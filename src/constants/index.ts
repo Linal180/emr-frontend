@@ -2,6 +2,9 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
+import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
+import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
 // graphql and interfaces block
 import {
   formatServiceCode, formatValue, getFormattedDate, getStandardTime,
@@ -244,7 +247,9 @@ export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
-export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Text messages";
+// export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
+export const CONSENT_TO_MESSAGES = "Consent To messages";
+export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
@@ -269,7 +274,7 @@ export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
-  "May we phone, email, or send a text to you to confirm appointments?";
+  "May we phone, or send a email to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
@@ -598,6 +603,7 @@ export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
 export const VITAL_LIST_PAGE_LIMIT = 5;
+export const LAB_RESULTS_LIMIT = 10;
 export const USERS_TEXT = "Users";
 export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";
@@ -612,6 +618,7 @@ export const FACILITY = "Facility";
 export const END_TIME = "End Time";
 export const USER_NAME = "Username";
 export const CANCELLED = "Cancelled";
+export const RESULT_FILE_NAME = "Result File Name";
 export const CVV = "CVV";
 export const REGISTERED_ON = "Registered on";
 export const PAY = "Pay";
@@ -627,6 +634,8 @@ export const MEDICAL_BILLING = "Medical Billing";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const PRACTICE_REGISTRATIONS = "Practice Registrations";
 export const RECENTLY_ADDED_FACILITIES = "Recently Added Facilities";
+export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
+export const RECENT_ACTIVITIES = "Recent Activities";
 export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
 export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
@@ -715,6 +724,7 @@ export const RECORD_VITALS = "Record Vitals";
 export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
 export const LAB_RESULTS_TEXT = "Lab Results";
+export const LAB_ORDER_RESULT = "Lab Order Result";
 export const VISIT_REASON = "Reason for visit";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
@@ -734,7 +744,11 @@ export const SPECIMEN_NOTES = "Specimen Notes";
 export const COLLECTION_DATE = "Collection Date";
 export const COLLECTION_TIME = "Collection Time";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
+export const TOTAL_USERS_PER_FACILITY = "Total Users Per Facility";
+export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
+export const APPOINTMENTS_PER_FACILITY = "Appointments Per Facility";
 export const DOCTOR_SIGNOFF = "Doctor Signoff";
+export const ACTIVATED = "Acitivated";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const ROLE_DETAILS_TEXT = "Role Details";
@@ -1017,6 +1031,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
+export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
@@ -2399,6 +2414,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
+  LabOrders = "Lab Orders",
 }
 
 export enum MODULE_TYPES {
@@ -3360,6 +3376,64 @@ export const FACILITIES_LIST = [
     fullName: "Horizon Labs",
   },
 ]
+export const EMERGENCY_LOG_LIST = [
+  {
+    shortName : 'AW',
+    fullName: "Andrew Williams",
+    hospitalName: "National Hospital",
+    activatedDate : '24/2/2022',
+    imageUrl : EMERGENCY_LOG_WILLIAMS
+  },
+  {
+    shortName : 'OM',
+    fullName: "Obaid McCoy",
+    hospitalName: "Horizon Eye Care and Medical Center",
+    activatedDate : '17/10/2022',
+    imageUrl : EMERGENCY_LOG_OBD
+  },
+  {
+    shortName : 'MP',
+    fullName: "Micheal Phelps",
+    hospitalName: "City Medical Center",
+    activatedDate : '2/6/2022',
+    imageUrl : EMERGENCY_LOG_PHLEPS
+  },
+  {
+    shortName : 'ND',
+    fullName: "Novac Dominic",
+    hospitalName: "National Hospital",
+    activatedDate : '30/2/2022',
+    imageUrl : ''
+  },
+]
+
+export const RECENT_ACTIVITY_LIST = [
+  {
+    shortName : 'AW',
+    fullName: "Andrew Williams",
+    hospitalName: "National Hospital",
+    activatedDate : '24/2/2022'
+  },
+  {
+    shortName : 'OM',
+    fullName: "Obaid McCoy",
+    hospitalName: "Horizon Eye Care and Medical Center",
+    activatedDate : '17/10/2022'
+  },
+  {
+    shortName : 'MP',
+    fullName: "Micheal Phelps",
+    hospitalName: "City Medical Center",
+    activatedDate : '2/6/2022'
+  },
+  {
+    shortName : 'ND',
+    fullName: "Novac Dominic",
+    hospitalName: "National Hospital",
+    activatedDate : '30/2/2022'
+  },
+]
+
 export enum VITAL_LABELS {
   createdAt = "",
   pulseRate = 'Pulse (bpm)',

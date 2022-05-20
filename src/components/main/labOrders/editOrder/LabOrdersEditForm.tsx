@@ -363,7 +363,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             <Box p={2} />
 
             {testFields.map((testField, index) => {
-              console.log("testField", testField)
               return (
                 <Box mb={4}>
                   <Card>

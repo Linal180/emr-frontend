@@ -3,7 +3,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { Box, Avatar, CircularProgress, Button, Typography, Menu } from "@material-ui/core";
 // components block
-import ViewDataLoader from "../../ViewDataLoader";
+import TextLoader from "../../TextLoader";
 import MediaCards from "../../AddMedia/MediaCards";
 import { PatientNoteModal } from './NoteModal'
 // interfaces, reducers, constants and styles block
@@ -207,40 +207,38 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   const isLoading = getPatientLoading || getAttachmentLoading
 
   return (
-    <>
-      {isLoading ? (<ViewDataLoader rows={3} columns={6} />) : (
-        <Box className={classes.profileCard}>
-          <Box key={attachmentId} display="flex" alignItems="center">
-            <Box pl={1} pr={3.75} position="relative">
-              {getAttachmentLoading ?
-                <Avatar variant="square" className={classes.profileImage}>
-                  <CircularProgress size={20} color="inherit" />
-                </Avatar>
-                :
-                <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-              }
+    <Box className={classes.profileCard}>
+      <Box key={attachmentId} display="flex" alignItems="center">
+        <Box pl={1} pr={3.75} position="relative">
+          {getAttachmentLoading ?
+            <Avatar variant="square" className={classes.profileImage}>
+              <CircularProgress size={20} color="inherit" />
+            </Avatar>
+            :
+            <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+          }
 
-              <MediaCards
-                title={ATTACHMENT_TITLES.ProfilePicture}
-                reload={() => fetchPatient()}
-                notDescription={true}
-                moduleType={AttachmentType.Patient}
-                itemId={id}
-                imageSide={attachmentUrl}
-                attachmentData={attachmentData || undefined}
-              />
-            </Box>
-          </Box>
+          <MediaCards
+            title={ATTACHMENT_TITLES.ProfilePicture}
+            reload={() => fetchPatient()}
+            notDescription={true}
+            moduleType={AttachmentType.Patient}
+            itemId={id}
+            imageSide={attachmentUrl}
+            attachmentData={attachmentData || undefined}
+          />
+        </Box>
+      </Box>
 
-          <Box flex={1}>
-            <Box display="flex">
-              <Box flex={1} flexWrap="wrap">
-                <Box display="flex" alignItems="center">
-                  <Box className={classes.userName} mr={1}>
-                    {`${firstName} ${lastName}`}
-                  </Box>
-
-                  <Typography variant="body2">({patientRecord})</Typography>
+      {isLoading ?
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
+        :
+        <Box flex={1}>
+          <Box display='flex'>
+            <Box flex={1} flexWrap="wrap">
+              <Box display="flex" alignItems="center">
+                <Box className={classes.userName} mr={1}>
+                  {`${firstName} ${lastName}`}
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
@@ -274,36 +272,46 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     />
                   </Menu>
                 </Box>
-
-                <Box display="flex" pt={1}>
-                  {ProfileAdditionalDetails.map((item, index) => (
-                    <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                      <Box className={classes.profileInfoHeading}>{item.title}</Box>
-
-                      <Box className={classes.profileInfoItem}>
-                        <Typography variant="body1">{item.description}</Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Box>
+                <Typography variant="body2">({patientRecord})</Typography>
               </Box>
 
-              <Box display='flex' alignItems='baseline' flexWrap='wrap'>
-                {!isChart && <Box pr={1}>
-                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-                    {EDIT_PATIENT}
-                  </Button>
-                </Box>}
+              <Box display="flex" width="100%" pt={1} flexWrap="wrap">
+                {ProfileDetails.map((item, index) => (
+                  <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                    <Box>{item.icon}</Box>
+                    <Typography variant="body1">{item.description}</Typography>
+                  </Box>
+                ))}
+              </Box>
 
-                {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
+              <Box display="flex" pt={1}>
+                {ProfileAdditionalDetails.map((item, index) => (
+                  <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
+
+                    <Box className={classes.profileInfoItem}>
+                      <Typography variant="body1">{item.description}</Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+
+            <Box display='flex' alignItems='baseline' flexWrap='wrap'>
+              {!isChart && <Box pr={1}>
+                <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                  {EDIT_PATIENT}
+                </Button>
+              </Box>}
+
+              {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
                   {SCHEDULE_APPOINTMENTS_TEXT}
                 </Button> */}
-              </Box>
             </Box>
           </Box>
         </Box>
-      )}
-    </>
+      }
+    </Box>
   )
 };
 
