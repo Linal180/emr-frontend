@@ -18,7 +18,7 @@ import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
   ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -61,7 +61,13 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
         const { status } = response || {}
 
         if (patientProblem && status && status === 200) {
-          const { problemSeverity, problemType, problemStartDate, note, appointment } = patientProblem
+          const { problemSeverity, problemType, problemStartDate, note, appointment, snowMedCode } = patientProblem
+          
+          if(snowMedCode){
+            const { id, referencedComponentId } = snowMedCode || {}
+            console.log(snowMedCode, "snowMedCode")
+            id && referencedComponentId && setValue('snowMedCodeId', setRecord(id, referencedComponentId))
+          }
 
           if (appointment) {
             const { appointmentType } = appointment;
@@ -163,12 +169,15 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     })
   }
 
-  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({ note, appointmentId, problemStartDate }) => {
+  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({ 
+    note, appointmentId, problemStartDate , snowMedCodeId
+  }) => {
     const { id: selectedAppointment } = appointmentId || {};
+    const { id: selectedSnoMedCode } = snowMedCodeId || {};
 
     const commonInput = {
       note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType
+      problemType: typeStatus.toUpperCase() as ProblemType, snowMedCodeId: selectedSnoMedCode
     }
 
     const extendedInput = selectedAppointment ?
@@ -230,8 +239,8 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
         </Box>
 
         <ItemSelector
-          label='SnoMed'
-          name="appointmentId"
+          label={SNO_MED_CODE}
+          name="snowMedCodeId"
           searchQuery={description || ''}
           modalName={ITEM_MODULE.snoMedCode}
         />

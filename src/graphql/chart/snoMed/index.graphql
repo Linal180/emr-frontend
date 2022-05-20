@@ -7,9 +7,8 @@ query SearchSnoMedCodes($searchSnoMedCodesInput: SearchSnoMedCodesInput!){
     
     snoMedCodes {
       id
-      mapTarget
-      mapAdvice
       __typename
+      referencedComponentId
     }
   }
 }

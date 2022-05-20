@@ -50,7 +50,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   useEffect(() => {
     fetchList()
   }, [fetchList, searchQuery, query])
-  
+
   return (
     <Controller
       rules={{ required: true }}
@@ -68,7 +68,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
-                {JSON.stringify(options)}
                 <Box position="relative">
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}

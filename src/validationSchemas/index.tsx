@@ -22,6 +22,7 @@ import {
   PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT,
   FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIALTY, SEVERITY,
   SPECIMEN_FIELD_VALIDATION_MESSAGE,
+  SNO_MED_CODE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -605,6 +606,7 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
 })
 
 export const patientProblemSchema = yup.object({
+  snowMedCodeId: selectorSchema(SNO_MED_CODE),
   problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
     value => new Date(value || '') <= new Date()),
 })

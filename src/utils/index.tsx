@@ -1132,9 +1132,9 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
     for (let item of list) {
       if (item) {
         if (item.__typename === 'SnoMedCodes') {
-          const { id, mapAdvice } = item || {};
+          const { id, referencedComponentId } = item || {};
 
-          data.push({ id, name: mapAdvice })
+          data.push({ id, name: referencedComponentId })
         }
       }
     }

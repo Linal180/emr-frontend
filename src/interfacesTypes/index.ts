@@ -1223,8 +1223,8 @@ export interface AddModalProps {
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
   & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
 
-export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate' | 'snowMedCodeId'>
-  & { appointmentId: SelectorOption }
+export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
+  & { appointmentId: SelectorOption } & { snowMedCodeId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
