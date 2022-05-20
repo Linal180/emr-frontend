@@ -2,7 +2,7 @@ import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 // components block
-import ViewDataLoader from "../../../../common/ViewDataLoader";
+import TextLoader from "../../../../common/TextLoader";
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../../history";
@@ -163,30 +163,32 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
 
   return (
     <>
-      {isLoading ? (<ViewDataLoader rows={3} columns={6} />) : (
-        <Box className={classes.profileCard}>
-          <Box key={attachmentId} display="flex" alignItems="center">
-            <Box pl={1} pr={3.75} position="relative">
-              {getAttachmentLoading ?
-                <Avatar variant="square" className={classes.profileImage}>
-                  <CircularProgress size={20} color="inherit" />
-                </Avatar>
-                :
-                <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-              }
+      <Box className={classes.profileCard}>
+        <Box key={attachmentId} display="flex" alignItems="center">
+          <Box pl={1} pr={3.75} position="relative">
+            {getAttachmentLoading ?
+              <Avatar variant="square" className={classes.profileImage}>
+                <CircularProgress size={20} color="inherit" />
+              </Avatar>
+              :
+              <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+            }
 
-              <MediaCards
-                title={ATTACHMENT_TITLES.ProfilePicture}
-                reload={() => fetchDoctor()}
-                notDescription={true}
-                moduleType={AttachmentType.Doctor}
-                itemId={id}
-                imageSide={attachmentUrl}
-                attachmentData={attachmentData || undefined}
-              />
-            </Box>
+            <MediaCards
+              title={ATTACHMENT_TITLES.ProfilePicture}
+              reload={() => fetchDoctor()}
+              notDescription={true}
+              moduleType={AttachmentType.Doctor}
+              itemId={id}
+              imageSide={attachmentUrl}
+              attachmentData={attachmentData || undefined}
+            />
           </Box>
+        </Box>
 
+        {isLoading ?
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
+          :
           <Box flex={1}>
             <Box display="flex">
               <Box flex={1} flexWrap="wrap">
@@ -220,15 +222,15 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
 
               <Box display='flex' alignItems='baseline' flexWrap='wrap'>
                 <Box pr={1}>
-                  <Button color="primary" variant="contained" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
                     {EDIT_DOCTOR}
                   </Button>
                 </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      )}
+        }
+      </Box>
     </>
   )
 };

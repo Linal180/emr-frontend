@@ -59,19 +59,19 @@ const DropzoneImage: FC<any> = forwardRef(({
   }));
 
   const handleFileChange = async () => {
-    files && files.map(async(file)=>{
+    files && files.map(async (file) => {
       const formData = new FormData();
       file && formData.append("file", file);
       title && formData.append("title", title);
       itemId && formData.append("typeId", itemId);
       attachmentId && formData.append("id", attachmentId);
       providerName && formData.append("providerName", providerName);
-      if(attachmentMetadata){
-        for ( var key in attachmentMetadata ) {
+      if (attachmentMetadata) {
+        for (var key in attachmentMetadata) {
           formData.append(key, attachmentMetadata[key]);
         }
       }
-                                                        
+
       setLoading(true);
       await axios.post(
         isEdit ?
@@ -86,13 +86,13 @@ const DropzoneImage: FC<any> = forwardRef(({
         }
       ).then(response => {
         const { status, data } = response;
-  
+
         if (status === 201 && data) {
           switch (imageModuleType) {
-  
+
             case AttachmentType.Patient:
               const patientData = data as unknown as MediaPatientDataType;
-  
+
               if (patientData) {
                 const { patient: { attachments: patientAttachment } } = patientData || {};
                 patientAttachment && setAttachments(patientAttachment)
@@ -100,12 +100,12 @@ const DropzoneImage: FC<any> = forwardRef(({
                 handleModalClose();
                 reload()
               }
-  
+
               break;
-  
+
             case AttachmentType.Doctor:
               const doctorData = data as unknown as MediaDoctorDataType
-  
+
               if (doctorData) {
                 const { doctor: { attachments: doctorAttachments } } = doctorData || {};
                 doctorAttachments && setAttachments(doctorAttachments)
@@ -113,12 +113,12 @@ const DropzoneImage: FC<any> = forwardRef(({
                 handleModalClose();
                 reload()
               }
-  
+
               break;
-  
+
             case AttachmentType.Staff:
               const staffData = data as unknown as MediaStaffDataType
-  
+
               if (staffData) {
                 const { staff: { attachments: staffAttachments } } = staffData || {};
                 staffAttachments && setAttachments(staffAttachments)
@@ -126,12 +126,12 @@ const DropzoneImage: FC<any> = forwardRef(({
                 handleModalClose();
                 reload()
               }
-  
+
               break;
-  
+
             case AttachmentType.SuperAdmin:
               const userData = data as unknown as MediaUserDataType
-  
+
               if (userData) {
                 const { user: { attachments: staffAttachments } } = userData || {};
                 staffAttachments && setAttachments(staffAttachments)
@@ -139,15 +139,15 @@ const DropzoneImage: FC<any> = forwardRef(({
                 handleModalClose();
                 reload()
               }
-  
+
               break;
-  
+
             default:
               break;
           }
         } else {
           Alert.error("Something went wrong!");
-  
+
           if (status === 401) {
             setIsLoggedIn(false)
             setUser(null)
@@ -155,7 +155,7 @@ const DropzoneImage: FC<any> = forwardRef(({
           }
         }
       }).then(data => {
-  
+
       }).catch(error => {
         const { response: { data: { error: errorMessage } } } = error || {}
         Alert.error(errorMessage);
@@ -209,12 +209,14 @@ const DropzoneImage: FC<any> = forwardRef(({
             )}
 
             <DropzoneArea
+              previewGridClasses={{ item: 'media-inner-image' }}
               filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
               acceptedFiles={ACCEPTABLE_FILES}
               onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
+              dropzoneText={imageEdit ? 
+                PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
             />
           </Box>
         )

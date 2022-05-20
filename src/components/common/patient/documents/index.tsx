@@ -271,7 +271,6 @@ const DocumentsTable: FC = (): JSX.Element => {
       <Box className="table-overflow">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>

@@ -84,7 +84,7 @@ body {
 }
 
 .media-image img {
-  height: 80%;
+  height: 100%;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -557,4 +557,12 @@ body .MuiTabPanel-root {
 
 .overflowVisible {
   overflow: visible !important;
+}
+
+.media-inner-image {
+  padding: 0px !important;
+}
+
+.media-inner-image > img {
+  height: 150px !important;
 }

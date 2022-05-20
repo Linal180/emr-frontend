@@ -1,8 +1,10 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "@material-ui/core";
+import { 
+  Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox, 
+} from "@material-ui/core";
 //components block
 import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
@@ -10,10 +12,9 @@ import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ACCESSION_NUMBER,
-  ASSIGNED_PROVIDER,
-  COLLECTED_DATE,
-  DESCRIPTION, EMPTY_OPTION, LAB_TEXT, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, RECEIVED_DATE, RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
+  ACCESSION_NUMBER, ASSIGNED_PROVIDER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LAB_TEXT, LOINC_CODE, 
+  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, RECEIVED_DATE, RESULTS, SAVE_TEXT, TESTS, 
+  USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import { GREY, GREY_THREE } from '../../../../theme';
 import {
@@ -28,6 +29,7 @@ import DatePicker from '../../../common/DatePicker';
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
+  const [doctorSignOff, setDoctorSignOff] = useState(false);
 
   const methods = useForm<LabOrderResultsFormInput>({
     mode: "all",
@@ -84,6 +86,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           normalRangeUnit: normalRangeUnits,
           resultUnit: resultUnits,
           resultValue: resultValue,
+          doctorsSignOff: doctorSignOff
         }
       })
 
@@ -120,7 +123,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { component, loincNum, unitsRequired } = test ?? {}
 
           const transformedObservations = testObservations?.map((testObservation) => {
-            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id } = testObservation ?? {}
+            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id, doctorsSignOff } = testObservation ?? {}
+
+            setDoctorSignOff(doctorsSignOff || false)
 
             return {
               observationId: id,
@@ -164,12 +169,18 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     fetchlabTests()
   }, [fetchlabTests])
 
+  const handleDoctorSignOffToggle = (
+    { target: { checked } }: ChangeEvent<HTMLInputElement>
+  ) => {
+    setDoctorSignOff(checked);
+  };
+
   return (
     <>
-      <Card>
-        <Box p={3}>
-          <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Card>
+            <Box px={3}>
               <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{RESULTS}</Typography>
               </Box>
@@ -180,7 +191,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                     name="lab"
                     label={LAB_TEXT}
                     value={EMPTY_OPTION}
-                    options={[]}
+                    options={[EMPTY_OPTION]}
                   />
                 </Grid>
 
@@ -189,7 +200,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                     name="assignedProvider"
                     label={ASSIGNED_PROVIDER}
                     value={EMPTY_OPTION}
-                    options={[]}
+                    options={[EMPTY_OPTION]}
                   />
                 </Grid>
 
@@ -225,23 +236,30 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                   <DatePicker name={''} label={RECEIVED_DATE} />
                 </Grid>
               </Grid>
-            </form>
-          </FormProvider>
-        </Box>
-      </Card>
+            </Box>
+          </Card>
 
-      <Box p={2} />
+          <Box p={2} />
 
-      <Card>
-        <Box px={3}>
-          <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+          <Card>
+            <Box px={3}>
               <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h4'>{TESTS}</Typography>
 
                 <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
                   {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
                 </Button>
+              </Box>
+
+              <Box mb={2}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox color="primary" checked={doctorSignOff} onChange={handleDoctorSignOffToggle} />
+                    }
+                    label={DOCTOR_SIGNOFF}
+                  />
+                </FormGroup>
               </Box>
 
               <Grid container spacing={3}>
@@ -280,10 +298,10 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 })
                 }
               </Grid>
-            </form>
-          </FormProvider>
-        </Box>
-      </Card>
+            </Box>
+          </Card>
+        </form>
+      </FormProvider>
 
       <Box p={2} />
 
