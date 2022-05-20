@@ -26,7 +26,7 @@ const BarChart6Component: FC = (): JSX.Element => {
         'Mercy University Hospital',
         'Cavan General Hospital',
         'County Hospital',
-       
+
       ],
 
       crosshair: false,
@@ -65,7 +65,7 @@ const BarChart6Component: FC = (): JSX.Element => {
         borderRadius: 4,
       }
     },
-    
+
     series: [{
       name: '',
       data: [49.9, 71.5, 106.4, 129.2, 144.0],
