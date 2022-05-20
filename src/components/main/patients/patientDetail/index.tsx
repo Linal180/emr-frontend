@@ -8,11 +8,17 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './Insurance';
 // import Selector from "../../../common/Selector";
+import AreaChartComponent from './charts';
+import CareTeamComponent from './careTeam';
 import PortalTable from '../../../common/patient/portal';
-import LabOrdersTable from '../../../common/patient/labOrders';
+import CardComponent from '../../../common/CardComponent';
+import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
+import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import BarChart2Component from '../../../common/charts/barChart2';
 import PatientProfileHero from '../../../common/patient/profileHero';
+import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 // constants, history, styling block
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
@@ -30,13 +36,7 @@ import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
 } from "../../../../constants";
-import BarChart2Component from '../../../common/charts/barChart2';
-import CareTeamComponent from './careTeam';
-import AreaChartComponent from './charts';
 import { getFormattedDate } from '../../../../utils';
-import CardComponent from '../../../common/CardComponent';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-import AppointmentList from '../../../common/AppointmentList';
 
 const PatientDetailsComponent = (): JSX.Element => {
   // const widgetId = "widget-menu";
@@ -164,7 +164,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </Box>
 
             <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} reload={() => fetchComing()} />
+              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated}/>
 
               {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                 <Box display="flex" justifyContent="center" pb={12} pt={5}>
