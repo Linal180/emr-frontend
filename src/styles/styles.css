@@ -603,3 +603,7 @@ background: #E5EAEE;
 .topMargin {
   top: -24px !important;
 }
+
+.highcharts-container {
+  width:auto !important
+}
