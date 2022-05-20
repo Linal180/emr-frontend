@@ -551,6 +551,12 @@ export const getISOTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getAppointmentDateTime = (date: string) => {
+  const timeDate = moment(date, "x")
+
+  return `${timeDate.format("ddd MMM. DD, YYYY")} at ${timeDate.format("hh:mm A")}`
+};
+
 export const getStandardTime = (timestamp: string) => {
   if (!timestamp) return "";
 
