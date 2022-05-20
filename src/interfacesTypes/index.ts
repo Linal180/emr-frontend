@@ -714,7 +714,7 @@ export type ExternalPatientInputProps = {
 } & Pick<
   CreatePatientItemInput,
   | "pharmacy"
-  | "voiceCallPermission"
+  | "smsPermission"
   | "phonePermission"
   | "callToConsent"
   | "releaseOfInfoBill"
