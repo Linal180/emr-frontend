@@ -27,7 +27,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Appointmentstatus,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1315,6 +1315,11 @@ export interface BackButtonProps {
   to: string;
 }
 
+export interface AppointmentsComponentProps {
+  title: string;
+  isMinWidth?: boolean;
+}
+
 export interface PatientSearchInputProps {
   dob: string;
   dos: string;
@@ -1437,3 +1442,9 @@ export interface PracticesTableProps {
 export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
+
+export interface AppointmentListProps {
+  appointments: AppointmentsPayload['appointments'];
+  type: Appointmentstatus;
+  reload?: Function;
+};

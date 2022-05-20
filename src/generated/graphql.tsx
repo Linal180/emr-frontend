@@ -9052,10 +9052,7 @@ export const GetPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-<<<<<<< Updated upstream
       smsPermission
-=======
->>>>>>> Stashed changes
       deceasedDate
       privacyNotice
       releaseOfInfoBill

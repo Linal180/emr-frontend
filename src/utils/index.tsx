@@ -219,7 +219,7 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY")
+  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
 export const deleteRecordTitle = (recordType: string) => {
@@ -564,6 +564,12 @@ export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getAppointmentDateTime = (date: string) => {
+  const timeDate = moment(date, "x")
+
+  return `${timeDate.format("ddd MMM. DD, YYYY")} at ${timeDate.format("hh:mm A")}`
 };
 
 export const getStandardTime = (timestamp: string) => {

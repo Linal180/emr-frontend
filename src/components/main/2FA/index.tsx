@@ -176,7 +176,7 @@ const TwoFAComponent = (): JSX.Element => {
 
                   <Box p={1} />
 
-                  <Button type="submit" variant="contained" color='primary' disabled={!phone}>
+                  <Button type="submit" variant="contained" color='primary' disabled={!(phone || doctorPhone || staffPhone)}>
                     {SAVE_TEXT}
                     {loading && <CircularProgress size={20} color="inherit" />}
                   </Button>
