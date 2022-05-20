@@ -15,7 +15,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       borderRadius: 8,
       padding: 30,
     },
-    
+
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },
@@ -42,7 +42,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       height: 120,
       width: 120,
       borderRadius: 12,
-      
+
       "& > img": {
         height: '100%',
         width: '100%',
@@ -143,6 +143,36 @@ export const useProfileDetailsStyles = makeStyles(() =>
       "& .MuiListItem-root": {
         color: BLACK_THREE,
       },
+    },
+
+    noteDropdown: {
+      "& .MuiMenu-paper": {
+        padding: 10
+      },
+      "& .MuiPopover-paper": {
+        [theme.breakpoints.up('sm')]: {
+          minWidth: 300
+        },
+        [theme.breakpoints.only('sm')]: {
+          minWidth: 150
+        }
+      }
+    },
+
+    profileNoteInfoItem: {
+      minWidth: "20%",
+      alignItems: 'center',
+      color: GREY_THREE,
+      marginBottom: 8,
+      marginRight: 5,
+      display: "flex",
+      flexWrap: "wrap",
+
+      "& svg": {
+        display: 'block',
+        marginRight: 7,
+        minWidth: 14
+      }
     },
   })
 );

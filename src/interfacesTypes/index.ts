@@ -369,6 +369,10 @@ export interface PatientSelectorProps {
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
 
+export interface PatientProviderSelectorProps {
+  patientId: string
+}
+
 export interface FacilitySelectorProps {
   name: string
   label: string
@@ -714,7 +718,7 @@ export type ExternalPatientInputProps = {
 } & Pick<
   CreatePatientItemInput,
   | "pharmacy"
-  | "voiceCallPermission"
+  | "smsPermission"
   | "phonePermission"
   | "callToConsent"
   | "releaseOfInfoBill"
@@ -892,6 +896,12 @@ export interface LoinsCodeFields {
 }
 
 export interface LabOrderResultsFormInput {
+  labName?: SelectorOption
+  assignedProvider?: SelectorOption
+  accessionNumber?:string
+  venderName?:string
+  collectedDate?:string
+  receivedDate?:string
   loinsCodeFields: LoinsCodeFields[]
 };
 
@@ -1421,6 +1431,10 @@ export interface PredefinedComponentsProps {
 
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
 
+export interface PatientNoteModalProps{
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
+}
 export interface PracticesTableProps {
   dispatch: Dispatch<PracticeAction>
 } 

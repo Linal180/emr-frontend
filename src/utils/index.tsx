@@ -5,7 +5,7 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -19,7 +19,7 @@ import {
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -365,6 +365,21 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
         data.push({ id, name: `${firstName} ${lastName}`.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { doctor:doctorPatient } = doctor;
+        const {firstName, lastName, id} = doctorPatient ?? {}
+        data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -1104,6 +1119,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
       return PatientWeight
   }
 }
+
 export const generateString = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
@@ -1125,3 +1141,14 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   }
   return ""
 }
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[21],
+    fontSize: 11,
+    borderRadius: 4,
+    width: 320
+  },
+}))(Tooltip);
