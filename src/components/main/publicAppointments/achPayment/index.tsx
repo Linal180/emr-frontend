@@ -2,7 +2,7 @@
 import { useParams } from 'react-router';
 import { ChangeEvent, Fragment } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, Grid, Tab } from '@material-ui/core';
+import { Box, Button, CircularProgress, Grid, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { usBankAccount, client, dataCollector } from 'braintree-web';
@@ -10,7 +10,6 @@ import { usBankAccount, client, dataCollector } from 'braintree-web';
 import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
-import BackdropLoader from '../../../common/Backdrop';
 import CheckboxController from '../../../common/CheckboxController';
 //constants, reducers, interfaces, graphql 
 import { ActionType } from '../../../../reducers/externalPaymentReducer';
@@ -149,47 +148,63 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
             <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
           ))}
         </TabList>
+
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
+
             <Box bgcolor={'white'} p={2} pt={4}>
+
               <InputController controllerName='routingNumber' controllerLabel={ROUTING_NUMBER} fieldType={'number'} notStep />
               <InputController controllerName='accountNumber' controllerLabel={BANK_ACCOUNT} fieldType={'number'} notStep />
               <Selector name='accountType' options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={ACCOUNT_TYPE} />
+
               <TabPanel value="personal">
                 <Grid container spacing={2}>
                   <Grid item xs={6}><InputController controllerName='firstName' controllerLabel={FIRST_NAME} /></Grid>
                   <Grid item xs={6}><InputController controllerName='lastName' controllerLabel={LAST_NAME} /></Grid>
                 </Grid>
               </TabPanel>
+
               <TabPanel value="business">
                 <InputController controllerName='businessName' controllerLabel={COMPANY_NAME} />
               </TabPanel>
 
               <Grid container spacing={2}>
+
                 <Grid item xs={6}><InputController controllerName='streetAddress' controllerLabel={STREET_ADDRESS} /></Grid>
+
                 <Grid item xs={6}><InputController controllerName='locality' controllerLabel={LOCALITY} /></Grid>
+
                 <Grid item xs={6}>
                   <InputController controllerName='postalCode' controllerLabel={ZIP_CODE} fieldType={'number'} notStep />
                 </Grid>
+
                 <Grid item xs={6}><Selector name='region' options={MAPPED_REGIONS} label={STATE} /></Grid>
               </Grid>
+
               <CheckboxController controllerName='authority' controllerLabel={ACH_PAYMENT_AUTHORITY} />
+
               <Box display={'flex'} justifyContent={'flex-end'}>
+
                 <Box pr={2}>
-                  <Button variant='outlined' onClick={() => dispatcher({ type: ActionType.SET_ACH_PAYMENT, achPayment: false })}>
+                  <Button
+                    variant='outlined'
+                    onClick={() => dispatcher({ type: ActionType.SET_ACH_PAYMENT, achPayment: false })}
+                    disabled={loader}>
                     {CANCEL_TEXT}
                   </Button>
                 </Box>
-                <Button variant="contained" color="primary" type='submit'>
-                  {SUBMIT}
+
+                <Button variant="contained" color="primary" type='submit' disabled={loader}>
+                {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
                 </Button>
               </Box>
             </Box>
+
           </form>
         </FormProvider>
-        <BackdropLoader loading={loader} />
-      </TabContext>
 
+      </TabContext>
     </Fragment>
   )
 }
