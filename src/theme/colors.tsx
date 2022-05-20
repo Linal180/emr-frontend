@@ -9,6 +9,8 @@ export const GRAY_NINE = "#5E6278"
 export const GRAY_TEN = "#F4F6FD"
 export const GRAY_ELEVEN = "#40353554"
 export const GRAY_TWELVE = "#BCB3E2"
+export const GRAY_THIRTEEN = "#7B7B7B"
+
 
 export const BLACK_FOUR = "#181C32";
 export const BLACK_FIVE = "#333333";
