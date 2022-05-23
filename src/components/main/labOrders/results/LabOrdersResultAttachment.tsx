@@ -252,7 +252,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
           </Box>
         </form>
       </FormProvider>
-    </Card >
+    </Card>
   );
 };
 
