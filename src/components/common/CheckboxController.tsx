@@ -2,14 +2,12 @@
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Checkbox, FormControl, FormControlLabel, FormHelperText } from "@material-ui/core";
-
-//interfaces block
+// interfaces block
 import { CheckboxControllerProps } from "../../interfacesTypes";
 
 const CheckboxController: FC<CheckboxControllerProps> = ({
   controllerName, controllerLabel, error, margin, isHelperText,
 }): JSX.Element => {
-
   const { control } = useFormContext();
 
   return (
@@ -20,7 +18,6 @@ const CheckboxController: FC<CheckboxControllerProps> = ({
       render={({ field: { value, onChange, onBlur, ref }, fieldState: { invalid, error: { message } = {} } }) =>
       (
         <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
-
           <FormControlLabel
             control={<Checkbox name={controllerName} id={controllerName} />}
             label={controllerLabel || ''}
