@@ -599,3 +599,11 @@ background: #E5EAEE;
 .media-inner-image > img {
   height: 150px !important;
 }
+
+.topMargin {
+  top: -24px !important;
+}
+
+.highcharts-container {
+  width:auto !important
+}

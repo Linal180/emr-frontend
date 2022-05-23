@@ -27,6 +27,7 @@ const Selector: FC<SelectorProps> = ({
             disableClearable
             value={field.value}
             disabled={disabled}
+            getOptionSelected={(option,value)=>option.id===value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (

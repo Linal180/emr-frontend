@@ -2,7 +2,7 @@
 import { FC } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Box, Grid, Typography, Button, } from "@material-ui/core";
-import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 // components block
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
@@ -21,10 +21,22 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
   });
 
   return (
-    <Grid item container spacing={3}>
+    <Box p={2}>
       {subFields.map((subField, subIndex) => {
         return (
-          <>
+          <Grid container spacing={3}>
+            {!!(subFields.length > 1 && subIndex !== 0) && <Grid item md={12} sm={12} xs={12}>
+              <Box mb={3} display="flex" alignItems="center" justifyContent='flex-end'>
+                <Button
+                  onClick={() => {
+                    setResultsToRemove((prevState: string[]) => [...prevState, (subField as LabOrdersResultOption).observationId])
+                    removeSubField(subIndex)
+                  }}
+                  type="submit" variant="outlined" color="inherit" className='danger'>
+                  {REMOVE_RESULT}
+                </Button>
+              </Box>
+            </Grid>}
             <Grid item md={2} sm={12} xs={12}>
               <InputController
                 fieldType="text"
@@ -65,33 +77,24 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
                 options={ABNORMAL_FLAG_OPTIONS}
               />
             </Grid>
-
-            {!!(subFields.length > 1 && subIndex !== 0) && <Grid item md={2} sm={12} xs={12}>
-              <Box marginTop={3}
-                onClick={() => {
-                  setResultsToRemove((prevState: string[]) => [...prevState, (subField as LabOrdersResultOption).observationId])
-                  removeSubField(subIndex)
-                }}
-                className="remove-box" display="flex" alignItems="center"
-              >
-                <RemoveCircleOutline color='inherit' />
-
-                <Typography>{REMOVE_RESULT}</Typography>
-              </Box>
-            </Grid>}
-          </>
+          </Grid>
         )
       })}
-      <Grid container spacing={3} justifyContent="flex-end">
-        <Grid item md={4} sm={12} xs={12}>
-          <Button onClick={() => appendSubField(ORDERS_RESULT_INITIAL_VALUES)}>
+
+      <Grid container spacing={3}>
+        <Grid item md={12} sm={12} xs={12}>
+          <Box pb={3}
+            onClick={() => appendSubField(ORDERS_RESULT_INITIAL_VALUES)}
+            className="billing-box" display="flex" alignItems="center" justifyContent='flex-end'
+          >
             <AddCircleOutline color='inherit' />
 
             <Typography>{ADD_ANOTHER_RESULT}</Typography>
-          </Button>
+          </Box>
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
+
   );
 };
 

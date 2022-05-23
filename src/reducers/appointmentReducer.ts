@@ -54,6 +54,12 @@ export interface State {
   isInvoiceNumber: boolean;
   cancelAppStatus: boolean;
   appBillingStatus: string;
+  pageComing: number;
+  pageCompleted: number;
+  totalPagesComing: number;
+  totalPagesCompleted: number;
+  upComing: AppointmentsPayload['appointments'];
+  completed: AppointmentsPayload['appointments'];
 }
 
 export const initialState: State = {
@@ -106,6 +112,12 @@ export const initialState: State = {
     providerId: '',
   },
   appBillingStatus: '',
+  pageComing: 1,
+  pageCompleted: 1,
+  totalPagesComing: 0,
+  totalPagesCompleted: 0,
+  upComing: [],
+  completed: []
 }
 
 export enum ActionType {
@@ -151,6 +163,12 @@ export enum ActionType {
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
   SET_APP_BILLING_STATUS = 'setAppBillingStatus',
+  SET_UP_COMING = 'setUpComing',
+  SET_COMPLETED = 'setComplete',
+  SET_PAGE_COMING = 'setPageComing',
+  SET_PAGE_COMPLETED = 'setPageCompleted',
+  SET_TOTAL_PAGES_COMING = 'setTotalPagesComing',
+  SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
 }
 
 export type Action =
@@ -204,7 +222,12 @@ export type Action =
     }
   }
   | { type: ActionType.SET_APP_BILLING_STATUS; appBillingStatus: string }
-
+  | { type: ActionType.SET_PAGE_COMING; pageComing: number }
+  | { type: ActionType.SET_PAGE_COMPLETED; pageCompleted: number }
+  | { type: ActionType.SET_TOTAL_PAGES_COMING; totalPagesComing: number }
+  | { type: ActionType.SET_UP_COMING; upComing: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_COMPLETED; completed: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_TOTAL_PAGES_COMPLETED; totalPagesCompleted: number }
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -442,6 +465,39 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         openPatientModal: action.openPatientModal
+      }
+    case ActionType.SET_PAGE_COMPLETED:
+      return {
+        ...state,
+        pageCompleted: action.pageCompleted
+      }
+
+    case ActionType.SET_PAGE_COMING:
+      return {
+        ...state,
+        pageComing: action.pageComing
+      }
+    case ActionType.SET_TOTAL_PAGES_COMING:
+      return {
+        ...state,
+        totalPagesComing: action.totalPagesComing
+      }
+
+    case ActionType.SET_COMPLETED:
+      return {
+        ...state,
+        completed: action.completed
+      }
+
+    case ActionType.SET_UP_COMING:
+      return {
+        ...state,
+        upComing: action.upComing
+      }
+    case ActionType.SET_TOTAL_PAGES_COMPLETED:
+      return {
+        ...state,
+        totalPagesCompleted: action.totalPagesCompleted
       }
   }
 };

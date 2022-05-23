@@ -17,17 +17,18 @@ import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
-import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  Maybe, PatientVitals, UpdateAttachmentInput, Doctor,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Doctor,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
+  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
+  Maybe, PatientVitals,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -448,7 +449,7 @@ export interface SearchComponentProps {
   search: Function;
   info?: boolean;
   tooltipData?: TooltipData[]
-  placeHolder? : string;
+  placeHolder?: string;
 }
 
 export interface AppMenuItemTypes {
@@ -753,12 +754,8 @@ export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
 }
 
-export type extendedContactInput = Omit<
-  CreateContactInput,
-  "facilityId" | "serviceCode" | "state"
-> & { facilityId: SelectorOption } & { serviceCode: SelectorOption } & {
-  state: SelectorOption;
-};
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode" | "state">
+  & { facilityId: SelectorOption } & { serviceCode: SelectorOption } & { state: SelectorOption };
 
 export interface LocationTableProps {
   openModal: boolean;
@@ -841,13 +838,13 @@ export interface SpecimenTypeOption {
 }
 
 export interface TestOption {
-   testId?: string
-   test: SelectorOption,
-   testDate: string
-   testTime: string
-   testNotes: string
-   newTest?: boolean
-   specimenTypeField?: SpecimenTypeOption[]
+  testId?: string
+  test: SelectorOption,
+  testDate: string
+  testTime: string
+  testNotes: string
+  newTest?: boolean
+  specimenTypeField?: SpecimenTypeOption[]
 }
 
 export interface LabOrdersCreateFormInput {
@@ -858,7 +855,7 @@ export interface LabOrdersCreateFormInput {
 };
 
 export interface LabOrdersSpecimenTypeInput {
-  index:number
+  index: number
 };
 
 export interface LabOrdersResultOption {
@@ -878,6 +875,12 @@ export interface LoinsCodeFields {
 }
 
 export interface LabOrderResultsFormInput {
+  labName?: SelectorOption
+  assignedProvider?: SelectorOption
+  accessionNumber?: string
+  venderName?: string
+  collectedDate?: string
+  receivedDate?: string
   loinsCodeFields: LoinsCodeFields[]
 };
 
@@ -1212,7 +1215,7 @@ export interface CardLayoutProps {
 
 export interface AddModalProps {
   newAllergy?: string;
-  allergyType?: string; 
+  allergyType?: string;
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1293,6 +1296,11 @@ export interface MediaUserDataType extends Message {
 
 export interface BackButtonProps {
   to: string;
+}
+
+export interface AppointmentsComponentProps {
+  title: string;
+  isMinWidth?: boolean;
 }
 
 export interface PatientSearchInputProps {
@@ -1406,16 +1414,21 @@ export interface PredefinedComponentsProps {
 
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
 
-export interface PatientNoteModalProps{
+export interface PatientNoteModalProps {
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
 }
 export interface PracticesTableProps {
   dispatch: Dispatch<PracticeAction>
-} 
+}
 
 export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
 
 export type RenderListOptionTypes = SnoMedCodesPayload['snoMedCodes']
+export interface AppointmentListProps {
+  appointments: AppointmentsPayload['appointments'];
+  type: Appointmentstatus;
+  reload?: Function;
+};
