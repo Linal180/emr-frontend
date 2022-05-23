@@ -12,8 +12,7 @@ import { SnoMedCodesPayload, useSearchSnoMedCodesLazyQuery } from "../../generat
 const ItemSelector: FC<ItemSelectorProps> = ({
   name, label, disabled, isRequired, margin, modalName, searchQuery, value, isEdit
 }): JSX.Element => {
-  const { control, setValue, watch } = useFormContext()
-  const { snowMedCodeId } = watch()
+  const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
   const [options, setOptions] = useState<SelectorOption[]>([])
 
