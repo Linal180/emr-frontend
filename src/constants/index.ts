@@ -29,6 +29,7 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -91,6 +92,7 @@ export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
+export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const ADVANCED_SEARCH = "Advanced Search";

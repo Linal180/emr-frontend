@@ -19,7 +19,7 @@ import {
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
   SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, PAIN_TEXT,
   REACTIONS_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT,
-  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE, NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -975,7 +975,9 @@ export const patientVitalUpdateSchema = yup.object({
 })
 
 export const attachmentNameUpdateSchema = yup.object({
-  attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
+  attachmentName: yup.string()
+  .test('', invalidMessage('Attachment name'), value => !!value)
+  .test('',NO_WHITE_SPACE_ALLOWED, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createLabOrdersSchema =  yup.object({
