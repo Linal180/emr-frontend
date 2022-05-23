@@ -74,8 +74,8 @@
     "gen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
-    "node": "^16.13.1",
-    "npm": "^8.1.2"
+    "node": "^14.10.0",
+    "npm": "^6.14.8"
   },
   "eslintConfig": {
     "extends": [

@@ -111,7 +111,7 @@ const ResponseTable: FC = (): JSX.Element => {
   return (
     <Box className={classes.mainTableContainer}>
       <Box className="table-overflow">
-        <Table >
+        <Table>
           <TableHead>
             <TableRow>
               {sortedFormLabels?.map((ele, index) => {
