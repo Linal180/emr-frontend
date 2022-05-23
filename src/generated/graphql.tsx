@@ -4809,6 +4809,13 @@ export type ChargePaymentMutationVariables = Exact<{
 
 export type ChargePaymentMutation = { __typename?: 'Mutation', chargePayment: { __typename?: 'TransactionPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, transaction: { __typename?: 'Transactions', id: string, status: Transactionstatus } } };
 
+export type AchPaymentMutationVariables = Exact<{
+  achPaymentInputs: AchPaymentInputs;
+}>;
+
+
+export type AchPaymentMutation = { __typename?: 'Mutation', achPayment: { __typename?: 'TransactionPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, transaction: { __typename?: 'Transactions', id: string, status: Transactionstatus } } };
+
 export type FindAllPermissionsQueryVariables = Exact<{
   permissionInput: PermissionInput;
 }>;
@@ -9667,6 +9674,48 @@ export function useChargePaymentMutation(baseOptions?: Apollo.MutationHookOption
 export type ChargePaymentMutationHookResult = ReturnType<typeof useChargePaymentMutation>;
 export type ChargePaymentMutationResult = Apollo.MutationResult<ChargePaymentMutation>;
 export type ChargePaymentMutationOptions = Apollo.BaseMutationOptions<ChargePaymentMutation, ChargePaymentMutationVariables>;
+export const AchPaymentDocument = gql`
+    mutation AchPayment($achPaymentInputs: ACHPaymentInputs!) {
+  achPayment(achPaymentInputs: $achPaymentInputs) {
+    response {
+      error
+      status
+      message
+      name
+    }
+    transaction {
+      id
+      status
+    }
+  }
+}
+    `;
+export type AchPaymentMutationFn = Apollo.MutationFunction<AchPaymentMutation, AchPaymentMutationVariables>;
+
+/**
+ * __useAchPaymentMutation__
+ *
+ * To run a mutation, you first call `useAchPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAchPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [achPaymentMutation, { data, loading, error }] = useAchPaymentMutation({
+ *   variables: {
+ *      achPaymentInputs: // value for 'achPaymentInputs'
+ *   },
+ * });
+ */
+export function useAchPaymentMutation(baseOptions?: Apollo.MutationHookOptions<AchPaymentMutation, AchPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AchPaymentMutation, AchPaymentMutationVariables>(AchPaymentDocument, options);
+      }
+export type AchPaymentMutationHookResult = ReturnType<typeof useAchPaymentMutation>;
+export type AchPaymentMutationResult = Apollo.MutationResult<AchPaymentMutation>;
+export type AchPaymentMutationOptions = Apollo.BaseMutationOptions<AchPaymentMutation, AchPaymentMutationVariables>;
 export const FindAllPermissionsDocument = gql`
     query FindAllPermissions($permissionInput: PermissionInput!) {
   findAllPermissions(permissionInput: $permissionInput) {
