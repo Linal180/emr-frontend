@@ -857,6 +857,7 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
 export const RESULT_VALUE = "Result Value";
@@ -2348,6 +2349,11 @@ export const PATIENT_CHARTING_DATA = [
   },
 ];
 
+export const DUMMY_OPTION = {
+  id: ADD_PATIENT_MODAL,
+  name: ADD_PATIENT_MODAL
+}
+
 export const DUMMY_APPOINTMENTS = [
   {
     id: 1,
@@ -2428,6 +2434,10 @@ export const DUMMY_APPOINTMENTS = [
     endDate: "2018-07-27T06:30:00.000Z",
   },
 ];
+
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
