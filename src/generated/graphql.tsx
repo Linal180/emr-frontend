@@ -16,6 +16,19 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AchPaymentInputs = {
+  appointmentId: Scalars['String'];
+  company?: Maybe<Scalars['String']>;
+  deviceData?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  price: Scalars['String'];
+  token: Scalars['String'];
+};
+
 /** The patient appointment status type assigned */
 export enum Appointmentstatus {
   Arrived = 'ARRIVED',
@@ -1571,6 +1584,7 @@ export enum Maritialstatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  achPayment: TransactionPayload;
   activateUser: UserPayload;
   addPatientAllergy: PatientAllergyPayload;
   addPatientProblem: PatientProblemPayload;
@@ -1667,6 +1681,11 @@ export type Mutation = {
   updateUserRole: UserPayload;
   verifyEmail: UserPayload;
   verifyOTP: UserPayload;
+};
+
+
+export type MutationAchPaymentArgs = {
+  achPaymentInputs: AchPaymentInputs;
 };
 
 
@@ -3497,7 +3516,6 @@ export type TestSpecimens = {
 
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
-  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   transaction: Transactions;
 };

@@ -4,17 +4,18 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { requiredLabel, renderListOptions } from "../../utils";
 import { INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants'
+import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import { SnoMedCodesPayload, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
 
-const ItemSelector: FC<ItemSelectorProps> = ({ 
-  name, label, disabled, isRequired, margin, modalName, searchQuery
+const ItemSelector: FC<ItemSelectorProps> = ({
+  name, label, disabled, isRequired, margin, modalName, searchQuery, value, isEdit
 }): JSX.Element => {
-  const { control } = useFormContext()
-  const [options, setOptions] = useState<SelectorOption[]>([])
+  const { control, setValue, watch } = useFormContext()
+  const { snowMedCodeId } = watch()
   const [query, setQuery] = useState<string>('')
+  const [options, setOptions] = useState<SelectorOption[]>([])
 
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -48,8 +49,17 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   }, [getSnoMedCodes, modalName])
 
   useEffect(() => {
-    fetchList()
+    searchQuery && (!searchQuery.length || searchQuery.length > 2) && fetchList()
   }, [fetchList, searchQuery, query])
+
+  useEffect(() => {
+    if (isEdit) {
+      if (value) {
+        const { id, name } = value
+        modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
+      }
+    }
+  }, [isEdit, modalName, setValue, value])
 
   return (
     <Controller
@@ -64,6 +74,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
             disableClearable
             value={field.value}
             disabled={disabled}
+            getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
@@ -79,7 +90,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
-                  onChange={({ target: { value }}) => value.length > 2 && setQuery(value) }
+                  onChange={({ target: { value } }) => value.length > 2 && setQuery(value)}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

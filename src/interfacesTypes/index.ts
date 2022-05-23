@@ -345,6 +345,7 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  isEdit?: boolean
   disabled?: boolean
   addEmpty?: boolean
   isRequired?: boolean
@@ -1216,6 +1217,7 @@ export interface CardLayoutProps {
 export interface AddModalProps {
   newAllergy?: string;
   allergyType?: string;
+  isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1432,3 +1434,7 @@ export interface AppointmentListProps {
   type: Appointmentstatus;
   reload?: Function;
 };
+
+export interface PatientProviderSelectorProps {
+  patientId: string;
+}

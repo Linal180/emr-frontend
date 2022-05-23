@@ -6,7 +6,6 @@ import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../../common/Alert';
-// import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import InputController from '../../../../../controller';
 // constants block
@@ -15,24 +14,26 @@ import { ClearIcon } from '../../../../../assets/svgs';
 import { formatValue, setRecord } from '../../../../../utils';
 import { ActionType } from '../../../../../reducers/chartReducer';
 import { patientProblemSchema } from '../../../../../validationSchemas';
-import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
+import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import {
   ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
 import ItemSelector from '../../../../common/ItemSelector';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 
-const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId }): JSX.Element => {
+const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen }): JSX.Element => {
   const { id: icdCodeId, code, description } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
   const severities = Object.keys(ProblemSeverity)
   const [severity, setSeverity] = useState<string>(severities[0])
+  const [snoMedCode, setSnoMedCode] = useState<SelectorOption>(EMPTY_OPTION)
   const methods = useForm<PatientProblemInputs>({
     mode: "all",
     resolver: yupResolver(patientProblemSchema)
@@ -62,10 +63,10 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
         if (patientProblem && status && status === 200) {
           const { problemSeverity, problemType, problemStartDate, note, appointment, snowMedCode } = patientProblem
-          
-          if(snowMedCode){
+
+          if (snowMedCode) {
             const { id, referencedComponentId } = snowMedCode || {}
-            console.log(snowMedCode, "snowMedCode")
+            setSnoMedCode({ id, name: referencedComponentId })
             id && referencedComponentId && setValue('snowMedCodeId', setRecord(id, referencedComponentId))
           }
 
@@ -157,8 +158,8 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   }, [getPatientProblem, recordId])
 
   useEffect(() => {
-    isEdit && fetchPatientProblem();
-  }, [fetchPatientProblem, isEdit])
+    isOpen && isEdit && fetchPatientProblem();
+  }, [fetchPatientProblem, isEdit, recordId, isOpen])
 
   const handleStatus = (status: string) => setTypeStatus(status)
   const handleSeverity = (severity: string) => setSeverity(severity)
@@ -169,8 +170,8 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     })
   }
 
-  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({ 
-    note, appointmentId, problemStartDate , snowMedCodeId
+  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({
+    note, appointmentId, problemStartDate, snowMedCodeId
   }) => {
     const { id: selectedAppointment } = appointmentId || {};
     const { id: selectedSnoMedCode } = snowMedCodeId || {};
@@ -215,60 +216,67 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
         <Box p={2} />
 
-        <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
-        <Typography variant='body1'>{STATUS}</Typography>
 
-        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-          {statuses.map(status =>
-            <Box onClick={() => handleStatus(status)}
-              className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
-              <Typography variant='h6'>{status}</Typography>
+        {getProblemLoading ?
+          <ViewDataLoader columns={12} rows={4} />
+          : <>
+            <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
+            <Typography variant='body1'>{STATUS}</Typography>
+
+            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+              {statuses.map(status =>
+                <Box onClick={() => handleStatus(status)}
+                  className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
+                  <Typography variant='h6'>{status}</Typography>
+                </Box>
+              )}
             </Box>
-          )}
-        </Box>
 
-        <Typography variant='body1'>{TYPE}</Typography>
+            <Typography variant='body1'>{TYPE}</Typography>
 
-        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-          {severities.map(type =>
-            <Box onClick={() => handleSeverity(type)}
-              className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
-              <Typography variant='h6'>{type}</Typography>
+            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+              {severities.map(type =>
+                <Box onClick={() => handleSeverity(type)}
+                  className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
+                  <Typography variant='h6'>{type}</Typography>
+                </Box>
+              )}
             </Box>
-          )}
-        </Box>
 
-        <ItemSelector
-          label={SNO_MED_CODE}
-          name="snowMedCodeId"
-          searchQuery={description || ''}
-          modalName={ITEM_MODULE.snoMedCode}
-        />
+            <ItemSelector
+              isEdit
+              label={SNO_MED_CODE}
+              name="snowMedCodeId"
+              value={snoMedCode}
+              searchQuery={description || ''}
+              modalName={ITEM_MODULE.snoMedCode}
+            />
 
-        <InputController
-          multiline
-          fieldType="text"
-          controllerName="note"
-          controllerLabel={COMMENTS}
-        />
+            <InputController
+              multiline
+              fieldType="text"
+              controllerName="note"
+              controllerLabel={COMMENTS}
+            />
 
-        <Box display='flex' justifyContent='flex-end'>
-          {isEdit &&
-            <Button disabled={removeProblemLoading} onClick={handleDelete} variant='contained'
-              className='btnDanger'
-            >
-              {DELETE}
-            </Button>
-          }
+            <Box display='flex' justifyContent='flex-end'>
+              {isEdit &&
+                <Button disabled={removeProblemLoading} onClick={handleDelete} variant='contained'
+                  className='btnDanger'
+                >
+                  {DELETE}
+                </Button>
+              }
 
-          <Box p={1} />
+              <Box p={1} />
 
-          <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
-            {isEdit ? UPDATE : ADD}
+              <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
+                {isEdit ? UPDATE : ADD}
 
-            {isDisable && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
+                {isDisable && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            </Box>
+          </>}
       </form>
     </FormProvider>
   )
