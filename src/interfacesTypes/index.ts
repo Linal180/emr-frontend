@@ -17,7 +17,8 @@ import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
-import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
@@ -466,7 +467,7 @@ export interface SearchComponentProps {
   search: Function;
   info?: boolean;
   tooltipData?: TooltipData[]
-  placeHolder? : string;
+  placeHolder?: string;
 }
 
 export interface AppMenuItemTypes {
@@ -859,13 +860,13 @@ export interface SpecimenTypeOption {
 }
 
 export interface TestOption {
-   testId?: string
-   test: SelectorOption,
-   testDate: string
-   testTime: string
-   testNotes: string
-   newTest?: boolean
-   specimenTypeField?: SpecimenTypeOption[]
+  testId?: string
+  test: SelectorOption,
+  testDate: string
+  testTime: string
+  testNotes: string
+  newTest?: boolean
+  specimenTypeField?: SpecimenTypeOption[]
 }
 
 export interface LabOrdersCreateFormInput {
@@ -876,7 +877,7 @@ export interface LabOrdersCreateFormInput {
 };
 
 export interface LabOrdersSpecimenTypeInput {
-  index:number
+  index: number
 };
 
 export interface LabOrdersResultOption {
@@ -1232,7 +1233,7 @@ export interface CardLayoutProps {
 
 export interface AddModalProps {
   newAllergy?: string;
-  allergyType?: string; 
+  allergyType?: string;
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1431,18 +1432,46 @@ export interface PredefinedComponentsProps {
 
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
 
-export interface PatientNoteModalProps{
+export interface PatientNoteModalProps {
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
 }
 export interface PracticesTableProps {
   dispatch: Dispatch<PracticeAction>
-} 
+}
 
 export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
 
+export type AchAccountType = 'personal' | 'business'
+
+export interface AccountPaymentInputs {
+  routingNumber: string;
+  accountNumber: string
+  accountType: SelectorOption
+  businessName: string
+  firstName: string
+  lastName: string
+  streetAddress: string
+  locality: string
+  region: SelectorOption
+  postalCode: string,
+  authority: boolean
+}
+
+export interface ACHPaymentComponentProps {
+  token: string;
+  dispatcher: Dispatch<ExternalPaymentAction>;
+  states: ExternalPaymentState;
+  moveNext: Function
+}
+
+export interface CheckboxControllerProps extends IControlLabel {
+  controllerName: string;
+  isHelperText?: boolean;
+  autoFocus?: boolean
+}
 export interface AppointmentListProps {
   appointments: AppointmentsPayload['appointments'];
   type: Appointmentstatus;
