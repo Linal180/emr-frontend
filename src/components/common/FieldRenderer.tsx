@@ -66,7 +66,7 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
       type={getFieldType(type)}
       {...field}
     >
-      <MenuItem value={isMultiSelect ? [] : ''} disabled>{placeholder}</MenuItem>
+     {!!placeholder && <MenuItem value={isMultiSelect ? [] : ''} disabled>{placeholder}</MenuItem>}
       {options?.map((option, index) => (
         <MenuItem key={`${index}-${fieldId}-${option.value}`} value={option.value}>{option.name}</MenuItem>
       ))}

@@ -108,6 +108,16 @@ query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
       patientId
       createdAt
       testNotes
+      doctor{
+        firstName
+        lastName
+        id
+      }
+      receivedDate
+      labName
+      vendorName
+      accessionNumber
+      collectedDate
       patient{
         doctorPatients{
           doctor{

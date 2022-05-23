@@ -52,7 +52,6 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} pt={2} color={WHITE} bgcolor="#21E1D8">
               <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
             </Box>
-
             <BarChart1Component />
           </Card>
         </Grid>
@@ -154,7 +153,6 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h4">{PRACTICE_REGISTRATIONS}</Typography>
-
                 <Box>
                   <Box className={classes.yearDropdown}>
                     <TextField
@@ -170,7 +168,6 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                   </Box>
                 </Box>
               </Box>
-
               <BarChart2Component />
             </Box>
           </Card>

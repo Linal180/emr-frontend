@@ -28,7 +28,7 @@ import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  DownloadIcon, EditNewIcon, TrashNewIcon,
+  DownloadIcon, SignedIcon, TrashNewIcon,
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
@@ -271,7 +271,6 @@ const DocumentsTable: FC = (): JSX.Element => {
       <Box className="table-overflow">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -337,7 +336,7 @@ const DocumentsTable: FC = (): JSX.Element => {
                               <Box className={classes.iconsBackground}
                                 onClick={() => handleSignDocument(id)}
                               >
-                                <EditNewIcon />
+                                <SignedIcon />
                               </Box>
                             }
 
