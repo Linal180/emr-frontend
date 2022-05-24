@@ -715,6 +715,7 @@ export const PERMISSIONS = "Permissions";
 export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
 export const DEACTIVATE = "DEACTIVATE";
+export const REVOKE = "REVOKE";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const ADD_SERVICE = "Add Service";

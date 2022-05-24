@@ -11,7 +11,7 @@ import { useTableStyles } from "../../../styles/tableStyles";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
   EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS, TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION,
-  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, DEACTIVATE, EMERGENCY_ACCESS_ERROR_MESSGE,
+  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, DEACTIVATE, EMERGENCY_ACCESS_ERROR_MESSGE, REVOKE,
 } from "../../../constants";
 import Alert from "../../common/Alert";
 import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
@@ -229,8 +229,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
   }
 
   const isEmergencyAccessEnabled=userRoles.includes(EMERGENCY_ACCESS_VALUE)
-  const emergencyAccessText= !isEmergencyAccessEnabled? ACTIVATE_EMERGENCY_ACCESS_MODE: DEACTIVATE_EMERGENCY_ACCESS_MODE
+  const emergencyAccessText= rolePayload? REVOKE_ACCESS : !isEmergencyAccessEnabled? ACTIVATE_EMERGENCY_ACCESS_MODE: DEACTIVATE_EMERGENCY_ACCESS_MODE
   const updateConfirmationModalDescription= rolePayload? `Confirm to ${REVOKE_EMERGENCY_ACCESS_MODE}`: `Confirm to ${emergencyAccessText}`
+  const emrgencyAccessModalButton= rolePayload? REVOKE : !isEmergencyAccessEnabled ? ACTIVATE : DEACTIVATE
 
   return (
     <>
@@ -369,7 +370,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
       <UpdateConfirmationModal title={emergencyAccessText} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={updateConfirmationModalDescription} handleDelete={handleEmergencyAccessRevoke}
-        setOpen={(open: boolean) => setOpenDelete(open)} actionText={!isEmergencyAccessEnabled? ACTIVATE: DEACTIVATE} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText}/>
+        setOpen={(open: boolean) => setOpenDelete(open)} actionText={emrgencyAccessModalButton} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText}/>
     </>
   );
 };
