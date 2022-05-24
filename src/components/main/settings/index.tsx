@@ -9,23 +9,25 @@ import CardComponent from "../../common/CardComponent";
 // constants block
 import { AuthContext } from "../../../context";
 import {
-  APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, CALENDAR_SETTINGS_TEXT,
-  FACILITY_SERVICES_DESCRIPTION, FACILITY_SERVICES_TEXT, PROVIDER_MANAGEMENT,
-  MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES,
-  USERS_MANAGEMENT, USER_MENU_ITEMS, SYSTEM_ROLES, FACILITIES_ROUTE, DOCTOR_PROFILE_TEXT,
-  CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT,
+  PRACTICE_MANAGEMENT_DESCRIPTION, PRACTICE_DETAILS, PROVIDER_DETAILS, PROVIDER_DETAILS_DESCRIPTION,
+  CALENDAR_SETTINGS_TEXT, FACILITY_SERVICES_DESCRIPTION, FACILITY_SERVICES_TEXT, PROVIDER_MANAGEMENT,
+  PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS,
+  PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, SYSTEM_ROLES, FACILITIES_ROUTE,
+  FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT, PROVIDER_PROFILE_DESCRIPTION,
 } from "../../../constants";
-import { visibleToUser } from "../../../utils";
 
 export const SettingsComponent = () => {
-  const { user, currentDoctor } = useContext(AuthContext)
+  const { user, currentDoctor, userPermissions } = useContext(AuthContext)
   const { roles, facility, } = user || {}
   const userRoles = pluck(roles || [], 'role')
   const { id: facilityId } = facility || {}
   const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+  const isSuperAdmin = userRoles.includes(SYSTEM_ROLES.SuperAdmin)
   const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
   const { id: doctorId } = currentDoctor || {}
+  console.log(userPermissions);
 
   return (
     <>
@@ -34,26 +36,38 @@ export const SettingsComponent = () => {
           <PageHeader title={SETTINGS_TEXT} />
 
           <CardComponent cardTitle={USERS_MANAGEMENT}>
-            {isDoctor ?
-              <Box pb={3}>
+            {isDoctor &&
+              <Box>
                 <Box display="flex" alignItems="center" flexWrap="wrap">
-                  <Link key={DOCTOR_PROFILE_TEXT} to={`${DOCTORS_ROUTE}/${doctorId}/details`}>
+                  <Link key={DOCTOR_PROFILE_TEXT} to={`${DOCTORS_ROUTE}/${doctorId}`}>
                     <MenuItem>{DOCTOR_PROFILE_TEXT}</MenuItem>
                   </Link>
+
+                  <Box pr={2}>-</Box>
+
+                  <Typography variant="body1">{PROVIDER_PROFILE_DESCRIPTION} </Typography>
                 </Box>
               </Box>
-              :
-              <Box pb={3}>
-                {USER_MENU_ITEMS.map((item) => {
-                  return (
-                    <Box display="flex" alignItems="center" flexWrap="wrap">
-                      <Link key={`${item.link}-${item.name}`} to={item.link}>
-                        <MenuItem>{item.name}</MenuItem>
-                      </Link>
-                    </Box>
-                  )
-                })}
-              </Box>}
+            }
+            <Box pb={3}>
+              {USER_MENU_ITEMS.map((item) => {
+                const { link, name, permission, desc } = item || {}
+                const doctorAdminRoute = isDoctor && name === PROVIDER_MANAGEMENT;
+                const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
+
+                return userPermissions.includes(permission) && (
+                  <Box display="flex" alignItems="center" flexWrap="wrap">
+                    <Link key={`${link}-${name}`} to={(doctorAdminRoute) ? doctorDetailRoute : link}>
+                      <MenuItem>{(doctorAdminRoute) ? PROVIDER_DETAILS : name}</MenuItem>
+                    </Link>
+
+                    <Box pr={2}>-</Box>
+
+                    <Typography variant="body1">{(doctorAdminRoute) ? PROVIDER_DETAILS_DESCRIPTION : desc} </Typography>
+                  </Box>
+                )
+              })}
+            </Box>
           </CardComponent>
 
           <Box p={2} />
@@ -61,22 +75,34 @@ export const SettingsComponent = () => {
           <CardComponent cardTitle={PRACTICE_SETTINGS}>
             <Box pb={3}>
               {PRACTICE_SETTINGS_ITEMS.map((item) => {
-                const { name, link, desc, visible } = item || {}
+                const { name, link, desc, permission } = item || {}
+                const practiceAdminRoute = isSuperAdmin && name === PRACTICE_DETAILS;
+                const facilityAdminRoute = isFacilityAdmin && name === FACILITY_MANAGEMENT;
+                const doctorAdminRoute = isDoctor && name === PROVIDER_MANAGEMENT;
+                const facilityDetailRoute = `${FACILITIES_ROUTE}/${facilityId}`
+                const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
 
-                return visibleToUser(userRoles, visible) && (
+                return userPermissions.includes(permission) && (
                   <Box display="flex" alignItems="center" flexWrap="wrap">
-                    <Link key={`${link}-${name}`} to={
-                      (isFacilityAdmin && name === FACILITY_MANAGEMENT)
-                        ? `${FACILITIES_ROUTE}/${facilityId}`
-                        : (isDoctor && name === PROVIDER_MANAGEMENT)
-                          ? `${DOCTORS_ROUTE}/${doctorId}`
-                          : link}>
-                      <MenuItem>{name}</MenuItem>
+                    <Link
+                      key={`${link}-${name}`}
+                      to={(facilityAdminRoute) ? facilityDetailRoute : (doctorAdminRoute) ? doctorDetailRoute : (practiceAdminRoute) ? `${PRACTICE_MANAGEMENT_ROUTE}` : link}>
+                      <MenuItem>
+                        {(practiceAdminRoute) ? PRACTICE_MANAGEMENT_TEXT : (doctorAdminRoute) ? PROVIDER_DETAILS : (facilityAdminRoute) ? FACILITY_DETAILS_TEXT : name}
+                      </MenuItem>
                     </Link>
 
                     <Box pr={2}>-</Box>
 
-                    <Typography variant="body1">{desc}</Typography>
+                    <Typography variant="body1">
+                      {(practiceAdminRoute)
+                        ? PRACTICE_MANAGEMENT_DESCRIPTION
+                        : (doctorAdminRoute)
+                          ? PROVIDER_DETAILS_DESCRIPTION
+                          : (facilityAdminRoute)
+                            ? FACILITY_DETAILS_DESCRIPTION
+                            : desc}
+                    </Typography>
                   </Box>
                 )
               })}
