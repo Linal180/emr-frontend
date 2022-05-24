@@ -403,6 +403,7 @@ export const EMERGENCY_ACCESS_DESCRIPTION =
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
 export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
+export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
 export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
@@ -713,6 +714,7 @@ export const DESCRIPTION = "Description";
 export const PERMISSIONS = "Permissions";
 export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
+export const DEACTIVATE = "DEACTIVATE";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const ADD_SERVICE = "Add Service";
@@ -1362,6 +1364,8 @@ export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
+export const EMERGENCY_ACCESS_ERROR_MESSGE =
+  "You don't have permission to change emrgency access status.";
 export const appointmentChargesDescription = (amount: string) =>
   `You will be charged $${amount} for this appointment booking.`;
 export const LOREM_TEXT_15 =

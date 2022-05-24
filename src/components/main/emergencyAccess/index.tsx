@@ -11,7 +11,7 @@ import { useTableStyles } from "../../../styles/tableStyles";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
   EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS, TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION,
-  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES,
+  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, DEACTIVATE, EMERGENCY_ACCESS_ERROR_MESSGE,
 } from "../../../constants";
 import Alert from "../../common/Alert";
 import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
@@ -55,7 +55,11 @@ const EmergencyAccessComponent = (): JSX.Element => {
       onError({ message }) {
         if (message === FORBIDDEN_EXCEPTION) {
           Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS);
-        } else Alert.error(message);
+        } else{
+          Alert.error(EMERGENCY_ACCESS_ERROR_MESSGE);
+        }
+
+        setOpenDelete(false)
       },
 
       onCompleted(data) {
@@ -224,6 +228,10 @@ const EmergencyAccessComponent = (): JSX.Element => {
     setShouldFetchEmergencyUser(true)
   }
 
+  const isEmergencyAccessEnabled=userRoles.includes(EMERGENCY_ACCESS_VALUE)
+  const emergencyAccessText= !isEmergencyAccessEnabled? ACTIVATE_EMERGENCY_ACCESS_MODE: DEACTIVATE_EMERGENCY_ACCESS_MODE
+  const updateConfirmationModalDescription= rolePayload? `Confirm to ${REVOKE_EMERGENCY_ACCESS_MODE}`: `Confirm to ${emergencyAccessText}`
+
   return (
     <>
       <PageHeader title={EMERGENCY_ACCESS} />
@@ -359,9 +367,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
 
 
-      <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
-        description={rolePayload ? 'Confirm to revoke emergency access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
-        setOpen={(open: boolean) => setOpenDelete(open)} actionText='Update' />
+      <UpdateConfirmationModal title={emergencyAccessText} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
+        description={updateConfirmationModalDescription} handleDelete={handleEmergencyAccessRevoke}
+        setOpen={(open: boolean) => setOpenDelete(open)} actionText={!isEmergencyAccessEnabled? ACTIVATE: DEACTIVATE} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText}/>
     </>
   );
 };
