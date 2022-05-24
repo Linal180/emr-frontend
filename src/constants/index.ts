@@ -29,6 +29,7 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
@@ -100,8 +101,11 @@ export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
+export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
+export const UPDATE_MEDIA = "Update media";
+export const EDIT_MEDIA = "Edit Media";
 export const ADVANCED_SEARCH = "Advanced Search";
 export const LABEL = "Label";
 export const FORMS = "Forms";
