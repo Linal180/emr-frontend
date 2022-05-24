@@ -53,7 +53,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { setValue, handleSubmit } = methods;
   const [{
     isEdit, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
-    deleteAttachmentId, documentTab, openSign, providerName
+    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -250,12 +250,12 @@ const DocumentsTable: FC = (): JSX.Element => {
             onClick={() => dispatch({ type: ActionType.SET_DOCUMENT_TAB, documentTab: !documentTab })}
             ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
           >
-            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'}>{PENDING}</Typography>
-            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'}>{SIGNED}</Typography>
+            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'} onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}>{PENDING}</Typography>
+            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'} onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}>{SIGNED}</Typography>
           </Box>
         </Box>
 
-        <MediaCards
+        {!isSignedTab && <MediaCards
           itemId={id}
           button={true}
           notDescription={true}
@@ -265,7 +265,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           title={ATTACHMENT_TITLES.ProviderUploads}
           attachmentData={attachmentData || undefined}
           reload={() => reloadAttachments()}
-        />
+        />}
       </Box>
 
       <Box className="table-overflow">

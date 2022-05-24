@@ -22,7 +22,8 @@ import {
   PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME,
   DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE, ACCOUNT_TYPE,
   US_BANK_ACCOUNT_REGEX, BANK_ACCOUNT_VALIDATION_MESSAGE, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE,
-  ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY
+  ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY,
+  NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -818,7 +819,9 @@ export const patientVitalUpdateSchema = yup.object({
 })
 
 export const attachmentNameUpdateSchema = yup.object({
-  attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
+  attachmentName: yup.string()
+    .test('', invalidMessage('Attachment name'), value => !!value)
+    .test('', NO_WHITE_SPACE_ALLOWED, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createLabOrdersSchema = yup.object({

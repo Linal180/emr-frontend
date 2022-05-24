@@ -1,6 +1,6 @@
 import { makeStyles, createStyles } from "@material-ui/core";
 import BlueCard from "../assets/images/blueCard.svg";
-import { GREY_ELEVEN, GREY_THIRTEEN, GREY_TWELVE, theme, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK, GREY_ELEVEN, GREY_THIRTEEN, GREY_TWELVE, theme, WHITE, WHITE_FOUR } from "../theme";
 
 export const useDashboardStyles = makeStyles(() =>
   createStyles({
@@ -22,8 +22,12 @@ export const useDashboardStyles = makeStyles(() =>
       borderRadius: 8,
       padding: theme.spacing(3, 2),
       minWidth: 145,
-      minHeight: 120,
+      minHeight: 141,
       cursor: 'pointer',
+
+      "&  .MuiTypography-root": {
+        color: BLACK,
+      },
     },
 
     facilitiesDropdown: {

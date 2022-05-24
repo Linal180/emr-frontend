@@ -1,3 +1,8 @@
+/* This bar chart shows:
+* Total number of Appointments against each Facility
+* and is for PRACTICE-ADMIN only
+*/
+
 // packages block
 import { FC, useState } from "react";
 import HighchartsReact from "highcharts-react-official";
