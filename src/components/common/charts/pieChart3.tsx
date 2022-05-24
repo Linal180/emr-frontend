@@ -1,6 +1,6 @@
 /* This pie chart shows:
-* Total number of Active and In-Active Practices
-* and is for SUPER-ADMIN only
+* Total number of users in a shift
+* and is used in FACILITY-ADMIN only
 */
 
 // packages block
@@ -8,15 +8,11 @@ import { FC, useState } from "react";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
-// constant
-import { PRACTICES } from "../../../constants";
-import { PieChartProps } from "../../../interfacesTypes";
 
-
-const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
-  const [pieChart1] = useState(
+const PieChart3Component: FC = (): JSX.Element => {
+  const [pieChart3] = useState(
     {
-      tooltip: { enabled: true },
+      tooltip: { enabled: false },
 
       credits: { enabled: false },
 
@@ -31,7 +27,7 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
       },
 
       title: {
-        text: PRACTICES,
+        text: '',
         align: 'center',
         verticalAlign: 'middle',
       },
@@ -72,11 +68,11 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
         showInLegend: false,
         type: 'pie',
         name: 'Practices',
-        innerSize: '85%',
+        innerSize: '65%',
 
         data: [
-          ['active', 100],
-          ['inactive', 0],
+          ['total', 132],
+          ['available', 70],
         ],
 
         states: {
@@ -88,10 +84,10 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
     });
 
   return (
-    <Box className="chartContainer">
-      <HighchartsReact highcharts={Highcharts} options={pieChart1} />
+    <Box className="chartContainerSmall">
+      <HighchartsReact highcharts={Highcharts} options={pieChart3} />
     </Box>
   )
 };
 
-export default PieChart;
+export default PieChart3Component;

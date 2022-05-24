@@ -29,6 +29,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
   Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
 } from "../generated/graphql";
+import { BooleanLiteral } from "typescript";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -1422,4 +1423,12 @@ export interface PracticesTableProps {
 
 export interface PieChartProps {
   practices?: PracticesPayload['practices']
+}
+
+export interface CalenderProps{
+  showHeader?: boolean;
+}
+
+export interface AppointmentListProps {
+  showHeader?: boolean;
 }

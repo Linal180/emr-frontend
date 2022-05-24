@@ -454,7 +454,7 @@ body .MuiTabPanel-root {
 
 .schedulerTableCell {
   border: 1px solid #E4E6EF !important;
-  width: 200px !important;
+  /* width: 200px !important; */
   height: 200px !important;
 }
 
@@ -519,13 +519,36 @@ body .MuiTabPanel-root {
 }
 
 /* Dashboard-charts-styling */
-.chartContainer > div > div {
+.chartContainer > div > div
+{
   height: 300px !important;
 }
 
-.chartContainer svg {
+.chartContainer svg
+{
   height: 320px !important;
   transform: scale(1.25) !important;
+}
+
+.pieChart2Container > div > div
+{
+  height: 200px !important;
+}
+
+.pieChart2Container svg
+{
+  height: 320px !important;
+  transform: scale(1.2) !important;
+}
+
+.chartContainerSmall > div > div {
+  height: 180px !important;
+  overflow: hidden !important;
+}
+
+.chartContainerSmall svg {
+  height: 160px !important;
+  transform: scale(3) !important;
 }
 
 .barChart1Container text,
@@ -569,6 +592,11 @@ body .MuiTabPanel-root {
 {
   display: none !important;
 }
+
+.pieChart2Container text {
+  color: #acacac !important;
+  fill: #acacac !important;
+}
  
 .Recent-Activity-Timeline 
 .MuiTimelineItem-missingOppositeContent:before {
@@ -598,4 +626,8 @@ background: #E5EAEE;
 
 .media-inner-image > img {
   height: 150px !important;
+}
+
+.whiteColor {
+  color: #ffffff !important;
 }

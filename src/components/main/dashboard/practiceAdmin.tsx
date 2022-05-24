@@ -6,28 +6,21 @@ import {
 } from '@material-ui/lab';
 // components block
 import Search from "../../common/Search";
-import PieChart2Component from "../../common/charts/pieChart2";
 import BarChart4Component from "../../common/charts/barChart4";
 import BarChart5Component from "../../common/charts/barChart5";
 import BarChart6Component from "../../common/charts/barChart6";
-// svgs block
+import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
+// svgs block, style
 import history from "../../../history";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import {
-  ActionIcon, ClaimActionIcon, ClaimAmountIcon, LockIcon, PatientsIcon, PracticeActiveIcon,
-  PracticeInactiveIcon, RedirectIcon, ViewIcon
-} from "../../../assets/svgs";
+import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
 import {
-  BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT
-} from "../../../theme";
-import {
-  CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED,
-  EMERGENCY_ACCESS, FACILITIES_LIST, MEDICAL_BILLING, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS,
-  RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, TOTAL_CLAIM_TEXT, VIEW_FACILITIES,
-  VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE,
-  FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY, TOTAL_USERS_PER_ROLE,
-  APPOINTMENTS_PER_FACILITY, ACTIVATED
+  EMERGENCY_ACCESS, FACILITIES_LIST, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
+  SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
+  EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -103,85 +96,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
-          <Card>
-            <Box px={2} display='flex' justifyContent='space-between'>
-              <Box pt={3}>
-                <Typography variant="h5">{MEDICAL_BILLING}</Typography>
-                <Box p={0.5} />
-                <Typography variant="body2">{TOTAL_CLAIM_TEXT}</Typography>
-              </Box>
-
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
-            </Box>
-
-            <PieChart2Component />
-
-            <Box px={4} mt={2} mb={3}>
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <PracticeActiveIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">24</Typography>
-
-                      <Box mt={0.5} color={GREEN_ONE}>
-                        <Typography variant="inherit">{CLAIM_RECEIVED}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <PracticeInactiveIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">3</Typography>
-
-                      <Box mt={0.5} color={BLUE_SEVEN}>
-                        <Typography variant="inherit">{CLAIM_IN_PROCESS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-
-              <Box p={2} />
-
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <ClaimActionIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">2</Typography>
-
-                      <Box mt={0.5} color={RED_ONE}>
-                        <Typography variant="inherit">{CLAIMS_REQUIRING_ACTION}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-
-                </Grid>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <ClaimAmountIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">$3,600</Typography>
-
-                      <Box mt={0.5} color={GREY_SEVEN}>
-                        <Typography variant="inherit">{CLAIM_AMOUNT_TO_PROCESS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
+          <MedicalBillingComponent />
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
