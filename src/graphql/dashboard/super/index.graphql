@@ -1,0 +1,44 @@
+# Get facilities count for each Practice with practice-name
+query GetPracticeFacilities{
+  getPracticesFacilities {
+    response {
+      status
+    }
+    
+    practiceFacilities {
+      id
+      name
+      facility
+    }
+  }
+}
+
+# Get Users count within each Practice with practice-name
+query GetPracticeUser {
+  getPracticesUser{
+    response {
+      status
+    }
+    
+    practiceUsers {
+      id
+      name
+      userCount
+    }
+  }
+}
+
+# Get Practice count by year with practice-name
+query GetPracticeByYear($practicesViaDateInputs: PracticesViaDateInputs!) {
+  getPracticesViaDate(practicesViaDateInputs: $practicesViaDateInputs){
+    response {
+      status
+    }
+    
+    practices{
+      id
+      name
+      count
+    }
+  }
+}

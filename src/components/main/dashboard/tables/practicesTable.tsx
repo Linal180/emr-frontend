@@ -89,7 +89,7 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
                 const { name, phone, createdAt } = practice || {}
 
                 return (
-                  <TableRow>
+                  <TableRow key={createdAt}>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>

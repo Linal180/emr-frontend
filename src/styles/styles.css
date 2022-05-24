@@ -528,7 +528,7 @@ body .MuiTabPanel-root {
   transform: scale(1.25) !important;
 }
 
-.barChart1Container text,
+.practice-chart-container text,
 .barChart3Container text ,
 .barChart4Container text,
 .barChart5Container text   
@@ -537,17 +537,17 @@ body .MuiTabPanel-root {
   fill: #ffffff !important;
 }
 
-.barChart1Container .highcharts-color-0,
+.practice-chart-container .highcharts-color-0,
 .barChart2Container .highcharts-color-0,
 .barChart3Container .highcharts-color-0,
-.barChart1Container .highcharts-legend-item,
+.practice-chart-container .highcharts-legend-item,
 .barChart2Container .highcharts-legend-item,
 .barChart3Container .highcharts-legend-item
 {
   display: none !important;
 }
 
-.barChart1Container .highcharts-axis-labels text, 
+.practice-chart-container .highcharts-axis-labels text, 
 .barChart2Container .highcharts-axis-labels text,
 .barChart3Container .highcharts-axis-labels text,
 .barChart4Container .highcharts-axis-labels text,
@@ -565,7 +565,7 @@ body .MuiTabPanel-root {
 
 .barChart4Container .highcharts-axis,
 .barChart5Container .highcharts-axis,
-.barChart1Container .highcharts-axis
+.practice-chart-container .highcharts-axis
 {
   display: none !important;
 }

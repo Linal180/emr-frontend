@@ -9,7 +9,7 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withS
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   RenderListOptionTypes,
@@ -20,7 +20,7 @@ import {
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient, SlotsPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -1164,6 +1164,10 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
   return data;
 };
 
+export const filterSlots = (slots: SlotsPayload['slots'], date:  MaterialUiPickersDate | string) => {
+  return slots
+}
+
 export const LightTooltip = withStyles((theme: Theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -1174,3 +1178,47 @@ export const LightTooltip = withStyles((theme: Theme) => ({
     width: 320
   },
 }))(Tooltip);
+
+export const practiceChartOptions = (chartBgColor: string) => {
+  return {
+    credits: { enabled: false },
+    chart: {
+      type: 'column',
+      styledMode: false,
+      backgroundColor: chartBgColor,
+      marginBottom: 40,
+    },
+
+    title: { text: '' },
+
+    yAxis: {
+      className: 'highcharts-color-0',
+      min: 0,
+      title: { text: '' }
+    },
+
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+
+    plotOptions: {
+      series: {
+        states: {
+          hover: { enabled: false }
+        }
+      },
+
+      column: {
+        pointPadding: 0.4,
+        borderWidth: 0,
+        color: WHITE,
+        borderRadius: 4,
+      }
+    }
+  }
+}

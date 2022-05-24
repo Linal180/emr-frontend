@@ -20,7 +20,7 @@ export const useDashboardStyles = makeStyles(() =>
     cardBox: {
       backgroundColor: GREY_ELEVEN,
       borderRadius: 8,
-      padding: theme.spacing(3,2),
+      padding: theme.spacing(3, 2),
       minWidth: 145,
       minHeight: 120,
       cursor: 'pointer',
@@ -112,7 +112,6 @@ export const useDashboardStyles = makeStyles(() =>
         borderRadius: 0,
         border: 'none',
       }
-    },
-
+    }
   })
-  );
+);

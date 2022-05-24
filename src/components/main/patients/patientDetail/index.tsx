@@ -16,7 +16,7 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import BarChart2Component from '../../../common/charts/barChart2';
+import BarChart2Component from '../../../common/charts/PracticesByYear';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 // constants, history, styling block
@@ -160,7 +160,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             <Box display="flex">
               <AreaChartComponent data={areaChartOne} />
               <AreaChartComponent data={areaChartTwo} />
-              <BarChart2Component />
+              <BarChart2Component year='2022'/>
             </Box>
 
             <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>

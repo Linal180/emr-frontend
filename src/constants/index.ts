@@ -1381,6 +1381,8 @@ export const UPIN_INFO =
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 
+export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+export const YEARS = [2017, 2018, 2019, 2020, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -3407,59 +3409,59 @@ export const FACILITIES_LIST = [
 ]
 export const EMERGENCY_LOG_LIST = [
   {
-    shortName : 'AW',
+    shortName: 'AW',
     fullName: "Andrew Williams",
     hospitalName: "National Hospital",
-    activatedDate : '24/2/2022',
-    imageUrl : EMERGENCY_LOG_WILLIAMS
+    activatedDate: '24/2/2022',
+    imageUrl: EMERGENCY_LOG_WILLIAMS
   },
   {
-    shortName : 'OM',
+    shortName: 'OM',
     fullName: "Obaid McCoy",
     hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate : '17/10/2022',
-    imageUrl : EMERGENCY_LOG_OBD
+    activatedDate: '17/10/2022',
+    imageUrl: EMERGENCY_LOG_OBD
   },
   {
-    shortName : 'MP',
+    shortName: 'MP',
     fullName: "Micheal Phelps",
     hospitalName: "City Medical Center",
-    activatedDate : '2/6/2022',
-    imageUrl : EMERGENCY_LOG_PHLEPS
+    activatedDate: '2/6/2022',
+    imageUrl: EMERGENCY_LOG_PHLEPS
   },
   {
-    shortName : 'ND',
+    shortName: 'ND',
     fullName: "Novac Dominic",
     hospitalName: "National Hospital",
-    activatedDate : '30/2/2022',
-    imageUrl : ''
+    activatedDate: '30/2/2022',
+    imageUrl: ''
   },
 ]
 
 export const RECENT_ACTIVITY_LIST = [
   {
-    shortName : 'AW',
+    shortName: 'AW',
     fullName: "Andrew Williams",
     hospitalName: "National Hospital",
-    activatedDate : '24/2/2022'
+    activatedDate: '24/2/2022'
   },
   {
-    shortName : 'OM',
+    shortName: 'OM',
     fullName: "Obaid McCoy",
     hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate : '17/10/2022'
+    activatedDate: '17/10/2022'
   },
   {
-    shortName : 'MP',
+    shortName: 'MP',
     fullName: "Micheal Phelps",
     hospitalName: "City Medical Center",
-    activatedDate : '2/6/2022'
+    activatedDate: '2/6/2022'
   },
   {
-    shortName : 'ND',
+    shortName: 'ND',
     fullName: "Novac Dominic",
     hospitalName: "National Hospital",
-    activatedDate : '30/2/2022'
+    activatedDate: '30/2/2022'
   },
 ]
 

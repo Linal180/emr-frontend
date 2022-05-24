@@ -74,7 +74,7 @@ const BarChart6Component: FC = (): JSX.Element => {
   });
 
   return (
-    <Box className="barChart1Container">
+    <Box className="practice-chart-container">
       <HighchartsReact highcharts={Highcharts} options={barChart6} />
     </Box>
   )

@@ -4,9 +4,9 @@ import { Box, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@m
 // components block
 import PieChart from "../../common/charts/PieChart";
 import PracticesTableComponent from "./tables/practicesTable";
-import BarChart1Component from "../../common/charts/barChart1";
-import BarChart2Component from "../../common/charts/barChart2";
-import BarChart3Component from "../../common/charts/barChart3";
+import PracticeUsers from "../../common/charts/PracticeUsers";
+import PracticesByYear from "../../common/charts/PracticesByYear";
+import PracticeFacilities from "../../common/charts/PracticeFacilities";
 // constants, styles and svgs block
 import history from "../../../history";
 import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
@@ -52,7 +52,8 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} pt={2} color={WHITE} bgcolor="#21E1D8">
               <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
             </Box>
-            <BarChart1Component />
+
+            <PracticeUsers />
           </Card>
         </Grid>
 
@@ -168,7 +169,8 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                   </Box>
                 </Box>
               </Box>
-              <BarChart2Component />
+
+              <PracticesByYear year="2022"/>
             </Box>
           </Card>
         </Grid>
@@ -180,7 +182,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
               </Box>
 
-              <BarChart3Component />
+              <PracticeFacilities />
             </Box>
           </Card>
         </Grid>
