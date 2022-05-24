@@ -8,9 +8,11 @@ import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, margin, onBlur }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur
+}): JSX.Element => {
   const { control } = useFormContext()
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options] : [...options]
+  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
 
   return (
     <Controller
@@ -21,10 +23,11 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={options.length ? updatedOptions : []}
+            options={options?.length ? updatedOptions : []}
             disableClearable
             value={field.value}
             disabled={disabled}
+            getOptionSelected={(option,value)=>option.id===value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (

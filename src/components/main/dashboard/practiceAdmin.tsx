@@ -195,7 +195,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
           <Card>
             <Box className="appointmentsPerFacilityChartContainer">
-              <Box px={3} pt={3} color={WHITE} bgcolor="#FF6A7A" >
+              <Box px={3} pt={3} color={WHITE} bgcolor="#FF6A7A">
                 <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
               </Box>
 
@@ -255,7 +255,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
             <Box className="Recent-Activity-Timeline">
               <Timeline>
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
@@ -275,7 +275,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   </TimelineContent>
                 </TimelineItem>
 
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
@@ -284,7 +284,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
                   <TimelineContent>
                     <Typography variant="body1">
-                      Reports recieved from imaging lab for <strong>“John Doe” </strong>
+                      Reports received from imaging lab for <strong>“John Doe” </strong>
                     </Typography>
 
                     <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
@@ -293,7 +293,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   </TimelineContent>
                 </TimelineItem>
 
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
@@ -310,7 +310,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   </TimelineContent>
                 </TimelineItem>
 
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
@@ -328,7 +328,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   </TimelineContent>
                 </TimelineItem>
 
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
@@ -337,7 +337,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
                   <TimelineContent>
                     <Typography variant="body1">
-                      Reports recieved from imaging lab for <strong>“John Doe” </strong>
+                      Reports received from imaging lab for <strong>“John Doe” </strong>
                     </Typography>
                     <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
                       10 minutes ago
@@ -345,7 +345,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   </TimelineContent>
                 </TimelineItem>
 
-                <TimelineItem >
+                <TimelineItem>
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 

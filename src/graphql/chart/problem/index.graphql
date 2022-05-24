@@ -42,6 +42,11 @@ query GetPatientProblem($getPatientProblem: GetPatientProblem!){
       problemStartDate
       note
 
+      snowMedCode{
+        id
+        referencedComponentId
+      }
+
       appointment {
         id
         

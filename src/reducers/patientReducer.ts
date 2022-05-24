@@ -8,7 +8,7 @@ import { formatValue } from "../utils";
 
 export interface State {
   page: number;
-  isVoice: boolean;
+  isSms: boolean;
   tabValue: string;
   selection: string;
   patientId: string;
@@ -57,6 +57,8 @@ export interface State {
   feverUnit: { id: TempUnitType, name: string };
   prevFeverUnit: TempUnitType;
   isTempEdit: boolean;
+  isNoteOpen: HTMLElement | null;
+  patientNoteOpen: boolean
 }
 
 export const initialState: State = {
@@ -68,7 +70,7 @@ export const initialState: State = {
   patientId: '',
   employerId: '',
   anchorEl: null,
-  isVoice: false,
+  isSms: false,
   selection: 'NO',
   searchQuery: '',
   isBilling: false,
@@ -109,13 +111,15 @@ export const initialState: State = {
   isHeadEdit: false,
   feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
   prevFeverUnit: TempUnitType.DegF,
-  isTempEdit: false
+  isTempEdit: false,
+  isNoteOpen: null,
+  patientNoteOpen: false
 }
 
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_IS_OPEN = "setIsOpen",
-  SET_IS_VOICE = 'setIsVoice',
+  SET_IS_SMS = 'setIsSms',
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
@@ -160,11 +164,13 @@ export enum ActionType {
   SET_EDIT_WEIGHT = 'setEditWeight',
   SET_EDIT_HEIGHT = 'setEditHeight',
   SET_EDIT_HEAD = 'setEditHead',
+  SET_NOTE_OPEN = 'setNoteOpen',
+  SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen'
 }
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
-  | { type: ActionType.SET_IS_VOICE, isVoice: boolean }
+  | { type: ActionType.SET_IS_SMS, isSms: boolean }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
   | { type: ActionType.SET_SELECTION; selection: string }
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
@@ -211,6 +217,8 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEIGHT; isHeightEdit: boolean }
   | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
+  | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
+  | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -373,10 +381,10 @@ export const patientReducer = (state: State, action: Action): State => {
         isEditCard: action.isEditCard
       }
 
-    case ActionType.SET_IS_VOICE:
+    case ActionType.SET_IS_SMS:
       return {
         ...state,
-        isVoice: action.isVoice
+        isSms: action.isSms
       }
 
     case ActionType.SET_IS_BILLING:
@@ -483,6 +491,16 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isTempEdit: action.isTempEdit
+      }
+    case ActionType.SET_NOTE_OPEN:
+      return {
+        ...state,
+        isNoteOpen: action.isNoteOpen
+      }
+    case ActionType.SET_PATIENT_NOTE_OPEN:
+      return {
+        ...state,
+        patientNoteOpen: action.patientNoteOpen
       }
   }
 };

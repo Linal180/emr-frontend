@@ -5,13 +5,14 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  RenderListOptionTypes,
   SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
@@ -19,7 +20,7 @@ import {
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -219,7 +220,7 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY")
+  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
 export const deleteRecordTitle = (recordType: string) => {
@@ -365,6 +366,21 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
         data.push({ id, name: `${firstName} ${lastName}`.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { doctor:doctorPatient } = doctor;
+        const {firstName, lastName, id} = doctorPatient ?? {}
+        data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -549,6 +565,12 @@ export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getAppointmentDateTime = (date: string) => {
+  const timeDate = moment(date, "x")
+
+  return `${timeDate.format("ddd MMM. DD, YYYY")} at ${timeDate.format("hh:mm A")}`
 };
 
 export const getStandardTime = (timestamp: string) => {
@@ -806,7 +828,7 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
-export const getFormatTime = (time: Maybe<string> | undefined,format="hh:mm") => {
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm") => {
   if (!time) return '';
   return moment(time, "hh:mm").format(format)
 };
@@ -1098,6 +1120,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
       return PatientWeight
   }
 }
+
 export const generateString = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
@@ -1113,9 +1136,41 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
     if (typeof str === 'string') {
       const num = parseFloat(str)
       const isNaN = Number.isNaN(num)
+
       return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
     }
+
     return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
   }
+
   return ""
 }
+
+export const renderListOptions = (list: RenderListOptionTypes) => {
+  const data: SelectorOption[] = [];
+
+  if (!!list) {
+    for (let item of list) {
+      if (item) {
+        if (item.__typename === 'SnoMedCodes') {
+          const { id, referencedComponentId } = item || {};
+
+          data.push({ id, name: referencedComponentId })
+        }
+      }
+    }
+  }
+
+  return data;
+};
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[21],
+    fontSize: 11,
+    borderRadius: 4,
+    width: 320
+  },
+}))(Tooltip);

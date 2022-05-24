@@ -187,7 +187,7 @@ const ProblemList = (): JSX.Element => {
         className={classes.dropdown}
       >
         {itemId && selectedItem && selectedItem.__typename === CARD_LAYOUT_MODAL.ICDCodes &&
-          <ProblemModal item={selectedItem} dispatcher={dispatch} isEdit recordId={itemId} fetch={async () => fetchProblems()} />
+          <ProblemModal isOpen={isFormMenuOpen} item={selectedItem} dispatcher={dispatch} isEdit recordId={itemId} fetch={async () => fetchProblems()} />
         }
       </Menu>
     </CardLayout>

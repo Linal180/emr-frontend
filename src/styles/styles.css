@@ -631,3 +631,11 @@ background: #E5EAEE;
 .whiteColor {
   color: #ffffff !important;
 }
+
+.topMargin {
+  top: -24px !important;
+}
+
+.highcharts-container {
+  width:auto !important
+}

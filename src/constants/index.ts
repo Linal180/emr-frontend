@@ -19,7 +19,7 @@ import {
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
   DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon,
+  TextAreaIcon, TextIcon, NewAvatarIcon,
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
@@ -29,6 +29,9 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -63,17 +66,29 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
-
+// constants
+export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
+export const LOCALITY = 'Locality'
+export const AUTHORITY = 'Authority'
+export const COMPANY_NAME = 'Company Name'
+export const ROUTING_NUMBER = 'Routing Number'
+export const ACCOUNT_TYPE = 'Account Type'
+export const PAY_VIA_ACH = 'Pay via ACH';
+export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
+export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
+export const PINNED_NOTES = "Pinned Notes";
+export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
-// constants
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
+export const MY_CARE_TEAM = "My Care Team";
+export const PRACTICE_DETAILS = "Practice Details";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
 export const ACUTE = "Acute";
@@ -86,8 +101,11 @@ export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
+export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
+export const UPDATE_MEDIA = "Update media";
+export const EDIT_MEDIA = "Edit Media";
 export const ADVANCED_SEARCH = "Advanced Search";
 export const LABEL = "Label";
 export const FORMS = "Forms";
@@ -125,6 +143,7 @@ export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
 export const EMPTY_MULTISELECT_OPTION = { value: "", label: "" };
 export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
+export const OTHER_OPTION = { id: "Other", name: "Other" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -181,6 +200,7 @@ export const DONE = "Done";
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
 export const USA = "United States";
+export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
@@ -244,7 +264,9 @@ export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
-export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
+// export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
+export const CONSENT_TO_MESSAGES = "Consent To messages";
+export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
@@ -269,7 +291,7 @@ export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
-  "May we phone, email, or send a text to you to confirm appointments?";
+  "May we phone, or send a email to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
@@ -355,6 +377,8 @@ export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
+export const ADD_PROVIDER_TEXT = "Add Provider";
+export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
 export const EMERGENCY_ACCESS = "Emergency Access";
 export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
@@ -577,6 +601,8 @@ export const PRESCRIBED_BY = "Prescribed By";
 export const STARTING_TIME = "Starting time";
 export const CVV = "CVV";
 export const PAY = "Pay";
+export const COLLECTED_DATE = "Collected Date";
+export const RECEIVED_DATE = "Received Date";
 export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
@@ -662,7 +688,12 @@ export const CLIA_ID_NUMBER = "CLIA ID Number";
 export const POS = "Place of Service Code (POS)";
 export const ALL_APPOINTMENTS = "All Appointments";
 export const LAST_APPOINTMENT = "Last Appointment";
+export const ASSIGNED_PROVIDER = "Assigned Provider";
+export const ORDER_NUMBER = "Order #";
+export const ACCESSION_NUMBER = "Accession Number";
+export const VENDOR_NAME = "Vendor Name";
 export const REPORTS_TEXT = "Reports";
+export const LAB_TEXT = "Lab";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const SEND_EMAIL = "Send Email";
@@ -830,11 +861,11 @@ export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
+export const SIGNED_AT = "Signed at";
 export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
-export const SIGNED_AT   = "Signed at";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
@@ -854,6 +885,7 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
 export const RESULT_VALUE = "Result Value";
@@ -1007,6 +1039,7 @@ export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
+export const ENTER_PHONE = "Enter Phone";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
@@ -1115,6 +1148,7 @@ export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const MAINTENANCE_ROUTE = "/maintenance";
+export const PAST_APPOINTMENTS = "Past Appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const CANCELLATION_ROUTE = "/cancellation";
@@ -1162,6 +1196,7 @@ export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
@@ -1229,6 +1264,8 @@ export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
+export const SCHEDULE_WITH_DOCTOR = "Schedule with doctor: ";
+export const SCHEDULED_IN_FACILITY = "Scheduled in facility: ";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
@@ -2341,6 +2378,11 @@ export const PATIENT_CHARTING_DATA = [
   },
 ];
 
+export const DUMMY_OPTION = {
+  id: ADD_PATIENT_MODAL,
+  name: ADD_PATIENT_MODAL
+}
+
 export const DUMMY_APPOINTMENTS = [
   {
     id: 1,
@@ -2421,6 +2463,10 @@ export const DUMMY_APPOINTMENTS = [
     endDate: "2018-07-27T06:30:00.000Z",
   },
 ];
+
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
@@ -2931,17 +2977,8 @@ export const ITEMS: ItemsTypes[] = [
 
 export const COLUMN_LENGTH: SelectOptions[] = [
   { id: 12, name: 12 },
-  { id: 11, name: 11 },
-  { id: 10, name: 10 },
-  { id: 9, name: 9 },
-  { id: 8, name: 8 },
-  { id: 7, name: 7 },
   { id: 6, name: 6 },
-  { id: 5, name: 5 },
   { id: 4, name: 4 },
-  { id: 3, name: 3 },
-  { id: 2, name: 2 },
-  { id: 1, name: 1 },
 ];
 
 const ITEM_HEIGHT = 48;
@@ -3028,25 +3065,25 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
-    specimenType: { id: '',name: '' },
-    collectionDate: '',
-    specimenNotes: '',
-    collectionTime: ''
+  specimenType: { id: '', name: '' },
+  collectionDate: '',
+  specimenNotes: '',
+  collectionTime: ''
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
-  test: { id: '',name: '' },
+  test: { id: '', name: '' },
   testDate: '',
   testNotes: '',
   testTime: '',
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
-  normalRange:'',
-  normalRangeUnits:'',
-  resultUnits:'',
-  resultValue:'',
-  abnormalFlag: { id: '',name: '' },
+  normalRange: '',
+  normalRangeUnits: '',
+  resultUnits: '',
+  resultValue: '',
+  abnormalFlag: { id: '', name: '' },
 };
 
 
@@ -3547,3 +3584,175 @@ export const ADDED_PATIENTS_LIST = [
     dob: '19/10/2001'
   },
 ]
+
+export const ACH_PAYMENT_TABS = [
+  {
+    title: "Personal",
+    value: "personal",
+  },
+  {
+    title: "Business",
+    value: "business",
+  }
+];
+
+export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
+  {
+    name: "Checking",
+    id: "checking",
+  },
+  {
+    name: "Savings",
+    id: "savings",
+  }
+];
+
+export const MAPPED_REGIONS: SelectorOption[] = states.map(
+  ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })
+);
+export const PROVIDERS_DUMMY_DATA = [
+  {
+    name: "William Warren",
+    specialist: "Cardiac Electrophysiology",
+    phone: "+12859374923",
+    address: "328 Gibraltar Dr. Sunnyvale, CA 94089 Lakewood, NY 11731",
+    icon: NewAvatarIcon,
+  },
+];
+
+export const areaChartOne = {
+  credits: { enabled: false },
+  chart: {
+    type: 'area',
+    styledMode: false,
+    renderTo: 'container',
+    backgroundColor: "#ffffff",
+    marginBottom: 0,
+  },
+  accessibility: {
+    description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
+  },
+  title: {
+    text: 'Blood Pressure',
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    margin: 100,
+    align: 'right'
+  },
+  subtitle: {
+    text: 'Last Reading: May 2, 2022',
+    style: { "color": "gray", "fontSize": "14px" },
+    align: 'right'
+  },
+  xAxis: {
+    allowDecimals: false,
+    accessibility: {
+      rangeDescription: 'Range: 1940 to 2017.'
+    }
+  },
+  yAxis: {
+    className: 'highcharts-color-0',
+    title: {
+      text: 'Nuclear weapon states'
+    },
+  },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
+  plotOptions: {
+    area: {
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        radius: 2,
+        states: {
+          hover: {
+            enabled: true
+          }
+        },
+      },
+      fillColor: '#F6E4E5'
+    },
+    column: {
+      pointPadding: 0.4,
+      borderWidth: 0,
+      borderRadius: 4,
+    }
+
+  },
+  series: [{
+    name: 'USA',
+    color: '#CA6B6E',
+    data: [
+      20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+      26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+    ]
+  }]
+}
+
+export const areaChartTwo = {
+  credits: { enabled: false },
+  chart: {
+    type: 'area',
+    styledMode: false,
+    backgroundColor: "#ffffff",
+    marginBottom: 0,
+  },
+  accessibility: {
+    description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
+  },
+  title: {
+    text: 'Heart Rate',
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    margin: 100,
+    align: 'right'
+  },
+  subtitle: {
+    text: 'Last Reading: May 2, 2022',
+    style: { "color": "gray", "fontSize": "14px" },
+    align: 'right'
+  },
+  xAxis: {
+    allowDecimals: false,
+    accessibility: {
+      rangeDescription: 'Range: 1940 to 2017.'
+    }
+  },
+  yAxis: {
+    className: 'highcharts-color-0',
+    title: {
+      text: 'Nuclear weapon states'
+    },
+  },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
+  plotOptions: {
+    area: {
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        radius: 2,
+        states: {
+          hover: {
+            enabled: true
+          }
+        },
+      },
+      fillColor: '#C9F7F5'
+    },
+    column: {
+      pointPadding: 0.4,
+      borderWidth: 0,
+      borderRadius: 4,
+    }
+
+  },
+  series: [{
+    color: '#1BC5BD',
+    name: 'USSR/Russia',
+    data: [
+      20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+      26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+    ]
+  }]
+}

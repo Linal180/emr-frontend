@@ -1,51 +1,49 @@
 // packages block
 import { FC, Reducer, useCallback, useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Card, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Box, Card, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
 //components block
 import Alert from '../../../common/Alert';
+import InputController from '../../../../controller';
+import TableLoader from '../../../common/TableLoader';
 import MediaCards from '../../../common/AddMedia/MediaCards';
 import ConfirmationModal from '../../../common/ConfirmationModal';
+import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 // interfaces, graphql, constants block
-import { GeneralFormProps, LabOrderResultsAttachmentInput, ParamsType } from "../../../../interfacesTypes";
+import { GREY } from '../../../../theme';
+import history from '../../../../history';
+import { renderTh } from '../../../../utils';
+import { SaveIcon, TrashNewIcon } from '../../../../assets/svgs';
+import { useTableStyles } from '../../../../styles/tableStyles';
 import {
-  ACTION,
-  ADD_RESULT_FILE,
-  ATTACHMENT_TITLES,
-  COMMENTS,
-  DELETE_LAB_ORDER_RESULT_DESCRIPTION,
-  LAB_ORDER_RESULT, LAB_RESULTS_LIMIT, NOT_FOUND_EXCEPTION, RESULT_FILE_NAME, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  Action, ActionType, initialState, mediaReducer, State
+} from '../../../../reducers/mediaReducer';
+import {
+  GeneralFormProps, LabOrderResultsAttachmentInput, ParamsType
+} from "../../../../interfacesTypes";
+import {
+  ACTION, ADD_RESULT_FILE, ATTACHMENT_TITLES, COMMENTS, DELETE_LAB_ORDER_RESULT_DESCRIPTION,
+  LAB_RESULTS_LIMIT, NOT_FOUND_EXCEPTION, RESULT_FILE_NAME, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  LAB_ORDER_RESULT,
 } from '../../../../constants';
 import {
   AttachmentMetaDataType, AttachmentsPayload, AttachmentType, useGetAttachmentsByLabOrderLazyQuery,
-  useRemoveAttachmentMediaMutation,
-  useUpdateAttachmentDataMutation
+  useRemoveAttachmentMediaMutation, useUpdateAttachmentDataMutation
 } from '../../../../generated/graphql';
-import history from '../../../../history';
-import { Action, ActionType, initialState, mediaReducer, State } from '../../../../reducers/mediaReducer';
-import { renderTh } from '../../../../utils';
-import TableLoader from '../../../common/TableLoader';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-import { TrashNewIcon } from '../../../../assets/svgs';
-import { useTableStyles } from '../../../../styles/tableStyles';
-import { Save } from '@material-ui/icons';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import InputController from '../../../../controller';
 
 const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
   const { orderNum, patientId } = useParams<ParamsType>();
   const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [labOrderAttachments,setLabOrderAttachments]= useState<AttachmentsPayload['attachments']>([])
-  const [labResultId, setLabResultId] = useState<string>('')
 
-  const methods = useForm<LabOrderResultsAttachmentInput>({
-    mode: "all",
-  });
+  const [labOrderAttachments, setLabOrderAttachments] = useState<AttachmentsPayload['attachments']>([])
+  const [labResultId, setLabResultId] = useState<string>('')
+  const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all" });
 
   const { handleSubmit, setValue } = methods
-
-  const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [removeAttachmentMedia, { loading: removeAttachmentLoading }] = useRemoveAttachmentMediaMutation({
     onError({ message }) {
@@ -103,7 +101,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
 
       if (getAttachmentsByLabOrder) {
         const { attachments } = getAttachmentsByLabOrder
-        
+
         setLabOrderAttachments(attachments as AttachmentsPayload['attachments'])
       }
     }
@@ -151,8 +149,8 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
     }
   }
 
-  const onSubmit:SubmitHandler<LabOrderResultsAttachmentInput>= async(values)=>{
-    const { comments }= values ?? {}
+  const onSubmit: SubmitHandler<LabOrderResultsAttachmentInput> = async (values) => {
+    const { comments } = values ?? {}
     attachmentId && await updateAttachmentData({
       variables: { updateAttachmentInput: { id: attachmentId, comments } }
     })
@@ -171,6 +169,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
                   {renderTh(ACTION, "center")}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {(loading) ? (
                   <TableRow>
@@ -188,33 +187,36 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
                       <TableRow key={id}>
                         <TableCell scope="row">{attachmentName}</TableCell>
                         <TableCell scope="row">
-                        {isEdit && attachmentId === id ? <>
-                            <InputController
-                             fieldType="text"
-                             controllerName={'comments'}
-                             controllerLabel={''}
-                              margin={'none'}
-                              multiline
-                            />
-                          </>
-                            : <Box onClick={() => handleEdit(id || '', comments || '')}>
-                              {comments || 'N/A'}
-                            </Box>
-                          }
+                          <Box p={2} border={`1px solid ${GREY}`} borderRadius={4}>
+                            {isEdit && attachmentId === id ? <>
+                              <InputController
+                                fieldType="text"
+                                controllerName={'comments'}
+                                controllerLabel={''}
+                                margin={'none'}
+                                multiline
+                              />
+                            </>
+                              :
+                              <Box onClick={() => handleEdit(id || '', comments || '')}>
+                                <Typography variant='body2'>{comments || 'Add Comments here'}</Typography>
+                              </Box>
+                            }
+                          </Box>
                         </TableCell>
 
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
 
-                            <Box className={classes.iconsBackground} onClick={handleSubmit(onSubmit)}>
-                              <Save />
-                            </Box>
+                            {isEdit && attachmentId === id && <Box className={classes.iconsBackground} onClick={handleSubmit(onSubmit)}>
+                              <SaveIcon />
+                            </Box>}
+
                             <Box className={classes.iconsBackground} onClick={() => onDeleteClick(labOrderAttachment?.id || '')}>
                               <TrashNewIcon />
                             </Box>
                           </Box>
                         </TableCell>
-
                       </TableRow>
                     )
                   })
@@ -253,7 +255,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
           </Box>
         </form>
       </FormProvider>
-    </Card >
+    </Card>
   );
 };
 
