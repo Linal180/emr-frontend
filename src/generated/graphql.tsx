@@ -16,6 +16,19 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AchPaymentInputs = {
+  appointmentId: Scalars['String'];
+  company?: Maybe<Scalars['String']>;
+  deviceData?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  price: Scalars['String'];
+  token: Scalars['String'];
+};
+
 /** The patient appointment status type assigned */
 export enum Appointmentstatus {
   Arrived = 'ARRIVED',
@@ -1571,6 +1584,7 @@ export enum Maritialstatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  achPayment: TransactionPayload;
   activateUser: UserPayload;
   addPatientAllergy: PatientAllergyPayload;
   addPatientProblem: PatientProblemPayload;
@@ -1667,6 +1681,11 @@ export type Mutation = {
   updateUserRole: UserPayload;
   verifyEmail: UserPayload;
   verifyOTP: UserPayload;
+};
+
+
+export type MutationAchPaymentArgs = {
+  achPaymentInputs: AchPaymentInputs;
 };
 
 
@@ -3497,7 +3516,6 @@ export type TestSpecimens = {
 
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
-  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   transaction: Transactions;
 };
@@ -4406,7 +4424,7 @@ export type GetPatientProblemQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, appointment?: { __typename?: 'Appointment', id: string, appointmentType?: { __typename?: 'Service', id: string, serviceType: ServiceType } | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, appointmentType?: { __typename?: 'Service', id: string, serviceType: ServiceType } | null | undefined } | null | undefined } | null | undefined } };
 
 export type AddPatientProblemMutationVariables = Exact<{
   createProblemInput: CreateProblemInput;
@@ -4428,6 +4446,13 @@ export type RemovePatientProblemMutationVariables = Exact<{
 
 
 export type RemovePatientProblemMutation = { __typename?: 'Mutation', removePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type SearchSnoMedCodesQueryVariables = Exact<{
+  searchSnoMedCodesInput: SearchSnoMedCodesInput;
+}>;
+
+
+export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, snoMedCodes?: Array<{ __typename: 'SnoMedCodes', id: string, referencedComponentId?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientVitalQueryVariables = Exact<{
   getPatientVital: GetPatientVital;
@@ -4783,6 +4808,13 @@ export type ChargePaymentMutationVariables = Exact<{
 
 
 export type ChargePaymentMutation = { __typename?: 'Mutation', chargePayment: { __typename?: 'TransactionPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, transaction: { __typename?: 'Transactions', id: string, status: Transactionstatus } } };
+
+export type AchPaymentMutationVariables = Exact<{
+  achPaymentInputs: AchPaymentInputs;
+}>;
+
+
+export type AchPaymentMutation = { __typename?: 'Mutation', achPayment: { __typename?: 'TransactionPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, transaction: { __typename?: 'Transactions', id: string, status: Transactionstatus } } };
 
 export type FindAllPermissionsQueryVariables = Exact<{
   permissionInput: PermissionInput;
@@ -6648,6 +6680,10 @@ export const GetPatientProblemDocument = gql`
       problemSeverity
       problemStartDate
       note
+      snowMedCode {
+        id
+        referencedComponentId
+      }
       appointment {
         id
         appointmentType {
@@ -6795,6 +6831,49 @@ export function useRemovePatientProblemMutation(baseOptions?: Apollo.MutationHoo
 export type RemovePatientProblemMutationHookResult = ReturnType<typeof useRemovePatientProblemMutation>;
 export type RemovePatientProblemMutationResult = Apollo.MutationResult<RemovePatientProblemMutation>;
 export type RemovePatientProblemMutationOptions = Apollo.BaseMutationOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+export const SearchSnoMedCodesDocument = gql`
+    query SearchSnoMedCodes($searchSnoMedCodesInput: SearchSnoMedCodesInput!) {
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: $searchSnoMedCodesInput) {
+    response {
+      status
+      message
+    }
+    snoMedCodes {
+      id
+      __typename
+      referencedComponentId
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchSnoMedCodesQuery__
+ *
+ * To run a query within a React component, call `useSearchSnoMedCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchSnoMedCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchSnoMedCodesQuery({
+ *   variables: {
+ *      searchSnoMedCodesInput: // value for 'searchSnoMedCodesInput'
+ *   },
+ * });
+ */
+export function useSearchSnoMedCodesQuery(baseOptions: Apollo.QueryHookOptions<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>(SearchSnoMedCodesDocument, options);
+      }
+export function useSearchSnoMedCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>(SearchSnoMedCodesDocument, options);
+        }
+export type SearchSnoMedCodesQueryHookResult = ReturnType<typeof useSearchSnoMedCodesQuery>;
+export type SearchSnoMedCodesLazyQueryHookResult = ReturnType<typeof useSearchSnoMedCodesLazyQuery>;
+export type SearchSnoMedCodesQueryResult = Apollo.QueryResult<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>;
 export const GetPatientVitalDocument = gql`
     query getPatientVital($getPatientVital: GetPatientVital!) {
   getPatientVital(getPatientVital: $getPatientVital) {
@@ -9595,6 +9674,48 @@ export function useChargePaymentMutation(baseOptions?: Apollo.MutationHookOption
 export type ChargePaymentMutationHookResult = ReturnType<typeof useChargePaymentMutation>;
 export type ChargePaymentMutationResult = Apollo.MutationResult<ChargePaymentMutation>;
 export type ChargePaymentMutationOptions = Apollo.BaseMutationOptions<ChargePaymentMutation, ChargePaymentMutationVariables>;
+export const AchPaymentDocument = gql`
+    mutation AchPayment($achPaymentInputs: ACHPaymentInputs!) {
+  achPayment(achPaymentInputs: $achPaymentInputs) {
+    response {
+      error
+      status
+      message
+      name
+    }
+    transaction {
+      id
+      status
+    }
+  }
+}
+    `;
+export type AchPaymentMutationFn = Apollo.MutationFunction<AchPaymentMutation, AchPaymentMutationVariables>;
+
+/**
+ * __useAchPaymentMutation__
+ *
+ * To run a mutation, you first call `useAchPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAchPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [achPaymentMutation, { data, loading, error }] = useAchPaymentMutation({
+ *   variables: {
+ *      achPaymentInputs: // value for 'achPaymentInputs'
+ *   },
+ * });
+ */
+export function useAchPaymentMutation(baseOptions?: Apollo.MutationHookOptions<AchPaymentMutation, AchPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AchPaymentMutation, AchPaymentMutationVariables>(AchPaymentDocument, options);
+      }
+export type AchPaymentMutationHookResult = ReturnType<typeof useAchPaymentMutation>;
+export type AchPaymentMutationResult = Apollo.MutationResult<AchPaymentMutation>;
+export type AchPaymentMutationOptions = Apollo.BaseMutationOptions<AchPaymentMutation, AchPaymentMutationVariables>;
 export const FindAllPermissionsDocument = gql`
     query FindAllPermissions($permissionInput: PermissionInput!) {
   findAllPermissions(permissionInput: $permissionInput) {

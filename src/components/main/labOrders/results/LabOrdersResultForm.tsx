@@ -1,41 +1,39 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import DatePicker from '../../../common/DatePicker';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { 
-  Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox, 
+import {
+  Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox,
 } from "@material-ui/core";
 //components block
-import LabOrdersResultAttachment from './LabOrdersResultAttachment';
-import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 import Alert from '../../../common/Alert';
+import Selector from '../../../common/Selector';
+import InputController from '../../../../controller';
+import LabOrdersResultSubForm from './LabOrdersResultSubForm';
+import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 // interfaces, graphql, constants block
+import history from '../../../../history';
+import { GREY, GREY_THREE } from '../../../../theme';
+import { getFormatDateString, renderItem } from '../../../../utils';
+import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LAB_TEXT, LOINC_CODE, 
-  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, OTHER_OPTION, RECEIVED_DATE, RESULTS, SAVE_TEXT, TESTS, 
-  USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
+  ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LAB_TEXT, LOINC_CODE,
+  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, OTHER_OPTION, RECEIVED_DATE,
+  RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
-import { GREY, GREY_THREE } from '../../../../theme';
 import {
   AbnormalFlag, useFindLabTestsByOrderNumLazyQuery,
   useRemoveLabTestObservationMutation, useUpdateLabTestMutation, useUpdateLabTestObservationMutation
 } from '../../../../generated/graphql';
-import history from '../../../../history';
-import Selector from '../../../common/Selector';
-import InputController from '../../../../controller';
-import DatePicker from '../../../common/DatePicker';
-import { getFormatDateString, renderItem } from '../../../../utils';
-import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
   const [doctorSignOff, setDoctorSignOff] = useState(false);
-
-  const methods = useForm<LabOrderResultsFormInput>({
-    mode: "all",
-  });
+  const methods = useForm<LabOrderResultsFormInput>({ mode: "all" });
+  const { handleSubmit, setValue, control } = methods;
 
   const [updateLabTest] = useUpdateLabTestMutation({
     onError({ message }) {
@@ -68,12 +66,8 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     },
   });
 
-  const { handleSubmit, setValue, control } = methods;
-
   const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
-    const { assignedProvider, accessionNumber, collectedDate, receivedDate, labName, venderName }= values ?? {}
-
-    console.log("values",values)
+    const { assignedProvider, accessionNumber, collectedDate, receivedDate, labName, venderName } = values ?? {}
 
     if (resultsToRemove.length) {
       resultsToRemove.forEach(async (resultId) => {
@@ -101,7 +95,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
               accessionNumber: accessionNumber,
               labName: labName?.id ?? '',
               vendorName: venderName ?? '',
-              ...(assignedProvider?.id && {doctorId: assignedProvider?.id ?? ''})
+              ...(assignedProvider?.id && { doctorId: assignedProvider?.id ?? '' })
             },
           }
         }
@@ -109,7 +103,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
 
       const transformedObservations = resultsField.map((resultsFieldValues) => {
         const { abnormalFlag, normalRange, normalRangeUnits, observationId, resultUnits, resultValue } = resultsFieldValues ?? {}
-         
+
         return {
           id: observationId ?? '',
           ...(abnormalFlag?.id && { abnormalFlag: abnormalFlag?.id as AbnormalFlag }),
@@ -198,7 +192,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  const fetchlabTests = useCallback(async () => {
+  const fetchLabTests = useCallback(async () => {
     try {
       await findLabTestsByOrderNum({
         variables: {
@@ -211,8 +205,8 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   }, [findLabTestsByOrderNum, orderNum])
 
   useEffect(() => {
-    fetchlabTests()
-  }, [fetchlabTests])
+    fetchLabTests()
+  }, [fetchLabTests])
 
   const handleDoctorSignOffToggle = (
     { target: { checked } }: ChangeEvent<HTMLInputElement>
@@ -240,12 +234,12 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                     name="labName"
                     label={LAB_TEXT}
                     value={EMPTY_OPTION}
-                    options={[EMPTY_OPTION,OTHER_OPTION]}
+                    options={[EMPTY_OPTION, OTHER_OPTION]}
                   />
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <PatientProviderSelector patientId={patientId ?? ''}/>
+                  <PatientProviderSelector patientId={patientId ?? ''} />
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
@@ -265,7 +259,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                 {renderItem(ORDER_NUMBER, orderNum)}
+                  {renderItem(ORDER_NUMBER, orderNum)}
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>

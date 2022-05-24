@@ -30,6 +30,8 @@ import {
 
 // regex
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -65,6 +67,13 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 // constants
+export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
+export const LOCALITY = 'Locality'
+export const AUTHORITY = 'Authority'
+export const COMPANY_NAME = 'Company Name'
+export const ROUTING_NUMBER = 'Routing Number'
+export const ACCOUNT_TYPE = 'Account Type'
+export const PAY_VIA_ACH = 'Pay via ACH';
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
@@ -852,6 +861,7 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
 export const RESULT_VALUE = "Result Value";
@@ -1161,6 +1171,7 @@ export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
@@ -2342,6 +2353,11 @@ export const PATIENT_CHARTING_DATA = [
   },
 ];
 
+export const DUMMY_OPTION = {
+  id: ADD_PATIENT_MODAL,
+  name: ADD_PATIENT_MODAL
+}
+
 export const DUMMY_APPOINTMENTS = [
   {
     id: 1,
@@ -2422,6 +2438,10 @@ export const DUMMY_APPOINTMENTS = [
     endDate: "2018-07-27T06:30:00.000Z",
   },
 ];
+
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
@@ -3462,6 +3482,33 @@ export enum VITAL_LABELS {
   patientTemperature = 'Temperature',
 }
 
+
+export const ACH_PAYMENT_TABS = [
+  {
+    title: "Personal",
+    value: "personal",
+  },
+  {
+    title: "Business",
+    value: "business",
+  }
+];
+
+export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
+  {
+    name: "Checking",
+    id: "checking",
+  },
+  {
+    name: "Savings",
+    id: "savings",
+  }
+];
+
+
+export const MAPPED_REGIONS: SelectorOption[] = states.map(
+  ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })
+);
 export const PROVIDERS_DUMMY_DATA = [
   {
     name: "William Warren",

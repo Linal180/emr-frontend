@@ -9,7 +9,7 @@ import { DetailTooltip } from "../../styles/tableStyles";
 import { useFormStyles } from "../../styles/formsStyles";
 import { CustomSelectControlProps } from "../../interfacesTypes";
 
-const InputController: FC<CustomSelectControlProps> = ({
+const Select: FC<CustomSelectControlProps> = ({
   isRequired, controllerName, controllerLabel, error, disabled, multiline, info, placeholder, options
 }): JSX.Element => {
   const classes = useFormStyles();
@@ -49,11 +49,11 @@ const InputController: FC<CustomSelectControlProps> = ({
             {...field}
           >
             <MenuItem value={''} disabled>{placeholder ? placeholder : ""}</MenuItem>
-            {options?.map((item) => (
-              <MenuItem value={item?.id}>
-                {item?.name}
-              </MenuItem>
-            ))}
+            {options?.map((item) => {
+              const { id, name } = item || {}
+
+              return <MenuItem value={id}>{name}</MenuItem>
+            })}
           </TextField>
         </FormControl>
       )}
@@ -61,4 +61,4 @@ const InputController: FC<CustomSelectControlProps> = ({
   );
 };
 
-export default InputController;
+export default Select;

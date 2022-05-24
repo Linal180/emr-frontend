@@ -6,11 +6,13 @@ import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@materi
 import Alert from "../../Alert";
 import InputController from "../../../../controller";
 // interfaces, reducers, constants and styles block
-import { EditOutlinedIcon, SaveIcon } from "../../../../assets/svgs";
-import { AUTO_OPEN_NOTES, PATIENT_NOTE_ERROR_MESSAGE, PATIENT_NOTE_SUCCESS_MESSAGE, PINNED_NOTES } from "../../../../constants";
-import { PatientNoteModalProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/patientReducer";
+import { PatientNoteModalProps } from "../../../../interfacesTypes";
+import { EditOutlinedIcon, SaveIcon } from "../../../../assets/svgs";
 import { PatientPayload, useUpdatePatientNoteInfoMutation } from "../../../../generated/graphql";
+import {
+  AUTO_OPEN_NOTES, PATIENT_NOTE_ERROR_MESSAGE, PATIENT_NOTE_SUCCESS_MESSAGE, PINNED_NOTES
+} from "../../../../constants";
 
 export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patientStates }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -41,13 +43,10 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
 
     id && await updatePatientNotesInfo({
       variables: {
-        updatePatientNoteInfoInputs: {
-          id,
-          patientNote,
-          patientNoteOpen
-        }
+        updatePatientNoteInfoInputs: { id, patientNote, patientNoteOpen }
       }
     })
+
     setIsEdit(!isEdit)
   }
 
@@ -55,11 +54,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
     dispatcher({ type: ActionType.SET_PATIENT_NOTE_OPEN, patientNoteOpen: !patientNoteOpen })
     id && await updatePatientNotesInfo({
       variables: {
-        updatePatientNoteInfoInputs: {
-          id,
-          patientNoteOpen: !patientNoteOpen,
-          patientNote
-        }
+        updatePatientNoteInfoInputs: { id, patientNoteOpen: !patientNoteOpen, patientNote }
       }
     })
   }
@@ -76,9 +71,8 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
     <Fragment>
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography>
-          {PINNED_NOTES}
-        </Typography>
+        <Typography>{PINNED_NOTES}</Typography>
+
         {isEdit ?
           <IconButton onClick={handleSubmit(onSubmit)}><SaveIcon /></IconButton> :
           <IconButton onClick={() => setIsEdit(true)}><EditOutlinedIcon /></IconButton>
@@ -90,6 +84,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
             <InputController fieldType="text" controllerName="patientNote" /> :
             <Typography color="inherit">{patientNote}</Typography>
           }
+          
           <FormControlLabel
             control={<Checkbox checked={patientNoteOpen} onChange={handleChange} name="checked" />}
             label={AUTO_OPEN_NOTES} />

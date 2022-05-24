@@ -12,6 +12,7 @@ import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  RenderListOptionTypes,
   SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
@@ -827,7 +828,7 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
-export const getFormatTime = (time: Maybe<string> | undefined,format="hh:mm") => {
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm") => {
   if (!time) return '';
   return moment(time, "hh:mm").format(format)
 };
@@ -1135,12 +1136,33 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
     if (typeof str === 'string') {
       const num = parseFloat(str)
       const isNaN = Number.isNaN(num)
+
       return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
     }
+
     return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
   }
+
   return ""
 }
+
+export const renderListOptions = (list: RenderListOptionTypes) => {
+  const data: SelectorOption[] = [];
+
+  if (!!list) {
+    for (let item of list) {
+      if (item) {
+        if (item.__typename === 'SnoMedCodes') {
+          const { id, referencedComponentId } = item || {};
+
+          data.push({ id, name: referencedComponentId })
+        }
+      }
+    }
+  }
+
+  return data;
+};
 
 export const LightTooltip = withStyles((theme: Theme) => ({
   tooltip: {
