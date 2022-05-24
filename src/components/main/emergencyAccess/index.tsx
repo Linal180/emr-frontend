@@ -6,7 +6,7 @@ import {
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
 // constants, history, styling block
-import { handleLogout, isFacilityAdmin, renderTh } from "../../../utils";
+import { handleLogout, isFacilityAdmin, isPracticeAdmin, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
@@ -37,6 +37,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
   const [searchTerm,setSearchTerm]=useState<string>('')
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
+  const isPracAdmin = isPracticeAdmin(user?.roles);
 
   const logout = () => {
     setIsLoggedIn(false)
@@ -133,7 +134,19 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   useEffect(() => {
     if (shouldFetchEmergencyUser) {
-      
+      if(isPracAdmin){
+        fetchEmergencyAccessUsers({
+          variables:{
+            emergencyAccessUsersInput: {
+              paginationInput: { page, limit: 10 },
+              practiceId: user?.facility?.practiceId,
+              email:searchTerm
+            }
+          }
+        })
+        return
+      }
+
       if (isFacAdmin) {
         fetchEmergencyAccessUsers({
           variables:{
@@ -156,7 +169,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
         }
       })
     }
-  }, [fetchEmergencyAccessUsers, isFacAdmin, page, searchTerm, shouldFetchEmergencyUser, user?.facilityId]);
+  }, [fetchEmergencyAccessUsers, isFacAdmin, isPracAdmin, page, searchTerm, shouldFetchEmergencyUser, user?.facility?.practiceId, user?.facilityId]);
 
   const handleEmergencyAccessToggle = async () => {
     const transformedUserRoles = userRoles.filter(
