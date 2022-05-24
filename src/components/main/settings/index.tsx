@@ -27,7 +27,6 @@ export const SettingsComponent = () => {
   const isSuperAdmin = userRoles.includes(SYSTEM_ROLES.SuperAdmin)
   const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
   const { id: doctorId } = currentDoctor || {}
-  console.log(userPermissions);
 
   return (
     <>
