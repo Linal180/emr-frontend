@@ -1,8 +1,7 @@
 // packages block
+import { useEffect, useCallback, Reducer, useState, useReducer, useContext, useRef, FC } from "react";
 import classNames from "clsx";
-import { useEffect, useCallback, Reducer, useState, useReducer, useContext, useRef } from "react";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
-
 import { Box, Card, CircularProgress } from "@material-ui/core";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
@@ -30,8 +29,11 @@ import {
 import PageHeader from "../../common/PageHeader";
 import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD } from "../../../constants";
 import { useIndicatorStyles } from "../../../styles/indicatorStyles";
+//Interfaces
+import { CalenderProps } from "../../../interfacesTypes";
 
-const CalendarComponent = (): JSX.Element => {
+const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
+
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState<string>('Month')
@@ -142,10 +144,14 @@ const CalendarComponent = (): JSX.Element => {
 
   return (
     <>
-      <PageHeader
+      {
+        showHeader &&
+        <PageHeader
         title={CALENDAR_VIEW_TEXT}
         path={[DASHBOARD_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
       />
+      }
+
       <Card>
         <Box>
           {fetchAllAppointmentsLoading &&
