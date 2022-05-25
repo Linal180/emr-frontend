@@ -214,7 +214,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       <span className='measure-unit'>{HEART_RATE_UNIT}</span>
                     </Typography>
 
-                    <Typography className='measure-frequency danger' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                    <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
                   </Box>
 
                   <Box className='areaBloodPressureChart'>

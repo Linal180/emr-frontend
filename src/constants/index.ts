@@ -2496,6 +2496,10 @@ export const DUMMY_APPOINTMENTS = [
   },
 ];
 
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
+
 export const DUMMY_ENCOUNTERS = [
   {
     id: 1,
