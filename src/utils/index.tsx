@@ -474,9 +474,9 @@ export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
   if (!!icdCodes) {
     for (let icdCode of icdCodes) {
       if (icdCode) {
-        const { id, code } = icdCode;
+        const { id, code, description } = icdCode;
 
-        code && data.push({ value: id, label: code })
+        code && data.push({ value: id, label: `${code} | ${description}` })
       }
     }
   }
@@ -830,7 +830,7 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
-export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm") => {
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm a") => {
   if (!time) return '';
   return moment(time, "hh:mm").format(format)
 };

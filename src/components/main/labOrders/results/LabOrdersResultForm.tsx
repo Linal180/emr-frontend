@@ -15,12 +15,12 @@ import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 // interfaces, graphql, constants block
 import history from '../../../../history';
 import { GREY, GREY_THREE } from '../../../../theme';
-import { getFormatDateString, renderItem } from '../../../../utils';
+import { getFormatDateString } from '../../../../utils';
 import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
   ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LAB_TEXT, LOINC_CODE,
-  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, OTHER_OPTION, RECEIVED_DATE,
+  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, OTHER_OPTION, RECEIVED_DATE,
   RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import {
@@ -145,7 +145,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
         const { labTests } = findLabTestsByOrderNum
 
         const transformedLabTests = labTests?.map((labTest) => {
-          const { test, id, testObservations, doctor, vendorName, collectedDate, receivedDate, accessionNumber, labName, } = labTest ?? {}
+          const { test, id, testObservations, doctor, vendorName, collectedDate, receivedDate, accessionNumber, labName, testSpecimens } = labTest ?? {}
           const { component, loincNum, unitsRequired } = test ?? {}
 
           setValue('labName', {
@@ -158,7 +158,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             name: `${doctor?.firstName ?? ''} ${doctor?.lastName ?? ''}`.trim()
           })
           setValue('venderName', vendorName ?? '')
-          setValue('collectedDate', collectedDate ?? '')
+          setValue('collectedDate',collectedDate ?? testSpecimens?.[0]?.collectionDate ?? '')
           setValue('receivedDate', receivedDate ?? '')
 
           const transformedObservations = testObservations?.map((testObservation) => {
@@ -222,10 +222,6 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             <Box px={3}>
               <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h4'>{RESULTS}</Typography>
-
-                <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
-                  {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
-                </Button>
               </Box>
 
               <Grid container spacing={3}>
@@ -259,15 +255,11 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                  {renderItem(ORDER_NUMBER, orderNum)}
+                  <DatePicker name="collectedDate" label={COLLECTED_DATE} disableFuture={false} />
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <DatePicker name="collectedDate" label={COLLECTED_DATE} />
-                </Grid>
-
-                <Grid item md={3} sm={12} xs={12}>
-                  <DatePicker name="receivedDate" label={RECEIVED_DATE} />
+                  <DatePicker name="receivedDate" label={RECEIVED_DATE} disableFuture={false} />
                 </Grid>
               </Grid>
             </Box>
@@ -276,7 +268,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={3}>
+            <Box p={3}>
               <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{TESTS}</Typography>
               </Box>
@@ -328,7 +320,12 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 })
                 }
               </Grid>
+
+              <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
+                {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
+              </Button>
             </Box>
+
           </Card>
         </form>
       </FormProvider>
