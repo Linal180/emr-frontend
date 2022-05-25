@@ -28,6 +28,7 @@ import {
   UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
 } from "../generated/graphql";
 
+
 // regex
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
@@ -66,6 +67,22 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
+
+// Blood Pressure Ranges
+export enum BLOOD_PRESSURE_RANGES {
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
+// Heart Rate Ranges
+export enum Heart_RATE_RANGES {
+  Abnormal = "Abnormal",
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
 // constants
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
@@ -116,6 +133,8 @@ export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
 export const FORM_COPY = "Copy form";
+export const ENCOUNTERS = "Encounters";
+export const CARE_TEAM = "Care Team";
 export const FORM_NAME = "Form name";
 export const THANK_YOU_TEXT = "Thank you!";
 export const FORM_SUBMIT_TEXT = "Form Submit";
@@ -170,7 +189,15 @@ export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
+export const LAST_READING_TEXT = "Last Reading"
 export const BLOOD_PRESSURE_TEXT = "Blood Pressure"
+export const BLOOD_PRESSURE_VALUE = "102 / 72"
+export const BLOOD_PRESSURE_LAST_READ = "May 2, 2022"
+export const BLOOD_PRESSURE_UNIT = "mmhg"
+export const HEART_RATE_TEXT = "Heart Rate"
+export const HEART_RATE_VALUE = "100"
+export const HEART_RATE_UNIT = "bpm"
+export const HEART_RATE_LAST_READ = "May 2, 2022"
 export const OXYGEN_SATURATION_TEXT = "Oxygen Saturation"
 export const HEIGHT_TEXT = "Height"
 export const WEIGHT_TEXT = "Weight"
@@ -2469,9 +2496,24 @@ export const DUMMY_APPOINTMENTS = [
   },
 ];
 
-export enum ITEM_MODULE {
-  snoMedCode = 'SnoMedCode'
-}
+export const DUMMY_ENCOUNTERS = [
+  {
+    id: 1,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  },
+  {
+    id: 2,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  }  
+];
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
@@ -3636,20 +3678,20 @@ export const areaChartOne = {
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    marginBottom: 0,
+    
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {
@@ -3665,7 +3707,8 @@ export const areaChartOne = {
     },
   },
   tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+    style : { 'zIndex' :'1' }
   },
   plotOptions: {
     area: {
@@ -3711,13 +3754,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {
