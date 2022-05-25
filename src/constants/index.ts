@@ -376,6 +376,7 @@ export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
+export const PROVIDER_DETAILS = "Provider Details";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const ADD_PROVIDER_TEXT = "Add Provider";
 export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
@@ -389,6 +390,14 @@ export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
   "Edit your practice information and settings";
+export const PRACTICE_MANAGEMENT_DESCRIPTION =
+  "Add and edit your practice information and settings";
+export const PROVIDER_DETAILS_DESCRIPTION =
+  "Edit your provider information and settings";
+  export const FACILITY_DETAILS_DESCRIPTION =
+  "Edit your facility information and settings";
+  export const PROVIDER_PROFILE_DESCRIPTION =
+  "Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
@@ -981,7 +990,7 @@ export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const YOU_HAVE_ENTERED = "You have entered:";
-export const DOCTOR_PROFILE_TEXT = "Doctor Profile";
+export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
 export const USER_STATUS_PLACEHOLDER = "User Status";
@@ -1498,17 +1507,6 @@ export const APP_MENU_ITEMS = [
         link: CLAIMS_ROUTE,
       },
     ],
-  },
-];
-
-export const USER_MENU_ITEMS = [
-  {
-    name: DOCTORS_TEXT,
-    link: DOCTORS_ROUTE,
-  },
-  {
-    name: STAFF_TEXT,
-    link: STAFF_ROUTE,
   },
 ];
 
@@ -2684,44 +2682,6 @@ export const LAB_ORDERS_LISTING_DATA = [
   },
 ];
 
-export const PRACTICE_SETTINGS_ITEMS = [
-  {
-    name: PRACTICE_DETAILS_TEXT,
-    link: PRACTICE_DETAILS_ROUTE,
-    desc: PRACTICE_DETAILS_DESCRIPTION,
-    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin],
-  },
-  {
-    name: FACILITY_MANAGEMENT,
-    link: FACILITIES_ROUTE,
-    desc: FACILITY_MANAGEMENT_DESCRIPTION,
-    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin],
-  },
-  {
-    name: PROVIDER_MANAGEMENT,
-    link: DOCTORS_ROUTE,
-    desc: PROVIDER_MANAGEMENT_DESCRIPTION,
-    visible: ["All"],
-  },
-  {
-    name: STAFF_MANAGEMENT,
-    link: STAFF_ROUTE,
-    desc: STAFF_MANAGEMENT_DESCRIPTION,
-    visible: ["All"],
-  },
-  {
-    name: ROLES_PERMISSIONS,
-    link: ROLES_ROUTE,
-    desc: ROLES_PERMISSIONS_DESCRIPTION,
-    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin],
-  },
-  {
-    name: EMERGENCY_ACCESS,
-    link: EMERGENCY_ACCESS_ROUTE,
-    desc: EMERGENCY_ACCESS_DESCRIPTION,
-  },
-];
-
 export const INVENTORY_ITEMS = [
   {
     name: ICT_TEN,
@@ -3306,6 +3266,48 @@ export enum USER_PERMISSIONS {
   addPatientVital = "addPatientVital"
 }
 
+export const USER_MENU_ITEMS = [
+  {
+    name: PROVIDER_MANAGEMENT,
+    link: DOCTORS_ROUTE,
+    desc: PROVIDER_MANAGEMENT_DESCRIPTION,
+    permission: USER_PERMISSIONS.findAllDoctor,
+  },
+  {
+    name: STAFF_MANAGEMENT,
+    link: STAFF_ROUTE,
+    desc: STAFF_MANAGEMENT_DESCRIPTION,
+    permission: USER_PERMISSIONS.findAllStaff,
+  }
+];
+
+export const PRACTICE_SETTINGS_ITEMS = [
+  {
+    name: PRACTICE_DETAILS_TEXT,
+    link: PRACTICE_DETAILS_ROUTE,
+    desc: PRACTICE_DETAILS_DESCRIPTION,
+    permission: USER_PERMISSIONS.findAllPractices,
+  },
+  {
+    name: FACILITY_MANAGEMENT,
+    link: FACILITIES_ROUTE,
+    desc: FACILITY_MANAGEMENT_DESCRIPTION,
+    permission: USER_PERMISSIONS.findAllFacility,
+  },
+  {
+    name: ROLES_PERMISSIONS,
+    link: ROLES_ROUTE,
+    desc: ROLES_PERMISSIONS_DESCRIPTION,
+    permission: USER_PERMISSIONS.getAllRoles,
+  },
+  {
+    name: EMERGENCY_ACCESS,
+    link: EMERGENCY_ACCESS_ROUTE,
+    desc: EMERGENCY_ACCESS_DESCRIPTION,
+    permission: USER_PERMISSIONS.emergencyAccess,
+  },
+];
+
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
 
@@ -3441,59 +3443,59 @@ export const FACILITIES_LIST = [
 ]
 export const EMERGENCY_LOG_LIST = [
   {
-    shortName : 'AW',
+    shortName: 'AW',
     fullName: "Andrew Williams",
     hospitalName: "National Hospital",
-    activatedDate : '24/2/2022',
-    imageUrl : EMERGENCY_LOG_WILLIAMS
+    activatedDate: '24/2/2022',
+    imageUrl: EMERGENCY_LOG_WILLIAMS
   },
   {
-    shortName : 'OM',
+    shortName: 'OM',
     fullName: "Obaid McCoy",
     hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate : '17/10/2022',
-    imageUrl : EMERGENCY_LOG_OBD
+    activatedDate: '17/10/2022',
+    imageUrl: EMERGENCY_LOG_OBD
   },
   {
-    shortName : 'MP',
+    shortName: 'MP',
     fullName: "Micheal Phelps",
     hospitalName: "City Medical Center",
-    activatedDate : '2/6/2022',
-    imageUrl : EMERGENCY_LOG_PHLEPS
+    activatedDate: '2/6/2022',
+    imageUrl: EMERGENCY_LOG_PHLEPS
   },
   {
-    shortName : 'ND',
+    shortName: 'ND',
     fullName: "Novac Dominic",
     hospitalName: "National Hospital",
-    activatedDate : '30/2/2022',
-    imageUrl : ''
+    activatedDate: '30/2/2022',
+    imageUrl: ''
   },
 ]
 
 export const RECENT_ACTIVITY_LIST = [
   {
-    shortName : 'AW',
+    shortName: 'AW',
     fullName: "Andrew Williams",
     hospitalName: "National Hospital",
-    activatedDate : '24/2/2022'
+    activatedDate: '24/2/2022'
   },
   {
-    shortName : 'OM',
+    shortName: 'OM',
     fullName: "Obaid McCoy",
     hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate : '17/10/2022'
+    activatedDate: '17/10/2022'
   },
   {
-    shortName : 'MP',
+    shortName: 'MP',
     fullName: "Micheal Phelps",
     hospitalName: "City Medical Center",
-    activatedDate : '2/6/2022'
+    activatedDate: '2/6/2022'
   },
   {
-    shortName : 'ND',
+    shortName: 'ND',
     fullName: "Novac Dominic",
     hospitalName: "National Hospital",
-    activatedDate : '30/2/2022'
+    activatedDate: '30/2/2022'
   },
 ]
 
