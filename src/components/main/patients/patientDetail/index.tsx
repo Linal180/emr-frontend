@@ -16,7 +16,7 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import BarChart2Component from '../../../common/charts/barChart2';
+import BarChart2Component from '../../../common/charts/PracticesByYear';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 // constants, history, styling block
@@ -160,11 +160,11 @@ const PatientDetailsComponent = (): JSX.Element => {
             <Box display="flex">
               <AreaChartComponent data={areaChartOne} />
               <AreaChartComponent data={areaChartTwo} />
-              <BarChart2Component />
+              <BarChart2Component year={{ id: '2022', name: '2022' }} />
             </Box>
 
             <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated}/>
+              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} />
 
               {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                 <Box display="flex" justifyContent="center" pb={12} pt={5}>
