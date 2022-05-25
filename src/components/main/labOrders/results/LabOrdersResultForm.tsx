@@ -24,7 +24,7 @@ import {
   RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import {
-  AbnormalFlag, useFindLabTestsByOrderNumLazyQuery,
+  AbnormalFlag, LabTestStatus, useFindLabTestsByOrderNumLazyQuery,
   useRemoveLabTestObservationMutation, useUpdateLabTestMutation, useUpdateLabTestObservationMutation
 } from '../../../../generated/graphql';
 
@@ -90,6 +90,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             updateLabTestItemInput: {
               id: testId ?? '',
               patientId: patientId ?? '',
+              status: LabTestStatus.ResultReceived,
               collectedDate: getFormatDateString(collectedDate, 'MM-DD-YYYY'),
               receivedDate: getFormatDateString(receivedDate, 'MM-DD-YYYY'),
               accessionNumber: accessionNumber,

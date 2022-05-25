@@ -2994,6 +2994,10 @@ export const COLUMN_LENGTH: SelectOptions[] = [
   { id: 4, name: 4 },
 ];
 
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 export const MENU_PROPS = {
