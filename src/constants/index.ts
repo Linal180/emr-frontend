@@ -11,10 +11,7 @@ import {
 } from "../utils";
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
-  FormInitialType,
-  TestOption,
-  SpecimenTypeOption,
-  LabOrdersResultOption,
+  FormInitialType, TestOption, SpecimenTypeOption, LabOrdersResultOption,
 } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
@@ -29,14 +26,11 @@ import {
 } from "../generated/graphql";
 
 // regex
-export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
-export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
-export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
-export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
+export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
@@ -45,11 +39,13 @@ export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
 export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -66,6 +62,22 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
+
+// Blood Pressure Ranges
+export enum BLOOD_PRESSURE_RANGES {
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
+// Heart Rate Ranges
+export enum Heart_RATE_RANGES {
+  Abnormal = "Abnormal",
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
 // constants
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
@@ -116,6 +128,8 @@ export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
 export const FORM_COPY = "Copy form";
+export const ENCOUNTERS = "Encounters";
+export const CARE_TEAM = "Care Team";
 export const FORM_NAME = "Form name";
 export const THANK_YOU_TEXT = "Thank you!";
 export const FORM_SUBMIT_TEXT = "Form Submit";
@@ -170,7 +184,15 @@ export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
+export const LAST_READING_TEXT = "Last Reading"
 export const BLOOD_PRESSURE_TEXT = "Blood Pressure"
+export const BLOOD_PRESSURE_VALUE = "102 / 72"
+export const BLOOD_PRESSURE_LAST_READ = "May 2, 2022"
+export const BLOOD_PRESSURE_UNIT = "mmhg"
+export const HEART_RATE_TEXT = "Heart Rate"
+export const HEART_RATE_VALUE = "100"
+export const HEART_RATE_UNIT = "bpm"
+export const HEART_RATE_LAST_READ = "May 2, 2022"
 export const OXYGEN_SATURATION_TEXT = "Oxygen Saturation"
 export const HEIGHT_TEXT = "Height"
 export const WEIGHT_TEXT = "Weight"
@@ -394,9 +416,9 @@ export const PRACTICE_MANAGEMENT_DESCRIPTION =
   "Add and edit your practice information and settings";
 export const PROVIDER_DETAILS_DESCRIPTION =
   "Edit your provider information and settings";
-  export const FACILITY_DETAILS_DESCRIPTION =
+export const FACILITY_DETAILS_DESCRIPTION =
   "Edit your facility information and settings";
-  export const PROVIDER_PROFILE_DESCRIPTION =
+export const PROVIDER_PROFILE_DESCRIPTION =
   "Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
@@ -475,11 +497,11 @@ export const CHECK_PRIOR_DATE_OF_SERVICE = "Check At Prior Date Of Service";
 export const OVERRIDE_PAYER_RETURNED_RESULT = "Override Payer Returned Result";
 export const TAKE_A_PICTURE_OF_INSURANCE =
   "Please take a pictures of your insurance card and upload here. ";
-  export const DOB = "Date of Birth";
-  export const DOB_TIME = "Date/Time";
-  export const SPECIALTY = "Specialty";
-  export const DOCTOR_ID = "doctor id";
-  export const PATIENT_ID = "patient id";
+export const DOB = "Date of Birth";
+export const DOB_TIME = "Date/Time";
+export const SPECIALTY = "Specialty";
+export const DOCTOR_ID = "doctor id";
+export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DECEASED_DATE = "Deceased Date";
@@ -635,6 +657,7 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const TOKEN = "emr_token";
 export const RESULTS = "Results";
+export const RESULTS_ENTERED = "Results Entered At";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
@@ -948,7 +971,7 @@ export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
-export const USUAL_PROVIDER   = "Usual Provider";
+export const USUAL_PROVIDER = "Usual Provider";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
@@ -986,6 +1009,8 @@ export const UPDATE_SIGNATURE = "Update Signature";
 export const BOOK_APPOINTMENT = "Book Appointment";
 export const ORDER_OF_BENEFIT = "Order of Benefit";
 export const CREATE_LAB_ORDER = "Create Lab Order";
+export const ORDER_CREATED_AT = "Order Created At";
+export const APPOINTMENT_DATE = "Appointment Date";
 export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
@@ -2173,6 +2198,7 @@ export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
+export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
@@ -2467,6 +2493,25 @@ export const DUMMY_APPOINTMENTS = [
     startDate: "2018-07-27T05:00:00.000Z",
     endDate: "2018-07-27T06:30:00.000Z",
   },
+];
+
+export const DUMMY_ENCOUNTERS = [
+  {
+    id: 1,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  },
+  {
+    id: 2,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  }  
 ];
 
 export enum ITEM_MODULE {
@@ -3407,42 +3452,16 @@ export const FEVER_UNITS = [
 ]
 
 export const MAPPED_AUTO_LOGOUT = [
-  { id: "0", name: '30 Minutes' },
-  { id: "1", name: '1 Hour' },
-  { id: "2", name: '90 Minutes' },
-  { id: "3", name: '6 Hours' },
-  { id: "4", name: '12 Hours' },
-  { id: "5", name: '24 Hours' },
-  { id: "6", name: '2 Days' },
-  { id: "7", name: '7 Days' },
+  { id: "0", name: '30 Minutes', time: 1800 * 1000 },
+  { id: "1", name: '1 Hour', time: 3600 * 1000 },
+  { id: "2", name: '90 Minutes', time: 5400 * 1000 },
+  { id: "3", name: '6 Hours', time: 21600 * 1000 },
+  { id: "4", name: '12 Hours', time: 43200 * 1000 },
+  { id: "5", name: '24 Hours', time: 86400 * 1000 },
+  { id: "6", name: '2 Days', time: 172800 * 1000 },
+  { id: "7", name: '7 Days', time: 604800 * 1000 },
 ]
 
-export const FACILITIES_LIST = [
-  {
-    shortName: "NH",
-    fullName: "National Hospital",
-  },
-  {
-    shortName: "EC",
-    fullName: "Eye Care Center",
-  },
-  {
-    shortName: "MS",
-    fullName: "Medix Premium Care Services",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-  {
-    shortName: "CC",
-    fullName: "City Medical Center",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-]
 export const EMERGENCY_LOG_LIST = [
   {
     shortName: 'AW',
@@ -3518,78 +3537,78 @@ export enum VITAL_LABELS {
 
 export const UPCOMING_APPOINTMENT_LIST = [
   {
-    fullName : 'Andrew Williams',
+    fullName: 'Andrew Williams',
     visitType: "Sick Visit",
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     appointmentTime: '11:00 AM'
   },
   {
-    fullName : 'Arlene McCoy',
+    fullName: 'Arlene McCoy',
     visitType: "Ortho Check up",
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'AM',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'AM',
     appointmentTime: '11:15 AM'
   },
   {
-    fullName : 'Marvin McKinney',
+    fullName: 'Marvin McKinney',
     visitType: "Endoscopy",
-    imageUrl : EMERGENCY_LOG_PHLEPS,
-    shortName : 'MM',
+    imageUrl: EMERGENCY_LOG_PHLEPS,
+    shortName: 'MM',
     appointmentTime: '11:30 AM'
   },
   {
-    fullName : 'Darlene Robertson',
+    fullName: 'Darlene Robertson',
     visitType: "CT Scan",
-    imageUrl : '',
-    shortName : 'DR',
+    imageUrl: '',
+    shortName: 'DR',
     appointmentTime: '12:00 PM'
   },
   {
-    fullName : 'Bessie Cooper',
+    fullName: 'Bessie Cooper',
     visitType: "Sick Visit",
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'BC',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'BC',
     appointmentTime: '12:15 PM'
   },
   {
-    fullName : 'Cameron Williamson',
+    fullName: 'Cameron Williamson',
     visitType: "MRI",
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'CW',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'CW',
     appointmentTime: '12:30 PM'
   },
 ]
 
 export const ADDED_PATIENTS_LIST = [
   {
-    fullName : 'Andrew Williams',
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    fullName: 'Andrew Williams',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     dob: '20/02/1995'
   },
   {
-    fullName : 'Arlene McCoy',
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'AW',
+    fullName: 'Arlene McCoy',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'AW',
     dob: '2/4/1992'
   },
   {
-    fullName : 'Marvin McKinney',
-    imageUrl : '',
-    shortName : 'AW',
+    fullName: 'Marvin McKinney',
+    imageUrl: '',
+    shortName: 'AW',
     dob: '16/05/1989'
   },
   {
-    fullName : 'Zayn Wyatt',
-    imageUrl : EMERGENCY_LOG_PHLEPS,
-    shortName : 'AW',
+    fullName: 'Zayn Wyatt',
+    imageUrl: EMERGENCY_LOG_PHLEPS,
+    shortName: 'AW',
     dob: '04/02/1966'
   },
   {
-    fullName : 'Bessie Cooper',
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    fullName: 'Bessie Cooper',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     dob: '19/10/2001'
   },
 ]
@@ -3636,20 +3655,20 @@ export const areaChartOne = {
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    marginBottom: 0,
+    
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {
@@ -3665,7 +3684,8 @@ export const areaChartOne = {
     },
   },
   tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+    style : { 'zIndex' :'1' }
   },
   plotOptions: {
     area: {
@@ -3711,13 +3731,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {

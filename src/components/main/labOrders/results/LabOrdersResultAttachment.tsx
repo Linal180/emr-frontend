@@ -149,10 +149,18 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
     }
   }
 
+  const handleAttachmentNameEdit = (attachmentId: string, name: string) => {
+    if (attachmentId) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+      dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
+      setValue('attachmentName', name)
+    }
+  }
+
   const onSubmit: SubmitHandler<LabOrderResultsAttachmentInput> = async (values) => {
-    const { comments } = values ?? {}
+    const { comments, attachmentName } = values ?? {}
     attachmentId && await updateAttachmentData({
-      variables: { updateAttachmentInput: { id: attachmentId, comments } }
+      variables: { updateAttachmentInput: { id: attachmentId, comments, attachmentName: attachmentName } }
     })
   }
 
@@ -185,7 +193,23 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
 
                     return (
                       <TableRow key={id}>
-                        <TableCell scope="row">{attachmentName}</TableCell>
+                        <TableCell scope="row">
+                          <Box p={2} border={`1px solid ${GREY}`} borderRadius={4}>
+                            {isEdit && attachmentId === id ? <>
+                              <InputController
+                                fieldType="text"
+                                controllerName='attachmentName'
+                                controllerLabel={''}
+                                margin={'none'}
+                              />
+                            </>
+                              :
+                              <Box onClick={() => handleAttachmentNameEdit(id || '', attachmentName || '')}>
+                                <Typography variant='body2'>{attachmentName}</Typography>
+                              </Box>
+                            }
+                          </Box>
+                        </TableCell>
                         <TableCell scope="row">
                           <Box p={2} border={`1px solid ${GREY}`} borderRadius={4}>
                             {isEdit && attachmentId === id ? <>

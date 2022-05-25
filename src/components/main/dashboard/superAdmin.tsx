@@ -27,11 +27,12 @@ import {
   TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
 } from "../../../constants";
 
-
-
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-  const methods = useForm<dashboardInputsProps>({ mode: "all", defaultValues: { year: { id: "2022", name: "2022" } } });
+  const methods = useForm<dashboardInputsProps>({
+    mode: "all",
+    defaultValues: { year: { id: "2022", name: "2022" } }
+  });
   const { watch } = methods;
   const { year } = watch()
   const [{ practices }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
