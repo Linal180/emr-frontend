@@ -378,8 +378,8 @@ export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
   if (!!doctors) {
     for (let doctor of doctors) {
       if (doctor) {
-        const { doctor:doctorPatient } = doctor;
-        const {firstName, lastName, id} = doctorPatient ?? {}
+        const { doctor: doctorPatient } = doctor;
+        const { firstName, lastName, id } = doctorPatient ?? {}
         data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
@@ -1164,7 +1164,7 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
   return data;
 };
 
-export const filterSlots = (slots: SlotsPayload['slots'], date:  MaterialUiPickersDate | string) => {
+export const filterSlots = (slots: SlotsPayload['slots'], date: MaterialUiPickersDate | string) => {
   return slots
 }
 
@@ -1222,3 +1222,15 @@ export const practiceChartOptions = (chartBgColor: string) => {
     }
   }
 }
+
+export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id: item.toString(), name: item.toString() })
+    }
+  }
+
+  return result;
+};

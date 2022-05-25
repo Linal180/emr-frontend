@@ -160,11 +160,11 @@ const PatientDetailsComponent = (): JSX.Element => {
             <Box display="flex">
               <AreaChartComponent data={areaChartOne} />
               <AreaChartComponent data={areaChartTwo} />
-              <BarChart2Component year='2022'/>
+              <BarChart2Component year={{ id: '2022', name: '2022' }} />
             </Box>
 
             <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated}/>
+              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} />
 
               {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                 <Box display="flex" justifyContent="center" pb={12} pt={5}>

@@ -70,7 +70,7 @@ const PracticeFacilities: FC = (): JSX.Element => {
   return (
     <>
       {!loading &&
-        <Box className="practice-chart-container">
+        <Box className="barChart1Container">
           <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </Box>
       }

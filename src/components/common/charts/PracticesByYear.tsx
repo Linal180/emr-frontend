@@ -1,18 +1,18 @@
 // packages block
-import { FC, useState, useCallback, useEffect } from "react";
+import { FC, useState, useCallback, useEffect, useRef } from "react";
+import { pluck } from "underscore";
+import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts, { SeriesOptionsType } from "highcharts";
-import { Box } from "@material-ui/core";
+// constants, utils and graphql block
 import { WHITE } from "../../../theme";
 import { MONTHS } from "../../../constants";
 import { practiceChartOptions } from "../../../utils";
+import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useGetPracticeByYearLazyQuery } from "../../../generated/graphql";
-import { pluck } from "underscore";
 
-export interface PracticesByYearProps {
-  year: string;
-}
-const PracticesByYear: FC<PracticesByYearProps> = ({ year }): JSX.Element => {
+const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
+  const chartRef = useRef<HighchartsReact.RefObject>(null)
   const { chart, credits, plotOptions, title, tooltip, yAxis } = practiceChartOptions(WHITE)
 
   const [chartOptions, setChartOptions] = useState<any>({
@@ -33,7 +33,7 @@ const PracticesByYear: FC<PracticesByYearProps> = ({ year }): JSX.Element => {
   const [getPracticesByYear, { loading }] = useGetPracticeByYearLazyQuery({
     onError() { },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       const { getPracticesViaDate } = data || {};
 
       if (getPracticesViaDate) {
@@ -51,6 +51,8 @@ const PracticesByYear: FC<PracticesByYearProps> = ({ year }): JSX.Element => {
               ...chartOptions, series: { ...chartOptions.series, data: facilitiesCount },
               xAxis: { ...chartOptions.xAxis, categories: practiceName as string[] }
             })
+
+            chartRef.current?.chart.redraw()
           }
         }
       }
@@ -58,9 +60,13 @@ const PracticesByYear: FC<PracticesByYearProps> = ({ year }): JSX.Element => {
   });
 
   const fetchPracticesByYear = useCallback(async () => {
-    await getPracticesByYear({ 
-      variables: { practicesViaDateInputs: { date: parseInt(year) }}
-    })
+    try {
+      const { name: selectedYear } = year || {}
+
+      !!selectedYear && !!parseInt(selectedYear) && await getPracticesByYear({
+        variables: { practicesViaDateInputs: { date: parseInt(selectedYear) } }
+      })
+    } catch (error) { }
   }, [getPracticesByYear, year])
 
   useEffect(() => {
@@ -71,7 +77,7 @@ const PracticesByYear: FC<PracticesByYearProps> = ({ year }): JSX.Element => {
     <>
       {!loading &&
         <Box className="barChart2Container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+          <HighchartsReact ref={chartRef} highcharts={Highcharts} options={chartOptions} updateArgs={[true, true, true]} />
         </Box>
       }
     </>
