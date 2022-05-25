@@ -5,22 +5,24 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
+import {
+  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  RenderListOptionTypes,
-  SelectorOption, TableAlignType, UserFormType
+  RenderListOptionTypes, SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient, SlotsPayload,
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
+  AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -1164,7 +1166,29 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
   return data;
 };
 
-export const filterSlots = (slots: SlotsPayload['slots'], date: MaterialUiPickersDate | string) => {
+const isToday = (someDate: Date) => {
+  const today = new Date()
+
+  return someDate.getDate() === today.getDate() &&
+    someDate.getMonth() === today.getMonth() &&
+    someDate.getFullYear() === today.getFullYear()
+}
+
+const isTimePassed = (time: string) => new Date() < new Date(time);
+
+export const filterSlots = (slots: SlotsPayload['slots'], date: string | MaterialUiPickersDate) => {
+  let filteredSlots: SlotsPayload['slots'] = []
+
+  if (date && isToday(new Date(date.toString()))) {
+    filteredSlots = slots?.filter(slot => {
+      const { startTime } = slot || {}
+
+      return startTime && isTimePassed(startTime)
+    })
+
+    return filteredSlots;
+  }
+
   return slots
 }
 
