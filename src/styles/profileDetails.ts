@@ -22,7 +22,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     profileCard: {
       marginTop: 10,
-      padding: 30,
+      padding: 20,
       background: WHITE,
       borderRadius: 12,
       display: 'flex',
@@ -39,9 +39,9 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileImage: {
-      height: 120,
-      width: 120,
-      borderRadius: 12,
+      height: 80,
+      width: 80,
+      borderRadius: 8,
 
       "& > img": {
         height: '100%',
@@ -62,11 +62,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      minWidth: "20%",
+      // minWidth: "20%",
       alignItems: 'center',
       color: GREY_THREE,
       marginBottom: 8,
-      marginRight: 5,
+      marginRight: 30,
 
       "& svg": {
         display: 'block',
