@@ -225,6 +225,10 @@ export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
+export const getDateWithDay = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
 export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
@@ -1258,3 +1262,12 @@ export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
 
   return result;
 };
+
+export const getShortName = (name: string) => {
+  let shortName = '';
+  const parts = name.split(' ')
+
+  parts.map(part => shortName = shortName.concat(part.charAt(0)))
+
+  return shortName;
+}

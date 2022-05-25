@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useCallback, useEffect, useRef } from "react";
+import { FC, useState, useCallback, useEffect } from "react";
 import { pluck } from "underscore";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
@@ -12,7 +12,6 @@ import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useGetPracticeByYearLazyQuery } from "../../../generated/graphql";
 
 const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
-  const chartRef = useRef<HighchartsReact.RefObject>(null)
   const { chart, credits, plotOptions, title, yAxis } = practiceChartOptions(WHITE)
 
   const [chartOptions, setChartOptions] = useState<any>({
@@ -58,8 +57,6 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
               xAxis: { ...chartOptions.xAxis, categories: practiceName as string[] },
               series: [{ ...chartOptions.series, data: facilitiesCount, color: '#E9EDFA', name: '' }],
             })
-
-            chartRef.current?.chart.redraw()
           }
         }
       }
@@ -84,7 +81,7 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
     <>
       {!loading &&
         <Box className="barChart2Container">
-          <HighchartsReact ref={chartRef} highcharts={Highcharts} options={chartOptions} updateArgs={[true, true, true]} />
+          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </Box>
       }
     </>

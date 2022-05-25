@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
   Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
@@ -12,22 +12,57 @@ import BarChart6Component from "../../common/charts/barChart6";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 // svgs block, style
 import history from "../../../history";
+import { getShortName } from "../../../utils";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
 import {
-  EMERGENCY_ACCESS, FACILITIES_LIST, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
+  EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
   EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED, PAGE_LIMIT
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+  const [facilities, setFacilities] = useState<FacilitiesPayload['facilities']>([])
+
+  const [findAllFacility] = useFindAllFacilityListLazyQuery({
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllFacility } = data
+
+        if (findAllFacility) {
+          const { facilities } = findAllFacility
+
+          !!facilities && setFacilities(facilities as FacilitiesPayload['facilities'])
+        }
+      }
+    }
+  })
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => { };
   const search = (query: string) => { }
+
+  const fetchFacilities = useCallback(async () => {
+    try {
+      await findAllFacility({
+        variables: {
+          facilityInput: { paginationOptions: { limit: PAGE_LIMIT, page: 1 } }
+        }
+      })
+    } catch (error) { }
+  }, [findAllFacility])
+
+  useEffect(() => {
+    fetchFacilities()
+  }, [fetchFacilities])
 
   return (
     <>
@@ -78,17 +113,19 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            {FACILITIES_LIST.map((item) => {
-              return (
+            {facilities?.map((facility) => {
+              const { name } = facility || {}
+
+              return name && (
                 <Box px={2} mb={3} display='flex' alignItems='center'>
                   <Box
                     bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
                     justifyContent="center" alignItems="center"
                   >
-                    <Typography variant="h6">{item.shortName}</Typography>
+                    <Typography variant="h6">{getShortName(name)}</Typography>
                   </Box>
 
-                  <Typography variant="body1">{item.fullName}</Typography>
+                  <Typography variant="body1">{name}</Typography>
                 </Box>
               )
             })}
