@@ -124,7 +124,8 @@ const Routes: FC = (): JSX.Element => {
       {isSuperAdmin(roles) ?
         <PrivateRoute exact path={DASHBOARD_ROUTE} component={SuperDashboard} />
         : isPracticeAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
-        : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> : null
+        : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
+        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
       }
 
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} permission={USER_PERMISSIONS.createPractice} />
