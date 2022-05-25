@@ -2495,6 +2495,10 @@ export const DUMMY_APPOINTMENTS = [
   },
 ];
 
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
+
 export const DUMMY_ENCOUNTERS = [
   {
     id: 1,
@@ -2513,10 +2517,6 @@ export const DUMMY_ENCOUNTERS = [
     hospitalName : 'Community Hospital'
   }  
 ];
-
-export enum ITEM_MODULE {
-  snoMedCode = 'SnoMedCode'
-}
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',

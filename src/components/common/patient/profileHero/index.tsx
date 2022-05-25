@@ -232,7 +232,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         </Box>
 
         {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
           :
           <Box flex={1}>
             <Box display='flex'>
