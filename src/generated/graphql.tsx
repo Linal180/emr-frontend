@@ -78,6 +78,13 @@ export type AccessUserPayload = {
   userId?: Maybe<Scalars['String']>;
 };
 
+export type ActiveInactivePracticesPayload = {
+  __typename?: 'ActiveInactivePracticesPayload';
+  activePractices?: Maybe<Scalars['Int']>;
+  inactivePractices?: Maybe<Scalars['Int']>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -1029,6 +1036,20 @@ export type FacilitiesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FacilitiesUser = {
+  __typename?: 'FacilitiesUser';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  usersCount?: Maybe<Scalars['Float']>;
+};
+
+export type FacilitiesUserWithRoles = {
+  __typename?: 'FacilitiesUserWithRoles';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  users?: Maybe<Array<UserWithRoles>>;
+};
+
 export type Facility = {
   __typename?: 'Facility';
   billingAddress?: Maybe<Array<BillingAddress>>;
@@ -1161,6 +1182,7 @@ export type FormElement = {
   placeholder?: Maybe<Scalars['String']>;
   required?: Maybe<Scalars['Boolean']>;
   sectionId: Scalars['String'];
+  tableName?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -2512,6 +2534,7 @@ export type PermissionsPayload = {
 
 export type Practice = {
   __typename?: 'Practice';
+  active?: Maybe<Scalars['Boolean']>;
   champus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
@@ -2527,6 +2550,24 @@ export type Practice = {
   upin?: Maybe<Scalars['String']>;
 };
 
+export type PracticeFacilities = {
+  __typename?: 'PracticeFacilities';
+  facility?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type PracticeFacilitiesPayload = {
+  __typename?: 'PracticeFacilitiesPayload';
+  practiceFacilities?: Maybe<Array<PracticeFacilities>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type PracticeFacilitiesUsersInputs = {
+  practiceId?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<PracticeRolesTypes>>;
+};
+
 export type PracticeInput = {
   paginationOptions: PaginationInput;
   practiceName?: Maybe<Scalars['String']>;
@@ -2538,6 +2579,12 @@ export type PracticePayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The type is assigned */
+export enum PracticeRolesTypes {
+  Doctor = 'DOCTOR',
+  Patient = 'PATIENT'
+}
+
 /** The facility practice type assigned type */
 export enum PracticeType {
   Clinic = 'CLINIC',
@@ -2545,11 +2592,56 @@ export enum PracticeType {
   Lab = 'LAB'
 }
 
+export type PracticeUsers = {
+  __typename?: 'PracticeUsers';
+  facilities?: Maybe<Array<FacilitiesUser>>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  userCount?: Maybe<Scalars['Float']>;
+};
+
+export type PracticeUsersPayload = {
+  __typename?: 'PracticeUsersPayload';
+  practiceUsers?: Maybe<Array<PracticeUsers>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type PracticeUsersWithRoles = {
+  __typename?: 'PracticeUsersWithRoles';
+  facilities?: Maybe<Array<FacilitiesUserWithRoles>>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  userCount?: Maybe<Scalars['Float']>;
+};
+
+export type PracticeUsersWithRolesPayload = {
+  __typename?: 'PracticeUsersWithRolesPayload';
+  practiceUsers?: Maybe<Array<PracticeUsersWithRoles>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type PracticesPayload = {
   __typename?: 'PracticesPayload';
   pagination?: Maybe<PaginationPayload>;
   practices?: Maybe<Array<Maybe<Practice>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PracticesViaDate = {
+  __typename?: 'PracticesViaDate';
+  count?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type PracticesViaDateInputs = {
+  date: Scalars['Float'];
+};
+
+export type PracticesViaDatePayload = {
+  __typename?: 'PracticesViaDatePayload';
+  practices?: Maybe<Array<PracticesViaDate>>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 /** The patient's problem severity type assigned */
@@ -2595,6 +2687,7 @@ export type Query = {
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
+  getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
@@ -2615,6 +2708,10 @@ export type Query = {
   getPatientProblem: PatientProblemPayload;
   getPatientVital: PatientVitalPayload;
   getPractice: PracticePayload;
+  getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
+  getPracticesByYear: PracticesViaDatePayload;
+  getPracticesFacilities: PracticeFacilitiesPayload;
+  getPracticesUser: PracticeUsersPayload;
   getPublicForm: FormPayload;
   getRole: RolePayload;
   getSchedule: SchedulePayload;
@@ -2862,6 +2959,16 @@ export type QueryGetPatientVitalArgs = {
 
 export type QueryGetPracticeArgs = {
   getPractice: GetPractice;
+};
+
+
+export type QueryGetPracticeFacilitiesUsersWithRolesArgs = {
+  practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
+};
+
+
+export type QueryGetPracticesByYearArgs = {
+  practicesViaDateInputs: PracticesViaDateInputs;
 };
 
 
@@ -4135,6 +4242,12 @@ export enum UserStatus {
   Active = 'ACTIVE',
   Deactivated = 'DEACTIVATED'
 }
+
+export type UserWithRoles = {
+  __typename?: 'UserWithRoles';
+  count?: Maybe<Scalars['Float']>;
+  role?: Maybe<Scalars['String']>;
+};
 
 export type UsersFormsElements = {
   __typename?: 'UsersFormsElements';

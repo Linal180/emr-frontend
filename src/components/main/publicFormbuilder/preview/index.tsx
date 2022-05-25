@@ -1,24 +1,25 @@
 //packages block
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress, Card } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 //components block
 import InputController from '../../../common/FormFieldController';
 import CardComponent from '../../../common/CardComponent';
-//interfaces & constants
+import ViewDataLoader from '../../../common/ViewDataLoader';
 import Alert from '../../../common/Alert';
+//interfaces, reducers, utils, constants
 import { ParamsType } from '../../../../interfacesTypes'
 import { getUserFormFormattedValues, parseColumnGrid } from '../../../../utils';
-import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
+import { useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
-  getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED, CONTACT_SUPPORT_TEAM
+  PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { GREY } from '../../../../theme';
-import ViewDataLoader from '../../../common/ViewDataLoader';
+import { State, Action, initialState, externalFormBuilderReducer, ActionType } from '../../../../reducers/externalFormBuilderReducer';
 //constants
 const initialValues = {};
 //component
@@ -26,13 +27,9 @@ const PublicFormPreview = () => {
   //hooks
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
-  //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
-  const [formName, setFormName] = useState('')
-  const [uploadImage, setUploadImage] = useState(false)
-  const [isActive, setIsActive] = useState(false)
-  const [loader, setLoader] = useState(true)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
+  const { isActive, loader, uploadImage, formName, formValues } = state
   const { handleSubmit } = methods;
   //mutation
   const [getForm] = useGetPublicFormLazyQuery({
@@ -49,17 +46,16 @@ const PublicFormPreview = () => {
 
           if (form && status && status === 200) {
             const { name, layout, isActive } = form;
+            const { sections } = layout;
 
             if (isActive) {
-              setIsActive(true)
-              name && setFormName(name);
-              const { sections } = layout;
-              sections?.length > 0 && setFormValues(sections)
+              dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
+              name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
+              sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
             }
             else {
-              setIsActive(false)
+              dispatch({ type: ActionType.SET_ACTIVE, isActive: false })
             }
-
           }
         }
       }
@@ -92,7 +88,7 @@ const PublicFormPreview = () => {
 
   const submitHandler = async (values: any) => {
     if (id) {
-      setUploadImage(true)
+      dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
       const formValues = await getUserFormFormattedValues(values, id);
       const data = {
         FormId: id,
@@ -102,7 +98,8 @@ const PublicFormPreview = () => {
         SubmitterId: "",
         userFormElements: formValues
       }
-      setUploadImage(false)
+      dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: false })
+
       createUserForm({ variables: { createUserFormInput: data } })
     }
   };
@@ -110,7 +107,7 @@ const PublicFormPreview = () => {
   const getFormHandler = useCallback(async () => {
     try {
       await getForm({ variables: { getForm: { id } } })
-      setLoader(false)
+      dispatch({ type: ActionType.SET_LOADER, loader: false })
     } catch (error) { }
   }, [id, getForm])
 
