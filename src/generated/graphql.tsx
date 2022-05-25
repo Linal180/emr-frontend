@@ -78,6 +78,13 @@ export type AccessUserPayload = {
   userId?: Maybe<Scalars['String']>;
 };
 
+export type ActiveInactivePracticesPayload = {
+  __typename?: 'ActiveInactivePracticesPayload';
+  activePractices?: Maybe<Scalars['Int']>;
+  inactivePractices?: Maybe<Scalars['Int']>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -1027,6 +1034,20 @@ export type FacilitiesPayload = {
   facilities?: Maybe<Array<Maybe<Facility>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type FacilitiesUser = {
+  __typename?: 'FacilitiesUser';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  usersCount?: Maybe<Scalars['Float']>;
+};
+
+export type FacilitiesUserWithRoles = {
+  __typename?: 'FacilitiesUserWithRoles';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  users?: Maybe<Array<UserWithRoles>>;
 };
 
 export type Facility = {
@@ -2512,6 +2533,7 @@ export type PermissionsPayload = {
 
 export type Practice = {
   __typename?: 'Practice';
+  active?: Maybe<Scalars['Boolean']>;
   champus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
@@ -2527,6 +2549,24 @@ export type Practice = {
   upin?: Maybe<Scalars['String']>;
 };
 
+export type PracticeFacilities = {
+  __typename?: 'PracticeFacilities';
+  facility?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type PracticeFacilitiesPayload = {
+  __typename?: 'PracticeFacilitiesPayload';
+  practiceFacilities?: Maybe<Array<PracticeFacilities>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type PracticeFacilitiesUsersInputs = {
+  practiceId?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<PracticeRolesTypes>>;
+};
+
 export type PracticeInput = {
   paginationOptions: PaginationInput;
   practiceName?: Maybe<Scalars['String']>;
@@ -2538,6 +2578,12 @@ export type PracticePayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The type is assigned */
+export enum PracticeRolesTypes {
+  Doctor = 'DOCTOR',
+  Patient = 'PATIENT'
+}
+
 /** The facility practice type assigned type */
 export enum PracticeType {
   Clinic = 'CLINIC',
@@ -2545,11 +2591,56 @@ export enum PracticeType {
   Lab = 'LAB'
 }
 
+export type PracticeUsers = {
+  __typename?: 'PracticeUsers';
+  facilities?: Maybe<Array<FacilitiesUser>>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  userCount?: Maybe<Scalars['Float']>;
+};
+
+export type PracticeUsersPayload = {
+  __typename?: 'PracticeUsersPayload';
+  practiceUsers?: Maybe<Array<PracticeUsers>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type PracticeUsersWithRoles = {
+  __typename?: 'PracticeUsersWithRoles';
+  facilities?: Maybe<Array<FacilitiesUserWithRoles>>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  userCount?: Maybe<Scalars['Float']>;
+};
+
+export type PracticeUsersWithRolesPayload = {
+  __typename?: 'PracticeUsersWithRolesPayload';
+  practiceUsers?: Maybe<Array<PracticeUsersWithRoles>>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type PracticesPayload = {
   __typename?: 'PracticesPayload';
   pagination?: Maybe<PaginationPayload>;
   practices?: Maybe<Array<Maybe<Practice>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PracticesViaDate = {
+  __typename?: 'PracticesViaDate';
+  count?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type PracticesViaDateInputs = {
+  date: Scalars['Float'];
+};
+
+export type PracticesViaDatePayload = {
+  __typename?: 'PracticesViaDatePayload';
+  practices?: Maybe<Array<PracticesViaDate>>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 /** The patient's problem severity type assigned */
@@ -2595,6 +2686,7 @@ export type Query = {
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
+  getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
@@ -2615,6 +2707,10 @@ export type Query = {
   getPatientProblem: PatientProblemPayload;
   getPatientVital: PatientVitalPayload;
   getPractice: PracticePayload;
+  getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
+  getPracticesByYear: PracticesViaDatePayload;
+  getPracticesFacilities: PracticeFacilitiesPayload;
+  getPracticesUser: PracticeUsersPayload;
   getPublicForm: FormPayload;
   getRole: RolePayload;
   getSchedule: SchedulePayload;
@@ -2862,6 +2958,16 @@ export type QueryGetPatientVitalArgs = {
 
 export type QueryGetPracticeArgs = {
   getPractice: GetPractice;
+};
+
+
+export type QueryGetPracticeFacilitiesUsersWithRolesArgs = {
+  practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
+};
+
+
+export type QueryGetPracticesByYearArgs = {
+  practicesViaDateInputs: PracticesViaDateInputs;
 };
 
 
@@ -4136,6 +4242,12 @@ export enum UserStatus {
   Deactivated = 'DEACTIVATED'
 }
 
+export type UserWithRoles = {
+  __typename?: 'UserWithRoles';
+  count?: Maybe<Scalars['Float']>;
+  role?: Maybe<Scalars['String']>;
+};
+
 export type UsersFormsElements = {
   __typename?: 'UsersFormsElements';
   FormsElementsId: Scalars['String'];
@@ -4523,6 +4635,23 @@ export type FindAllServiceListQueryVariables = Exact<{
 
 
 export type FindAllServiceListQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, services?: Array<{ __typename?: 'Service', id: string, name: string, duration: string } | null | undefined> | null | undefined } };
+
+export type GetPracticeFacilitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPracticeFacilitiesQuery = { __typename?: 'Query', getPracticesFacilities: { __typename?: 'PracticeFacilitiesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined } | null | undefined, practiceFacilities?: Array<{ __typename?: 'PracticeFacilities', id?: string | null | undefined, name?: string | null | undefined, facility?: number | null | undefined }> | null | undefined } };
+
+export type GetPracticeUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPracticeUserQuery = { __typename?: 'Query', getPracticesUser: { __typename?: 'PracticeUsersPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined } | null | undefined, practiceUsers?: Array<{ __typename?: 'PracticeUsers', id?: string | null | undefined, name?: string | null | undefined, userCount?: number | null | undefined }> | null | undefined } };
+
+export type GetPracticeByYearQueryVariables = Exact<{
+  practicesViaDateInputs: PracticesViaDateInputs;
+}>;
+
+
+export type GetPracticeByYearQuery = { __typename?: 'Query', getPracticesByYear: { __typename?: 'PracticesViaDatePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined } | null | undefined, practices?: Array<{ __typename?: 'PracticesViaDate', id?: number | null | undefined, name?: string | null | undefined, count?: number | null | undefined }> | null | undefined } };
 
 export type FindAllDoctorQueryVariables = Exact<{
   doctorInput: DoctorInput;
@@ -7359,6 +7488,130 @@ export function useFindAllServiceListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FindAllServiceListQueryHookResult = ReturnType<typeof useFindAllServiceListQuery>;
 export type FindAllServiceListLazyQueryHookResult = ReturnType<typeof useFindAllServiceListLazyQuery>;
 export type FindAllServiceListQueryResult = Apollo.QueryResult<FindAllServiceListQuery, FindAllServiceListQueryVariables>;
+export const GetPracticeFacilitiesDocument = gql`
+    query GetPracticeFacilities {
+  getPracticesFacilities {
+    response {
+      status
+    }
+    practiceFacilities {
+      id
+      name
+      facility
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeFacilitiesQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeFacilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeFacilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeFacilitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPracticeFacilitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetPracticeFacilitiesQuery, GetPracticeFacilitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeFacilitiesQuery, GetPracticeFacilitiesQueryVariables>(GetPracticeFacilitiesDocument, options);
+      }
+export function useGetPracticeFacilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeFacilitiesQuery, GetPracticeFacilitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeFacilitiesQuery, GetPracticeFacilitiesQueryVariables>(GetPracticeFacilitiesDocument, options);
+        }
+export type GetPracticeFacilitiesQueryHookResult = ReturnType<typeof useGetPracticeFacilitiesQuery>;
+export type GetPracticeFacilitiesLazyQueryHookResult = ReturnType<typeof useGetPracticeFacilitiesLazyQuery>;
+export type GetPracticeFacilitiesQueryResult = Apollo.QueryResult<GetPracticeFacilitiesQuery, GetPracticeFacilitiesQueryVariables>;
+export const GetPracticeUserDocument = gql`
+    query GetPracticeUser {
+  getPracticesUser {
+    response {
+      status
+    }
+    practiceUsers {
+      id
+      name
+      userCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeUserQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPracticeUserQuery(baseOptions?: Apollo.QueryHookOptions<GetPracticeUserQuery, GetPracticeUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeUserQuery, GetPracticeUserQueryVariables>(GetPracticeUserDocument, options);
+      }
+export function useGetPracticeUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeUserQuery, GetPracticeUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeUserQuery, GetPracticeUserQueryVariables>(GetPracticeUserDocument, options);
+        }
+export type GetPracticeUserQueryHookResult = ReturnType<typeof useGetPracticeUserQuery>;
+export type GetPracticeUserLazyQueryHookResult = ReturnType<typeof useGetPracticeUserLazyQuery>;
+export type GetPracticeUserQueryResult = Apollo.QueryResult<GetPracticeUserQuery, GetPracticeUserQueryVariables>;
+export const GetPracticeByYearDocument = gql`
+    query GetPracticeByYear($practicesViaDateInputs: PracticesViaDateInputs!) {
+  getPracticesByYear(practicesViaDateInputs: $practicesViaDateInputs) {
+    response {
+      status
+    }
+    practices {
+      id
+      name
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeByYearQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeByYearQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeByYearQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeByYearQuery({
+ *   variables: {
+ *      practicesViaDateInputs: // value for 'practicesViaDateInputs'
+ *   },
+ * });
+ */
+export function useGetPracticeByYearQuery(baseOptions: Apollo.QueryHookOptions<GetPracticeByYearQuery, GetPracticeByYearQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeByYearQuery, GetPracticeByYearQueryVariables>(GetPracticeByYearDocument, options);
+      }
+export function useGetPracticeByYearLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeByYearQuery, GetPracticeByYearQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeByYearQuery, GetPracticeByYearQueryVariables>(GetPracticeByYearDocument, options);
+        }
+export type GetPracticeByYearQueryHookResult = ReturnType<typeof useGetPracticeByYearQuery>;
+export type GetPracticeByYearLazyQueryHookResult = ReturnType<typeof useGetPracticeByYearLazyQuery>;
+export type GetPracticeByYearQueryResult = Apollo.QueryResult<GetPracticeByYearQuery, GetPracticeByYearQueryVariables>;
 export const FindAllDoctorDocument = gql`
     query FindAllDoctor($doctorInput: DoctorInput!) {
   findAllDoctor(doctorInput: $doctorInput) {

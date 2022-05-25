@@ -79,7 +79,7 @@ const PieChart2Component: FC = (): JSX.Element => {
   });
 
   return (
-    <Box className="pieChart2Container">
+    <Box className="barChart1Container">
       <HighchartsReact highcharts={Highcharts} options={pieChart2} />
     </Box>
   )

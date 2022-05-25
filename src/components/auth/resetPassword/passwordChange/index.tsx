@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Button, Container } from "@material-ui/core";
 // styles, context, history
-import { PasswordChangeIcon } from '../../assets/svgs';
-import { useNetworkStyles } from "../../styles/networkStyles";
-import { LOGIN_ROUTE, PASSWORD_CHANGE_HEADING_TEXT, PASSWORD_CHANGE_TEXT, SIGN_IN } from '../../constants';
+import { PasswordChangeIcon } from '../../../../assets/svgs';
+import { useNetworkStyles } from "../../../../styles/networkStyles";
+import { LOGIN_ROUTE, PASSWORD_CHANGE_HEADING_TEXT, PASSWORD_CHANGE_TEXT, SIGN_IN } from '../../../../constants';
 
 const PasswordChange: FC = (): JSX.Element => {
   const classes = useNetworkStyles();
