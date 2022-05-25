@@ -12,7 +12,6 @@ import HighchartsReact from "highcharts-react-official";
 import { PRACTICES } from "../../../constants";
 import { PieChartProps } from "../../../interfacesTypes";
 
-
 const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
   const [pieChart1] = useState(
     {

@@ -650,6 +650,17 @@ background: #E5EAEE;
   transform: translate(-60px, 221px) scale(1.5) !important;
 }
 
+.areaChartContainer > div > div
+{
+  height: 300px !important;
+}
+
+.areaChartContainer svg
+{
+  height: 230px !important;
+  transform: scale(1.5) !important;
+}
+
 .bloodPressure-measurement{
     position: absolute;
     left: 30px;
