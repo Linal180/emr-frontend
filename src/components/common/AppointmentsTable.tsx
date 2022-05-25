@@ -20,7 +20,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
+  getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin
 } from "../../utils";
 import {
@@ -230,7 +230,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
 
                       <TableCell scope="row">
-                        {getFormattedDate(scheduleStartDateTime || '')}
+                        {getDateWithDay(scheduleStartDateTime || '')}
                       </TableCell>
 
                       <TableCell scope="row">

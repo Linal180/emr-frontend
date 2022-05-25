@@ -79,7 +79,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
 
   return (
     <>
-      <Box m={2}>
+      <Box m={1.5}>
         <Grid container spacing={3}>
           {attachments &&
             attachments.map((attachment: Attachment) => {
@@ -102,7 +102,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid item md={12} xs={12}>
+          <Grid item md={12} xs={12} style={{padding: 0}}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {buttonText || UPLOAD}

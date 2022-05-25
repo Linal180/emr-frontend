@@ -225,6 +225,10 @@ export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
+export const getDateWithDay = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
 export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
@@ -474,9 +478,9 @@ export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
   if (!!icdCodes) {
     for (let icdCode of icdCodes) {
       if (icdCode) {
-        const { id, code } = icdCode;
+        const { id, code, description } = icdCode;
 
-        code && data.push({ value: id, label: code })
+        code && data.push({ value: id, label: `${code} | ${description}` })
       }
     }
   }
@@ -830,7 +834,7 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
-export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm") => {
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm a") => {
   if (!time) return '';
   return moment(time, "hh:mm").format(format)
 };
@@ -1258,3 +1262,12 @@ export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
 
   return result;
 };
+
+export const getShortName = (name: string) => {
+  let shortName = '';
+  const parts = name.split(' ')
+
+  parts.map(part => shortName = shortName.concat(part.charAt(0)))
+
+  return shortName;
+}
