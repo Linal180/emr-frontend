@@ -394,6 +394,12 @@ export type ResetPasswordInputs = {
   repeatPassword: string;
 };
 
+export type ChangePasswordInputs = {
+  oldPassword: string;
+  password: string;
+  repeatPassword: string;
+};
+
 export type updatePasswordInputs = ResetPasswordInputs & {
   oldPassword: string;
 };
