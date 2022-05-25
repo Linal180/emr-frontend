@@ -11,10 +11,7 @@ import {
 } from "../utils";
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
-  FormInitialType,
-  TestOption,
-  SpecimenTypeOption,
-  LabOrdersResultOption,
+  FormInitialType, TestOption, SpecimenTypeOption, LabOrdersResultOption,
 } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
@@ -28,16 +25,12 @@ import {
   UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
 } from "../generated/graphql";
 
-
 // regex
-export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
-export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
-export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
-export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
+export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
@@ -46,11 +39,13 @@ export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
 export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -2515,6 +2510,10 @@ export const DUMMY_ENCOUNTERS = [
   }  
 ];
 
+export enum ITEM_MODULE {
+  snoMedCode = 'SnoMedCode'
+}
+
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
   ICDCodes = 'ICDCodes',
@@ -3459,32 +3458,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "7", name: '7 Days', time: 604800 * 1000 },
 ]
 
-export const FACILITIES_LIST = [
-  {
-    shortName: "NH",
-    fullName: "National Hospital",
-  },
-  {
-    shortName: "EC",
-    fullName: "Eye Care Center",
-  },
-  {
-    shortName: "MS",
-    fullName: "Medix Premium Care Services",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-  {
-    shortName: "CC",
-    fullName: "City Medical Center",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-]
 export const EMERGENCY_LOG_LIST = [
   {
     shortName: 'AW',
