@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import IdleTimer from 'react-idle-timer'
 import { Redirect, useLocation } from "react-router";
 import { Box, CssBaseline } from "@material-ui/core";
@@ -11,12 +11,12 @@ import history from "../../history";
 import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
-import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, ROUTE } from "../../constants";
+import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE } from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
-  const [timeout] = useState<number>(LOCK_TIME_OUT)
+  const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)
   const { user, userPermissions, isLoggedIn } = useContext(AuthContext);
-  const { email } = user || {}
+  const { email, autoLogoutTime } = user || {}
   const { pathname } = useLocation()
 
   const onIdle = () => {
@@ -25,6 +25,12 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     sessionStorage.setItem(ROUTE, route);
     history.push(LOCK_ROUTE);
   }
+
+  useMemo(() => {
+    const autoTIme = MAPPED_AUTO_LOGOUT?.find(({ id }) => id === autoLogoutTime)
+    const { time } = autoTIme || {}
+    time && setTimeout(time)
+  }, [autoLogoutTime])
 
   const AppLayout = () => <>
     <CssBaseline />

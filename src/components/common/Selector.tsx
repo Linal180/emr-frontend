@@ -9,7 +9,7 @@ import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur,onSelect
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
@@ -49,7 +49,10 @@ const Selector: FC<SelectorProps> = ({
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
-            onChange={(_, data) => field.onChange(data)}
+            onChange={(_, data) => {
+              field.onChange(data)
+              onSelect && onSelect(data.id)
+            }}
           />
         );
       }}
