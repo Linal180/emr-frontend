@@ -11,7 +11,7 @@ import {
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   RenderListOptionTypes, SelectorOption, TableAlignType, UserFormType
@@ -1166,7 +1166,6 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
   return data;
 };
 
-
 const isToday = (someDate: Date) => {
   const today = new Date()
 
@@ -1203,3 +1202,59 @@ export const LightTooltip = withStyles((theme: Theme) => ({
     width: 320
   },
 }))(Tooltip);
+
+export const practiceChartOptions = (chartBgColor: string) => {
+  return {
+    credits: { enabled: false },
+    chart: {
+      type: 'column',
+      styledMode: false,
+      backgroundColor: chartBgColor,
+      marginBottom: 40,
+    },
+
+    title: { text: '' },
+
+    yAxis: {
+      className: 'highcharts-color-0',
+      min: 0,
+      title: { text: '' }
+    },
+
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true,
+    },
+
+    plotOptions: {
+      series: {
+        states: {
+          hover: { enabled: false }
+        }
+      },
+
+      column: {
+        pointPadding: 0.4,
+        borderWidth: 0,
+        color: WHITE,
+        borderRadius: 4,
+      }
+    }
+  }
+}
+
+export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id: item.toString(), name: item.toString() })
+    }
+  }
+
+  return result;
+};

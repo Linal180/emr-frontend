@@ -1480,3 +1480,7 @@ export interface AppointmentListProps {
 export interface PatientProviderSelectorProps {
   patientId: string;
 }
+
+export interface dashboardInputsProps {
+  year: SelectorOption
+}
