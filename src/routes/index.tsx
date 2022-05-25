@@ -39,15 +39,19 @@ import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { SuperDashboard } from "../pages/main/dashboard/Super";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
+import { AddLabOrders } from "../pages/main/labOrders/addOrder";
 import LabResults from "../pages/main/reports/labResultsListing";
+import { EditLabOrders } from "../pages/main/labOrders/editOrder";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
+import { FacilityDashboard } from "../pages/main/dashboard/Facility";
 import { PracticeDashboard } from "../pages/main/dashboard/Practice";
 import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
 import { TwoFaAuthentication } from "../pages/main/2FaAuthentication";
+import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
@@ -71,7 +75,7 @@ import { AppointmentConfirmation } from "../pages/main/publicAppointments/confir
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { PublicFormPreview, PublicFormFail, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
 // constants, contexts and utils
-import { isSuperAdmin } from "../utils";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../utils";
 import { AuthContext } from "../context";
 import {
   STAFF_ROUTE, DOCTORS_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, CANCEL_APPOINTMENT,
@@ -87,9 +91,6 @@ import {
   FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, EDIT_LAB_ORDERS_ROUTE, ADD_LAB_ORDERS_RESULTS_ROUTE,
   ROOT_ROUTE
 } from "../constants";
-import { EditLabOrders } from "../pages/main/labOrders/editOrder";
-import { AddLabOrders } from "../pages/main/labOrders/addOrder";
-import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -122,7 +123,9 @@ const Routes: FC = (): JSX.Element => {
 
       {isSuperAdmin(roles) ?
         <PrivateRoute exact path={DASHBOARD_ROUTE} component={SuperDashboard} />
-        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
+        : isPracticeAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
+        : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
+        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
       }
 
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} permission={USER_PERMISSIONS.createPractice} />

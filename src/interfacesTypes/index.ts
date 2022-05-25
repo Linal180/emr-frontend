@@ -31,6 +31,7 @@ import {
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
   Maybe, PatientVitals,
 } from "../generated/graphql";
+import { BooleanLiteral } from "typescript";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -178,6 +179,7 @@ export interface ConfirmationTypes extends DialogTypes {
   description?: string;
   handleDelete: () => void;
   learnMoreText?: string
+  aboutToText?: string
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {
@@ -1429,6 +1431,10 @@ export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
 
+export interface CalenderProps{
+  showHeader?: boolean;
+}
+
 export type RenderListOptionTypes = SnoMedCodesPayload['snoMedCodes']
 export type AchAccountType = 'personal' | 'business'
 
@@ -1459,9 +1465,10 @@ export interface CheckboxControllerProps extends IControlLabel {
   autoFocus?: boolean
 }
 export interface AppointmentListProps {
-  appointments: AppointmentsPayload['appointments'];
-  type: Appointmentstatus;
+  appointments?: AppointmentsPayload['appointments'];
+  type?: Appointmentstatus;
   reload?: Function;
+  showHeader?: boolean;
 };
 
 export interface PatientProviderSelectorProps {

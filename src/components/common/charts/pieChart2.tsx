@@ -1,3 +1,8 @@
+/* This pie chart shows:
+* Medical Billing claims
+* and is used in PRACTICE-ADMIN & FACILITY-ADMIN
+*/
+
 // packages block
 import { FC, useState } from "react";
 import Highcharts from "highcharts";
@@ -58,7 +63,7 @@ const PieChart2Component: FC = (): JSX.Element => {
       showInLegend: false,
       type: 'pie',
       name: 'ClaimRatio',
-      innerSize: '85%',
+      innerSize: '75%',
       data: [
         ['active', 50],
         ['inactive', 30],
@@ -74,7 +79,7 @@ const PieChart2Component: FC = (): JSX.Element => {
   });
 
   return (
-    <Box className="chartContainer">
+    <Box className="pieChart2Container">
       <HighchartsReact highcharts={Highcharts} options={pieChart2} />
     </Box>
   )

@@ -1,3 +1,8 @@
+/* This bar chart shows:
+* Total number of Facilities against each Practice
+* and is for SUPER-ADMIN only
+*/
+
 // packages block
 import { FC, useState } from "react";
 import HighchartsReact from "highcharts-react-official";
