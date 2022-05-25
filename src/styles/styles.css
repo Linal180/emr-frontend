@@ -607,3 +607,55 @@ background: #E5EAEE;
 .highcharts-container {
   width:auto !important
 }
+.card-chart{
+  background: #FFFFFF;
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09);
+  border-radius: 8px;
+  position: relative;
+}
+.areaBloodPressureChart .highcharts-container {
+  transform: translate(-60px, 221px) scale(1.5) !important;
+}
+
+.bloodPressure-measurement{
+    position: absolute;
+    left: 30px;
+    top: 135px;
+    color: #CA6B6E;
+    z-index: 1;
+}
+.bloodPressure-measurement .measure-unit{
+  font-size: 14px;
+  color: #464E5F;
+}
+.heartRate-measurement{
+  position: absolute;
+  left: 30px;
+  top: 135px;
+  color: #1BC5BD;
+  z-index: 1;
+}
+.heartRate-measurement .measure-unit{
+  font-size: 14px;
+  color: #464E5F;
+  margin-left: 10px;
+}
+.measure-frequency{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 15px;
+  color: #ffff;
+  padding: 4px 8px  4px 8px;
+  border-radius: 4px;
+}
+.primary{
+  background-color: #03CC83;
+}
+.danger{
+  background-color: #DD1010;
+}
+.card-box-shadow{
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09) !important;
+  border-radius: 8px !important;
+}

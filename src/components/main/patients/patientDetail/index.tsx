@@ -2,12 +2,10 @@
 import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
-import { Box, Button, Tab } from "@material-ui/core";
-// import { SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
 import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './Insurance';
-// import Selector from "../../../common/Selector";
 import AreaChartComponent from './charts';
 import CareTeamComponent from './careTeam';
 import PortalTable from '../../../common/patient/portal';
@@ -18,11 +16,14 @@ import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import BarChart2Component from '../../../common/charts/barChart2';
 import PatientProfileHero from '../../../common/patient/profileHero';
+import EnounterComponent from '../../patients/patientDetail/encounters';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 // constants, history, styling block
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery } from '../../../../generated/graphql';
+import {
+  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery
+} from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
@@ -35,11 +36,13 @@ import {
 import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
+  BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
+  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE, HEART_RATE_VALUE,
 } from "../../../../constants";
 import { getFormattedDate } from '../../../../utils';
+import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 
 const PatientDetailsComponent = (): JSX.Element => {
-  // const widgetId = "widget-menu";
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles();
   const [{ openDelete, tabValue, patientData }, dispatch] =
@@ -81,17 +84,23 @@ const PatientDetailsComponent = (): JSX.Element => {
           if (pagination) {
             const { totalPages } = pagination
 
-            totalPages && appointmentDispatch({ type: appointmentActionType.SET_TOTAL_PAGES_COMING, totalPagesComing: totalPages })
+            totalPages && appointmentDispatch({
+              type: appointmentActionType.SET_TOTAL_PAGES_COMING, totalPagesComing: totalPages
+            })
           }
 
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
-            upComing: appointments?.filter(appointment => new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) > new Date()) as AppointmentsPayload['appointments']
+            upComing: appointments?.filter(appointment =>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
+              new Date()) as AppointmentsPayload['appointments']
           });
 
           appointmentDispatch({
             type: appointmentActionType.SET_COMPLETED,
-            completed: appointments?.filter(appointment => new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) < new Date()) as AppointmentsPayload['appointments']
+            completed: appointments?.filter(appointment =>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) <
+              new Date()) as AppointmentsPayload['appointments']
           });
         }
       }
@@ -156,39 +165,109 @@ const PatientDetailsComponent = (): JSX.Element => {
             }
           />
 
+          <Box p={1} />
+
           <TabPanel value="1">
-            <Box display="flex">
-              <AreaChartComponent data={areaChartOne} />
-              <AreaChartComponent data={areaChartTwo} />
-              <BarChart2Component />
-            </Box>
+            <Grid container spacing={3}>
+              <Grid item md={3} sm={12} xs={12}>
+                <Box width="100%" className='card-chart'>
+                  <Box display="flex" justifyContent="space-between" p={3} >
+                    <BloodPressureIcon />
+                    <Box>
+                      <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
+                      <Typography component="span" align='right'>
+                        {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
+                      </Typography>
+                    </Box>
+                  </Box>
 
-            <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-              <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated}/>
+                  <Box className='bloodPressure-measurement'>
+                    <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
+                      <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
+                    </Typography>
 
-              {((!upComingLoading && upComing?.length === 0) || upComingError) && (
-                <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                  <NoDataFoundComponent />
+                    <Typography className='measure-frequency primary' component="span">
+                      {BLOOD_PRESSURE_RANGES.Normal}
+                    </Typography>
+                  </Box>
+
+                  <Box className='areaBloodPressureChart'>
+                    <AreaChartComponent data={areaChartOne} />
+                  </Box>
                 </Box>
-              )}
+              </Grid>
 
-              {totalPagesComing > 1 &&
-                <Box my={2} display="flex" justifyContent="flex-end">
-                  <Pagination
-                    count={totalPagesComing}
-                    shape="rounded"
-                    variant="outlined"
-                    page={pageCompleted}
-                    onChange={handleComingChange}
-                  />
+              <Grid item md={3} xs={12} sm={12}>
+                <Box width="100%" className='card-chart'>
+                  <Box display="flex" justifyContent="space-between" p={3}>
+                    <HeartRateIcon />
+
+                    <Box>
+                      <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
+
+                      <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                    </Box>
+                  </Box>
+
+                  <Box className='heartRate-measurement'>
+                    <Typography variant="h2">{HEART_RATE_VALUE}
+                      <span className='measure-unit'>{HEART_RATE_UNIT}</span>
+                    </Typography>
+
+                    <Typography className='measure-frequency danger' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                  </Box>
+
+                  <Box className='areaBloodPressureChart'>
+                    <AreaChartComponent data={areaChartTwo} />
+                  </Box>
                 </Box>
-              }
-            </CardComponent>
+              </Grid>
 
-            <Box display="flex">
-              <CareTeamComponent />
-              <Box width="50%" mt={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Card>
+                  <BarChart2Component />
+                </Card>
+              </Grid>
+            </Grid>
 
+            <Box p={2} />
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={6}>
+                <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
+                  <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} />
+
+                  {((!upComingLoading && upComing?.length === 0) || upComingError) && (
+                    <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                      <NoDataFoundComponent />
+                    </Box>
+                  )}
+
+                  {totalPagesComing > 1 &&
+                    <Box my={2} display="flex" justifyContent="flex-end">
+                      <Pagination
+                        count={totalPagesComing}
+                        shape="rounded"
+                        variant="outlined"
+                        page={pageCompleted}
+                        onChange={handleComingChange}
+                      />
+                    </Box>
+                  }
+                </CardComponent>
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
+                <EnounterComponent />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={6}>
+                <CareTeamComponent />
+              </Grid>
+
+              <Grid item xs={12} sm={12} md={6}>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
                   <AppointmentList appointments={completed} type={Appointmentstatus.Completed} />
 
@@ -210,9 +289,8 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Box>
-            </Box>
-
+              </Grid>
+            </Grid>
           </TabPanel>
 
           <TabPanel value="2">
