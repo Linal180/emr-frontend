@@ -39,8 +39,8 @@ export const documentVerificationFormStyles = makeStyles({
 
   cameraIcon: {
     cursor: "pointer",
-    top: 10,
-    right: 40,
+    top: 3,
+    right: 36,
     position: "absolute",
   }
 });
