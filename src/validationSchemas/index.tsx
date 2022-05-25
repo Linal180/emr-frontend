@@ -559,8 +559,7 @@ export const updatePracticeSchema = yup.object({
 
 export const updatePasswordSchema = yup.object({
   ...passwordAndRepeatPasswordSchema,
-  oldPassword: yup.string().required(requiredMessage(OLD_PASSWORD))
-    .matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
+  oldPassword: yup.string().required(requiredMessage(OLD_PASSWORD)),
 })
 
 export const roleSchema = yup.object({

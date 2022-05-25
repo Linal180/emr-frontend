@@ -30,7 +30,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps
+  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps, filterSlots
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
@@ -187,8 +187,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
         if (slots) {
           dispatch({
-            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
+            type: ActionType.SET_AVAILABLE_SLOTS, 
+            availableSlots: filterSlots(slots, appStartDate ? appStartDate : date) as SlotsPayload['slots']
           })
+
         } else { dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] }); }
       }
     }
