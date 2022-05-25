@@ -1,3 +1,8 @@
+/* This pie chart shows:
+* Total number of Active and In-Active Practices
+* and is for SUPER-ADMIN only
+*/
+
 // packages block
 import { FC, useState } from "react";
 import Highcharts from "highcharts";

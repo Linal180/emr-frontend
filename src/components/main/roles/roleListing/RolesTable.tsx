@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, useState, useEffect, useCallback } from "react";
+import { ChangeEvent, useState, useEffect, useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
@@ -13,10 +13,16 @@ import { TrashNewIcon } from "../../../../assets/svgs";
 import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
-import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION } from "../../../../constants";
+import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION, SYSTEM_ROLES } from "../../../../constants";
 import { RolesTableProps } from "../../../../interfacesTypes";
+import { AuthContext } from "../../../../context";
+import { pluck } from "underscore";
 
-const RolesTable = ({customRole=false}:RolesTableProps) => {
+const RolesTable = ({ customRole = false }: RolesTableProps) => {
+  const { user } = useContext(AuthContext)
+  const { roles: currentRole } = user || {}
+  const userRoles = pluck(currentRole || [], 'role')
+  const isSuperAdmin = userRoles.includes(SYSTEM_ROLES.SuperAdmin)
   const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
@@ -114,7 +120,7 @@ const RolesTable = ({customRole=false}:RolesTableProps) => {
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(DESCRIPTION)}
-               {customRole && renderTh(ACTION, "center")} 
+                {customRole && renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
 
@@ -138,13 +144,13 @@ const RolesTable = ({customRole=false}:RolesTableProps) => {
                       </TableCell>
 
                       <TableCell scope="row">{description || N_A}</TableCell>
-                      {customRole && 
+                      {customRole &&
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                             <IconButton
                               color="primary"
-                              disabled={!customRole || false}
-                              className={customRole ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
+                              disabled={!isSuperAdmin}
+                              className={isSuperAdmin ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
                               onClick={() => onDelete(id || '')}>
                               <TrashNewIcon />
                             </IconButton>

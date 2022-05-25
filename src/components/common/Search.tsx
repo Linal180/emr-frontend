@@ -13,7 +13,6 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
   const [open, setOpen] = useState(false);
 
   const handleTooltipClose = () => setOpen(false);
-
   const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {

@@ -14,7 +14,7 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import BarChart2Component from '../../../common/charts/barChart2';
+import BarChart2Component from '../../../common/charts/PracticesByYear';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import EnounterComponent from '../../patients/patientDetail/encounters';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
@@ -225,7 +225,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Grid item md={6} sm={12} xs={12}>
                 <Card>
-                  <BarChart2Component />
+                  <BarChart2Component year={{ id: '2022', name: '2022' }} />
                 </Card>
               </Grid>
             </Grid>

@@ -4,36 +4,34 @@ import { useParams } from "react-router-dom";
 import { Box, Avatar, CircularProgress, Button, Typography, Menu } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
-import MediaCards from "../../AddMedia/MediaCards";
 import { PatientNoteModal } from './NoteModal'
+import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
-import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES
-} from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon } from "../../../../assets/svgs";
+import {
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon
+} from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
-  const classes = useProfileDetailsStyles();
-  const { id } = useParams<ParamsType>();
   const noteRef = useRef(null)
+  const { id } = useParams<ParamsType>();
+  const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-
+  const { patientData, isNoteOpen, patientNoteOpen } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-
-  const { patientData, isNoteOpen, patientNoteOpen } = patientState
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -231,7 +229,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       </Box>
 
       {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
+        <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
         :
         <Box flex={1}>
           <Box display='flex'>
@@ -241,47 +239,48 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                   {`${firstName} ${lastName}`}
                 </Box>
 
-                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
-                      <Box>{item.icon}</Box>
-                      <Typography variant="body1">{item.description}</Typography>
-                    </Box>
-                  ))}
-                  <div ref={noteRef} className={classes.profileNoteInfoItem} onClick={(event) => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget })}>
-                    <Box><NotesCardIcon /></Box>
-                    <Box display="flex" alignItems="center">
-                      <Typography variant="body1">{NOTES}</Typography>
-                      <RedCircleIcon />
-                    </Box>
-                  </div>
-                  <Menu
-                    getContentAnchorEl={null}
-                    anchorEl={isNoteOpen}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                    id={'patient-notes'}
-                    keepMounted
-                    transformOrigin={{ vertical: "top", horizontal: "left" }}
-                    open={!!isNoteOpen}
-                    onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
-                    className={classes.noteDropdown}
-                  >
-                    <PatientNoteModal
-                      patientStates={patientState}
-                      dispatcher={dispatch}
-                    />
-                  </Menu>
-                </Box>
                 <Typography variant="body2">({patientRecord})</Typography>
               </Box>
 
               <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                 {ProfileDetails.map((item, index) => (
-                  <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                  <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`}
+                    className={classes.profileInfoItem}
+                  >
                     <Box>{item.icon}</Box>
                     <Typography variant="body1">{item.description}</Typography>
                   </Box>
                 ))}
+
+                <div ref={noteRef}
+                  className={`${classes.profileNoteInfoItem} pointer-cursor`}
+                  onClick={(event) => dispatch({
+                    type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
+                  })}
+                >
+                  <Box><NotesCardIcon /></Box>
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="body1">{NOTES}</Typography>
+                    <RedCircleIcon />
+                  </Box>
+                </div>
+
+                <Menu
+                  getContentAnchorEl={null}
+                  anchorEl={isNoteOpen}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  id={'patient-notes'}
+                  keepMounted
+                  transformOrigin={{ vertical: "top", horizontal: "left" }}
+                  open={!!isNoteOpen}
+                  onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+                  className={classes.noteDropdown}
+                >
+                  <PatientNoteModal
+                    patientStates={patientState}
+                    dispatcher={dispatch}
+                  />
+                </Menu>
               </Box>
 
               <Box display="flex" pt={1}>

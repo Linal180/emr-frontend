@@ -1,46 +1,49 @@
 // packages block
 import { FC, Reducer, useCallback, useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Card, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
 //components block
 import Alert from '../../../common/Alert';
+import InputController from '../../../../controller';
+import TableLoader from '../../../common/TableLoader';
 import MediaCards from '../../../common/AddMedia/MediaCards';
 import ConfirmationModal from '../../../common/ConfirmationModal';
-// interfaces, graphql, constants block
-import { GeneralFormProps, LabOrderResultsAttachmentInput, ParamsType } from "../../../../interfacesTypes";
-import {
-  ACTION, ADD_RESULT_FILE, ATTACHMENT_TITLES, COMMENTS, DELETE_LAB_ORDER_RESULT_DESCRIPTION, LAB_ORDER_RESULT,
-  LAB_RESULTS_LIMIT, NOT_FOUND_EXCEPTION, RESULT_FILE_NAME, USER_NOT_FOUND_EXCEPTION_MESSAGE,
-} from '../../../../constants';
-import {
-  AttachmentMetaDataType, AttachmentsPayload, AttachmentType, useGetAttachmentsByLabOrderLazyQuery, useRemoveAttachmentMediaMutation,
-  useUpdateAttachmentDataMutation
-} from '../../../../generated/graphql';
-import history from '../../../../history';
-import { Action, ActionType, initialState, mediaReducer, State } from '../../../../reducers/mediaReducer';
-import { renderTh } from '../../../../utils';
-import TableLoader from '../../../common/TableLoader';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+// interfaces, graphql, constants block
+import { GREY } from '../../../../theme';
+import history from '../../../../history';
+import { renderTh } from '../../../../utils';
 import { SaveIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { useTableStyles } from '../../../../styles/tableStyles';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import InputController from '../../../../controller';
-import { GREY } from '../../../../theme';
+import {
+  Action, ActionType, initialState, mediaReducer, State
+} from '../../../../reducers/mediaReducer';
+import {
+  GeneralFormProps, LabOrderResultsAttachmentInput, ParamsType
+} from "../../../../interfacesTypes";
+import {
+  ACTION, ADD_RESULT_FILE, ATTACHMENT_TITLES, COMMENTS, DELETE_LAB_ORDER_RESULT_DESCRIPTION,
+  LAB_RESULTS_LIMIT, NOT_FOUND_EXCEPTION, RESULT_FILE_NAME, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  LAB_ORDER_RESULT,
+} from '../../../../constants';
+import {
+  AttachmentMetaDataType, AttachmentsPayload, AttachmentType, useGetAttachmentsByLabOrderLazyQuery,
+  useRemoveAttachmentMediaMutation, useUpdateAttachmentDataMutation
+} from '../../../../generated/graphql';
 
 const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
   const { orderNum, patientId } = useParams<ParamsType>();
   const [openDelete, setOpenDelete] = useState<boolean>(false)
+
   const [labOrderAttachments, setLabOrderAttachments] = useState<AttachmentsPayload['attachments']>([])
   const [labResultId, setLabResultId] = useState<string>('')
-
-  const methods = useForm<LabOrderResultsAttachmentInput>({
-    mode: "all",
-  });
+  const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all" });
 
   const { handleSubmit, setValue } = methods
-
-  const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [removeAttachmentMedia, { loading: removeAttachmentLoading }] = useRemoveAttachmentMediaMutation({
     onError({ message }) {
@@ -252,7 +255,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
           </Box>
         </form>
       </FormProvider>
-    </Card >
+    </Card>
   );
 };
 

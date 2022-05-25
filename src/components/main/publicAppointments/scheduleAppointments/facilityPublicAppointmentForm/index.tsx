@@ -13,6 +13,7 @@ import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import AppointmentDatePicker from "../AppointmentDatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
+import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 // constants block
 import history from "../../../../../history";
 import { EMRLogo } from "../../../../../assets/svgs";
@@ -35,7 +36,6 @@ import {
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
   NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, DAYS,
 } from "../../../../../constants";
-import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
