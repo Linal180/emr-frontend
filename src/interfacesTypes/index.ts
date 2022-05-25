@@ -31,7 +31,6 @@ import {
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
   Maybe, PatientVitals,
 } from "../generated/graphql";
-import { BooleanLiteral } from "typescript";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -357,6 +356,7 @@ export interface SelectorProps {
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function
+  onSelect?: Function
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -484,6 +484,7 @@ export interface PickerProps {
   error?: string;
   isRequired?: boolean;
   clearable?: boolean
+  disableFuture?: boolean
 }
 
 export interface TimePickerProps {
@@ -892,6 +893,11 @@ export interface LabOrderResultsAttachmentInput {
   attachmentId: string
   attachmentName: string
   comments?: string
+};
+
+export interface LabOrderInput {
+  orderNum: string
+  status?: SelectorOption
 };
 
 export interface LabOrdersResultSubFormProps {

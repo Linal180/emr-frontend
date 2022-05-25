@@ -32,7 +32,14 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
       }
       
       testObservations{
+        createdAt
         doctorsSignOff
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
       }
       
       appointment{

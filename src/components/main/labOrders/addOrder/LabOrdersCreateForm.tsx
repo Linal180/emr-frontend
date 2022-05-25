@@ -123,9 +123,7 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
 
-                <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                  {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
-                </Button>
+
               </Box>
 
               <Grid container spacing={3}>
@@ -184,7 +182,7 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
                       </Grid>
 
                       <Grid item md={3} sm={12} xs={12}>
-                        <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} />
+                        <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
                       </Grid>
 
                       <Grid item md={3} sm={12} xs={12}>
@@ -219,6 +217,10 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
               {ADD_ANOTHER_TEST}
             </Button>
           </Box>
+
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+            {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
+          </Button>
         </form>
       </FormProvider>
     </>
