@@ -30,7 +30,7 @@ query GetPracticeUser {
 
 # Get Practice count by year with practice-name
 query GetPracticeByYear($practicesViaDateInputs: PracticesViaDateInputs!) {
-  getPracticesViaDate(practicesViaDateInputs: $practicesViaDateInputs){
+  getPracticesByYear(practicesViaDateInputs: $practicesViaDateInputs){
     response {
       status
     }

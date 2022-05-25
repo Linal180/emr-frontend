@@ -1411,7 +1411,7 @@ export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export const YEARS = [2017, 2018, 2019, 2020, 2022]
+export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,

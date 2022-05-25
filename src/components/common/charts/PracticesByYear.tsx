@@ -13,10 +13,16 @@ import { useGetPracticeByYearLazyQuery } from "../../../generated/graphql";
 
 const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
   const chartRef = useRef<HighchartsReact.RefObject>(null)
-  const { chart, credits, plotOptions, title, tooltip, yAxis } = practiceChartOptions(WHITE)
+  const { chart, credits, plotOptions, title, yAxis } = practiceChartOptions(WHITE)
 
   const [chartOptions, setChartOptions] = useState<any>({
-    credits, chart, title, yAxis, tooltip, plotOptions,
+    credits, chart, title, yAxis, plotOptions,
+
+    tooltip: {
+      valueDecimals: 0,
+      valueSuffix: ' practices',
+      pointFormat: '{point.y}'
+    },
 
     xAxis: {
       categories: MONTHS,
@@ -34,10 +40,10 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
     onError() { },
 
     async onCompleted(data) {
-      const { getPracticesViaDate } = data || {};
+      const { getPracticesByYear } = data || {};
 
-      if (getPracticesViaDate) {
-        const { response, practices } = getPracticesViaDate
+      if (getPracticesByYear) {
+        const { response, practices } = getPracticesByYear
 
         if (response) {
           const { status } = response
@@ -48,8 +54,9 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
             facilitiesCount = (pluck(practices, 'count') || []) as number[]
 
             setChartOptions({
-              ...chartOptions, series: { ...chartOptions.series, data: facilitiesCount },
-              xAxis: { ...chartOptions.xAxis, categories: practiceName as string[] }
+              ...chartOptions,
+              xAxis: { ...chartOptions.xAxis, categories: practiceName as string[] },
+              series: [{ ...chartOptions.series, data: facilitiesCount, color: '#E9EDFA', name: '' }],
             })
 
             chartRef.current?.chart.redraw()

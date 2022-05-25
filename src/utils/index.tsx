@@ -1203,7 +1203,7 @@ export const practiceChartOptions = (chartBgColor: string) => {
         '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
-      useHTML: true
+      useHTML: true,
     },
 
     plotOptions: {
