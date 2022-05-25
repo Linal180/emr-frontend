@@ -13,7 +13,7 @@ import { WHITE } from "../../../theme";
 import { SettingsIcon, ShieldIcon } from "../../../assets/svgs";
 import { useProfileDetailsStyles } from "../../../styles/profileDetails";
 import {
-  CHANGE_PASSWORD, CONFIRM_PASSWORD, GENERAL, NEW_PASSWORD, OLD_PASSWORD, PROFILE_GENERAL_MENU_ITEMS,
+  CHANGE_PASSWORD, CONFIRM_PASSWORD, GENERAL, NEW_PASSWORD, OLD_PASSWORD, OLD_PASSWORD_DID_NOT_MATCH, PROFILE_GENERAL_MENU_ITEMS,
   PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY, SET_PASSWORD_SUCCESS, USER_SETTINGS
 } from "../../../constants";
 import { updatePasswordSchema } from '../../../validationSchemas';
@@ -29,10 +29,11 @@ const ChangePasswordComponent = (): JSX.Element => {
     mode: "all",
     resolver: yupResolver(updatePasswordSchema),
   });
+  const { handleSubmit, reset } = methods;
 
   const [updatePassword, { loading }] = useUpdatePasswordMutation({
-    onError({ message }) {
-      Alert.error(message)
+    onError() {
+      Alert.error(OLD_PASSWORD_DID_NOT_MATCH)
     },
 
     onCompleted({ updatePassword }) {
@@ -40,10 +41,10 @@ const ChangePasswordComponent = (): JSX.Element => {
       const { status } = response || {}
       if (status === 200) {
         Alert.success(SET_PASSWORD_SUCCESS);
+        reset()
       }
     }
   })
-  const { handleSubmit, formState: { errors } } = methods;
 
   const onSubmit: SubmitHandler<ChangePasswordInputs> = async (data) => {
     const { password, oldPassword } = data;
@@ -98,7 +99,6 @@ const ChangePasswordComponent = (): JSX.Element => {
           <CardComponent cardTitle={CHANGE_PASSWORD}>
             <Box p={2} mb={2}>
               <FormProvider {...methods}>
-                {JSON.stringify(errors)}
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Grid container spacing={3}>
                     <Grid item md={8} sm={12} xs={12}>
