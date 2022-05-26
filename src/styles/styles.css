@@ -553,7 +553,7 @@ body .MuiTabPanel-root {
 
 .barChart1Container text,
 .barChart3Container text ,
-.barChart4Container text,
+.practice-users-chart-container text,
 .barChart5Container text   
 {
   color: #ffffff !important;
@@ -573,20 +573,20 @@ body .MuiTabPanel-root {
 .barChart1Container .highcharts-axis-labels text, 
 .barChart2Container .highcharts-axis-labels text,
 .barChart3Container .highcharts-axis-labels text,
-.barChart4Container .highcharts-axis-labels text,
+.practice-users-chart-container .highcharts-axis-labels text,
 .barChart5Container .highcharts-axis-labels text,
 .barChart6Container .highcharts-axis-labels text
 {
   font-weight: 600 !important;
 }
 
-.barChart4Container .highcharts-grid-line,
+.practice-users-chart-container .highcharts-grid-line,
 .barChart5Container .highcharts-grid-line
 {
   display: none !important;
 }
 
-.barChart4Container .highcharts-axis,
+.practice-users-chart-container .highcharts-axis,
 .barChart5Container .highcharts-axis,
 .barChart1Container .highcharts-axis
 {

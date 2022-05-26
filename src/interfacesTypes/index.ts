@@ -1490,3 +1490,7 @@ export interface PatientProviderSelectorProps {
 export interface dashboardInputsProps {
   year: SelectorOption
 }
+
+export interface PracticeChartProps {
+  practiceId: string;
+}

@@ -1,0 +1,22 @@
+# Gets practice facility users with roles count
+query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!){
+  getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: $practiceFacilitiesUsersInputs){
+    response {
+      status
+    }
+    
+    practiceUsers {
+      id
+      name
+
+      facilities {
+        name
+
+        users {
+          count
+          role
+        }
+      }
+    }
+  }
+}
