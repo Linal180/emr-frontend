@@ -12,19 +12,21 @@ const ChartCards: FC = (): JSX.Element => {
   const [isVitals] = useState<boolean>(true)
 
   return (
-    <Grid container spacing={3}>
-      <Grid item md={4} sm={12} xs={12}>
-        <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
-      </Grid>
+    <>
+      <Grid container spacing={3}>
+        <Grid item md={4} sm={12} xs={12}>
+          <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
+        </Grid>
 
-      <Grid item md={4} sm={12} xs={12}>
-        <AllergyList  />
-      </Grid>
+        <Grid item md={4} sm={12} xs={12}>
+          <AllergyList />
+        </Grid>
 
-      <Grid item md={4} sm={12} xs={12}>
-        <ProblemList />
+        <Grid item md={4} sm={12} xs={12}>
+          <ProblemList />
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 export default ChartCards;
