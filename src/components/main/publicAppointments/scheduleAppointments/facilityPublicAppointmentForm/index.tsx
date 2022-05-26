@@ -1,57 +1,50 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer } from "react";
+import { Reducer, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } from "@material-ui/core";
+import { Box, Button, Checkbox,  FormControlLabel, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
-import AppointmentDatePicker from "../AppointmentDatePicker";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
 import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 // constants block
 import history from "../../../../../history";
+import { WHITE, GREY } from "../../../../../theme";
 import { EMRLogo } from "../../../../../assets/svgs";
 import { FacilityContext } from '../../../../../context';
-import { WHITE, GREY } from "../../../../../theme";
 import { externalAppointmentSchema } from "../../../../../validationSchemas";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
-import { getCurrentTimestamps, getStandardTime, getTimestampsForDob } from "../../../../../utils";
+import { getCurrentTimestamps, getTimestampsForDob } from "../../../../../utils";
 import {
-  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
+  ContactType, Genderidentity, PaymentType, useCreateExternalAppointmentMutation,
   useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
   MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, APPOINTMENT_PAYMENT,
-  AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, DAYS,
+  FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
+  BOOK_YOUR_APPOINTMENT,
 } from "../../../../../constants";
+import AppointmentSlots from "../../../../common/AppointmentSlots";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { id: facilityId } = useParams<ParamsType>();
   const { fetchAllServicesList } = useContext(FacilityContext)
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { facility, availableSlots, currentDate, offset, agreed } = state;
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
+  const [{ facility, agreed, date }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(externalAppointmentSchema)
   });
-  const { reset, setValue, handleSubmit, watch } = methods;
-  const {
-    serviceId: { id: selectedService } = {},
-  } = watch();
+  const { reset, handleSubmit } = methods;
 
   const [getFacility] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -75,29 +68,6 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
           }
         }
       } catch (error) { }
-    }
-  });
-
-  const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] })
-    },
-
-    onCompleted(data) {
-      const { getSlots } = data || {}
-
-      if (getSlots) {
-        const { slots } = getSlots;
-
-        slots ?
-          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots })
-          :
-          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
-      }
     }
   });
 
@@ -129,24 +99,6 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
       :
       history.push(PATIENT_APPOINTMENT_FAIL)
   }, [facilityId, getFacility])
-
-  useEffect(() => {
-    if (selectedService && date) {
-      setValue('scheduleEndDateTime', '')
-      setValue('scheduleStartDateTime', '')
-      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
-      const currentDay = new Date(date).getDay()
-
-      getSlots({
-        variables: {
-          getSlots: {
-            offset, currentDate: date.toString(), serviceId: selectedService, facilityId,
-            day: days[currentDay]
-          }
-        }
-      })
-    }
-  }, [date, facilityId, getSlots, offset, selectedService, currentDate, setValue])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
@@ -180,14 +132,6 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
         Alert.error(FACILITY_NOT_FOUND)
     }
   }
-
-  const handleSlot = (slot: Slots) => {
-    if (slot) {
-      const { startTime, endTime } = slot;
-      startTime && setValue('scheduleStartDateTime', startTime)
-      endTime && setValue('scheduleEndDateTime', endTime)
-    }
-  };
 
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
@@ -294,36 +238,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
                   </Box>
                 </Grid>
 
-                <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
-                  <CardComponent cardTitle="Available Slots">
-                    <AppointmentDatePicker date={date} setDate={setDate} />
-
-                    <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
-                      <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
-                    </Box>
-
-                    {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-                      <ul className={classes.timeSlots}>
-                        {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-                          const { startTime, endTime } = slot || {}
-
-                          return (
-                            <li key={index} onClick={() => handleSlot(slot)}>
-                              <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
-
-                              <label htmlFor={`timeSlot-${index}`}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                {getStandardTime(new Date(endTime || '').getTime().toString())}
-                              </label>
-                            </li>
-                          )
-                        }) : (
-                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
-                        )}
-                      </ul>
-                    )}
-                  </CardComponent>
-                </Grid>
+                <AppointmentSlots facilityId={facilityId} />
               </Grid>
             </Box>
           </form>

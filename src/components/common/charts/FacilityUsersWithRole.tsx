@@ -32,8 +32,8 @@ const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Elem
     },
 
     yAxis: {
-      min: 10,
-      max: 1000,
+      min: 5,
+      max: 100,
 
       title: {
         text: 'Rainfall (mm)'
