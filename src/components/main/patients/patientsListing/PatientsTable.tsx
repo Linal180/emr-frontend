@@ -71,6 +71,8 @@ const PatientsTable: FC = (): JSX.Element => {
           const { totalPages } = pagination
           typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+      } else {
+        dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
       }
     }
   });
@@ -158,6 +160,8 @@ const PatientsTable: FC = (): JSX.Element => {
     setValue("location", { id: '', name: "" })
     setValue('provider', { id: '', name: "" })
   }
+  console.log("==============", error);
+
 
   return (
     <>
@@ -291,7 +295,6 @@ const PatientsTable: FC = (): JSX.Element => {
               )}
             </TableBody>
           </Table>
-
           {((!(loading) && !patients?.length) || (error)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />

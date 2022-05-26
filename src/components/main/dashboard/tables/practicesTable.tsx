@@ -52,6 +52,9 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
             dispatcher({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
           }
         }
+      } else {
+        dispatch({ type: ActionType.SET_PRACTICES, practices: [] })
+        dispatcher({ type: ActionType.SET_PRACTICES, practices: [] })
       }
     }
   });
