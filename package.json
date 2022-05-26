@@ -52,7 +52,7 @@
     "react-idle-timer": "^4.6.4",
     "react-phone-input-2": "^2.14.0",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "react-select": "^5.1.0",
     "react-signature-canvas": "^1.0.5",
     "smartystreets-javascript-sdk": "^1.12.0",

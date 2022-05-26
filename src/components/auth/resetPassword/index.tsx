@@ -6,8 +6,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Box, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
-import PasswordChange from "../../passwordChange";
 import AuthLayout from "../AuthLayout";
+import PasswordChange from "./passwordChange";
 import ResetPasswordController from "./ResetPasswordController";
 // context, constants, graphql, interfaces, utils and styles block
 import history from "../../../history";

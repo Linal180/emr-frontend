@@ -88,7 +88,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                   <FormControl fullWidth margin="normal"
                     className={classes.toggleContainer}
                   >
-                    <InputLabel shrink>{REQUIRED_TEXT}</InputLabel>
+                    <InputLabel shrink className='topMargin'>{REQUIRED_TEXT}</InputLabel>
                     <label className="toggle-main">
                       <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES_TEXT}</Box>
 

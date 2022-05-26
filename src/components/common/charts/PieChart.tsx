@@ -1,3 +1,8 @@
+/* This pie chart shows:
+* Total number of Active and In-Active Practices
+* and is for SUPER-ADMIN only
+*/
+
 // packages block
 import { FC, useState } from "react";
 import Highcharts from "highcharts";
@@ -6,7 +11,6 @@ import HighchartsReact from "highcharts-react-official";
 // constant
 import { PRACTICES } from "../../../constants";
 import { PieChartProps } from "../../../interfacesTypes";
-
 
 const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
   const [pieChart1] = useState(

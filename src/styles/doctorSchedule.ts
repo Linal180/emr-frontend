@@ -52,6 +52,14 @@ export const useDoctorScheduleStyles = makeStyles(() =>
       "& svg": {
         maxWidth: 16
       }
-    }
+    },
+
+    addProvider: {
+      border: `1px dashed ${BLUE_THREE}`,
+      padding: 20,
+      background: WHITE_SIX,
+      borderRadius: 6,
+      cursor: 'pointer',
+    },
   })
 );

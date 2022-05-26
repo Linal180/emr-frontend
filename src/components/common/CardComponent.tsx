@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, IconButton, Box } from "@material-ui/cor
 // interfaces/types block
 import { CardComponentType } from "../../interfacesTypes";
 
-const CardComponent: FC<CardComponentType> = ({ children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon }): JSX.Element => (
-  <Card>
+const CardComponent: FC<CardComponentType> = ({ 
+  children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon 
+}): JSX.Element => (
+  <Card className="card-box-shadow">
     <CardHeader
       action={
         hasEdit && (
@@ -18,6 +20,7 @@ const CardComponent: FC<CardComponentType> = ({ children, cardTitle, isEdit, has
                     <Save />
                   </IconButton>
                 )}
+                
                 <IconButton onClick={onEditClick} aria-label="settings">
                   <ArrowBack />
                 </IconButton>

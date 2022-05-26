@@ -1,16 +1,22 @@
+/* This bar chart shows:
+* Total number of Appointments against each Facility
+* and is for PRACTICE-ADMIN only
+*/
+
 // packages block
 import { FC, useState } from "react";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 
-const BarChart1Component: FC = (): JSX.Element => {
-  const [barChart1] = useState({
+const BarChart6Component: FC = (): JSX.Element => {
+  const [barChart6] = useState({
     credits: { enabled: false },
+
     chart: {
       type: 'column',
       styledMode: false,
-      backgroundColor: "#21E1D8",
+      backgroundColor: "#FF6A7A",
       marginBottom: 40,
     },
 
@@ -25,9 +31,10 @@ const BarChart1Component: FC = (): JSX.Element => {
         'Mercy University Hospital',
         'Cavan General Hospital',
         'County Hospital',
-        'Horizon Eye Care Center',
-        'Best Hospital'
+
       ],
+
+      crosshair: false,
     },
 
     yAxis: {
@@ -66,16 +73,16 @@ const BarChart1Component: FC = (): JSX.Element => {
 
     series: [{
       name: '',
-      data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6],
+      data: [49.9, 71.5, 106.4, 129.2, 144.0],
       color: '#ffffff',
     }]
   });
 
   return (
     <Box className="barChart1Container">
-      <HighchartsReact highcharts={Highcharts} options={barChart1} />
+      <HighchartsReact highcharts={Highcharts} options={barChart6} />
     </Box>
   )
 };
 
-export default BarChart1Component;
+export default BarChart6Component;

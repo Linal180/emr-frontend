@@ -1,30 +1,36 @@
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
 // components block
-import ViewDataLoader from "../../ViewDataLoader";
+import TextLoader from "../../TextLoader";
+import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
+import {
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon
+} from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
-  const classes = useProfileDetailsStyles();
+  const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
-  const [{ patientData }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [open, setOpen] = useState<boolean>(false)
+  const classes = useProfileDetailsStyles();
+  const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const { patientData, isNoteOpen, patientNoteOpen } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -73,6 +79,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         const { getPatient } = data;
 
         if (getPatient) {
+
           const { patient } = getPatient;
           const { attachments } = patient || {}
           const profilePicture = attachments && attachments.filter(attachment =>
@@ -149,6 +156,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       icon: LocationIcon(),
       description: selfCurrentLocation
     },
+    {
+      icon: LocationIcon(),
+      description: selfCurrentLocation
+    },
   ]
 
   let providerName = ""
@@ -188,36 +199,43 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     // },
   ]
 
+  useEffect(() => {
+    patientNoteOpen && dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: noteRef.current })
+  }, [patientNoteOpen, dispatch])
+
   const isLoading = getPatientLoading || getAttachmentLoading
 
   return (
     <>
-      {isLoading ? (<ViewDataLoader rows={3} columns={6} />) : (
-        <Box className={classes.profileCard}>
-          <Box key={attachmentId} display="flex" alignItems="center">
-            <Box pl={1} pr={3.75} position="relative">
-              {getAttachmentLoading ?
-                <Avatar variant="square" className={classes.profileImage}>
-                  <CircularProgress size={20} color="inherit" />
-                </Avatar>
-                :
-                <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-              }
 
-              <MediaCards
-                title={ATTACHMENT_TITLES.ProfilePicture}
-                reload={() => fetchPatient()}
-                notDescription={true}
-                moduleType={AttachmentType.Patient}
-                itemId={id}
-                imageSide={attachmentUrl}
-                attachmentData={attachmentData || undefined}
-              />
-            </Box>
+      <Box className={` ${classes.profileCard} card-box-shadow`}>
+        <Box key={attachmentId} display="flex" alignItems="center">
+          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
+            {getAttachmentLoading ?
+              <Avatar variant="square" className={classes.profileImage}>
+                <CircularProgress size={20} color="inherit" />
+              </Avatar>
+              :
+              <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+            }
+
+            <MediaCards
+              title={ATTACHMENT_TITLES.ProfilePicture}
+              reload={() => fetchPatient()}
+              notDescription={true}
+              moduleType={AttachmentType.Patient}
+              itemId={id}
+              imageSide={attachmentUrl}
+              attachmentData={attachmentData || undefined}
+            />
           </Box>
+        </Box>
 
+        {isLoading ?
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
+          :
           <Box flex={1}>
-            <Box display="flex">
+            <Box display='flex'>
               <Box flex={1} flexWrap="wrap">
                 <Box display="flex" alignItems="center">
                   <Box className={classes.userName} mr={1}>
@@ -229,41 +247,88 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`}
+                      className={classes.profileInfoItem}
+                    >
                       <Box>{item.icon}</Box>
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
-                </Box>
 
-                <Box display="flex" pt={1}>
-                  {ProfileAdditionalDetails.map((item, index) => (
-                    <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                      <Box className={classes.profileInfoHeading}>{item.title}</Box>
-
-                      <Box className={classes.profileInfoItem}>
-                        <Typography variant="body1">{item.description}</Typography>
-                      </Box>
+                  <div ref={noteRef}
+                    className={`${classes.profileNoteInfoItem} pointer-cursor`}
+                    onClick={(event) => dispatch({
+                      type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
+                    })}
+                  >
+                    <Box><NotesCardIcon /></Box>
+                    <Box display="flex" alignItems="center">
+                      <Typography variant="body1">{NOTES}</Typography>
+                      <RedCircleIcon />
                     </Box>
-                  ))}
+                  </div>
+
+                  <Menu
+                    getContentAnchorEl={null}
+                    anchorEl={isNoteOpen}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    id={'patient-notes'}
+                    keepMounted
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                    open={!!isNoteOpen}
+                    onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+                    className={classes.noteDropdown}
+                  >
+                    <PatientNoteModal
+                      patientStates={patientState}
+                      dispatcher={dispatch}
+                    />
+                  </Menu>
+
                 </Box>
               </Box>
 
-              <Box display='flex' alignItems='baseline' flexWrap='wrap'>
-                {!isChart && <Box pr={1}>
-                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-                    {EDIT_PATIENT}
-                  </Button>
-                </Box>}
+              <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
+                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
+                  <Typography variant="body2">... {MORE_INFO}</Typography>
+                </Button>
 
                 {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
                   {SCHEDULE_APPOINTMENTS_TEXT}
-                </Button> */}
+                </Button> */
+                }
+
               </Box>
             </Box>
           </Box>
+        }
+      </Box>
+
+      <Collapse in={open} mountOnEnter unmountOnExit>
+        <Box className="card-box-shadow" mt={3}>
+          <Card>
+            <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
+              {ProfileAdditionalDetails.map((item, index) => (
+                <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                  <Box className={classes.profileInfoHeading}>{item.title}</Box>
+
+                  <Box className={classes.profileInfoItem}>
+                    <Typography variant="body1">{item.description}</Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Card>
         </Box>
-      )}
+      </Collapse>
+
+      <Box my={4}>
+        {!isChart && <Box pr={1}>
+          <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+            {EDIT_PATIENT}
+          </Button>
+        </Box>}
+      </Box>
     </>
   )
 };

@@ -1,14 +1,14 @@
 //packages block
 import { FC, useState } from "react";
+import { Link } from "react-router-dom";
 import { Controller } from "react-hook-form";
 import { Box, FormControl, InputLabel, TextField, Typography } from "@material-ui/core";
 // components block
 import ShowPassword from "../../common/ShowPassword";
 //styles and interfaceTypes
 import { useLoginStyles } from "../../../styles/loginStyles";
-import { FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, PASSWORD, TEXT } from "../../../constants";
 import { LoginInputControlProps, PasswordType } from "../../../interfacesTypes";
-import { Link } from "react-router-dom";
+import { FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, PASSWORD, TEXT } from "../../../constants";
 
 const LoginController: FC<LoginInputControlProps> = ({
   control, controllerName, controllerLabel, fieldType, error, isPassword, disabled

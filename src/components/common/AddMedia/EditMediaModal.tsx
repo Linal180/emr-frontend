@@ -10,10 +10,11 @@ import DropzoneImage from "../DropZoneImage";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 import { TrashNewIcon } from "../../../assets/svgs";
+import { EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
-  preSignedUrl, title, providerName
+  preSignedUrl, title, providerName, filesLimit
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
@@ -54,7 +55,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
       aria-labelledby="image-dialog-title"
       aria-describedby="image-dialog-description"
     >
-      <DialogTitle id="image-dialog-title">Edit Media</DialogTitle>
+      <DialogTitle id="image-dialog-title">{EDIT_MEDIA}</DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>
 
@@ -71,6 +72,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               </Box>
             </Box> :
             <DropzoneImage
+              filesLimit={filesLimit}
               title={title}
               reload={reload}
               itemId={itemId}
@@ -83,8 +85,6 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               imageModuleType={imageModuleType}
             />
           }
-
-          <Box pt={3} />
         </DialogContent>
 
         <DialogActions>
@@ -93,13 +93,13 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={loading}
+              disabled={loading || (fileUrl !== '')}
             >
               {loading && (
                 <CircularProgress size={20} />
               )}
 
-              Update media
+              {UPDATE_MEDIA}
             </Button>
           </Box>
         </DialogActions>

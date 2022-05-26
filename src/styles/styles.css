@@ -84,7 +84,7 @@ body {
 }
 
 .media-image img {
-  height: 80%;
+  height: 100%;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -454,7 +454,7 @@ body .MuiTabPanel-root {
 
 .schedulerTableCell {
   border: 1px solid #E4E6EF !important;
-  width: 200px !important;
+  /* width: 200px !important; */
   height: 200px !important;
 }
 
@@ -519,17 +519,42 @@ body .MuiTabPanel-root {
 }
 
 /* Dashboard-charts-styling */
-.chartContainer > div > div {
+.chartContainer > div > div
+{
   height: 300px !important;
 }
 
-.chartContainer svg {
+.chartContainer svg
+{
   height: 320px !important;
   transform: scale(1.25) !important;
 }
 
+.pieChart2Container > div > div
+{
+  height: 200px !important;
+}
+
+.pieChart2Container svg
+{
+  height: 320px !important;
+  transform: scale(1.2) !important;
+}
+
+.chartContainerSmall > div > div {
+  height: 180px !important;
+  overflow: hidden !important;
+}
+
+.chartContainerSmall svg {
+  height: 160px !important;
+  transform: scale(3) !important;
+}
+
 .barChart1Container text,
-.barChart3Container text  
+.barChart3Container text ,
+.barChart4Container text,
+.barChart5Container text   
 {
   color: #ffffff !important;
   fill: #ffffff !important;
@@ -540,21 +565,140 @@ body .MuiTabPanel-root {
 .barChart3Container .highcharts-color-0,
 .barChart1Container .highcharts-legend-item,
 .barChart2Container .highcharts-legend-item,
-.barChart3Container .highcharts-legend-item,
-.barChart1Container .highcharts-axis,
-.barChart2Container .highcharts-axis,
-.barChart3Container .highcharts-axis
+.barChart3Container .highcharts-legend-item
 {
   display: none !important;
 }
 
 .barChart1Container .highcharts-axis-labels text, 
 .barChart2Container .highcharts-axis-labels text,
-.barChart3Container .highcharts-axis-labels text
+.barChart3Container .highcharts-axis-labels text,
+.barChart4Container .highcharts-axis-labels text,
+.barChart5Container .highcharts-axis-labels text,
+.barChart6Container .highcharts-axis-labels text
 {
   font-weight: 600 !important;
 }
 
+.barChart4Container .highcharts-grid-line,
+.barChart5Container .highcharts-grid-line
+{
+  display: none !important;
+}
+
+.barChart4Container .highcharts-axis,
+.barChart5Container .highcharts-axis,
+.barChart1Container .highcharts-axis
+{
+  display: none !important;
+}
+
+.pieChart2Container text {
+  color: #acacac !important;
+  fill: #acacac !important;
+}
+ 
+.Recent-Activity-Timeline 
+.MuiTimelineItem-missingOppositeContent:before {
+    display: none;
+}
+
+.Recent-Activity-Timeline p{
+  color: #7E8299;
+}
+
+.Recent-Activity-Timeline 
+.MuiTimelineDot-root {
+   border-width: 4px;
+}
+
+.Recent-Activity-Timeline  .MuiTimelineConnector-root{
+background: #E5EAEE;
+}
+
 .overflowVisible {
   overflow: visible !important;
+}
+
+.media-inner-image {
+  padding: 0px !important;
+}
+
+.media-inner-image > img {
+  height: 150px !important;
+}
+
+.whiteColor {
+  color: #ffffff !important;
+}
+
+.topMargin {
+  top: -24px !important;
+}
+
+.highcharts-container {
+  width:auto !important
+}
+.card-chart{
+  background: #FFFFFF;
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09);
+  border-radius: 8px;
+  position: relative;
+}
+.areaBloodPressureChart .highcharts-container {
+  transform: translate(-60px, 221px) scale(1.5) !important;
+}
+
+.areaChartContainer > div > div
+{
+  height: 300px !important;
+}
+
+.areaChartContainer svg
+{
+  height: 230px !important;
+  transform: scale(1.5) !important;
+}
+
+.bloodPressure-measurement{
+    position: absolute;
+    left: 30px;
+    top: 135px;
+    color: #CA6B6E;
+    z-index: 1;
+}
+.bloodPressure-measurement .measure-unit{
+  font-size: 14px;
+  color: #464E5F;
+}
+.heartRate-measurement{
+  position: absolute;
+  left: 30px;
+  top: 135px;
+  color: #1BC5BD;
+  z-index: 1;
+}
+.heartRate-measurement .measure-unit{
+  font-size: 14px;
+  color: #464E5F;
+  margin-left: 10px;
+}
+.measure-frequency{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 15px;
+  color: #ffff;
+  padding: 4px 8px  4px 8px;
+  border-radius: 4px;
+}
+.primary{
+  background-color: #03CC83;
+}
+.danger-bg{
+  background-color: #DD1010;
+}
+.card-box-shadow{
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09) !important;
+  border-radius: 8px !important;
 }

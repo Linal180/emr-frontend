@@ -5,21 +5,24 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import {
+  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, UserFormType
+  RenderListOptionTypes, SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
+  AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -219,6 +222,10 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
+};
+
+export const getDateWithDay = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
 };
 
@@ -372,6 +379,21 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
   return data;
 }
 
+export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { doctor: doctorPatient } = doctor;
+        const { firstName, lastName, id } = doctorPatient ?? {}
+        data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderPatient = (patients: PatientsPayload['patients']) => {
   const data: SelectorOption[] = [];
 
@@ -456,9 +478,9 @@ export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
   if (!!icdCodes) {
     for (let icdCode of icdCodes) {
       if (icdCode) {
-        const { id, code } = icdCode;
+        const { id, code, description } = icdCode;
 
-        code && data.push({ value: id, label: code })
+        code && data.push({ value: id, label: `${code} | ${description}` })
       }
     }
   }
@@ -549,6 +571,12 @@ export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getAppointmentDateTime = (date: string) => {
+  const timeDate = moment(date, "x")
+
+  return `${timeDate.format("ddd MMM. DD, YYYY")} at ${timeDate.format("hh:mm A")}`
 };
 
 export const getStandardTime = (timestamp: string) => {
@@ -805,6 +833,11 @@ export const onIdle = () => {
   localStorage.removeItem(TOKEN);
   history.push(LOCK_ROUTE);
 }
+
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm a") => {
+  if (!time) return '';
+  return moment(time, "hh:mm").format(format)
+};
 
 export const getFormatDate = (date: Maybe<string> | undefined) => {
   if (!date) return '';
@@ -1093,6 +1126,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
       return PatientWeight
   }
 }
+
 export const generateString = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
@@ -1108,9 +1142,132 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
     if (typeof str === 'string') {
       const num = parseFloat(str)
       const isNaN = Number.isNaN(num)
+
       return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
     }
+
     return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
   }
+
   return ""
+}
+
+export const renderListOptions = (list: RenderListOptionTypes) => {
+  const data: SelectorOption[] = [];
+
+  if (!!list) {
+    for (let item of list) {
+      if (item) {
+        if (item.__typename === 'SnoMedCodes') {
+          const { id, referencedComponentId } = item || {};
+
+          data.push({ id, name: referencedComponentId })
+        }
+      }
+    }
+  }
+
+  return data;
+};
+
+const isToday = (someDate: Date) => {
+  const today = new Date()
+
+  return someDate.getDate() === today.getDate() &&
+    someDate.getMonth() === today.getMonth() &&
+    someDate.getFullYear() === today.getFullYear()
+}
+
+const isTimePassed = (time: string) => new Date() < new Date(time);
+
+export const filterSlots = (slots: SlotsPayload['slots'], date: string | MaterialUiPickersDate) => {
+  let filteredSlots: SlotsPayload['slots'] = []
+
+  if (date && isToday(new Date(date.toString()))) {
+    filteredSlots = slots?.filter(slot => {
+      const { startTime } = slot || {}
+
+      return startTime && isTimePassed(startTime)
+    })
+
+    return filteredSlots;
+  }
+
+  return slots
+}
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[21],
+    fontSize: 11,
+    borderRadius: 4,
+    width: 320
+  },
+}))(Tooltip);
+
+export const practiceChartOptions = (chartBgColor: string) => {
+  return {
+    credits: { enabled: false },
+    chart: {
+      type: 'column',
+      styledMode: false,
+      backgroundColor: chartBgColor,
+      marginBottom: 40,
+    },
+
+    title: { text: '' },
+
+    yAxis: {
+      className: 'highcharts-color-0',
+      min: 0,
+      title: { text: '' }
+    },
+
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true,
+    },
+
+    plotOptions: {
+      series: {
+        states: {
+          hover: { enabled: false }
+        }
+      },
+
+      column: {
+        pointPadding: 0.4,
+        borderWidth: 0,
+        color: WHITE,
+        borderRadius: 4,
+      }
+    }
+  }
+}
+
+export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id: item.toString(), name: item.toString() })
+    }
+  }
+
+  return result;
+};
+
+export const getShortName = (name: string) => {
+  let shortName = '';
+  const parts = name.split(' ')
+
+  parts.map(part => shortName = shortName.concat(part.charAt(0)))
+
+  return shortName;
 }

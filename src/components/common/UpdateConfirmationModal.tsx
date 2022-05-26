@@ -6,11 +6,10 @@ import {
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
-import { aboutToUpdate, UpdateRecordTitle } from "../../utils";
 import { DELETE_RECORD, CANCEL } from "../../constants";
 
 const UpdateConfirmationModal: FC<ConfirmationTypes> = ({
-  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, learnMoreText
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, learnMoreText, aboutToText
 }): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
@@ -33,7 +32,7 @@ const UpdateConfirmationModal: FC<ConfirmationTypes> = ({
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {UpdateRecordTitle(title || '')}
+          {title}
       </DialogTitle>
 
       <DialogContent>
@@ -43,7 +42,7 @@ const UpdateConfirmationModal: FC<ConfirmationTypes> = ({
           </Box>
 
           <CardContent>
-            <Typography variant="h5"><strong>{aboutToUpdate(title || '')}</strong></Typography>
+            <Typography variant="h5"><strong>{aboutToText}</strong></Typography>
 
             <Box p={0.5} />
 

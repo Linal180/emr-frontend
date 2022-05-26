@@ -37,3 +37,19 @@ mutation ChargePayment($paymentInput: PaymentInput!){
     }
   }
 }
+
+mutation AchPayment($achPaymentInputs: ACHPaymentInputs!){
+  achPayment(achPaymentInputs: $achPaymentInputs){
+    response {
+      error
+      status
+      message
+      name
+    }
+    
+    transaction {
+      id
+      status
+    }
+  }
+}

@@ -47,7 +47,7 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
         if (findAllPractices) {
           const { practices } = findAllPractices
 
-          if(practices){
+          if (practices) {
             dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
             dispatcher({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
           }
@@ -89,7 +89,7 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
                 const { name, phone, createdAt } = practice || {}
 
                 return (
-                  <TableRow>
+                  <TableRow key={createdAt}>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
@@ -101,10 +101,10 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
         </Table>
 
         {((!loading && practices?.length === 0) || error) && (
-            <Box display="flex" justifyContent="center" pb={12} pt={5}>
-              <NoDataFoundComponent />
-            </Box>
-          )}
+          <Box display="flex" justifyContent="center" pb={12} pt={5}>
+            <NoDataFoundComponent />
+          </Box>
+        )}
       </Box>
     </Box>
   );
