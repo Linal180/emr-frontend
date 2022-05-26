@@ -1,5 +1,5 @@
 //packages block
-import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress, Card } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -14,7 +14,7 @@ import { getUserFormFormattedValues, parseColumnGrid } from '../../../../utils';
 import { useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED, FormBuilderApiSelector,
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
@@ -29,8 +29,9 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues } = state
+  const { isActive, loader, uploadImage, formName, formValues, facilityId } = state
   const { handleSubmit } = methods;
+
   //mutation
   const [getForm] = useGetPublicFormLazyQuery({
     fetchPolicy: "network-only",
@@ -45,13 +46,15 @@ const PublicFormPreview = () => {
           const { status } = response;
 
           if (form && status && status === 200) {
-            const { name, layout, isActive } = form;
+            const { name, layout, isActive, facilityId } = form;
             const { sections } = layout;
 
             if (isActive) {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
+              facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
+
             }
             else {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: false })
@@ -65,6 +68,18 @@ const PublicFormPreview = () => {
       history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
     }
   })
+
+  useMemo(() => {
+    if (formValues && formValues?.length > 0) {
+      formValues?.map(({ fields }) => fields?.map((field) => {
+        const { apiCall, fieldId } = field
+        if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
+          dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
+        }
+        return field
+      }))
+    }
+  }, [formValues])
 
   const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
     onCompleted: (data) => {
@@ -142,7 +157,7 @@ const PublicFormPreview = () => {
                                 md={parseColumnGrid(field?.column)}
                                 key={`${item?.id}-${field?.fieldId}`}
                               >
-                                <InputController item={field} />
+                                <InputController item={field} facilityId={facilityId} state={state} />
                               </Grid>
                             ))}
                           </Grid>

@@ -18,6 +18,7 @@ import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
@@ -31,7 +32,6 @@ import {
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
   Maybe, PatientVitals,
 } from "../generated/graphql";
-import { BooleanLiteral } from "typescript";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -1127,6 +1127,8 @@ export interface FieldComponentProps {
   item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
+  facilityId?: string
+  state?: ExternalFormBuilderState
 }
 
 export interface ShareModalTypes extends DialogTypes {
@@ -1437,7 +1439,7 @@ export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
 
-export interface CalenderProps{
+export interface CalenderProps {
   showHeader?: boolean;
 }
 
@@ -1479,4 +1481,9 @@ export interface AppointmentListProps {
 
 export interface PatientProviderSelectorProps {
   patientId: string;
+}
+
+export interface SlotsComponentProps {
+  facilityId: string;
+  state?: ExternalFormBuilderState
 }

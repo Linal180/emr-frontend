@@ -46,6 +46,7 @@ query findAllForms($formInput: FormInput!) {
             fieldId
             textArea
             isMultiSelect
+            apiCall
 
             options {
               name
@@ -169,6 +170,7 @@ query getPublicForm($getForm: GetForm!) {
             fieldId
             textArea
             isMultiSelect
+            apiCall
 
             options {
               name

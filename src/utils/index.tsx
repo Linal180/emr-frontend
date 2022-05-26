@@ -378,8 +378,8 @@ export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
   if (!!doctors) {
     for (let doctor of doctors) {
       if (doctor) {
-        const { doctor:doctorPatient } = doctor;
-        const {firstName, lastName, id} = doctorPatient ?? {}
+        const { doctor: doctorPatient } = doctor;
+        const { firstName, lastName, id } = doctorPatient ?? {}
         data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
@@ -937,6 +937,8 @@ export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolea
       return ''
     case ElementType.Checkbox:
       return []
+    case ElementType.Date:
+      return new Date()
     default:
       return ''
   }

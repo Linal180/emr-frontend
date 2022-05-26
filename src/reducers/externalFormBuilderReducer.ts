@@ -8,6 +8,8 @@ export interface State {
   formName: string;
   formValues: SectionsInputs[];
   formType: FormType;
+  facilityId: string;
+  serviceId: string;
 }
 
 export const initialState: State = {
@@ -16,7 +18,9 @@ export const initialState: State = {
   uploadImage: false,
   formName: '',
   formValues: getFormInitialValues(),
-  formType: FormType.Appointment
+  formType: FormType.Appointment,
+  facilityId: '',
+  serviceId: ""
 }
 
 export enum ActionType {
@@ -25,7 +29,9 @@ export enum ActionType {
   SET_UPLOAD_IMAGE = 'setUploadImage',
   SET_FORM_NAME = 'setFormName',
   SET_FORM_VALUES = 'setFormValues',
-  SET_FORM_TYPE = 'setFormType'
+  SET_FORM_TYPE = 'setFormType',
+  SET_FACILITY_ID = 'setFacilityId',
+  SET_SERVICE_ID = 'setServiceId'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -33,7 +39,9 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_UPLOAD_IMAGE; uploadImage: boolean } |
 { type: ActionType.SET_FORM_NAME; formName: string } |
 { type: ActionType.SET_FORM_VALUES; formValues: SectionsInputs[] } |
-{ type: ActionType.SET_FORM_TYPE; formType: FormType }
+{ type: ActionType.SET_FORM_TYPE; formType: FormType } |
+{ type: ActionType.SET_FACILITY_ID; facilityId: string } |
+{ type: ActionType.SET_SERVICE_ID; serviceId: string }
 
 
 export const externalFormBuilderReducer = (state: State, action: Action): State => {
@@ -73,6 +81,19 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
         ...state,
         formType: action.formType
       }
+
+    case ActionType.SET_FACILITY_ID:
+      return {
+        ...state,
+        facilityId: action.facilityId
+      }
+
+    case ActionType.SET_SERVICE_ID:
+      return {
+        ...state,
+        serviceId: action.serviceId
+      }
+
     default:
       return state
   }

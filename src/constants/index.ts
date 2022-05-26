@@ -2,6 +2,8 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+//assets
 import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
@@ -394,9 +396,9 @@ export const PRACTICE_MANAGEMENT_DESCRIPTION =
   "Add and edit your practice information and settings";
 export const PROVIDER_DETAILS_DESCRIPTION =
   "Edit your provider information and settings";
-  export const FACILITY_DETAILS_DESCRIPTION =
+export const FACILITY_DETAILS_DESCRIPTION =
   "Edit your facility information and settings";
-  export const PROVIDER_PROFILE_DESCRIPTION =
+export const PROVIDER_PROFILE_DESCRIPTION =
   "Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
@@ -475,11 +477,11 @@ export const CHECK_PRIOR_DATE_OF_SERVICE = "Check At Prior Date Of Service";
 export const OVERRIDE_PAYER_RETURNED_RESULT = "Override Payer Returned Result";
 export const TAKE_A_PICTURE_OF_INSURANCE =
   "Please take a pictures of your insurance card and upload here. ";
-  export const DOB = "Date of Birth";
-  export const DOB_TIME = "Date/Time";
-  export const SPECIALTY = "Specialty";
-  export const DOCTOR_ID = "doctor id";
-  export const PATIENT_ID = "patient id";
+export const DOB = "Date of Birth";
+export const DOB_TIME = "Date/Time";
+export const SPECIALTY = "Specialty";
+export const DOCTOR_ID = "doctor id";
+export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DECEASED_DATE = "Deceased Date";
@@ -948,7 +950,7 @@ export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
-export const USUAL_PROVIDER   = "Usual Provider";
+export const USUAL_PROVIDER = "Usual Provider";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
@@ -2795,6 +2797,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3516,78 +3534,78 @@ export enum VITAL_LABELS {
 
 export const UPCOMING_APPOINTMENT_LIST = [
   {
-    fullName : 'Andrew Williams',
+    fullName: 'Andrew Williams',
     visitType: "Sick Visit",
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     appointmentTime: '11:00 AM'
   },
   {
-    fullName : 'Arlene McCoy',
+    fullName: 'Arlene McCoy',
     visitType: "Ortho Check up",
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'AM',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'AM',
     appointmentTime: '11:15 AM'
   },
   {
-    fullName : 'Marvin McKinney',
+    fullName: 'Marvin McKinney',
     visitType: "Endoscopy",
-    imageUrl : EMERGENCY_LOG_PHLEPS,
-    shortName : 'MM',
+    imageUrl: EMERGENCY_LOG_PHLEPS,
+    shortName: 'MM',
     appointmentTime: '11:30 AM'
   },
   {
-    fullName : 'Darlene Robertson',
+    fullName: 'Darlene Robertson',
     visitType: "CT Scan",
-    imageUrl : '',
-    shortName : 'DR',
+    imageUrl: '',
+    shortName: 'DR',
     appointmentTime: '12:00 PM'
   },
   {
-    fullName : 'Bessie Cooper',
+    fullName: 'Bessie Cooper',
     visitType: "Sick Visit",
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'BC',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'BC',
     appointmentTime: '12:15 PM'
   },
   {
-    fullName : 'Cameron Williamson',
+    fullName: 'Cameron Williamson',
     visitType: "MRI",
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'CW',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'CW',
     appointmentTime: '12:30 PM'
   },
 ]
 
 export const ADDED_PATIENTS_LIST = [
   {
-    fullName : 'Andrew Williams',
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    fullName: 'Andrew Williams',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     dob: '20/02/1995'
   },
   {
-    fullName : 'Arlene McCoy',
-    imageUrl : EMERGENCY_LOG_OBD,
-    shortName : 'AW',
+    fullName: 'Arlene McCoy',
+    imageUrl: EMERGENCY_LOG_OBD,
+    shortName: 'AW',
     dob: '2/4/1992'
   },
   {
-    fullName : 'Marvin McKinney',
-    imageUrl : '',
-    shortName : 'AW',
+    fullName: 'Marvin McKinney',
+    imageUrl: '',
+    shortName: 'AW',
     dob: '16/05/1989'
   },
   {
-    fullName : 'Zayn Wyatt',
-    imageUrl : EMERGENCY_LOG_PHLEPS,
-    shortName : 'AW',
+    fullName: 'Zayn Wyatt',
+    imageUrl: EMERGENCY_LOG_PHLEPS,
+    shortName: 'AW',
     dob: '04/02/1966'
   },
   {
-    fullName : 'Bessie Cooper',
-    imageUrl : EMERGENCY_LOG_WILLIAMS,
-    shortName : 'AW',
+    fullName: 'Bessie Cooper',
+    imageUrl: EMERGENCY_LOG_WILLIAMS,
+    shortName: 'AW',
     dob: '19/10/2001'
   },
 ]
@@ -3762,4 +3780,10 @@ export const areaChartTwo = {
       26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
     ]
   }]
+}
+
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
 }
