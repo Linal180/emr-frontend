@@ -516,6 +516,7 @@ export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
 export const CITY = "City";
 export const EMAIL = "Email";
+export const RELATION = "Relation";
 export const PHONE = "Phone";
 export const STATE = "State";
 export const PDF_TEXT = "PDF";
@@ -3650,7 +3651,6 @@ export const PROVIDERS_DUMMY_DATA = [
 
 export const areaChartOne = {
   credits: { enabled: false },
-  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3684,10 +3684,10 @@ export const areaChartOne = {
       text: 'Nuclear weapon states'
     },
   },
-  // tooltip: {
-  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-  //   style : { 'zIndex' :'1' }
-  // },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+    style : { 'zIndex' :'1' }
+  },
   plotOptions: {
     area: {
       marker: {
@@ -3721,7 +3721,6 @@ export const areaChartOne = {
 
 export const areaChartTwo = {
   credits: { enabled: false },
-  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3754,9 +3753,9 @@ export const areaChartTwo = {
       text: 'Nuclear weapon states'
     },
   },
-  // tooltip: {
-  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-  // },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
   plotOptions: {
     area: {
       marker: {

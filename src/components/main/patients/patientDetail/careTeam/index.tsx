@@ -7,7 +7,7 @@ import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, PRACTICE_DETAILS, PROVIDERS_DUMMY_DATA, CARE_TEAM }
   from "../../../../../constants";
 
-const CareTeamComponent = (): JSX.Element => {
+const CareTeamComponent = ({toggleSideDrawer}:any): JSX.Element => {
   const classes = useDoctorScheduleStyles();
 
   return (
@@ -37,7 +37,7 @@ const CareTeamComponent = (): JSX.Element => {
                 <Button variant="outlined">{PRACTICE_DETAILS}</Button>
               </Box>
 
-              <Box className={classes.addProvider} display='flex'>
+              <Box onClick={toggleSideDrawer} className={classes.addProvider} display='flex'>
                 <Box mr={2}>
                   <AddSlotIcon />
                 </Box>
