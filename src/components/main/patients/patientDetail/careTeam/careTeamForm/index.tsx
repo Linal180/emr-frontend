@@ -13,7 +13,7 @@ import InputController from '../../../../../../controller'
 // constants, history, styling block
 import { 
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, MAPPED_GENDER_IDENTITY, PHONE_NUMBER, RELATION, 
-  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY 
+  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER
 } from '../../../../../../constants';
 import { CloseIcon } from '../../../../../../assets/svgs';
 
@@ -31,7 +31,7 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
             display="flex" justifyContent="space-between"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} px={2} pt={2} pb={1}
           >
-            <Typography variant='h3'>Eidt Provider</Typography>
+            <Typography variant='h3'>{EDIT_PROVIDER}</Typography>
             <IconButton>
               <CloseIcon />
             </IconButton>
