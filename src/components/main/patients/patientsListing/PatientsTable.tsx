@@ -127,9 +127,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) => {
     dispatch({ type: ActionType.SET_PAGE, page });
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' });
   }
-
 
   const onDeleteClick = (id: string) => {
     if (id) {
