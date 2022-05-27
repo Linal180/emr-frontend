@@ -2568,13 +2568,19 @@ export type PracticeFacilitiesUsersInputs = {
   roles?: Maybe<Array<PracticeRolesTypes>>;
 };
 
+export type PracticeFacilityAppointment = {
+  __typename?: 'PracticeFacilityAppointment';
+  count: Scalars['Float'];
+  facility?: Maybe<Scalars['String']>;
+};
+
 export type PracticeFacilityAppointmentsInputs = {
   practiceId?: Maybe<Scalars['String']>;
 };
 
 export type PracticeFacilityAppointmentsPayload = {
   __typename?: 'PracticeFacilityAppointmentsPayload';
-  facilitiesAppointments?: Maybe<Array<Facility>>;
+  facilitiesAppointments?: Maybe<Array<PracticeFacilityAppointment>>;
   response?: Maybe<ResponsePayloadResponse>;
 };
 
@@ -2601,6 +2607,18 @@ export enum PracticeType {
   Hospital = 'HOSPITAL',
   Lab = 'LAB'
 }
+
+export type PracticeUserRoles = {
+  __typename?: 'PracticeUserRoles';
+  count: Scalars['Float'];
+  role?: Maybe<Scalars['String']>;
+};
+
+export type PracticeUserRolesPayload = {
+  __typename?: 'PracticeUserRolesPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  userRoles?: Maybe<Array<PracticeUserRoles>>;
+};
 
 export type PracticeUsers = {
   __typename?: 'PracticeUsers';
@@ -2731,7 +2749,7 @@ export type Query = {
   getStaff: StaffPayload;
   getToken: BraintreePayload;
   getUser: UserPayload;
-  getUsersWithRoles: PracticeFacilityAppointmentsPayload;
+  getUsersWithRoles: PracticeUserRolesPayload;
   me: UserPayload;
   searchIcdCodes: IcdCodesPayload;
   searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
@@ -3253,7 +3271,9 @@ export type RolePermission = {
   id: Scalars['String'];
   isMutable?: Maybe<Scalars['Boolean']>;
   permission?: Maybe<Permission>;
+  permissionId?: Maybe<Scalars['String']>;
   role?: Maybe<Role>;
+  roleId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
 };
 
@@ -4669,6 +4689,20 @@ export type GetPracticeUsersWithRolesQueryVariables = Exact<{
 
 
 export type GetPracticeUsersWithRolesQuery = { __typename?: 'Query', getPracticeFacilitiesUsersWithRoles: { __typename?: 'PracticeUsersWithRolesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null } | null, practiceUsers?: Array<{ __typename?: 'PracticeUsersWithRoles', id?: string | null, name?: string | null, facilities?: Array<{ __typename?: 'FacilitiesUserWithRoles', name?: string | null, users?: Array<{ __typename?: 'UserWithRoles', count?: number | null, role?: string | null }> | null }> | null }> | null } };
+
+export type GetPracticeUserRolesCountQueryVariables = Exact<{
+  usersWithRolesInputs: UsersWithRolesInputs;
+}>;
+
+
+export type GetPracticeUserRolesCountQuery = { __typename?: 'Query', getUsersWithRoles: { __typename?: 'PracticeUserRolesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, userRoles?: Array<{ __typename?: 'PracticeUserRoles', role?: string | null, count: number }> | null } };
+
+export type GetPracticeFacilityAppointmentsQueryVariables = Exact<{
+  practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs;
+}>;
+
+
+export type GetPracticeFacilityAppointmentsQuery = { __typename?: 'Query', getPracticeFacilityAppointments: { __typename?: 'PracticeFacilityAppointmentsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null } | null, facilitiesAppointments?: Array<{ __typename?: 'PracticeFacilityAppointment', facility?: string | null, count: number }> | null } };
 
 export type GetPracticeFacilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7573,6 +7607,91 @@ export function useGetPracticeUsersWithRolesLazyQuery(baseOptions?: Apollo.LazyQ
 export type GetPracticeUsersWithRolesQueryHookResult = ReturnType<typeof useGetPracticeUsersWithRolesQuery>;
 export type GetPracticeUsersWithRolesLazyQueryHookResult = ReturnType<typeof useGetPracticeUsersWithRolesLazyQuery>;
 export type GetPracticeUsersWithRolesQueryResult = Apollo.QueryResult<GetPracticeUsersWithRolesQuery, GetPracticeUsersWithRolesQueryVariables>;
+export const GetPracticeUserRolesCountDocument = gql`
+    query GetPracticeUserRolesCount($usersWithRolesInputs: UsersWithRolesInputs!) {
+  getUsersWithRoles(usersWithRolesInputs: $usersWithRolesInputs) {
+    response {
+      status
+      message
+    }
+    userRoles {
+      role
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeUserRolesCountQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeUserRolesCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeUserRolesCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeUserRolesCountQuery({
+ *   variables: {
+ *      usersWithRolesInputs: // value for 'usersWithRolesInputs'
+ *   },
+ * });
+ */
+export function useGetPracticeUserRolesCountQuery(baseOptions: Apollo.QueryHookOptions<GetPracticeUserRolesCountQuery, GetPracticeUserRolesCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeUserRolesCountQuery, GetPracticeUserRolesCountQueryVariables>(GetPracticeUserRolesCountDocument, options);
+      }
+export function useGetPracticeUserRolesCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeUserRolesCountQuery, GetPracticeUserRolesCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeUserRolesCountQuery, GetPracticeUserRolesCountQueryVariables>(GetPracticeUserRolesCountDocument, options);
+        }
+export type GetPracticeUserRolesCountQueryHookResult = ReturnType<typeof useGetPracticeUserRolesCountQuery>;
+export type GetPracticeUserRolesCountLazyQueryHookResult = ReturnType<typeof useGetPracticeUserRolesCountLazyQuery>;
+export type GetPracticeUserRolesCountQueryResult = Apollo.QueryResult<GetPracticeUserRolesCountQuery, GetPracticeUserRolesCountQueryVariables>;
+export const GetPracticeFacilityAppointmentsDocument = gql`
+    query GetPracticeFacilityAppointments($practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!) {
+  getPracticeFacilityAppointments(
+    practiceFacilityAppointmentsInputs: $practiceFacilityAppointmentsInputs
+  ) {
+    response {
+      status
+    }
+    facilitiesAppointments {
+      facility
+      count
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeFacilityAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeFacilityAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeFacilityAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeFacilityAppointmentsQuery({
+ *   variables: {
+ *      practiceFacilityAppointmentsInputs: // value for 'practiceFacilityAppointmentsInputs'
+ *   },
+ * });
+ */
+export function useGetPracticeFacilityAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<GetPracticeFacilityAppointmentsQuery, GetPracticeFacilityAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeFacilityAppointmentsQuery, GetPracticeFacilityAppointmentsQueryVariables>(GetPracticeFacilityAppointmentsDocument, options);
+      }
+export function useGetPracticeFacilityAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeFacilityAppointmentsQuery, GetPracticeFacilityAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeFacilityAppointmentsQuery, GetPracticeFacilityAppointmentsQueryVariables>(GetPracticeFacilityAppointmentsDocument, options);
+        }
+export type GetPracticeFacilityAppointmentsQueryHookResult = ReturnType<typeof useGetPracticeFacilityAppointmentsQuery>;
+export type GetPracticeFacilityAppointmentsLazyQueryHookResult = ReturnType<typeof useGetPracticeFacilityAppointmentsLazyQuery>;
+export type GetPracticeFacilityAppointmentsQueryResult = Apollo.QueryResult<GetPracticeFacilityAppointmentsQuery, GetPracticeFacilityAppointmentsQueryVariables>;
 export const GetPracticeFacilitiesDocument = gql`
     query GetPracticeFacilities {
   getPracticesFacilities {

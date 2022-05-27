@@ -7,8 +7,8 @@ import {
 // components block
 import Search from "../../common/Search";
 import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
-import BarChart5Component from "../../common/charts/barChart5";
-import BarChart6Component from "../../common/charts/barChart6";
+import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
+import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 // svgs block, style
 import history from "../../../history";
@@ -228,7 +228,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
-            <BarChart5Component />
+            <PracticeUserRoles practiceId={practiceId || ''} />
           </Card>
 
           <Box p={2} />
@@ -239,7 +239,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
               </Box>
 
-              <BarChart6Component />
+              <FacilityAppointments practiceId={practiceId || ''} />
             </Box>
           </Card>
         </Grid>
