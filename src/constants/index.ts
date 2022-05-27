@@ -3342,11 +3342,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
