@@ -165,7 +165,9 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   }, [attachmentId, getAttachment])
 
   useEffect(() => {
-    attachmentId && fetchAttachment()
+    if (attachmentId && attachmentData) {
+      attachmentId && fetchAttachment()
+    }
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const disableSubmit = loading || updatePracticeLoading

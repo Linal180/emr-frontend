@@ -13,7 +13,7 @@ import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 import {
-  MediaDoctorDataType, MediaPatientDataType, MediaStaffDataType, MediaUserDataType
+  MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType, MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
 
 const DropzoneImage: FC<any> = forwardRef(({
@@ -138,6 +138,19 @@ const DropzoneImage: FC<any> = forwardRef(({
               if (userData) {
                 const { user: { attachments: staffAttachments } } = userData || {};
                 staffAttachments && setAttachments(staffAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+
+              break;
+
+            case AttachmentType.Practice:
+              const practiceData = data as unknown as MediaPracticeDataType
+
+              if (practiceData) {
+                const { practice: { attachments: practiceAttachments } } = practiceData || {};
+                practiceAttachments && setAttachments(practiceAttachments)
                 setLoading(false);
                 handleModalClose();
                 reload()
