@@ -18,7 +18,7 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
 
-  if (facilityId && apiCall && !isCreating) {
+  if (facilityId && apiCall) {
     switch (apiCall) {
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
