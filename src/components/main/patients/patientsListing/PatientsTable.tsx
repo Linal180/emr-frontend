@@ -160,8 +160,6 @@ const PatientsTable: FC = (): JSX.Element => {
     setValue("location", { id: '', name: "" })
     setValue('provider', { id: '', name: "" })
   }
-  console.log("==============", error);
-
 
   return (
     <>

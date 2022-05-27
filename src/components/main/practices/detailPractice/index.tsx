@@ -3,7 +3,8 @@ import { Reducer, useReducer, FC, useCallback, useContext, useEffect, useState }
 import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Avatar, Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
+import LogoIcon from "../../../../assets/images/logo.svg";
 // component block
 import Alert from '../../../common/Alert';
 import PracticeData from './practiceData';
@@ -27,7 +28,6 @@ import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as MediaState
 } from '../../../../reducers/mediaReducer';
-import { useProfileStyles } from '../../../../styles/profileStyles';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
   const { user, setPracticeName } = useContext(AuthContext);
@@ -38,7 +38,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
   const { attachmentUrl, attachmentId, attachmentData } = mediaState
   const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
-  const classes = useProfileStyles()
   const methods = useForm<any>({
     mode: "all",
     resolver: yupResolver(updatePracticeSchema)
@@ -180,8 +179,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
             <Box mt={5} p={5}>
               <Grid container spacing={3}>
                 <Grid item md={4} sm={12} xs={12}>
-                  <Box key={attachmentId} mx={3.5}>
-                    <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+                  <Box className='logo-container' ml={2}>
+                    <img key={attachmentId} src={attachmentUrl || LogoIcon} alt="" />
                   </Box>
 
                   <Box>
