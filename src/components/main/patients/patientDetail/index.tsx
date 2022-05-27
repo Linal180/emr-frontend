@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
+import { ChangeEvent, Reducer, useReducer, useEffect, useCallback, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
 import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
@@ -41,9 +41,11 @@ import {
 } from "../../../../constants";
 import { getFormattedDate } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
+import CareTeamProvider from './careTeam/sideDrawer';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
+  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
   const [{ openDelete, tabValue, patientData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -58,6 +60,8 @@ const PatientDetailsComponent = (): JSX.Element => {
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
+
+  const toggleSideDrawer = () =>{ setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
     if (routeParamValue) {
@@ -264,7 +268,9 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent />
+                <CareTeamComponent 
+                    toggleSideDrawer={toggleSideDrawer}
+                />
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
@@ -310,6 +316,10 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
         </Box>
       </TabContext>
+
+      <Box className="careTeam-side-drawer">
+        <CareTeamProvider drawerOpened={drawerOpened}  toggleSideDrawer={toggleSideDrawer} />
+      </Box>
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}

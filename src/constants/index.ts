@@ -516,6 +516,7 @@ export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
 export const CITY = "City";
 export const EMAIL = "Email";
+export const RELATION = "Relation";
 export const PHONE = "Phone";
 export const STATE = "State";
 export const PDF_TEXT = "PDF";
@@ -851,6 +852,9 @@ export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const QUICK_PATIENT_REGISTRATIONS = "Quick Patient Registrations";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
+export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
+export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
+export const OTHER_PROVIDER = "Other Provider"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -959,6 +963,7 @@ export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
 export const ADDRESS_NUMBER = "Address Number";
 export const CONTACT_NUMBER = "Contact Number";
+export const ENTER_RELATION = "Enter Relation";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -1287,6 +1292,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
+export const EDIT_PROVIDER = "Eidt Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -3650,7 +3656,6 @@ export const PROVIDERS_DUMMY_DATA = [
 
 export const areaChartOne = {
   credits: { enabled: false },
-  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3684,10 +3689,10 @@ export const areaChartOne = {
       text: 'Nuclear weapon states'
     },
   },
-  // tooltip: {
-  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-  //   style : { 'zIndex' :'1' }
-  // },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+    style : { 'zIndex' :'1' }
+  },
   plotOptions: {
     area: {
       marker: {
@@ -3721,7 +3726,6 @@ export const areaChartOne = {
 
 export const areaChartTwo = {
   credits: { enabled: false },
-  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3754,9 +3758,9 @@ export const areaChartTwo = {
       text: 'Nuclear weapon states'
     },
   },
-  // tooltip: {
-  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-  // },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
   plotOptions: {
     area: {
       marker: {
