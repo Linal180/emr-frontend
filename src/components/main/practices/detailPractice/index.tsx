@@ -1,28 +1,33 @@
 // packages block
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { Reducer, useReducer, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
+import { Avatar, Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
 import PracticeData from './practiceData';
 import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
-import LogoIcon from "../../../../assets/images/logo.svg";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import MediaCards from '../../../common/AddMedia/MediaCards';
 // constants block
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
 import {
-  PracticePayload, useGetPracticeLazyQuery, useUpdatePracticeMutation
+  AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
-  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
+  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE, ATTACHMENT_TITLES,
 } from '../../../../constants';
+import {
+  Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
+  State as MediaState
+} from '../../../../reducers/mediaReducer';
+import { useProfileStyles } from '../../../../styles/profileStyles';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
   const { user, setPracticeName } = useContext(AuthContext);
@@ -30,7 +35,10 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   const { practice } = facility || {};
   const { id: practiceId } = practice || {};
   const [edit, setEdit] = useState<boolean>(false);
+  const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
+  const { attachmentUrl, attachmentId, attachmentData } = mediaState
   const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
+  const classes = useProfileStyles()
   const methods = useForm<any>({
     mode: "all",
     resolver: yupResolver(updatePracticeSchema)
@@ -57,6 +65,10 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
           const { status } = response
 
           if (practice && status && status === 200) {
+            const { attachments } = practice || {}
+            const practiceAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            practiceAttachment?.id && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: practiceAttachment?.id })
+            practiceAttachment && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: practiceAttachment })
             setPracticeData(practice)
             const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
 
@@ -90,8 +102,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
           name && setPracticeName(name)
           fetchPractice();
-          setEdit(false)
           Alert.success(message);
+          setEdit(!edit)
         }
       }
     }
@@ -123,6 +135,39 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     })
   };
 
+  const editHandler = () => {
+    setEdit(!edit)
+  }
+
+  const [getAttachment] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+      }
+    }
+  });
+
+  const fetchAttachment = useCallback(async () => {
+    try {
+      attachmentId && await getAttachment({ variables: { getMedia: { id: attachmentId } } })
+    } catch (error) { }
+  }, [attachmentId, getAttachment])
+
+  useEffect(() => {
+    attachmentId && fetchAttachment()
+  }, [attachmentId, fetchAttachment, attachmentData])
+
   const disableSubmit = loading || updatePracticeLoading
 
   return (
@@ -132,49 +177,57 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
           <Card>
             <Box mt={5} p={5}>
               <Grid container spacing={3}>
-                <Grid item md={4} sm={12}>
-                  <Box className='logo-container'>
-                    <img src={LogoIcon} alt="" />
+                <Grid item md={4} sm={12} xs={12}>
+                  <Box key={attachmentId} mx={3.5}>
+                    <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
                   </Box>
 
-                  <Box mt={2} ml={1}>
-                    <Button type="submit" variant="outlined" color="secondary">
-                      {UPLOAD_LOGO}
-                    </Button>
+                  <Box>
+                    <MediaCards
+                      title={ATTACHMENT_TITLES.ProfilePicture}
+                      reload={() => fetchAttachment()}
+                      notDescription={true}
+                      moduleType={AttachmentType.Practice}
+                      itemId={practiceId || ''}
+                      imageSide={attachmentUrl}
+                      attachmentData={attachmentData || undefined}
+                      buttonText={UPLOAD_LOGO}
+                      button={true}
+                    />
                   </Box>
                 </Grid>
 
                 <Grid item md={8} sm={12}>
                   {loading ? <ViewDataLoader columns={6} rows={4} /> :
                     <FormProvider {...methods}>
-                      <Box onClick={() => setEdit(!edit)} mb={3} display="flex" justifyContent="flex-end">
-                        <Box display='flex'>
-                          {edit ?
-                            <>
-                              <Button color="secondary">{CANCEL}</Button>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <Box mb={3} display="flex" justifyContent="flex-end">
+                          <Box display='flex'>
+                            {edit ?
+                              <>
+                                <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
-                              <Box display="flex" justifyContent="flex-start" pl={2}>
-                                <Button type="submit" variant="contained" color="primary"
-                                  disabled={disableSubmit}
-                                >
-                                  {SAVE_TEXT}
+                                <Box display="flex" justifyContent="flex-start" pl={2}>
+                                  <Button type="submit" variant="contained" color="primary"
+                                    disabled={disableSubmit}
+                                  >
+                                    {SAVE_TEXT}
 
-                                  {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                                </Button>
-                              </Box>
-                            </>
-                            :
-                            <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
-                          }
+                                    {disableSubmit && <CircularProgress size={20} color="inherit" />}
+                                  </Button>
+                                </Box>
+                              </>
+                              :
+                              <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                            }
+                          </Box>
                         </Box>
-                      </Box>
 
-                      <Collapse in={!edit} mountOnEnter unmountOnExit>
-                        <PracticeData practiceData={practiceData} />
-                      </Collapse>
+                        <Collapse in={!edit} mountOnEnter unmountOnExit>
+                          <PracticeData practiceData={practiceData} />
+                        </Collapse>
 
-                      <Collapse in={edit} mountOnEnter unmountOnExit>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <Collapse in={edit} mountOnEnter unmountOnExit>
                           <Grid container spacing={3}>
                             <Grid item md={12} sm={12}>
                               <InputController
@@ -258,8 +311,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                               </Grid>
                             </Grid>
                           </Grid>
-                        </form>
-                      </Collapse>
+                        </Collapse>
+                      </form>
                     </FormProvider>}
                 </Grid>
               </Grid>

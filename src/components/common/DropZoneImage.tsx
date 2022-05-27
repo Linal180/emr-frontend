@@ -46,6 +46,9 @@ const DropzoneImage: FC<any> = forwardRef(({
       moduleRoute = "users";
       break;
 
+    case AttachmentType.Practice:
+      moduleRoute = "practices";
+      break;
     default:
       break;
   }
@@ -215,7 +218,7 @@ const DropzoneImage: FC<any> = forwardRef(({
               acceptedFiles={ACCEPTABLE_FILES}
               onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={imageEdit ? 
+              dropzoneText={imageEdit ?
                 PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
             />
           </Box>

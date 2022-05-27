@@ -2532,6 +2532,7 @@ export enum ATTACHMENT_TITLES {
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
   LabOrders = "Lab Orders",
+  PracticeLogo = "Logo",
 }
 
 export enum MODULE_TYPES {
