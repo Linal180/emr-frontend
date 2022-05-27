@@ -282,6 +282,7 @@ export enum AttachmentType {
   Doctor = 'DOCTOR',
   FormBuilder = 'FORM_BUILDER',
   Patient = 'PATIENT',
+  Practice = 'PRACTICE',
   Staff = 'STAFF',
   SuperAdmin = 'SUPER_ADMIN',
   Lab = 'lab'
@@ -2534,6 +2535,7 @@ export type PermissionsPayload = {
 export type Practice = {
   __typename?: 'Practice';
   active?: Maybe<Scalars['Boolean']>;
+  attachments?: Maybe<Array<Attachment>>;
   champus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
@@ -4971,7 +4973,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null | undefined, practiceId?: string | null | undefined, ein?: string | null | undefined, fax?: string | null | undefined, upin?: string | null | undefined, medicare?: string | null | undefined, medicaid?: string | null | undefined, champus?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null | undefined, practiceId?: string | null | undefined, ein?: string | null | undefined, fax?: string | null | undefined, upin?: string | null | undefined, medicare?: string | null | undefined, medicaid?: string | null | undefined, champus?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -10126,6 +10128,16 @@ export const GetPracticeDocument = gql`
       champus
       createdAt
       updatedAt
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

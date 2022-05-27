@@ -20,7 +20,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF,
-   STAFF_TEXT, CANT_DELETE_SELF_STAFF
+  STAFF_TEXT, CANT_DELETE_SELF_STAFF
 } from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
@@ -55,6 +55,8 @@ const StaffTable: FC = (): JSX.Element => {
         }
 
         dispatch({ type: ActionType.SET_ALL_STAFF, allStaff: allstaff as AllStaffPayload['allstaff'] })
+      } else {
+        dispatch({ type: ActionType.SET_ALL_STAFF, allStaff: [] })
       }
     }
   });

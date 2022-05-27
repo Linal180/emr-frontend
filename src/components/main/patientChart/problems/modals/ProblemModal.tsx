@@ -178,7 +178,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
     const commonInput = {
       note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType, snowMedCodeId: selectedSnoMedCode
+      problemType: typeStatus.toUpperCase() as ProblemType
     }
 
     const extendedInput = selectedAppointment ?
@@ -193,7 +193,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     } else {
       await addPatientProblem({
         variables: {
-          createProblemInput: { patientId, icdCodeId, ...extendedInput }
+          createProblemInput: { patientId, icdCodeId, ...extendedInput, snowMedCodeId: selectedSnoMedCode }
         }
       })
     }

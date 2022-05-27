@@ -62,7 +62,9 @@ const PracticeTable: FC = (): JSX.Element => {
             const { totalPages } = pagination
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
-        }
+        } 
+      } else {
+        dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
       }
     }
   });
