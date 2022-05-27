@@ -11,7 +11,7 @@ const CareTeamProvider = ({ drawerOpened, toggleSideDrawer }: any) => {
       onClose={toggleSideDrawer}
       anchor="right"
     >
-      <CreateTeamForm />
+      <CreateTeamForm toggleSideDrawer={toggleSideDrawer} />
     </Drawer>
   )
 }

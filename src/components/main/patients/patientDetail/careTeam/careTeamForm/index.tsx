@@ -11,14 +11,14 @@ import Search from '../../../../../common/Search';
 import Selector from '../../../../../common/Selector';
 import InputController from '../../../../../../controller'
 // constants, history, styling block
-import { 
-  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, MAPPED_GENDER_IDENTITY, PHONE_NUMBER, RELATION, 
-  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER
-} from '../../../../../../constants';
 import { CloseIcon } from '../../../../../../assets/svgs';
+import PhoneField from '../../../../../common/PhoneInput';
+import {
+  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, MAPPED_GENDER_IDENTITY, RELATION,
+  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER, MOBILE, PREFERRED_PROVIDER_IN_PRACTICE, BACKUP_PROVIDER_IN_PRACTICE, PRIMARY_PROVIDER, REFERRING_PROVIDER, OTHER_PROVIDER, ENTER_RELATION
+} from '../../../../../../constants';
 
-const CareTeamForm: FC<any> = (): JSX.Element => {
-
+const CareTeamForm: FC<any> = ({toggleSideDrawer}): JSX.Element => {
   const methods = useForm<any>({
     mode: "all",
   });
@@ -32,7 +32,7 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
             borderBottom={`1px solid ${GREY_SIXTEEN}`} px={2} pt={2} pb={1}
           >
             <Typography variant='h3'>{EDIT_PROVIDER}</Typography>
-            <IconButton>
+            <IconButton onClick={toggleSideDrawer}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -62,12 +62,7 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="phoneNumber"
-                  controllerLabel={PHONE_NUMBER}
-                  placeholder="(212) 222-2222"
-                />
+                <PhoneField name="mobile" label={MOBILE} />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
@@ -75,7 +70,7 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
                   fieldType="email"
                   controllerName="email"
                   controllerLabel={EMAIL}
-                  placeholder="Email"
+                  placeholder={EMAIL}
                 />
               </Grid>
 
@@ -100,35 +95,35 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
                       control={
                         <Checkbox color="primary" />
                       }
-                      label="Preferred provider in practice"
+                      label={PREFERRED_PROVIDER_IN_PRACTICE}
                     />
 
                     <FormControlLabel
                       control={
                         <Checkbox color="primary" />
                       }
-                      label="Backup provider in practice"
+                      label={BACKUP_PROVIDER_IN_PRACTICE}
                     />
 
                     <FormControlLabel
                       control={
                         <Checkbox color="primary" />
                       }
-                      label="Primary care provider (PCP)"
+                      label={PRIMARY_PROVIDER}
                     />
 
                     <FormControlLabel
                       control={
                         <Checkbox color="primary" />
                       }
-                      label="Referring provider"
+                      label={REFERRING_PROVIDER}
                     />
 
                     <FormControlLabel
                       control={
                         <Checkbox color="primary" />
                       }
-                      label="Other Provider"
+                      label={OTHER_PROVIDER}
                     />
                   </FormGroup>
                 </FormControl>
@@ -141,7 +136,7 @@ const CareTeamForm: FC<any> = (): JSX.Element => {
                   fieldType="text"
                   controllerLabel={RELATION}
                   controllerName="realtion"
-                  placeholder="Enter Relation"
+                  placeholder={ENTER_RELATION}
                 />
               </Grid>
             </Grid>
