@@ -1490,3 +1490,9 @@ export interface PatientProviderSelectorProps {
 export interface dashboardInputsProps {
   year: SelectorOption
 }
+
+export interface TabTypes {
+  title: string;
+  value: string;
+  Icon: ElementType;
+}

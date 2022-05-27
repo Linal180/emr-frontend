@@ -263,6 +263,10 @@ body .MuiTabPanel-root {
   padding: 20px 0 0 0;
 }
 
+.tab-panel {
+  padding-top: 0 !important;
+}
+
 .react-tel-input {
   font-family: "Inter, sans-serif";
   font-size: 14px;

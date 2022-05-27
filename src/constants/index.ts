@@ -16,14 +16,15 @@ import {
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
   DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon, NewAvatarIcon,
+  TextAreaIcon, TextIcon, NewAvatarIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, Element,
 } from "../generated/graphql";
+import { ReactElement } from "react";
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
@@ -182,6 +183,16 @@ export const OZ_TEXT = "OZ"
 export const CM_TEXT = "CM"
 export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
+export const PULSE_TEXT_AND_UNIT = "Pulse (bpm)";
+export const BLOOD_PRESSURE_TEXT_AND_UNIT = "Blood Pressure (mmHg)";
+export const OXYGEN_SATURATION_TEXT_AND_UNIT = "Oxygen Saturation (%)";
+export const RESPIRATORY_TEXT_AND_UNIT = "Respiratory Rate (rpm)";
+export const FEVER_TEXT_AND_UNIT = "Fever (°C)";
+export const PAIN_TEXT_AND_UNIT = "Pain (1-10)";
+export const HEIGHT_TEXT_AND_UNIT = "Height (in)";
+export const WEIGHT_TEXT_AND_UNIT = "Weight (lbs)";
+export const BMI_TEXT_AND_UNIT = "BMI (kg/m2)";
+export const HEAD_TEXT_AND_UNIT = "Head Circumference (in)";
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
 export const LAST_READING_TEXT = "Last Reading"
@@ -693,6 +704,7 @@ export const CLAIM_RECEIVED = "Claim Received";
 export const VIEW_FACILITIES = "View Facilities";
 export const NEW_APPOINTMENT = "New Appointment";
 export const MEDICAL_BILLING = "Medical Billing";
+export const LAST_FIVE_RESULTS = "Last 5 Results";
 export const RESULT_FILE_NAME = "Result File Name";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const RECENT_ACTIVITIES = "Recent Activities";
@@ -802,7 +814,9 @@ export const APPOINTMENT_TEXT = "Appointment";
 export const LAB_RESULTS_TEXT = "Lab Results";
 export const VISIT_REASON = "Reason for visit";
 export const PAGE_NOT_FOUND = "Page Not Found";
+export const RECENT_READINGS = "Recent Readings";
 export const LAB_ORDER_RESULT = "Lab Order Result";
+export const LAST_READING_DATE = "Last Reading Date: ";
 export const REGISTERED_PATIENTS = "Registered Patients";
 export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
@@ -814,7 +828,8 @@ export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shif
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
-export const ACTIVATED = "Acitivated";
+export const ACTIVATED = "Activated";
+export const ADD_VITALS = "Add Vitals";
 export const TEST_NOTES = "Test Notes";
 export const VIEW_BILLING = "View Billing";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
@@ -913,6 +928,7 @@ export const SSN_FORMAT = '000-00-0000';
 export const CONTINUE_TEXT = "Continue";
 export const NAME_FORMAT = 'First Last';
 export const ADD_ROLE_TEXT = "Add Role";
+export const ENTER_PHONE = "Enter Phone";
 export const NEXT_OF_KIN = "Next Of Kin";
 export const AUTO_LOGOUT = "Auto Logout";
 export const LOCK_SCREEN = "Lock Screen";
@@ -951,6 +967,7 @@ export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
 export const REVOKE_ACCESS = "Revoke Access";
+export const FORMER_SMOKER = "Former Smoker";
 export const DECREASED_DATE = "Deceased Date";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const PREFERRED_NAME = "Preferred Name";
@@ -967,11 +984,11 @@ export const PRIVACY_NOTICE = "Privacy Notice";
 export const DISABLE_ACCESS_PORTAL = "Enabled";
 export const PAY_VIA_PAYPAL = "Pay via PayPal";
 export const EDIT_LAB_ORDER = "Edit Lab Order";
+export const USUAL_PROVIDER = "Usual Provider";
 export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
-export const USUAL_PROVIDER = "Usual Provider";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
@@ -1015,7 +1032,6 @@ export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const YOU_HAVE_ENTERED = "You have entered:";
-export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
 export const USER_STATUS_PLACEHOLDER = "User Status";
@@ -1026,6 +1042,7 @@ export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
+export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
@@ -1076,7 +1093,6 @@ export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
-export const ENTER_PHONE = "Enter Phone";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
@@ -3787,3 +3803,65 @@ export const areaChartTwo = {
     ]
   }]
 }
+
+export const PATIENT_CHARTING_TABS = [
+    {
+      icon: VitalsIcon,
+      title: "Vitals",
+      value: "1",
+    },
+    {
+      icon: ProblemsIcon,
+      title: "Problems",
+      value: "2",
+    },
+  {
+    icon: AllergiesIcon,
+    title: "Allergies",
+    value: "3",
+  }
+]
+
+export const VITALS_DUMMY_DATA = [
+  {
+    value: "124",
+    name: "Pulse (bpm)",
+  },
+  {
+    value: "120 / 70",
+    name: "Blood Pressure (mmHg)",
+  },
+  {
+    value: "68",
+    name: "Oxygen Saturation (%)",
+  },
+  {
+    value: "40",
+    name: "Respiratory Rate (rpm)",
+  },
+  {
+    value: "98",
+    name: "Fever (°C)",
+  },
+  {
+    value: "9",
+    name: "Pain (1-10)",
+  },
+  {
+    value: "69.60",
+    name: "Height (in)",
+  },
+  {
+    value: "149.91",
+    name: "Weight (lbs)",
+  },
+  {
+    value: "21.76",
+    name: "BMI (kg/m2)",
+  },
+  {
+    value: "25",
+    name: "Head Circumference (in)",
+  },
+
+]

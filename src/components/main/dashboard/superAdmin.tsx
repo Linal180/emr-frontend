@@ -164,12 +164,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h4">{PRACTICE_REGISTRATIONS}</Typography>
 
-                <Box>
-                  <Box className={classes.yearDropdown}>
-                    <FormProvider {...methods}>
-                      <Selector label="" name="year" options={renderArrayAsSelectorOptions(YEARS)} />
-                    </FormProvider>
-                  </Box>
+                <Box className={classes.yearDropdown}>
+                  <FormProvider {...methods}>
+                    <Selector label="" name="year" options={renderArrayAsSelectorOptions(YEARS)} />
+                  </FormProvider>
                 </Box>
               </Box>
 
