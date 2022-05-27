@@ -141,16 +141,32 @@ const PublicFormPreview = () => {
             <Box>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(submitHandler)}>
-                  <CardComponent cardTitle={formName}>
-                    <Grid container spacing={2}>
-                      {formValues?.map((item, index) => (
-                        <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                          <Box p={2} pl={0}>
-                            <Typography variant='h4'>
-                              {item?.name}
-                            </Typography>
-                          </Box>
-                          <Grid container spacing={2}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" marginY={2}>
+                    <Box>
+                      <Typography variant='h4'>
+                        {formName}
+                      </Typography>
+                    </Box>
+                    <Box display={'flex'} justifyContent={'flex-end'}>
+                      <Box marginX={2}>
+                        <Button variant={'contained'}>
+                          {CANCEL_TEXT}
+                        </Button>
+                      </Box>
+
+                      <Box>
+                        {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
+                        <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
+                          {FORM_SUBMIT_TEXT}
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Grid container spacing={3}>
+                    {formValues?.map((item, index) => (
+                      <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
+                        <CardComponent cardTitle={item?.name}>
+                          <Grid container spacing={3}>
                             {item?.fields?.map((field) => (
                               <Grid
                                 item
@@ -161,23 +177,12 @@ const PublicFormPreview = () => {
                               </Grid>
                             ))}
                           </Grid>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </CardComponent>
-                  <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
-                    <Box marginX={2}>
-                      <Button variant={'contained'}>
-                        {CANCEL_TEXT}
-                      </Button>
-                    </Box>
-                    <Box>
-                      {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
-                      <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
-                        {FORM_SUBMIT_TEXT}
-                      </Button>
-                    </Box>
-                  </Box>
+                        </CardComponent>
+                      </Grid>
+                    ))}
+                  </Grid>
+
+
                 </form>
               </FormProvider>
             </Box> :

@@ -8,7 +8,7 @@ import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
 //component
 import { FieldRenderer } from './FieldRenderer'
-import ServiceSelector from './Selector/ServiceSelector';
+import ServiceSelector from './formBuilder/ServiceSelector';
 import SlotsComponent from './formBuilder/SlotsComponent'
 //field renderer component
 export const FieldController = ({ item, isCreating, facilityId, state }: FieldComponentProps) => {
@@ -18,7 +18,7 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
 
-  if (facilityId && apiCall) {
+  if (facilityId && apiCall && !isCreating) {
     switch (apiCall) {
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector

@@ -210,7 +210,7 @@ const AddForm = () => {
       })
       const { layout } = preDefined || {}
       const { sections } = layout || {}
-      const section = sections?.map(({ fields, name }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: 12 }))
+      const section = sections?.map(({ fields, name, col }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: col || 12 }))
       const sect = section && section?.length > 0 && section[0]
       const isEmpty = formValues[0]?.fields?.length === 0
       sect && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: isEmpty ? [{ ...sect as SectionsInputs }] : [...formValues, { ...sect as SectionsInputs }] })
