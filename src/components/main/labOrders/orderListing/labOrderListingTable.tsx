@@ -3,14 +3,14 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Pagination } from "@material-ui/lab";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, } from "@material-ui/core";
 //components block
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
-import { convertDateFromUnix, getFormatTime, renderTh } from "../../../../utils";
+import { convertDateFromUnix, formatValue, getFormatTime, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { DATE, STATUS, DOCTOR, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, } from "../../../../constants";
+import { STATUS, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, YES, NO, N_A, PRIMARY_CARE_PROVIDER, ORDER_CREATED_AT, APPOINTMENT_DATE, TEST_DATE, } from "../../../../constants";
 import { BLUE } from "../../../../theme";
 import { LabTestsPayload, useFindLabTestsByOrderNumLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
@@ -91,10 +91,12 @@ const LabOrderListingTable = (): JSX.Element => {
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(DOCTOR)}
+                {renderTh(PRIMARY_CARE_PROVIDER)}
                 {renderTh(LOINC_CODE)}
                 {renderTh(DESCRIPTION)}
-                {renderTh(DATE)}
+                {renderTh(APPOINTMENT_DATE)}
+                {renderTh(TEST_DATE)}
+                {renderTh(ORDER_CREATED_AT)}
                 {renderTh(SIGN_OFF)}
                 {renderTh(STATUS)}
                 {renderTh(RESULT)}
@@ -116,41 +118,32 @@ const LabOrderListingTable = (): JSX.Element => {
               labOrders?.map((labOrder) => {
                 const { appointment, patient, test, diagnoses, createdAt, 
                 labTestStatus, testDate, testTime, testNotes, testObservations } = labOrder || {}
-
                 const {doctorPatients} = patient || {}
                 const { doctor } = doctorPatients?.find((doctorPatient)=> doctorPatient.currentProvider) || {}
                 const { firstName, lastName } = doctor ?? {}
                 const { loincNum } = test ?? {}
-                const description = diagnoses?.reduce((acc,diagnose,i)=>{
-                  if(i===0){
-                    acc=diagnose?.code ?? ''
-                    return acc
-                  }
-                  acc=acc.concat('+',diagnose?.code ?? '')
-                  return acc
-                },'')
                 const { scheduleStartDateTime : appointmentDate } = appointment ?? {}
                 const performed = getPerformedDate(testDate || '',testTime || '')
                 const { doctorsSignOff, attachments, resultValue, resultUnit} = testObservations?.[0] ?? {}
-                const { title } = attachments?.[0] ?? {}
+                const { attachmentName } = attachments?.[0] ?? {}
 
                 return (
                   <TableRow>
                   <TableCell scope="row">{`${firstName} ${lastName}`}</TableCell>
                   <TableCell scope="row">{loincNum}</TableCell>
-                  <TableCell scope="row">{description}</TableCell>
+                  <TableCell scope="row">{diagnoses?.map((diagnose)=>{
+                    return <li>{`${diagnose?.code} | ${diagnose?.description}`}</li>
+                  })}</TableCell>
+                  <TableCell scope="row">{convertDateFromUnix(appointmentDate, 'MM-DD-YYYY hh:mm a')}</TableCell>
+                  <TableCell scope="row">{performed}</TableCell>
+                  <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm a')}</TableCell>
+                  <TableCell scope="row">{doctorsSignOff? YES : NO}</TableCell>
+                  <TableCell scope="row">{formatValue(labTestStatus ?? N_A) || N_A}</TableCell>
+                  <TableCell scope="row">{resultValue ?`${resultValue} ${resultUnit}`: N_A}</TableCell>
                   <TableCell scope="row">
-                   {appointmentDate && <Typography variant="body1">Appointment Date: {convertDateFromUnix(appointmentDate, 'MM-DD-YYYY hh:mm')}</Typography>}
-                    <Typography variant="body1">Entered: {convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm')}</Typography>
-                    {performed && <Typography variant="body1">Performed: {performed}</Typography>}
+                    <Box color={BLUE}> {attachmentName || N_A} </Box>
                   </TableCell>
-                  <TableCell scope="row">{doctorsSignOff}</TableCell>
-                  <TableCell scope="row">{labTestStatus}</TableCell>
-                  <TableCell scope="row">{`${resultValue} ${resultUnit}`}</TableCell>
-                  <TableCell scope="row">
-                    <Box color={BLUE}> {title} </Box>
-                  </TableCell>
-                  <TableCell scope="row">{testNotes}</TableCell>
+                  <TableCell scope="row">{testNotes || '- -'}</TableCell>
                 </TableRow>
                 )
               }))}

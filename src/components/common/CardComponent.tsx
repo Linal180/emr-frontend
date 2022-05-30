@@ -8,7 +8,7 @@ import { CardComponentType } from "../../interfacesTypes";
 const CardComponent: FC<CardComponentType> = ({
   children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight
 }): JSX.Element => (
-  <Card className={isFullHeight ? "fullMinHeight" : ""}>
+  <Card className={isFullHeight ? "fullMinHeight card-box-shadow" : " card-box-shadow"}>
     <CardHeader
       action={
         hasEdit && (
@@ -20,6 +20,7 @@ const CardComponent: FC<CardComponentType> = ({
                     <Save />
                   </IconButton>
                 )}
+                
                 <IconButton onClick={onEditClick} aria-label="settings">
                   <ArrowBack />
                 </IconButton>

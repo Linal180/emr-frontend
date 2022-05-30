@@ -66,6 +66,8 @@ const DoctorsTable: FC = (): JSX.Element => {
         }
 
         doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
+      } else {
+        dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
       }
     }
   });
@@ -74,10 +76,10 @@ const DoctorsTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } : 
-        isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPracAdmin ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-        doctorInputs && await findAllDoctor({
+      doctorInputs && await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
@@ -151,9 +153,9 @@ const DoctorsTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-      <Box py={2} mb={2} maxWidth={450}>
-        <Search search={search} />
-      </Box>
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">

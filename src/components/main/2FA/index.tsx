@@ -4,15 +4,15 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 // component block
 import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, CircularProgress, FormControl, Grid, MenuItem, Typography, } from '@material-ui/core';
+import { Box, Button, CircularProgress, FormControl, Grid, IconButton, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
-import { GRAY_THREE, WHITE } from '../../../theme';
-import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
+import { GRAY_THREE, RED, WHITE } from '../../../theme';
+import { InfoSearchIcon, SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION,
   DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED,
-  NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE, TWO_FA_DISABLED_SUCCESSFULLY, ENTER_PHONE,
+  NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE, TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION,
 } from '../../../constants';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context';
@@ -22,7 +22,6 @@ import { twoFAValidationSchema } from '../../../validationSchemas';
 import { TwoFactorInputProps } from '../../../interfacesTypes';
 import Alert from '../../common/Alert';
 import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatientStyles';
-import PhoneField from '../../common/PhoneInput';
 
 const TwoFAComponent = (): JSX.Element => {
   const { user, currentDoctor, currentStaff, fetchUser } = useContext(AuthContext)
@@ -133,6 +132,23 @@ const TwoFAComponent = (): JSX.Element => {
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
             <Box p={2} mb={2}>
+              {!(phone || doctorPhone || staffPhone) &&
+                <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} mb={1} borderRadius={5}>
+                  <Box display="flex" alignItems='center'>
+                    <IconButton size="small" color='inherit' className={classes.iconPadding}>
+                      <InfoSearchIcon />
+                    </IconButton>
+                    <Typography variant='h4'>
+                      {ADD_PHONE_NUM_DESCRIPTION}
+                    </Typography>
+                  </Box>
+
+                  <Button color="primary" variant="contained" component={Link} to={"/profile"}>
+                    {ADD_NUM}
+                  </Button>
+                </Box>
+              }
+
               <Typography variant='body2'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
 
               <FormProvider {...methods}>
@@ -159,19 +175,13 @@ const TwoFAComponent = (): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid container spacing={3}>
-                    <Grid item md={6} sm={12} xs={12}>
-                      <PhoneField name="billingPhone" label={ENTER_PHONE} />
-                    </Grid>
-
-                    <Grid item md={6} sm={12} xs={12}>
-                      <InputController
-                        fieldType="password"
-                        controllerName="password"
-                        isPassword={true}
-                        controllerLabel={ENTER_PASSWORD}
-                      />
-                    </Grid>
+                  <Grid md={6} spacing={3}>
+                    <InputController
+                      fieldType="password"
+                      controllerName="password"
+                      isPassword={true}
+                      controllerLabel={ENTER_PASSWORD}
+                    />
                   </Grid>
 
                   <Box p={1} />

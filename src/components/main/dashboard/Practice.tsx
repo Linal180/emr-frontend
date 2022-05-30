@@ -1,33 +1,71 @@
 // packages block
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
   Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
 } from '@material-ui/lab';
 // components block
 import Search from "../../common/Search";
-import BarChart4Component from "../../common/charts/barChart4";
-import BarChart5Component from "../../common/charts/barChart5";
-import BarChart6Component from "../../common/charts/barChart6";
+import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
+import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
+import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 // svgs block, style
 import history from "../../../history";
+import { getShortName } from "../../../utils";
+import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
 import {
-  EMERGENCY_ACCESS, FACILITIES_LIST, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
+  EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
   EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED, PAGE_LIMIT
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+  const { currentUser } = useContext(AuthContext)
+  const { practiceId } = currentUser || {}
+  const [facilities, setFacilities] = useState<FacilitiesPayload['facilities']>([])
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => { };
+  const [findAllFacility] = useFindAllFacilityListLazyQuery({
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllFacility } = data
+
+        if (findAllFacility) {
+          const { facilities } = findAllFacility
+
+          !!facilities && setFacilities(facilities as FacilitiesPayload['facilities'])
+        }
+      }
+    }
+  })
+
+  const handleChange = (_: ChangeEvent<HTMLInputElement>) => { };
   const search = (query: string) => { }
+
+  const fetchFacilities = useCallback(async () => {
+    try {
+      await findAllFacility({
+        variables: {
+          facilityInput: { paginationOptions: { limit: PAGE_LIMIT, page: 1 } }
+        }
+      })
+    } catch (error) { }
+  }, [findAllFacility])
+
+  useEffect(() => {
+    fetchFacilities()
+  }, [fetchFacilities])
 
   return (
     <>
@@ -78,17 +116,19 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            {FACILITIES_LIST.map((item) => {
-              return (
-                <Box px={2} mb={3} display='flex' alignItems='center'>
+            {facilities?.map((facility) => {
+              const { name } = facility || {}
+
+              return name && (
+                <Box key={name} px={2} mb={3} display='flex' alignItems='center'>
                   <Box
                     bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
                     justifyContent="center" alignItems="center"
                   >
-                    <Typography variant="h6">{item.shortName}</Typography>
+                    <Typography variant="h6">{getShortName(name)}</Typography>
                   </Box>
 
-                  <Typography variant="body1">{item.fullName}</Typography>
+                  <Typography variant="body1">{name}</Typography>
                 </Box>
               )
             })}
@@ -178,7 +218,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
 
-            <BarChart4Component />
+            <FacilityUsersWithRole practiceId={practiceId || ''} />
           </Card>
 
           <Box p={2} />
@@ -188,7 +228,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
-            <BarChart5Component />
+            <PracticeUserRoles practiceId={practiceId || ''} />
           </Card>
 
           <Box p={2} />
@@ -199,7 +239,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
               </Box>
 
-              <BarChart6Component />
+              <FacilityAppointments practiceId={practiceId || ''} />
             </Box>
           </Card>
         </Grid>
@@ -216,9 +256,9 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
             {EMERGENCY_LOG_LIST.map((item) => {
               return (
-                <Box px={2} mb={3} display='flex' alignItems='start'>
+                <Box key={item.fullName} px={2} mb={3} display='flex' alignItems='start'>
                   <Box
-                    bgcolor={!item.imageUrl && BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2}
+                    bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2}
                     display="flex" justifyContent="center" alignItems="center"
                   >
                     {

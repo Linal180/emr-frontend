@@ -6,7 +6,7 @@ import { Box, colors, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 //components
 import ViewDataLoader from '../ViewDataLoader'
-import AppointmentDatePicker from '../../main/publicAppointments/scheduleAppointments/AppointmentDatePicker'
+import AppointmentDatePicker from '../../main/publicAppointments/appointmentForm/AppointmentDatePicker'
 //constants, graphql, utils, styles, interfaces
 import { getCurrentTimestamps, getStandardTime } from '../../../utils'
 import { AVAILABLE_SLOTS, DAYS, NO_SLOT_AVAILABLE } from '../../../constants'

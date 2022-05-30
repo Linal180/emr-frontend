@@ -9,13 +9,14 @@ import {
   Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
-import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as AppointmentAction } from "../reducers/appointmentReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
@@ -30,7 +31,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals,
+  Maybe, PatientVitals, Practice,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -358,6 +359,7 @@ export interface SelectorProps {
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function
+  onSelect?: Function
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -491,6 +493,7 @@ export interface PickerProps {
   error?: string;
   isRequired?: boolean;
   clearable?: boolean
+  disableFuture?: boolean
 }
 
 export interface TimePickerProps {
@@ -901,6 +904,11 @@ export interface LabOrderResultsAttachmentInput {
   comments?: string
 };
 
+export interface LabOrderInput {
+  orderNum: string
+  status?: SelectorOption
+};
+
 export interface LabOrdersResultSubFormProps {
   index: number
   setResultsToRemove: Function
@@ -1308,6 +1316,10 @@ export interface MediaUserDataType extends Message {
   user: User;
 }
 
+export interface MediaPracticeDataType extends Message {
+  practice: Practice;
+}
+
 export interface BackButtonProps {
   to: string;
 }
@@ -1487,4 +1499,17 @@ export interface PatientProviderSelectorProps {
 export interface SlotsComponentProps {
   facilityId: string;
   state?: ExternalFormBuilderState
+}
+export interface dashboardInputsProps {
+  year: SelectorOption
+}
+
+export interface PracticeChartProps {
+  practiceId: string;
+}
+
+export interface AppointmentSlotsProps {
+  facilityId?: string;
+  providerId?: string;
+  dispatcher: Dispatch<AppointmentAction>
 }

@@ -13,10 +13,7 @@ import {
 } from "../utils";
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
-  FormInitialType,
-  TestOption,
-  SpecimenTypeOption,
-  LabOrdersResultOption,
+  FormInitialType, TestOption, SpecimenTypeOption, LabOrdersResultOption,
 } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
@@ -31,14 +28,11 @@ import {
 } from "../generated/graphql";
 
 // regex
-export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
-export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
-export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
-export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
+export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
@@ -47,11 +41,13 @@ export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
 export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -68,6 +64,22 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
+
+// Blood Pressure Ranges
+export enum BLOOD_PRESSURE_RANGES {
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
+// Heart Rate Ranges
+export enum Heart_RATE_RANGES {
+  Abnormal = "Abnormal",
+  Normal = "Normal",
+  Low = "Low",
+  High = "Hight",
+}
+
 // constants
 export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
@@ -96,7 +108,7 @@ export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
 export const ACUTE = "Acute";
 export const CHRONIC = "Chronic";
-export const LOCK_TIME_OUT = 6000000;
+export const LOCK_TIME_OUT = 604800000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -119,6 +131,8 @@ export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
 export const FORM_COPY = "Copy form";
+export const ENCOUNTERS = "Encounters";
+export const CARE_TEAM = "Care Team";
 export const FORM_NAME = "Form name";
 export const THANK_YOU_TEXT = "Thank you!";
 export const FORM_SUBMIT_TEXT = "Form Submit";
@@ -173,7 +187,15 @@ export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
+export const LAST_READING_TEXT = "Last Reading"
 export const BLOOD_PRESSURE_TEXT = "Blood Pressure"
+export const BLOOD_PRESSURE_VALUE = "102 / 72"
+export const BLOOD_PRESSURE_LAST_READ = "May 2, 2022"
+export const BLOOD_PRESSURE_UNIT = "mmhg"
+export const HEART_RATE_TEXT = "Heart Rate"
+export const HEART_RATE_VALUE = "100"
+export const HEART_RATE_UNIT = "bpm"
+export const HEART_RATE_LAST_READ = "May 2, 2022"
 export const OXYGEN_SATURATION_TEXT = "Oxygen Saturation"
 export const HEIGHT_TEXT = "Height"
 export const WEIGHT_TEXT = "Weight"
@@ -497,6 +519,7 @@ export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
 export const CITY = "City";
 export const EMAIL = "Email";
+export const RELATION = "Relation";
 export const PHONE = "Phone";
 export const STATE = "State";
 export const PDF_TEXT = "PDF";
@@ -638,6 +661,7 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const TOKEN = "emr_token";
 export const RESULTS = "Results";
+export const RESULTS_ENTERED = "Results Entered At";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
@@ -831,6 +855,9 @@ export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const QUICK_PATIENT_REGISTRATIONS = "Quick Patient Registrations";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
+export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
+export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
+export const OTHER_PROVIDER = "Other Provider"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -939,6 +966,7 @@ export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
 export const ADDRESS_NUMBER = "Address Number";
 export const CONTACT_NUMBER = "Contact Number";
+export const ENTER_RELATION = "Enter Relation";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -989,6 +1017,8 @@ export const UPDATE_SIGNATURE = "Update Signature";
 export const BOOK_APPOINTMENT = "Book Appointment";
 export const ORDER_OF_BENEFIT = "Order of Benefit";
 export const CREATE_LAB_ORDER = "Create Lab Order";
+export const ORDER_CREATED_AT = "Order Created At";
+export const APPOINTMENT_DATE = "Appointment Date";
 export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
@@ -1265,6 +1295,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
+export const EDIT_PROVIDER = "Eidt Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1427,6 +1458,8 @@ export const UPIN_INFO =
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 
+export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -2174,6 +2207,7 @@ export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
+export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
@@ -2474,6 +2508,25 @@ export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode'
 }
 
+export const DUMMY_ENCOUNTERS = [
+  {
+    id: 1,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  },
+  {
+    id: 2,
+    serviceName: "Sick Visit",
+    scheduleDateTime: "March 16, 2022 at 3:15 PM",
+    duration: "50 Minutes",
+    doctorName : 'Dr. Jenny Wilson',
+    hospitalName : 'Community Hospital'
+  }  
+];
+
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
   ICDCodes = 'ICDCodes',
@@ -2488,6 +2541,7 @@ export enum ATTACHMENT_TITLES {
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
   LabOrders = "Lab Orders",
+  PracticeLogo = "Logo",
 }
 
 export enum MODULE_TYPES {
@@ -3424,42 +3478,16 @@ export const FEVER_UNITS = [
 ]
 
 export const MAPPED_AUTO_LOGOUT = [
-  { id: "0", name: '30 Minutes' },
-  { id: "1", name: '1 Hour' },
-  { id: "2", name: '90 Minutes' },
-  { id: "3", name: '6 Hours' },
-  { id: "4", name: '12 Hours' },
-  { id: "5", name: '24 Hours' },
-  { id: "6", name: '2 Days' },
-  { id: "7", name: '7 Days' },
+  { id: "0", name: '30 Minutes', time: 1800 * 1000 },
+  { id: "1", name: '1 Hour', time: 3600 * 1000 },
+  { id: "2", name: '90 Minutes', time: 5400 * 1000 },
+  { id: "3", name: '6 Hours', time: 21600 * 1000 },
+  { id: "4", name: '12 Hours', time: 43200 * 1000 },
+  { id: "5", name: '24 Hours', time: 86400 * 1000 },
+  { id: "6", name: '2 Days', time: 172800 * 1000 },
+  { id: "7", name: '7 Days', time: 604800 * 1000 },
 ]
 
-export const FACILITIES_LIST = [
-  {
-    shortName: "NH",
-    fullName: "National Hospital",
-  },
-  {
-    shortName: "EC",
-    fullName: "Eye Care Center",
-  },
-  {
-    shortName: "MS",
-    fullName: "Medix Premium Care Services",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-  {
-    shortName: "CC",
-    fullName: "City Medical Center",
-  },
-  {
-    shortName: "HL",
-    fullName: "Horizon Labs",
-  },
-]
 export const EMERGENCY_LOG_LIST = [
   {
     shortName: 'AW',
@@ -3653,20 +3681,20 @@ export const areaChartOne = {
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    marginBottom: 0,
+    
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {
@@ -3682,7 +3710,8 @@ export const areaChartOne = {
     },
   },
   tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+    style : { 'zIndex' :'1' }
   },
   plotOptions: {
     area: {
@@ -3728,13 +3757,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px" },
+    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
     align: 'right'
   },
   xAxis: {

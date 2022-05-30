@@ -42,6 +42,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
     "notistack": "^1.0.10",
+    "npm-force-resolutions": "^0.0.10",
     "rc-time-picker": "^3.7.3",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
@@ -52,7 +53,7 @@
     "react-idle-timer": "^4.6.4",
     "react-phone-input-2": "^2.14.0",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "react-select": "^5.1.0",
     "react-signature-canvas": "^1.0.5",
     "smartystreets-javascript-sdk": "^1.12.0",
@@ -69,7 +70,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "gen": "graphql-codegen --config codegen.yml"
+    "gen": "graphql-codegen --config codegen.yml",
+    "preinstall": "npx npm-force-resolutions"
   },
   "engines": {
     "node": "^16.13.1",
@@ -93,6 +95,10 @@
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "//": "See https://github.com/facebook/create-react-app/issues/11773",
+    "react-error-overlay": "6.0.9"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "2.2.0",
     "@graphql-codegen/typescript": "2.2.2",
@@ -108,7 +114,6 @@
     "@types/react-signature-canvas": "^1.0.2",
     "@types/smartystreets-javascript-sdk": "^1.6.4",
     "@types/underscore": "^1.11.4",
-    "@types/uuid": "^8.3.4",
-    "react-error-overlay": "^6.0.9"
+    "@types/uuid": "^8.3.4"
   }
 }

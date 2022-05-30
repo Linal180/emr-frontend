@@ -1,15 +1,19 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useReducer } from "react";
-import { Box, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
+import { FC, Reducer, useReducer } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
+import Selector from "../../common/Selector";
 import PieChart from "../../common/charts/PieChart";
 import PracticesTableComponent from "./tables/practicesTable";
-import BarChart1Component from "../../common/charts/barChart1";
-import BarChart2Component from "../../common/charts/barChart2";
-import BarChart3Component from "../../common/charts/barChart3";
+import PracticeUsers from "../../common/charts/PracticeUsers";
+import PracticesByYear from "../../common/charts/PracticesByYear";
+import PracticeFacilities from "../../common/charts/PracticeFacilities";
 // constants, styles and svgs block
 import history from "../../../history";
 import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
+import { renderArrayAsSelectorOptions } from "../../../utils";
+import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import {
   practiceReducer, Action, initialState, State
@@ -20,13 +24,18 @@ import {
 import {
   ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE,
   PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
-  TOTAL_USERS_PER_PRACTICE, VIEW_BILLING
+  TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
 } from "../../../constants";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+  const methods = useForm<dashboardInputsProps>({
+    mode: "all",
+    defaultValues: { year: { id: "2022", name: "2022" } }
+  });
+  const { watch } = methods;
+  const { year } = watch()
   const [{ practices }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
-  const handleChange = (_: ChangeEvent<HTMLInputElement>) => { };
 
   return (
     <>
@@ -52,7 +61,8 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} pt={2} color={WHITE} bgcolor="#21E1D8">
               <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
             </Box>
-            <BarChart1Component />
+
+            <PracticeUsers />
           </Card>
         </Grid>
 
@@ -153,22 +163,17 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h4">{PRACTICE_REGISTRATIONS}</Typography>
+
                 <Box>
                   <Box className={classes.yearDropdown}>
-                    <TextField
-                      id="standard-select-currency"
-                      select
-                      value={'2022'}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={'2022'}>
-                        {'2022'}
-                      </MenuItem>
-                    </TextField>
+                    <FormProvider {...methods}>
+                      <Selector label="" name="year" options={renderArrayAsSelectorOptions(YEARS)} />
+                    </FormProvider>
                   </Box>
                 </Box>
               </Box>
-              <BarChart2Component />
+
+              <PracticesByYear year={year} />
             </Box>
           </Card>
         </Grid>
@@ -180,7 +185,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
               </Box>
 
-              <BarChart3Component />
+              <PracticeFacilities />
             </Box>
           </Card>
         </Grid>

@@ -66,6 +66,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
           const { totalPages } = pagination
           totalPages && setTotalPages(totalPages)
         }
+      } else {
+        setForms([]);
       }
     }
   });

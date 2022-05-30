@@ -1,0 +1,51 @@
+# Gets practice facility users with roles count
+query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!){
+  getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: $practiceFacilitiesUsersInputs){
+    response {
+      status
+    }
+    
+    practiceUsers {
+      id
+      name
+
+      facilities {
+        name
+
+        users {
+          count
+          role
+        }
+      }
+    }
+  }
+}
+
+# Find Practice User count against Practice
+query GetPracticeUserRolesCount($usersWithRolesInputs: UsersWithRolesInputs!){
+  getUsersWithRoles(usersWithRolesInputs: $usersWithRolesInputs){
+    response {
+      status
+      message
+    }
+  
+    userRoles {
+      role
+      count
+    }
+  }
+}
+
+# Find Appointment count for each facility in a Practice
+query GetPracticeFacilityAppointments($practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!){
+  getPracticeFacilityAppointments(practiceFacilityAppointmentsInputs: $practiceFacilityAppointmentsInputs){
+    response {
+      status
+    }
+    
+    facilitiesAppointments {
+      facility
+      count
+    }
+  }
+}

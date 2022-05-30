@@ -79,7 +79,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
 
   return (
     <>
-      <Box m={2}>
+      <Box m={1.5}>
         <Grid container spacing={3}>
           {attachments &&
             attachments.map((attachment: Attachment) => {

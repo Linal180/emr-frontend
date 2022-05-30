@@ -2,9 +2,9 @@ import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { 
-  ADD_ANOTHER_SPECIMEN, ADD_SPECIMEN, COLLECTION_DATE, COLLECTION_TIME, REMOVE_SPECIMEN, SPECIMEN_NOTES, SPECIMEN_TYPE, 
-  SPECIMEN_TYPE_INITIAL_VALUES 
+import {
+  ADD_ANOTHER_SPECIMEN, ADD_SPECIMEN, COLLECTION_DATE, COLLECTION_TIME, REMOVE_SPECIMEN, SPECIMEN_NOTES, SPECIMEN_TYPE,
+  SPECIMEN_TYPE_INITIAL_VALUES
 } from "../../../../constants";
 import InputController from "../../../../controller";
 import { LabOrdersSpecimenTypeInput } from "../../../../interfacesTypes";
@@ -42,7 +42,11 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
-                <DatePicker name={`testField[${index}].specimenTypeField[${subIndex}].collectionDate`} label={COLLECTION_DATE} />
+                <DatePicker
+                  name={`testField[${index}].specimenTypeField[${subIndex}].collectionDate`}
+                  label={COLLECTION_DATE}
+                  disableFuture={false}
+                />
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>

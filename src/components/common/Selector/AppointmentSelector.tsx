@@ -12,11 +12,14 @@ import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { AppointmentsPayload, useFindAllAppointmentsLazyQuery } from "../../../generated/graphql";
 
-const AppointmentSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, patientId }): JSX.Element => {
+const AppointmentSelector: FC<FacilitySelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, patientId
+}): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, searchQuery, appointments } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderAppointments(appointments ?? [])] : [...renderAppointments(appointments ?? [])]
+  const updatedOptions = addEmpty ?
+    [EMPTY_OPTION, ...renderAppointments(appointments ?? [])] : [...renderAppointments(appointments ?? [])]
 
   const [findAllAppointment,] = useFindAllAppointmentsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -45,7 +48,7 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({ name, label, disabled,
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllAppointment({
-        variables: { appointmentInput: { ...pageInputs, searchString: searchQuery, patientId, relationTable:'Services' } }
+        variables: { appointmentInput: { ...pageInputs, searchString: searchQuery, patientId, relationTable: 'Services' } }
       })
     } catch (error) { }
   }, [page, findAllAppointment, searchQuery, patientId])

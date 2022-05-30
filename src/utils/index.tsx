@@ -5,22 +5,25 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
+import {
+  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  RenderListOptionTypes,
-  SelectorOption, TableAlignType, UserFormType
+  RenderListOptionTypes, SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
+  AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType,
+  PracticeUsersWithRoles,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -221,6 +224,10 @@ export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
+};
+
+export const getDateWithDay = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
 };
 
 export const deleteRecordTitle = (recordType: string) => {
@@ -472,9 +479,9 @@ export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
   if (!!icdCodes) {
     for (let icdCode of icdCodes) {
       if (icdCode) {
-        const { id, code } = icdCode;
+        const { id, code, description } = icdCode;
 
-        code && data.push({ value: id, label: code })
+        code && data.push({ value: id, label: `${code} | ${description}` })
       }
     }
   }
@@ -828,7 +835,7 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
-export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm") => {
+export const getFormatTime = (time: Maybe<string> | undefined, format = "hh:mm a") => {
   if (!time) return '';
   return moment(time, "hh:mm").format(format)
 };
@@ -1166,6 +1173,32 @@ export const renderListOptions = (list: RenderListOptionTypes) => {
   return data;
 };
 
+const isToday = (someDate: Date) => {
+  const today = new Date()
+
+  return someDate.getDate() === today.getDate() &&
+    someDate.getMonth() === today.getMonth() &&
+    someDate.getFullYear() === today.getFullYear()
+}
+
+const isTimePassed = (time: string) => new Date() < new Date(time);
+
+export const filterSlots = (slots: SlotsPayload['slots'], date: string | MaterialUiPickersDate) => {
+  let filteredSlots: SlotsPayload['slots'] = []
+
+  if (date && isToday(new Date(date.toString()))) {
+    filteredSlots = slots?.filter(slot => {
+      const { startTime } = slot || {}
+
+      return startTime && isTimePassed(startTime)
+    })
+
+    return filteredSlots;
+  }
+
+  return slots
+}
+
 export const LightTooltip = withStyles((theme: Theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -1176,3 +1209,122 @@ export const LightTooltip = withStyles((theme: Theme) => ({
     width: 320
   },
 }))(Tooltip);
+
+export const practiceChartOptions = (chartBgColor: string) => {
+  return {
+    credits: { enabled: false },
+    chart: {
+      type: 'column',
+      styledMode: false,
+      backgroundColor: chartBgColor,
+      marginBottom: 40,
+    },
+
+    title: { text: '' },
+
+    yAxis: {
+      className: 'highcharts-color-0',
+      min: 0,
+      title: { text: '' }
+    },
+
+    subtitle: {
+      text: '',
+    },
+
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true,
+    },
+
+    plotOptions: {
+      series: {
+        states: {
+          hover: { enabled: false }
+        }
+      },
+
+      column: {
+        pointPadding: 0.4,
+        borderWidth: 0,
+        color: WHITE,
+        borderRadius: 4,
+      }
+    }
+  }
+}
+
+export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id: item.toString(), name: item.toString() })
+    }
+  }
+
+  return result;
+};
+
+export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => {
+  let staffCount: number[] = []
+  let doctorCount: number[] = []
+  let patientCount: number[] = []
+  let facilityNames: string[] = []
+
+  if (data) {
+    const records = pluck(data, 'facilities')
+
+    if (records) {
+      records.map((record) => {
+        const users = pluck(record || [], 'users')
+        const names = pluck(record || [], 'name')
+
+        if (!!names) facilityNames = names as string[]
+
+        if (users) {
+          return users.map((userFacility) => {
+            return userFacility?.map(user => {
+              const { count, role } = user || {}
+
+              switch (role) {
+                case 'patient':
+                  patientCount.push(count || 0);
+                  break;
+
+                case 'doctor':
+                  doctorCount.push(count || 0);
+                  break;
+
+                case 'staff':
+                  staffCount.push(count || 0);
+                  break;
+              }
+
+              return null;
+            })
+          })
+        }
+
+        return null;
+      })
+    }
+  }
+
+  return {
+    staffCount, patientCount, doctorCount, facilityNames
+  }
+};
+
+export const getShortName = (name: string) => {
+  let shortName = '';
+  const parts = name.split(' ')
+
+  parts.map(part => shortName = shortName.concat(part.charAt(0)))
+
+  return shortName;
+}

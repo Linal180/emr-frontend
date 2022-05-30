@@ -13,7 +13,7 @@ const PieChart2Component: FC = (): JSX.Element => {
   const [pieChart2] = useState({
     tooltip: { enabled: true },
     credits: { enabled: false },
-    
+
     chart: {
       renderTo: 'container',
       plotBackgroundColor: null,
@@ -60,26 +60,26 @@ const PieChart2Component: FC = (): JSX.Element => {
 
     series: [
       {
-      showInLegend: false,
-      type: 'pie',
-      name: 'ClaimRatio',
-      innerSize: '75%',
-      data: [
-        ['active', 50],
-        ['inactive', 30],
-        ['noninactive', 20],
-      ],
-      
-      states: {
-        hover: {
-          enabled: false
+        showInLegend: false,
+        type: 'pie',
+        name: 'ClaimRatio',
+        innerSize: '75%',
+        data: [
+          ['active', 50],
+          ['inactive', 30],
+          ['closed', 20],
+        ],
+
+        states: {
+          hover: {
+            enabled: false
+          }
         }
-      }
-    }],
+      }],
   });
 
   return (
-    <Box className="pieChart2Container">
+    <Box className="chartContainer">
       <HighchartsReact highcharts={Highcharts} options={pieChart2} />
     </Box>
   )
