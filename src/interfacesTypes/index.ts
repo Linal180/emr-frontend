@@ -16,6 +16,7 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as AppointmentAction } from "../reducers/appointmentReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
@@ -29,7 +30,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals,
+  Maybe, PatientVitals, Practice,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1311,6 +1312,10 @@ export interface MediaUserDataType extends Message {
   user: User;
 }
 
+export interface MediaPracticeDataType extends Message {
+  practice: Practice;
+}
+
 export interface BackButtonProps {
   to: string;
 }
@@ -1489,4 +1494,14 @@ export interface PatientProviderSelectorProps {
 
 export interface dashboardInputsProps {
   year: SelectorOption
+}
+
+export interface PracticeChartProps {
+  practiceId: string;
+}
+
+export interface AppointmentSlotsProps {
+  facilityId?: string;
+  providerId?: string;
+  dispatcher: Dispatch<AppointmentAction>
 }

@@ -41,6 +41,17 @@ query GetPractice($getPractice: GetPractice!){
       champus
       createdAt
       updatedAt
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

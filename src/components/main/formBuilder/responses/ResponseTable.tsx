@@ -59,6 +59,8 @@ const ResponseTable: FC = (): JSX.Element => {
           message && Alert.error(message)
         }
 
+      } else {
+        setForms([]);
       }
     },
     onError: () => {

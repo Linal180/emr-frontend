@@ -23,6 +23,7 @@ import {
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
   AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
   UnitType,
+  PracticeUsersWithRoles,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -1225,6 +1226,10 @@ export const practiceChartOptions = (chartBgColor: string) => {
       title: { text: '' }
     },
 
+    subtitle: {
+      text: '',
+    },
+
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -1261,6 +1266,56 @@ export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
   }
 
   return result;
+};
+
+export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => {
+  let staffCount: number[] = []
+  let doctorCount: number[] = []
+  let patientCount: number[] = []
+  let facilityNames: string[] = []
+
+  if (data) {
+    const records = pluck(data, 'facilities')
+
+    if (records) {
+      records.map((record) => {
+        const users = pluck(record || [], 'users')
+        const names = pluck(record || [], 'name')
+
+        if (!!names) facilityNames = names as string[]
+
+        if (users) {
+          return users.map((userFacility) => {
+            return userFacility?.map(user => {
+              const { count, role } = user || {}
+
+              switch (role) {
+                case 'patient':
+                  patientCount.push(count || 0);
+                  break;
+
+                case 'doctor':
+                  doctorCount.push(count || 0);
+                  break;
+
+                case 'staff':
+                  staffCount.push(count || 0);
+                  break;
+              }
+
+              return null;
+            })
+          })
+        }
+
+        return null;
+      })
+    }
+  }
+
+  return {
+    staffCount, patientCount, doctorCount, facilityNames
+  }
 };
 
 export const getShortName = (name: string) => {
