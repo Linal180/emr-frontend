@@ -156,10 +156,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       icon: LocationIcon(),
       description: selfCurrentLocation
     },
-    {
-      icon: LocationIcon(),
-      description: selfCurrentLocation
-    },
   ]
 
   let providerName = ""
