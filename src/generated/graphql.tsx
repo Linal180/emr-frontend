@@ -1120,6 +1120,7 @@ export type FieldsInputs = {
   options: Array<FieldOptionsInputType>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
+  tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   textArea: Scalars['Boolean'];
   type: ElementType;
@@ -1140,6 +1141,7 @@ export type FieldsTypes = {
   options: Array<FieldOptionsType>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
+  tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   textArea: Scalars['Boolean'];
   type: ElementType;
@@ -1184,6 +1186,7 @@ export type FormElement = {
   placeholder?: Maybe<Scalars['String']>;
   required?: Maybe<Scalars['Boolean']>;
   sectionId: Scalars['String'];
+  tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -4721,7 +4724,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -4735,7 +4738,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -8123,6 +8126,7 @@ export const FindAllFormsDocument = gql`
             textArea
             isMultiSelect
             apiCall
+            tableContactType
             options {
               name
               value
@@ -8237,6 +8241,7 @@ export const GetFormDocument = gql`
             fieldId
             textArea
             isMultiSelect
+            tableContactType
             options {
               name
               value

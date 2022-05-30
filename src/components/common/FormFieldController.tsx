@@ -1,15 +1,16 @@
 
 import { FormControl, InputLabel } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
-import { APPOINTMENT_TYPE, FormBuilderApiSelector } from '../../constants';
 //interfaces, styles, constants
 import { FieldComponentProps } from '../../interfacesTypes';
 import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
+import { FormBuilderApiSelector } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
 import ServiceSelector from './formBuilder/ServiceSelector';
 import SlotsComponent from './formBuilder/SlotsComponent'
+import ProviderSelector from './formBuilder/DoctorSelector'
 //field renderer component
 export const FieldController = ({ item, isCreating, facilityId, state }: FieldComponentProps) => {
   //hooks
@@ -22,8 +23,8 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
     switch (apiCall) {
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
-          isRequired
-          label={APPOINTMENT_TYPE}
+          isRequired={required}
+          label={label}
           name={fieldId}
           facilityId={facilityId}
           addEmpty
@@ -31,6 +32,15 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
 
       case FormBuilderApiSelector.SERVICE_SLOT:
         return <SlotsComponent facilityId={facilityId || ""} state={state} />
+
+      case FormBuilderApiSelector.FACILITY_PROVIDERS:
+        return <ProviderSelector
+          facilityId={facilityId || ""}
+          label={label}
+          name={fieldId}
+          addEmpty
+          isRequired={required}
+        />
 
       default:
         return <Controller

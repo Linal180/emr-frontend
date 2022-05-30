@@ -8,7 +8,7 @@ import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGro
 //component
 import RadioButton from '../../components/common/RadioButton'
 //constant, interfaces, svgs, utils
-import { getFieldType } from '../../utils';
+import { getFieldType, getTimestamps } from '../../utils';
 import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
 import { useFormBuilderSidebarStyles } from '../../styles/formbuilder/sidebarStyle';
@@ -206,7 +206,7 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
         onClick={() => setOpenPicker(!openPicker)}
         onClose={() => setOpenPicker(!openPicker)}
         onChange={(date) => {
-          isCreating ? setDate(date) : onChange && onChange(date)
+          isCreating ? setDate(date) : onChange && onChange(getTimestamps(date?.toString() || new Date().toString()))
         }}
         onKeyDown={(e) => e.preventDefault()}
         autoOk

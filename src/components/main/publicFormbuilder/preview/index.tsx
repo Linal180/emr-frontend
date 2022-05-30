@@ -11,10 +11,12 @@ import Alert from '../../../common/Alert';
 //interfaces, reducers, utils, constants
 import { ParamsType } from '../../../../interfacesTypes'
 import { getUserFormFormattedValues, parseColumnGrid } from '../../../../utils';
-import { useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
+import { FormType, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED, FormBuilderApiSelector,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
+  FormBuilderApiSelector,
+  APPOINTMENT_SLOT_ERROR_MESSAGE,
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
@@ -29,7 +31,7 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, facilityId } = state
+  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType } = state
   const { handleSubmit } = methods;
 
   //mutation
@@ -46,13 +48,14 @@ const PublicFormPreview = () => {
           const { status } = response;
 
           if (form && status && status === 200) {
-            const { name, layout, isActive, facilityId } = form;
+            const { name, layout, isActive, facilityId, type } = form;
             const { sections } = layout;
 
             if (isActive) {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
               facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
+              type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
               sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
 
             }
@@ -96,8 +99,8 @@ const PublicFormPreview = () => {
       }
 
     },
-    onError: () => {
-      Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
+    onError: ({ message }) => {
+      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
     }
   })
 
@@ -114,8 +117,18 @@ const PublicFormPreview = () => {
         userFormElements: formValues
       }
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: false })
-
-      createUserForm({ variables: { createUserFormInput: data } })
+      if (formType === FormType.Appointment) {
+        const { scheduleEndDateTime, scheduleStartDateTime } = values;
+        if (scheduleStartDateTime && scheduleEndDateTime) {
+          await createUserForm({ variables: { createUserFormInput: data } })
+        }
+        else {
+          Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
+        }
+      }
+      else {
+        await createUserForm({ variables: { createUserFormInput: data } })
+      }
     }
   };
 
@@ -162,27 +175,27 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
                   </Box>
-                  <Grid container spacing={3}>
-                    {formValues?.map((item, index) => (
-                      <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                        <CardComponent cardTitle={item?.name}>
-                          <Grid container spacing={3}>
-                            {item?.fields?.map((field) => (
-                              <Grid
-                                item
-                                md={parseColumnGrid(field?.column)}
-                                key={`${item?.id}-${field?.fieldId}`}
-                              >
-                                <InputController item={field} facilityId={facilityId} state={state} />
-                              </Grid>
-                            ))}
-                          </Grid>
-                        </CardComponent>
-                      </Grid>
-                    ))}
-                  </Grid>
-
-
+                  <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                    <Grid container spacing={3} alignItems='stretch'>
+                      {formValues?.map((item, index) => (
+                        <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
+                          <CardComponent cardTitle={item?.name} isFullHeight>
+                            <Grid container spacing={3}>
+                              {item?.fields?.map((field) => (
+                                <Grid
+                                  item
+                                  md={parseColumnGrid(field?.column)}
+                                  key={`${item?.id}-${field?.fieldId}`}
+                                >
+                                  <InputController item={field} facilityId={facilityId} state={state} />
+                                </Grid>
+                              ))}
+                            </Grid>
+                          </CardComponent>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
                 </form>
               </FormProvider>
             </Box> :

@@ -47,6 +47,7 @@ query findAllForms($formInput: FormInput!) {
             textArea
             isMultiSelect
             apiCall
+            tableContactType
 
             options {
               name
@@ -110,6 +111,7 @@ query getForm($getForm: GetForm!) {
             fieldId
             textArea
             isMultiSelect
+            tableContactType
 
             options {
               name

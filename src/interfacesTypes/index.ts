@@ -235,6 +235,7 @@ export interface CardComponentType extends Children {
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
   onEditClick?: () => void;
+  isFullHeight?: boolean
 }
 
 export interface ChartingCardComponentType {

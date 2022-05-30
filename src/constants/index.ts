@@ -69,6 +69,7 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 // constants
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -3786,4 +3787,5 @@ export const areaChartTwo = {
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders'
 }
