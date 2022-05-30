@@ -7,7 +7,6 @@ import {
   Checkbox, IconButton
 } from '@material-ui/core';
 //components block
-import Search from '../../../../../common/Search';
 import Selector from '../../../../../common/Selector';
 import InputController from '../../../../../../controller'
 // constants, history, styling block
@@ -15,12 +14,17 @@ import { CloseIcon } from '../../../../../../assets/svgs';
 import PhoneField from '../../../../../common/PhoneInput';
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, MAPPED_GENDER_IDENTITY, RELATION,
-  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER, MOBILE, PREFERRED_PROVIDER_IN_PRACTICE, BACKUP_PROVIDER_IN_PRACTICE, PRIMARY_PROVIDER, REFERRING_PROVIDER, OTHER_PROVIDER, ENTER_RELATION
+  RELATIONSHIP_TO_PATIENT, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER, MOBILE, PREFERRED_PROVIDER_IN_PRACTICE, BACKUP_PROVIDER_IN_PRACTICE, PRIMARY_PROVIDER, REFERRING_PROVIDER, OTHER_PROVIDER, ENTER_RELATION, USUAL_PROVIDER_ID
 } from '../../../../../../constants';
+import { UpdatePatientProviderInputs } from '../../../../../../interfacesTypes';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { updatePatientProviderSchema } from '../../../../../../validationSchemas';
+import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 
-const CareTeamForm: FC<any> = ({toggleSideDrawer}): JSX.Element => {
-  const methods = useForm<any>({
+const CareTeamForm: FC<any> = ({ toggleSideDrawer }): JSX.Element => {
+  const methods = useForm<UpdatePatientProviderInputs>({
     mode: "all",
+    resolver: yupResolver(updatePatientProviderSchema)
   });
 
   return (
@@ -38,7 +42,13 @@ const CareTeamForm: FC<any> = ({toggleSideDrawer}): JSX.Element => {
           </Box>
 
           <Box mt={2} p={3}>
-            <Search search={Search} />
+            {/* <Search search={Search} /> */}
+            <DoctorSelector
+              isRequired
+              shouldOmitFacilityId
+              name="providerId"
+              label={USUAL_PROVIDER_ID}
+            />
 
             <Box p={3} />
 

@@ -369,3 +369,12 @@ mutation UpdatePatientNoteInfo($updatePatientNoteInfoInputs: UpdatePatientNoteIn
     }
   }
 }
+
+mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!){
+  updatePatientProvider(updatePatientProvider: $updatePatientProvider){
+     response {
+      status
+      message
+    }   
+  }
+}

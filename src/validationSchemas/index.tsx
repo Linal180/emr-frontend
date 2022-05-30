@@ -879,3 +879,7 @@ export const businessAchSchema = yup.object({
   businessName: yup.string().required(requiredMessage(COMPANY_NAME)),
   ...achPaymentSchema,
 })
+
+export const updatePatientProviderSchema = yup.object({
+  providerId: selectorSchema(PROVIDER)
+})

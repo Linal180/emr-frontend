@@ -1494,3 +1494,5 @@ export interface PatientProviderSelectorProps {
 export interface dashboardInputsProps {
   year: SelectorOption
 }
+
+export type UpdatePatientProviderInputs = { providerId: SelectorOption }
