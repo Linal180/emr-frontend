@@ -1,9 +1,8 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer, useCallback } from "react";
+import { Reducer, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Box, Button, Checkbox, FormControlLabel, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
@@ -18,38 +17,36 @@ import { WHITE, GREY } from "../../../../../theme";
 import { EMRLogo } from "../../../../../assets/svgs";
 import { FacilityContext } from '../../../../../context';
 import { externalAppointmentSchema } from "../../../../../validationSchemas";
-import { getCurrentTimestamps, getTimestampsForDob } from "../../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
+import { getCurrentTimestamps, getTimestampsForDob } from "../../../../../utils";
 import {
-  ContactType, Genderidentity, PaymentType, useCreateExternalAppointmentMutation, DoctorPayload,
-  BillingStatus, useGetDoctorLazyQuery,
+  ContactType, Genderidentity, PaymentType, useCreateExternalAppointmentMutation,
+  useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, DOCTOR_NOT_FOUND,
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING, APPOINTMENT_PAYMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, APPOINTMENT_PAYMENT,
+  FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
   BOOK_YOUR_APPOINTMENT,
 } from "../../../../../constants";
 import AppointmentSlots from "../../../../common/AppointmentSlots";
 
-const DoctorPublicAppointmentForm = (): JSX.Element => {
+const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
-  const { id: doctorId } = useParams<ParamsType>();
+  const { id: facilityId } = useParams<ParamsType>();
   const { fetchAllServicesList } = useContext(FacilityContext)
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { agreed, doctor, facilityId } = state;
-  const [date] = useState(new Date() as MaterialUiPickersDate);
+  const [{ facility, agreed, date }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(externalAppointmentSchema)
   });
   const { reset, handleSubmit } = methods;
 
-  const [getDoctor] = useGetDoctorLazyQuery({
+  const [getFacility] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -60,16 +57,14 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
     onCompleted(data) {
       try {
-        const { getDoctor: { response, doctor } } = data;
+        const { getFacility: { response, facility } } = data;
 
         if (response) {
           const { status } = response
 
-          if (doctor && status && status === 200) {
-            const { facilityId } = doctor
+          if (facility && status && status === 200) {
             fetchAllServicesList(facilityId)
-            dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
-            dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId ?? '' })
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
         }
       } catch (error) { }
@@ -98,29 +93,21 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     }
   });
 
-  const fetchDoctor = useCallback(async () => {
-    try {
-      doctorId ?
-        await getDoctor({ variables: { getDoctor: { id: doctorId } } })
-        :
-        history.push(PATIENT_APPOINTMENT_FAIL)
-    } catch (error) { }
-  }, [doctorId, getDoctor])
-
   useEffect(() => {
-    fetchDoctor()
-  }, [doctorId, fetchDoctor])
+    facilityId ?
+      getFacility({ variables: { getFacility: { id: facilityId } } })
+      :
+      history.push(PATIENT_APPOINTMENT_FAIL)
+  }, [facilityId, getFacility])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
-    const {
-      firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime
-    } = inputs;
+    const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
-      if (doctor) {
-        const { facilityId, practiceId } = doctor
+      if (facility) {
+        const { id: facilityId, practiceId } = facility
         const { id: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
@@ -129,21 +116,20 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                practiceId: practiceId,
-                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self, facilityId: facilityId || '',
+                serviceId: selectedService, facilityId, paymentType: PaymentType.Self,
                 scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, date), billingStatus: BillingStatus.Due,
-                scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date),
+                scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), practiceId: practiceId || ''
               },
 
               createPatientItemInput: {
-                email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
-                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
+                email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId,
+                sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }
         })
       } else
-        Alert.error(DOCTOR_NOT_FOUND)
+        Alert.error(FACILITY_NOT_FOUND)
     }
   }
 
@@ -252,7 +238,9 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
                   </Box>
                 </Grid>
 
-                <AppointmentSlots providerId={doctorId}/>
+                <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
+                  <AppointmentSlots facilityId={facilityId} dispatcher={dispatch} />
+                </Grid>
               </Grid>
             </Box>
           </form>
@@ -262,4 +250,4 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
   )
 }
 
-export default DoctorPublicAppointmentForm;
+export default FacilityPublicAppointmentForm;
