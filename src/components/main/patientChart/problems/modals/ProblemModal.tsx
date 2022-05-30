@@ -17,7 +17,7 @@ import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import {
   ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION, APPOINTMENT_TEXT,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -25,6 +25,7 @@ import {
 } from '../../../../../generated/graphql';
 import ItemSelector from '../../../../common/ItemSelector';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
+import AppointmentSelector from '../../../../common/Selector/AppointmentSelector';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen }): JSX.Element => {
   const { id: icdCodeId, code, description } = item as IcdCodes || {}
@@ -60,7 +61,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
       if (getPatientProblem) {
         const { patientProblem, response } = getPatientProblem
         const { status } = response || {}
-
+        console.log("getPatientProblem")
         if (patientProblem && status && status === 200) {
           const { problemSeverity, problemType, problemStartDate, note, appointment, snowMedCode } = patientProblem
 
@@ -69,13 +70,13 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
             setSnoMedCode({ id, name: referencedComponentId })
             id && referencedComponentId && setValue('snowMedCodeId', setRecord(id, referencedComponentId))
           }
-
+          console.log(appointment, "appointment")
           if (appointment) {
             const { appointmentType } = appointment;
 
             if (appointmentType) {
               const { id, serviceType } = appointmentType;
-
+              console.log(serviceType, ">>>>>>>>>>>>>>>>>")
               id && serviceType && setValue('appointmentId', setRecord(id, serviceType))
             }
           }
@@ -250,6 +251,13 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
               value={snoMedCode}
               searchQuery={description || ''}
               modalName={ITEM_MODULE.snoMedCode}
+            />
+
+            <AppointmentSelector
+              addEmpty
+              name="appointmentId"
+              patientId={patientId}
+              label={APPOINTMENT_TEXT}
             />
 
             <InputController
