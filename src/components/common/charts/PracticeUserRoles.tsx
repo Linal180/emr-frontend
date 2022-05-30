@@ -5,14 +5,15 @@
 
 // packages block
 import { FC, useCallback, useEffect, useState } from "react";
-import HighchartsReact from "highcharts-react-official";
+import { pluck } from "underscore";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
+import HighchartsReact from "highcharts-react-official";
+// utils, interfaces and graphql block
+import { WHITE } from "../../../theme";
+import { practiceChartOptions } from "../../../utils";
 import { PracticeChartProps } from "../../../interfacesTypes";
 import { useGetPracticeUserRolesCountLazyQuery  } from "../../../generated/graphql";
-import { pluck } from "underscore";
-import { practiceChartOptions } from "../../../utils";
-import { WHITE } from "../../../theme";
 
 const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element => {
   const { credits, title, subtitle } = practiceChartOptions('#A075F8')

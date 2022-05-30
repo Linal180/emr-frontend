@@ -9,10 +9,10 @@ import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
 // constants and utils block
-import { practiceChartOptions, getPracticeFacilityUsersData } from "../../../utils";
 import { BLUE, VERY_MILD, WHITE } from "../../../theme";
-import { PracticeRolesTypes, useGetPracticeUsersWithRolesLazyQuery } from "../../../generated/graphql";
 import { PracticeChartProps } from "../../../interfacesTypes";
+import { practiceChartOptions, getPracticeFacilityUsersData } from "../../../utils";
+import { PracticeRolesTypes, useGetPracticeUsersWithRolesLazyQuery } from "../../../generated/graphql";
 
 const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Element => {
   const { credits, title, tooltip } = practiceChartOptions('#21E1D8')
