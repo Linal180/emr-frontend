@@ -4,15 +4,45 @@ import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
 // interfaces, constants, utils blocks
 import { WHITE_FOUR } from "../../theme";
-import { getAppointmentDateTime } from "../../utils";
-import { Appointmentstatus } from "../../generated/graphql"
+import { convertDateFromUnix, getAppointmentDateTime } from "../../utils";
+import { Appointmentstatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps } from "../../interfacesTypes";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, APPOINTMENT_UPDATED_SUCCESSFULLY, CHECK_IN_ROUTE
 } from "../../constants";
+import Alert from "./Alert";
+import history from "../../history";
 
-const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) =>
-  <Box>
+const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
+  const [updateAppointment, { loading: updateAppointmentLoading }] = useUpdateAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+  });
+
+  const handlePatientCheckIn = async(id:string) =>{
+    const { data }=await updateAppointment({
+      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(),'MM-DD-YYYY hh:mm a') } }
+    })
+    
+    const { updateAppointment: updateAppointmentResponse } = data ?? {}
+    const { response } = updateAppointmentResponse ?? {}
+    if (response) {
+      const { status } = response
+
+      if (status && status === 200) {
+        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
+        history.push(`${APPOINTMENTS_ROUTE}/${id}${CHECK_IN_ROUTE}`)
+      }
+    }
+
+    
+  }
+
+  return (
+    <Box>
     {appointments?.map(appointment => {
       const { id, scheduleStartDateTime, appointmentType, provider, facility } = appointment || {};
       const { firstName, lastName } = provider || {};
@@ -43,12 +73,17 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) =>
               </Link>
 
               <Box p={1} />
-              <Button type="submit" variant="contained" color="secondary">{CHECK_IN}</Button>
+              <Button type="submit" variant="contained" color="secondary" onClick={()=>handlePatientCheckIn(id || '')} disabled={updateAppointmentLoading}>
+                {CHECK_IN}
+              </Button>
             </Box>
           }
         </Box>
       )
     })}
-  </Box>;
+  </Box>
+  )
+}
+  
 
 export default AppointmentList;

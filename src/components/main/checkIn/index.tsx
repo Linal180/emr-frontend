@@ -1,34 +1,39 @@
 // packages block
-import { useState, ChangeEvent } from "react";
-import { AddCircleOutline, Check, ChevronRight, } from '@material-ui/icons';
-import { FormProvider, SubmitHandler, useForm, Controller } from 'react-hook-form';
 import {
-  Box, Button, Card, colors, Grid, Step, Stepper, Typography, StepLabel, StepIconProps, Table, TableBody, TableHead, TableRow,
-  TableCell, IconButton, FormControl, InputLabel, Collapse,
+  Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step, StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
+import { AddCircleOutline, Check, ChevronRight } from '@material-ui/icons';
+// constants, history, styling block
+import clsx from 'clsx';
+import { ChangeEvent, Reducer, useReducer, useState } from "react";
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { useParams } from "react-router";
+import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
+import { ClearIcon, UserIcon } from "../../../assets/svgs";
+import {
+  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
+  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, GO_TO_PROFILE, HCFA_DESC, HCPCS_CODES, ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_INFO,
+  PATIENT_PAYMENT_TYPE, PRICE, PRIMARY_PROVIDER, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT, YES
+} from "../../../constants";
+import InputController from '../../../controller';
+import { ParamsType } from "../../../interfacesTypes";
+import { Action, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { convertDateFromUnix, renderTh } from "../../../utils";
+import PageHeader from "../../common/PageHeader";
 // component block
 import Search from "../../common/Search";
 import Selector from '../../common/Selector';
-import InputController from '../../../controller';
-import PageHeader from "../../common/PageHeader";
 import ChartCards from "../patientChart/chartCards";
 import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
-// constants, history, styling block
-import clsx from 'clsx';
-import { renderTh } from "../../../utils";
-import { ClearIcon, UserIcon } from "../../../assets/svgs";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { useTableStyles } from "../../../styles/tableStyles";
-import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import {
-  ACTIONS, AMOUNT_DOLLAR, APPOINTMENT_INFO, APPOINTMENT_INFO_DATA, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
-  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, GO_TO_PROFILE, HCFA_DESC, HCPCS_CODES, PRICE,
-  ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_INFO,
-  PATIENT_PAYMENT_TYPE, PRIMARY_PROVIDER, RECORD_VITALS, SAVE_TEXT, TO_BILLING, TO_CHART, VITALS_TEXT, ADD_ANOTHER_PATIENT_PAYMENT, YES, NO
-} from "../../../constants";
+import InsuranceComponent from "../patients/patientDetail/insurance";
+import PatientForm from "../patients/patientForm";
+import CheckIn from "./CheckIn";
+import LabOrders from "./LabOrders";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -46,11 +51,20 @@ const CheckInStepIcon = (props: StepIconProps) => {
 }
 
 const CheckInComponent = (): JSX.Element => {
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
+  const { appointment } = state
+  const { appointmentType, id: appointmentId, scheduleStartDateTime } = appointment ?? {}
+  const appointmentInfo = {
+    name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`,
+    id: appointmentId ?? ''
+  }
+
   const classes = useTableStyles();
   const classesToggle = usePublicAppointmentStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
+  const { id: patientId } = useParams<ParamsType>()
   const search = (query: string) => { }
 
   const handleStep = (step: number) => () => {
@@ -64,9 +78,9 @@ const CheckInComponent = (): JSX.Element => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CheckIn />
-      case 1:
-        return <PatientInfo />
+        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep}/>
+      case 1:   
+        return <PatientInfo/>
       case 2:
         return <Insurance />
       case 3:
@@ -74,6 +88,8 @@ const CheckInComponent = (): JSX.Element => {
       case 4:
         return <Chart />
       case 5:
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={handleStep}/>
+      case 6:
         return <Billing />
       default:
         return 'Unknown step';
@@ -86,35 +102,6 @@ const CheckInComponent = (): JSX.Element => {
     setValue('employment', checked)
   };
 
-  // 0- CHECK-IN
-  const CheckIn = () =>
-    <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{APPOINTMENT_INFO}</Typography>
-
-          <Button variant="contained" color="primary">
-            {RECORD_VITALS}
-            <ChevronRight />
-          </Button>
-        </Box>
-
-        <Box p={2}>
-          <Grid container spacing={0}>
-            {APPOINTMENT_INFO_DATA.map((item) => (
-              <Grid item md={4} sm={12} xs={12}>
-                <Box my={2}>
-                  <Typography variant="body2">{item.name}</Typography>
-                  <Box p={0.2} />
-                  <Typography variant="body1">{item.description}</Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Card>
-    </>
-
   // 1- PATIENT-INFO
   const PatientInfo = () =>
     <>
@@ -122,13 +109,15 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-          <Button variant="contained" color="primary">
-            {SAVE_TEXT}
+          <Button variant="contained" color="primary" onClick={handleStep(2)}>
+            {INSURANCE}
             <ChevronRight />
           </Button>
         </Box>
 
         <Box p={2}></Box>
+
+        <PatientForm id={patientId} isEdit />
       </Card>
     </>
 
@@ -144,7 +133,7 @@ const CheckInComponent = (): JSX.Element => {
             <ChevronRight />
           </Button>
         </Box>
-
+        <InsuranceComponent />
         <Box p={2}></Box>
       </Card>
     </>

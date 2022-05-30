@@ -108,7 +108,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               {buttonText || UPLOAD}
             </Button>}
 
-            {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+            {notDescription && !button && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
             </Typography>}
 

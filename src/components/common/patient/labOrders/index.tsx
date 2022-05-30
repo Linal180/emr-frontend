@@ -99,7 +99,6 @@ const LabOrdersTable = (): JSX.Element => {
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
 
   const handleEdit = (orderNum: string, name: string, labTestIds:string[]) => {
-    console.log('labTestIds',labTestIds)
     if (orderNum) {
       setLabTestIds(labTestIds)
       setOrderNum(orderNum)
@@ -176,7 +175,6 @@ const LabOrdersTable = (): JSX.Element => {
                   {Object.values(transformedLabOrders).map((labOrders) => {
                     const { appointment, createdAt, labTestStatus, orderNumber, testObservations} = labOrders[0] as LabTestPayload['labTest'] ?? {}
                     const { appointmentType, scheduleStartDateTime } = appointment ?? {}
-                    console.log("testObservations",testObservations, orderNumber)
                     return (
                       <TableRow>
                         <TableCell scope="row">

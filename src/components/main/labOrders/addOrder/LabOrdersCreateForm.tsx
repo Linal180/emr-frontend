@@ -6,7 +6,7 @@ import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // interfaces, graphql, constants block
-import { GeneralFormProps, LabOrdersCreateFormInput, ParamsType } from "../../../../interfacesTypes";
+import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
   ADD_ANOTHER_TEST, APPOINTMENT_TEXT, CREATE_LAB_ORDER,
   DIAGNOSES, EMPTY_MULTISELECT_OPTION, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, STATUS,
@@ -22,11 +22,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
 import Alert from '../../../common/Alert';
-import { generateString, getFormatDateString } from '../../../../utils';
+import { generateString, getFormatDateString, renderItem } from '../../../../utils';
 import { useParams } from 'react-router';
 import history from '../../../../history';
 
-const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
+const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.Element => {
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
     defaultValues: {
@@ -37,7 +37,7 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
     resolver: yupResolver(createLabOrdersSchema)
   });
 
-  const { patientId } = useParams<ParamsType>()
+  const { id: patientId } = useParams<ParamsType>()
 
   const { control, handleSubmit, reset } = methods
 
@@ -54,7 +54,7 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
     onCompleted() {
       Alert.success('Lab Orders Created Successfully');
       // history.push(LOGIN_ROUTE)
-      history.push(`/patients/${patientId}/details/10`)
+      !appointmentInfo && history.push(`/patients/${patientId}/details/10`)
       reset()
     }
   });
@@ -62,7 +62,13 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
   const onSubmit: SubmitHandler<LabOrdersCreateFormInput> = async (values) => {
     const orderNumber = generateString()
     const { appointment, labTestStatus, diagnosesIds, testField } = values
-    const { id: appointmentId } = appointment ?? {}
+    let appointmentId=''
+    if(appointmentInfo){
+      appointmentId= appointmentInfo.id
+    }else{
+      appointmentId=appointment?.id ?? ''
+    }
+     
     const { id: testStatus } = labTestStatus ?? {}
 
     testField.forEach(async (testFieldValues) => {
@@ -128,12 +134,13 @@ const LabOrdersCreateForm: FC<GeneralFormProps> = (): JSX.Element => {
 
               <Grid container spacing={3}>
                 <Grid item md={4} sm={12} xs={12}>
-                  <AppointmentSelector
-                    label={APPOINTMENT_TEXT}
-                    name="appointment"
-                    addEmpty
-                    patientId={patientId}
-                  />
+                  {appointmentInfo ? renderItem(APPOINTMENT_TEXT, appointmentInfo.name) :
+                      <AppointmentSelector
+                        label={APPOINTMENT_TEXT}
+                        name="appointment"
+                        addEmpty
+                        patientId={patientId}
+                      />}
                 </Grid>
 
                 <Grid item md={4} sm={12} xs={12}>
