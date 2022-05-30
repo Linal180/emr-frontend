@@ -880,6 +880,41 @@ export const businessAchSchema = yup.object({
   ...achPaymentSchema,
 })
 
+export const basicPatientDoctorSchema = {
+  ...ssnSchema,
+  ...npiSchema,
+  ...upinSchema,
+  ...deaDateSchema,
+  ...licenseDateSchema,
+  ...taxonomyCodeSchema,
+  ...firstLastNameSchema,
+  taxId: yup.string(),
+  prefix: yup.string(),
+  deaNumber: yup.string(),
+  taxIdStuff: yup.string(),
+  dpsCtpNumber: yup.string(),
+  stateLicense: yup.string(),
+  emcProviderId: yup.string(),
+  campusGrpNumber: yup.string(),
+  blueShildNumber: yup.string(),
+  providerIntials: yup.string(),
+  specialityLicense: yup.string(),
+  degreeCredentials: yup.string(),
+  anesthesiaLicense: yup.string(),
+  medicareGrpNumber: yup.string(),
+  medicaidGrpNumber: yup.string(),
+  prescriptiveAuthNumber: yup.string(),
+  meammographyCertNumber: yup.string(),
+  speciality: selectorSchema(SPECIALTY),
+  suffix: notRequiredStringOnly(SUFFIX),
+  middleName: notRequiredStringOnly(MIDDLE_NAME),
+  languagesSpoken: notRequiredStringOnly(LANGUAGE_SPOKEN),
+};
+
 export const updatePatientProviderSchema = yup.object({
-  providerId: selectorSchema(PROVIDER)
+  providerId: selectorSchema(PROVIDER),
+  phone: notRequiredPhone(PHONE),
+  speciality: selectorSchema(SPECIALTY),
+  ...firstLastNameSchema,
+  ...emailSchema,
 })

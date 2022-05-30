@@ -378,3 +378,40 @@ mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!){
     }   
   }
 }
+
+query GetPatientProvider($getPatient: GetPatient!) {
+  getPatientProvider(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    providers {
+      id
+      doctorId
+      patientId
+      currentProvider
+      createdAt
+      updatedAt
+
+        doctor {
+          id
+          firstName
+          lastName
+          email
+          speciality
+          
+          contacts {
+            id
+            name
+            city
+            email
+            phone
+            primaryContact
+            }
+        }
+      }
+  }
+}

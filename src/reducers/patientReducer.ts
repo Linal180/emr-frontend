@@ -1,6 +1,7 @@
 import { usStreet } from "smartystreets-javascript-sdk";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
+  AllDoctorPayload,
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
@@ -59,6 +60,7 @@ export interface State {
   isTempEdit: boolean;
   isNoteOpen: HTMLElement | null;
   patientNoteOpen: boolean
+  patientProvidersData: AllDoctorPayload['doctors'];
 }
 
 export const initialState: State = {
@@ -113,7 +115,8 @@ export const initialState: State = {
   prevFeverUnit: TempUnitType.DegF,
   isTempEdit: false,
   isNoteOpen: null,
-  patientNoteOpen: false
+  patientNoteOpen: false,
+  patientProvidersData: []
 }
 
 export enum ActionType {
@@ -165,7 +168,9 @@ export enum ActionType {
   SET_EDIT_HEIGHT = 'setEditHeight',
   SET_EDIT_HEAD = 'setEditHead',
   SET_NOTE_OPEN = 'setNoteOpen',
-  SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen'
+  SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
+  SET_PATIENT_PROVIDERS = 'setPatientProviders',
+  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData'
 }
 
 export type Action =
@@ -219,6 +224,7 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
+  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: AllDoctorPayload['doctors'] }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -501,6 +507,11 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientNoteOpen: action.patientNoteOpen
+      }
+    case ActionType.SET_PATIENT_PROVIDERS_DATA:
+      return {
+        ...state,
+        patientProvidersData: action.patientProvidersData
       }
   }
 };
