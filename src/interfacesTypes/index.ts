@@ -16,7 +16,6 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as AppointmentAction } from "../reducers/appointmentReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
@@ -216,6 +215,10 @@ interface ControlLabel {
 type LoginControlTypes = "email" | "password";
 
 export type MediaControlTypes = "title" | "subTitle" | "description";
+
+export type FormForwardRef = {
+  submit: () => void,
+}
 
 export interface LoginInputControlProps extends ControlLabel {
   error?: string;
@@ -1063,6 +1066,11 @@ export interface PatientCardsProps extends GeneralFormProps {
   isEdit?: boolean
   dispatch?: Dispatch<PatientAction>
   state?: PatientState
+  shouldShowBread?: boolean
+}
+
+export interface PatientFormProps extends GeneralFormProps {
+  shouldShowBread?: boolean
 }
 
 export interface AddPatientModalProps {

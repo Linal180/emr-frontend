@@ -1,48 +1,29 @@
 // packages block
-import { FC, useContext, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import {
-  CircularProgress, Box, Button, Grid,
-} from "@material-ui/core";
-// components block
-import Alert from "../../../common/Alert";
-import PageHeader from '../../../common/PageHeader';
-import BackButton from '../../../common/BackButton';
-import { getAddressByZipcode } from '../../../common/smartyAddress';
-import PatientIdentificationCard from './PatientIdentificationCard';
-import PatientContactInfoCard from './PatientContactInfoCard';
-import PatientEmergencyContactCard from './PatientEmergencyContactCard';
-import PatientNextKinCard from './PatientNextKinCard';
-import PatientGuardianCard from './PatientGuardianCard';
-import PatientRegistrationDatesCard from './PatientRegistrationDatesCard';
-import PatientPrivacyCard from './PatientPrivacyCard';
-import PatientDemographicsCard from './PatientDemographicsCard';
-import PatientEmploymentCard from './PatientEmploymentCard';
-import PatientGuarantorCard from './PatientGuarantorCard';
-// interfaces, graphql, constants block /styles
-import history from '../../../../history';
-import { AuthContext, ListContext, FacilityContext } from '../../../../context';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
-import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/patientReducer";
+import { Box, Button, CircularProgress } from "@material-ui/core";
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER } from "../../../../constants";
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
-  Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
-  useUpdatePatientMutation, useCreatePatientMutation
+  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
+  useUpdatePatientMutation
 } from "../../../../generated/graphql";
-import {
-  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
-  EMPTY_OPTION, NOT_FOUND_EXCEPTION, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT,
-  ZIP_CODE_ENTER, SSN_FORMAT, UPDATE_PATIENT, ADD_PATIENT, PATIENTS_BREAD,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, DASHBOARD_BREAD,
-} from "../../../../constants";
+// interfaces, graphql, constants block /styles
+import history from '../../../../history';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
+// components block
+import Alert from "../../../common/Alert";
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import { getAddressByZipcode } from '../../../common/smartyAddress';
+import PatientCard from './PatientCard';
 
-const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id, isEdit, shouldShowBread= true },ref): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
@@ -286,7 +267,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(PATIENT_UPDATED);
-          history.push(PATIENTS_ROUTE)
+          shouldShowBread && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -487,10 +468,16 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     setValue('ssn', SSN_FORMAT)
   }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
 
+  useImperativeHandle(ref, () => ({
+    submit() {
+      handleSubmit(onSubmit)()
+    }
+  }));
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+      {shouldShowBread &&  <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -507,55 +494,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>
+        </Box>}
 
-        <Box maxHeight="calc(100vh - 210px)" className="overflowY-auto">
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <PatientIdentificationCard getPatientLoading={getPatientLoading}/>
-
-              <Box pb={3} />
-
-              <PatientContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch}/>
-
-              <Box pb={3} />
-
-              <PatientEmergencyContactCard getPatientLoading={getPatientLoading}/>
-
-              <Box pb={3} />
-
-              <PatientNextKinCard getPatientLoading={getPatientLoading}/>
-
-              <Box pb={3} />
-
-              <PatientGuardianCard getPatientLoading={getPatientLoading}/>
-
-              <Box pb={3} />
-
-              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch}/>
-            </Grid>
-
-            <Grid md={6} item>
-              <PatientRegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} />
-
-              <Box pb={3} />
-
-              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch}/>
-
-              <Box pb={3} />
-
-              <PatientEmploymentCard getPatientLoading={getPatientLoading}/>
-
-              <Box pb={3} />
-
-              <PatientGuarantorCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch}/>
-            </Grid>
-          </Grid>
-        </Box>
+        <PatientCard shouldShowBread={shouldShowBread} getPatientLoading={getPatientLoading} isEdit={isEdit} dispatch={dispatch} state={state}/>
       </form>
     </FormProvider>
   );
-};
+});
 
 export default PatientForm;
 

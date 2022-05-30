@@ -15,7 +15,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
   const { appointment } = appointmentState;
   const { appointmentType, provider, primaryInsurance, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
   const { name: facilityName } = facility ?? {}
-  const { serviceType } = appointmentType ?? {}
+  const { name: seviceName } = appointmentType ?? {}
   const { firstName, lastName } = provider ?? {}
   
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
@@ -58,7 +58,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant="h4">{APPOINTMENT_INFO}</Typography>
 
-        <Button variant="contained" color="primary" onClick={handleStep(1)}>
+        <Button variant="contained" color="primary" onClick={()=>handleStep(1)}>
           {CHECK_IN}
           <ChevronRight />
         </Button>
@@ -70,7 +70,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
               <Box my={2}>
                 <Typography variant="body2">{APPOINTMENT_TYPE}</Typography>
                 <Box p={0.2} />
-                <Typography variant="body1">{serviceType}</Typography>
+                <Typography variant="body1">{seviceName}</Typography>
               </Box>
             </Grid>
 
