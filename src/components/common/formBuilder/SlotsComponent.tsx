@@ -15,106 +15,107 @@ import { usePublicAppointmentStyles } from '../../../styles/publicAppointmentSty
 import { SlotsComponentProps } from '../../../interfacesTypes'
 
 const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
-	const [availableSlots, setAvailableSlots] = useState<SlotsPayload['slots']>([])
-	const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
-	const [appointmentTypeId, setAppointmentTypeId] = useState('')
+  const [availableSlots, setAvailableSlots] = useState<SlotsPayload['slots']>([])
+  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
+  const [appointmentTypeId, setAppointmentTypeId] = useState('')
 
-	const { serviceId } = state || {}
+  const { serviceId } = state || {}
 
-	const classes = usePublicAppointmentStyles()
-	const { setValue, getValues } = useFormContext()
-	const values = getValues()
+  const classes = usePublicAppointmentStyles()
+  const { setValue, getValues } = useFormContext()
+  const values = getValues()
 
-	const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
-		fetchPolicy: "network-only",
-		nextFetchPolicy: 'no-cache',
-		notifyOnNetworkStatusChange: true,
+  const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
-		onError() {
-			setAvailableSlots([])
-		},
+    onError() {
+      setAvailableSlots([])
+    },
 
-		onCompleted(data) {
-			const { getSlots } = data || {}
+    onCompleted(data) {
+      const { getSlots } = data || {}
 
-			if (getSlots) {
-				const { slots } = getSlots;
+      if (getSlots) {
+        const { slots } = getSlots;
 
-				slots ? setAvailableSlots(slots) : setAvailableSlots([])
-			}
-		}
-	});
+        slots ? setAvailableSlots(slots) : setAvailableSlots([])
+      }
+    }
+  });
 
-	const handleSlot = (slot: Slots) => {
-		if (slot) {
-			const { startTime, endTime } = slot;
-			const startDateTime = getCurrentTimestamps(startTime || '', date)
-			const endDateTime = getCurrentTimestamps(endTime || '', date)
-			startTime && setValue('scheduleStartDateTime', startDateTime)
-			endTime && setValue('scheduleEndDateTime', endDateTime)
-		}
-	};
+  const handleSlot = (slot: Slots) => {
+    if (slot) {
+      const { startTime, endTime } = slot;
+      const startDateTime = getCurrentTimestamps(startTime || '', date)
+      const endDateTime = getCurrentTimestamps(endTime || '', date)
+      startTime && setValue('scheduleStartDateTime', startDateTime)
+      endTime && setValue('scheduleEndDateTime', endDateTime)
+    }
+  };
 
-	const getSlotsHandler = useCallback(async () => {
-		if (date && serviceId) {
-			setValue('scheduleEndDateTime', '')
-			setValue('scheduleStartDateTime', '')
-			const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
-			const currentDay = new Date(date).getDay()
+  const getSlotsHandler = useCallback(async () => {
+    if (date && serviceId) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+      const currentDay = new Date(date).getDay()
 
-			await getSlots({
-				variables: {
-					getSlots: {
-						offset: moment.tz().utcOffset(), currentDate: date.toString(), serviceId: appointmentTypeId, facilityId,
-						day: days[currentDay]
-					}
-				}
-			})
-		}
-	}, [date, getSlots, facilityId, setValue, serviceId, appointmentTypeId])
+      await getSlots({
+        variables: {
+          getSlots: {
+            offset: moment.tz().utcOffset(), currentDate: date.toString(), serviceId: appointmentTypeId, facilityId,
+            day: days[currentDay]
+          }
+        }
+      })
+    }
+  }, [date, getSlots, facilityId, setValue, serviceId, appointmentTypeId])
 
-	useEffect(() => {
-		appointmentTypeId && serviceId && date && getSlotsHandler()
-	}, [date, serviceId, getSlotsHandler, appointmentTypeId])
+  useEffect(() => {
+    appointmentTypeId && serviceId && date && getSlotsHandler()
+  }, [date, serviceId, getSlotsHandler, appointmentTypeId])
 
-	useEffect(() => {
-		if (serviceId && values[serviceId]) {
-			const id = values[serviceId]
-			setAppointmentTypeId(id)
-		}
-	}, [values, serviceId, setAppointmentTypeId])
+  useEffect(() => {
+    if (serviceId && values[serviceId]) {
+      const id = values[serviceId]
+      setAppointmentTypeId(id)
+    }
+  }, [values, serviceId, setAppointmentTypeId])
 
 
-	return (
-		<Fragment>
-			<AppointmentDatePicker date={date} setDate={setDate} />
+  return (
+    <Fragment>
+      <Box display="flex" justifyContent="center">
+        <AppointmentDatePicker date={date} setDate={setDate} />
+      </Box>
+      <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
+      </Box>
 
-			<Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
-				<Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
-			</Box>
+      {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+        <ul className={classes.timeSlots}>
+          {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+            const { startTime, endTime } = slot || {}
 
-			{getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-				<ul className={classes.timeSlots}>
-					{!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-						const { startTime, endTime } = slot || {}
+            return (
+              <li key={index} onClick={() => handleSlot(slot)}>
+                <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
-						return (
-							<li key={index} onClick={() => handleSlot(slot)}>
-								<input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
-
-								<label htmlFor={`timeSlot-${index}`}>
-									{getStandardTime(new Date(startTime || '').getTime().toString())} -
-									{getStandardTime(new Date(endTime || '').getTime().toString())}
-								</label>
-							</li>
-						)
-					}) : (
-						<Typography>{NO_SLOT_AVAILABLE}</Typography>
-					)}
-				</ul>
-			)}
-		</Fragment>
-	)
+                <label htmlFor={`timeSlot-${index}`}>
+                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                  {getStandardTime(new Date(endTime || '').getTime().toString())}
+                </label>
+              </li>
+            )
+          }) : (
+            <Typography>{NO_SLOT_AVAILABLE}</Typography>
+          )}
+        </ul>
+      )}
+    </Fragment>
+  )
 }
 
 export default SlotsComponent

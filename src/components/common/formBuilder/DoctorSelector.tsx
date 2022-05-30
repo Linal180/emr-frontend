@@ -14,7 +14,7 @@ import {
 } from "../../../reducers/doctorReducer";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId = false
+  name, label, disabled, isRequired = false, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId = false
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
@@ -25,12 +25,12 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const isFacAdmin = isFacilityAdmin(roles);
   const isSuperAndPracAdmin = isSuper || isPracAdmin
 
-  const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, searchQuery, doctors, provider } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
-  const [findAllDoctor,] = useFindAllDoctorListLazyQuery({
+  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -122,7 +122,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
 
   return (
     <Controller
-      rules={{ required: true }}
+      rules={{ required: isRequired }}
       name={name}
       control={control}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
