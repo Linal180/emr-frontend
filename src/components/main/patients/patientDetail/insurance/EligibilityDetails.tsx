@@ -1,5 +1,7 @@
+//packages import
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from "@material-ui/core";
 import { ChangeEvent, FC, useState } from "react";
+//constants, interfaces, utiles import
 import { CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE, OVERRIDE_PAYER_RETURNED_RESULT } from "../../../../../constants";
 import { GeneralFormProps } from "../../../../../interfacesTypes";
 

@@ -1,7 +1,9 @@
+//packages import
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 import { FC, useCallback, useEffect } from "react";
 import { useParams } from "react-router";
+//constants, interfaces, utils, types
 import { APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE, PROVIDER_NAME, REASON } from "../../../constants";
 import { AppointmentPayload, useGetAppointmentLazyQuery } from "../../../generated/graphql";
 import { CheckInComponentProps, ParamsType } from "../../../interfacesTypes";

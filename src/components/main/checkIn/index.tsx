@@ -1,30 +1,13 @@
 // packages block
-import {
-  Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step, StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
-} from "@material-ui/core";
-import { AddCircleOutline, Check, ChevronRight } from '@material-ui/icons';
-// constants, history, styling block
-import clsx from 'clsx';
 import { ChangeEvent, Reducer, useReducer, useState } from "react";
+import clsx from 'clsx';
+import {
+  Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step, 
+  StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
+} from "@material-ui/core";
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
-import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
-import { ClearIcon, UserIcon } from "../../../assets/svgs";
-import {
-  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
-  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, GO_TO_PROFILE, HCFA_DESC, HCPCS_CODES, ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_INFO,
-  PATIENT_PAYMENT_TYPE, PRICE, PRIMARY_PROVIDER, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT, YES
-} from "../../../constants";
-import InputController from '../../../controller';
-import { ParamsType } from "../../../interfacesTypes";
-import { Action, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { convertDateFromUnix, renderTh } from "../../../utils";
-import PageHeader from "../../common/PageHeader";
+import { AddCircleOutline, Check, ChevronRight } from '@material-ui/icons';
 // component block
 import Search from "../../common/Search";
 import Selector from '../../common/Selector';
@@ -34,6 +17,25 @@ import InsuranceComponent from "../patients/patientDetail/insurance";
 import PatientForm from "../patients/patientForm";
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
+import InputController from '../../../controller';
+import PageHeader from "../../common/PageHeader";
+// constants, history, styling block
+import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
+import { ClearIcon, UserIcon } from "../../../assets/svgs";
+import {
+  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
+  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, GO_TO_PROFILE, HCFA_DESC, 
+  HCPCS_CODES, ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_INFO,
+  PATIENT_PAYMENT_TYPE, PRICE, PRIMARY_PROVIDER, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT, YES
+} from "../../../constants";
+import { ParamsType } from "../../../interfacesTypes";
+import { Action, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { convertDateFromUnix, renderTh } from "../../../utils";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();

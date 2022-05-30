@@ -1,10 +1,13 @@
+//packages import
 import { FC } from "react"
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core"
-import { ActionType } from "../../../../reducers/patientReducer"
-import { CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY } from "../../../../constants"
+//components import
 import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
+//constants, interfaces, reducer imports
 import { PatientCardsProps } from "../../../../interfacesTypes"
+import { ActionType } from "../../../../reducers/patientReducer"
+import { CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY } from "../../../../constants"
 
 const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}

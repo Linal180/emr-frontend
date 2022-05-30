@@ -1,15 +1,11 @@
+//packages import
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Grid, Typography } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import { FC, useCallback, useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
-import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
-import { InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
-import { formatValue, setRecord } from "../../../../../utils";
-import { createInsuranceSchema } from "../../../../../validationSchemas";
-import Alert from "../../../../common/Alert";
+//components import
 import ItemSelector from "../../../../common/ItemSelector";
 import Selector from "../../../../common/Selector";
 import TextLoader from "../../../../common/TextLoader";
@@ -17,6 +13,13 @@ import EligibilityDetails from "./EligibilityDetails";
 import PolicyAttachments from "./PolicyAttachments";
 import PolicyDetails from "./PolicyDetails";
 import PolicyHolderDetails from "./PolicyHolderDetails";
+//constants, types, utils import
+import { ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
+import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
+import { InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
+import { formatValue, setRecord } from "../../../../../utils";
+import { createInsuranceSchema } from "../../../../../validationSchemas";
+import Alert from "../../../../common/Alert";
 
 const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions }) => {
   const { id: patientId } = useParams<ParamsType>()

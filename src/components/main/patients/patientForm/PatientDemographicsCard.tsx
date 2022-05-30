@@ -1,16 +1,24 @@
+//packages import
 import { Box, FormControl, Grid, InputLabel } from "@material-ui/core"
 import { ChangeEvent, FC } from "react"
 import { Controller, useFormContext } from "react-hook-form"
-import { DEMOGRAPHICS, EMPTY_OPTION, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, MAPPED_ETHNICITY, MAPPED_GENDER_IDENTITY, MAPPED_MARITAL_STATUS, MAPPED_PRONOUNS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS, PRONOUNS, RACE, SEXUAL_ORIENTATION, SEX_AT_BIRTH } from "../../../../constants"
+//components import
+import CardComponent from "../../../common/CardComponent"
+import Selector from "../../../common/Selector"
+import ViewDataLoader from "../../../common/ViewDataLoader"
 import InputController from "../../../../controller"
+//interfaces, styles, constants block
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles"
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
 import { GREY_SEVEN, WHITE } from "../../../../theme"
-import CardComponent from "../../../common/CardComponent"
-import Selector from "../../../common/Selector"
-import ViewDataLoader from "../../../common/ViewDataLoader"
+import {
+  DEMOGRAPHICS, EMPTY_OPTION, ETHNICITY, GENDER_IDENTITY,
+  HOMEBOUND, LANGUAGE_SPOKEN, MAPPED_ETHNICITY, MAPPED_GENDER_IDENTITY,
+  MAPPED_MARITAL_STATUS, MAPPED_PRONOUNS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION,
+  MARITAL_STATUS, PRONOUNS, RACE, SEXUAL_ORIENTATION, SEX_AT_BIRTH
+} from "../../../../constants"
 
 const PatientDemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
   const { control, setValue } = useFormContext()

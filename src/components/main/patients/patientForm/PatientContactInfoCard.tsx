@@ -1,19 +1,25 @@
+//packages import
 import { Box, Button, Grid, Typography } from "@material-ui/core"
 import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, EMAIL, EMPTY_OPTION, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY } from "../../../../constants"
 import InputController from "../../../../controller"
-import { SmartyUserData } from "../../../../interfacesTypes"
-import { ActionType, } from "../../../../reducers/patientReducer"
+//components import
 import Alert from "../../../common/Alert"
-import { PatientCardsProps } from "../../../../interfacesTypes"
 import CardComponent from "../../../common/CardComponent"
 import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
 import { verifyAddress } from "../../../common/smartyAddress"
 import SmartyModal from "../../../common/SmartyModal"
 import ViewDataLoader from "../../../common/ViewDataLoader"
+//constants, interfaces and utils import
+import { SmartyUserData, PatientCardsProps } from "../../../../interfacesTypes"
+import { ActionType, } from "../../../../reducers/patientReducer"
+import {
+  ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, EMAIL,
+  EMPTY_OPTION, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE,
+  STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
+} from "../../../../constants"
 
 const PatientContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
@@ -23,7 +29,7 @@ const PatientContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, stat
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
 
-  const { isVerified, addressOpen, data }= state || {}
+  const { isVerified, addressOpen, data } = state || {}
 
 
   const verifyAddressHandler = async () => {

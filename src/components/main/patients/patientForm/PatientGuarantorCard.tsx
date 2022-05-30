@@ -1,18 +1,27 @@
+//packages import
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
-import { ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, EMPTY_OPTION, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME, MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES, MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE } from "../../../../constants";
+//components import
 import InputController from "../../../../controller";
-import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/patientReducer";
-import { setRecord } from "../../../../utils";
 import CardComponent from "../../../common/CardComponent";
 import PhoneField from "../../../common/PhoneInput";
 import Selector from "../../../common/Selector";
 import ViewDataLoader from "../../../common/ViewDataLoader";
+//tyoes, interfaces, utils import
+import {
+  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, EMPTY_OPTION,
+  FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
+  MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
+  MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE
+} from "../../../../constants";
+import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
+import { ActionType } from "../../../../reducers/patientReducer";
+import { setRecord } from "../../../../utils";
+
 
 const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
-  const methods= useFormContext<PatientInputProps>()
+  const methods = useFormContext<PatientInputProps>()
   const { watch, setValue } = methods
   const { basicAddress, basicAddress2, basicCity, basicCountry, basicEmail, basicState, basicZipCode } = watch()
 
@@ -41,7 +50,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
   const setAddressValues = (checked: boolean) => checked ? copyAddress() : resetAddress()
 
   const handleSameAddress = (checked: boolean) => {
-   dispatch && dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
+    dispatch && dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
 
     setAddressValues(checked);
   }

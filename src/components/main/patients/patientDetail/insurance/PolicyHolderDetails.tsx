@@ -1,18 +1,22 @@
+//packages import
 import { Box, Grid } from "@material-ui/core";
 import { FC, useCallback, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { useParams } from "react-router";
+//components import
+import InputController from "../../../../../controller";
+import DatePicker from "../../../../common/DatePicker";
+import Selector from "../../../../common/Selector";
+//constants, types and interface props
 import {
   ADDRESS, ADDRESS_CTD, CITY, DOB, EMPLOYER, EMPTY_OPTION, FIRST_NAME,
   LAST_NAME, LEGAL_SEX, MAPPED_POLICY_GENDER, MAPPED_STATES, MIDDLE_NAME, POLICY_HOLDER_ID_CERTIFICATION_NUMBER,
   SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../../constants";
-import InputController from "../../../../../controller";
 import { PolicyHolderRelationshipType, useGetPatientLazyQuery } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput, ParamsType } from "../../../../../interfacesTypes";
 import { setRecord } from "../../../../../utils";
-import DatePicker from "../../../../common/DatePicker";
-import Selector from "../../../../common/Selector";
+
 
 const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { id: patientId } = useParams<ParamsType>()

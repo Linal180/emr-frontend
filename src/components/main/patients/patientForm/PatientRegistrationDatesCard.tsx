@@ -1,14 +1,17 @@
+//packages import
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
 import { useFormContext } from "react-hook-form"
-import { DECREASED_DATE, DOCTOR, EXPIRATION_DATE, FACILITY, ISSUE_DATE, REGISTRATION_DATE, REGISTRATION_DATES, USUAL_PROVIDER_ID } from "../../../../constants"
-import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
-import { renderItem } from "../../../../utils"
+//components import
 import CardComponent from "../../../common/CardComponent"
 import DatePicker from "../../../common/DatePicker"
 import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
+//constants, interfaces and utils import
+import { DECREASED_DATE, DOCTOR, EXPIRATION_DATE, FACILITY, ISSUE_DATE, REGISTRATION_DATE, REGISTRATION_DATES, USUAL_PROVIDER_ID } from "../../../../constants"
+import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
+import { renderItem } from "../../../../utils"
 
 const PatientRegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state }) => {
   const { facilityName, doctorName } = state || {}

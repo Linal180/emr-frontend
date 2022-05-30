@@ -1,11 +1,14 @@
+//packages import
 import { FC } from "react"
 import { Grid } from "@material-ui/core"
-import { EMPLOYER_NAME, EMPLOYER_PHONE, EMPLOYMENT, USUAL_INDUSTRY, USUAL_OCCUPATION } from "../../../../constants"
+//components import
 import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
-import { PatientCardsProps } from "../../../../interfacesTypes"
 import InputController from "../../../../controller"
 import PhoneField from "../../../common/PhoneInput"
+//constants, interface imports
+import { EMPLOYER_NAME, EMPLOYER_PHONE, EMPLOYMENT, USUAL_INDUSTRY, USUAL_OCCUPATION } from "../../../../constants"
+import { PatientCardsProps } from "../../../../interfacesTypes"
 
 const PatientEmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading }) => {
   return (

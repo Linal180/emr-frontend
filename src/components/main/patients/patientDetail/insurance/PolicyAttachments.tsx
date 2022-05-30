@@ -1,14 +1,19 @@
+//packages Import
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { Box, Grid, Typography } from "@material-ui/core";
 import { RemoveCircleOutline } from "@material-ui/icons";
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
-import { ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE } from "../../../../../constants";
-import { Attachment, AttachmentMetaDataType, AttachmentType, useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation } from "../../../../../generated/graphql";
-import { ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
+//components Import
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
+//constants, types, interfaces imports 
+import { ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, 
+        INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE } from "../../../../../constants";
+import { Attachment, AttachmentMetaDataType, AttachmentType, 
+         useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation } from "../../../../../generated/graphql";
+import { ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
+import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
 
 const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }) => {
   const { id: patientId } = useParams<ParamsType>()
