@@ -175,6 +175,7 @@ const LabOrdersTable = (): JSX.Element => {
                   {Object.values(transformedLabOrders).map((labOrders) => {
                     const { appointment, createdAt, labTestStatus, orderNumber, testObservations} = labOrders[0] as LabTestPayload['labTest'] ?? {}
                     const { appointmentType, scheduleStartDateTime } = appointment ?? {}
+
                     return (
                       <TableRow>
                         <TableCell scope="row">
