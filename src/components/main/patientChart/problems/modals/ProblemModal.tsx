@@ -61,7 +61,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
       if (getPatientProblem) {
         const { patientProblem, response } = getPatientProblem
         const { status } = response || {}
-        console.log("getPatientProblem")
+
         if (patientProblem && status && status === 200) {
           const { problemSeverity, problemType, problemStartDate, note, appointment, snowMedCode } = patientProblem
 
@@ -70,13 +70,13 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
             setSnoMedCode({ id, name: referencedComponentId })
             id && referencedComponentId && setValue('snowMedCodeId', setRecord(id, referencedComponentId))
           }
-          console.log(appointment, "appointment")
+
           if (appointment) {
             const { appointmentType } = appointment;
 
             if (appointmentType) {
               const { id, serviceType } = appointmentType;
-              console.log(serviceType, ">>>>>>>>>>>>>>>>>")
+
               id && serviceType && setValue('appointmentId', setRecord(id, serviceType))
             }
           }
