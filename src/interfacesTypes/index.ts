@@ -16,6 +16,7 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as AppointmentAction } from "../reducers/appointmentReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
@@ -1493,4 +1494,14 @@ export interface PatientProviderSelectorProps {
 
 export interface dashboardInputsProps {
   year: SelectorOption
+}
+
+export interface PracticeChartProps {
+  practiceId: string;
+}
+
+export interface AppointmentSlotsProps {
+  facilityId?: string;
+  providerId?: string;
+  dispatcher: Dispatch<AppointmentAction>
 }

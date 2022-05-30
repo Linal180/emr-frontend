@@ -63,7 +63,7 @@ const PracticeUsers: FC = (): JSX.Element => {
     <>
       {!loading &&
 
-        <Box className="barChart1Container">
+        <Box className="practice-bar-chart-container">
           <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </Box>
       }
