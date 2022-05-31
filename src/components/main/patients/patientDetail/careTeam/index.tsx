@@ -4,7 +4,7 @@ import { Box, Button, Card, TableCell, TableRow, Typography } from "@material-ui
 import TableLoader from "../../../../common/TableLoader";
 // constants block
 import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, PRACTICE_DETAILS, CARE_TEAM }
-from "../../../../../constants";
+  from "../../../../../constants";
 import { WHITE_FOUR } from "../../../../../theme";
 import { formatValue } from "../../../../../utils";
 import { CareTeamsProps } from "../../../../../interfacesTypes";
@@ -15,9 +15,7 @@ import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: CareTeamsProps): JSX.Element => {
   const classes = useDoctorScheduleStyles();
 
-  const closeSlider = () => {
-    toggleSideDrawer && toggleSideDrawer()
-  }
+  const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
 
   return (
     <Card className="card-box-shadow">

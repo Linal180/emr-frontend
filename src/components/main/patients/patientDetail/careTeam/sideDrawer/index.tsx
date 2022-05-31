@@ -6,17 +6,15 @@ import CreateTeamForm from '../careTeamForm';
 
 const CareTeamProvider = ({ drawerOpened, toggleSideDrawer, patientId, reload }: CareTeamsProps) => {
 
-  const closeSlider = () => {
-    toggleSideDrawer && toggleSideDrawer()
-  }
-  
+  const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
+
   return (
     <Drawer
       open={drawerOpened}
       onClose={closeSlider}
       anchor="right"
     >
-      <CreateTeamForm toggleSideDrawer={toggleSideDrawer} patientId={patientId} reload={reload}/>
+      <CreateTeamForm toggleSideDrawer={toggleSideDrawer} patientId={patientId} reload={reload} />
     </Drawer>
   )
 }

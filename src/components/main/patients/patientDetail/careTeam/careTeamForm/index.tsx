@@ -1,29 +1,26 @@
 // packages block
 import { FC, useEffect } from 'react';
-import { GREY_SIXTEEN } from '../../../../../../theme';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import {
-  Box, Button, Typography, Grid, IconButton,
-  // Checkbox, FormControl, FormLabel, FormControlLabel, FormGroup,
-} from '@material-ui/core';
-//components block
-import Selector from '../../../../../common/Selector';
-import InputController from '../../../../../../controller'
-// constants, history, styling block
-import { CloseIcon } from '../../../../../../assets/svgs';
-import PhoneField from '../../../../../common/PhoneInput';
-import {
-  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY, EDIT_PROVIDER, DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
-  // RELATIONSHIP_TO_PATIENT, PREFERRED_PROVIDER_IN_PRACTICE, BACKUP_PROVIDER_IN_PRACTICE, PRIMARY_PROVIDER, REFERRING_PROVIDER, OTHER_PROVIDER, ENTER_RELATION, RELATION
-} from '../../../../../../constants';
-import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { updatePatientProviderSchema } from '../../../../../../validationSchemas';
-import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
-import { useGetDoctorLazyQuery, useUpdatePatientProviderMutation } from '../../../../../../generated/graphql';
-import { setRecord } from '../../../../../../utils';
-import history from '../../../../../../history';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, Typography, Grid, IconButton } from '@material-ui/core';
+//components block
 import Alert from '../../../../../common/Alert';
+import Selector from '../../../../../common/Selector';
+import PhoneField from '../../../../../common/PhoneInput';
+import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
+// constants, history, styling block
+import history from '../../../../../../history';
+import { setRecord } from '../../../../../../utils';
+import { GREY_SIXTEEN } from '../../../../../../theme';
+import { CloseIcon } from '../../../../../../assets/svgs';
+import InputController from '../../../../../../controller'
+import { updatePatientProviderSchema } from '../../../../../../validationSchemas';
+import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
+import { useGetDoctorLazyQuery, useUpdatePatientProviderMutation } from '../../../../../../generated/graphql';
+import {
+  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
+  EDIT_PROVIDER, DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
+} from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload }): JSX.Element => {
   const methods = useForm<UpdatePatientProviderInputsProps>({
@@ -112,9 +109,8 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
     }
   }
 
-  const closeSlider = () => {
-    toggleSideDrawer && toggleSideDrawer()
-  }
+  const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
+
 
   useEffect(() => {
     if (selectedProviderId)
