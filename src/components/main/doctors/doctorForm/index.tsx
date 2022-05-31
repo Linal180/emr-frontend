@@ -576,11 +576,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="phone" label={PHONE} />
+                        <PhoneField isRequired name="phone" label={MOBILE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" label={MOBILE} />
+                        <PhoneField name="mobile" label={PHONE} />
                       </Grid>
                     </Grid>
 
