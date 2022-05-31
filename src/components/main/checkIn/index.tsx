@@ -179,7 +179,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <ChartCards />
+        <ChartCards  />
       </Card>
     </>
 

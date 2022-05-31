@@ -22,9 +22,8 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, Element,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
 } from "../generated/graphql";
-import { ReactElement } from "react";
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
@@ -452,6 +451,8 @@ export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
+export const ICD_TEN_CODE = "ICD-10 Code:";
+export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -689,6 +690,7 @@ export const SERVICES = "Services";
 export const FACILITY = "Facility";
 export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 10;
+export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
@@ -698,6 +700,7 @@ export const VITAL_LIST_PAGE_LIMIT = 5;
 export const ADD_RECORD = "Add Record";
 export const NEW_PATIENT = "New Patient";
 export const ADD_ALLERGY = "Add Allergy";
+export const EDIT_ALLERGY = "Edit Allergy";
 export const NEW_PROVIDER = "New Provider";
 export const REGISTERED_ON = "Registered on";
 export const VIEW_PATIENTS = "View Patients";
@@ -712,6 +715,7 @@ export const RECENT_ACTIVITIES = "Recent Activities";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const TOTAL_APPOINTMENTS = "Total Appointments";
 export const PATIENT_DISCHARGED = "Patient Discharged";
+export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
 export const AVAILABILITY_SCHEDULE = "Availability Schedule";
 export const PRACTICE_REGISTRATIONS = "Practice Registrations";
@@ -832,8 +836,10 @@ export const TEST_TIME = "Test Time";
 export const ACTIVATED = "Activated";
 export const ADD_VITALS = "Add Vitals";
 export const TEST_NOTES = "Test Notes";
+export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
+export const EDIT_PROBLEMS = "Edit Problems";
 export const QUICK_ACTIONS = "Quick Actions";
 export const SPECIMEN_TYPE = "Specimen Type";
 export const EXCEPTION = "Forbidden exception";
@@ -857,6 +863,7 @@ export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const QUICK_APPOINTMENTS = "Quick Appointments";
 export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
+export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
@@ -3868,5 +3875,40 @@ export const VITALS_DUMMY_DATA = [
     value: "25",
     name: "Head Circumference (in)",
   },
+]
 
+export const PROBLEMS_DUMMY_DATA = [
+  {
+    name: "Functional Heartburn",
+    value: "Moderate",
+    status: "Active"
+  },
+  {
+    name: "Pain in lower limb (left)",
+    value: "Mild",
+    status: "Active"
+  },
+  {
+    name: "High blood pressure",
+    value: "Acute",
+    status: "Active"
+  },
+  {
+    name: "Abnormal heartbeat",
+    value: "Acute",
+    status: "Historical"
+  },
+]
+
+export const ALLERGIES_DUMMY_DATA = [
+  {
+    name: "peanut",
+    value: "Nausea, Mild",
+    status: "Active"
+  },
+  {
+    name: "Pollen",
+    value: "Breathing Problem, Mild",
+    status: "Active"
+  },
 ]

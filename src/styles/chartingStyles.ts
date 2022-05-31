@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK_TWO, GRAY_ONE, GREEN, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK_THREE, BLACK_TWO, GRAY_ONE, GREEN, GREEN_TWO, WHITE, WHITE_FOUR } from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -74,4 +74,26 @@ export const useChartingStyles = makeStyles({
       backgroundColor: WHITE,
     },
   },
+
+  tableHeaderDropdown: {
+    "& .MuiInputBase-root": {
+      backgroundColor: GREEN_TWO,
+      border: `1px solid ${WHITE_FOUR}`,
+      minWidth: 120,
+      height: 40,
+      padding: 10,
+    },
+    
+  },
+
+  tableBox: {
+    overflowX: 'auto',
+
+    "& .MuiTable-root": {
+      "& .MuiTableCell-head .MuiTypography-root": {
+        color: BLACK_THREE,
+      },
+    }
+  },
+
 });
