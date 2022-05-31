@@ -23,13 +23,15 @@ import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
   EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED, PAGE_LIMIT
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-  const { currentUser } = useContext(AuthContext)
-  const { practiceId } = currentUser || {}
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {};
+  const { practice } = facility || {};
+  const { id: practiceId } = practice || {};
   const [facilities, setFacilities] = useState<FacilitiesPayload['facilities']>([])
 
   const [findAllFacility] = useFindAllFacilityListLazyQuery({
@@ -57,7 +59,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
     try {
       await findAllFacility({
         variables: {
-          facilityInput: { paginationOptions: { limit: PAGE_LIMIT, page: 1 } }
+          facilityInput: { paginationOptions: { limit: 7, page: 1 } }
         }
       })
     } catch (error) { }

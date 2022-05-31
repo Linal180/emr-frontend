@@ -9,7 +9,7 @@ import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur,onSelect
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur,onSelect, value
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
@@ -19,7 +19,7 @@ const Selector: FC<SelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={updatedOptions[0]}
+      defaultValue={value ?? updatedOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
