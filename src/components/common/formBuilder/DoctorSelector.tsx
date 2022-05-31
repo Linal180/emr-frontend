@@ -125,6 +125,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       rules={{ required: isRequired }}
       name={name}
       control={control}
+      defaultValue={''}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete

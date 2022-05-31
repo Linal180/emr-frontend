@@ -61,6 +61,7 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
 
   return (
     <Controller
+      rules={{ required: required }}
       name={fieldId}
       control={control}
       defaultValue={getUserFormDefaultValue(type, isMultiSelect)}

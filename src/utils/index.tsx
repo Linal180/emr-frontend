@@ -914,7 +914,7 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
       }
     }
     else {
-      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [], arrayOfObjects: [] })
+      arr.push({ FormsElementsId: property, value: values[property] || '', arrayOfStrings: [], arrayOfObjects: [] })
     }
   }
   return arr;

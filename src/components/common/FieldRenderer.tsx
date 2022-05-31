@@ -185,10 +185,11 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
   )
 }
 //date component
-export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
+export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const [date, setDate] = useState<Date | null>(new Date())
   const { name, value, onChange } = field || {}
+  const { required } = item || {}
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -198,6 +199,7 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
         variant="inline"
         format="MM/dd/yyyy"
         inputVariant="outlined"
+        required={required}
         fullWidth
         KeyboardButtonProps={{ 'aria-label': 'change date', }}
         open={openPicker}
@@ -217,15 +219,19 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
 }
 
 //tel phone number
-export const PhoneFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
+export const PhoneFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
   const [phoneNo, setPhoneNo] = useState<string>('')
   const { value, onChange } = field || {}
+  const { required } = item
 
   return (
     <PhoneInput
       country='us'
       disableDropdown
       disableCountryCode
+      inputProps={{
+        required: required
+      }}
       value={isCreating ? phoneNo : value}
       onlyCountries={['us']}
       placeholder='(111) 111-1111'
