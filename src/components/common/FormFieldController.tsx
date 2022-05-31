@@ -11,6 +11,7 @@ import { FieldRenderer } from './FieldRenderer'
 import ServiceSelector from './formBuilder/ServiceSelector';
 import SlotsComponent from './formBuilder/SlotsComponent'
 import ProviderSelector from './formBuilder/DoctorSelector'
+import PaymentSelector from './formBuilder/PaymentSelector'
 //field renderer component
 export const FieldController = ({ item, isCreating, facilityId, state }: FieldComponentProps) => {
   //hooks
@@ -23,7 +24,7 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
     switch (apiCall) {
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
-          isRequired={required}
+          isRequired={required || true}
           label={label}
           name={fieldId}
           facilityId={facilityId}
@@ -39,9 +40,11 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
           label={label}
           name={fieldId}
           addEmpty
-          isRequired={required}
+          isRequired={required || true}
         />
 
+      case FormBuilderApiSelector.PAYMENT_TYPE:
+        return <PaymentSelector item={item} />
       default:
         return <Controller
           name={fieldId}

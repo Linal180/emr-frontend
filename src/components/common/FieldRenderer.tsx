@@ -230,7 +230,7 @@ export const PhoneFieldComponent = ({ field, isCreating, item }: FieldComponentP
       disableDropdown
       disableCountryCode
       inputProps={{
-        required: required
+        required: isCreating ? false : required
       }}
       value={isCreating ? phoneNo : value}
       onlyCountries={['us']}
