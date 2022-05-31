@@ -1,94 +1,46 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
-import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
-import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup,
-  Checkbox, InputLabel, Typography,
-} from "@material-ui/core";
-// components block
-import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
-import DatePicker from "../../../common/DatePicker";
-import PhoneField from '../../../common/PhoneInput';
-import PageHeader from '../../../common/PageHeader';
-import BackButton from '../../../common/BackButton';
-import InputController from '../../../../controller';
-import SmartyModal from '../../../common/SmartyModal';
-import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
-import DoctorSelector from '../../../common/Selector/DoctorSelector';
-import FacilitySelector from '../../../common/Selector/FacilitySelector';
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
-// interfaces, graphql, constants block /styles
-import history from '../../../../history';
-import { GREY_SEVEN, WHITE } from '../../../../theme';
-import { AuthContext, ListContext, FacilityContext } from '../../../../context';
-import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
-import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
-import { getDate, getTimestamps, getTimestampsForDob, renderItem, setRecord } from '../../../../utils';
-import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/patientReducer";
+import { Box, Button, CircularProgress } from "@material-ui/core";
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER } from "../../../../constants";
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
-  Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
-  useUpdatePatientMutation, useCreatePatientMutation
+  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
+  useUpdatePatientMutation
 } from "../../../../generated/graphql";
-import {
-  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB,
-  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN,
-  GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
-  PREVIOUS_LAST_NAME, MAPPED_STATES, DECREASED_DATE, USUAL_INDUSTRY, PHONE, EMPLOYMENT,
-  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE,
-  MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER,
-  EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
-  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY,
-  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
-  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS,
-  SAME_AS_PATIENT, SSN_FORMAT, DOCTOR, UPDATE_PATIENT, EMAIL, VERIFIED, ADD_PATIENT, PATIENTS_BREAD,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, DASHBOARD_BREAD, CONSENT_TO_MESSAGES_DESCRIPTION, CONSENT_TO_MESSAGES,
-} from "../../../../constants";
+// interfaces, graphql, constants block /styles
+import history from '../../../../history';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
+// components block
+import Alert from "../../../common/Alert";
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import { getAddressByZipcode } from '../../../common/smartyAddress';
+import PatientCard from './PatientCard';
 
-const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id, isEdit, shouldShowBread= true },ref): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
-  const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress,
-    facilityName, doctorName, isChecked, isVerified, addressOpen, data
-  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [state, setState] = useState({
-    privacyNotice: false,
-    releaseOfInfoBill: false,
-    callToConsent: false,
-    medicationHistoryAuthority: false,
-    smsPermission: false
-  })
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
-  const classes = usePublicAppointmentStyles();
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const {
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission
+  } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? extendedEditPatientSchema : extendedPatientSchema)
   });
-  const { handleSubmit, setValue, watch, control } = methods;
+  const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2, basicCountry, basicEmail
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
-
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: checked })
-    setValue('homeBound', checked)
-  };
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -174,13 +126,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
           sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
 
-          setState({
-            ...state, callToConsent: callToConsent || false,
-            privacyNotice: privacyNotice || false,
-            releaseOfInfoBill: releaseOfInfoBill || false,
-            medicationHistoryAuthority: medicationHistoryAuthority || false,
-            smsPermission: smsPermission || false
-          })
+          dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: callToConsent || false })
+          dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: privacyNotice || false })
+          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
+          dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: medicationHistoryAuthority || false })
+          dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: smsPermission || false })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -317,17 +267,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(PATIENT_UPDATED);
-          history.push(PATIENTS_ROUTE)
+          shouldShowBread && history.push(PATIENTS_ROUTE)
         }
       }
     }
   });
-
-  const handleChangeForCheckBox = (name: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setState({ ...state, [name]: event.target.checked });
-  };
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
@@ -365,7 +309,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedSexualOrientation } = sexualOrientation;
       const { id: selectedGuarantorRelationship } = guarantorRelationship;
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
-      const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission } = state
 
       let practiceId = '';
       if (selectedFacility) {
@@ -516,80 +459,25 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }, [basicZipCode, setValue])
 
-  const verifyAddressHandler = async () => {
-    if (basicZipCode && basicCity) {
-      const { id } = basicState
-      const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) =>
-        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
-      const { status, options } = data || {}
-
-      if (status) {
-        dispatch({ type: ActionType.SET_DATA, data: options })
-        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
-      }
-      else {
-        dispatch({ type: ActionType.SET_DATA, data: [] })
-        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_AND_CITY)
-    }
-  }
-
-  const copyAddress = () => {
-    basicAddress && setValue("guarantorAddress", basicAddress)
-    basicAddress2 && setValue("guarantorAddress2", basicAddress2)
-    basicZipCode && setValue("guarantorZipCode", basicZipCode)
-    basicCity && setValue("guarantorCity", basicCity)
-    basicState && setValue("guarantorState", basicState)
-    basicCountry && setValue("guarantorCountry", basicCountry)
-    basicEmail && setValue("guarantorEmail", basicEmail)
-  };
-
-  const resetAddress = () => {
-    setValue("guarantorAddress", '')
-    setValue("guarantorAddress2", '')
-    setValue("guarantorZipCode", '')
-    setValue("guarantorCity", '')
-    setValue("guarantorState", setRecord('', ''))
-    setValue("guarantorCountry", setRecord('', ''))
-    setValue("guarantorEmail", '')
-  };
-
-  const setAddressValues = (checked: boolean) => checked ? copyAddress() : resetAddress()
-
-  const handleSameAddress = (checked: boolean) => {
-    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
-
-    setAddressValues(checked);
-  }
-
   useEffect(() => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
-
-  const verifiedAddressHandler = (
-    deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string
-  ) => {
-    deliveryLine1 && setValue('basicAddress', deliveryLine1);
-    zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
-    cityName && setValue('basicCity', cityName);
-    setTimeout(() => {
-      dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
-    }, 0);
-  }
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
     setValue('ssn', SSN_FORMAT)
   }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
 
+  useImperativeHandle(ref, () => ({
+    submit() {
+      handleSubmit(onSubmit)()
+    }
+  }));
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+      {shouldShowBread &&  <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -606,806 +494,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>
+        </Box>}
 
-        <Box maxHeight="calc(100vh - 210px)" className="overflowY-auto">
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <CardComponent cardTitle={IDENTIFICATION}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="suffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="firstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="middleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="lastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="firstNameUsed"
-                          controllerLabel={FIRST_NAME_USED}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="prefferedName"
-                          controllerLabel={PREFERRED_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="previousFirstName"
-                          controllerLabel={PREVIOUS_FIRST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="previouslastName"
-                          controllerLabel={PREVIOUS_LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="motherMaidenName"
-                          controllerLabel={MOTHERS_MAIDEN_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="ssn"
-                          controllerLabel={SSN}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          name="gender"
-                          label={LEGAL_SEX}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker isRequired name="dob" label={DOB} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={CONTACT_INFORMATION}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="basicAddress"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="basicAddress2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Grid container spacing={1} alignItems={'center'}>
-                        <Grid item md={10} sm={10} xs={10}>
-                          <InputController
-                            isRequired
-                            fieldType="text"
-                            controllerName="basicZipCode"
-                            controllerLabel={ZIP_CODE}
-                          />
-                        </Grid>
-
-                        <Grid item md={2}>
-                          {!isVerified ? <Box>
-                            <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
-                              <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
-                                {VERIFY_ADDRESS}
-                              </Typography>
-                            </Button>
-                          </Box> :
-                            <Box display={'flex'} alignItems={'center'}>
-                              <CheckBoxIcon color='primary' />
-                              <Box ml={0.2}>
-                                <Typography>{VERIFIED}</Typography>
-                              </Box>
-                            </Box>
-                          }
-                        </Grid>
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="basicCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="basicState"
-                          label={STATE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="basicCountry"
-                          label={COUNTRY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="basicEmail"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="basicMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={EMERGENCY_CONTACT}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="emergencyName"
-                          controllerLabel={NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="emergencyRelationship"
-                          label={RELATIONSHIP}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RELATIONSHIP_TYPE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={NEXT_OF_KIN}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="kinName"
-                          controllerLabel={NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="kinRelationship"
-                          label={RELATIONSHIP}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RELATIONSHIP_TYPE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARDIAN}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianFirstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianMiddleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianLastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianSuffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={DEMOGRAPHICS}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="language"
-                          controllerLabel={LANGUAGE_SPOKEN}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="race"
-                          label={RACE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RACE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="ethnicity"
-                          label={ETHNICITY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_ETHNICITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="maritialStatus"
-                          label={MARITAL_STATUS}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_MARITAL_STATUS}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="sexualOrientation"
-                          label={SEXUAL_ORIENTATION}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_SEXUAL_ORIENTATION}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="genderIdentity"
-                          label={GENDER_IDENTITY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="sexAtBirth"
-                          label={SEX_AT_BIRTH}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="pronouns"
-                          label={PRONOUNS}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_PRONOUNS}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Controller
-                        name='homeBound'
-                        control={control}
-                        render={() => (
-                          <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                            <InputLabel shrink>{HOMEBOUND}</InputLabel>
-
-                            <label className="toggle-main">
-                              <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
-                              <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                              <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
-                            </label>
-                          </FormControl>
-                        )}
-                      />
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-              <CardComponent cardTitle={REGISTRATION_DATES}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(FACILITY, facilityName)
-                          : <FacilitySelector
-                            isRequired
-                            label={FACILITY}
-                            name="facilityId"
-                          />
-                        }
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(DOCTOR, doctorName)
-                          : <DoctorSelector
-                            label={USUAL_PROVIDER_ID}
-                            name="usualProviderId"
-                            facilityId={selectedFacility}
-                            addEmpty
-                            isRequired
-                          />
-                        }
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="registrationDate" label={REGISTRATION_DATE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deceasedDate" label={DECREASED_DATE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={PRIVACY}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <FormControl component="fieldset">
-                        <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={state.privacyNotice}
-                                onChange={handleChangeForCheckBox("privacyNotice")}
-                              />
-                            }
-                            label="Privacy Notice"
-                          />
-
-                          <FormControlLabel
-                            control={
-                              <Checkbox color="primary" checked={state.releaseOfInfoBill} onChange={handleChangeForCheckBox("releaseOfInfoBill")} />
-                            }
-                            label="Release of Billing Information and Assignment of Benefits"
-                          />
-                        </FormGroup>
-                      </FormControl>
-
-                      <Box display="flex" flexDirection="row">
-                        <FormControl component="fieldset">
-                          <FormGroup>
-                            <Box mr={3} mb={2} mt={2}>
-                              <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox color="primary" checked={state.callToConsent} onChange={handleChangeForCheckBox("callToConsent")} />
-                                }
-                                label="Granted"
-                              />
-                            </Box>
-                          </FormGroup>
-                        </FormControl>
-
-                        <FormControl component="fieldset">
-                          <FormGroup>
-                            <Box ml={3} mt={2} mb={2}>
-                              <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    color="primary"
-                                    checked={state.medicationHistoryAuthority}
-                                    onChange={handleChangeForCheckBox("medicationHistoryAuthority")}
-                                  />
-                                }
-                                label="Granted"
-                              />
-                            </Box>
-                          </FormGroup>
-                        </FormControl>
-                      </Box>
-
-                      <Box>
-                        <FormControl component="fieldset">
-                          <FormGroup>
-                            <Box mr={3} mb={2} mt={2}>
-                              <FormLabel component="legend">{CONSENT_TO_MESSAGES}</FormLabel>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox color="primary" checked={state.smsPermission} onChange={handleChangeForCheckBox("smsPermission")} />
-                                }
-                                label={CONSENT_TO_MESSAGES_DESCRIPTION}
-                              />
-                            </Box>
-                          </FormGroup>
-                        </FormControl>
-                      </Box>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={EMPLOYMENT}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerName"
-                          controllerLabel={EMPLOYER_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="employerPhone" label={EMPLOYER_PHONE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerUsualOccupation"
-                          controllerLabel={USUAL_OCCUPATION}
-
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerIndustry"
-                          controllerLabel={USUAL_INDUSTRY}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARANTOR}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        name="guarantorRelationship"
-                        label={GUARANTOR_RELATION}
-                        value={EMPTY_OPTION}
-                        options={MAPPED_RELATIONSHIP_TYPE}
-                      />
-                    </Grid>
-
-                    <Box pb={2}>
-                      <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
-                    </Box>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorSuffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorFirstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorMiddleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorLastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guarantorEmployerName"
-                        controllerLabel={EMPLOYER}
-                      />
-                    </Grid>
-
-                    <FormControl component="fieldset">
-                      <FormGroup>
-                        <Box mr={3} mb={2} mt={2}>
-                          <FormControlLabel
-                            label={SAME_AS_PATIENT}
-                            control={
-                              <Checkbox color="primary" checked={sameAddress}
-                                onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                              />
-                            }
-                          />
-                        </Box>
-                      </FormGroup>
-                    </FormControl>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="guarantorZipCode"
-                        controllerLabel={ZIP_CODE}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="guarantorAddress"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guarantorAddress2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="guarantorState"
-                          label={STATE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          name="guarantorCountry"
-                          label={COUNTRY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorSsn"
-                          controllerLabel={SSN}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="guarantorPhone" label={PHONE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="email"
-                        controllerName="guarantorEmail"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-            </Grid>
-          </Grid>
-        </Box>
+        <PatientCard shouldShowBread={shouldShowBread} getPatientLoading={getPatientLoading} isEdit={isEdit} dispatch={dispatch} state={state}/>
       </form>
-      <SmartyModal
-        isOpen={addressOpen}
-        setOpen={(open: boolean) =>
-          dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
-        }
-        data={data}
-        userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
-};
+});
 
 export default PatientForm;
 
