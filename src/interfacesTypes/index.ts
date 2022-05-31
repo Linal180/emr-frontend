@@ -16,11 +16,11 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as AppointmentAction } from "../reducers/appointmentReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
+import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
@@ -216,6 +216,10 @@ interface ControlLabel {
 type LoginControlTypes = "email" | "password";
 
 export type MediaControlTypes = "title" | "subTitle" | "description";
+
+export type FormForwardRef = {
+  submit: () => void,
+}
 
 export interface LoginInputControlProps extends ControlLabel {
   error?: string;
@@ -511,6 +515,7 @@ export type ParamsType = {
   orderNum?: string;
   patientId?: string;
   tabValue?: string
+  appointmentId?: string
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -786,6 +791,27 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface PolicyCardProps extends GeneralFormProps{
+  handleReload?: Function
+  filteredOrderOfBenefitOptions?: SelectorOption[]
+}
+
+export interface CheckInComponentProps {
+  appointmentState: AppointmentState,
+  appointmentDispatcher: Dispatch<AppointmentAction>
+  handleStep: Function
+}
+
+export interface PolicyAttachmentProps {
+  policyId?: string
+  handleReload: Function
+}
+
+export interface LabOrderCreateProps {
+  appointmentInfo?: SelectorOption
+  handleStep?: Function
+}
+
 type PhoneInputTypes =
   | "phone"
   | "fax"
@@ -914,6 +940,42 @@ export interface LabOrdersResultSubFormProps {
   setResultsToRemove: Function
 }
 
+export interface CopayFields {
+  copayId?: string
+  copayType?: SelectorOption
+  amount?: string
+}
+
+export interface InsuranceCreateInput {
+  insuranceId?: SelectorOption
+  orderOfBenefit?: SelectorOption
+  patientRelationship?: SelectorOption
+  certificationNumber?: string
+  policyNumber?: string
+  issueDate?: string
+  expirationDate?: string
+  copayFields?: CopayFields[]
+  coInsurancePercentage?: string
+  referringProvider?: SelectorOption
+  primaryCareProvider?: SelectorOption
+  pricingProductType?: SelectorOption
+  notes?: string
+  policyHolderId?: string
+  employer?: string 
+  suffix?: string
+  firstName?: string
+  middleName?: string
+  lastName?: string
+  zipCode?: string
+  address?: string
+  addressCTD?: string
+  city?: string
+  state?: SelectorOption
+  ssn?: string
+  sex?: SelectorOption
+  dob?: string
+};
+
 export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
   providerName?: string;
@@ -999,6 +1061,18 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   reload: Function;
   doctorDispatcher: Dispatch<DoctorAction>;
   doctorFacilityId: string | undefined;
+}
+
+export interface PatientCardsProps extends GeneralFormProps {
+  getPatientLoading: boolean;
+  isEdit?: boolean
+  dispatch?: Dispatch<PatientAction>
+  state?: PatientState
+  shouldShowBread?: boolean
+}
+
+export interface PatientFormProps extends GeneralFormProps {
+  shouldShowBread?: boolean
 }
 
 export interface AddPatientModalProps {
@@ -1502,6 +1576,24 @@ export interface SlotsComponentProps {
 }
 export interface dashboardInputsProps {
   year: SelectorOption
+}
+
+export interface UpdatePatientProviderInputsProps {
+  providerId: SelectorOption;
+  speciality: SelectorOption;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
+export interface CareTeamsProps {
+  toggleSideDrawer?: Function;
+  drawerOpened? : boolean;
+  patientId?: string;
+  loading?: boolean;
+  reload?: Function;
+  patientProvidersData?: AllDoctorPayload['doctors']
 }
 
 export interface PracticeChartProps {

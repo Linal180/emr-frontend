@@ -2593,6 +2593,12 @@ export type PatientProblemsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientProviderPayload = {
+  __typename?: 'PatientProviderPayload';
+  providers?: Maybe<Array<DoctorPatient>>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientVitalInput = {
   appointmentId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
@@ -3077,6 +3083,7 @@ export type Query = {
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientProblem: PatientProblemPayload;
+  getPatientProvider: PatientProviderPayload;
   getPatientVital: PatientVitalPayload;
   getPractice: PracticePayload;
   getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
@@ -3357,6 +3364,11 @@ export type QueryGetPatientAppointmentArgs = {
 
 export type QueryGetPatientProblemArgs = {
   getPatientProblem: GetPatientProblem;
+};
+
+
+export type QueryGetPatientProviderArgs = {
+  getPatient: GetPatient;
 };
 
 
@@ -4888,6 +4900,13 @@ export type GetAttachmentsByLabOrderQueryVariables = Exact<{
 
 export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', metadataType: AttachmentMetaDataType, labOrderNum?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
+export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
+  getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
+}>;
+
+
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', metadataType: AttachmentMetaDataType, policyId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
 }>;
@@ -5293,6 +5312,41 @@ export type CreateFormTemplateMutationVariables = Exact<{
 
 export type CreateFormTemplateMutation = { __typename?: 'Mutation', createFormTemplate: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string } | null | undefined } };
 
+export type FetchAllInsurancesQueryVariables = Exact<{
+  insuranceInput: InsurancePaginationInput;
+}>;
+
+
+export type FetchAllInsurancesQuery = { __typename?: 'Query', fetchAllInsurances: { __typename?: 'InsurancesPayload', insurances: Array<{ __typename?: 'Insurance', payerName: string, payerId: string, id: string }>, response?: { __typename?: 'Response', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+
+export type FetchAllPoliciesQueryVariables = Exact<{
+  policyInput: PolicyPaginationInput;
+}>;
+
+
+export type FetchAllPoliciesQuery = { __typename?: 'Query', fetchAllPolicies: { __typename?: 'PoliciesPayload', policies: Array<{ __typename?: 'Policy', id: string, orderOfBenifit?: OrderOfBenefitType | null | undefined, expirationDate?: string | null | undefined, issueDate?: string | null | undefined, copays?: Array<{ __typename?: 'Copay', type?: CopayType | null | undefined, amount?: string | null | undefined }> | null | undefined, policyHolder?: { __typename?: 'PolicyHolder', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', email?: string | null | undefined } | null | undefined, insurance?: { __typename?: 'Insurance', payerName: string, payerId: string } | null | undefined }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'Response', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FetchPolicyQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type FetchPolicyQuery = { __typename?: 'Query', fetchPolicy: { __typename?: 'PolicyPayload', policy: { __typename?: 'Policy', id: string, policyHolderRelationship?: PolicyHolderRelationshipType | null | undefined, coinsurancePercentage?: string | null | undefined, expirationDate?: string | null | undefined, pricingProductType?: PricingProductType | null | undefined, issueDate?: string | null | undefined, memberId?: string | null | undefined, groupNumber?: string | null | undefined, notes?: string | null | undefined, orderOfBenifit?: OrderOfBenefitType | null | undefined, referringProvider?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined, id: string } | null | undefined, primaryCareProvider?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined, id: string } | null | undefined, copays?: Array<{ __typename?: 'Copay', id: string, type?: CopayType | null | undefined, amount?: string | null | undefined }> | null | undefined, policyHolder?: { __typename?: 'PolicyHolder', id: string, address?: string | null | undefined, addressCTD?: string | null | undefined, city?: string | null | undefined, dob?: string | null | undefined, employer?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, certificationNumber?: string | null | undefined, ssn?: string | null | undefined, state?: string | null | undefined, suffix?: string | null | undefined, zipCode?: string | null | undefined, sex?: Policy_Holder_Gender_Identity | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string } | null | undefined, insurance?: { __typename?: 'Insurance', payerName: string, payerId: string, id: string } | null | undefined }, response?: { __typename?: 'Response', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type CreatePolicyMutationVariables = Exact<{
+  createPolicyInput: CreatePolicyInput;
+}>;
+
+
+export type CreatePolicyMutation = { __typename?: 'Mutation', createPolicy: { __typename?: 'PolicyPayload', response?: { __typename?: 'Response', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, policy: { __typename?: 'Policy', id: string } } };
+
+export type UpdatePolicyMutationVariables = Exact<{
+  updatePolicyInput: UpdatePolicyInput;
+}>;
+
+
+export type UpdatePolicyMutation = { __typename?: 'Mutation', updatePolicy: { __typename?: 'PolicyPayload', response?: { __typename?: 'Response', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, policy: { __typename?: 'Policy', id: string } } };
+
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
 }>;
@@ -5418,6 +5472,20 @@ export type UpdatePatientNoteInfoMutationVariables = Exact<{
 
 
 export type UpdatePatientNoteInfoMutation = { __typename?: 'Mutation', updatePatientNoteInfo: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, patientNote?: string | null | undefined, patientNoteOpen?: boolean | null | undefined } | null | undefined } };
+
+export type UpdatePatientProviderMutationVariables = Exact<{
+  updatePatientProvider: UpdatePatientProvider;
+}>;
+
+
+export type UpdatePatientProviderMutation = { __typename?: 'Mutation', updatePatientProvider: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetPatientProviderQueryVariables = Exact<{
+  getPatient: GetPatient;
+}>;
+
+
+export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientProviderPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, providers?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, patientId?: string | null | undefined, currentProvider?: boolean | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, email?: string | null | undefined, speciality?: Speciality | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined }> | null | undefined } };
 
 export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5802,6 +5870,8 @@ export const GetAppointmentDocument = gql`
       createdAt
       updatedAt
       billingStatus
+      checkedInAt
+      selfCheckIn
       appointmentType {
         id
         name
@@ -6481,6 +6551,53 @@ export function useGetAttachmentsByLabOrderLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetAttachmentsByLabOrderQueryHookResult = ReturnType<typeof useGetAttachmentsByLabOrderQuery>;
 export type GetAttachmentsByLabOrderLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByLabOrderLazyQuery>;
 export type GetAttachmentsByLabOrderQueryResult = Apollo.QueryResult<GetAttachmentsByLabOrderQuery, GetAttachmentsByLabOrderQueryVariables>;
+export const GetAttachmentsByPolicyIdDocument = gql`
+    query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
+    attachments {
+      id
+      title
+      attachmentName
+      url
+      type
+      comments
+      attachmentMetadata {
+        metadataType
+        policyId
+      }
+      attachmentMetadataId
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttachmentsByPolicyIdQuery__
+ *
+ * To run a query within a React component, call `useGetAttachmentsByPolicyIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttachmentsByPolicyIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttachmentsByPolicyIdQuery({
+ *   variables: {
+ *      getAttachmentsByPolicyId: // value for 'getAttachmentsByPolicyId'
+ *   },
+ * });
+ */
+export function useGetAttachmentsByPolicyIdQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>(GetAttachmentsByPolicyIdDocument, options);
+      }
+export function useGetAttachmentsByPolicyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>(GetAttachmentsByPolicyIdDocument, options);
+        }
+export type GetAttachmentsByPolicyIdQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdQuery>;
+export type GetAttachmentsByPolicyIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdLazyQuery>;
+export type GetAttachmentsByPolicyIdQueryResult = Apollo.QueryResult<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
@@ -9359,6 +9476,284 @@ export function useCreateFormTemplateMutation(baseOptions?: Apollo.MutationHookO
 export type CreateFormTemplateMutationHookResult = ReturnType<typeof useCreateFormTemplateMutation>;
 export type CreateFormTemplateMutationResult = Apollo.MutationResult<CreateFormTemplateMutation>;
 export type CreateFormTemplateMutationOptions = Apollo.BaseMutationOptions<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>;
+export const FetchAllInsurancesDocument = gql`
+    query FetchAllInsurances($insuranceInput: InsurancePaginationInput!) {
+  fetchAllInsurances(insuranceInput: $insuranceInput) {
+    insurances {
+      payerName
+      payerId
+      id
+    }
+    response {
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllInsurancesQuery__
+ *
+ * To run a query within a React component, call `useFetchAllInsurancesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllInsurancesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllInsurancesQuery({
+ *   variables: {
+ *      insuranceInput: // value for 'insuranceInput'
+ *   },
+ * });
+ */
+export function useFetchAllInsurancesQuery(baseOptions: Apollo.QueryHookOptions<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>(FetchAllInsurancesDocument, options);
+      }
+export function useFetchAllInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>(FetchAllInsurancesDocument, options);
+        }
+export type FetchAllInsurancesQueryHookResult = ReturnType<typeof useFetchAllInsurancesQuery>;
+export type FetchAllInsurancesLazyQueryHookResult = ReturnType<typeof useFetchAllInsurancesLazyQuery>;
+export type FetchAllInsurancesQueryResult = Apollo.QueryResult<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>;
+export const FetchAllPoliciesDocument = gql`
+    query FetchAllPolicies($policyInput: PolicyPaginationInput!) {
+  fetchAllPolicies(policyInput: $policyInput) {
+    policies {
+      id
+      orderOfBenifit
+      expirationDate
+      issueDate
+      copays {
+        type
+        amount
+      }
+      policyHolder {
+        firstName
+        lastName
+      }
+      patient {
+        email
+      }
+      insurance {
+        payerName
+        payerId
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllPoliciesQuery__
+ *
+ * To run a query within a React component, call `useFetchAllPoliciesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllPoliciesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllPoliciesQuery({
+ *   variables: {
+ *      policyInput: // value for 'policyInput'
+ *   },
+ * });
+ */
+export function useFetchAllPoliciesQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPoliciesQuery, FetchAllPoliciesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllPoliciesQuery, FetchAllPoliciesQueryVariables>(FetchAllPoliciesDocument, options);
+      }
+export function useFetchAllPoliciesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPoliciesQuery, FetchAllPoliciesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllPoliciesQuery, FetchAllPoliciesQueryVariables>(FetchAllPoliciesDocument, options);
+        }
+export type FetchAllPoliciesQueryHookResult = ReturnType<typeof useFetchAllPoliciesQuery>;
+export type FetchAllPoliciesLazyQueryHookResult = ReturnType<typeof useFetchAllPoliciesLazyQuery>;
+export type FetchAllPoliciesQueryResult = Apollo.QueryResult<FetchAllPoliciesQuery, FetchAllPoliciesQueryVariables>;
+export const FetchPolicyDocument = gql`
+    query FetchPolicy($id: String!) {
+  fetchPolicy(id: $id) {
+    policy {
+      id
+      policyHolderRelationship
+      coinsurancePercentage
+      expirationDate
+      pricingProductType
+      issueDate
+      memberId
+      groupNumber
+      notes
+      orderOfBenifit
+      referringProvider {
+        firstName
+        lastName
+        id
+      }
+      primaryCareProvider {
+        firstName
+        lastName
+        id
+      }
+      copays {
+        id
+        type
+        amount
+      }
+      policyHolder {
+        id
+        address
+        addressCTD
+        city
+        dob
+        employer
+        firstName
+        middleName
+        lastName
+        certificationNumber
+        ssn
+        state
+        suffix
+        zipCode
+        sex
+      }
+      patient {
+        id
+      }
+      insurance {
+        payerName
+        payerId
+        id
+      }
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchPolicyQuery__
+ *
+ * To run a query within a React component, call `useFetchPolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchPolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchPolicyQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFetchPolicyQuery(baseOptions: Apollo.QueryHookOptions<FetchPolicyQuery, FetchPolicyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchPolicyQuery, FetchPolicyQueryVariables>(FetchPolicyDocument, options);
+      }
+export function useFetchPolicyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchPolicyQuery, FetchPolicyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchPolicyQuery, FetchPolicyQueryVariables>(FetchPolicyDocument, options);
+        }
+export type FetchPolicyQueryHookResult = ReturnType<typeof useFetchPolicyQuery>;
+export type FetchPolicyLazyQueryHookResult = ReturnType<typeof useFetchPolicyLazyQuery>;
+export type FetchPolicyQueryResult = Apollo.QueryResult<FetchPolicyQuery, FetchPolicyQueryVariables>;
+export const CreatePolicyDocument = gql`
+    mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
+  createPolicy(createPolicyInput: $createPolicyInput) {
+    response {
+      status
+      message
+    }
+    policy {
+      id
+    }
+  }
+}
+    `;
+export type CreatePolicyMutationFn = Apollo.MutationFunction<CreatePolicyMutation, CreatePolicyMutationVariables>;
+
+/**
+ * __useCreatePolicyMutation__
+ *
+ * To run a mutation, you first call `useCreatePolicyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePolicyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPolicyMutation, { data, loading, error }] = useCreatePolicyMutation({
+ *   variables: {
+ *      createPolicyInput: // value for 'createPolicyInput'
+ *   },
+ * });
+ */
+export function useCreatePolicyMutation(baseOptions?: Apollo.MutationHookOptions<CreatePolicyMutation, CreatePolicyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePolicyMutation, CreatePolicyMutationVariables>(CreatePolicyDocument, options);
+      }
+export type CreatePolicyMutationHookResult = ReturnType<typeof useCreatePolicyMutation>;
+export type CreatePolicyMutationResult = Apollo.MutationResult<CreatePolicyMutation>;
+export type CreatePolicyMutationOptions = Apollo.BaseMutationOptions<CreatePolicyMutation, CreatePolicyMutationVariables>;
+export const UpdatePolicyDocument = gql`
+    mutation UpdatePolicy($updatePolicyInput: UpdatePolicyInput!) {
+  updatePolicy(updatePolicyInput: $updatePolicyInput) {
+    response {
+      status
+      message
+    }
+    policy {
+      id
+    }
+  }
+}
+    `;
+export type UpdatePolicyMutationFn = Apollo.MutationFunction<UpdatePolicyMutation, UpdatePolicyMutationVariables>;
+
+/**
+ * __useUpdatePolicyMutation__
+ *
+ * To run a mutation, you first call `useUpdatePolicyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePolicyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePolicyMutation, { data, loading, error }] = useUpdatePolicyMutation({
+ *   variables: {
+ *      updatePolicyInput: // value for 'updatePolicyInput'
+ *   },
+ * });
+ */
+export function useUpdatePolicyMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePolicyMutation, UpdatePolicyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePolicyMutation, UpdatePolicyMutationVariables>(UpdatePolicyDocument, options);
+      }
+export type UpdatePolicyMutationHookResult = ReturnType<typeof useUpdatePolicyMutation>;
+export type UpdatePolicyMutationResult = Apollo.MutationResult<UpdatePolicyMutation>;
+export type UpdatePolicyMutationOptions = Apollo.BaseMutationOptions<UpdatePolicyMutation, UpdatePolicyMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {
@@ -10458,6 +10853,105 @@ export function useUpdatePatientNoteInfoMutation(baseOptions?: Apollo.MutationHo
 export type UpdatePatientNoteInfoMutationHookResult = ReturnType<typeof useUpdatePatientNoteInfoMutation>;
 export type UpdatePatientNoteInfoMutationResult = Apollo.MutationResult<UpdatePatientNoteInfoMutation>;
 export type UpdatePatientNoteInfoMutationOptions = Apollo.BaseMutationOptions<UpdatePatientNoteInfoMutation, UpdatePatientNoteInfoMutationVariables>;
+export const UpdatePatientProviderDocument = gql`
+    mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!) {
+  updatePatientProvider(updatePatientProvider: $updatePatientProvider) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProviderMutationFn = Apollo.MutationFunction<UpdatePatientProviderMutation, UpdatePatientProviderMutationVariables>;
+
+/**
+ * __useUpdatePatientProviderMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProviderMutation, { data, loading, error }] = useUpdatePatientProviderMutation({
+ *   variables: {
+ *      updatePatientProvider: // value for 'updatePatientProvider'
+ *   },
+ * });
+ */
+export function useUpdatePatientProviderMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProviderMutation, UpdatePatientProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProviderMutation, UpdatePatientProviderMutationVariables>(UpdatePatientProviderDocument, options);
+      }
+export type UpdatePatientProviderMutationHookResult = ReturnType<typeof useUpdatePatientProviderMutation>;
+export type UpdatePatientProviderMutationResult = Apollo.MutationResult<UpdatePatientProviderMutation>;
+export type UpdatePatientProviderMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProviderMutation, UpdatePatientProviderMutationVariables>;
+export const GetPatientProviderDocument = gql`
+    query GetPatientProvider($getPatient: GetPatient!) {
+  getPatientProvider(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    providers {
+      id
+      doctorId
+      patientId
+      currentProvider
+      createdAt
+      updatedAt
+      doctor {
+        id
+        firstName
+        lastName
+        email
+        speciality
+        contacts {
+          id
+          name
+          city
+          email
+          phone
+          primaryContact
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientProviderQuery__
+ *
+ * To run a query within a React component, call `useGetPatientProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientProviderQuery({
+ *   variables: {
+ *      getPatient: // value for 'getPatient'
+ *   },
+ * });
+ */
+export function useGetPatientProviderQuery(baseOptions: Apollo.QueryHookOptions<GetPatientProviderQuery, GetPatientProviderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientProviderQuery, GetPatientProviderQueryVariables>(GetPatientProviderDocument, options);
+      }
+export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientProviderQuery, GetPatientProviderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientProviderQuery, GetPatientProviderQueryVariables>(GetPatientProviderDocument, options);
+        }
+export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
+export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
+export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
 export const GetTokenDocument = gql`
     query GetToken {
   getToken {

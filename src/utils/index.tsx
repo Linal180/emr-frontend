@@ -14,7 +14,7 @@ import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  RenderListOptionTypes, SelectorOption, TableAlignType, UserFormType
+  SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
@@ -23,13 +23,15 @@ import {
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
   AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
   UnitType,
+  SnoMedCodes,
+  Insurance,
   PracticeUsersWithRoles,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
-  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE
 } from "../constants";
 
 export const handleLogout = () => {
@@ -1155,17 +1157,24 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   return ""
 }
 
-export const renderListOptions = (list: RenderListOptionTypes) => {
+export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modalName:ITEM_MODULE){
   const data: SelectorOption[] = [];
 
   if (!!list) {
     for (let item of list) {
-      if (item) {
-        if (item.__typename === 'SnoMedCodes') {
-          const { id, referencedComponentId } = item || {};
+      switch (modalName) {
+        case ITEM_MODULE.snoMedCode:
+          let { id: snoMedCodeId, referencedComponentId } = (item as unknown as SnoMedCodes) || {};
 
-          data.push({ id, name: referencedComponentId })
-        }
+          data.push({ id: snoMedCodeId, name: referencedComponentId })
+          break;
+        case ITEM_MODULE.insurance:
+          let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
+  
+          data.push({ id: insuranceId, name: `${payerId} | ${payerName}` })
+          break;
+        default:
+          break;
       }
     }
   }
@@ -1327,4 +1336,17 @@ export const getShortName = (name: string) => {
   parts.map(part => shortName = shortName.concat(part.charAt(0)))
 
   return shortName;
+}
+
+export function mapEnum<enumType> (enumerable: enumType): SelectorOption[] {
+  // get all the members of the enum
+  let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+
+  // now map through the enum values
+  return enumMembers.map(m => {
+    return {
+      id: m,
+      name: formatValue(m)
+    }
+  });
 }
