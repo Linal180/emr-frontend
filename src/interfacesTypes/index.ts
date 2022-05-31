@@ -1522,7 +1522,7 @@ export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
 
-export interface CalenderProps{
+export interface CalenderProps {
   showHeader?: boolean;
 }
 
@@ -1568,6 +1568,24 @@ export interface PatientProviderSelectorProps {
 
 export interface dashboardInputsProps {
   year: SelectorOption
+}
+
+export interface UpdatePatientProviderInputsProps {
+  providerId: SelectorOption;
+  speciality: SelectorOption;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
+export interface CareTeamsProps {
+  toggleSideDrawer?: Function;
+  drawerOpened? : boolean;
+  patientId?: string;
+  loading?: boolean;
+  reload?: Function;
+  patientProvidersData?: AllDoctorPayload['doctors']
 }
 
 export interface PracticeChartProps {

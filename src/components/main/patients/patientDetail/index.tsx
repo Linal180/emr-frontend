@@ -8,6 +8,7 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
 import CareTeamComponent from './careTeam';
+import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
 import AppointmentList from '../../../common/AppointmentList';
@@ -22,7 +23,8 @@ import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery
+  AllDoctorPayload,
+  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -41,13 +43,12 @@ import {
 } from "../../../../constants";
 import { getFormattedDate } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
-import CareTeamProvider from './careTeam/sideDrawer';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData }, dispatch] =
+  const [{ openDelete, tabValue, patientData, patientProvidersData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [{
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
@@ -61,7 +62,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const handleDeleteWidget = () => { };
 
-  const toggleSideDrawer = () =>{ setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
     if (routeParamValue) {
@@ -133,6 +134,41 @@ const PatientDetailsComponent = (): JSX.Element => {
   const handleCompletedChange = (_: ChangeEvent<unknown>, value: number) => appointmentDispatch({
     type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
   });
+
+  const [getPatientProvider, { loading: getPatientLoading }] = useGetPatientProviderLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() { },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatientProvider } = data;
+
+        if (getPatientProvider) {
+
+          const { providers } = getPatientProvider;
+          const patientProvider = providers?.map((item) => item.doctor)
+          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: patientProvider as AllDoctorPayload['doctors'] })
+        }
+      }
+    },
+  });
+
+
+  const fetchAllPatientsProviders = useCallback(async () => {
+    try {
+      id && await getPatientProvider({
+        variables: {
+          getPatient: { id }
+        }
+      })
+    } catch (error) { }
+  }, [id, getPatientProvider])
+
+  useEffect(() => {
+    fetchAllPatientsProviders()
+  }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
     if (id) {
@@ -268,8 +304,8 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent 
-                    toggleSideDrawer={toggleSideDrawer}
+                <CareTeamComponent
+                  toggleSideDrawer={toggleSideDrawer} patientId={id} loading={getPatientLoading} reload={() => fetchAllPatientsProviders()}  patientProvidersData={patientProvidersData}
                 />
               </Grid>
 
@@ -318,7 +354,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <CareTeamProvider drawerOpened={drawerOpened}  toggleSideDrawer={toggleSideDrawer} />
+        <CareTeamProvider drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer} patientId={id} reload={() => fetchAllPatientsProviders()} />
       </Box>
 
       <ConfirmationModal

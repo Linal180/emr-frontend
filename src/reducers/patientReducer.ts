@@ -1,6 +1,7 @@
 import { usStreet } from "smartystreets-javascript-sdk";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
+  AllDoctorPayload,
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
@@ -58,7 +59,8 @@ export interface State {
   prevFeverUnit: TempUnitType;
   isTempEdit: boolean;
   isNoteOpen: HTMLElement | null;
-  patientNoteOpen: boolean;
+  patientNoteOpen: boolean
+  patientProvidersData: AllDoctorPayload['doctors'];
   privacyNotice: boolean
   releaseOfInfoBill: boolean
   callToConsent: boolean
@@ -119,6 +121,7 @@ export const initialState: State = {
   isTempEdit: false,
   isNoteOpen: null,
   patientNoteOpen: false,
+  patientProvidersData: [],
   privacyNotice: false,
   releaseOfInfoBill: false,
   callToConsent: false,
@@ -176,11 +179,13 @@ export enum ActionType {
   SET_EDIT_HEAD = 'setEditHead',
   SET_NOTE_OPEN = 'setNoteOpen',
   SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
-  SET_PRIVACY_NOTICE= 'setPrivacyNote',
-  SET_RELEASE_OF_INFO_BILL= 'setReleaseOfInfoBill',
-  SET_CALL_TO_CONSENT= 'setCallToConsent',
-  SET_MEDICATION_HISTORY_AUTHORITY= 'setMedicationHistoryAuthority',
-  SET_SMS_PERMISSION= 'setSmsPermission',
+  SET_PATIENT_PROVIDERS = 'setPatientProviders',
+  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
+  SET_PRIVACY_NOTICE = 'setPrivacyNote',
+  SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
+  SET_CALL_TO_CONSENT = 'setCallToConsent',
+  SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
+  SET_SMS_PERMISSION = 'setSmsPermission',
 
 }
 
@@ -235,6 +240,7 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
+  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: AllDoctorPayload['doctors'] }
   | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
   | { type: ActionType.SET_RELEASE_OF_INFO_BILL; releaseOfInfoBill: boolean }
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
@@ -523,6 +529,11 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         patientNoteOpen: action.patientNoteOpen
       }
+    case ActionType.SET_PATIENT_PROVIDERS_DATA:
+      return {
+        ...state,
+        patientProvidersData: action.patientProvidersData
+      }
     case ActionType.SET_PRIVACY_NOTICE:
       return {
         ...state,
@@ -538,12 +549,12 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         callToConsent: action.callToConsent
       }
-      case ActionType.SET_MEDICATION_HISTORY_AUTHORITY:
+    case ActionType.SET_MEDICATION_HISTORY_AUTHORITY:
       return {
         ...state,
         medicationHistoryAuthority: action.medicationHistoryAuthority
       }
-      case ActionType.SET_SMS_PERMISSION:
+    case ActionType.SET_SMS_PERMISSION:
       return {
         ...state,
         smsPermission: action.smsPermission

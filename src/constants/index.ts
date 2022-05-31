@@ -16,7 +16,7 @@ import {
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
   DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon, NewAvatarIcon,
+  TextAreaIcon, TextIcon,
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
@@ -1317,6 +1317,7 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
+export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -3667,15 +3668,6 @@ export const INITIAL_COPAY_VALUE = {
 export const MAPPED_REGIONS: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })
 );
-export const PROVIDERS_DUMMY_DATA = [
-  {
-    name: "William Warren",
-    specialist: "Cardiac Electrophysiology",
-    phone: "+12859374923",
-    address: "328 Gibraltar Dr. Sunnyvale, CA 94089 Lakewood, NY 11731",
-    icon: NewAvatarIcon,
-  },
-];
 
 export const areaChartOne = {
   credits: { enabled: false },
