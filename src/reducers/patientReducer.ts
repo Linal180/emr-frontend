@@ -2,6 +2,7 @@ import { usStreet } from "smartystreets-javascript-sdk";
 import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
+  AllDoctorPayload,
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
@@ -59,7 +60,8 @@ export interface State {
   prevFeverUnit: TempUnitType;
   isTempEdit: boolean;
   isNoteOpen: HTMLElement | null;
-  patientNoteOpen: boolean;
+  patientNoteOpen: boolean
+  patientProvidersData: AllDoctorPayload['doctors'];
   privacyNotice: boolean
   releaseOfInfoBill: boolean
   callToConsent: boolean
@@ -121,6 +123,7 @@ export const initialState: State = {
   isTempEdit: false,
   isNoteOpen: null,
   patientNoteOpen: false,
+  patientProvidersData: [],
   privacyNotice: false,
   releaseOfInfoBill: false,
   callToConsent: false,
@@ -179,6 +182,8 @@ export enum ActionType {
   SET_EDIT_HEAD = 'setEditHead',
   SET_NOTE_OPEN = 'setNoteOpen',
   SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
+  SET_PATIENT_PROVIDERS = 'setPatientProviders',
+  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
   SET_PRIVACY_NOTICE = 'setPrivacyNote',
   SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
   SET_CALL_TO_CONSENT = 'setCallToConsent',
@@ -238,6 +243,7 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
+  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: AllDoctorPayload['doctors'] }
   | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
   | { type: ActionType.SET_RELEASE_OF_INFO_BILL; releaseOfInfoBill: boolean }
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
@@ -400,11 +406,13 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         anchorEl: action.anchorEl
       }
+      
     case ActionType.SET_ATTACHMENT_ID:
       return {
         ...state,
         attachmentId: action.attachmentId
       }
+      
     case ActionType.SET_IS_EDIT_CARD:
       return {
         ...state,
@@ -440,36 +448,43 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         facilityId: action.facilityId
       }
+
     case ActionType.SET_DOCTOR_NAME:
       return {
         ...state,
         doctorName: action.doctorName
       }
+
     case ActionType.SET_IS_CHECKED:
       return {
         ...state,
         isChecked: action.isChecked
       }
+
     case ActionType.SET_IS_VERIFIED:
       return {
         ...state,
         isVerified: action.isVerified
       }
+
     case ActionType.SET_ADDRESS_OPEN:
       return {
         ...state,
         addressOpen: action.addressOpen
       }
+
     case ActionType.SET_DATA:
       return {
         ...state,
         data: action.data
       }
+
     case ActionType.SET_OPEN_UNITS:
       return {
         ...state,
         openUnits: action.openUnits
       }
+
     case ActionType.SET_HEIGHT_UNIT:
       const { heightUnit: { id: prevHeightUnit } } = state;
       return {
@@ -478,6 +493,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isHeightEdit: true,
         heightUnit: action.heightUnit
       }
+
     case ActionType.SET_WEIGHT_UNIT:
       const { weightUnit: { id: prevWeightUnit } } = state
       return {
@@ -486,6 +502,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isWeightEdit: true,
         weightUnit: action.weightUnit
       }
+
     case ActionType.SET_HEAD_CIRCUMFERENCE_UNIT:
       const { headCircumferenceUnit: { id: prevHeadUnit } } = state
       return {
@@ -494,6 +511,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isHeadEdit: true,
         headCircumferenceUnit: action.headCircumferenceUnit
       }
+
     case ActionType.SET_FEVER_UNIT:
       const { feverUnit: { id: prevFeverUnit } } = state
       return {
@@ -502,56 +520,73 @@ export const patientReducer = (state: State, action: Action): State => {
         isTempEdit: true,
         feverUnit: action.feverUnit
       }
+
     case ActionType.SET_EDIT_HEAD:
       return {
         ...state,
         isHeadEdit: action.isHeadEdit
       }
+
     case ActionType.SET_EDIT_HEIGHT:
       return {
         ...state,
         isHeightEdit: action.isHeightEdit
       }
+
     case ActionType.SET_EDIT_WEIGHT:
       return {
         ...state,
         isWeightEdit: action.isWeightEdit
       }
+
     case ActionType.SET_EDIT_TEMP:
       return {
         ...state,
         isTempEdit: action.isTempEdit
       }
+
     case ActionType.SET_NOTE_OPEN:
       return {
         ...state,
         isNoteOpen: action.isNoteOpen
       }
+
     case ActionType.SET_PATIENT_NOTE_OPEN:
       return {
         ...state,
         patientNoteOpen: action.patientNoteOpen
       }
+
+    case ActionType.SET_PATIENT_PROVIDERS_DATA:
+      return {
+        ...state,
+        patientProvidersData: action.patientProvidersData
+      }
+
     case ActionType.SET_PRIVACY_NOTICE:
       return {
         ...state,
         privacyNotice: action.privacyNotice
       }
+
     case ActionType.SET_RELEASE_OF_INFO_BILL:
       return {
         ...state,
         releaseOfInfoBill: action.releaseOfInfoBill
       }
+
     case ActionType.SET_CALL_TO_CONSENT:
       return {
         ...state,
         callToConsent: action.callToConsent
       }
+
     case ActionType.SET_MEDICATION_HISTORY_AUTHORITY:
       return {
         ...state,
         medicationHistoryAuthority: action.medicationHistoryAuthority
       }
+
     case ActionType.SET_SMS_PERMISSION:
       return {
         ...state,
