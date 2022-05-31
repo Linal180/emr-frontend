@@ -234,6 +234,7 @@ export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const SAME_AS_PATIENT = "Same as patient";
+export const DONT_WANT_TO_SHARE_EMAIL = "Don't want to share email";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";

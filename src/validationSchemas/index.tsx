@@ -77,6 +77,11 @@ const notRequiredOTP = (label: string, isRequired: boolean) => {
     .required(requiredMessage(label))
 }
 
+const optionalEmailSchema = (isOptional: boolean) => { 
+  return yup.string().email(INVALID_EMAIL)
+    .test('',requiredMessage(EMAIL), value => isOptional ? true : !!value )
+}
+
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
 const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGEX) }
 const npiSchema = { npi: notRequiredMatches(NPI_VALIDATION_MESSAGE, NPI_REGEX) }
@@ -216,13 +221,13 @@ export const basicContactSchema = {
   basicState: stateSchema(true),
   basicCountry: countrySchema(true),
   basicCity: requiredStringOnly(CITY, 2, 20),
-  basicMobile: notRequiredPhone(MOBILE_NUMBER),
+  basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicAddress: addressValidation(ADDRESS, true),
   basicAddress2: addressValidation(ADDRESS, false),
   basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   basicZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
-  basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
-    .required(requiredMessage(PHONE_NUMBER)),
+  basicPhone: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15))
+    .required(requiredMessage(MOBILE_NUMBER)),
 };
 
 export const basicContactViaAppointmentSchema = {
@@ -444,7 +449,7 @@ export const employerPatientSchema = {
   employerUsualOccupation: notRequiredStringOnly(USUAL_OCCUPATION),
 };
 
-export const extendedPatientSchema = yup.object({
+export const extendedPatientSchema = (isOptional: boolean) => yup.object({
   ...PatientSchema,
   ...kinPatientSchema,
   ...basicContactSchema,
@@ -454,10 +459,12 @@ export const extendedPatientSchema = yup.object({
   ...guarantorPatientSchema,
   gender: selectorSchema(GENDER),
   facilityId: selectorSchema(FACILITY),
+  basicEmail: optionalEmailSchema(isOptional),
+  basicPhone: notRequiredPhone(MOBILE_NUMBER),
   usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
 })
 
-export const extendedEditPatientSchema = yup.object({
+export const extendedEditPatientSchema = (isOptional: boolean) => yup.object({
   ...PatientSchema,
   ...kinPatientSchema,
   ...basicContactSchema,
@@ -466,6 +473,8 @@ export const extendedEditPatientSchema = yup.object({
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   gender: selectorSchema(GENDER),
+  basicPhone: notRequiredPhone(MOBILE_NUMBER),
+  basicEmail: optionalEmailSchema(isOptional)
 })
 
 export const extendedPatientAppointmentSchema = yup.object({
