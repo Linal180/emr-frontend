@@ -7,7 +7,7 @@ import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
 // graphql and interfaces block
 import {
-  formatServiceCode, formatValue, getFormattedDate, getStandardTime,
+  formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord,
 } from "../utils";
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
@@ -22,7 +22,7 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity,
 } from "../generated/graphql";
 
 // regex
@@ -898,6 +898,7 @@ export const ID_NUMBER = "ID Number";
 export const YOUR_NAME = "Your Name";
 export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
+export const LAB_ORDERS = "Lab Orders";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
 export const SIGNED_AT = "Signed at";
@@ -946,6 +947,8 @@ export const CANCELLATIONS = "Cancellations";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const COPAY_TYPE = "Copay Type";
+export const AMOUNT = "Amount";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
@@ -1138,6 +1141,7 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const TWO_FACTOR_LOGIN_DESCRIPTION = "Enter security code from your mobile phone.";
 export const PATIENT_RELATIONSHIP_TO_POLICY_HOLDER = "Patient relationship to policy holder";
 export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
+export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
@@ -1627,6 +1631,17 @@ export const LAB_TEST_STATUSES: SelectorOption[] = [
   { id: LabTestStatus.ResultReceived, name: formatValue(LabTestStatus.ResultReceived) },
   { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
+
+export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE= mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
+
+export const MAPPED_POLICY_ORDER_OF_BENEFIT= mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
+
+export const MAPPED_PRICING_PRODUCT_TYPE= mapEnum<typeof PricingProductType>(PricingProductType)
+
+export const MAPPED_COPAY_TYPE= mapEnum<typeof CopayType>(CopayType)
+
+export const MAPPED_POLICY_GENDER= mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
   {
@@ -2503,7 +2518,8 @@ export const DUMMY_APPOINTMENTS = [
 ];
 
 export enum ITEM_MODULE {
-  snoMedCode = 'SnoMedCode'
+  snoMedCode = 'SnoMedCode',
+  insurance= 'insurance'
 }
 
 export const DUMMY_ENCOUNTERS = [
@@ -3113,6 +3129,7 @@ export const CHECK_IN_STEPS = [
   INSURANCE,
   VITALS_TEXT,
   CHART_TEXT,
+  LAB_ORDERS,
   BILLING_TEXT,
 ];
 
@@ -3642,6 +3659,11 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
     id: "savings",
   }
 ];
+
+export const INITIAL_COPAY_VALUE = {
+  copayType: setRecord('',''),
+  amount: ''
+}
 
 export const MAPPED_REGIONS: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })

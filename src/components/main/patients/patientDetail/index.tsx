@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
 import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
-import Insurance from './Insurance';
+import Insurance from './insurance';
 import AreaChartComponent from './charts';
 import CareTeamComponent from './careTeam';
 import CareTeamProvider from './careTeam/sideDrawer';

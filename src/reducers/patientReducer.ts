@@ -61,6 +61,11 @@ export interface State {
   isNoteOpen: HTMLElement | null;
   patientNoteOpen: boolean
   patientProvidersData: AllDoctorPayload['doctors'];
+  privacyNotice: boolean
+  releaseOfInfoBill: boolean
+  callToConsent: boolean
+  medicationHistoryAuthority: boolean
+  smsPermission: boolean
 }
 
 export const initialState: State = {
@@ -116,7 +121,12 @@ export const initialState: State = {
   isTempEdit: false,
   isNoteOpen: null,
   patientNoteOpen: false,
-  patientProvidersData: []
+  patientProvidersData: [],
+  privacyNotice: false,
+  releaseOfInfoBill: false,
+  callToConsent: false,
+  medicationHistoryAuthority: false,
+  smsPermission: false,
 }
 
 export enum ActionType {
@@ -170,7 +180,13 @@ export enum ActionType {
   SET_NOTE_OPEN = 'setNoteOpen',
   SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
   SET_PATIENT_PROVIDERS = 'setPatientProviders',
-  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData'
+  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
+  SET_PRIVACY_NOTICE = 'setPrivacyNote',
+  SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
+  SET_CALL_TO_CONSENT = 'setCallToConsent',
+  SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
+  SET_SMS_PERMISSION = 'setSmsPermission',
+
 }
 
 export type Action =
@@ -225,6 +241,11 @@ export type Action =
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
   | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: AllDoctorPayload['doctors'] }
+  | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
+  | { type: ActionType.SET_RELEASE_OF_INFO_BILL; releaseOfInfoBill: boolean }
+  | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
+  | { type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY; medicationHistoryAuthority: boolean }
+  | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -512,6 +533,31 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientProvidersData: action.patientProvidersData
+      }
+    case ActionType.SET_PRIVACY_NOTICE:
+      return {
+        ...state,
+        privacyNotice: action.privacyNotice
+      }
+    case ActionType.SET_RELEASE_OF_INFO_BILL:
+      return {
+        ...state,
+        releaseOfInfoBill: action.releaseOfInfoBill
+      }
+    case ActionType.SET_CALL_TO_CONSENT:
+      return {
+        ...state,
+        callToConsent: action.callToConsent
+      }
+    case ActionType.SET_MEDICATION_HISTORY_AUTHORITY:
+      return {
+        ...state,
+        medicationHistoryAuthority: action.medicationHistoryAuthority
+      }
+    case ActionType.SET_SMS_PERMISSION:
+      return {
+        ...state,
+        smsPermission: action.smsPermission
       }
   }
 };
