@@ -792,6 +792,7 @@ export interface GeneralFormProps {
 export interface PolicyCardProps extends GeneralFormProps{
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
+  setPolicyToEdit?: Function
 }
 
 export interface CheckInComponentProps {
