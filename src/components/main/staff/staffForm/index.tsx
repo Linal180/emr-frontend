@@ -308,11 +308,11 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" label={PHONE} />
+                        <PhoneField name="phone" label={MOBILE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" label={MOBILE} />
+                        <PhoneField name="mobile" label={PHONE} />
                       </Grid>
                     </Grid>
                   </>

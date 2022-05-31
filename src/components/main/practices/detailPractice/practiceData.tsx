@@ -1,16 +1,13 @@
 // packages block
 import { FC } from "react";
 import { Grid, Typography } from "@material-ui/core";
-// utils, constants & graphql block
+// utils, constants block
 import { renderItem } from "../../../../utils";
-import { PracticePayload } from "../../../../generated/graphql";
+import { PracticeDataProps } from "../../../../interfacesTypes";
 import {
   PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS
 } from "../../../../constants";
 
-interface PracticeDataProps {
-  practiceData: PracticePayload['practice'];
-}
 const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
   const { name, phone, ein, champus, fax, medicaid, medicare, upin } = practiceData || {};
   

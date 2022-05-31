@@ -30,7 +30,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice,
+  Maybe, PatientVitals, Practice, PracticePayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1596,4 +1596,8 @@ export interface AppointmentSlotsProps {
   facilityId?: string;
   providerId?: string;
   dispatcher: Dispatch<AppointmentAction>
+}
+
+export interface PracticeDataProps {
+  practiceData: PracticePayload['practice'];
 }
