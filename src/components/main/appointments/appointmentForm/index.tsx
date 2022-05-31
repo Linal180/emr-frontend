@@ -34,7 +34,7 @@ import {
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetSlotsLazyQuery, Appointmentstatus, SlotsPayload, BillingStatus,
+  useGetSlotsLazyQuery, AppointmentStatus, SlotsPayload, BillingStatus,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -117,7 +117,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status
           } = appointment || {}
 
-          if (status === Appointmentstatus.Cancelled) {
+          if (status === AppointmentStatus.Cancelled) {
             dispatch({ type: ActionType.SET_CANCEL_APP_STATUS, cancelAppStatus: true })
           }
 

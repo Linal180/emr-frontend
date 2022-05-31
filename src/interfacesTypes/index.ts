@@ -29,8 +29,8 @@ import {
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Doctor,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
-  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload,
+  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
+  Maybe, PatientVitals, Practice, PracticePayload, 
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1557,7 +1557,7 @@ export interface CheckboxControllerProps extends IControlLabel {
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];
-  type?: Appointmentstatus;
+  type?: AppointmentStatus;
   reload?: Function;
   showHeader?: boolean;
 };

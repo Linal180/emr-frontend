@@ -36,7 +36,7 @@ const httpLink = new HttpLink({
   uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`,
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
   if (graphQLErrors) {
     graphQLErrors.map(
       ({ extensions }) => {
@@ -72,8 +72,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
             }
           }
         }
-
-        return null;
+        
+        return forward(operation);
       }
     );
 
@@ -92,18 +92,15 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const defaultOptions: DefaultOptions = {
   watchQuery: {
     fetchPolicy: "network-only",
-    errorPolicy: "all",
     notifyOnNetworkStatusChange: true,
   },
 
   query: {
     fetchPolicy: "network-only",
-    errorPolicy: "all",
     notifyOnNetworkStatusChange: true,
   },
 
   mutate: {
-    errorPolicy: "all",
   },
 };
 

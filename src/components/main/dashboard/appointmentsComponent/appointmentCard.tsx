@@ -26,7 +26,7 @@ import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../../assets/svgs';
 import {
-  Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
+  AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
   useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
 } from '../../../../generated/graphql';
 import {
@@ -208,7 +208,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
     id && await updateAppointmentStatus({
       variables: {
         appointmentStatusInput: {
-          id: id.toString(), status: appointmentStatus.name as Appointmentstatus
+          id: id.toString(), status: appointmentStatus.name as AppointmentStatus
         }
       }
     })
@@ -281,7 +281,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
       await updateAppointmentStatus({
         variables: {
           appointmentStatusInput: {
-            id: id.toString(), status: appointmentStatus.id as Appointmentstatus
+            id: id.toString(), status: appointmentStatus.id as AppointmentStatus
           }
         }
       })
