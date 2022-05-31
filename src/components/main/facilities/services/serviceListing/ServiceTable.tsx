@@ -64,6 +64,8 @@ const ServicesTable: FC = (): JSX.Element => {
         !!services && dispatch({
           type: ActionType.SET_SERVICES, services: services as ServicesPayload['services']
         });
+      } else {
+        dispatch({ type: ActionType.SET_SERVICES, services: [] });
       }
     }
   });

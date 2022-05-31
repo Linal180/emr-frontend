@@ -67,6 +67,8 @@ const FacilityTable: FC = (): JSX.Element => {
         facilities && dispatch({
           type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
         })
+      } else {
+        dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
       }
     }
   });

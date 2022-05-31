@@ -70,6 +70,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           type: ActionType.SET_APPOINTMENTS,
           appointments: appointments as AppointmentsPayload['appointments']
         });
+      } else {
+        dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
       }
     }
   });

@@ -86,6 +86,12 @@ export const BloodPressureIcon = () => (
   </svg>
 )
 
+export const CloseIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 1L1 9" stroke="#5E6278" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M1 1L9 9" stroke="#5E6278" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)
 
 export const HeartRateIcon = () => (
   <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">

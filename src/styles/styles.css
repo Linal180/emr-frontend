@@ -555,44 +555,44 @@ body .MuiTabPanel-root {
   transform: scale(3) !important;
 }
 
-.barChart1Container text,
+.practice-bar-chart-container text,
 .barChart3Container text ,
-.barChart4Container text,
-.barChart5Container text   
+.practice-users-chart-container text,
+.practice-users-roles-container text   
 {
   color: #ffffff !important;
   fill: #ffffff !important;
 }
 
-.barChart1Container .highcharts-color-0,
+.practice-bar-chart-container .highcharts-color-0,
 .barChart2Container .highcharts-color-0,
 .barChart3Container .highcharts-color-0,
-.barChart1Container .highcharts-legend-item,
+.practice-bar-chart-container .highcharts-legend-item,
 .barChart2Container .highcharts-legend-item,
 .barChart3Container .highcharts-legend-item
 {
   display: none !important;
 }
 
-.barChart1Container .highcharts-axis-labels text, 
+.practice-bar-chart-container .highcharts-axis-labels text, 
 .barChart2Container .highcharts-axis-labels text,
 .barChart3Container .highcharts-axis-labels text,
-.barChart4Container .highcharts-axis-labels text,
-.barChart5Container .highcharts-axis-labels text,
+.practice-users-chart-container .highcharts-axis-labels text,
+.practice-users-roles-container .highcharts-axis-labels text,
 .barChart6Container .highcharts-axis-labels text
 {
   font-weight: 600 !important;
 }
 
-.barChart4Container .highcharts-grid-line,
-.barChart5Container .highcharts-grid-line
+.practice-users-chart-container .highcharts-grid-line,
+.practice-users-roles-container .highcharts-grid-line
 {
   display: none !important;
 }
 
-.barChart4Container .highcharts-axis,
-.barChart5Container .highcharts-axis,
-.barChart1Container .highcharts-axis
+.practice-users-chart-container .highcharts-axis,
+.practice-users-roles-container .highcharts-axis,
+.practice-bar-chart-container .highcharts-axis
 {
   display: none !important;
 }
