@@ -2,6 +2,8 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+//assets
 import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
@@ -79,6 +81,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -274,6 +277,7 @@ export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
 export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
+export const TERTIARY_INSURANCE = "Tertiary Insurance";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const ADD_STAFF = "Add Staff";
@@ -860,11 +864,13 @@ export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
+export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
 export const SEARCH = "Search";
 export const SIGNED = "Signed";
@@ -880,6 +886,7 @@ export const ROLES_TEXT = "Roles";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
+export const COPAY_TEXT = "COPAY";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -899,7 +906,6 @@ export const ID_NUMBER = "ID Number";
 export const YOUR_NAME = "Your Name";
 export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
-export const LAB_ORDERS = "Lab Orders";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
 export const SIGNED_AT = "Signed at";
@@ -907,6 +913,7 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
+export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
@@ -926,6 +933,7 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const EFFECTIVE_TEXT = "EFFECTIVE";
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -949,7 +957,7 @@ export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const COPAY_TYPE = "Copay Type";
-export const AMOUNT = "Amount";
+export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
@@ -959,7 +967,9 @@ export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
 export const REVOKE_ACCESS = "Revoke Access";
+export const POLICY_NAME_TEXT = "POLICY NAME";
 export const DECREASED_DATE = "Deceased Date";
+export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const PREFERRED_NAME = "Preferred Name";
 export const HOLD_STATEMENT = "Hold Statement";
@@ -1297,7 +1307,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const EDIT_PROVIDER = "Eidt Provider"
+export const EDIT_PROVIDER = "Edit Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1444,6 +1454,10 @@ export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP = 
+"This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP = 
+"These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1460,7 +1474,6 @@ export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
-
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
 export const APP_MENU_ITEMS = [
@@ -2867,6 +2880,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3103,16 +3132,16 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
   specimenType: { id: '', name: '' },
-  collectionDate: '',
+  collectionDate: moment().toString(),
   specimenNotes: '',
-  collectionTime: ''
+  collectionTime: moment().format('HH:mm:ss')
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   test: { id: '', name: '' },
-  testDate: '',
+  testDate: moment().toString(),
   testNotes: '',
-  testTime: '',
+  testTime: moment().format('HH:mm:ss'),
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
@@ -3397,11 +3426,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
@@ -3672,6 +3701,7 @@ export const MAPPED_REGIONS: SelectorOption[] = states.map(
 
 export const areaChartOne = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3705,10 +3735,10 @@ export const areaChartOne = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-    style : { 'zIndex' :'1' }
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+  //   style: { 'zIndex' :'1' },
+  // },
   plotOptions: {
     area: {
       marker: {
@@ -3742,6 +3772,7 @@ export const areaChartOne = {
 
 export const areaChartTwo = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3774,9 +3805,9 @@ export const areaChartTwo = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  // },
   plotOptions: {
     area: {
       marker: {
@@ -3806,4 +3837,19 @@ export const areaChartTwo = {
       26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
     ]
   }]
+}
+
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType'
+}
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler'
 }

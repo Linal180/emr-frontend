@@ -40,7 +40,7 @@ export const VitalsLabels = ({ patientStates }: VitalsLabelsProps) => {
         {Object.values(VITAL_LABELS).map(label => {
           const unit = getVitalLabel(label)
 
-          return label && <TableRow>{renderTh(`${label} ${unit}`)}</TableRow>
+          return label && <TableRow>{renderTh(`${label} ${unit}`,'left',false,'',true)}</TableRow>
         })}
       </TableBody>
     </Table>

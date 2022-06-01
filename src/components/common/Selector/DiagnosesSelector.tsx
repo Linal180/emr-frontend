@@ -1,20 +1,20 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from 'react'
-import Select from 'react-select';
+import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
+import Select from 'react-select';
+import { INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT } from '../../../constants';
+import { IcdCodesPayload, useFetchIcdCodesLazyQuery } from '../../../generated/graphql';
 // constants and type/interfaces block
 import { multiOptionType, ReactionSelectorInterface } from '../../../interfacesTypes';
-import { IcdCodesPayload, useSearchIcdCodesLazyQuery } from '../../../generated/graphql';
 import { renderIcdCodes, requiredLabel } from '../../../utils';
-import { INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT } from '../../../constants';
 
 const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, margin, isRequired, defaultValues }): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
   const [values, setValues] = useState<multiOptionType[]>([])
 
-  const [searchIcdCodes] = useSearchIcdCodesLazyQuery({
+  const [searchIcdCodes] = useFetchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -24,10 +24,10 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
 
     onCompleted(data) {
       if (data) {
-        const { searchIcdCodes } = data;
+        const { fetchICDCodes } = data;
 
-        if (searchIcdCodes) {
-          const { icdCodes } = searchIcdCodes
+        if (fetchICDCodes) {
+          const { icdCodes } = fetchICDCodes
 
           icdCodes && setOptions(renderIcdCodes(icdCodes as IcdCodesPayload['icdCodes']))
         }

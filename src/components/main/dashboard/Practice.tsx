@@ -15,7 +15,7 @@ import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, PURPLE_TWO, BLUE_TEN, PINK_TWO } from "../../../theme";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
@@ -212,11 +212,12 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
+      <Box p={2} />
+
       <Grid container spacing={3}>
         <Grid item md={8}>
-          <Box p={2} />
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor="#21E1D8" paddingBottom={3}>
+            <Box px={3} pt={3} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
 
@@ -226,7 +227,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor="#A075F8" paddingBottom={3}>
+            <Box px={3} pt={3} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
@@ -236,18 +237,16 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box className="appointmentsPerFacilityChartContainer">
-              <Box px={3} pt={3} color={WHITE} bgcolor="#FF6A7A">
-                <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
-              </Box>
-
-              <FacilityAppointments practiceId={practiceId || ''} />
+            <Box px={3} pt={3} color={WHITE} bgcolor={PINK_TWO}>
+              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
             </Box>
+
+            <FacilityAppointments practiceId={practiceId || ''} />
           </Card>
         </Grid>
 
         <Grid item md={4}>
-          <Card style={{ paddingTop: '20px' }}>
+          <Card>
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{EMERGENCY_ACCESS_LOG}</Typography>
 
@@ -274,7 +273,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                       <Typography variant="body1">{item.fullName}</Typography>
                     </Box>
 
-                    <Box color={GREY_THIRTEEN} style={{ fontStyle: 'italic' }}>
+                    <Box color={GREY_THIRTEEN}>
                       <Typography variant="body1">{item.hospitalName}</Typography>
                     </Box>
 
@@ -286,6 +285,9 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               )
             })}
           </Card>
+
+          <Box p={2} />
+
           <Card>
             <Box px={2} mb={2} fontWeight="bold" display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
@@ -304,67 +306,48 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                     <TimelineConnector />
                   </TimelineSeparator>
 
-                  <TimelineContent>
-                    <Box>
-                      <Typography variant="body1">
-                        Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>
-                      </Typography>
-
-                      <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
-                        5 minutes ago
-                      </Typography>
-                    </Box>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent>
-                    <Typography variant="body1">
-                      Reports received from imaging lab for <strong>“John Doe” </strong>
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
-                      10 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent>
-                    <Typography variant="body1">
-                      <strong>“June Liam”</strong> self checked in at 10:42AM
-                    </Typography>
-                    <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
-                      5 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent>
+                  <TimelineContent className="pt-0">
                     <Typography variant="body1">
                       Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>
                     </Typography>
 
-                    <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
+                    <Typography variant="body2" style={{ color: BLUE }}>
+                      53 minutes ago
+                    </Typography>
+                  </TimelineContent>
+                </TimelineItem>
+
+                <TimelineItem>
+                  <TimelineSeparator>
+                    <TimelineDot variant="outlined" color="secondary" />
+
+                    <TimelineConnector />
+                  </TimelineSeparator>
+
+                  <TimelineContent className="pt-0">
+                    <Typography variant="body1">
+                      Reports received from imaging lab for <strong>“John Doe” </strong>
+                    </Typography>
+
+                    <Typography variant="body2" style={{ color: BLUE }}>
+                      10 minutes ago
+                    </Typography>
+                  </TimelineContent>
+                </TimelineItem>
+
+                <TimelineItem>
+                  <TimelineSeparator>
+                    <TimelineDot variant="outlined" color="secondary" />
+
+                    <TimelineConnector />
+                  </TimelineSeparator>
+
+                  <TimelineContent className="pt-0">
+                    <Typography variant="body1">
+                      <strong>“June Liam”</strong> self checked in at 10:42AM
+                    </Typography>
+
+                    <Typography variant="body2" style={{ color: BLUE }}>
                       5 minutes ago
                     </Typography>
                   </TimelineContent>
@@ -377,12 +360,13 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                     <TimelineConnector />
                   </TimelineSeparator>
 
-                  <TimelineContent>
+                  <TimelineContent className="pt-0">
                     <Typography variant="body1">
-                      Reports received from imaging lab for <strong>“John Doe” </strong>
+                      Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>
                     </Typography>
-                    <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
-                      10 minutes ago
+
+                    <Typography variant="body2" style={{ color: BLUE }}>
+                      5 minutes ago
                     </Typography>
                   </TimelineContent>
                 </TimelineItem>
@@ -391,12 +375,31 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                   <TimelineSeparator>
                     <TimelineDot variant="outlined" color="secondary" />
 
+                    <TimelineConnector />
                   </TimelineSeparator>
-                  <TimelineContent>
+
+                  <TimelineContent className="pt-0">
+                    <Typography variant="body1">
+                      Reports received from imaging lab for <strong>“John Doe” </strong>
+                    </Typography>
+
+                    <Typography variant="body2" style={{ color: BLUE }}>
+                      10 minutes ago
+                    </Typography>
+                  </TimelineContent>
+                </TimelineItem>
+
+                <TimelineItem>
+                  <TimelineSeparator>
+                    <TimelineDot variant="outlined" color="secondary" />
+                  </TimelineSeparator>
+
+                  <TimelineContent className="pt-0">
                     <Typography variant="body1">
                       <strong>“June Liam”</strong> self checked in at 10:42AM
                     </Typography>
-                    <Typography variant="body2" style={{ color: BLUE_EIGHT, marginTop: '5px' }}>
+
+                    <Typography variant="body2" style={{ color: BLUE }}>
                       5 minutes ago
                     </Typography>
                   </TimelineContent>
