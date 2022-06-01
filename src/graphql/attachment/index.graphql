@@ -116,4 +116,22 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
   }
 }
 
+query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
+     attachments{
+      id
+      title
+      attachmentName
+      url
+      type
+      comments
+      attachmentMetadata{
+        metadataType
+        policyId
+      }
+      attachmentMetadataId
+    }
+  }
+}
+
 

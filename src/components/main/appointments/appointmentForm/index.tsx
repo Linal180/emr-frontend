@@ -187,7 +187,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
         if (slots) {
           dispatch({
-            type: ActionType.SET_AVAILABLE_SLOTS, 
+            type: ActionType.SET_AVAILABLE_SLOTS,
             availableSlots: filterSlots(slots, appStartDate ? appStartDate : date) as SlotsPayload['slots']
           })
 
@@ -272,7 +272,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         }
       })
     }
-  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate])
+  }, [
+    currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch,
+    getSlots, appStartDate, setValue, appEndDate
+  ])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -316,10 +319,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, 
-        appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, 
-        appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,
+          appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime,
+          appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
@@ -386,7 +389,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Box ml={2}>
                 <PageHeader
                   title={EDIT_APPOINTMENT}
-                  path={[DASHBOARD_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
+                  path={[DASHBOARD_BREAD, VIEW_APPOINTMENTS_BREAD,
+                    isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD
+                  ]}
                 />
               </Box>
             </Box>

@@ -156,6 +156,7 @@ query GetStaffUser($getStaff: GetStaff!) {
       lastName
       firstName
       phone
+      practiceId
 
       attachments {
         id

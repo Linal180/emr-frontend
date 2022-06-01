@@ -17,7 +17,7 @@ import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import {
   ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION, APPOINTMENT_TEXT,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -25,6 +25,7 @@ import {
 } from '../../../../../generated/graphql';
 import ItemSelector from '../../../../common/ItemSelector';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
+import AppointmentSelector from '../../../../common/Selector/AppointmentSelector';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen }): JSX.Element => {
   const { id: icdCodeId, code, description } = item as IcdCodes || {}
@@ -178,7 +179,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
     const commonInput = {
       note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType, snowMedCodeId: selectedSnoMedCode
+      problemType: typeStatus.toUpperCase() as ProblemType
     }
 
     const extendedInput = selectedAppointment ?
@@ -193,7 +194,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     } else {
       await addPatientProblem({
         variables: {
-          createProblemInput: { patientId, icdCodeId, ...extendedInput }
+          createProblemInput: { patientId, icdCodeId, ...extendedInput, snowMedCodeId: selectedSnoMedCode }
         }
       })
     }
@@ -248,8 +249,15 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
               label={SNO_MED_CODE}
               name="snowMedCodeId"
               value={snoMedCode}
-              searchQuery={description || ''}
+              searchQuery={code || ''}
               modalName={ITEM_MODULE.snoMedCode}
+            />
+
+            <AppointmentSelector
+              addEmpty
+              name="appointmentId"
+              patientId={patientId}
+              label={APPOINTMENT_TEXT}
             />
 
             <InputController

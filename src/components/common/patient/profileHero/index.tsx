@@ -11,7 +11,7 @@ import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -24,7 +24,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart, isCheckIn }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -126,17 +126,16 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  // const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
 
   if (selfContact && selfContact[0]) {
-    const { phone, email, country, state } = selfContact[0]
+    const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = patientEmail ? patientEmail : email || "--"
-    selfCurrentLocation = `${country ? country : N_A} ${state ? state : ''}`
+    selfCurrentLocation = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
   }
 
   const ProfileDetails = [
@@ -151,10 +150,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     {
       icon: AtIcon(),
       description: selfEmail
-    },
-    {
-      icon: LocationIcon(),
-      description: selfCurrentLocation
     },
     {
       icon: LocationIcon(),
@@ -297,7 +292,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                   {SCHEDULE_APPOINTMENTS_TEXT}
                 </Button> */
                 }
-
               </Box>
             </Box>
           </Box>
@@ -323,7 +317,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       </Collapse>
 
       <Box my={4}>
-        {!isChart && <Box pr={1}>
+        {!isChart && !isCheckIn && <Box pr={1}>
           <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
             {EDIT_PATIENT}
           </Button>

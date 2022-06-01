@@ -30,7 +30,7 @@ import {
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   ADD_STAFF, DASHBOARD_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD, FORBIDDEN_EXCEPTION,
-  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES,
+  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -228,7 +228,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             <Box ml={2} />
 
             <PageHeader
-              title={ADD_STAFF}
+              title={isEdit ? EDIT_STAFF : ADD_STAFF}
               path={[DASHBOARD_BREAD, STAFF_BREAD, isEdit ? STAFF_EDIT_BREAD : STAFF_NEW_BREAD]}
             />
           </Box>
@@ -308,11 +308,11 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" label={PHONE} />
+                        <PhoneField name="phone" label={MOBILE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" label={MOBILE} />
+                        <PhoneField name="mobile" label={PHONE} />
                       </Grid>
                     </Grid>
                   </>

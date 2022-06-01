@@ -1,20 +1,20 @@
 // packages block
-import { FC, Reducer, useReducer, MouseEvent, useState, useCallback } from 'react';
 import { Box, Button, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
-import { Add as AddIcon, } from '@material-ui/icons'
-// component block
-import ProblemModal from '../problems/modals/ProblemModal';
-import AllergyModal from '../allergies/modals/AllergyModal';
-// constants block
-import { FilterSearchProps } from '../../../../interfacesTypes';
-import { Allergies, IcdCodes } from '../../../../generated/graphql';
-import { GREY_ELEVEN, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
+import { Add as AddIcon } from '@material-ui/icons';
+import { FC, MouseEvent, Reducer, useCallback, useReducer, useState } from 'react';
 import { ClearIcon, NoDataIcon, SmallSearchIcon } from '../../../../assets/svgs';
-import { usePatientChartingStyles } from "../../../../styles/patientCharting";
-import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
 import {
   ADD_ALLERGY, CARD_LAYOUT_MODAL, NO_RECORDS, SEARCH_FOR_ALLERGIES, SEARCH_FOR_ICD_CODES, TYPE
 } from '../../../../constants';
+import { Allergies, IcdCodes } from '../../../../generated/graphql';
+// constants block
+import { FilterSearchProps } from '../../../../interfacesTypes';
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../reducers/chartReducer";
+import { usePatientChartingStyles } from "../../../../styles/patientCharting";
+import { GRAY_SIX, GREY_ELEVEN, GREY_SEVEN } from '../../../../theme';
+import AllergyModal from '../allergies/modals/AllergyModal';
+// component block
+import ProblemModal from '../problems/modals/ProblemModal';
 
 const FilterSearch: FC<FilterSearchProps> = (
   { tabs, searchItem, loading, searchData, dispatcher, fetch, modal }
@@ -95,10 +95,10 @@ const FilterSearch: FC<FilterSearchProps> = (
                 </Box>
               )
             } else if (modal === CARD_LAYOUT_MODAL.ICDCodes) {
-              const { code, description } = item as IcdCodes || {}
+              const { code, description, id } = item as IcdCodes || {}
 
               return (
-                <Box key={code} className='pointer-cursor' my={0.2}
+                <Box key={`${id} ${Date.now()}`} className='pointer-cursor' my={0.2}
                   onClick={(event) => item && handleOpenForm(event, item)}
                 >
                   <Typography variant='body1' className="hoverClass">{code} - {description}</Typography>
@@ -112,14 +112,14 @@ const FilterSearch: FC<FilterSearchProps> = (
             <Typography variant="h6">{NO_RECORDS}</Typography>
 
             <Box p={1} />
-            
-            {searchQuery && modal === CARD_LAYOUT_MODAL.Allergies && 
+
+            {searchQuery && modal === CARD_LAYOUT_MODAL.Allergies &&
               <Button type="submit" size='small' variant='contained' color='primary'
                 onClick={(event) => handleNewAllergy(event)}
-                startIcon={<AddIcon />}  
+                startIcon={<AddIcon />}
               >
                 {ADD_ALLERGY}
-              </Button> }
+              </Button>}
           </Box>)
       }
     </Box>

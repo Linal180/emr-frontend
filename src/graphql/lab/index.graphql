@@ -105,6 +105,13 @@ query FindAllTestSpecimenTypes($testSpecimenTypeInput: TestSpecimenTypeInput!) {
   }
 }
 
+query getSpecimenTypeByName($name: String!) {
+  getSpecimenTypeByName(name: $name) {
+      id
+      name   
+  }
+}
+
 query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
   findLabTestsByOrderNum(labTestByOrderNumInput: $labTestByOrderNumInput) {
     labTests{

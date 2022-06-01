@@ -1,13 +1,14 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
+import { ChangeEvent, Reducer, useReducer, useEffect, useCallback, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
 import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
 import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
-import Insurance from './Insurance';
+import Insurance from './insurance';
 import AreaChartComponent from './charts';
 import CareTeamComponent from './careTeam';
+import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
 import AppointmentList from '../../../common/AppointmentList';
@@ -22,7 +23,7 @@ import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery
+  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -44,8 +45,9 @@ import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
+  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData }, dispatch] =
+  const [{ openDelete, tabValue, patientData, patientProvidersData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [{
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
@@ -59,6 +61,8 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const handleDeleteWidget = () => { };
 
+  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+
   useEffect(() => {
     if (routeParamValue) {
       dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: routeParamValue })
@@ -71,7 +75,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       nextFetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
 
-      onError({ message }) {
+      onError() {
         appointmentDispatch({ type: appointmentActionType.SET_UP_COMING, upComing: [] });
       },
 
@@ -129,6 +133,39 @@ const PatientDetailsComponent = (): JSX.Element => {
   const handleCompletedChange = (_: ChangeEvent<unknown>, value: number) => appointmentDispatch({
     type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
   });
+
+  const [getPatientProvider, { loading: getPatientLoading }] = useGetPatientProviderLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() { },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatientProvider } = data;
+
+        if (getPatientProvider) {
+
+          const { providers } = getPatientProvider;
+          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
+        }
+      }
+    },
+  });
+
+  const fetchAllPatientsProviders = useCallback(async () => {
+    try {
+      id && await getPatientProvider({
+        variables: {
+          getPatient: { id }
+        }
+      })
+    } catch (error) { }
+  }, [id, getPatientProvider])
+
+  useEffect(() => {
+    fetchAllPatientsProviders()
+  }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
     if (id) {
@@ -264,7 +301,9 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent />
+                <CareTeamComponent
+                  toggleSideDrawer={toggleSideDrawer} patientId={id} loading={getPatientLoading} reload={() => fetchAllPatientsProviders()}  patientProvidersData={patientProvidersData}
+                />
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
@@ -310,6 +349,10 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
         </Box>
       </TabContext>
+
+      <Box className="careTeam-side-drawer">
+        <CareTeamProvider drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer} patientId={id} reload={() => fetchAllPatientsProviders()} />
+      </Box>
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}

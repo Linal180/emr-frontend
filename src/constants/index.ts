@@ -2,12 +2,14 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+//assets
 import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
 // graphql and interfaces block
 import {
-  formatServiceCode, formatValue, getFormattedDate, getStandardTime,
+  formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord,
 } from "../utils";
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
@@ -16,13 +18,13 @@ import {
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
   DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon, NewAvatarIcon,
+  TextAreaIcon, TextIcon,
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity,
 } from "../generated/graphql";
 
 // regex
@@ -79,6 +81,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -105,7 +108,7 @@ export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
 export const ACUTE = "Acute";
 export const CHRONIC = "Chronic";
-export const LOCK_TIME_OUT = 6000000;
+export const LOCK_TIME_OUT = 604800000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -234,6 +237,7 @@ export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const SAME_AS_PATIENT = "Same as patient";
+export const DONT_WANT_TO_SHARE_EMAIL = "Don't want to share email";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
@@ -273,6 +277,7 @@ export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
 export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
+export const TERTIARY_INSURANCE = "Tertiary Insurance";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const ADD_STAFF = "Add Staff";
@@ -516,6 +521,7 @@ export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
 export const CITY = "City";
 export const EMAIL = "Email";
+export const RELATION = "Relation";
 export const PHONE = "Phone";
 export const STATE = "State";
 export const PDF_TEXT = "PDF";
@@ -851,15 +857,20 @@ export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const QUICK_PATIENT_REGISTRATIONS = "Quick Patient Registrations";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
+export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
+export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
+export const OTHER_PROVIDER = "Other Provider"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
+export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
 export const SEARCH = "Search";
 export const SIGNED = "Signed";
@@ -875,6 +886,7 @@ export const ROLES_TEXT = "Roles";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
+export const COPAY_TEXT = "COPAY";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -901,6 +913,7 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
+export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
@@ -920,6 +933,7 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const EFFECTIVE_TEXT = "EFFECTIVE";
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -942,6 +956,8 @@ export const CANCELLATIONS = "Cancellations";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const COPAY_TYPE = "Copay Type";
+export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
@@ -951,7 +967,9 @@ export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
 export const REVOKE_ACCESS = "Revoke Access";
+export const POLICY_NAME_TEXT = "POLICY NAME";
 export const DECREASED_DATE = "Deceased Date";
+export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const PREFERRED_NAME = "Preferred Name";
 export const HOLD_STATEMENT = "Hold Statement";
@@ -959,6 +977,7 @@ export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
 export const ADDRESS_NUMBER = "Address Number";
 export const CONTACT_NUMBER = "Contact Number";
+export const ENTER_RELATION = "Enter Relation";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -1133,6 +1152,7 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const TWO_FACTOR_LOGIN_DESCRIPTION = "Enter security code from your mobile phone.";
 export const PATIENT_RELATIONSHIP_TO_POLICY_HOLDER = "Patient relationship to policy holder";
 export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
+export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
@@ -1287,6 +1307,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
+export const EDIT_PROVIDER = "Edit Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1307,6 +1328,7 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
+export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1432,6 +1454,10 @@ export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP = 
+"This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP = 
+"These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1448,7 +1474,6 @@ export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
-
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
 export const APP_MENU_ITEMS = [
@@ -1620,6 +1645,17 @@ export const LAB_TEST_STATUSES: SelectorOption[] = [
   { id: LabTestStatus.ResultReceived, name: formatValue(LabTestStatus.ResultReceived) },
   { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
+
+export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE= mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
+
+export const MAPPED_POLICY_ORDER_OF_BENEFIT= mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
+
+export const MAPPED_PRICING_PRODUCT_TYPE= mapEnum<typeof PricingProductType>(PricingProductType)
+
+export const MAPPED_COPAY_TYPE= mapEnum<typeof CopayType>(CopayType)
+
+export const MAPPED_POLICY_GENDER= mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
   {
@@ -2496,7 +2532,8 @@ export const DUMMY_APPOINTMENTS = [
 ];
 
 export enum ITEM_MODULE {
-  snoMedCode = 'SnoMedCode'
+  snoMedCode = 'SnoMedCode',
+  insurance= 'insurance'
 }
 
 export const DUMMY_ENCOUNTERS = [
@@ -2532,6 +2569,7 @@ export enum ATTACHMENT_TITLES {
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
   LabOrders = "Lab Orders",
+  PracticeLogo = "Logo",
 }
 
 export enum MODULE_TYPES {
@@ -2842,6 +2880,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3078,16 +3132,16 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
   specimenType: { id: '', name: '' },
-  collectionDate: '',
+  collectionDate: moment().toString(),
   specimenNotes: '',
-  collectionTime: ''
+  collectionTime: moment().format('HH:mm:ss')
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   test: { id: '', name: '' },
-  testDate: '',
+  testDate: moment().toString(),
   testNotes: '',
-  testTime: '',
+  testTime: moment().format('HH:mm:ss'),
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
@@ -3105,6 +3159,7 @@ export const CHECK_IN_STEPS = [
   INSURANCE,
   VITALS_TEXT,
   CHART_TEXT,
+  LAB_ORDERS,
   BILLING_TEXT,
 ];
 
@@ -3371,11 +3426,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
@@ -3635,18 +3690,14 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
   }
 ];
 
+export const INITIAL_COPAY_VALUE = {
+  copayType: setRecord('',''),
+  amount: ''
+}
+
 export const MAPPED_REGIONS: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })
 );
-export const PROVIDERS_DUMMY_DATA = [
-  {
-    name: "William Warren",
-    specialist: "Cardiac Electrophysiology",
-    phone: "+12859374923",
-    address: "328 Gibraltar Dr. Sunnyvale, CA 94089 Lakewood, NY 11731",
-    icon: NewAvatarIcon,
-  },
-];
 
 export const areaChartOne = {
   credits: { enabled: false },
@@ -3686,7 +3737,7 @@ export const areaChartOne = {
   },
   // tooltip: {
   //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-  //   style : { 'zIndex' :'1' }
+  //   style: { 'zIndex' :'1' },
   // },
   plotOptions: {
     area: {
@@ -3786,4 +3837,19 @@ export const areaChartTwo = {
       26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
     ]
   }]
+}
+
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType'
+}
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler'
 }

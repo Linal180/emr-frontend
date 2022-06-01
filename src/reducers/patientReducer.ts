@@ -1,10 +1,10 @@
 import { usStreet } from "smartystreets-javascript-sdk";
+import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
-  AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientsPayload,
+  AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
-import { formatValue } from "../utils";
 
 export interface State {
   page: number;
@@ -17,19 +17,20 @@ export interface State {
   activeStep: number;
   isBilling: boolean;
   openGraph: boolean;
+  facilityId: string;
+  doctorName: string;
   openDelete: boolean;
   searchQuery: string;
   isEditCard: boolean;
   kinContactId: string;
   facilityName: string;
-  facilityId: string;
-  doctorName: string;
+  sameAddress: boolean;
   paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
-  sameAddress: boolean;
   consentAgreed: boolean;
   isAppointment: boolean;
+  optionalEmail: boolean;
   deletePatientId: string;
   guardianContactId: string;
   guarantorContactId: string;
@@ -59,6 +60,12 @@ export interface State {
   isTempEdit: boolean;
   isNoteOpen: HTMLElement | null;
   patientNoteOpen: boolean
+  patientProvidersData: PatientProviderPayload['providers'];
+  privacyNotice: boolean
+  releaseOfInfoBill: boolean
+  callToConsent: boolean
+  medicationHistoryAuthority: boolean
+  smsPermission: boolean
 }
 
 export const initialState: State = {
@@ -89,6 +96,7 @@ export const initialState: State = {
   attachmentsData: [],
   deletePatientId: '',
   consentAgreed: false,
+  optionalEmail: false,
   isAppointment: false,
   attachmentData: null,
   guardianContactId: '',
@@ -113,13 +121,19 @@ export const initialState: State = {
   prevFeverUnit: TempUnitType.DegF,
   isTempEdit: false,
   isNoteOpen: null,
-  patientNoteOpen: false
+  patientNoteOpen: false,
+  patientProvidersData: [],
+  privacyNotice: false,
+  releaseOfInfoBill: false,
+  callToConsent: false,
+  medicationHistoryAuthority: false,
+  smsPermission: false,
 }
 
 export enum ActionType {
   SET_PAGE = 'setPage',
-  SET_IS_OPEN = "setIsOpen",
   SET_IS_SMS = 'setIsSms',
+  SET_IS_OPEN = "setIsOpen",
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
@@ -128,6 +142,8 @@ export enum ActionType {
   SET_IS_BILLING = 'setIsBilling',
   SET_PATIENT_ID = 'setPatientId',
   SET_ACTIVE_STEP = 'setActiveStep',
+  SET_FACILITY_ID = 'setFacilityId',
+  SET_DOCTOR_NAME = 'setDoctorName',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_EMPLOYER_ID = 'setEmployerId',
   SET_TOTAL_PAGES = 'setTotalPages',
@@ -137,12 +153,11 @@ export enum ActionType {
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
-  SET_FACILITY_ID = 'setFacilityId',
-  SET_DOCTOR_NAME = 'setDoctorName',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_PAYMENT_METHOD = 'setPaymentMethod',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
+  SET_OPTIONAL_EMAIL = 'setOptionalEmail',
   SET_CONSENT_AGREED = 'setConsentAgreed',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
@@ -165,7 +180,14 @@ export enum ActionType {
   SET_EDIT_HEIGHT = 'setEditHeight',
   SET_EDIT_HEAD = 'setEditHead',
   SET_NOTE_OPEN = 'setNoteOpen',
-  SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen'
+  SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
+  SET_PATIENT_PROVIDERS = 'setPatientProviders',
+  SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
+  SET_PRIVACY_NOTICE = 'setPrivacyNote',
+  SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
+  SET_CALL_TO_CONSENT = 'setCallToConsent',
+  SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
+  SET_SMS_PERMISSION = 'setSmsPermission',
 }
 
 export type Action =
@@ -176,6 +198,8 @@ export type Action =
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_IS_BILLING, isBilling: boolean }
   | { type: ActionType.SET_OPEN_GRAPH, openGraph: boolean }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
+  | { type: ActionType.SET_DOCTOR_NAME; doctorName: string }
   | { type: ActionType.SET_EMPLOYER_ID; employerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
@@ -184,12 +208,11 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
-  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
-  | { type: ActionType.SET_DOCTOR_NAME; doctorName: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
   | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
+  | { type: ActionType.SET_OPTIONAL_EMAIL, optionalEmail: boolean }
   | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
@@ -219,6 +242,12 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
+  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: PatientProviderPayload['providers'] }
+  | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
+  | { type: ActionType.SET_RELEASE_OF_INFO_BILL; releaseOfInfoBill: boolean }
+  | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
+  | { type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY; medicationHistoryAuthority: boolean }
+  | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -238,6 +267,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         consentAgreed: action.consentAgreed
+      }
+
+    case ActionType.SET_OPTIONAL_EMAIL:
+      return {
+        ...state,
+        optionalEmail: action.optionalEmail
       }
 
     case ActionType.SET_SAME_ADDRESS:
@@ -370,11 +405,13 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         anchorEl: action.anchorEl
       }
+      
     case ActionType.SET_ATTACHMENT_ID:
       return {
         ...state,
         attachmentId: action.attachmentId
       }
+      
     case ActionType.SET_IS_EDIT_CARD:
       return {
         ...state,
@@ -410,36 +447,43 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         facilityId: action.facilityId
       }
+
     case ActionType.SET_DOCTOR_NAME:
       return {
         ...state,
         doctorName: action.doctorName
       }
+
     case ActionType.SET_IS_CHECKED:
       return {
         ...state,
         isChecked: action.isChecked
       }
+
     case ActionType.SET_IS_VERIFIED:
       return {
         ...state,
         isVerified: action.isVerified
       }
+
     case ActionType.SET_ADDRESS_OPEN:
       return {
         ...state,
         addressOpen: action.addressOpen
       }
+
     case ActionType.SET_DATA:
       return {
         ...state,
         data: action.data
       }
+
     case ActionType.SET_OPEN_UNITS:
       return {
         ...state,
         openUnits: action.openUnits
       }
+
     case ActionType.SET_HEIGHT_UNIT:
       const { heightUnit: { id: prevHeightUnit } } = state;
       return {
@@ -448,6 +492,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isHeightEdit: true,
         heightUnit: action.heightUnit
       }
+
     case ActionType.SET_WEIGHT_UNIT:
       const { weightUnit: { id: prevWeightUnit } } = state
       return {
@@ -456,6 +501,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isWeightEdit: true,
         weightUnit: action.weightUnit
       }
+
     case ActionType.SET_HEAD_CIRCUMFERENCE_UNIT:
       const { headCircumferenceUnit: { id: prevHeadUnit } } = state
       return {
@@ -464,6 +510,7 @@ export const patientReducer = (state: State, action: Action): State => {
         isHeadEdit: true,
         headCircumferenceUnit: action.headCircumferenceUnit
       }
+
     case ActionType.SET_FEVER_UNIT:
       const { feverUnit: { id: prevFeverUnit } } = state
       return {
@@ -472,35 +519,77 @@ export const patientReducer = (state: State, action: Action): State => {
         isTempEdit: true,
         feverUnit: action.feverUnit
       }
+
     case ActionType.SET_EDIT_HEAD:
       return {
         ...state,
         isHeadEdit: action.isHeadEdit
       }
+
     case ActionType.SET_EDIT_HEIGHT:
       return {
         ...state,
         isHeightEdit: action.isHeightEdit
       }
+
     case ActionType.SET_EDIT_WEIGHT:
       return {
         ...state,
         isWeightEdit: action.isWeightEdit
       }
+
     case ActionType.SET_EDIT_TEMP:
       return {
         ...state,
         isTempEdit: action.isTempEdit
       }
+
     case ActionType.SET_NOTE_OPEN:
       return {
         ...state,
         isNoteOpen: action.isNoteOpen
       }
+
     case ActionType.SET_PATIENT_NOTE_OPEN:
       return {
         ...state,
         patientNoteOpen: action.patientNoteOpen
+      }
+
+    case ActionType.SET_PATIENT_PROVIDERS_DATA:
+      return {
+        ...state,
+        patientProvidersData: action.patientProvidersData
+      }
+
+    case ActionType.SET_PRIVACY_NOTICE:
+      return {
+        ...state,
+        privacyNotice: action.privacyNotice
+      }
+
+    case ActionType.SET_RELEASE_OF_INFO_BILL:
+      return {
+        ...state,
+        releaseOfInfoBill: action.releaseOfInfoBill
+      }
+
+    case ActionType.SET_CALL_TO_CONSENT:
+      return {
+        ...state,
+        callToConsent: action.callToConsent
+      }
+
+    case ActionType.SET_MEDICATION_HISTORY_AUTHORITY:
+      return {
+        ...state,
+        medicationHistoryAuthority: action.medicationHistoryAuthority
+      }
+
+    case ActionType.SET_SMS_PERMISSION:
+      return {
+        ...state,
+        smsPermission: action.smsPermission
       }
   }
 };

@@ -15,6 +15,7 @@ export interface State {
   appPaid: boolean;
   serviceId: string;
   appStatus: string;
+  patientId: string;
   facilityId: string;
   totalPages: number;
   providerId: string;
@@ -72,6 +73,7 @@ export const initialState: State = {
   doctor: null,
   totalPages: 0,
   copied: false,
+  patientId: '',
   agreed: false,
   appEdit: false,
   instance: null,
@@ -135,6 +137,7 @@ export enum ActionType {
   SET_FACILITY = 'setFacility',
   SET_UP_COMING = 'setUpComing',
   SET_COMPLETED = 'setComplete',
+  SET_PATIENT_ID = 'setPatientId',
   SET_APP_DETAIL = 'setAppDetail',
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
@@ -183,6 +186,7 @@ export type Action =
   | { type: ActionType.SET_APP_OPEN; appOpen: boolean }
   | { type: ActionType.SET_APP_PAID; appPaid: boolean }
   | { type: ActionType.SET_APP_STATUS; appStatus: string }
+  | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
   | { type: ActionType.SET_PAGE_COMING; pageComing: number }
@@ -287,6 +291,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientName: action.patientName
+      }
+
+    case ActionType.SET_PATIENT_ID:
+      return {
+        ...state,
+        patientId: action.patientId
       }
 
     case ActionType.SET_PROVIDER_NAME:

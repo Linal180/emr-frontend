@@ -1,0 +1,150 @@
+query FetchAllInsurances($insuranceInput: InsurancePaginationInput!){
+  fetchAllInsurances(insuranceInput: $insuranceInput){
+    insurances{
+      payerName
+      payerId
+      id
+    }
+    
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+query FetchAllPolicies($policyInput: PolicyPaginationInput!){
+  fetchAllPolicies(policyInput: $policyInput){
+    policies {
+      id
+      orderOfBenifit
+      expirationDate
+      issueDate
+      memberId
+      groupNumber
+      copays {
+        type
+        amount
+      }
+      policyHolder {
+        firstName
+        lastName
+      }
+      patient {
+        email
+      }
+      insurance {
+        payerName
+        payerId
+      }
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+    
+    response{
+      status
+      message
+    }
+  }
+}
+
+query FetchPolicy($id: String!){
+  fetchPolicy(id: $id){
+    policy {
+      id
+      policyHolderRelationship
+      coinsurancePercentage
+      expirationDate
+      pricingProductType
+      issueDate
+      memberId
+      groupNumber
+      notes
+      orderOfBenifit
+      referringProvider{
+        firstName
+        lastName
+        id
+      }
+      
+      primaryCareProvider{
+        firstName
+        lastName
+        id
+      }
+      
+      copays {
+        id
+        type
+        amount
+      }
+
+      policyHolder {
+        id
+        address
+        addressCTD
+        city
+        dob
+        employer
+        firstName
+        middleName
+        lastName
+        certificationNumber
+        ssn
+        state
+        suffix
+        zipCode
+        sex
+      }
+
+      patient {
+        id
+      }
+
+      insurance {
+        payerName
+        payerId
+        id
+      }
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
+  createPolicy(createPolicyInput: $createPolicyInput){
+    response {
+      status
+      message
+    }
+
+    policy {
+      id
+    }
+  }
+}
+
+mutation UpdatePolicy($updatePolicyInput: UpdatePolicyInput!) {
+  updatePolicy(updatePolicyInput: $updatePolicyInput){
+    response {
+      status
+      message
+    }
+
+    policy {
+      id
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { AllDoctorPayload, DoctorPayload, SlotsPayload, SchedulesPayload } from "../generated/graphql"
-import { DaySchedule } from "../interfacesTypes";
+import { DaySchedule, SelectorOption } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -23,6 +23,7 @@ export interface State {
   doctors: AllDoctorPayload['doctors'];
   doctorSlots: SlotsPayload['slots'];
   doctorSchedules: SchedulesPayload['schedules'];
+  provider: SelectorOption
 }
 
 export const initialState: State = {
@@ -47,6 +48,10 @@ export const initialState: State = {
   doctorFacilityId: "",
   scheduleOpenModal: false,
   openScheduleDelete: false,
+  provider: {
+    id: "",
+    name: ""
+  }
 }
 
 export enum ActionType {
@@ -71,6 +76,7 @@ export enum ActionType {
   SET_DELETE_SCHEDULE_ID = 'setDeleteScheduleId',
   SET_SCHEDULE_OPEN_MODAL = 'setScheduleOpenModal',
   SET_OPEN_SCHEDULE_DELETE = 'setOpenScheduleDelete',
+  SET_PROVIDER = 'setProvider'
 }
 
 export type Action =
@@ -95,6 +101,7 @@ export type Action =
   | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
   | { type: ActionType.SET_DOCTOR_SLOTS; doctorSlots: SlotsPayload['slots'] }
   | { type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: SchedulesPayload['schedules'] }
+  | { type: ActionType.SET_PROVIDER, provider: SelectorOption }
 
 export const doctorReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -222,6 +229,12 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         serviceId: action.serviceId
+      }
+
+    case ActionType.SET_PROVIDER:
+      return {
+        ...state,
+        provider: action.provider
       }
   };
 }

@@ -26,13 +26,14 @@ export const BLUE_FOUR = "#1BC5BD"
 export const BLUE_FIVE = "#C9F7F5"
 export const BLUE_SIX = "#009EF7";
 export const BLUE_SEVEN = "#3699FF";
-export const BLUE_EIGHT = "#204ECF";
 export const BLUE_NINE = "#3f51b5";
+export const BLUE_TEN = "#21E1D8";
 
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
 
 export const PINK = "#F1416C";
+export const PINK_TWO = "#FF6A7A";
 
 export const RED_THREE = "#f44336";
 
@@ -66,6 +67,7 @@ export const GREY_TWELVE = "#F9FBFF"
 export const GREY_THIRTEEN = "#7E7E7E"
 export const GREY_FOURTEEN = "#F4F4F4"
 export const GREY_FIFTEEN = "#5E6278"
+export const GREY_SIXTEEN = "#B3B3B3"
 
 export const WHITE = "#FFFFFF";
 
@@ -73,6 +75,7 @@ export const RED = "#DD1010";
 export const RED_ONE = "#F64E60";
 
 export const PURPLE_ONE = "#7239EA";
+export const PURPLE_TWO = "#A075F8";
 
 export const MILD = "#FFA800";
 export const ACUTE = "#DD1010";

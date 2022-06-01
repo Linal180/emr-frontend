@@ -1,6 +1,7 @@
 // packages block
 import { FC, useState } from "react";
 import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
+import { CameraAlt } from "@material-ui/icons";
 // components block
 import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
@@ -10,7 +11,6 @@ import { DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, S
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileUploadIcon, UploadIcon } from "../../../assets/svgs";
-import { CameraAlt } from "@material-ui/icons";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
@@ -102,13 +102,13 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid item md={12} xs={12} style={{padding: 0}}>
+          <Grid item md={12} xs={12}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {buttonText || UPLOAD}
             </Button>}
 
-            {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+            {notDescription && !button && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
             </Typography>}
 

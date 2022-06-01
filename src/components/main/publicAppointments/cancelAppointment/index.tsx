@@ -10,7 +10,8 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { useCancelAppointmentMutation } from "../../../../generated/graphql";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
 import {
-  appointmentCancellationDescription, APPOINTMENT_CANCEL_SUBHEADING, APPOINTMENT_NOT_EXIST, CANCEL_APPOINTMENT_TEXT, CANT_CANCELLED_APPOINTMENT, DISMISS, NOT_FOUND_EXCEPTION,
+  appointmentCancellationDescription, APPOINTMENT_CANCEL_SUBHEADING, APPOINTMENT_NOT_EXIST, 
+  CANCEL_APPOINTMENT_TEXT, CANT_CANCELLED_APPOINTMENT, DISMISS, NOT_FOUND_EXCEPTION,
   PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, YES_CANCEL,
 } from "../../../../constants";
 
