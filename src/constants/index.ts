@@ -1454,6 +1454,10 @@ export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP = 
+"This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP = 
+"These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1470,7 +1474,6 @@ export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
-
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
 export const APP_MENU_ITEMS = [
@@ -3698,6 +3701,7 @@ export const MAPPED_REGIONS: SelectorOption[] = states.map(
 
 export const areaChartOne = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3731,10 +3735,10 @@ export const areaChartOne = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-    style : { 'zIndex' :'1' }
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+  //   style: { 'zIndex' :'1' },
+  // },
   plotOptions: {
     area: {
       marker: {
@@ -3768,6 +3772,7 @@ export const areaChartOne = {
 
 export const areaChartTwo = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3800,9 +3805,9 @@ export const areaChartTwo = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  // },
   plotOptions: {
     area: {
       marker: {
