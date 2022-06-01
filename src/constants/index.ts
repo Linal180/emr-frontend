@@ -920,7 +920,6 @@ export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
-export const COPAY_TYPE = "Copay Type";
 export const SCHEDULE_TEXT = "Schedule";
 export const YES_CANCEL = "Yes, Cancel";
 export const SSN_FORMAT = '000-00-0000';
@@ -957,6 +956,8 @@ export const CANCELLATIONS = "Cancellations";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const COPAY_TYPE = "Copay Type";
+export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
@@ -3128,16 +3129,16 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
   specimenType: { id: '', name: '' },
-  collectionDate: '',
+  collectionDate: moment().toString(),
   specimenNotes: '',
-  collectionTime: ''
+  collectionTime: moment().format('HH:mm:ss')
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   test: { id: '', name: '' },
-  testDate: '',
+  testDate: moment().toString(),
   testNotes: '',
-  testTime: '',
+  testTime: moment().format('HH:mm:ss'),
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
