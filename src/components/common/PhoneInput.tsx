@@ -8,7 +8,7 @@ import 'react-phone-input-2/lib/style.css'
 import { requiredLabel } from '../../utils';
 import { PhoneInputProps } from '../../interfacesTypes';
 
-const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
+const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired, disabled }) => {
   const { control } = useFormContext()
 
   return (
@@ -26,6 +26,7 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
             {...field}
             country='us'
             disableDropdown
+            disabled={disabled && true}
             disableCountryCode
             value={field.value}
             onlyCountries={['us']}

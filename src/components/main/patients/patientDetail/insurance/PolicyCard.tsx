@@ -14,14 +14,14 @@ import PolicyAttachments from "./PolicyAttachments";
 import PolicyDetails from "./PolicyDetails";
 import PolicyHolderDetails from "./PolicyHolderDetails";
 //constants, types, utils import
-import { ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
+import { CANCEL, ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
 import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
 import { InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
 import Alert from "../../../../common/Alert";
 
-const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions }) => {
+const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit }) => {
   const { id: patientId } = useParams<ParamsType>()
   const [expanded, setExpanded] = useState<string | false>(false);
   const [policyId, setPolicyId] = useState<string>('')
@@ -213,15 +213,18 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
           }
         }
       })
+      setPolicyToEdit && setPolicyToEdit('')
     } else {
       createPolicy({
         variables: {
           createPolicyInput: {
             coinsurancePercentage: coInsurancePercentage,
-            ...(transformedCopays.length && { copays: transformedCopays.map((copayValues)=>{
-              const {id:copayId, ...copayValue} = copayValues
-              return copayValue
-            }) }),
+            ...(transformedCopays.length && {
+              copays: transformedCopays.map((copayValues) => {
+                const { id: copayId, ...copayValue } = copayValues
+                return copayValue
+              })
+            }),
             expirationDate,
             insuranceId: insuranceId?.id ?? '',
             issueDate,
@@ -253,7 +256,11 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
             <Box pb={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
               <Typography variant='h4'>{INSURANCE_AND_POLICIES}</Typography>
 
-              <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
+              <Box display="flex" alignItems="center">
+                {isEdit && <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>}
+                <Box p={1} />
+                <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
+              </Box>
             </Box>
 
             <Box pt={3} pb={5}>

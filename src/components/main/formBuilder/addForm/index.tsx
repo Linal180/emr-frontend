@@ -179,7 +179,6 @@ const AddForm = () => {
           const itemField = ITEMS?.find(
             (item) => item?.fieldId === draggableId
           );
-
           const newField: FieldsInputs = {
             label: itemField?.label ?? '',
             type: itemField?.type as ElementType ?? ElementType.Text,
@@ -193,7 +192,8 @@ const AddForm = () => {
             defaultValue: itemField?.defaultValue ?? '',
             options: itemField?.options ?? [],
             textArea: itemField?.textArea ?? false,
-            isMultiSelect: itemField?.isMultiSelect ?? false
+            isMultiSelect: itemField?.isMultiSelect ?? false,
+            apiCall: itemField?.apiCall ?? ''
           };
 
           item?.fields?.splice(destination.index, 0, newField);
@@ -210,7 +210,7 @@ const AddForm = () => {
       })
       const { layout } = preDefined || {}
       const { sections } = layout || {}
-      const section = sections?.map(({ fields, name }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: 12 }))
+      const section = sections?.map(({ fields, name, col }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: col || 12 }))
       const sect = section && section?.length > 0 && section[0]
       const isEmpty = formValues[0]?.fields?.length === 0
       sect && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: isEmpty ? [{ ...sect as SectionsInputs }] : [...formValues, { ...sect as SectionsInputs }] })
@@ -428,19 +428,19 @@ const AddForm = () => {
               <Box mx={1} />
 
               <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
-                {loading ? <CircularProgress size={20} color="inherit" /> : SAVE_DRAFT}
+                {loading && <CircularProgress size={20} color="inherit" />}  {SAVE_DRAFT}
               </Button>
 
               <Box mx={1} />
 
-              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary">
-                {createTemplateLoading ? <CircularProgress size={20} color="inherit" /> : CREATE_TEMPLATE}
+              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary" disabled={createTemplateLoading}>
+                {createTemplateLoading && <CircularProgress size={20} color="inherit" />} {CREATE_TEMPLATE}
               </Button>
 
               <Box mx={1} />
 
               <Button type='submit' variant='contained' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: true })} color='primary' disabled={loading || updateLoading}>
-                {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : PUBLISH}
+                {(loading || updateLoading) && <CircularProgress size={20} color="inherit" />} {PUBLISH}
               </Button>
             </Box>
           </Box>

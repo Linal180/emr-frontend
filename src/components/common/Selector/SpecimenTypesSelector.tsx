@@ -35,7 +35,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
 
   const fetchAllSpecimenTypes = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page:1, limit: DROPDOWN_PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllSpecimenTypes({
         variables: { testSpecimenTypeInput: { ...pageInputs, specimenTypeName: searchQuery } }
       })
@@ -64,7 +64,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
+              <FormControl fullWidth margin='normal' error={field.value.id ? !field.value.id : Boolean(invalid)}>
                 <Box position="relative">
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}
@@ -73,12 +73,12 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
                 <TextField
                   {...params}
                   variant="outlined"
-                  error={invalid}
+                  error={field.value.id ? !field.value.id : invalid}
                   className="selectorClass"
                   onChange={(event) => setSearchQuery(event.target.value)}
                 />
 
-                <FormHelperText>{message}</FormHelperText>
+                {!field.value.id && <FormHelperText>{message}</FormHelperText>}
               </FormControl>
             )}
             onChange={(_, data) => field.onChange(data)}
