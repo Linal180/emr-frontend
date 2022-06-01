@@ -24,7 +24,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart, isCheckIn }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -293,7 +293,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                   {SCHEDULE_APPOINTMENTS_TEXT}
                 </Button> */
                 }
-
               </Box>
             </Box>
           </Box>
@@ -319,7 +318,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       </Collapse>
 
       <Box my={4}>
-        {!isChart && <Box pr={1}>
+        {!isChart && !isCheckIn && <Box pr={1}>
           <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
             {EDIT_PATIENT}
           </Button>

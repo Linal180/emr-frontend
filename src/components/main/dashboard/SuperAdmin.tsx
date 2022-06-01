@@ -11,7 +11,7 @@ import PracticesByYear from "../../common/charts/PracticesByYear";
 import PracticeFacilities from "../../common/charts/PracticeFacilities";
 // constants, styles and svgs block
 import history from "../../../history";
-import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
+import { BLUE_SEVEN, BLUE_TEN, GREEN_ONE, PURPLE_TWO, WHITE } from "../../../theme";
 import { renderArrayAsSelectorOptions } from "../../../utils";
 import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
@@ -58,7 +58,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={2} pt={2} color={WHITE} bgcolor="#21E1D8">
+            <Box px={2} pt={2} color={WHITE} bgcolor={BLUE_TEN}>
               <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
             </Box>
 
@@ -181,7 +181,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={6} sm={12} xs={12}>
           <Card>
             <Box className="totalFacilitiesChartContainer">
-              <Box px={2} pt={2} color={WHITE} bgcolor="#A075F8">
+              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
                 <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
               </Box>
 

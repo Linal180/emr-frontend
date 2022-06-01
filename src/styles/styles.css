@@ -324,6 +324,10 @@ body .MuiTabPanel-root {
   color: #DD1010;
 }
 
+.pt-0 {
+  padding-top: 0 !important;
+}
+
 .btnDanger {
   color: #ffffff !important;
   background-color: #DD1010 !important;

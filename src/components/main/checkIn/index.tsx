@@ -1,43 +1,50 @@
 // packages block
+import { useParams } from "react-router";
+import clsx from 'clsx';
+import { ChangeEvent, Reducer, useReducer, useRef, useState } from "react";
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step,
   StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
 import { AddCircleOutline, Check, ChevronRight } from '@material-ui/icons';
-import clsx from 'clsx';
-import { ChangeEvent, Reducer, useReducer, useRef, useState } from "react";
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { useParams } from "react-router";
-import { ClearIcon } from "../../../assets/svgs";
-import {
-  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
-  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, HCFA_DESC,
-  HCPCS_CODES, ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_INFO,
-  PATIENT_PAYMENT_TYPE, PRICE, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT, YES
-} from "../../../constants";
-import InputController from '../../../controller';
-import { AttachmentsPayload, PatientPayload } from "../../../generated/graphql";
-import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
-import { appointmentReducer, State, Action, initialState } from "../../../reducers/appointmentReducer";
-import { Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState } from "../../../reducers/patientReducer";
-import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../reducers/mediaReducer";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { convertDateFromUnix, renderTh } from "../../../utils";
-import PageHeader from "../../common/PageHeader";
-import PatientProfileHero from "../../common/patient/profileHero";
 // component block
-import Search from "../../common/Search";
-import Selector from '../../common/Selector';
-import ChartCards from "../patientChart/chartCards";
-import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
-import InsuranceComponent from "../patients/patientDetail/insurance";
-import PatientForm from "../patients/patientForm";
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
+import Search from "../../common/Search";
+import Selector from '../../common/Selector';
+import PageHeader from "../../common/PageHeader";
+import PatientForm from "../patients/patientForm";
+import InputController from '../../../controller';
+import ChartCards from "../patientChart/chartCards";
+import PatientProfileHero from "../../common/patient/profileHero";
+import InsuranceComponent from "../patients/patientDetail/insurance";
+import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
+// constants, history, styling block
+import { ClearIcon } from "../../../assets/svgs";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { convertDateFromUnix, renderTh } from "../../../utils";
+import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
+import { AttachmentsPayload, PatientPayload } from "../../../generated/graphql";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { appointmentReducer, State, Action, initialState } from "../../../reducers/appointmentReducer";
+import {
+  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
+  patientReducer, State as PatientState
+} from "../../../reducers/patientReducer";
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState,
+  mediaReducer, State as mediaState
+} from "../../../reducers/mediaReducer";
+import {
+  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
+  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, HCFA_DESC, HCPCS_CODES,
+  ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, YES,
+  OTHER_DATE_TYPE, PATIENT_INFO, PATIENT_PAYMENT_TYPE, PRICE, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT,
+} from "../../../constants";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -543,16 +550,15 @@ const CheckInComponent = (): JSX.Element => {
   return (
     <>
       <PageHeader title={`Encounter on ${appointmentTime}`} />
-      {/* <PageHeader title="Encounter on 20/4/2022 at 3:45 PM" /> */}
 
       <PatientProfileHero
+        isCheckIn
         setPatient={(patient: PatientPayload['patient']) =>
           patientDispatcher({ type: PatientActionType.SET_PATIENT_DATA, patientData: patient })
         }
         setAttachmentsData={(attachments: AttachmentsPayload['attachments']) =>
           mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
         }
-        isChart
       />
       <Box p={2} />
 

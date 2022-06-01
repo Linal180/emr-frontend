@@ -10,19 +10,19 @@ import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
 // utils, interfaces and graphql block
-import { WHITE } from "../../../theme";
+import { PURPLE_TWO, WHITE } from "../../../theme";
 import { practiceChartOptions } from "../../../utils";
 import { PracticeChartProps } from "../../../interfacesTypes";
 import { useGetPracticeUserRolesCountLazyQuery  } from "../../../generated/graphql";
 
 const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element => {
-  const { credits, title, subtitle } = practiceChartOptions('#A075F8')
+  const { credits, title, subtitle } = practiceChartOptions(PURPLE_TWO)
 
   const [chartOptions, setChartOptions] = useState<any>({
     credits, title, subtitle, 
     chart: {
       type: 'bar',
-      backgroundColor: '#A075F8'
+      backgroundColor: PURPLE_TWO,
     },
 
     xAxis: {

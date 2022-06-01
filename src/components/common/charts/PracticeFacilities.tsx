@@ -11,12 +11,12 @@ import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts, { SeriesOptionsType } from "highcharts";
 // constants and graphql block
-import { WHITE } from "../../../theme";
+import { PURPLE_TWO, WHITE } from "../../../theme";
 import { practiceChartOptions } from "../../../utils";
 import { useGetPracticeFacilitiesLazyQuery } from "../../../generated/graphql";
 
 const PracticeFacilities: FC = (): JSX.Element => {
-  const { chart, credits, plotOptions, title, tooltip, yAxis } = practiceChartOptions('#A075F8')
+  const { chart, credits, plotOptions, title, tooltip, yAxis } = practiceChartOptions(PURPLE_TWO)
 
   const [chartOptions, setChartOptions] = useState<any>({
     credits, chart, title, yAxis, tooltip, plotOptions,

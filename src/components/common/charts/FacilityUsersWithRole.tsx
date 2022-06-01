@@ -9,13 +9,13 @@ import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
 // constants and utils block
-import { BLUE, VERY_MILD, WHITE } from "../../../theme";
+import { BLUE, BLUE_TEN, VERY_MILD, WHITE } from "../../../theme";
 import { PracticeChartProps } from "../../../interfacesTypes";
 import { practiceChartOptions, getPracticeFacilityUsersData } from "../../../utils";
 import { PracticeRolesTypes, useGetPracticeUsersWithRolesLazyQuery } from "../../../generated/graphql";
 
 const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Element => {
-  const { credits, title, tooltip } = practiceChartOptions('#21E1D8')
+  const { credits, title, tooltip } = practiceChartOptions(BLUE_TEN)
 
   const [chartOptions, setChartOptions] = useState<any>({
     credits, title,
@@ -23,7 +23,7 @@ const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Elem
     chart: {
       type: 'column',
       styledMode: false,
-      backgroundColor: "#21E1D8",
+      backgroundColor: BLUE_TEN,
     },
 
     xAxis: {

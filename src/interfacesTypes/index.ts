@@ -1444,6 +1444,7 @@ export interface FilterSearchProps {
 
 export interface PatientProfileHeroProps {
   isChart?: boolean;
+  isCheckIn?: boolean;
   setPatient: Function;
   setAttachmentsData: Function;
 }
