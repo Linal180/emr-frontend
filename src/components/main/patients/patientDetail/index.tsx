@@ -75,7 +75,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       nextFetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
 
-      onError({ message }) {
+      onError() {
         appointmentDispatch({ type: appointmentActionType.SET_UP_COMING, upComing: [] });
       },
 
@@ -152,7 +152,6 @@ const PatientDetailsComponent = (): JSX.Element => {
       }
     },
   });
-
 
   const fetchAllPatientsProviders = useCallback(async () => {
     try {

@@ -11,7 +11,7 @@ import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -126,17 +126,16 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  // const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
 
   if (selfContact && selfContact[0]) {
-    const { phone, email, country, state } = selfContact[0]
+    const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = patientEmail ? patientEmail : email || "--"
-    selfCurrentLocation = `${country ? country : N_A} ${state ? state : ''}`
+    selfCurrentLocation = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
   }
 
   const ProfileDetails = [
