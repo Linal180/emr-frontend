@@ -2,8 +2,7 @@ import { usStreet } from "smartystreets-javascript-sdk";
 import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
-  AllDoctorPayload,
-  AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientsPayload,
+  AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
 
@@ -61,7 +60,7 @@ export interface State {
   isTempEdit: boolean;
   isNoteOpen: HTMLElement | null;
   patientNoteOpen: boolean
-  patientProvidersData: AllDoctorPayload['doctors'];
+  patientProvidersData: PatientProviderPayload['providers'];
   privacyNotice: boolean
   releaseOfInfoBill: boolean
   callToConsent: boolean
@@ -243,7 +242,7 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
-  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: AllDoctorPayload['doctors'] }
+  | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: PatientProviderPayload['providers'] }
   | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
   | { type: ActionType.SET_RELEASE_OF_INFO_BILL; releaseOfInfoBill: boolean }
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
