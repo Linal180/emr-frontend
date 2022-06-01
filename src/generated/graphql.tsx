@@ -1191,6 +1191,7 @@ export type FieldOptionsType = {
 };
 
 export type FieldsInputs = {
+  apiCall?: Maybe<Scalars['String']>;
   column: Scalars['Int'];
   columnName?: Maybe<Scalars['String']>;
   css: Scalars['String'];
@@ -1203,6 +1204,7 @@ export type FieldsInputs = {
   options: Array<FieldOptionsInputType>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
+  tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   textArea: Scalars['Boolean'];
   type: ElementType;
@@ -1210,6 +1212,7 @@ export type FieldsInputs = {
 
 export type FieldsTypes = {
   __typename?: 'FieldsTypes';
+  apiCall?: Maybe<Scalars['String']>;
   column: Scalars['Int'];
   columnName?: Maybe<Scalars['String']>;
   css: Scalars['String'];
@@ -1222,6 +1225,7 @@ export type FieldsTypes = {
   options: Array<FieldOptionsType>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
+  tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   textArea: Scalars['Boolean'];
   type: ElementType;
@@ -1266,6 +1270,8 @@ export type FormElement = {
   placeholder?: Maybe<Scalars['String']>;
   required?: Maybe<Scalars['Boolean']>;
   sectionId: Scalars['String'];
+  tableContactType?: Maybe<Scalars['String']>;
+  tableName?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -9007,6 +9013,8 @@ export const FindAllFormsDocument = gql`
             fieldId
             textArea
             isMultiSelect
+            apiCall
+            tableContactType
             options {
               name
               value
@@ -9121,6 +9129,8 @@ export const GetFormDocument = gql`
             fieldId
             textArea
             isMultiSelect
+            tableContactType
+            apiCall
             options {
               name
               value
@@ -9232,6 +9242,8 @@ export const GetPublicFormDocument = gql`
             fieldId
             textArea
             isMultiSelect
+            apiCall
+            tableContactType
             options {
               name
               value

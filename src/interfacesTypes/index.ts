@@ -18,6 +18,7 @@ import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
@@ -239,6 +240,7 @@ export interface CardComponentType extends Children {
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
   onEditClick?: () => void;
+  isFullHeight?: boolean
 }
 
 export interface ChartingCardComponentType {
@@ -1210,6 +1212,8 @@ export interface FieldComponentProps {
   item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
+  facilityId?: string
+  state?: ExternalFormBuilderState
 }
 
 export interface ShareModalTypes extends DialogTypes {
@@ -1568,6 +1572,10 @@ export interface PatientProviderSelectorProps {
   patientId: string;
 }
 
+export interface SlotsComponentProps {
+  facilityId: string;
+  state?: ExternalFormBuilderState
+}
 export interface dashboardInputsProps {
   year: SelectorOption
 }

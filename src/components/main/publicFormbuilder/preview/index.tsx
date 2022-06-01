@@ -1,24 +1,27 @@
 //packages block
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress, Card } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 //components block
 import InputController from '../../../common/FormFieldController';
 import CardComponent from '../../../common/CardComponent';
-//interfaces & constants
+import ViewDataLoader from '../../../common/ViewDataLoader';
 import Alert from '../../../common/Alert';
+//interfaces, reducers, utils, constants
 import { ParamsType } from '../../../../interfacesTypes'
 import { getUserFormFormattedValues, parseColumnGrid } from '../../../../utils';
-import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
+import { FormType, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
-  getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED, CONTACT_SUPPORT_TEAM
+  PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
+  FormBuilderApiSelector,
+  APPOINTMENT_SLOT_ERROR_MESSAGE,
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { GREY } from '../../../../theme';
-import ViewDataLoader from '../../../common/ViewDataLoader';
+import { State, Action, initialState, externalFormBuilderReducer, ActionType } from '../../../../reducers/externalFormBuilderReducer';
 //constants
 const initialValues = {};
 //component
@@ -26,14 +29,11 @@ const PublicFormPreview = () => {
   //hooks
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
-  //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
-  const [formName, setFormName] = useState('')
-  const [uploadImage, setUploadImage] = useState(false)
-  const [isActive, setIsActive] = useState(false)
-  const [loader, setLoader] = useState(true)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
+  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType } = state
   const { handleSubmit } = methods;
+
   //mutation
   const [getForm] = useGetPublicFormLazyQuery({
     fetchPolicy: "network-only",
@@ -48,18 +48,20 @@ const PublicFormPreview = () => {
           const { status } = response;
 
           if (form && status && status === 200) {
-            const { name, layout, isActive } = form;
+            const { name, layout, isActive, facilityId, type } = form;
+            const { sections } = layout;
 
             if (isActive) {
-              setIsActive(true)
-              name && setFormName(name);
-              const { sections } = layout;
-              sections?.length > 0 && setFormValues(sections)
+              dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
+              facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
+              name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
+              type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
+              sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
+
             }
             else {
-              setIsActive(false)
+              dispatch({ type: ActionType.SET_ACTIVE, isActive: false })
             }
-
           }
         }
       }
@@ -69,6 +71,18 @@ const PublicFormPreview = () => {
       history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
     }
   })
+
+  useMemo(() => {
+    if (formValues && formValues?.length > 0) {
+      formValues?.map(({ fields }) => fields?.map((field) => {
+        const { apiCall, fieldId } = field
+        if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
+          dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
+        }
+        return field
+      }))
+    }
+  }, [formValues])
 
   const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
     onCompleted: (data) => {
@@ -85,14 +99,14 @@ const PublicFormPreview = () => {
       }
 
     },
-    onError: () => {
-      Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
+    onError: ({ message }) => {
+      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
     }
   })
 
   const submitHandler = async (values: any) => {
     if (id) {
-      setUploadImage(true)
+      dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
       const formValues = await getUserFormFormattedValues(values, id);
       const data = {
         FormId: id,
@@ -102,15 +116,26 @@ const PublicFormPreview = () => {
         SubmitterId: "",
         userFormElements: formValues
       }
-      setUploadImage(false)
-      createUserForm({ variables: { createUserFormInput: data } })
+      dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: false })
+      if (formType === FormType.Appointment) {
+        const { scheduleEndDateTime, scheduleStartDateTime } = values;
+        if (scheduleStartDateTime && scheduleEndDateTime) {
+          await createUserForm({ variables: { createUserFormInput: data } })
+        }
+        else {
+          Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
+        }
+      }
+      else {
+        await createUserForm({ variables: { createUserFormInput: data } })
+      }
     }
   };
 
   const getFormHandler = useCallback(async () => {
     try {
       await getForm({ variables: { getForm: { id } } })
-      setLoader(false)
+      dispatch({ type: ActionType.SET_LOADER, loader: false })
     } catch (error) { }
   }, [id, getForm])
 
@@ -129,42 +154,47 @@ const PublicFormPreview = () => {
             <Box>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(submitHandler)}>
-                  <CardComponent cardTitle={formName}>
-                    <Grid container spacing={2}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" marginY={2}>
+                    <Box>
+                      <Typography variant='h4'>
+                        {formName}
+                      </Typography>
+                    </Box>
+                    <Box display={'flex'} justifyContent={'flex-end'}>
+                      <Box marginX={2}>
+                        <Button variant={'contained'}>
+                          {CANCEL_TEXT}
+                        </Button>
+                      </Box>
+
+                      <Box>
+                        {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
+                        <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
+                          {FORM_SUBMIT_TEXT}
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                    <Grid container spacing={3} alignItems='stretch'>
                       {formValues?.map((item, index) => (
                         <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                          <Box p={2} pl={0}>
-                            <Typography variant='h4'>
-                              {item?.name}
-                            </Typography>
-                          </Box>
-                          <Grid container spacing={2}>
-                            {item?.fields?.map((field) => (
-                              <Grid
-                                item
-                                md={parseColumnGrid(field?.column)}
-                                key={`${item?.id}-${field?.fieldId}`}
-                              >
-                                <InputController item={field} />
-                              </Grid>
-                            ))}
-                          </Grid>
+                          <CardComponent cardTitle={item?.name} isFullHeight>
+                            <Grid container spacing={3}>
+                              {item?.fields?.map((field) => (
+                                <Grid
+                                  item
+                                  md={parseColumnGrid(field?.column)}
+                                  key={`${item?.id}-${field?.fieldId}`}
+                                >
+                                  <InputController item={field} facilityId={facilityId} state={state} />
+                                </Grid>
+                              ))}
+                            </Grid>
+                          </CardComponent>
                         </Grid>
                       ))}
                     </Grid>
-                  </CardComponent>
-                  <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
-                    <Box marginX={2}>
-                      <Button variant={'contained'}>
-                        {CANCEL_TEXT}
-                      </Button>
-                    </Box>
-                    <Box>
-                      {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
-                      <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
-                        {FORM_SUBMIT_TEXT}
-                      </Button>
-                    </Box>
                   </Box>
                 </form>
               </FormProvider>
