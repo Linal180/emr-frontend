@@ -4,35 +4,40 @@ import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
+import Selector from "./Selector";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../context";
-import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
-import { AppointmentsTableProps } from "../../interfacesTypes";
+import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
+import { AppointmentsTableProps, SelectorOption } from "../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin
+  isFacilityAdmin, isPracticeAdmin, renderPairSelectorOptions, getAppointmentStatus, setRecord
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery
+  useGetAppointmentsLazyQuery, AppointmentStatus, useUpdateAppointmentMutation
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME, AppointmentSearchingTooltipData,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
+  AppointmentSearchingTooltipData, EMPTY_OPTION,
 } from "../../constants";
 
 dotenv.config()
+
+type StatusInputProps = { status: SelectorOption }
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
@@ -43,7 +48,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
+  const { page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments } = state;
+  const methods = useForm<StatusInputProps>({
+    mode: "all",
+  });
+  const { setValue, watch } = methods
+  const { status } = watch()
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -107,6 +117,28 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
+  const [updateAppointment] = useUpdateAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateAppointment: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success("Status updated successfully");
+          updateAppointmentData()
+          clearEdit()
+        }
+      }
+    }
+  });
+
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
     onError() {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
@@ -163,6 +195,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     type: ActionType.SET_PAGE, page: value
   });
 
+  const updateAppointmentData = () => {
+    const { id, name } = status || {}
+    const appointment = appointments?.find(appointment => appointment?.id === id)
+    const updatedAppointment = { ...appointment, status: getAppointmentStatus(name || '') } as AppointmentPayload['appointment']
+    const index = appointments?.findIndex(appointment => appointment?.id === id)
+
+    if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
+      appointments.splice(index, 1, updatedAppointment)
+
+      dispatch({
+        type: ActionType.SET_APPOINTMENTS,
+        appointments
+      })
+    }
+  }
+
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_APPOINTMENT_ID, deleteAppointmentId: id })
@@ -184,6 +232,28 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
+
+  const handleStatusUpdate = (id: string, status: string) => {
+    if (id && status) {
+      setValue('status', setRecord(id, status))
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: !!id })
+      dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
+    }
+  }
+
+  const clearEdit = () => {
+    setValue('status', EMPTY_OPTION)
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: '' })
+  }
+
+  const onSubmit = async ({ id, name }: SelectorOption) => {
+    try {
+      id && name && await updateAppointment({
+        variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
+      })
+    } catch (error) { }
   }
 
   return (
@@ -240,9 +310,21 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
-                        <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
-                          {text}
-                        </Box>
+                        {id && <Box>
+                          {isEdit && appointmentId === id ?
+                            <FormProvider {...methods}>
+                              <Selector
+                                label=""
+                                value={{ id, name: text }}
+                                name="status"
+                                options={renderPairSelectorOptions(id, Object.values(AppointmentStatus))}
+                                onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                              />
+                            </FormProvider>
+                            : <Box onClick={() => id && handleStatusUpdate(id, text)} className={`${classes.status} pointer-cursor`} component='span' color={textColor} border={`1px solid ${textColor}`}>
+                              {text}
+                            </Box>}
+                        </Box>}
                       </TableCell>
 
                       <TableCell scope="row">

@@ -8,6 +8,7 @@ export interface State {
   page: number;
   instance: any;
   offset: number;
+  isEdit: boolean;
   agreed: boolean;
   copied: boolean;
   appEdit: boolean;
@@ -72,6 +73,7 @@ export const initialState: State = {
   doctor: null,
   totalPages: 0,
   copied: false,
+  isEdit: false,
   agreed: false,
   appEdit: false,
   instance: null,
@@ -128,6 +130,7 @@ export enum ActionType {
   SET_COPIED = 'setCopied',
   SET_AGREED = 'setAgreed',
   SET_DOCTOR = 'setDoctor',
+  SET_IS_EDIT = 'setIsEdit',
   SET_APP_EDIT = 'setAppEdit',
   SET_APP_OPEN = 'setAppOpen',
   SET_APP_PAID = 'setAppPaid',
@@ -179,6 +182,7 @@ export type Action =
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }
+  | { type: ActionType.SET_IS_EDIT, isEdit: boolean }
   | { type: ActionType.SET_APP_EDIT; appEdit: boolean }
   | { type: ActionType.SET_APP_OPEN; appOpen: boolean }
   | { type: ActionType.SET_APP_PAID; appPaid: boolean }
@@ -245,6 +249,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         agreed: action.agreed
+      }
+
+    case ActionType.SET_IS_EDIT:
+      return {
+        ...state,
+        isEdit: action.isEdit
       }
 
     case ActionType.SET_DATE:

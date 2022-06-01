@@ -49,7 +49,7 @@ export const formatValue = (value: string) => {
   value.split("_").map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
-  return formatted;
+  return formatted.trim();
 };
 
 export const formatServiceCode = (value: string) => {
@@ -1338,6 +1338,18 @@ export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
   return result;
 };
 
+export const renderPairSelectorOptions = (id: string, array: string[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id, name: formatValue(item).trim().toString() })
+    }
+  }
+
+  return result;
+};
+
 export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => {
   let staffCount: number[] = []
   let doctorCount: number[] = []
@@ -1408,4 +1420,39 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
       }
     });
   } else return [EMPTY_OPTION]
+}
+
+export const getAppointmentStatus = (status: string) => {
+  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == " ,status)
+  switch (status) {
+    case formatValue(AppointmentStatus.Cancelled):
+      return AppointmentStatus.Cancelled;
+
+    case formatValue(AppointmentStatus.CheckedIn):
+      return AppointmentStatus.CheckedIn;
+
+    case formatValue(AppointmentStatus.Completed):
+      return AppointmentStatus.Completed;
+
+    case formatValue(AppointmentStatus.InLobby):
+      return AppointmentStatus.InLobby;
+
+    case formatValue(AppointmentStatus.InSession):
+      return AppointmentStatus.InSession;
+
+    case formatValue(AppointmentStatus.Initiated):
+      return AppointmentStatus.Initiated;
+
+    case formatValue(AppointmentStatus.NoShow):
+      return AppointmentStatus.NoShow;
+
+    case formatValue(AppointmentStatus.Rescheduled):
+      return AppointmentStatus.Rescheduled;
+
+    case formatValue(AppointmentStatus.SelfCheckedIn):
+      return AppointmentStatus.SelfCheckedIn;
+
+    default:
+      return AppointmentStatus.Initiated;
+  }
 }

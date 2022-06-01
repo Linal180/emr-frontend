@@ -6,25 +6,27 @@ import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
+import DatePicker from "../../../common/DatePicker";
+import PhoneField from "../../../common/PhoneInput";
+import InputController from "../../../../controller";
 import CardComponent from "../../../common/CardComponent";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
+import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
 import { extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema } from "../../../../validationSchemas";
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
 import { checkPermission, getTimestampsForDob, isPracticeAdmin, isSuperAdmin } from "../../../../utils";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race,
+  RelationshipType, Sexualorientation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
-  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX, MAPPED_GENDER_IDENTITY,
-  DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY,
+  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX,
+  MAPPED_GENDER_IDENTITY, DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY,
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import DatePicker from "../../../common/DatePicker";
-import PhoneField from "../../../common/PhoneInput";
-import history from "../../../../history";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
 
 const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
   const { userPermissions, user } = useContext(AuthContext)
