@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, IconButton, Box } from "@material-ui/cor
 // interfaces/types block
 import { CardComponentType } from "../../interfacesTypes";
 
-const CardComponent: FC<CardComponentType> = ({ 
-  children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon 
+const CardComponent: FC<CardComponentType> = ({
+  children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight
 }): JSX.Element => (
-  <Card className="card-box-shadow">
+  <Card className={isFullHeight ? "fullMinHeight card-box-shadow" : " card-box-shadow"}>
     <CardHeader
       action={
         hasEdit && (

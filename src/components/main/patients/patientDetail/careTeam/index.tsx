@@ -1,15 +1,14 @@
 // packages block
-import { Box, Button, Card, TableCell, TableRow, Typography } from "@material-ui/core";
+import { Box, Card, Typography } from "@material-ui/core";
 // common block
-import TableLoader from "../../../../common/TableLoader";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 // constants block
-import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, PRACTICE_DETAILS, CARE_TEAM }
+import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, CARE_TEAM, PRIMARY_PROVIDER }
   from "../../../../../constants";
-import { WHITE_FOUR } from "../../../../../theme";
+import { BLUE_FOUR, WHITE_FOUR } from "../../../../../theme";
 import { formatValue } from "../../../../../utils";
 import { CareTeamsProps } from "../../../../../interfacesTypes";
-import { DoctorPatient } from "../../../../../generated/graphql";
-import { AddSlotIcon, EditNewIcon } from "../../../../../assets/svgs";
+import { AddSlotIcon } from "../../../../../assets/svgs";
 import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 
 const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: CareTeamsProps): JSX.Element => {
@@ -25,13 +24,10 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: 
           <Typography variant="h3" >{CARE_TEAM}</Typography>
         </Box>
         {(loading) ? (
-          <TableRow>
-            <TableCell colSpan={5}>
-              <TableLoader numberOfRows={3} numberOfColumns={5} />
-            </TableCell>
-          </TableRow>
-        ) : (patientProvidersData?.map((item: DoctorPatient['doctor']) => {
-          const { email, firstName, lastName, speciality, id } = item || {}
+          <ViewDataLoader columns={12} rows={2}/>
+        ) : (patientProvidersData?.map((item) => {
+          const { doctor, id, currentProvider } = item || {}
+          const { email, firstName, lastName, speciality } = doctor || {}
           const doctorName = `${firstName} ${lastName}`
           return (
             <>
@@ -49,10 +45,12 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: 
                     <Typography variant="body1">{email}</Typography>
                   </Box>
 
-                  <EditNewIcon />
+                  {/* <EditNewIcon /> */}
                 </Box>
 
-                <Button variant="outlined">{PRACTICE_DETAILS}</Button>
+                {currentProvider === true && <Box className={classes.status} component='span' color={BLUE_FOUR} border={`1px solid ${BLUE_FOUR}`}>
+                  {PRIMARY_PROVIDER}
+                </Box>}
               </Box>
 
             </>

@@ -29,11 +29,11 @@ const Sidebar = ({ dispatch, formState }: FormSidebarProps) => {
         </TabList>
 
         <TabPanel value="1">
-          <FormFields />
+          <PreDefinedComponents formState={formState} dispatch={dispatch} />
         </TabPanel>
 
         <TabPanel value="2">
-          <PreDefinedComponents formState={formState} dispatch={dispatch} />
+          <FormFields />
         </TabPanel>
       </TabContext>
 

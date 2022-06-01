@@ -46,6 +46,10 @@ body {
   height: 100%;
 }
 
+.fullMinHeight {
+  min-height: 100%;
+}
+
 .draft-wrapper {
   border: 1px solid rgba(0, 0, 0, 0.23);
   border-radius: 4px;

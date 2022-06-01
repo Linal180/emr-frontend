@@ -7,7 +7,7 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 import TableLoader from '../../../../common/TableLoader';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 //constants, styles block
-import { PAGE_LIMIT, PRE_DEFINED } from '../../../../../constants';
+import { PRE_DEFINED_COMPONENT_PAGE_LIMIT, PRE_DEFINED } from '../../../../../constants';
 import { useFormBuilderSidebarStyles } from '../../../../../styles/formbuilder/sidebarStyle';
 import { BLACK, GRAY_ONE, WHITE } from '../../../../../theme';
 import { FormType, useFindAllFormsLazyQuery } from '../../../../../generated/graphql';
@@ -36,7 +36,7 @@ export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponen
 
   const fetchAllForms = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page: 1, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page: 1, limit: PRE_DEFINED_COMPONENT_PAGE_LIMIT } }
       const formInputs = { ...pageInputs, isSystemForm: true, formType: FormType.PreDefined }
 
       await getAllPreDefinedComponent({

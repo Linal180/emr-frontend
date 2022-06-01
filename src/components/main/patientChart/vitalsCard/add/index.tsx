@@ -8,7 +8,7 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgr
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { EMPTY_OPTION, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
+import { MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
 import {
   HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
@@ -246,7 +246,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
         <Table>
           <TableHead>
             <TableRow>
-              {renderTh(getCurrentDate(`${new Date()}`))}
+              {renderTh(getCurrentDate(`${new Date()}`),'left',false,'',true)}
             </TableRow>
           </TableHead>
 
@@ -370,7 +370,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                 <Selector
                   name="smokingStatus"
                   label={''}
-                  value={EMPTY_OPTION}
                   options={MAPPED_SMOKING_STATUS}
                   margin={'none'}
                 />
