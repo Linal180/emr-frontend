@@ -20,7 +20,7 @@ import {
   MARITAL_STATUS, PRONOUNS, RACE, SEXUAL_ORIENTATION, SEX_AT_BIRTH
 } from "../../../../constants"
 
-const PatientDemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
+const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
   const { control, setValue } = useFormContext()
   const classes = usePublicAppointmentStyles();
   const { isChecked } = state || {}
@@ -137,4 +137,4 @@ const PatientDemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, sta
   )
 }
 
-export default PatientDemographicsCard
+export default DemographicsCard;

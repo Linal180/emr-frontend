@@ -11,7 +11,7 @@ import ViewDataLoader from "../../../common/ViewDataLoader"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { EMERGENCY_CONTACT, EMPTY_OPTION, HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP } from "../../../../constants"
 
-const PatientEmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading }) => {
+const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading }) => {
   return (
     <CardComponent cardTitle={EMERGENCY_CONTACT}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
@@ -50,4 +50,4 @@ const PatientEmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading 
   )
 }
 
-export default PatientEmergencyContactCard
+export default EmergencyContactCard;
