@@ -20,7 +20,7 @@ const ProfileSettingsLayout: FC<Children> = ({ children }): JSX.Element => {
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState<boolean>(false);
   const [isDoctor, setIsDoctor] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClose = () => setAnchorEl(null);
 
