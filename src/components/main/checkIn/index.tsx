@@ -1,8 +1,8 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useRef, useState } from "react";
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
 import clsx from 'clsx';
+import { ChangeEvent, Reducer, useReducer, useRef, useState } from "react";
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step,
   StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
@@ -22,20 +22,29 @@ import InsuranceComponent from "../patients/patientDetail/insurance";
 import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
 // constants, history, styling block
 import { ClearIcon } from "../../../assets/svgs";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { convertDateFromUnix, renderTh } from "../../../utils";
+import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
+import { AttachmentsPayload, PatientPayload } from "../../../generated/graphql";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { appointmentReducer, State, Action, initialState } from "../../../reducers/appointmentReducer";
+import {
+  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
+  patientReducer, State as PatientState
+} from "../../../reducers/patientReducer";
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState,
+  mediaReducer, State as mediaState
+} from "../../../reducers/mediaReducer";
 import {
   ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
-  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, HCFA_DESC, HCPCS_CODES, 
+  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, HCFA_DESC, HCPCS_CODES,
   ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, YES,
   OTHER_DATE_TYPE, PATIENT_INFO, PATIENT_PAYMENT_TYPE, PRICE, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT,
 } from "../../../constants";
-import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
-import { Action, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { convertDateFromUnix, renderTh } from "../../../utils";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -63,6 +72,11 @@ const CheckInComponent = (): JSX.Element => {
   }
 
   const patientRef = useRef<FormForwardRef>();
+
+  const [, patientDispatcher] =
+    useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
+  const [, mediaDispatcher] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
   const classes = useTableStyles();
   const classesToggle = usePublicAppointmentStyles();
@@ -107,7 +121,7 @@ const CheckInComponent = (): JSX.Element => {
     setValue('employment', checked)
   };
 
-  const handlePatientUpdate = () =>{
+  const handlePatientUpdate = () => {
     patientRef.current?.submit()
     handleStep(2)
   }
@@ -125,7 +139,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <Box p={3}><PatientForm id={patientId} isEdit shouldShowBread={false} ref={patientRef}/></Box>
+        <Box p={3}><PatientForm id={patientId} isEdit shouldShowBread={false} ref={patientRef} /></Box>
 
 
       </Card>
@@ -138,7 +152,7 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{INSURANCE}</Typography>
 
-          <Button variant="contained" color="primary" onClick={()=>handleStep(3)}>
+          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
             {RECORD_VITALS}
             <ChevronRight />
           </Button>
@@ -537,14 +551,23 @@ const CheckInComponent = (): JSX.Element => {
     <>
       <PageHeader title={`Encounter on ${appointmentTime}`} />
 
-      <PatientProfileHero isCheckIn setAttachmentsData={() => {}} setPatient={() => { }} />
+      <PatientProfileHero
+        isCheckIn
+        setPatient={(patient: PatientPayload['patient']) =>
+          patientDispatcher({ type: PatientActionType.SET_PATIENT_DATA, patientData: patient })
+        }
+        setAttachmentsData={(attachments: AttachmentsPayload['attachments']) =>
+          mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
+        }
+      />
+      <Box p={2} />
 
       <Card>
         <Box px={3} pt={1} pb={1}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={()=>handleStep(index)} StepIconComponent={CheckInStepIcon}>{label}</StepLabel>
+                <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>{label}</StepLabel>
               </Step>
             ))}
           </Stepper>

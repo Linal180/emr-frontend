@@ -2,6 +2,8 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+//assets
 import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
@@ -79,6 +81,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -234,6 +237,7 @@ export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const SAME_AS_PATIENT = "Same as patient";
+export const DONT_WANT_TO_SHARE_EMAIL = "Don't want to share email";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
@@ -916,7 +920,6 @@ export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
-export const COPAY_TYPE = "Copay Type";
 export const SCHEDULE_TEXT = "Schedule";
 export const YES_CANCEL = "Yes, Cancel";
 export const SSN_FORMAT = '000-00-0000';
@@ -953,6 +956,8 @@ export const CANCELLATIONS = "Cancellations";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const COPAY_TYPE = "Copay Type";
+export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
@@ -1302,7 +1307,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const EDIT_PROVIDER = "Eidt Provider"
+export const EDIT_PROVIDER = "Edit Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -2872,6 +2877,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3108,16 +3129,16 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
   specimenType: { id: '', name: '' },
-  collectionDate: '',
+  collectionDate: moment().toString(),
   specimenNotes: '',
-  collectionTime: ''
+  collectionTime: moment().format('HH:mm:ss')
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   test: { id: '', name: '' },
-  testDate: '',
+  testDate: moment().toString(),
   testNotes: '',
-  testTime: '',
+  testTime: moment().format('HH:mm:ss'),
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
@@ -3402,11 +3423,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
@@ -3811,4 +3832,19 @@ export const areaChartTwo = {
       26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
     ]
   }]
+}
+
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType'
+}
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler'
 }

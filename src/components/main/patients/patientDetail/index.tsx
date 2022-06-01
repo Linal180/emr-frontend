@@ -23,8 +23,7 @@ import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  AllDoctorPayload,
-  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
+  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -148,8 +147,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatientProvider) {
 
           const { providers } = getPatientProvider;
-          const patientProvider = providers?.map((item) => item.doctor)
-          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: patientProvider as AllDoctorPayload['doctors'] })
+          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
         }
       }
     },

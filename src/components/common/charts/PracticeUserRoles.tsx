@@ -36,8 +36,7 @@ const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element 
       min: 0,
       title: {
         text: 'Users',
-        align: 'high',
-        enabled: false
+        enabled: false,
       },
 
       labels: {
