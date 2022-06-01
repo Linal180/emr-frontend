@@ -31,7 +31,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload,
+  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -837,6 +837,7 @@ export interface PhoneInputProps {
   error?: string;
   isRequired?: boolean;
   name: PhoneInputTypes;
+  disabled?: boolean;
 }
 
 export interface DropzoneImageType {
@@ -1594,7 +1595,7 @@ export interface CareTeamsProps {
   patientId?: string;
   loading?: boolean;
   reload?: Function;
-  patientProvidersData?: AllDoctorPayload['doctors']
+  patientProvidersData?: PatientProviderPayload['providers']
 }
 
 export interface PracticeChartProps {

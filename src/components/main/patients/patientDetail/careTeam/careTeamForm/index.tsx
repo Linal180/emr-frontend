@@ -19,7 +19,7 @@ import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../..
 import { useGetDoctorLazyQuery, useUpdatePatientProviderMutation } from '../../../../../../generated/graphql';
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
-  EDIT_PROVIDER, DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
+  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT,
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload }): JSX.Element => {
@@ -125,7 +125,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
             display="flex" justifyContent="space-between"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} px={2} pt={2} pb={1}
           >
-            <Typography variant='h3'>{EDIT_PROVIDER}</Typography>
+            <Typography variant='h3'>{ADD_PROVIDER_TEXT}</Typography>
             <IconButton onClick={closeSlider}>
               <CloseIcon />
             </IconButton>
@@ -148,6 +148,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
                   controllerName="firstName"
                   controllerLabel={FIRST_NAME}
                   placeholder="Chadwick"
+                  disabled
                 />
               </Grid>
 
@@ -157,11 +158,12 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
                   controllerName="lastName"
                   controllerLabel={LAST_NAME}
                   placeholder="Lewis"
+                  disabled
                 />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
-                <PhoneField name="phone" label={PHONE} />
+                <PhoneField name="phone" label={PHONE} disabled />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
@@ -170,6 +172,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
                   controllerName="email"
                   controllerLabel={EMAIL}
                   placeholder={EMAIL}
+                  disabled
                 />
               </Grid>
 
@@ -180,6 +183,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
                   label={SPECIALTY}
                   value={EMPTY_OPTION}
                   options={MAPPED_SPECIALTIES}
+                  disabled
                 />
               </Grid>
 
