@@ -7,3 +7,13 @@ query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!){
     }
   }
 }
+
+query FetchICDCodes($searchIcdCodesInput: SearchIcdCodesInput!){
+  fetchICDCodes(searchIcdCodesInput: $searchIcdCodesInput){
+    icdCodes {
+      id
+      code
+      description
+    }
+  }
+}

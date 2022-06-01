@@ -1,7 +1,6 @@
 // packages block
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import { Close } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
@@ -21,13 +20,16 @@ import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
-import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../../utils';
+import {
+   convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
+  } from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../../assets/svgs';
 import {
   AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, 
+  useUpdateAppointmentMutation
 } from '../../../../generated/graphql';
 import {
   DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
@@ -37,7 +39,7 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
@@ -373,6 +375,31 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
     }
   };
 
+  const [updateAppointment] = useUpdateAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+  });
+
+  const handlePatientCheckIn = async (id: string) => {
+    const { data } = await updateAppointment({
+      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+    })
+
+    const { updateAppointment: updateAppointmentResponse } = data ?? {}
+    const { response } = updateAppointmentResponse ?? {}
+    if (response) {
+      const { status } = response
+
+      if (status && status === 200) {
+        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
+        history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+      }
+    }
+  }
+
   return (
     <Dialog
       open={appOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
@@ -409,7 +436,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
             <Box className={classes.cardText}>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Box pb={3} display="flex" justifyContent="space-between">
+                  <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start">
                     <Box>
                       <Typography variant='h4'>{patientName}</Typography>
 
@@ -419,9 +446,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
 
-                    <Box className='button-link'>
-                      <Typography component={Link} to={`${APPOINTMENTS_ROUTE}/${id}${CHECK_IN_ROUTE}`}>{CHECK_IN}</Typography>
-                    </Box>
+                      <Button variant="contained" color="primary" onClick={()=>handlePatientCheckIn(id)}>{CHECK_IN}</Button>
                   </Box>
                 </form>
               </FormProvider>

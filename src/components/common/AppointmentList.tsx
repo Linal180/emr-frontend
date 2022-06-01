@@ -2,6 +2,7 @@
 import { FC } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
+// components block
 import Alert from "./Alert";
 // interfaces, constants, utils blocks
 import history from "../../history";
@@ -10,7 +11,7 @@ import { convertDateFromUnix, getAppointmentDateTime } from "../../utils";
 import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, 
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
   APPOINTMENT_UPDATED_SUCCESSFULLY, CHECK_IN_ROUTE
 } from "../../constants";
 
@@ -27,7 +28,12 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
 
   const handlePatientCheckIn = async (id: string) => {
     const { data } = await updateAppointment({
-      variables: { updateAppointmentInput: { id, status: AppointmentStatus.CheckedIn, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.CheckedIn,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
@@ -74,7 +80,10 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                 </Link>
 
                 <Box p={1} />
-                <Button type="submit" variant="contained" color="secondary" onClick={() => handlePatientCheckIn(id || '')} disabled={updateAppointmentLoading}>
+                <Button type="submit" variant="contained" color="secondary"
+                  onClick={() => handlePatientCheckIn(id || '')}
+                  disabled={updateAppointmentLoading}
+                >
                   {CHECK_IN}
                 </Button>
               </Box>

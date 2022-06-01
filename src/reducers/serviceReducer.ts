@@ -1,4 +1,5 @@
 import { ServicesPayload } from "../generated/graphql"
+import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -10,6 +11,7 @@ export interface State {
   searchQuery: string;
   deleteServiceId: string;
   services: ServicesPayload['services'];
+  serviceType: SelectorOption
 }
 
 export const initialState: State = {
@@ -22,6 +24,10 @@ export const initialState: State = {
   openModal: false,
   openDelete: false,
   deleteServiceId: '',
+  serviceType: {
+    id: "",
+    name: ""
+  }
 }
 
 export enum ActionType {
@@ -34,6 +40,7 @@ export enum ActionType {
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_DELETE_SERVICE_ID = 'setDeleteServiceId',
+  SET_SERVICE_TYPE = 'setServiceType'
 }
 
 export type serviceAction =
@@ -46,6 +53,7 @@ export type serviceAction =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_DELETE_SERVICE_ID; deleteServiceId: string }
   | { type: ActionType.SET_SERVICES; services: ServicesPayload['services'] }
+  | { type: ActionType.SET_SERVICE_TYPE; serviceType: SelectorOption }
 
 export const serviceReducer = (state: State, action: serviceAction): State => {
   switch (action.type) {
@@ -101,6 +109,12 @@ export const serviceReducer = (state: State, action: serviceAction): State => {
       return {
         ...state,
         deleteServiceId: action.deleteServiceId
+      }
+      
+    case ActionType.SET_SERVICE_TYPE:
+      return {
+        ...state,
+        serviceType: action.serviceType
       }
   }
 };

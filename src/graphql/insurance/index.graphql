@@ -25,6 +25,8 @@ query FetchAllPolicies($policyInput: PolicyPaginationInput!){
       orderOfBenifit
       expirationDate
       issueDate
+      memberId
+      groupNumber
       copays {
         type
         amount

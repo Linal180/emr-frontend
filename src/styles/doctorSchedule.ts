@@ -61,5 +61,13 @@ export const useDoctorScheduleStyles = makeStyles(() =>
       borderRadius: 6,
       cursor: 'pointer',
     },
+
+    status: {
+      fontWeight: 'bold',
+      fontSize: '0.75rem',
+      borderRadius: 8,
+      padding: '8px 15px',
+      display: 'inline-block',
+    }
   })
 );

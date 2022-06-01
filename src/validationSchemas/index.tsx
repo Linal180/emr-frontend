@@ -907,7 +907,7 @@ export const createInsuranceSchema = yup.object({
   employer: yup.string().required(requiredMessage(EMPLOYER)),
   suffix: yup.string().required(requiredMessage(SUFFIX)),
   firstName: yup.string().required(requiredMessage(FIRST_NAME)),
-  middleName: yup.string().required(requiredMessage(MIDDLE_NAME)),
+  middleName: yup.string(),
   lastName: yup.string().required(requiredMessage(LAST_NAME)),
   zipCode: yup.string().required(requiredMessage(ZIP_CODE)),
   address: yup.string().required(requiredMessage(ADDRESS)),

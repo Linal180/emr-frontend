@@ -18,6 +18,7 @@ import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
@@ -30,7 +31,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload, 
+  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -239,6 +240,7 @@ export interface CardComponentType extends Children {
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
   onEditClick?: () => void;
+  isFullHeight?: boolean
 }
 
 export interface ChartingCardComponentType {
@@ -792,6 +794,7 @@ export interface GeneralFormProps {
 export interface PolicyCardProps extends GeneralFormProps{
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
+  setPolicyToEdit?: Function
 }
 
 export interface CheckInComponentProps {
@@ -834,6 +837,7 @@ export interface PhoneInputProps {
   error?: string;
   isRequired?: boolean;
   name: PhoneInputTypes;
+  disabled?: boolean;
 }
 
 export interface DropzoneImageType {
@@ -1208,6 +1212,8 @@ export interface FieldComponentProps {
   item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
+  facilityId?: string
+  state?: ExternalFormBuilderState
 }
 
 export interface ShareModalTypes extends DialogTypes {
@@ -1438,6 +1444,7 @@ export interface FilterSearchProps {
 
 export interface PatientProfileHeroProps {
   isChart?: boolean;
+  isCheckIn?: boolean;
   setPatient: Function;
   setAttachmentsData: Function;
 }
@@ -1566,6 +1573,10 @@ export interface PatientProviderSelectorProps {
   patientId: string;
 }
 
+export interface SlotsComponentProps {
+  facilityId: string;
+  state?: ExternalFormBuilderState
+}
 export interface dashboardInputsProps {
   year: SelectorOption
 }
@@ -1585,7 +1596,7 @@ export interface CareTeamsProps {
   patientId?: string;
   loading?: boolean;
   reload?: Function;
-  patientProvidersData?: AllDoctorPayload['doctors']
+  patientProvidersData?: PatientProviderPayload['providers']
 }
 
 export interface PracticeChartProps {

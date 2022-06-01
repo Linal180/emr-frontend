@@ -14,25 +14,27 @@ import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { AppointmentsTableProps, SelectorOption } from "../../interfacesTypes";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin, renderPairSelectorOptions, getAppointmentStatus, setRecord
+  isFacilityAdmin, isPracticeAdmin, renderPairSelectorOptions, getAppointmentStatus, setRecord,
+  convertDateFromUnix
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery, AppointmentStatus, useUpdateAppointmentMutation
+  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation, AppointmentStatus
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, EMPTY_OPTION,
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY, EMPTY_OPTION
 } from "../../constants";
 
 dotenv.config()
@@ -256,6 +258,28 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     } catch (error) { }
   }
 
+  const handleCheckIn = async (id: string, patientId: string) => {
+    const { data } = await updateAppointment({
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.CheckedIn,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
+    })
+
+    const { updateAppointment: updateAppointmentResponse } = data ?? {}
+    const { response } = updateAppointmentResponse ?? {}
+    if (response) {
+      const { status } = response
+
+      if (patientId && status && status === 200) {
+        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
+        history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+      }
+    }
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -290,7 +314,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
                   } = appointment || {};
                   const { name } = facility || {};
-                  const { firstName, lastName } = patient || {};
+                  const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
                   const { firstName: doctorFN, lastName: doctorLN } = provider || {};
                   const { text, textColor } = appointmentStatus(status || '')
@@ -328,7 +352,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
 
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        <Box display="flex" alignItems="center" minWidth={100}
+                          onClick={() => id && patientId && handleCheckIn(id, patientId)}
+                          justifyContent="center">
+                          <Box className={classes.iconsBackground}>
+                            <CheckInTickIcon />
+                          </Box>
+
                           <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />

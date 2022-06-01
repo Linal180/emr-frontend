@@ -25,7 +25,7 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  AllDoctorPayload, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload,
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
   useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -42,8 +42,7 @@ import {
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE,
-  VISITS,
+  HEART_RATE_VALUE, VISITS,
 } from "../../../../constants";
 import { WHITE } from '../../../../theme';
 
@@ -151,8 +150,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatientProvider) {
 
           const { providers } = getPatientProvider;
-          const patientProvider = providers?.map((item) => item.doctor)
-          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: patientProvider as AllDoctorPayload['doctors'] })
+          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
         }
       }
     },
