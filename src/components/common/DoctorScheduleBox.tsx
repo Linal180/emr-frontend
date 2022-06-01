@@ -2,7 +2,7 @@
 import { FC } from "react";
 import { Box, Typography } from "@material-ui/core";
 // utils, constants and graphql
-import { EditIcon, TrashIcon } from "../../assets/svgs";
+import { EditNewIcon, TrashNewIcon } from "../../assets/svgs";
 import { getStandardTime } from "../../utils";
 import { ActionType } from "../../reducers/doctorReducer";
 import { DoctorScheduleProps } from "../../interfacesTypes";
@@ -33,11 +33,11 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
     <Box display="flex" pb={3} flexDirection="column" justifyContent="space-between">
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-          <TrashIcon />
+          <TrashNewIcon />
         </Box>
 
         <Box className={classes.iconsBackground} onClick={() => handleEdit(id)}>
-          <EditIcon />
+          <EditNewIcon />
         </Box>
       </Box>
 

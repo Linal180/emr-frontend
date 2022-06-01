@@ -1,74 +1,44 @@
 //packages block
-import React from 'react'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
-import { Box, Divider, Typography } from '@material-ui/core';
+import { ChangeEvent, useState } from 'react'
+import { Box, colors, Tab, Typography } from '@material-ui/core';
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 //constants block
-import { ITEMS } from '../../../../../constants';
+import { FORM_BUILDER_ADD_FIELDS_TABS, FORM_FIELDS } from '../../../../../constants';
 import { useFormBuilderSidebarStyles } from '../../../../../styles/formbuilder/sidebarStyle';
-import { BLACK, GRAY_ONE, WHITE } from '../../../../../theme';
-//component
-const Sidebar = () => {
+import { FormFields } from './FormFields'
+import { PreDefinedComponents } from './preDefinedComponents'
+import { FormSidebarProps } from '../../../../../interfacesTypes';
+
+const Sidebar = ({ dispatch, formState }: FormSidebarProps) => {
+  const [selectedTab, setSelectedTab] = useState<string>('1')
   const classes = useFormBuilderSidebarStyles()
-  //render
+
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) => setSelectedTab(newValue)
+
   return (
-    <Box
-      className={classes.main}
-    >
-      <Box sx={{ padding: 10 }}>
-        <Typography variant='h4'>Form Fields</Typography>
+    <Box className={classes.main}>
+      <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Typography variant='h4'>{FORM_FIELDS}</Typography>
       </Box>
-      <Box sx={{ paddingY: 2 }}>
-        <Divider />
-      </Box>
-      <Droppable droppableId='ITEMS' isDropDisabled={true}>
-        {(provided, snapshot) => (
-          <div
-            style={{ borderRadius: '8px', border: `1px ${snapshot.isDraggingOver ? `dashed ${BLACK}` : `solid ${WHITE}`}` }}
-            ref={provided.innerRef}
-          >
-            {ITEMS?.map((item, index) => (
-              <Draggable
-                key={item.fieldId}
-                draggableId={`${item.fieldId}`}
-                index={index}
-              >
-                {(provided, snapshot) => {
-                  return (
-                    <React.Fragment>
-                      <div ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={{
-                          border: `1px ${snapshot.isDragging ? `dashed ${BLACK}` : `solid ${GRAY_ONE}`}`,
-                          ...provided.draggableProps.style,
-                        }}
-                        className={classes.dragContainer}
-                      >
-                        <Box marginRight={2}>
-                          <item.icon />
-                        </Box>
-                        <Box>
-                          {item.label}
-                        </Box>
-                      </div>
-                      {snapshot.isDragging && (
-                        <Box
-                          className={classes.isDragging}
-                        >
-                          {item.label}
-                        </Box>
-                      )}
-                    </React.Fragment>
-                  );
-                }}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+
+      <TabContext value={selectedTab}>
+        <TabList onChange={handleChange}>
+          {FORM_BUILDER_ADD_FIELDS_TABS.map(item => (
+            <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+          ))}
+        </TabList>
+
+        <TabPanel value="1">
+          <FormFields />
+        </TabPanel>
+
+        <TabPanel value="2">
+          <PreDefinedComponents formState={formState} dispatch={dispatch} />
+        </TabPanel>
+      </TabContext>
+
     </Box>
   )
 }
 
-export default Sidebar
+export default Sidebar;

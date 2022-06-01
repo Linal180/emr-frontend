@@ -1,7 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import {
-  BLACK, BLACK_SEVEN, BLACK_THREE, BLUE_EIGHT, GRAY_FIVE, WHITE, WHITE_FOUR,
-} from "../theme";
+import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE  } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -20,6 +18,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: "none",
     padding: theme.spacing(0, 4),
+    height: 80,
+    overflow: 'hidden',
 
     [theme.breakpoints.down("sm")]: {
       padding: 0,
@@ -37,7 +37,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     alignItems: "center",
 
     "& .active": {
-      borderBottom: `2px solid ${BLUE_EIGHT}`,
+      borderBottom: `2px solid ${BLUE}`,
     },
 
     [theme.breakpoints.down("sm")]: {
@@ -49,7 +49,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     paddingBottom: 5,
     minWidth: 80,
     textAlign: "center",
-    color: BLACK_SEVEN,
+    color: BLACK,
     cursor: "pointer",
     textTransform: "capitalize",
     display: "flex",
@@ -67,7 +67,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   profileItem: {
-    color: BLACK_SEVEN,
+    color: BLACK,
     textTransform: "capitalize",
     minWidth: "auto",
   },
@@ -80,8 +80,15 @@ export const useHeaderStyles = makeStyles((theme) => ({
     },
   },
 
+  roleName: {
+    "& .MuiTypography-root": {
+      color: GREY_SEVEN,
+      textAlign: 'right',
+    },
+  },
+
   dropdownMenuBar: {
-    backgroundColor: GRAY_FIVE,
+    backgroundColor: GREY_ELEVEN,
     borderRadius: 5,
   },
 
@@ -90,4 +97,79 @@ export const useHeaderStyles = makeStyles((theme) => ({
       color: BLACK_THREE,
     },
   },
+
+  toggleContainer: {
+    "& .toggle-main": {
+      display: 'flex',
+      position: 'relative',
+      border: `1px solid ${GRAY_SIX}`,
+      fontWeight: 500,
+      fontSize: 14,
+      width: 145,
+      height: 44,
+      padding: 5,
+      borderRadius: 6,
+
+      "& > div": {
+        position: 'relative',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 2,
+        zIndex: 2,
+        flex: 1,
+      }
+    },
+
+    "& .MuiToggleButtonGroup-root": {
+      marginTop: 10,
+    },
+
+    "& .MuiToggleButton-root.Mui-selected": {
+      color: WHITE,
+      backgroundColor: BLUE_ONE,
+      padding: "9px 30px",
+      borderRadius: 6,
+    },
+
+    "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
+      borderTopRightRadius: "6px",
+      borderBottomRightRadius: "6px",
+    },
+
+    "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
+      borderTopLeftRadius: "6px",
+      borderBottomLeftRadius: "6px",
+    }
+  },
+
+  resendBtn: {
+    paddingBottom: 30,
+    textDecoration: 'underline',
+    color: BLUE,
+    cursor: 'pointer'
+  },
+
+  otpDialogue: {
+
+    "& .MuiDialog-paper": {
+      overflowY: 'clip',
+      borderRadius: 5,
+      padding: 20
+    }
+  },
+
+  iconPadding: {
+    paddingRight: 10
+  },
+
+  cursor: {
+    cursor: 'pointer',
+
+    "&:hover": {
+      textDecoration: 'underline',
+      color: BLUE,
+    }
+  }
 }));

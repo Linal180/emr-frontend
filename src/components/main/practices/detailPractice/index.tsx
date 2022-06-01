@@ -1,152 +1,327 @@
 // packages block
-import { FC } from 'react';
+import { Reducer, useReducer, FC, useCallback, useContext, useEffect, useState } from 'react';
+import { Edit } from '@material-ui/icons';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
+import LogoIcon from "../../../../assets/images/logo.svg";
 // component block
-import { Box, Button, Card, Grid, Typography } from '@material-ui/core';
-import InputController from '../../../../controller';
+import Alert from '../../../common/Alert';
+import PracticeData from './practiceData';
 import PhoneField from '../../../common/PhoneInput';
-import LogoIcon from "../../../../assets/images/logo.svg"
+import InputController from '../../../../controller';
+import ViewDataLoader from '../../../common/ViewDataLoader';
+import MediaCards from '../../../common/AddMedia/MediaCards';
 // constants block
-import { 
-  CHAMPUS, EIN, FAX, MEDICAID, MEDICARE, PHONE, PRACTICE_IDENTIFIER, PRACTICE_NAME, PRACTICE_NPI, 
-  SAVE_TEXT, UPIN, UPLOAD_LOGO 
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
+import { updatePracticeSchema } from '../../../../validationSchemas';
+import { CustomPracticeInputProps } from '../../../../interfacesTypes';
+import {
+  AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation
+} from '../../../../generated/graphql';
+import {
+  CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
+  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE, ATTACHMENT_TITLES,
 } from '../../../../constants';
+import {
+  Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
+  State as MediaState
+} from '../../../../reducers/mediaReducer';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
+  const { user, setPracticeName } = useContext(AuthContext);
+  const { facility } = user || {};
+  const { practice } = facility || {};
+  const { id: practiceId } = practice || {};
+  const [edit, setEdit] = useState<boolean>(false);
+  const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
+  const { attachmentUrl, attachmentId, attachmentData } = mediaState
+  const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
   const methods = useForm<any>({
     mode: "all",
+    resolver: yupResolver(updatePracticeSchema)
   });
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue } = methods;
 
-  const onSubmit: SubmitHandler<any> = () => { }
+  const [getPractice, { loading }] = useGetPracticeLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(SETTINGS_ROUTE)
+    },
+
+    onCompleted(data) {
+      const { getPractice } = data || {};
+
+      if (getPractice) {
+        const { response, practice } = getPractice
+
+        if (response) {
+          const { status } = response
+
+          if (practice && status && status === 200) {
+            const { attachments } = practice || {}
+            const practiceAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            practiceAttachment?.id && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: practiceAttachment?.id })
+            practiceAttachment && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: practiceAttachment })
+            setPracticeData(practice)
+            const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
+
+            fax && setValue('fax', fax)
+            ein && setValue('ein', ein)
+            upin && setValue('upin', upin)
+            name && setValue('name', name)
+            phone && setValue('phone', phone)
+            champus && setValue('champus', champus)
+            medicare && setValue('medicare', medicare)
+            medicaid && setValue('medicaid', medicaid)
+          }
+        }
+      }
+    }
+  });
+
+  const [updatePractice, { loading: updatePracticeLoading }] = useUpdatePracticeMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      const { updatePractice: { response, practice } } = data;
+
+      if (response) {
+        const { status, message } = response
+
+        if (practice && message && status && status === 200) {
+          const { name } = practice
+
+          name && setPracticeName(name)
+          fetchPractice();
+          Alert.success(message);
+          setEdit(!edit)
+        }
+      }
+    }
+  });
+
+  const fetchPractice = useCallback(async () => {
+    try {
+      await getPractice({
+        variables: { getPractice: { id: practiceId } }
+      });
+    } catch (error) { }
+  }, [getPractice, practiceId]);
+
+  useEffect(() => {
+    if (practiceId) {
+      fetchPractice();
+    } else {
+      Alert.error(NO_ASSOCIATED_PRACTICE)
+      history.push(SETTINGS_ROUTE)
+    }
+  }, [practiceId, fetchPractice]);
+
+  const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
+    const { name, phone, fax, upin, ein, medicaid, medicare, champus } = inputs;
+    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin }
+
+    practiceId && await updatePractice({
+      variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }
+    })
+  };
+
+  const editHandler = () => {
+    setEdit(!edit)
+  }
+
+  const [getAttachment] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+      }
+    }
+  });
+
+  const fetchAttachment = useCallback(async () => {
+    try {
+      attachmentId && await getAttachment({ variables: { getMedia: { id: attachmentId } } })
+    } catch (error) { }
+  }, [attachmentId, getAttachment])
+
+  useEffect(() => {
+    if (attachmentId && attachmentData) {
+      attachmentId && fetchAttachment()
+    }
+  }, [attachmentId, fetchAttachment, attachmentData])
+
+  const disableSubmit = loading || updatePracticeLoading
+
   return (
-    <>
-      <Box p={4} />
-      
+    <Box p={4}>
       <Grid container justifyContent='center'>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box mt={5} p={5}>
               <Grid container spacing={3}>
-                <Grid item md={4} sm={12}>
-                  <Box className='logo-container'>
-                    <img src={LogoIcon} alt="" />
+                <Grid item md={4} sm={12} xs={12}>
+                  <Box className='logo-container' ml={2}>
+                    <img key={attachmentId} src={attachmentUrl || LogoIcon} alt="" />
                   </Box>
 
-                  <Box mt={2} ml={1}>
-                    <Button type="submit" variant="outlined" color="inherit" className='blue-button-new'>
-                      {UPLOAD_LOGO}
-                    </Button>
+                  <Box>
+                    <MediaCards
+                      title={ATTACHMENT_TITLES.ProfilePicture}
+                      reload={() => fetchAttachment()}
+                      notDescription={true}
+                      moduleType={AttachmentType.Practice}
+                      itemId={practiceId || ''}
+                      imageSide={attachmentUrl}
+                      attachmentData={attachmentData || undefined}
+                      buttonText={UPLOAD_LOGO}
+                      button={true}
+                    />
                   </Box>
                 </Grid>
 
                 <Grid item md={8} sm={12}>
-                  <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <Grid container spacing={3}>
-                        <Grid item md={12} sm={12}>
-                          <InputController
-                            fieldType="text"
-                            controllerName="Name"
-                            controllerLabel={PRACTICE_NAME}
-                          />
-                        </Grid>
-                      </Grid>
+                  {loading ? <ViewDataLoader columns={6} rows={4} /> :
+                    <FormProvider {...methods}>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <Box mb={3} display="flex" justifyContent="flex-end">
+                          <Box display='flex'>
+                            {edit ?
+                              <>
+                                <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12}>
-                          <PhoneField name="phone" label={PHONE} />
-                        </Grid>
+                                <Box display="flex" justifyContent="flex-start" pl={2}>
+                                  <Button type="submit" variant="contained" color="primary"
+                                    disabled={disableSubmit}
+                                  >
+                                    {SAVE_TEXT}
 
-                        <Grid item md={6} sm={12}>
-                          <PhoneField name="fax" label={FAX} />
-                        </Grid>
-                      </Grid>
+                                    {disableSubmit && <CircularProgress size={20} color="inherit" />}
+                                  </Button>
+                                </Box>
+                              </>
+                              :
+                              <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                            }
+                          </Box>
+                        </Box>
 
-                      <Grid container spacing={3}>
-                        <Grid item md={12} sm={12}>
-                          <Typography variant='h6'>{PRACTICE_IDENTIFIER}</Typography>
-                        </Grid>
-                      </Grid>
+                        <Collapse in={!edit} mountOnEnter unmountOnExit>
+                          <PracticeData practiceData={practiceData} />
+                        </Collapse>
 
-                      <Box p={2} />
-
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12}>
+                        <Collapse in={edit} mountOnEnter unmountOnExit>
                           <Grid container spacing={3}>
-                            <Grid item md={6} sm={12}>
+                            <Grid item md={12} sm={12}>
                               <InputController
                                 fieldType="text"
-                                controllerName="NPI"
-                                controllerLabel={PRACTICE_NPI}
-                              />
-                            </Grid>
-
-                            <Grid item md={6} sm={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="EIN"
-                                controllerLabel={EIN}
+                                controllerName="name"
+                                controllerLabel={PRACTICE_NAME}
                               />
                             </Grid>
                           </Grid>
-                        </Grid>
 
-                        <Grid item md={6} sm={12}>
                           <Grid container spacing={3}>
                             <Grid item md={6} sm={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="UPIN"
-                                controllerLabel={UPIN}
-                              />
+                              <PhoneField name="phone" label={PHONE} />
                             </Grid>
 
                             <Grid item md={6} sm={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="medicare"
-                                controllerLabel={MEDICARE}
-                              />
+                              <PhoneField name="fax" label={FAX} />
                             </Grid>
                           </Grid>
-                        </Grid>
-                      </Grid>
 
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12}>
+                          <Grid container spacing={3}>
+                            <Grid item md={12} sm={12}>
+                              <Typography variant='h6'>{PRACTICE_IDENTIFIER}</Typography>
+                            </Grid>
+                          </Grid>
+
+                          <Box p={2} />
+
                           <Grid container spacing={3}>
                             <Grid item md={6} sm={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="medicad"
-                                controllerLabel={MEDICAID}
-                              />
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="ein"
+                                    controllerLabel={EIN}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="upin"
+                                    controllerLabel={UPIN}
+                                  />
+                                </Grid>
+                              </Grid>
                             </Grid>
 
                             <Grid item md={6} sm={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="champus"
-                                controllerLabel={CHAMPUS}
-                              />
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="medicare"
+                                    controllerLabel={MEDICARE}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="medicaid"
+                                    controllerLabel={MEDICAID}
+                                  />
+                                </Grid>
+                              </Grid>
                             </Grid>
                           </Grid>
-                        </Grid>
 
-                        <Grid item md={12} sm={12}>
-                          <Button variant='contained' color='primary'>{SAVE_TEXT}</Button>
-                        </Grid>
-                      </Grid>
-                    </form>
-                  </FormProvider>
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="champus"
+                                    controllerLabel={CHAMPUS}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Collapse>
+                      </form>
+                    </FormProvider>}
                 </Grid>
               </Grid>
             </Box>
           </Card>
         </Grid>
       </Grid>
-    </>
+    </Box>
   )
 }
 

@@ -4,7 +4,7 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import CardComponent from "../../../../common/CardComponent";
 import DropzoneContainer from "../../../../common/DropzoneContainer";
 // theme block
-import { GRAY_TWO } from '../../../../../theme';
+import { GREY_SEVEN } from '../../../../../theme';
 
 const DocumentVerificationForm = () => {
   return (
@@ -39,7 +39,7 @@ const DocumentVerificationForm = () => {
         </Box>
 
         <Box py={2}>
-          <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GRAY_TWO}>(Secondary)</Box></Typography>
+          <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GREY_SEVEN}>(Secondary)</Box></Typography>
 
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>

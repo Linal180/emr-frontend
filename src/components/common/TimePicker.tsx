@@ -15,7 +15,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
       control={control}
       defaultValue=''
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={`${name}-dialog`}>
             {isRequired ? requiredLabel(label) : label}
           </InputLabel>

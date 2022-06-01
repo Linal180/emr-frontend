@@ -1,0 +1,14 @@
+query SearchSnoMedCodes($searchSnoMedCodesInput: SearchSnoMedCodesInput!){
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: $searchSnoMedCodesInput){
+    response {
+      status
+      message
+    }
+    
+    snoMedCodes {
+      id
+      __typename
+      referencedComponentId
+    }
+  }
+}

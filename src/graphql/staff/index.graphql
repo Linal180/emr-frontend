@@ -18,6 +18,9 @@ query FindAllStaff($staffInput: StaffInput!) {
       lastName
       username
       phone
+      user {
+        id
+      }
     }
   }
 }

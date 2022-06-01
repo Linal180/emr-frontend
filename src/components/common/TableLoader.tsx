@@ -9,9 +9,9 @@ const TableLoader: FC<TableLoaderType> = ({ numberOfRows, numberOfColumns }): JS
   return (
     <Table aria-label="customized table">
       <TableBody>
-        {new Array(numberOfRows).fill(1).map((item, index) => (
+        {new Array(numberOfRows).fill(1).map((_, index) => (
           <TableRow key={`${index}-TableLoader`}>
-            {new Array(numberOfColumns).fill(2).map((item, childIndex) => (
+            {new Array(numberOfColumns).fill(2).map((_, childIndex) => (
               <TableCell key={`${index}-TableCell-${childIndex}`}>
                 <Skeleton />
               </TableCell>

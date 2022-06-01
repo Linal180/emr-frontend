@@ -1,1 +1,1 @@
-export const POPPINS = "Poppins, sans-serif";
+export const INTER = "Inter, sans-serif";

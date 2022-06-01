@@ -1,41 +1,33 @@
 // packages block
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext } from 'react';
 // components block
-import Alert from '../../../common/Alert';
 import FacilityTable from "./FacilityTable";
 import PageHeader from "../../../common/PageHeader";
 // constants block
-import history from '../../../../history';
+import { isUserAdmin } from '../../../../utils';
 import { AuthContext } from '../../../../context';
-import { checkPermission } from '../../../../utils';
 import {
-  ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT, PERMISSION_DENIED, ROOT_ROUTE,
-  USER_PERMISSIONS
+  ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT,
 } from "../../../../constants";
 
 const FacilityComponent: FC = (): JSX.Element => {
-  const { userPermissions } = useContext(AuthContext)
-
-  useEffect(() => {
-    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)) {
-      Alert.error(PERMISSION_DENIED)
-      history.push(ROOT_ROUTE)
-    }
-  }, [userPermissions]);
+  const { user } = useContext(AuthContext);
+  const { roles } = user || {};
+  const isAdmin = isUserAdmin(roles)
 
   return (
     <>
       <PageHeader
         title={FACILITIES_TEXT}
         path={[FACILITIES_BREAD]}
-        hasComponent
-        buttonText={ADD_FACILITY}
-        linkToPage={`${FACILITIES_ROUTE}/new`}
+        hasComponent={isAdmin}
+        buttonText={isAdmin ? ADD_FACILITY : ''}
+        linkToPage={isAdmin ? `${FACILITIES_ROUTE}/new` : ''}
       />
 
       <FacilityTable />
     </>
   )
-}
+};
 
 export default FacilityComponent;

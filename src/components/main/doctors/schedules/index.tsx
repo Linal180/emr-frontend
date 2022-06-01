@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorScheduleModal from "./ScheduleSlotModal";
@@ -10,10 +10,8 @@ import ViewDataLoader from "../../../common/ViewDataLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
-import history from "../../../../history";
-import { AuthContext } from "../../../../context";
 import { AddSlotIcon } from '../../../../assets/svgs';
-import { checkPermission, getDaySchedules } from "../../../../utils";
+import {  getDaySchedules } from "../../../../utils";
 import { useDoctorScheduleStyles } from '../../../../styles/doctorSchedule';
 import { DaySchedule, DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -24,22 +22,14 @@ import {
 } from "../../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, PERMISSION_DENIED, ROOT_ROUTE, USER_PERMISSIONS
+  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE,
 } from "../../../../constants";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
-  const { userPermissions } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
-
-  useEffect(() => {
-    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllSchedules)) {
-      Alert.error(PERMISSION_DENIED)
-      history.push(ROOT_ROUTE)
-    }
-  }, [userPermissions]);
 
   const [getDoctorSchedule, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -132,7 +122,15 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
             <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                  <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto" pt={3}>
+                <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                    <AddSlotIcon />
+
+                    <Typography>
+                      {ADD_MORE_RECORDS_TEXT}
+                    </Typography>
+                  </Box>
+
+                  <Box>
                     {byDaySchedules?.map((schedule: DaySchedule) => {
                       const { day, slots } = schedule || {}
 
@@ -147,14 +145,6 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                           </Box>
                         )
                     })}
-                  </Box>
-
-                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                    <AddSlotIcon />
-
-                    <Typography>
-                      {ADD_MORE_RECORDS_TEXT}
-                    </Typography>
                   </Box>
                 </Grid>
               </Grid>

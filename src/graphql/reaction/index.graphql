@@ -1,0 +1,8 @@
+query FindAllReactions($reactionInput: ReactionInput!){
+  findAllReactions(reactionInput: $reactionInput){
+    reactions {
+      id
+      name
+    }
+  }
+}

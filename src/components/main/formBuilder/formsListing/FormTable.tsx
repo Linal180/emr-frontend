@@ -3,7 +3,6 @@ import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "r
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
-import { Visibility as VisibilityIcon, InsertLink as InsertLinkIcon, Share as ShareIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -14,16 +13,17 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
-import { isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
+import { getFormatDate, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
-import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
   useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
   LayoutJsonType
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE,
+  FORM_EMBED_TITLE, CREATED_ON, NOT_PUBLISHED, PUBLISHED, FORM_BUILDER_RESPONSES
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -37,7 +37,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery,] = useState<string>('');
+  const [searchQuery] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openShare, setOpenShare] = useState<boolean>(false);
@@ -45,6 +45,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [forms, setForms] = useState<FormsPayload['forms']>([]);
   const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
   const [openPreview, setOpenPreview] = useState<boolean>(false)
+  const [formName, setFormName] = useState<string>('')
   //mutation & query
   const [findAllForms, { loading, error }] = useFindAllFormsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -65,6 +66,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
           const { totalPages } = pagination
           totalPages && setTotalPages(totalPages)
         }
+      } else {
+        setForms([]);
       }
     }
   });
@@ -99,7 +102,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : { facilityId, ...pageInputs, isSystemForm: false }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -134,15 +137,16 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   };
 
-  const onViewClick = (layout: LayoutJsonType | undefined) => {
+  const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
     if (layout) {
       const { sections } = layout;
       sections?.length > 0 && setFormPreviewData(sections)
+      name && setFormName(name)
       setOpenPreview(true)
     }
   }
 
-  const previewCloseHanlder = () => setOpenPreview(false)
+  const previewCloseHandler = () => setOpenPreview(false)
 
   const handleClipboard = (id: string) => {
     if (id) {
@@ -155,7 +159,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
-      `<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
+      `<iframe width="560" height="315" src="${formEmbedUrl}" frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
     )
     setOpenShare(false)
   }
@@ -169,7 +173,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+      <Box py={2} mb={2} maxWidth={450}>
+        <Search search={search} />
+      </Box>
 
       <Box className="table-overflow">
         <Table aria-label="customized table">
@@ -178,6 +184,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(TYPE)}
               {isSuper && renderTh(FACILITY_NAME)}
+              {renderTh(CREATED_ON)}
+              {renderTh(PUBLISHED)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -191,33 +199,37 @@ const FormBuilderTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               forms?.map((record: FormPayload['form']) => {
-                const { id, type, name, facilityId, layout } = record || {};
+                const { id, type, name, facilityId, layout, createdAt, isActive } = record || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
-                      {name}
+                      <Link to={`${FORM_BUILDER_RESPONSES}/${id}`}>
+                        {name}
+                      </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
+                    {isSuper && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
+                    <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
+                    <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>
-                          <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                            <InsertLinkIcon />
+                        <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
+                          <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && handleClipboard(id || '')}>
+                            <LinkIcon />
                           </Box>
                         </DetailTooltip>
                         <Link to={`${FORM_BUILDER_EDIT_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
-                            <EditIcon />
+                            <EditNewIcon />
                           </Box>
                         </Link>
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
+                          <TrashNewIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout)}>
-                          <VisibilityIcon />
+                        <Box className={classes.iconsBackground} onClick={() => name && onViewClick(layout, name)}>
+                          <EyeIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onShareClick(id || '')}>
+                        <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>
                           <ShareIcon />
                         </Box>
                       </Box>
@@ -236,18 +248,26 @@ const FormBuilderTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination count={totalPages} shape="rounded" page={page} onChange={handleChange} />
+          <Box display="flex" justifyContent="flex-end" p={3}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
           </Box>
         )}
 
         <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading}
           description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm}
           setOpen={(open: boolean) => setOpenDelete(open)} />
+
         <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
           description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
           handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
-        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
+
+        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} formName={formName} />
       </Box>
     </Box>
   );

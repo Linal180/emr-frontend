@@ -2,10 +2,9 @@ query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
-    
+
     response {
       error
       status
@@ -18,7 +17,40 @@ query FindAllPatient($patientInput: PatientInput!) {
       lastName
       firstName
       patientRecord
-      
+
+      contacts {
+        id
+        name
+        city
+        email
+        phone
+        primaryContact
+      }
+    }
+  }
+}
+
+query FetchAllPatient($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+
+    patients {
+      id
+      email
+      dob
+      lastName
+      firstName
+      patientRecord
+
       contacts {
         id
         name
@@ -48,6 +80,7 @@ query GetPatient($getPatient: GetPatient!) {
       lastName
       suffix
       inviteAccepted
+      patientRecord
       firstNameUsed
       prefferedName
       previousFirstName
@@ -61,7 +94,7 @@ query GetPatient($getPatient: GetPatient!) {
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -83,6 +116,7 @@ query GetPatient($getPatient: GetPatient!) {
       statementNote
       statementNoteDateFrom
       statementNoteDateTo
+      patientNoteOpen
       createdAt
       updatedAt
 
@@ -90,7 +124,7 @@ query GetPatient($getPatient: GetPatient!) {
         id
         doctorId
         currentProvider
-        
+
         doctor {
           id
           firstName
@@ -110,7 +144,7 @@ query GetPatient($getPatient: GetPatient!) {
         createdAt
         updatedAt
       }
-      
+
       contacts {
         id
         fax
@@ -157,14 +191,14 @@ query GetPatient($getPatient: GetPatient!) {
         isPrivate
         serviceCode
         updatedAt
-      } 
+      }
     }
   }
 }
 
-mutation RemovePatient($removePatient: RemovePatient!){
-	removePatient(removePatient: $removePatient){
-    response{
+mutation RemovePatient($removePatient: RemovePatient!) {
+  removePatient(removePatient: $removePatient) {
+    response {
       name
       status
       message
@@ -172,8 +206,8 @@ mutation RemovePatient($removePatient: RemovePatient!){
   }
 }
 
-mutation CreatePatient($createPatientInput: CreatePatientInput!){
-  createPatient(createPatientInput: $createPatientInput){
+mutation CreatePatient($createPatientInput: CreatePatientInput!) {
+  createPatient(createPatientInput: $createPatientInput) {
     response {
       error
       status
@@ -182,8 +216,8 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!){
   }
 }
 
-mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
-  updatePatient(updatePatientInput: $updatePatientInput){
+mutation UpdatePatient($updatePatientInput: UpdatePatientInput!) {
+  updatePatient(updatePatientInput: $updatePatientInput) {
     response {
       error
       status
@@ -192,8 +226,8 @@ mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
   }
 }
 
-mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
-  sendInviteToPatient(patientInviteInput: $patientInviteInput){
+mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!) {
+  sendInviteToPatient(patientInviteInput: $patientInviteInput) {
     response {
       status
       error
@@ -219,7 +253,7 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -248,7 +282,7 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
         id
         doctorId
         currentProvider
-        
+
         doctor {
           id
           firstName
@@ -268,7 +302,7 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
         createdAt
         updatedAt
       }
-      
+
       contacts {
         id
         fax
@@ -315,7 +349,69 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
         isPrivate
         serviceCode
         updatedAt
-      } 
+      }
     }
+  }
+}
+
+mutation UpdatePatientNoteInfo($updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!) {
+  updatePatientNoteInfo(updatePatientNoteInfoInputs: $updatePatientNoteInfoInputs) {
+    response {
+      status
+      error
+      message
+    }
+
+    patient {
+      id
+      patientNote
+      patientNoteOpen
+    }
+  }
+}
+
+mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!){
+  updatePatientProvider(updatePatientProvider: $updatePatientProvider){
+     response {
+      status
+      message
+    }   
+  }
+}
+
+query GetPatientProvider($getPatient: GetPatient!) {
+  getPatientProvider(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    providers {
+      id
+      doctorId
+      patientId
+      currentProvider
+      createdAt
+      updatedAt
+
+        doctor {
+          id
+          firstName
+          lastName
+          email
+          speciality
+          
+          contacts {
+            id
+            name
+            city
+            email
+            phone
+            primaryContact
+            }
+        }
+      }
   }
 }

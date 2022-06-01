@@ -1,5 +1,5 @@
 // packages block
-import { FC, useImperativeHandle, useState, forwardRef } from "react";
+import { FC, useImperativeHandle, useState, forwardRef, useContext } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -7,100 +7,176 @@ import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
+import { AuthContext } from "../../context";
 import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
-import { MediaPatientDataType } from "../../interfacesTypes";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
+import {
+  MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType, MediaStaffDataType, MediaUserDataType
+} from "../../interfacesTypes";
 
 const DropzoneImage: FC<any> = forwardRef(({
-  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
+  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
+  reload, title, providerName, filesLimit, attachmentMetadata
 }, ref): JSX.Element => {
+  const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageEdit, setImageEdit] = useState<boolean>(false);
-  const [file, setFile] = useState<File>();
+  const [files, setFiles] = useState<File[]>();
 
   const token = getToken();
   let moduleRoute = "";
 
   switch (imageModuleType) {
-
     case AttachmentType.Patient:
       moduleRoute = "patients";
       break;
 
+    case AttachmentType.Doctor:
+      moduleRoute = "doctor";
+      break;
+
+    case AttachmentType.Staff:
+      moduleRoute = "staff";
+      break;
+
+    case AttachmentType.SuperAdmin:
+      moduleRoute = "users";
+      break;
+
+    case AttachmentType.Practice:
+      moduleRoute = "practices";
+      break;
     default:
       break;
   }
 
-  const handleModalClose = () => {
-    handleClose()
-    reload()
-  }
+  const handleModalClose = () => handleClose();
 
   useImperativeHandle(ref, () => ({
     submit() {
-      file && handleFileChange()
+      files && handleFileChange()
     }
   }));
 
   const handleFileChange = async () => {
-    const formData = new FormData();
-    attachmentId && formData.append("id", attachmentId);
-    itemId && formData.append("typeId", itemId);
-    title && formData.append("title", title);
-    file && formData.append("file", file);
-
-    setLoading(true);
-    await axios.post(
-      isEdit ?
-        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
-        :
-        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    files && files.map(async (file) => {
+      const formData = new FormData();
+      file && formData.append("file", file);
+      title && formData.append("title", title);
+      itemId && formData.append("typeId", itemId);
+      attachmentId && formData.append("id", attachmentId);
+      providerName && formData.append("providerName", providerName);
+      if (attachmentMetadata) {
+        for (var key in attachmentMetadata) {
+          formData.append(key, attachmentMetadata[key]);
+        }
       }
-    ).then(response => {
-      const { status, data } = response;
 
-      if (status === 201 && data) {
-        switch (imageModuleType) {
+      setLoading(true);
+      await axios.post(
+        isEdit ?
+          `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
+          :
+          `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ).then(response => {
+        const { status, data } = response;
 
-          case AttachmentType.Patient:
-            const patientData = data as unknown as MediaPatientDataType;
-            if (patientData) {
-              const { patient: { attachments: patientAttachment } } = patientData || {};
+        if (status === 201 && data) {
+          switch (imageModuleType) {
 
-              if (patientAttachment) {
+            case AttachmentType.Patient:
+              const patientData = data as unknown as MediaPatientDataType;
+
+              if (patientData) {
+                const { patient: { attachments: patientAttachment } } = patientData || {};
+                patientAttachment && setAttachments(patientAttachment)
                 setLoading(false);
                 handleModalClose();
-                setAttachments(patientAttachment)
-                Alert.success('Media added successfully!');
-                reload();
+                reload()
               }
-            }
-            break;
 
-          default:
-            break;
+              break;
+
+            case AttachmentType.Doctor:
+              const doctorData = data as unknown as MediaDoctorDataType
+
+              if (doctorData) {
+                const { doctor: { attachments: doctorAttachments } } = doctorData || {};
+                doctorAttachments && setAttachments(doctorAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+
+              break;
+
+            case AttachmentType.Staff:
+              const staffData = data as unknown as MediaStaffDataType
+
+              if (staffData) {
+                const { staff: { attachments: staffAttachments } } = staffData || {};
+                staffAttachments && setAttachments(staffAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+
+              break;
+
+            case AttachmentType.SuperAdmin:
+              const userData = data as unknown as MediaUserDataType
+
+              if (userData) {
+                const { user: { attachments: staffAttachments } } = userData || {};
+                staffAttachments && setAttachments(staffAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+
+              break;
+
+            case AttachmentType.Practice:
+              const practiceData = data as unknown as MediaPracticeDataType
+
+              if (practiceData) {
+                const { practice: { attachments: practiceAttachments } } = practiceData || {};
+                practiceAttachments && setAttachments(practiceAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          Alert.error("Something went wrong!");
+
+          if (status === 401) {
+            setIsLoggedIn(false)
+            setUser(null)
+            handleLogout();
+          }
         }
-      } else {
-        Alert.error("Something went wrong!");
+      }).then(data => {
 
-        if (status === 401) {
-          handleLogout();
-        }
-      }
-    }).then(data => {
-
-    }).catch(error => {
-      const { response: { data: { error: errorMessage } } } = error || {}
-      Alert.error(errorMessage);
-    });
+      }).catch(error => {
+        const { response: { data: { error: errorMessage } } } = error || {}
+        Alert.error(errorMessage);
+      });
+    })
   }
 
   const handleUpdateImage = () => setImageEdit(true)
@@ -149,12 +225,14 @@ const DropzoneImage: FC<any> = forwardRef(({
             )}
 
             <DropzoneArea
-              filesLimit={1}
+              previewGridClasses={{ item: 'media-inner-image' }}
+              filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
               acceptedFiles={ACCEPTABLE_FILES}
-              onChange={(files) => setFile(files[0])}
+              onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
+              dropzoneText={imageEdit ?
+                PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
             />
           </Box>
         )

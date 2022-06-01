@@ -1,7 +1,10 @@
 mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
-    
+    isTwoFactorEnabled
+    userId
+    access_2fa_token
+
     response {
       status
       message
@@ -27,8 +30,13 @@ query GetLoggedInUser {
     user {
       id
       email
+      phone
+      isTwoFactorEnabled
       token
       userId
+      userType
+      phone
+      autoLogoutTime
 
       roles {
         id
@@ -45,7 +53,23 @@ query GetLoggedInUser {
       facility {
         id
         name
-        practiceId        
+        practiceId
+
+        practice {
+          id
+          name
+        }
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
       }
     }
   }
@@ -61,9 +85,9 @@ mutation ForgetPassword($forgotPasswordInput: ForgotPasswordInput!) {
   }
 }
 
-mutation ResetPassword($resetPassword: ResetPasswordInput!){
-  resetPassword(resetPassword:$resetPassword){
-    response{
+mutation ResetPassword($resetPassword: ResetPasswordInput!) {
+  resetPassword(resetPassword: $resetPassword) {
+    response {
       error
       status
       message
@@ -71,8 +95,8 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
   }
 }
 
-mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
-  updatePassword(updatePasswordInput: $updatePasswordInput){
+mutation updatePassword($updatePasswordInput: UpdatePasswordInput!) {
+  updatePassword(updatePasswordInput: $updatePasswordInput) {
     response {
       error
       status
@@ -84,9 +108,33 @@ mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
 query GetDoctorUser($getDoctor: GetDoctor!) {
   getDoctor(getDoctor: $getDoctor) {
     doctor {
+      __typename
       id
       firstName
       lastName
+
+      contacts {
+        id
+        email
+        phone
+        address
+        zipCode
+        city
+        state
+        country
+        primaryContact
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
 
     response {
@@ -95,17 +143,63 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
   }
 }
 
-query GetStaffUser($getStaff: GetStaff!){
-  getStaff(getStaff: $getStaff){
+query GetStaffUser($getStaff: GetStaff!) {
+  getStaff(getStaff: $getStaff) {
     response {
       status
     }
 
     staff {
+      __typename
       id
       email
       lastName
       firstName
+      phone
+      practiceId
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation update2FactorAuth($twoFactorInput: TwoFactorInput!){
+  update2FactorAuth(twoFactorInput: $twoFactorInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation resentOTP{
+  resentOTP{
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation verifyOTP($verifyCodeInput: VerifyCodeInput!){
+  verifyOTP(verifyCodeInput: $verifyCodeInput){
+    access_token
+
+    response {
+      error
+      status
+      message
     }
   }
 }

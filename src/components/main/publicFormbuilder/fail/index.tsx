@@ -1,33 +1,28 @@
 // packages block
-import { Box, Card, Typography } from '@material-ui/core';
+import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 // styles and theme block
 import { WHITE_TWO } from '../../../../theme';
-import { failStyles } from '../../../../styles/publicAppointmentStyles/failsStyles';
 import { FORM_FAIL_DESCRIPTION, THANK_YOU_TEXT } from '../../../../constants';
+import { failStyles } from '../../../../styles/publicAppointmentStyles/failsStyles';
 //component
 const FormFailComponent = () => {
   //style hook
   const classes = failStyles();
   //render
   return (
-    <Box bgcolor={WHITE_TWO}
-      minHeight="100vh"
-      p={3.75}
-      sx={{
-        justifyContent: "center",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+    <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
-        <Box minHeight="580px" className={classes.container}>
-          <Box maxWidth="700px">
-            <Typography component="h3" variant="h3">
-              {FORM_FAIL_DESCRIPTION}
-              <br />
-              <br />
-              {THANK_YOU_TEXT}
-            </Typography>
+        <Box width={570}>
+          <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant="h3"><strong>{FORM_FAIL_DESCRIPTION}</strong></Typography>
+          </Box>
+
+          <Box className={classes.container}>
+            <Typography variant="h3">{THANK_YOU_TEXT}</Typography>
+
+            <Box mt={2} display="flex" justifyContent="flex-end">
+              <Button variant='outlined' color='secondary'>Go Back</Button>
+            </Box>
           </Box>
         </Box>
       </Card>

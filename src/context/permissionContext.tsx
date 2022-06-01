@@ -1,6 +1,7 @@
 // packages block
-import { createContext, FC, useCallback, useEffect, Reducer, useReducer } from "react";
+import { createContext, FC, useCallback, useEffect, Reducer, useReducer, useContext } from "react";
 // graphql, interfaces/types, reducer and constants block
+import { AuthContext } from "./authContext";
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { PermissionContextInterface } from "../interfacesTypes";
 import { PermissionsPayload, useFindAllPermissionsLazyQuery } from "../generated/graphql";
@@ -10,18 +11,19 @@ import {
 
 export const PermissionContext = createContext<PermissionContextInterface>({
   permissions: [],
+  permissionLoading: false
 });
 
 export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
+  const { user } = useContext(AuthContext)
   const [{ permissions, page }, dispatch] = useReducer<Reducer<State, Action>>(permissionContextReducer, initialState)
 
-  const [findAllPermissions] = useFindAllPermissionsLazyQuery({
+  const [findAllPermissions, { loading: permissionLoading }] = useFindAllPermissionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError({message}) {
-      console.log(message)
+    onError() {
       return null;
     },
 
@@ -37,7 +39,7 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
           }
         }
 
-        permissions && fetchedPermissions &&
+        !!permissions && !!fetchedPermissions &&
           dispatch({
             type: ActionType.SET_PERMISSIONS,
             permissions: [...permissions, ...fetchedPermissions] as PermissionsPayload['permissions']
@@ -54,11 +56,14 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
     } catch { }
   }, [findAllPermissions])
 
-  useEffect(() => { hasToken && fetchAllPermissionList(page) }, [fetchAllPermissionList, hasToken, page])
+  useEffect(() => { }, [user])
+  useEffect(() => {
+    hasToken && fetchAllPermissionList(page)
+  }, [fetchAllPermissionList, hasToken, page])
 
   return (
     <PermissionContext.Provider
-      value={{ permissions }}
+      value={{ permissions, permissionLoading }}
     >
       {children}
     </PermissionContext.Provider>

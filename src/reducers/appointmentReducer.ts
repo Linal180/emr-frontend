@@ -6,29 +6,52 @@ import {
 
 export interface State {
   page: number;
+  instance: any;
   offset: number;
   agreed: boolean;
   copied: boolean;
+  appEdit: boolean;
+  appOpen: boolean;
+  appPaid: boolean;
   serviceId: string;
+  appStatus: string;
+  facilityId: string;
   totalPages: number;
   providerId: string;
+  appDetail: boolean;
+  pageComing: number;
   currentDate: string;
   openDelete: boolean;
   searchQuery: string;
   serviceName: string;
   patientName: string;
+  appInvoice: boolean;
+  appPayment: boolean;
   isInsurance: boolean;
   providerName: string;
   facilityName: string;
+  appStartDate: string;
   appointmentId: string;
   isEmployment: boolean;
+  pageCompleted: number;
+  appShowPayBtn: boolean;
   isAutoAccident: boolean;
+  appInvoiceNumber: string;
+  isInvoiceNumber: boolean;
+  cancelAppStatus: boolean;
   isOtherAccident: boolean;
+  appBillingStatus: string;
+  totalPagesComing: number;
+  openPatientModal: boolean;
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
+  totalPagesCompleted: number;
   doctor: DoctorPayload['doctor'];
+  appointmentPaymentToken: string;
   facility: FacilityPayload['facility'];
   availableSlots: SlotsPayload['slots'];
+  upComing: AppointmentsPayload['appointments'];
+  completed: AppointmentsPayload['appointments'];
   appointment: AppointmentPayload['appointment'];
   appointments: AppointmentsPayload['appointments'];
   externalAppointment: {
@@ -38,22 +61,12 @@ export interface State {
     patientId: string;
     providerId: string;
   };
-  appointmentPaymentToken: string;
-  appEdit: boolean;
-  instance: any;
-  appOpen: boolean;
-  appPaid: boolean;
-  appStatus: string;
-  appInvoice: boolean;
-  appPayment: boolean;
-  appInvoiceNumber: string;
-  appShowPayBtn: boolean;
-  appDetail: boolean;
-  isInvoiceNumber: boolean;
 }
 
 export const initialState: State = {
   page: 1,
+  upComing: [],
+  completed: [],
   serviceId: '',
   appStatus: '',
   doctor: null,
@@ -64,6 +77,8 @@ export const initialState: State = {
   instance: null,
   appOpen: false,
   appPaid: false,
+  pageComing: 1,
+  facilityId: '',
   facility: null,
   providerId: '',
   appDetail: true,
@@ -73,20 +88,27 @@ export const initialState: State = {
   appointments: [],
   providerName: '',
   facilityName: '',
+  appStartDate: '',
+  pageCompleted: 1,
   openDelete: false,
   appointmentId: '',
   appointment: null,
-  isInsurance: false,
-  availableSlots: [],
   appInvoice: false,
   appPayment: false,
-  appInvoiceNumber: '',
+  isInsurance: false,
+  availableSlots: [],
+  totalPagesComing: 0,
   isEmployment: false,
+  appBillingStatus: '',
   appShowPayBtn: false,
+  appInvoiceNumber: '',
   isAutoAccident: false,
+  totalPagesCompleted: 0,
+  cancelAppStatus: false,
   isInvoiceNumber: false,
   isOtherAccident: false,
   deleteAppointmentId: '',
+  openPatientModal: false,
   appointmentPaymentToken: "",
   offset: moment.tz().utcOffset(),
   currentDate: new Date().toDateString(),
@@ -111,12 +133,16 @@ export enum ActionType {
   SET_APP_PAID = 'setAppPaid',
   SET_INSTANCE = 'setInstance',
   SET_FACILITY = 'setFacility',
+  SET_UP_COMING = 'setUpComing',
+  SET_COMPLETED = 'setComplete',
   SET_APP_DETAIL = 'setAppDetail',
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
+  SET_PAGE_COMING = 'setPageComing',
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
+  SET_FACILITY_ID = 'setFacilityId',
   SET_APP_INVOICE = 'setAppInvoice',
   SET_APP_PAYMENT = 'setAppPayment',
   SET_APPOINTMENT = 'setAppointment',
@@ -129,15 +155,22 @@ export enum ActionType {
   SET_IS_EMPLOYMENT = 'setIsEmployment',
   SET_FACILITY_NAME = 'setFacilityName',
   SET_PROVIDER_NAME = 'setProviderName',
+  SET_APP_START_DATE = 'setAppStartDate',
+  SET_PAGE_COMPLETED = 'setPageCompleted',
   SET_APPOINTMENT_ID = 'setAppointmentId',
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
   SET_APP_SHOW_PAY_BTN = 'setAppShowPayBtn',
   SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
+  SET_CANCEL_APP_STATUS = 'setCancelAppStatus',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
+  SET_TOTAL_PAGES_COMING = 'setTotalPagesComing',
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
+  SET_OPEN_PATIENT_MODAL = 'setOpenPatientModal',
+  SET_APP_BILLING_STATUS = 'setAppBillingStatus',
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
+  SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
 }
 
@@ -152,6 +185,8 @@ export type Action =
   | { type: ActionType.SET_APP_STATUS; appStatus: string }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
+  | { type: ActionType.SET_PAGE_COMING; pageComing: number }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
   | { type: ActionType.SET_PROVIDER_ID, providerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_APP_INVOICE; appInvoice: boolean }
@@ -165,17 +200,26 @@ export type Action =
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
   | { type: ActionType.SET_PROVIDER_NAME; providerName: string }
+  | { type: ActionType.SET_APP_START_DATE; appStartDate: string }
   | { type: ActionType.SET_IS_EMPLOYMENT, isEmployment: boolean }
+  | { type: ActionType.SET_PAGE_COMPLETED; pageCompleted: number }
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_APP_SHOW_PAY_BTN; appShowPayBtn: boolean }
   | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
+  | { type: ActionType.SET_CANCEL_APP_STATUS; cancelAppStatus: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
+  | { type: ActionType.SET_TOTAL_PAGES_COMING; totalPagesComing: number }
+  | { type: ActionType.SET_APP_BILLING_STATUS; appBillingStatus: string }
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
+  | { type: ActionType.SET_OPEN_PATIENT_MODAL; openPatientModal: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
+  | { type: ActionType.SET_TOTAL_PAGES_COMPLETED; totalPagesCompleted: number }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
+  | { type: ActionType.SET_UP_COMING; upComing: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_COMPLETED; completed: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
@@ -188,7 +232,6 @@ export type Action =
       providerId: string,
     }
   }
-
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -208,6 +251,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         date: action.date
+      }
+
+    case ActionType.SET_APP_START_DATE:
+      return {
+        ...state,
+        appStartDate: action.appStartDate
       }
 
     case ActionType.SET_COPIED:
@@ -250,6 +299,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilityName: action.facilityName
+      }
+
+    case ActionType.SET_FACILITY_ID:
+      return {
+        ...state,
+        facilityId: action.facilityId
       }
 
     case ActionType.SET_IS_INSURANCE:
@@ -405,6 +460,54 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isInvoiceNumber: action.isInvoiceNumber
+      }
+    case ActionType.SET_CANCEL_APP_STATUS:
+      return {
+        ...state,
+        cancelAppStatus: action.cancelAppStatus
+      }
+    case ActionType.SET_APP_BILLING_STATUS:
+      return {
+        ...state,
+        appBillingStatus: action.appBillingStatus
+      }
+    case ActionType.SET_OPEN_PATIENT_MODAL:
+      return {
+        ...state,
+        openPatientModal: action.openPatientModal
+      }
+    case ActionType.SET_PAGE_COMPLETED:
+      return {
+        ...state,
+        pageCompleted: action.pageCompleted
+      }
+
+    case ActionType.SET_PAGE_COMING:
+      return {
+        ...state,
+        pageComing: action.pageComing
+      }
+    case ActionType.SET_TOTAL_PAGES_COMING:
+      return {
+        ...state,
+        totalPagesComing: action.totalPagesComing
+      }
+
+    case ActionType.SET_COMPLETED:
+      return {
+        ...state,
+        completed: action.completed
+      }
+
+    case ActionType.SET_UP_COMING:
+      return {
+        ...state,
+        upComing: action.upComing
+      }
+    case ActionType.SET_TOTAL_PAGES_COMPLETED:
+      return {
+        ...state,
+        totalPagesCompleted: action.totalPagesCompleted
       }
   }
 };

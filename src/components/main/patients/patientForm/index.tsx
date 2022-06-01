@@ -1,89 +1,53 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
-import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
-import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
-} from "@material-ui/core";
+import { Box, Button, CircularProgress } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
+import FormCard from './FormCard';
 import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
-import DatePicker from "../../../common/DatePicker";
-import PhoneField from '../../../common/PhoneInput';
-import InputController from '../../../../controller';
-import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import { getAddressByZipcode } from '../../../common/smartyAddress';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { GRAY_TWO, WHITE } from '../../../../theme';
-import { extendedPatientSchema } from '../../../../validationSchemas';
-import { AuthContext, ListContext, FacilityContext } from '../../../../context';
-import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
-import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
+  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION,
+  FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD,
+  PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED,
+  SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+} from "../../../../constants";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
-  Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
-  useUpdatePatientMutation, useCreatePatientMutation
+  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
+  useUpdatePatientMutation
 } from "../../../../generated/graphql";
-import {
-  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL,
-  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT,
-  GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME,
-  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, PHONE,
-  MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
-  EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
-  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY,
-  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION, USUAL_INDUSTRY,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
-  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
-} from "../../../../constants";
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
-import SmartyModal from '../../../common/SmartyModal'
 
-const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
+  { id, isEdit, shouldShowBread = true }, ref
+): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, fetchAllPatientList, setPatientList } = useContext(ListContext)
-  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
-  const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
-  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [state, setState] = useState({
-    privacyNotice: false,
-    releaseOfInfoBill: false,
-    callToConsent: false,
-    medicationHistoryAuthority: false,
-  })
-
-  const [isChecked, setIsChecked] = useState(false);
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
-  const classes = usePublicAppointmentStyles();
-
+  const { facilityList } = useContext(ListContext)
+  const { fetchAllDoctorList } = useContext(FacilityContext)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const {
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail
+  } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema)
+    resolver: yupResolver(isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
   });
-  const { handleSubmit, setValue, watch, reset, control } = methods;
+  const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
-
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    setIsChecked(checked);
-    setValue('homeBound', checked)
-  };
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -108,7 +72,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
             sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
             statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients, registrationDate
+            medicationHistoryAuthority, doctorPatients, registrationDate, smsPermission
           } = patient;
 
           if (facility) {
@@ -117,6 +81,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             if (facilityId) {
               fetchAllDoctorList(facilityId)
               name && setValue("facilityId", setRecord(facilityId, name))
+              dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
@@ -131,6 +96,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
               usualProviderId &&
                 setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+              dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             }
           }
 
@@ -151,11 +117,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
+          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
+
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
+
           race && setValue("race", setRecord(race, race))
           gender && setValue("gender", setRecord(gender, gender))
           pronouns && setValue("pronouns", setRecord(pronouns, pronouns))
@@ -164,12 +132,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
           genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
           sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
-          setState({
-            ...state, callToConsent: callToConsent || false,
-            privacyNotice: privacyNotice || false,
-            releaseOfInfoBill: releaseOfInfoBill || false,
-            medicationHistoryAuthority: medicationHistoryAuthority || false,
-          })
+
+          dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: callToConsent || false })
+          dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: privacyNotice || false })
+          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
+          dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: medicationHistoryAuthority || false })
+          dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: smsPermission || false })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -219,7 +187,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             if (guarantorContact) {
               const { id: guarantorContactId, suffix, firstName, lastName, middleName, phone, zipCode, address,
-                address2, city, state, country, ssn, email, employerName
+                address2, city, state, country, ssn, email, employerName, relationship
               } = guarantorContact;
 
               dispatch({ type: ActionType.SET_GUARANTOR_CONTACT_ID, guarantorContactId })
@@ -237,6 +205,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               state && setValue("guarantorState", setRecord(state, state))
               employerName && setValue("guarantorEmployerName", employerName)
               country && setValue("guarantorCountry", setRecord(country, country))
+              relationship && setValue("guarantorRelationship", setRecord(relationship, relationship))
             }
 
             const guardianContact = contacts.filter(contact => contact.contactType === ContactType.Guardian)[0]
@@ -252,8 +221,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             }
           }
 
-          if (employer && employer.length) {
-            const { id: employerId, name, email, phone, industry, usualOccupation } = employer[0];
+          if (employer) {
+            const { id: employerId, name, email, phone, industry, usualOccupation } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
@@ -282,8 +251,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setPatientList([])
-          fetchAllPatientList();
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
         }
@@ -306,20 +273,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setPatientList([])
-          fetchAllPatientList();
           Alert.success(PATIENT_UPDATED);
-          history.push(PATIENTS_ROUTE)
+          shouldShowBread && history.push(PATIENTS_ROUTE)
         }
       }
     }
   });
-
-  const handleChangeForCheckBox = (name: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setState({ ...state, [name]: event.target.checked });
-  };
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
@@ -357,13 +316,20 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedSexualOrientation } = sexualOrientation;
       const { id: selectedGuarantorRelationship } = guarantorRelationship;
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
-      const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
+
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-        previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
-        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
-        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
+        email: basicEmail || '', facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         gender: selectedGender as Genderidentity || Genderidentity.None,
@@ -371,7 +337,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestamps(dob) : '',
+        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
@@ -398,7 +364,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
         phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
-        userId: userId, ssn: guarantorSsn, primaryContact: false, address: guarantorAddress,
+        userId: userId, ssn: guarantorSsn || SSN_FORMAT, primaryContact: false, address: guarantorAddress,
       };
 
       const guardianContactInput = {
@@ -474,13 +440,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   }, [getPatient, id, isEdit])
 
   const fetchList = useCallback((id: string, name: string) => {
-    reset({
-      usualProviderId: EMPTY_OPTION,
-      facilityId: { id, name }
-    });
+    setValue('usualProviderId', EMPTY_OPTION)
 
     id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, reset]);
+  }, [fetchAllDoctorList, setValue]);
 
   useEffect(() => {
     selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
@@ -492,814 +455,64 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     if (basicZipCode) {
       const data = await getAddressByZipcode(basicZipCode);
-      const { zipCode: responseData, message, status } = data || {}
+      const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
       if (status) {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-      else {
-        Alert.error(message)
-      }
-    }
-    else {
+    } else {
       Alert.error(ZIP_CODE_ENTER)
     }
   }, [basicZipCode, setValue])
 
-  const verifyAddressHandler = async () => {
-    if (basicZipCode && basicCity) {
-      const { id } = basicState
-      const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) => ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
-      const { status, options } = data || {}
-
-      if (status) {
-        setData(options)
-        setAddressOpen(true)
-      }
-      else {
-        setData([])
-        setAddressOpen(true)
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_AND_CITY)
-    }
-  }
-
   useEffect(() => {
     basicZipCode?.length === 5 && getAddressHandler()
-  }, [basicZipCode, getAddressHandler])
+  }, [basicZipCode, getAddressHandler]);
 
+  useEffect(() => {
+    dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
+    setValue('ssn', SSN_FORMAT)
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
+
+  useImperativeHandle(ref, () => ({
+    submit() {
+      handleSubmit(onSubmit)()
+    }
+  }));
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <CardComponent cardTitle={IDENTIFICATION}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="suffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
+        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display="flex">
+            <BackButton to={`${PATIENTS_ROUTE}`} />
+
+            <Box ml={2}>
+              <PageHeader
+                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
+                path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+              />
+            </Box>
+          </Box>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="firstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="middleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="lastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="firstNameUsed"
-                          controllerLabel={FIRST_NAME_USED}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="prefferedName"
-                          controllerLabel={PREFERRED_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="previousFirstName"
-                          controllerLabel={PREVIOUS_FIRST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="previouslastName"
-                          controllerLabel={PREVIOUS_LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="motherMaidenName"
-                          controllerLabel={MOTHERS_MAIDEN_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="ssn"
-                          controllerLabel={SSN}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          name="gender"
-                          label={LEGAL_SEX}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker isRequired name="dob" label={DOB} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={CONTACT_INFORMATION}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="basicAddress"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="basicAddress2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Grid container spacing={1} alignItems={'center'}>
-                        <Grid item md={10} sm={10} xs={10}>
-                          <InputController
-                            isRequired
-                            fieldType="text"
-                            controllerName="basicZipCode"
-                            controllerLabel={ZIP_CODE}
-                          />
-                        </Grid>
-
-                        <Grid item md={2}>
-                          <Box>
-                            <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
-                              <Typography color='primary'>
-                                verify address
-                              </Typography>
-                            </Button>
-
-                          </Box>
-                        </Grid>
-
-                      </Grid>
-                    </Grid>
-
-
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="basicCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="basicState"
-                          label={STATE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="basicCountry"
-                          label={COUNTRY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="basicEmail"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="basicMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={EMERGENCY_CONTACT}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="emergencyName"
-                          controllerLabel={NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="emergencyRelationship"
-                          label={RELATIONSHIP}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RELATIONSHIP_TYPE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={NEXT_OF_KIN}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="kinName"
-                          controllerLabel={NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="kinRelationship"
-                          label={RELATIONSHIP}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RELATIONSHIP_TYPE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinPhone" label={HOME_PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinMobile" label={MOBILE_PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARDIAN}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianFirstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianMiddleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianLastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guardianSuffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={DEMOGRAPHICS}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="language"
-                          controllerLabel={LANGUAGE_SPOKEN}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="race"
-                          label={RACE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_RACE}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="ethnicity"
-                          label={ETHNICITY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_ETHNICITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="maritialStatus"
-                          label={MARITAL_STATUS}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_MARITAL_STATUS}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="sexualOrientation"
-                          label={SEXUAL_ORIENTATION}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_SEXUAL_ORIENTATION}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="genderIdentity"
-                          label={GENDER_IDENTITY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="sexAtBirth"
-                          label={SEX_AT_BIRTH}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER_IDENTITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          name="pronouns"
-                          label={PRONOUNS}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_PRONOUNS}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Controller
-                        name='homeBound'
-                        control={control}
-                        render={() => (
-                          <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                            <InputLabel shrink>{HOMEBOUND}</InputLabel>
-
-                            <label className="toggle-main">
-                              <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
-                              <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                              <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
-                            </label>
-                          </FormControl>
-                        )}
-                      />
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-              <CardComponent cardTitle={REGISTRATION_DATES}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={FACILITY}
-                          name="facilityId"
-                          options={renderFacilities(facilityList)}
-                        />
-                      </Grid>
-
-                      {!isEdit &&
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={USUAL_PROVIDER_ID}
-                            name="usualProviderId"
-                            options={renderDoctors(doctorList)}
-                          />
-                        </Grid>
-                      }
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="registrationDate" label={REGISTRATION_DATE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deceasedDate" label={DECREASED_DATE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={PRIVACY}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <FormControl component="fieldset">
-                        <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                color="primary"
-                                checked={state.privacyNotice}
-                                onChange={handleChangeForCheckBox("privacyNotice")}
-                              />
-                            }
-                            label="Privacy Notice"
-                          />
-
-                          <FormControlLabel
-                            control={
-                              <Checkbox color="primary" checked={state.releaseOfInfoBill} onChange={handleChangeForCheckBox("releaseOfInfoBill")} />
-                            }
-                            label="Release of Billing Information and Assignment of Benefits"
-                          />
-                        </FormGroup>
-                      </FormControl>
-
-                      <Box display="flex" flexDirection="row">
-                        <FormControl component="fieldset">
-                          <FormGroup>
-                            <Box mr={3} mb={2} mt={2}>
-                              <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox color="primary" checked={state.callToConsent} onChange={handleChangeForCheckBox("callToConsent")} />
-                                }
-                                label="Granted"
-                              />
-                            </Box>
-                          </FormGroup>
-                        </FormControl>
-
-                        <FormControl component="fieldset">
-                          <FormGroup>
-                            <Box ml={3} mt={2} mb={2}>
-                              <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    color="primary"
-                                    checked={state.medicationHistoryAuthority}
-                                    onChange={handleChangeForCheckBox("medicationHistoryAuthority")}
-                                  />
-                                }
-                                label="Granted"
-                              />
-                            </Box>
-                          </FormGroup>
-                        </FormControl>
-                      </Box>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={EMPLOYMENT}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerName"
-                          controllerLabel={EMPLOYER_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="employerPhone" label={EMPLOYER_PHONE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerUsualOccupation"
-                          controllerLabel={USUAL_OCCUPATION}
-
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="employerIndustry"
-                          controllerLabel={USUAL_INDUSTRY}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARANTOR}>
-                {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        name="guarantorRelationship"
-                        label={GUARANTOR_RELATION}
-                        value={EMPTY_OPTION}
-                        options={MAPPED_RELATIONSHIP_TYPE}
-                      />
-                    </Grid>
-
-                    <Box pb={2}>
-                      <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
-                    </Box>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorSuffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorFirstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorMiddleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorLastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="guarantorZipCode"
-                        controllerLabel={ZIP_CODE}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="guarantorAddress"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guarantorAddress2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="guarantorCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          name="guarantorState"
-                          label={STATE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          name="guarantorCountry"
-                          label={COUNTRY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorSsn"
-                          controllerLabel={SSN}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="guarantorPhone" label={PHONE} />
-                      </Grid>
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="email"
-                        controllerName="guarantorEmail"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guarantorEmployerName"
-                        controllerLabel={EMPLOYER}
-                      />
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
             {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>
+        </Box>}
 
+        <FormCard
+          isEdit={isEdit}
+          dispatch={dispatch} state={state}
+          shouldShowBread={shouldShowBread}
+          getPatientLoading={getPatientLoading}
+        />
       </form>
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} />
     </FormProvider>
   );
-};
+});
 
 export default PatientForm;
 

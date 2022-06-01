@@ -1,19 +1,22 @@
 // packages block
-import { FC, useState } from "react";
-import { InfoOutlined } from "@material-ui/icons";
+import { FC, useState, Fragment } from "react";
+import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
-import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-ui/core";
 // components block
 import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
+import { requiredLabel } from "../utils";
 import { PASSWORD, TEXT } from "../constants";
+import { ClearIcon, InfoIcon } from "../assets/svgs";
 import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
+  disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
+  notStep, isHelperText, autoFocus
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -33,14 +36,16 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
-            {isRequired ? `${controllerLabel} *` : controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 
             {info &&
               <Box>
                 <DetailTooltip placement="top-end" arrow title={info}>
-                  <InfoOutlined color="inherit" fontSize="inherit" />
+                  <Box width={15} height={15}>
+                    <InfoIcon />
+                  </Box>
                 </DetailTooltip>
               </Box>
             }
@@ -51,22 +56,33 @@ const InputController: FC<CustomInputControlProps> = ({
             error={invalid}
             variant="outlined"
             multiline={multiline}
+            minRows={3}
             className={className}
             disabled={disabled}
             id={controllerName}
+            autoFocus={autoFocus}
             placeholder={placeholder ? placeholder : ""}
             type={fieldType === "password" ? passwordType : fieldType}
-            helperText={error ? error : message}
+            helperText={!isHelperText ? error ? error : message : ""}
             {...field}
+            onBlur={() => onBlur && onBlur()}
             InputProps={isPassword ? {
               endAdornment: <ShowPassword
                 isPassword={isPassword}
                 passwordType={passwordType}
                 handleShowPassword={handleClickShowPassword}
               />,
-            } : fieldType === 'number' ? {
-              inputProps: { step: '5' }
-            } : undefined}
+            } : clearable ? {
+              endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
+                <ClearIcon />
+              </IconButton>
+            } : fieldType === 'number' ?
+              {
+                inputProps: { step: notStep ? 'any' : '5' },
+                endAdornment: endAdornment ? endAdornment : <></>
+              } : isSearch ? {
+                endAdornment: <Search />
+              } : endAdornment ? { endAdornment } : undefined}
           />
         </FormControl>
       )}

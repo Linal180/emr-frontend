@@ -1,7 +1,6 @@
 // packages block
 import { FC, useState, useEffect, useCallback, Reducer, useReducer, useRef } from "react";
 import { useForm } from "react-hook-form";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
 } from "@material-ui/core";
@@ -10,15 +9,18 @@ import DropzoneImage from "../DropZoneImage";
 // graphql and interfaces/types block
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
+import { TrashNewIcon } from "../../../assets/svgs";
+import { EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
-  preSignedUrl, title
+  preSignedUrl, title, providerName, filesLimit
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
-  const [{ fileUrl, attachmentId }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [{ fileUrl, attachmentId }, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const handlePreview = useCallback(() => {
     const { id } = attachment || {}
@@ -39,8 +41,8 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   const handleMediaSubmit = async (data: ICreateMediaInput) => {
     setLoading(true)
     const { title } = data
-    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
+    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
     setLoading(false)
   }
 
@@ -53,7 +55,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
       aria-labelledby="image-dialog-title"
       aria-describedby="image-dialog-description"
     >
-      <DialogTitle id="image-dialog-title">Edit Media</DialogTitle>
+      <DialogTitle id="image-dialog-title">{EDIT_MEDIA}</DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>
 
@@ -62,27 +64,27 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
               <Box className="media-overlay">
-                <IconButton aria-label="delete" color="secondary" onClick={() =>
+                <IconButton aria-label="delete" onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>
-                  <DeleteIcon />
+                  <TrashNewIcon />
                 </IconButton>
               </Box>
             </Box> :
             <DropzoneImage
-              ref={dropZoneRef}
+              filesLimit={filesLimit}
               title={title}
               reload={reload}
               itemId={itemId}
               isEdit={isEdit}
+              ref={dropZoneRef}
               handleClose={handleClose}
+              providerName={providerName}
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
             />
           }
-
-          <Box pt={3} />
         </DialogContent>
 
         <DialogActions>
@@ -91,13 +93,13 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={loading}
+              disabled={loading || (fileUrl !== '')}
             >
               {loading && (
                 <CircularProgress size={20} />
               )}
 
-              Update media
+              {UPDATE_MEDIA}
             </Button>
           </Box>
         </DialogActions>

@@ -6,21 +6,23 @@
 // packages block
 import dotenv from 'dotenv';
 import { onError } from "@apollo/client/link/error";
-import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions } from "@apollo/client";
 // components block
 import Alert from "../components/common/Alert";
 // utils and constants block
 import history from '../history';
 import { handleLogout } from "../utils";
 import {
-  FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE, NOT_FOUND_EXCEPTION,
-  PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED
+  FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE,
+  NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
+  UNAUTHORIZED, FA_TOKEN,
 } from "../constants";
 
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: any, forward: any) => {
-  const token = localStorage.getItem(TOKEN);
+  const token = localStorage.getItem(TOKEN) || localStorage.getItem(FA_TOKEN);
+
   operation.setContext({
     headers: {
       authorization: `Bearer ${token}`,
@@ -59,7 +61,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
                 if (message && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
                   Alert.error(message)
-                } else if (responseError && responseError !== NOT_FOUND_EXCEPTION && responseError === PRECONDITION_FAILED_EXCEPTION) {
+                } else if (
+                  responseError
+                  && responseError !== NOT_FOUND_EXCEPTION
+                  && responseError === PRECONDITION_FAILED_EXCEPTION
+                ) {
                   Alert.error(responseError)
                 }
               }
@@ -75,7 +81,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
     if (message === UNAUTHORIZED || message === TOKEN_INVALID) handleLogout();
   }
-  
+
   if (networkError) {
     Alert.error(MAINTENANCE_ALERT)
     history.push(MAINTENANCE_ROUTE)
@@ -83,12 +89,32 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: "network-only",
+    errorPolicy: "all",
+    notifyOnNetworkStatusChange: true,
+  },
+
+  query: {
+    fetchPolicy: "network-only",
+    errorPolicy: "all",
+    notifyOnNetworkStatusChange: true,
+  },
+
+  mutate: {
+    errorPolicy: "all",
+  },
+};
+
 const client = new ApolloClient({
   cache: new InMemoryCache({
     addTypename: false
   }),
+
   connectToDevTools: true,
   link: from([authMiddleware, errorLink, httpLink]),
+  defaultOptions: defaultOptions
 });
 
 export default client;

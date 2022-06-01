@@ -1,9 +1,9 @@
 // constants block
-import { BILLING_BREAD, INVOICES_TEXT, INVOICES_BREAD } from "../../../../constants";
+import { DASHBOARD_BREAD, INVOICES_TEXT, INVOICES_BREAD } from "../../../../constants";
 import PageHeader from "../../../common/PageHeader";
 
 const InvoicesComponent = (): JSX.Element => {
-  return (<PageHeader title={INVOICES_TEXT} path={[BILLING_BREAD, INVOICES_BREAD]} />)
+  return (<PageHeader title={INVOICES_TEXT} path={[DASHBOARD_BREAD, INVOICES_BREAD]} />)
 }
 
 export default InvoicesComponent;

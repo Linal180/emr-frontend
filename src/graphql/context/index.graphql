@@ -13,7 +13,7 @@ query FindAllRoleList($roleInput: RoleInput!){
 }
 
 query FindAllPracticeList($practiceInput: PracticeInput!){
-  findAllPractices(facilityInput: $practiceInput){
+  findAllPractices(practiceInput: $practiceInput){
     pagination {
       totalPages
     }
@@ -30,6 +30,7 @@ query FindAllFacilityList($facilityInput: FacilityInput!) {
     facilities {
       id
       name
+      practiceId
     }
 
     pagination {

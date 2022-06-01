@@ -8,30 +8,28 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, checkPermission, isSuperAdmin, isUserAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
+  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, userPermissions } = useContext(AuthContext);
+  const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
+  const roleName = getHigherRole(userRoles) || ''
+  const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   useEffect(() => {
-    if (isUserAdmin(roles)) {
-      setIsAdmin(true)
-      setIsSuper(isSuperAdmin(roles))
-    }
+    setIsSuper(isSuperAdmin(roles))
   }, [isSuper, roles, user]);
 
   return (
@@ -84,7 +82,8 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
+            && !isFacilityAdmin &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -105,6 +104,8 @@ const HeaderNew: FC = (): JSX.Element => {
 
         <Box display="flex" alignItems="center">
           <Link to={SETTINGS_ROUTE}>
+            <Box pt={1} />
+
             <SettingsIcon />
           </Link>
 
@@ -114,16 +115,20 @@ const HeaderNew: FC = (): JSX.Element => {
             <Box display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems="right"
+              alignItems="flex-end"
               className={classes.profileItemName}
             >
-              <Typography>{HELLO_TEXT}</Typography>
+              {isSuper ?
+                <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                : (
+                  <>
+                    <Typography variant="h6">{firstName} {lastName}</Typography>
 
-              {isAdmin ?
-                <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
-                :
-                <Typography variant="h6">{firstName} {lastName}</Typography>
-              }
+                    <Box className={classes.roleName}>
+                      <Typography variant="body1">{roleName}</Typography>
+                    </Box>
+                  </>
+                )}
             </Box>
 
             <ProfileDropdownMenu />

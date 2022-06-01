@@ -1,0 +1,249 @@
+query FindAllLabTest($labTestInput: LabTestInput!) {
+  findAllLabTest(labTestInput: $labTestInput) {
+    labTests{
+      id
+      orderNumber
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      patient{
+        doctorPatients{
+          doctor{
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+      }
+      
+      diagnoses{
+        code
+        description
+      }
+      
+      test{
+        id
+        loincNum
+        component
+      }
+      
+      testObservations{
+        createdAt
+        doctorsSignOff
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      
+      appointment{
+          id
+          appointmentType {
+            name
+        }
+        scheduleStartDateTime
+      }
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindAllLoincCodes($searchLoincCodesInput: SearchLoincCodesInput!) {
+  findAllLoincCodes(searchLoincCodesInput: $searchLoincCodesInput) {
+    loincCodes{
+      id
+      loincNum
+      component
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindAllTestSpecimenTypes($testSpecimenTypeInput: TestSpecimenTypeInput!) {
+  findAllTestSpecimenTypes(testSpecimenTypeInput: $testSpecimenTypeInput) {
+    specimenTypes{
+      id
+      name   
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
+  findLabTestsByOrderNum(labTestByOrderNumInput: $labTestByOrderNumInput) {
+    labTests{
+      id
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      doctor{
+        firstName
+        lastName
+        id
+      }
+      receivedDate
+      labName
+      vendorName
+      accessionNumber
+      collectedDate
+      patient{
+        doctorPatients{
+          doctor{
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+      }
+      
+      diagnoses{
+        id
+        code
+        description
+      }
+      
+      test{
+        id
+        loincNum
+        component
+        unitsRequired
+      }
+      
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes{
+          id
+          name
+        }
+      }
+      
+      testObservations{
+        id
+        doctorsSignOff
+        resultUnit
+        resultValue
+        normalRange
+        normalRangeUnit
+        abnormalFlag
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      
+      appointment{
+          id
+          appointmentType {
+            name
+        }
+        scheduleStartDateTime
+      }
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation CreateLabTest($createLabTestInput: CreateLabTestInput!){
+  createLabTest(createLabTestInput: $createLabTestInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateLabTest($updateLabTestInput: UpdateLabTestInput!){
+  updateLabTest(updateLabTestInput: $updateLabTestInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveLabTest($removeLabTest: RemoveLabTest!){
+  removeLabTest(removeLabTest: $removeLabTest){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveLabTestObservation($removeLabTestObservation: RemoveLabTestObservation!){
+  removeLabTestObservation(removeLabTestObservation: $removeLabTestObservation){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateLabTestObservation($updateLabTestObservationInput: UpdateLabTestObservationInput!){
+  updateLabTestObservation(updateLabTestObservationInput: $updateLabTestObservationInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

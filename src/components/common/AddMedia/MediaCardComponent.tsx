@@ -1,6 +1,7 @@
 // packages block
 import { FC, useState } from "react";
 import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
+import { CameraAlt } from "@material-ui/icons";
 // components block
 import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
@@ -10,11 +11,10 @@ import { DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, S
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileUploadIcon, UploadIcon } from "../../../assets/svgs";
-import { CameraAlt } from "@material-ui/icons";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
-  allAttachments, imageSide, notDescription, button
+  allAttachments, imageSide, notDescription, button, buttonText
 }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
@@ -79,7 +79,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
 
   return (
     <>
-      <Box m={2}>
+      <Box m={1.5}>
         <Grid container spacing={3}>
           {attachments &&
             attachments.map((attachment: Attachment) => {
@@ -102,13 +102,13 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid md={12} xs={12}>
+          <Grid item md={12} xs={12}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
-              {UPLOAD}
+              {buttonText || UPLOAD}
             </Button>}
 
-            {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+            {notDescription && !button && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
             </Typography>}
 

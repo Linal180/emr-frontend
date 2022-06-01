@@ -16,6 +16,10 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       status
       scheduleEndDateTime
       scheduleStartDateTime
+      token
+      reason
+      primaryInsurance
+      billingStatus
       
       provider {
         id
@@ -37,6 +41,8 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       appointmentType {
         id
         name
+        price
+        color
       }
     }
   }
@@ -68,6 +74,8 @@ query GetAppointment($getAppointment: GetAppointment!){
       createdAt
       updatedAt
       billingStatus
+      checkedInAt
+      selfCheckIn
       
       appointmentType {
         id
