@@ -249,7 +249,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
               label={SNO_MED_CODE}
               name="snowMedCodeId"
               value={snoMedCode}
-              searchQuery={description || ''}
+              searchQuery={code || ''}
               modalName={ITEM_MODULE.snoMedCode}
             />
 

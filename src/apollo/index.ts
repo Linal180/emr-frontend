@@ -92,18 +92,15 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const defaultOptions: DefaultOptions = {
   watchQuery: {
     fetchPolicy: "network-only",
-    errorPolicy: "all",
     notifyOnNetworkStatusChange: true,
   },
 
   query: {
     fetchPolicy: "network-only",
-    errorPolicy: "all",
     notifyOnNetworkStatusChange: true,
   },
 
   mutate: {
-    errorPolicy: "all",
   },
 };
 

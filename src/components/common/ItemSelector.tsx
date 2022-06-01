@@ -10,17 +10,18 @@ import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import { Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
   const [options, setOptions] = useState<SelectorOption[]>([])
 
+
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
       searchSnoMedCodesInput: {
         paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
-        searchTerm: query ? query : ''
+        searchTerm: searchQuery ? searchQuery : query ? query : ''
       }
     },
 
@@ -35,7 +36,8 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (searchSnoMedCodeByIcdCodes) {
           const { snoMedCodes } = searchSnoMedCodeByIcdCodes
 
-          !!snoMedCodes && setOptions(renderListOptions<SnoMedCodes>(snoMedCodes as SnoMedCodes[],modalName))
+
+          !!snoMedCodes && setOptions(renderListOptions<SnoMedCodes>(snoMedCodes as SnoMedCodes[], modalName))
         }
       }
     },
@@ -60,7 +62,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (fetchAllInsurances) {
           const { insurances } = fetchAllInsurances
 
-          !!insurances && setOptions(renderListOptions<Insurance>(insurances as Insurance[],modalName))
+          !!insurances && setOptions(renderListOptions<Insurance>(insurances as Insurance[], modalName))
         }
       }
     },
@@ -74,15 +76,15 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   }, [getInsurances, getSnoMedCodes, modalName])
 
   useEffect(() => {
-   (!query.length || query.length > 2) && fetchList()
-  }, [fetchList, query])
+    (!query.length || query.length > 2) && fetchList()
+  }, [fetchList, query, searchQuery])
 
   useEffect(() => {
     if (isEdit) {
       if (value) {
         const { id, name } = value
         modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
-        modalName === ITEM_MODULE.insurance && setValue('insuranceId',value)
+        modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
       }
     }
   }, [isEdit, modalName, setValue, value])
