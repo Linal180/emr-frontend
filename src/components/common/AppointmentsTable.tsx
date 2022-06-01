@@ -12,24 +12,26 @@ import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import history from "../../history";
 import { AuthContext } from "../../context";
-import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin
+  isFacilityAdmin, isPracticeAdmin, convertDateFromUnix
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery
+  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME, AppointmentSearchingTooltipData,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
 } from "../../constants";
 
 dotenv.config()
@@ -105,6 +107,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         });
       }
     }
+  });
+
+  const [updateAppointment] = useUpdateAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
   });
 
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
@@ -186,6 +196,23 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const handleCheckIn = async (id: string, patientId: string) => {
+    const { data } = await updateAppointment({
+      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+    })
+
+    const { updateAppointment: updateAppointmentResponse } = data ?? {}
+    const { response } = updateAppointmentResponse ?? {}
+    if (response) {
+      const { status } = response
+
+      if (patientId && status && status === 200) {
+        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
+        history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+      }
+    }
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -220,7 +247,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
                   } = appointment || {};
                   const { name } = facility || {};
-                  const { firstName, lastName } = patient || {};
+                  const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
                   const { firstName: doctorFN, lastName: doctorLN } = provider || {};
                   const { text, textColor } = appointmentStatus(status || '')
@@ -246,7 +273,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
 
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        <Box display="flex" alignItems="center" minWidth={100}
+                          onClick={() => id && patientId && handleCheckIn(id, patientId)}
+                          justifyContent="center">
+                          <Box className={classes.iconsBackground}>
+                            <CheckInTickIcon />
+                          </Box>
+
                           <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
