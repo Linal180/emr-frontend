@@ -2,6 +2,8 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+//assets
 import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
@@ -79,6 +81,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -2873,6 +2876,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3403,11 +3422,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
@@ -3812,4 +3831,19 @@ export const areaChartTwo = {
       26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
     ]
   }]
+}
+
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType'
+}
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler'
 }
