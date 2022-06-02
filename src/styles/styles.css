@@ -710,3 +710,19 @@ background: #E5EAEE;
   box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09) !important;
   border-radius: 8px !important;
 }
+
+.patient-information-form .MuiInputLabel-formControl{ 
+  position: relative;
+}
+
+/* media queries */
+@media(max-width : 768px){
+  .facility-registration-form{
+    flex-direction: column;
+  }
+  .facility-registration-form .facility-menu-navbar{
+    max-width: 100%;
+    position: relative;
+    top: 0;
+  }
+}
