@@ -1,5 +1,5 @@
 //package block
-import { MouseEvent, useContext, useEffect, useCallback, useReducer, Reducer } from 'react';
+import { MouseEvent, useContext, useEffect, useCallback, useReducer, Reducer, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useParams } from 'react-router';
 import { SubmitHandler } from 'react-hook-form';
@@ -24,40 +24,47 @@ import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { FormAddIcon } from '../../../../assets/svgs';
 import { GREY_EIGHT, WHITE } from '../../../../theme';
-import { isSuperAdmin, setRecord } from '../../../../utils';
+import { isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
   FormType, useCreateFormMutation, FieldsInputs, ElementType, useGetFormLazyQuery,
-  useUpdateFormMutation, useCreateFormTemplateMutation, SectionsInputs
+  useUpdateFormMutation, useCreateFormTemplateMutation, SectionsInputs, useGetFacilityLazyQuery, useGetPracticeLazyQuery
 } from '../../../../generated/graphql';
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
   FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
   FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
-  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED, ITEMS_ID,
+  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED, ITEMS_ID, PRACTICE,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
+import SwitchController from '../../../../controller/SwitchController';
+import PracticeSelector from '../../../common/Selector/PracticeSelector';
 
 const AddForm = () => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(formBuilderReducer, initialState);
-  const { colMenu, formName, openTemplate, isActive, selected, formValues, preDefinedComponent } = state
+  const {
+    colMenu, formName, openTemplate, isActive, selected, formValues, preDefinedComponent, formFacility, formPractice
+  } = state
 
   const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
   const { user } = useContext(AuthContext);
-  const { roles, facility } = user || {};
-  const { id: facilityId } = facility || {};
+  const { roles, facility, } = user || {};
+  const { id: facilityId, practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const methods = useForm<FormBuilderFormInitial>({
     defaultValues: FORM_BUILDER_INITIAL_VALUES,
-    resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema)
+    resolver: yupResolver((isSuper || isPracticeUser) ? createFormBuilderSchemaWithFacility : createFormBuilderSchema)
   });
-  const { handleSubmit, setValue } = methods
+  const { handleSubmit, setValue, watch } = methods;
+  const { isPractice } = watch()
+
 
   const [createForm, { loading }] = useCreateFormMutation({
     onError({ message }) {
@@ -94,10 +101,15 @@ const AddForm = () => {
           const { status } = response
 
           if (form && status && status === 200) {
-            const { name, type, layout, facilityId } = form
+            const { name, type, layout, facilityId, practiceId } = form
             name && setValue('name', name)
             !templateId && type && setValue('type', setRecord(type, type))
-            facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
+            facilityId && setValue('isPractice', false)
+            practiceId && !facilityId && setValue('isPractice', true)
+            facilityId && dispatch({ type: ActionType.SET_FACILITY, formFacility: facilityId })
+            practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
+            // facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
+            // practiceId && setValue('practiceId', setRecord(practiceId, practiceId))
             const { sections } = layout
             sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
             const facilityName = facilityId && getFacilityNameHandler(facilityId)
@@ -150,6 +162,29 @@ const AddForm = () => {
     }
   })
 
+  const [getFacility] = useGetFacilityLazyQuery({
+    onCompleted: (data) => {
+      const { getFacility } = data
+      const { facility, response } = getFacility || {}
+      const { status } = response || {}
+      if(status === 200){
+        
+      }
+    },
+    onError: () => {
+
+    }
+  })
+
+  const [getPractice] = useGetPracticeLazyQuery({
+    onCompleted: (data) => {
+
+    },
+    onError: () => {
+
+    }
+  })
+
   const getFormHandler = useCallback(() => {
     formId && getForm({ variables: { getForm: { id: formId } } })
     templateId && getForm({ variables: { getForm: { id: templateId } } })
@@ -158,6 +193,21 @@ const AddForm = () => {
   useEffect(() => {
     (formId || templateId) && getFormHandler()
   }, [getFormHandler, formId, templateId])
+
+  const getFormFacility = useCallback(async () => {
+    try {
+      await getFacility({ variables: { getFacility: { id: formFacility } } })
+    } catch (error) { }
+  }, [getFacility, formFacility])
+
+  const getFormPractice = useCallback(async () => {
+    try {
+      await getPractice({ variables: { getPractice: { id: formPractice } } })
+    } catch (error) { }
+  }, [formPractice, getPractice])
+
+  useMemo(() => formFacility && getFormFacility(), [formFacility, getFormFacility])
+  useMemo(() => formPractice && getFormPractice(), [formPractice, getFormPractice])
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -302,11 +352,33 @@ const AddForm = () => {
   const saveHandler: SubmitHandler<FormBuilderFormInitial> = (values) => {
     const isFieldFound = formValues?.some((item) => item.fields.length > 0);
     if (isFieldFound) {
-      const { name, type, facilityId: selectedFacility } = values || {};
+      const { name, type, facilityId: selectedFacility, isPractice, practiceId: { id } } = values || {};
       const { id: typeId } = type;
       const { id: facility } = selectedFacility;
-      const selectedFacilityId = isSuper ? facility : facilityId ? facilityId : '';
-      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues }, isActive }
+      let selectedFacilityId = ''
+      if (isSuper || isPracticeUser) {
+        if (isPractice) {
+          selectedFacilityId = ""
+        }
+        else {
+          selectedFacilityId = facility
+        }
+      }
+      else {
+        selectedFacilityId = facilityId || ''
+      }
+
+      let selectedPracticeId = '';
+      if (isSuper) {
+        selectedPracticeId = isPractice ? id : ''
+      }
+      if (isPracticeUser) {
+        selectedPracticeId = practiceId || ''
+      }
+      const data = {
+        name, type: typeId as FormType, facilityId: selectedFacilityId,
+        layout: { sections: formValues }, isActive, practiceId: selectedPracticeId
+      }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
     else Alert.error(DROP_FIELD)
@@ -449,11 +521,28 @@ const AddForm = () => {
             <Box p={3} pb={0} bgcolor={WHITE}>
               {getFormLoader ? <ViewDataLoader rows={1} columns={3} hasMedia={false} /> :
                 <Grid container spacing={3}>
-                  {isSuper && <Grid item md={4} sm={12} xs={12}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    {(isSuper || isPracticeUser) &&
+                      <SwitchController
+                        controllerName='isPractice'
+                        controllerLabel='Do you want to create Practice Form ?'
+                      />}
+                  </Grid>
+
+                  {!isPractice && (isSuper || isPracticeUser) && <Grid item md={4} sm={12} xs={12}>
                     <FacilitySelector
                       isRequired
                       label={FACILITY}
                       name="facilityId"
+                      addEmpty
+                    />
+                  </Grid>}
+
+                  {isPractice && isSuper && <Grid item md={4} sm={12} xs={12}>
+                    <PracticeSelector
+                      isRequired
+                      label={PRACTICE}
+                      name="practiceId"
                       addEmpty
                     />
                   </Grid>}
@@ -476,6 +565,7 @@ const AddForm = () => {
                       options={MAPPED_FORM_TYPES}
                     />
                   </Grid>
+
                 </Grid>
               }
             </Box>

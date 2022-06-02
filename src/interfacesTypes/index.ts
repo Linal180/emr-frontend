@@ -453,7 +453,8 @@ export interface CustomInputControlProps extends IControlLabel {
   onBlur?: Function;
   notStep?: boolean;
   isHelperText?: boolean;
-  autoFocus?: boolean
+  autoFocus?: boolean;
+  isHtmlValidate?: boolean
 }
 
 export interface TooltipData {
@@ -1195,6 +1196,8 @@ export interface FormBuilderFormInitial {
   name: string;
   type: SelectorOption;
   facilityId: SelectorOption;
+  practiceId: SelectorOption;
+  isPractice: boolean;
 }
 
 export interface LoaderProps {
@@ -1611,4 +1614,10 @@ export interface AppointmentSlotsProps {
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
+}
+
+export interface SwitchControllerProps extends IControlLabel {
+  controllerName: string;
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }
