@@ -1,27 +1,30 @@
-
 // packages block
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
 import { Add } from '@material-ui/icons';
+import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, IconButton, } from "@material-ui/core";
 // components block
-import Search from "../../Search";
-// constant, utils and styles block
-import { FilledAddIcon } from "../../../../assets/svgs";
-import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import {
-  MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, CREATE_LAB_ORDERS_ROUTE, RESULTS, PAGE_LIMIT, ADD_LAB_ORDERS_RESULTS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ORDER_NUM, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE, RESULTS_ENTERED
-} from "../../../../constants";
-import { LabTestPayload, LabTestsPayload, useFindAllLabTestLazyQuery, useUpdateLabTestMutation, LabTestStatus } from "../../../../generated/graphql";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Pagination } from "@material-ui/lab";
-import NoDataFoundComponent from "../../NoDataFoundComponent";
-import { LabOrderInput, ParamsType } from "../../../../interfacesTypes";
-import history from "../../../../history";
-import { FormProvider, useForm } from "react-hook-form";
-import Selector from "../../Selector";
 import Alert from "../../Alert";
+import Search from "../../Search";
+import Selector from "../../Selector";
+import NoDataFoundComponent from "../../NoDataFoundComponent";
+// constant, utils and styles block
+import history from "../../../../history";
+import { FilledAddIcon } from "../../../../assets/svgs";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { LabOrderInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
+import {
+  LabTestPayload, LabTestsPayload, useFindAllLabTestLazyQuery, useUpdateLabTestMutation, LabTestStatus
+} from "../../../../generated/graphql";
+import {
+  MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, CREATE_LAB_ORDERS_ROUTE, RESULTS, PAGE_LIMIT,
+  ADD_LAB_ORDERS_RESULTS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ORDER_NUM, EMPTY_OPTION, LAB_TEST_STATUSES,
+  NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE, RESULTS_ENTERED
+} from "../../../../constants";
 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();
@@ -61,7 +64,7 @@ const LabOrdersTable = (): JSX.Element => {
     }
   });
 
-  const fetchlabTests = useCallback(async () => {
+  const fetchLabTests = useCallback(async () => {
     try {
       const pageInputs = { page, limit: PAGE_LIMIT }
       await findAllLabTest({
@@ -76,8 +79,8 @@ const LabOrdersTable = (): JSX.Element => {
   }, [findAllLabTest, id, page])
 
   useEffect(() => {
-    fetchlabTests()
-  }, [page, fetchlabTests])
+    fetchLabTests()
+  }, [page, fetchLabTests])
 
   const transformedLabOrders = useMemo(() => {
     if (!labOrders?.length) {
@@ -98,7 +101,7 @@ const LabOrdersTable = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
 
-  const handleEdit = (orderNum: string, name: string, labTestIds:string[]) => {
+  const handleEdit = (orderNum: string, name: string, labTestIds: string[]) => {
     if (orderNum) {
       setLabTestIds(labTestIds)
       setOrderNum(orderNum)
@@ -121,17 +124,17 @@ const LabOrdersTable = (): JSX.Element => {
     },
 
     onCompleted() {
-      fetchlabTests()
+      fetchLabTests()
     }
   });
 
-  const onSelectStaus =(statusValue: string)=>{
-    labTestIds.map(async(labTestId)=>{
+  const onSelectStatus = (statusValue: string) => {
+    labTestIds.map(async (labTestId) => {
       await updateLabTest({
         variables: {
           updateLabTestInput: {
             updateLabTestItemInput: {
-              id:labTestId,
+              id: labTestId,
               status: statusValue as LabTestStatus
             },
           }
@@ -173,7 +176,7 @@ const LabOrdersTable = (): JSX.Element => {
 
                 <TableBody>
                   {Object.values(transformedLabOrders).map((labOrders) => {
-                    const { appointment, createdAt, labTestStatus, orderNumber, testObservations} = labOrders[0] as LabTestPayload['labTest'] ?? {}
+                    const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
                     const { appointmentType, scheduleStartDateTime } = appointment ?? {}
 
                     return (
@@ -201,13 +204,13 @@ const LabOrdersTable = (): JSX.Element => {
                               label=""
                               value={EMPTY_OPTION}
                               options={LAB_TEST_STATUSES}
-                              onSelect={(value:string)=>onSelectStaus(value)}
+                              onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
                             />
                           </>
                             :
                             <Box className={classes.status} component='span' color={textColor}
                               border={`1px solid ${textColor}`}
-                              onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder:LabTestPayload['labTest'])=>labOrder?.id))}
+                              onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
                             >
                               {formatValue(labTestStatus ?? '')}
                             </Box>

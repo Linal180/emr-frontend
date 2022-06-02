@@ -9,9 +9,9 @@ import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
+import { getTimestamps, formatPhone, getFormattedDate, renderMissing } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -126,17 +126,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  // const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
 
   if (selfContact && selfContact[0]) {
-    const { phone, email, country, state } = selfContact[0]
-    selfPhoneNumber = formatPhone(phone || '') || "--"
-    selfEmail = patientEmail ? patientEmail : email || "--"
-    selfCurrentLocation = `${country ? country : N_A} ${state ? state : ''}`
+    const { phone, email, state, address, city, zipCode } = selfContact[0]
+    selfPhoneNumber = formatPhone(phone || '') || ""
+    selfEmail = patientEmail ? patientEmail : email || ""
+    const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
+    selfCurrentLocation = selfAddress.trim() ? selfAddress : ''
   }
 
   const ProfileDetails = [
@@ -203,7 +203,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   return (
     <>
-
       <Box className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
           <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
@@ -242,14 +241,18 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`}
-                      className={classes.profileInfoItem}
-                    >
-                      <Box>{item.icon}</Box>
-                      <Typography variant="body1">{item.description}</Typography>
-                    </Box>
-                  ))}
+                  {ProfileDetails.map((item, index) => {
+                    const { icon, description } = item
+
+                    return (
+                      <Box display="flex" flexWrap="wrap" key={`${description}-${index}`}
+                        className={classes.profileInfoItem}
+                      >
+                        <Box>{icon}</Box>
+                        <Typography variant="body1">{description ? description : renderMissing()}</Typography>
+                      </Box>
+                    )
+                  })}
 
                   <div ref={noteRef}
                     className={`${classes.profileNoteInfoItem} pointer-cursor`}

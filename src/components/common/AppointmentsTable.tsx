@@ -4,10 +4,12 @@ import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
+import Selector from "./Selector";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
@@ -15,26 +17,29 @@ import NoDataFoundComponent from "./NoDataFoundComponent";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { AppointmentsTableProps } from "../../interfacesTypes";
+import { AppointmentsTableProps, SelectorOption } from "../../interfacesTypes";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin, convertDateFromUnix
+  isFacilityAdmin, isPracticeAdmin, renderPairSelectorOptions, getAppointmentStatus, setRecord,
+  convertDateFromUnix
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation
+  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation, AppointmentStatus
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION
 } from "../../constants";
 
 dotenv.config()
+
+type StatusInputProps = { status: SelectorOption }
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
@@ -45,7 +50,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
+  const { page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments } = state;
+  const methods = useForm<StatusInputProps>({
+    mode: "all",
+  });
+  const { setValue, watch } = methods
+  const { status } = watch()
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -115,6 +125,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     onError({ message }) {
       Alert.error(message)
     },
+
+    onCompleted(data) {
+      const { updateAppointment: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success("Status updated successfully");
+          updateAppointmentData()
+          clearEdit()
+        }
+      }
+    }
   });
 
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
@@ -173,6 +197,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     type: ActionType.SET_PAGE, page: value
   });
 
+  const updateAppointmentData = () => {
+    const { id, name } = status || {}
+    const appointment = appointments?.find(appointment => appointment?.id === id)
+    const updatedAppointment = { ...appointment, status: getAppointmentStatus(name || '') } as AppointmentPayload['appointment']
+    const index = appointments?.findIndex(appointment => appointment?.id === id)
+
+    if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
+      appointments.splice(index, 1, updatedAppointment)
+
+      dispatch({
+        type: ActionType.SET_APPOINTMENTS,
+        appointments
+      })
+    }
+  }
+
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_APPOINTMENT_ID, deleteAppointmentId: id })
@@ -196,9 +236,36 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const handleStatusUpdate = (id: string, status: string) => {
+    if (id && status) {
+      setValue('status', setRecord(id, status))
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: !!id })
+      dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
+    }
+  }
+
+  const clearEdit = () => {
+    setValue('status', EMPTY_OPTION)
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: '' })
+  }
+
+  const onSubmit = async ({ id, name }: SelectorOption) => {
+    try {
+      id && name && await updateAppointment({
+        variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
+      })
+    } catch (error) { }
+  }
+
   const handleCheckIn = async (id: string, patientId: string) => {
     const { data } = await updateAppointment({
-      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.CheckedIn,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
@@ -207,7 +274,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       const { status } = response
 
       if (patientId && status && status === 200) {
-        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
         history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
       }
     }
@@ -267,9 +333,21 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
-                        <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
-                          {text}
-                        </Box>
+                        {id && <Box>
+                          {isEdit && appointmentId === id ?
+                            <FormProvider {...methods}>
+                              <Selector
+                                label=""
+                                value={{ id, name: text }}
+                                name="status"
+                                options={renderPairSelectorOptions(id, Object.values(AppointmentStatus))}
+                                onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                              />
+                            </FormProvider>
+                            : <Box onClick={() => id && handleStatusUpdate(id, text)} className={`${classes.status} pointer-cursor`} component='span' color={textColor} border={`1px solid ${textColor}`}>
+                              {text}
+                            </Box>}
+                        </Box>}
                       </TableCell>
 
                       <TableCell scope="row">

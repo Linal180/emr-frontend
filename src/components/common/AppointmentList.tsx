@@ -8,14 +8,15 @@ import Alert from "./Alert";
 import history from "../../history";
 import { WHITE_FOUR } from "../../theme";
 import { convertDateFromUnix, getAppointmentDateTime } from "../../utils";
-import { Appointmentstatus, useUpdateAppointmentMutation } from "../../generated/graphql"
+import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, APPOINTMENT_UPDATED_SUCCESSFULLY, CHECK_IN_ROUTE
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId } = useParams<ParamsType>();
+
   const [updateAppointment, { loading: updateAppointmentLoading }] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
 
@@ -26,7 +27,16 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
 
   const handlePatientCheckIn = async (id: string) => {
     const { data } = await updateAppointment({
+<<<<<<< HEAD
       variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+=======
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.CheckedIn,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
+>>>>>>> 12dc777c94a84f3d43786456f64f9c0f1a271029
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
@@ -35,7 +45,6 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
       const { status } = response
 
       if (status && status === 200) {
-        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
         history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
       }
     }
@@ -66,14 +75,17 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                 <Typography variant="body1">{SCHEDULED_IN_FACILITY} {facilityName}</Typography>}
             </Box>
 
-            {type === Appointmentstatus.Initiated &&
+            {type === AppointmentStatus.Initiated &&
               <Box display="flex" my={2}>
                 <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                   <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
                 </Link>
 
                 <Box p={1} />
-                <Button type="submit" variant="contained" color="secondary" onClick={() => handlePatientCheckIn(id || '')} disabled={updateAppointmentLoading}>
+                <Button type="submit" variant="contained" color="secondary"
+                  onClick={() => handlePatientCheckIn(id || '')}
+                  disabled={updateAppointmentLoading}
+                >
                   {CHECK_IN}
                 </Button>
               </Box>

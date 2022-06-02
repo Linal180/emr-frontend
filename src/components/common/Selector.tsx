@@ -51,7 +51,7 @@ const Selector: FC<SelectorProps> = ({
             )}
             onChange={(_, data) => {
               field.onChange(data)
-              onSelect && onSelect(data.id)
+              onSelect && onSelect(data)
             }}
           />
         );

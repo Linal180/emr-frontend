@@ -30,7 +30,7 @@ import {
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Doctor,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
-  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
+  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
   Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload,
 } from "../generated/graphql";
 
@@ -1567,7 +1567,7 @@ export interface CheckboxControllerProps extends IControlLabel {
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];
-  type?: Appointmentstatus;
+  type?: AppointmentStatus;
   reload?: Function;
   showHeader?: boolean;
 };
