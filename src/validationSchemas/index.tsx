@@ -25,7 +25,8 @@ import {
   ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY,
   NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
-  PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN, LEGAL_SEX, AMOUNT, OTHER_RELATION,
+  OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN,
+  LEGAL_SEX, AMOUNT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -399,6 +400,7 @@ export const PatientSchema = {
   previouslastName: notRequiredStringOnly(PREVIOUS_LAST_NAME),
   motherMaidenName: notRequiredStringOnly(MOTHERS_MAIDEN_NAME),
   previousFirstName: notRequiredStringOnly(PREVIOUS_FIRST_NAME),
+  firstNameUsed: notRequiredStringOnly(PREVIOUS_FIRST_NAME),
 };
 
 export const emergencyPatientSchema = {
@@ -542,6 +544,7 @@ export const externalPatientSchema = yup.object({
   emergencyAddress2: addressValidation(ADDRESS, false),
   preferredPharmacy: notRequiredStringOnly(PREFERRED_PHARMACY),
   zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  emergencyZipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 })
 
 const registerUserSchema = {
@@ -560,6 +563,7 @@ const practiceFacilitySchema = {
   phone: notRequiredPhone(PHONE),
   city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
+  name: yup.string().required(requiredMessage(PRACTICE_NAME)),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
@@ -567,7 +571,6 @@ export const createPracticeSchema = yup.object({
   ...registerUserSchema,
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
-  name: yup.string().required(requiredMessage(PRACTICE_NAME)),
   facilityName: yup.string().required(requiredMessage(FACILITY_NAME)),
 })
 

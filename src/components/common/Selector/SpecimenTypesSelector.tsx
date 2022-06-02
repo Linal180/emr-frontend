@@ -55,6 +55,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
       control={control}
       defaultValue={updatedOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+        console.log("field",field)
         return (
           <Autocomplete
             options={updatedOptions ?? []}

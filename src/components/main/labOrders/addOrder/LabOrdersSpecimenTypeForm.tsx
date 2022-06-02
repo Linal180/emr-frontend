@@ -46,7 +46,17 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
             specimenType: specimenType ?? EMPTY_OPTION
           }
         })
-        setValue(`testField.${index}.specimenTypeField`, transformedSpecimenTypeField)
+        transformedSpecimenTypeField?.map((value, subIndex) => {
+          const { collectionDate, collectionTime, specimenNotes, specimenType } = value ?? {}
+
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionDate`, collectionDate)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionTime`, collectionTime)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenNotes`, specimenNotes)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenType`, specimenType)
+          
+          return null;
+        })
+
       }
     })
   }, [setValue, specimenType, testField, numberOfSpecimens])
@@ -58,6 +68,8 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
       }
     })
   }, [getSpecimenType])
+
+  console.log("testField", testField)
 
 
   return (

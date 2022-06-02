@@ -23,8 +23,10 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity, DoctorPatientRelationType,
+  DoctorPatientRelationType, FormType, ElementType, FieldOptionsInputType, AppointmentStatus, AllergySeverity, SmokingStatus,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
+  PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType,
+  Policy_Holder_Gender_Identity,
 } from "../generated/graphql";
 
 // regex
@@ -406,7 +408,8 @@ export const PROVIDER_MANAGEMENT = "Provider Management";
 export const PROVIDER_DETAILS = "Provider Details";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const ADD_PROVIDER_TEXT = "Add Provider";
-export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
+export const ADD_PROVIDER_INFORMATION = "Click here to add Provider information";
+export const SEARCH_PATIENT_NAME_ID = "Patient Name, Patient ID or Insurance Number etc...";
 export const EMERGENCY_ACCESS = "Emergency Access";
 export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
@@ -873,12 +876,14 @@ export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
+export const VISITS = "Visits";
 export const SEARCH = "Search";
 export const SIGNED = "Signed";
 export const DELETE = "Delete";
 export const UPLOAD = "Upload";
 export const HOME_TEXT = "Home";
 export const PENDING = "Pending";
+export const MISSING = "Missing";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -958,6 +963,7 @@ export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const COPAY_TYPE = "Copay Type";
+export const EDIT_PROVIDER = "Edit Provider";
 export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
@@ -1254,13 +1260,13 @@ export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
-export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
@@ -1308,7 +1314,6 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const EDIT_PROVIDER = "Edit Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1391,6 +1396,7 @@ export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
+export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient Can't be invited";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
   "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD =
@@ -1660,16 +1666,16 @@ export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
   {
-    id: Appointmentstatus.Cancelled,
-    name: formatValue(Appointmentstatus.Cancelled),
+    id: AppointmentStatus.Cancelled,
+    name: formatValue(AppointmentStatus.Cancelled),
   },
   {
-    id: Appointmentstatus.Completed,
-    name: formatValue(Appointmentstatus.Completed),
+    id: AppointmentStatus.Completed,
+    name: formatValue(AppointmentStatus.Completed),
   },
   {
-    id: Appointmentstatus.Initiated,
-    name: formatValue(Appointmentstatus.Initiated),
+    id: AppointmentStatus.Initiated,
+    name: formatValue(AppointmentStatus.Initiated),
   },
 ];
 

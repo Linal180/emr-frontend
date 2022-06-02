@@ -383,7 +383,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   }
 
   return (
-    <Box bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
+    <Box className='patient-information-form' bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
       <Box pt={3}>
         <EMRLogo />
       </Box>
@@ -600,6 +600,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={3} sm={12} xs={12}>
                             <InputController
+                              isRequired
                               fieldType="text"
                               controllerName="emergencyZipCode"
                               controllerLabel={ZIP_CODE}
