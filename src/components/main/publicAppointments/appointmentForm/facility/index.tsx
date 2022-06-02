@@ -10,6 +10,7 @@ import Selector from "../../../../common/Selector";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
+import AppointmentSlots from "../../../../common/AppointmentSlots";
 import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 // constants block
 import history from "../../../../../history";
@@ -33,7 +34,6 @@ import {
   FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
   BOOK_YOUR_APPOINTMENT,
 } from "../../../../../constants";
-import AppointmentSlots from "../../../../common/AppointmentSlots";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
@@ -123,7 +123,8 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId,
-                sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
+                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.None,
+                practiceId: practiceId || ''
               },
             }
           }
