@@ -177,8 +177,10 @@ const PatientDetailsComponent = (): JSX.Element => {
     <Box>
       <TabContext value={tabValue}>
         <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <Box display="flex" flexWrap="wrap">
-            <TabList onChange={handleChange} aria-label="Profile top tabs">
+          <Box display="flex" flexWrap="wrap"  maxWidth="100%">
+            <TabList onChange={handleChange} 
+              variant="scrollable" 
+              aria-label="Profile top tabs">
               {PROFILE_TOP_TABS.map(item => (
                 <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
               ))}
