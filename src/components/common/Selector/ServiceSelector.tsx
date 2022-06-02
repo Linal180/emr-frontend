@@ -4,23 +4,20 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isPracticeAdmin, isSuperAdmin, renderServices, requiredLabel } from "../../../utils";
+import { AuthContext } from "../../../context";
+import { renderServices, requiredLabel } from "../../../utils";
+import { DoctorSelectorProps } from "../../../interfacesTypes";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from "../../../reducers/serviceReducer";
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
-import { AuthContext } from "../../../context";
 
 const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
-  const {facility, roles} = user || {}
-  const {id: userFacilityId} = facility || {}
-  const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
-  const isSuperAndPracAdmin = isSuper || isPracAdmin
+  const { facility } = user || {}
+  const { id: userFacilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
@@ -51,13 +48,16 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
   const fetchAllServices = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      isSuperAndPracAdmin ? facilityId && await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
-      }): await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
+      facilityId && await findAllService({
+        variables: {
+          serviceInput: {
+            ...pageInputs, isActive: true, serviceName: searchQuery,
+            facilityId: facilityId ?? userFacilityId
+          }
+        }
       })
     } catch (error) { }
-  }, [page, isSuperAndPracAdmin, findAllService, searchQuery, facilityId, userFacilityId])
+  }, [page, findAllService, searchQuery, facilityId, userFacilityId])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {

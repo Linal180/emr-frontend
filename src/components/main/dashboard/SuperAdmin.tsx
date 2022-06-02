@@ -26,6 +26,7 @@ import {
   PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
   TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
 } from "../../../constants";
+import { Link } from "react-router-dom";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
@@ -45,9 +46,11 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{PRACTICES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={PRACTICE_MANAGEMENT_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             <Box p={1}>
@@ -113,9 +116,11 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="body2">{practices?.length} {TOTAL_TEXT}</Typography>
               </Box>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={PRACTICE_MANAGEMENT_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             <PieChart practices={practices} />

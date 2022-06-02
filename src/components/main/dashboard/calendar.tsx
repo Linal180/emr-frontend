@@ -24,7 +24,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
 import {
-  useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
+  useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus
 } from "../../../generated/graphql";
 import PageHeader from "../../common/PageHeader";
 import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD } from "../../../constants";
@@ -83,7 +83,7 @@ const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
           appointments: appointments?.filter(appointment =>
-            appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
+            appointment?.status !== AppointmentStatus.Cancelled) as AppointmentsPayload['appointments']
         });
       }
     }
