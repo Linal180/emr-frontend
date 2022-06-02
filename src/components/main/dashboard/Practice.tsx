@@ -1,15 +1,16 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
   Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
 } from '@material-ui/lab';
 // components block
 import Search from "../../common/Search";
-import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
 import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
 import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
+import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
 // svgs block, style
 import history from "../../../history";
 import { getShortName } from "../../../utils";
@@ -23,7 +24,7 @@ import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
   EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED, SEARCH_PATIENT_NAME_ID,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -57,13 +58,15 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
   const fetchFacilities = useCallback(async () => {
     try {
-      await findAllFacility({
+      practiceId && await findAllFacility({
         variables: {
-          facilityInput: { paginationOptions: { limit: 7, page: 1 } }
+          facilityInput: { 
+            practiceId,
+            paginationOptions: { limit: 7, page: 1 } }
         }
       })
     } catch (error) { }
-  }, [findAllFacility])
+  }, [findAllFacility, practiceId])
 
   useEffect(() => {
     fetchFacilities()
@@ -83,7 +86,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               alignItems="center"
             >
               <Box className={classes.searchContainer} width="90%" maxWidth="90%">
-                <Search search={search} placeHolder="Patient Name, Patient ID or Insurance Number etc..." />
+                <Search search={search} placeHolder={SEARCH_PATIENT_NAME_ID} />
               </Box>
 
               <Button variant="contained" color="primary" size="large">{SEARCH_PLACEHOLDER}</Button>
@@ -113,9 +116,11 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={FACILITIES_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             {facilities?.map((facility) => {
@@ -297,7 +302,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <Box className="Recent-Activity-Timeline">
+            <Box className="recent-activity-timeline">
               <Timeline>
                 <TimelineItem>
                   <TimelineSeparator>

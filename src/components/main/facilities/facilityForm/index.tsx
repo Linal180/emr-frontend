@@ -391,8 +391,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               </Button>
             </Box>
 
-            <Box display='flex' position='relative'>
-              <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' className={classes.navbar}>
+            <Box className='facility-registration-form' display='flex' position='relative'>
+              <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' 
+              className={`facility-menu-navbar ${classes.navbar}`}>
                 <List>
                   {FacilityMenuNav.map((item) => {
                     return (
@@ -427,7 +428,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                           <>
                             <Grid container spacing={3}>
-                              <Grid item md={isSuper ? 6 : 12}>
+                              <Grid item xs={12} sm={12} md={isSuper ? 6 : 12}>
                                 <InputController
                                   isRequired
                                   fieldType="text"
@@ -437,7 +438,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               </Grid>
 
                               {isSuper &&
-                                <Grid item md={6}>
+                                <Grid xs={12} sm={12} item md={6}>
                                   <PracticeSelector
                                     isRequired
                                     label={PRACTICE}
@@ -448,7 +449,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </Grid>
 
                             <Grid container spacing={3}>
-                              <Grid item md={6}>
+                              <Grid xs={12} sm={12} item md={6}>
                                 <Selector
                                   isRequired
                                   value={EMPTY_OPTION}
@@ -458,7 +459,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 />
                               </Grid>
 
-                              <Grid item md={6}>
+                              <Grid xs={12} sm={12} item md={6}>
                                 <Selector
                                   isRequired
                                   value={EMPTY_OPTION}
@@ -512,7 +513,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               </FormControl>
 
                               <Grid container spacing={3}>
-                                <Grid item md={8}>
+                                <Grid item xs={12} sm={12} md={8}>
                                   <InputController
                                     fieldType="text"
                                     controllerName="billingEmail"
@@ -520,7 +521,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                   />
                                 </Grid>
 
-                                <Grid item md={4}>
+                                <Grid item xs={12} sm={12} md={4}>
                                   <InputController
                                     fieldType="text"
                                     controllerName="billingZipCode"
@@ -646,7 +647,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                           <>
                             <Grid container spacing={3}>
-                              <Grid item md={12}>
+                              <Grid item xs={12} sm={12} md={12}>
                                 <InputController
                                   isRequired
                                   fieldType="text"
@@ -673,7 +674,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             />
                             <Grid container spacing={3}>
 
-                              <Grid item md={6}>
+                              <Grid item xs={12} sm={12} md={6}>
                                 <InputController
                                   fieldType="text"
                                   controllerName="address2"
@@ -681,7 +682,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 />
                               </Grid>
 
-                              <Grid item md={6}>
+                              <Grid item xs={12} sm={12} md={6}>
                                 <Grid container spacing={1} alignItems={'center'}>
                                   <Grid item md={10} sm={10} xs={10}>
                                     <InputController
@@ -711,7 +712,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               </Grid>
                             </Grid>
                             <Grid container spacing={3}>
-                              <Grid item md={4}>
+                              <Grid item xs={12} sm={12} md={4}>
                                 <InputController
                                   fieldType="text"
                                   controllerName="city"
@@ -719,7 +720,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 />
                               </Grid>
 
-                              <Grid item md={4}>
+                              <Grid item xs={12} sm={12} md={4}>
                                 <Selector
                                   value={EMPTY_OPTION}
                                   label={STATE}
@@ -728,7 +729,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 />
                               </Grid>
 
-                              <Grid item md={4}>
+                              <Grid item xs={12} sm={12} md={4}>
                                 <Selector
                                   name="country"
                                   label={COUNTRY}

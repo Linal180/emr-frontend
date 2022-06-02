@@ -10,6 +10,7 @@ import Selector from "../../../../common/Selector";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
+import AppointmentSlots from "../../../../common/AppointmentSlots";
 import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 // constants block
 import history from "../../../../../history";
@@ -33,7 +34,6 @@ import {
   PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING, APPOINTMENT_PAYMENT,
   BOOK_YOUR_APPOINTMENT,
 } from "../../../../../constants";
-import AppointmentSlots from "../../../../common/AppointmentSlots";
 
 const DoctorPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
@@ -135,13 +135,13 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
-                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
+                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.None, 
+                usualProviderId: doctorId, practiceId: practiceId || '',
               },
             }
           }
         })
-      } else
-        Alert.error(DOCTOR_NOT_FOUND)
+      } else Alert.error(DOCTOR_NOT_FOUND)
     }
   }
 
