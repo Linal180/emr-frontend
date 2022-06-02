@@ -1,5 +1,6 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
   Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
@@ -25,7 +26,6 @@ import {
   EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
   TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED, SEARCH_PATIENT_NAME_ID,
 } from "../../../constants";
-import { Link } from "react-router-dom";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();

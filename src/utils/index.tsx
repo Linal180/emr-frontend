@@ -28,7 +28,7 @@ import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
-  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE, EMPTY_OPTION
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE, EMPTY_OPTION, MISSING
 } from "../constants";
 
 export const handleLogout = () => {
@@ -90,6 +90,10 @@ export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boo
       }
     </Typography>
   </TableCell>
+);
+
+export const renderMissing = () => (
+  <Typography variant='h6' className="danger">{MISSING}</Typography>
 );
 
 export const requiredLabel = (label: string) => {
