@@ -8,14 +8,26 @@ import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, CARE_TEAM, PRIMARY_PROVIDE
 import { BLUE_FOUR, WHITE_FOUR } from "../../../../../theme";
 import { formatValue } from "../../../../../utils";
 import { CareTeamsProps } from "../../../../../interfacesTypes";
-import { AddSlotIcon } from "../../../../../assets/svgs";
+import { AddSlotIcon, EditNewIcon } from "../../../../../assets/svgs";
 import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
+import { ActionType } from "../../../../../reducers/patientReducer";
 
-const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: CareTeamsProps): JSX.Element => {
+const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, onEdit, patientDispatcher }: CareTeamsProps): JSX.Element => {
   const classes = useDoctorScheduleStyles();
 
-  const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
+  const handleSlider = () => toggleSideDrawer && toggleSideDrawer()
 
+  const handleEdit = (id: string, providerId: string, doctorName: string) => {
+    patientDispatcher && patientDispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })
+    patientDispatcher && patientDispatcher({ type: ActionType.SET_DOCTOR_NAME, doctorName: doctorName })
+    onEdit && onEdit(id, providerId)
+    handleSlider()
+  }
+
+  const handleAdd = () => {
+    patientDispatcher && patientDispatcher({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    handleSlider()
+  }
   return (
     <Card className="card-box-shadow">
       <Box p={4}>
@@ -24,10 +36,10 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: 
           <Typography variant="h3" >{CARE_TEAM}</Typography>
         </Box>
         {(loading) ? (
-          <ViewDataLoader columns={12} rows={2}/>
+          <ViewDataLoader columns={12} rows={2} />
         ) : (patientProvidersData?.map((item) => {
           const { doctor, id, currentProvider } = item || {}
-          const { email, firstName, lastName, speciality } = doctor || {}
+          const { email, firstName, lastName, speciality, id: providerId } = doctor || {}
           const doctorName = `${firstName} ${lastName}`
           return (
             <>
@@ -45,7 +57,9 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: 
                     <Typography variant="body1">{email}</Typography>
                   </Box>
 
-                  {/* <EditNewIcon /> */}
+                  <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
+                    <EditNewIcon />
+                  </Box>
                 </Box>
 
                 {currentProvider === true && <Box className={classes.status} component='span' color={BLUE_FOUR} border={`1px solid ${BLUE_FOUR}`}>
@@ -56,7 +70,7 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData }: 
             </>
           )
         }))}
-        <Box onClick={closeSlider} className={classes.addProvider} display='flex'>
+        <Box onClick={() =>handleAdd()} className={classes.addProvider} display='flex'>
           <Box mr={2}>
             <AddSlotIcon />
           </Box>

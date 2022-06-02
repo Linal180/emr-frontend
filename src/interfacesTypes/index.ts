@@ -1588,15 +1588,23 @@ export interface UpdatePatientProviderInputsProps {
   lastName: string;
   email: string;
   phone: string;
+  relation: string;
+  otherRelation?: string;
 }
 
 export interface CareTeamsProps {
-  toggleSideDrawer?: Function;
-  drawerOpened? : boolean;
-  patientId?: string;
   loading?: boolean;
-  reload?: Function;
+  isEdit?: boolean;
+  patientId?: string;
+  doctorId?: string;
+  doctorPatientId?: string;
+  doctorName?: string;
+  drawerOpened? : boolean;
   patientProvidersData?: PatientProviderPayload['providers']
+  onEdit?: Function;
+  reload?: Function;
+  toggleSideDrawer?: Function;
+  patientDispatcher?: Dispatch<PatientAction>
 }
 
 export interface PracticeChartProps {

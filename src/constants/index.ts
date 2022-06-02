@@ -24,7 +24,7 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity, DoctorPatientRelationType,
 } from "../generated/graphql";
 
 // regex
@@ -860,6 +860,7 @@ export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
 export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
 export const OTHER_PROVIDER = "Other Provider"
+export const OTHER_RELATION = "Other Relation"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -1454,10 +1455,10 @@ export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
-export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP = 
-"This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
-export const COPAY_AMOUNTS_TOOLTIP = 
-"These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP =
+  "This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP =
+  "These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1475,7 +1476,7 @@ export const UPIN_INFO =
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
+export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -1646,15 +1647,15 @@ export const LAB_TEST_STATUSES: SelectorOption[] = [
   { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
 
-export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE= mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
+export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE = mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
 
-export const MAPPED_POLICY_ORDER_OF_BENEFIT= mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
+export const MAPPED_POLICY_ORDER_OF_BENEFIT = mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
 
-export const MAPPED_PRICING_PRODUCT_TYPE= mapEnum<typeof PricingProductType>(PricingProductType)
+export const MAPPED_PRICING_PRODUCT_TYPE = mapEnum<typeof PricingProductType>(PricingProductType)
 
-export const MAPPED_COPAY_TYPE= mapEnum<typeof CopayType>(CopayType)
+export const MAPPED_COPAY_TYPE = mapEnum<typeof CopayType>(CopayType)
 
-export const MAPPED_POLICY_GENDER= mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
 
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
@@ -2533,7 +2534,7 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
-  insurance= 'insurance'
+  insurance = 'insurance'
 }
 
 export const DUMMY_ENCOUNTERS = [
@@ -2542,17 +2543,17 @@ export const DUMMY_ENCOUNTERS = [
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
   },
   {
     id: 2,
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
-  }  
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
+  }
 ];
 
 export enum CARD_LAYOUT_MODAL {
@@ -3485,6 +3486,25 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
 
+export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
+  {
+    name: formatValue(DoctorPatientRelationType.BackupProvider),
+    id: DoctorPatientRelationType.BackupProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.PreferredProvider),
+    id: DoctorPatientRelationType.PreferredProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.ReferringProvider),
+    id: DoctorPatientRelationType.ReferringProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OtherProvider),
+    id: DoctorPatientRelationType.OtherProvider,
+  },
+]
+
 export const PATIENT_HEIGHT_UNITS = [
   { id: UnitType.Inch, name: IN_TEXT },
   { id: UnitType.Centimeter, name: CM_TEXT },
@@ -3691,7 +3711,7 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
 ];
 
 export const INITIAL_COPAY_VALUE = {
-  copayType: setRecord('',''),
+  copayType: setRecord('', ''),
   amount: ''
 }
 
@@ -3707,20 +3727,20 @@ export const areaChartOne = {
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    
+
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {
@@ -3784,13 +3804,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {

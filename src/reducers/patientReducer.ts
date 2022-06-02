@@ -65,7 +65,10 @@ export interface State {
   releaseOfInfoBill: boolean
   callToConsent: boolean
   medicationHistoryAuthority: boolean
-  smsPermission: boolean
+  smsPermission: boolean,
+  doctorPatientId: string;
+  doctorId: string;
+  isEdit: boolean;
 }
 
 export const initialState: State = {
@@ -128,6 +131,9 @@ export const initialState: State = {
   callToConsent: false,
   medicationHistoryAuthority: false,
   smsPermission: false,
+  doctorPatientId: '',
+  doctorId: 'string',
+  isEdit: false
 }
 
 export enum ActionType {
@@ -188,6 +194,9 @@ export enum ActionType {
   SET_CALL_TO_CONSENT = 'setCallToConsent',
   SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
   SET_SMS_PERMISSION = 'setSmsPermission',
+  SET_DOCTOR_PATIENT_ID = 'setDoctorPatientId',
+  SET_DOCTOR_ID = 'setDoctorId',
+  SET_IS_EDIT = 'setIsEdit'
 }
 
 export type Action =
@@ -248,6 +257,9 @@ export type Action =
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
   | { type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY; medicationHistoryAuthority: boolean }
   | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
+  | { type: ActionType.SET_DOCTOR_PATIENT_ID; doctorPatientId: string }
+  | { type: ActionType.SET_DOCTOR_ID; doctorId: string }
+  | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -405,13 +417,13 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         anchorEl: action.anchorEl
       }
-      
+
     case ActionType.SET_ATTACHMENT_ID:
       return {
         ...state,
         attachmentId: action.attachmentId
       }
-      
+
     case ActionType.SET_IS_EDIT_CARD:
       return {
         ...state,
@@ -590,6 +602,24 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         smsPermission: action.smsPermission
+      }
+
+    case ActionType.SET_DOCTOR_PATIENT_ID:
+      return {
+        ...state,
+        doctorPatientId: action.doctorPatientId
+      }
+
+    case ActionType.SET_DOCTOR_ID:
+      return {
+        ...state,
+        doctorId: action.doctorId
+      }
+
+      case ActionType.SET_IS_EDIT:
+      return {
+        ...state,
+        isEdit: action.isEdit
       }
   }
 };
