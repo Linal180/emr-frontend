@@ -23,7 +23,10 @@ import {
   DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE, ACCOUNT_TYPE,
   US_BANK_ACCOUNT_REGEX, BANK_ACCOUNT_VALIDATION_MESSAGE, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE,
   ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY,
-  NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN, LEGAL_SEX, AMOUNT, EMERGENCY_ACCESS,
+  NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
+  PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN,
+  LEGAL_SEX, AMOUNT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -71,7 +74,7 @@ const notRequiredPhone = (label: string) => {
 
 const requiredPhone = (label: string) => {
   return yup.string().min(10, MinLength(label, 10))
-  .max(15, MaxLength(label, 15)).required(requiredMessage(label))
+    .max(15, MaxLength(label, 15)).required(requiredMessage(label))
 }
 
 const notRequiredOTP = (label: string, isRequired: boolean) => {
@@ -82,9 +85,9 @@ const notRequiredOTP = (label: string, isRequired: boolean) => {
     .required(requiredMessage(label))
 }
 
-const optionalEmailSchema = (isOptional: boolean) => { 
+const optionalEmailSchema = (isOptional: boolean) => {
   return yup.string().email(INVALID_EMAIL)
-    .test('',requiredMessage(EMAIL), value => isOptional ? true : !!value )
+    .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
 }
 
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
@@ -918,7 +921,7 @@ export const createInsuranceSchema = yup.object({
   state: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).test('',requiredMessage(STATE) , ({ id }) => !!id),
+  }).test('', requiredMessage(STATE), ({ id }) => !!id),
   ssn: yup.string().required(requiredMessage(SSN)),
   sex: yup.object().shape({
     name: yup.string().required(),
