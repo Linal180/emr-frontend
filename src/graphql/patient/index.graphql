@@ -383,6 +383,15 @@ mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!){
   }
 }
 
+mutation UpdatePatientProviderRelation($updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!){
+  updatePatientProviderRelation(updatePatientProviderRelationInputs: $updatePatientProviderRelationInputs){
+     response {
+      status
+      message
+    }   
+  }
+}
+
 query GetPatientProviders($getPatient: GetPatient!) {
   getPatientProviders(getPatient: $getPatient) {
     response {

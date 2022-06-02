@@ -5539,6 +5539,13 @@ export type UpdatePatientProviderMutationVariables = Exact<{
 
 export type UpdatePatientProviderMutation = { __typename?: 'Mutation', updatePatientProvider: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type UpdatePatientProviderRelationMutationVariables = Exact<{
+  updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs;
+}>;
+
+
+export type UpdatePatientProviderRelationMutation = { __typename?: 'Mutation', updatePatientProviderRelation: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
 export type GetPatientProvidersQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
@@ -11004,6 +11011,44 @@ export function useUpdatePatientProviderMutation(baseOptions?: Apollo.MutationHo
 export type UpdatePatientProviderMutationHookResult = ReturnType<typeof useUpdatePatientProviderMutation>;
 export type UpdatePatientProviderMutationResult = Apollo.MutationResult<UpdatePatientProviderMutation>;
 export type UpdatePatientProviderMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProviderMutation, UpdatePatientProviderMutationVariables>;
+export const UpdatePatientProviderRelationDocument = gql`
+    mutation UpdatePatientProviderRelation($updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!) {
+  updatePatientProviderRelation(
+    updatePatientProviderRelationInputs: $updatePatientProviderRelationInputs
+  ) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProviderRelationMutationFn = Apollo.MutationFunction<UpdatePatientProviderRelationMutation, UpdatePatientProviderRelationMutationVariables>;
+
+/**
+ * __useUpdatePatientProviderRelationMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProviderRelationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProviderRelationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProviderRelationMutation, { data, loading, error }] = useUpdatePatientProviderRelationMutation({
+ *   variables: {
+ *      updatePatientProviderRelationInputs: // value for 'updatePatientProviderRelationInputs'
+ *   },
+ * });
+ */
+export function useUpdatePatientProviderRelationMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProviderRelationMutation, UpdatePatientProviderRelationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProviderRelationMutation, UpdatePatientProviderRelationMutationVariables>(UpdatePatientProviderRelationDocument, options);
+      }
+export type UpdatePatientProviderRelationMutationHookResult = ReturnType<typeof useUpdatePatientProviderRelationMutation>;
+export type UpdatePatientProviderRelationMutationResult = Apollo.MutationResult<UpdatePatientProviderRelationMutation>;
+export type UpdatePatientProviderRelationMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProviderRelationMutation, UpdatePatientProviderRelationMutationVariables>;
 export const GetPatientProvidersDocument = gql`
     query GetPatientProviders($getPatient: GetPatient!) {
   getPatientProviders(getPatient: $getPatient) {

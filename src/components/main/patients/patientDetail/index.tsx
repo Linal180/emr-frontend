@@ -26,7 +26,6 @@ import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
- , useGetPatientProviderLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {

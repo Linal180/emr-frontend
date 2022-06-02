@@ -1002,3 +1002,11 @@ export const updatePatientProviderSchema = (isOtherRelation: boolean) => yup.obj
   ...firstLastNameSchema,
   ...emailSchema,
 })
+
+export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) => yup.object({
+  phone: notRequiredPhone(PHONE),
+  speciality: selectorSchema(SPECIALTY),
+  otherRelation: otherRelationSchema(isOtherRelation),
+  ...firstLastNameSchema,
+  ...emailSchema,
+})
