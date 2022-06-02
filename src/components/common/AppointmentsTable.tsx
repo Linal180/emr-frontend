@@ -34,7 +34,7 @@ import {
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY, EMPTY_OPTION
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION
 } from "../../constants";
 
 dotenv.config()
@@ -274,7 +274,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       const { status } = response
 
       if (patientId && status && status === 200) {
-        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
         history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
       }
     }

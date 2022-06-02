@@ -11,8 +11,7 @@ import { convertDateFromUnix, getAppointmentDateTime } from "../../utils";
 import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
-  APPOINTMENT_UPDATED_SUCCESSFULLY, CHECK_IN_ROUTE
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
@@ -42,7 +41,6 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
       const { status } = response
 
       if (status && status === 200) {
-        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
         history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
       }
     }
