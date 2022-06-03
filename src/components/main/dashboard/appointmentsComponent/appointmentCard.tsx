@@ -20,13 +20,16 @@ import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
-import { convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../../utils';
+import {
+   convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
+  } from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../../assets/svgs';
 import {
-  Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, useUpdateAppointmentMutation
+  AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, 
+  useUpdateAppointmentMutation
 } from '../../../../generated/graphql';
 import {
   DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
@@ -36,8 +39,7 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY,
-  APPOINTMENT_UPDATED_SUCCESSFULLY,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
@@ -208,7 +210,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
     id && await updateAppointmentStatus({
       variables: {
         appointmentStatusInput: {
-          id: id.toString(), status: appointmentStatus.name as Appointmentstatus
+          id: id.toString(), status: appointmentStatus.name as AppointmentStatus
         }
       }
     })
@@ -281,7 +283,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
       await updateAppointmentStatus({
         variables: {
           appointmentStatusInput: {
-            id: id.toString(), status: appointmentStatus.id as Appointmentstatus
+            id: id.toString(), status: appointmentStatus.id as AppointmentStatus
           }
         }
       })
