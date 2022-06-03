@@ -229,6 +229,86 @@ export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
+export const calculateAge = (dateString: string) => {
+  let now = new Date();
+
+  let yearNow = now.getFullYear();
+  let monthNow = now.getMonth();
+  let dateNow = now.getDate();
+
+  let dob = new Date(parseInt(dateString.substring(6, 10)),
+    parseInt(dateString.substring(0, 2)) - 1,
+    parseInt(dateString.substring(3, 5))
+  );
+
+  let yearDob = dob.getFullYear();
+  let monthDob = dob.getMonth();
+  let dateDob = dob.getDate();
+  let age = {
+    years: 0,
+    months: 0,
+    days: 0
+  };
+  let ageString = "";
+  let yearString = "";
+  let monthString = "";
+  let dayString = "";
+
+
+  let yearAge = yearNow - yearDob;
+  let monthAge = 0
+  let dateAge = 0
+
+  if (monthNow >= monthDob)
+    monthAge = monthNow - monthDob;
+  else {
+    yearAge--;
+    monthAge = 12 + monthNow - monthDob;
+  }
+
+  if (dateNow >= dateDob)
+    dateAge = dateNow - dateDob;
+  else {
+    monthAge--;
+    dateAge = 31 + dateNow - dateDob;
+
+    if (monthAge < 0) {
+      monthAge = 11;
+      yearAge--;
+    }
+  }
+
+  age = {
+    years: yearAge,
+    months: monthAge,
+    days: dateAge
+  };
+
+  if (age.years > 1) yearString = " years";
+  else yearString = " year";
+  if (age.months > 1) monthString = " months";
+  else monthString = " month";
+  if (age.days > 1) dayString = " days";
+  else dayString = " day";
+
+  if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.months + monthString + "," + age.days + dayString;
+  else if ((age.years === 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days === 0))
+    ageString = age.years + yearString;
+  else if ((age.years > 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.years + yearString + ", " + age.months + monthString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.months + monthString + ", " + age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.days + dayString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.months + monthString;
+
+  return `${ageString} old`;
+}
+
 export const getDateWithDay = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
 };
@@ -827,7 +907,6 @@ export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) =>
     case ProblemSeverity.Acute:
       return ACUTE;
   }
-
 };
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
@@ -1122,7 +1201,7 @@ export const ounceToPounds = (o: number) => (o / 16)
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  var arr = url.split(','),
+  let arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1429,7 +1508,7 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
 }
 
 export const getAppointmentStatus = (status: string) => {
-  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == " ,status)
+  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == ", status)
   switch (status) {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
