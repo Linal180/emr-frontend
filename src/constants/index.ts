@@ -109,6 +109,10 @@ export const NOTES = "Notes";
 export const ACUTE = "Acute";
 export const CHRONIC = "Chronic";
 export const LOCK_TIME_OUT = 604800000;
+export const BASIC_DETAILS = "Basic Details";
+export const DEMOGRAPHIC = "Demographic";
+export const BILLING_DETAILS = "Billing Details";
+export const EMERGENCY_CONTACTS = "Emergency Contacts";
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -1003,6 +1007,7 @@ export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
 export const USER_ROLE_PLACEHOLDER = "User Role";
+export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
 export const GENDER_IDENTITY = "Gender Identity";
@@ -1128,6 +1133,7 @@ export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose your Payment Method";
+export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
 export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
@@ -1252,6 +1258,18 @@ export const FACILITY_INFO_ROUTE = "facility-information";
 export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
+// Register-Patient Routes
+export const IDENTIFICATION_ROUTE = "identification";
+export const CONTACT_INFORMATION_ROUTE = "contact-information";
+export const PROVIDER_REGISTRATION__ROUTE = "provider-registration";
+export const PRIVACY__ROUTE = "privacy";
+export const EMERGENCY_CONTACT_ROUTE = "emergency-contact";
+export const GUARANTOR_ROUTE = "guarantor";
+export const MAILING_ADDRESS_ROUTE = "mailing-address";
+export const EMPLOYMENT_ROUTE = "employment";
+export const DEMOGRAPHICS_ROUTE = "demographics";
+export const BILLING_ROUTE = "billing";
+
 // HELPER TEXT MESSAGES
 export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -1328,7 +1346,6 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
-export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1390,19 +1407,19 @@ export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
-export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
-  "Resource can't be deleted.";
+export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
+export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD =
-  "You have entered wrong email or password";
+"You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
-  "User with this email already exists";
+"User with this email already exists";
 export const LOGIN_TEXT_MESSAGE =
   "Enter your credentials to login to your portal";
-export const APPOINTMENT_BOOKED_SUCCESSFULLY =
+  export const APPOINTMENT_BOOKED_SUCCESSFULLY =
   "Appointment is booked successfully";
-export const APPOINTMENT_CANCEL_TEXT =
+  export const APPOINTMENT_CANCEL_TEXT =
   "Your appointment is cancelled successfully";
-export const RESET_PASSWORD_SUCCESS =
+  export const RESET_PASSWORD_SUCCESS =
   "Your password has been changed successfully.";
 export const LOGIN_MESSAGE =
   "Please sign in to explore all that BOCA+ has to offer.";
@@ -3183,6 +3200,41 @@ export const FacilityMenuNav = [
   {
     title: BUSINESS_HOURS,
     linkTo: FACILITY_SCHEDULE_ROUTE,
+  },
+];
+
+export const RegisterPatientMenuNav = [
+  {
+    title: IDENTIFICATION,
+    linkTo: IDENTIFICATION_ROUTE,
+  },
+  {
+    title: CONTACT_INFORMATION,
+    linkTo: CONTACT_INFORMATION_ROUTE,
+  },
+  {
+    title: PROVIDER_REGISTRATION_DATES,
+    linkTo: PROVIDER_REGISTRATION__ROUTE,
+  },
+  {
+    title: PRIVACY,
+    linkTo: PRIVACY__ROUTE,
+  },
+  {
+    title: EMERGENCY_CONTACT,
+    linkTo: EMERGENCY_CONTACT_ROUTE,
+  },
+  {
+    title: GUARANTOR,
+    linkTo: GUARANTOR_ROUTE,
+  },
+  {
+    title: EMPLOYMENT,
+    linkTo: EMPLOYMENT_ROUTE,
+  },
+  {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
   },
 ];
 

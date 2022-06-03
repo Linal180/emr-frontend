@@ -25,6 +25,7 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/react-router": "^5.1.18",
+    "@types/react-scroll": "^1.8.3",
     "axios": "^0.22.0",
     "braintree-web-drop-in-react": "^1.2.1",
     "country-state-city": "^3.0.1",
@@ -63,7 +64,8 @@
     "underscore": "^1.13.2",
     "uuid": "^8.3.2",
     "web-vitals": "^1.1.2",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "react-scroll": "^1.8.4"
   },
   "scripts": {
     "start": "react-scripts start",
