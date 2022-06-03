@@ -1529,6 +1529,10 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
+export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
+  return status === AppointmentStatus.Initiated
+}
+
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
   switch (value) {
     case AppointmentStatus.Initiated:

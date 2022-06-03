@@ -25,7 +25,8 @@ import {
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine
+  AppointmentStatusStateMachine,
+  canUpdateAppointmentStatus
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
@@ -34,7 +35,7 @@ import {
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, VIEW_ENCOUNTER
 } from "../../constants";
 
 dotenv.config()
@@ -323,7 +324,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
 
                       <TableCell scope="row">
-                        {getDateWithDay(scheduleStartDateTime || '')}
+                        <Box display='flex' flexDirection='column'>
+                          {getDateWithDay(scheduleStartDateTime || '')}
+
+                          {status === AppointmentStatus.CheckedIn &&
+                            <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
+                              {VIEW_ENCOUNTER}
+                            </Link>}
+                        </Box>
                       </TableCell>
 
                       <TableCell scope="row">
@@ -354,10 +362,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Box className={classes.iconsBackground}
-                            onClick={() => id && patientId && handleCheckIn(id, patientId)}>
+                          {status && <Box className={classes.iconsBackground}
+                            onClick={() => canUpdateAppointmentStatus(status) ?
+                              id && patientId && handleCheckIn(id, patientId)
+                              : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                            }>
                             <CheckInTickIcon />
-                          </Box>
+                          </Box>}
 
                           <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
