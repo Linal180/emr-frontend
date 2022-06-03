@@ -34,7 +34,7 @@ import {
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY
 } from "../../constants";
 
 dotenv.config()
@@ -133,7 +133,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success("Status updated successfully");
+          Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
           updateAppointmentData()
           clearEdit()
         }
@@ -351,10 +351,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
 
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100}
-                          onClick={() => id && patientId && handleCheckIn(id, patientId)}
-                          justifyContent="center">
-                          <Box className={classes.iconsBackground}>
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Box className={classes.iconsBackground}
+                            onClick={() => id && patientId && handleCheckIn(id, patientId)}>
                             <CheckInTickIcon />
                           </Box>
 
