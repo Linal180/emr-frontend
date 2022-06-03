@@ -1039,6 +1039,7 @@ export type DoctorPatient = {
 /** The relationship of patient with doctor */
 export enum DoctorPatientRelationType {
   BackupProvider = 'BACKUP_PROVIDER',
+  OrderingProvider = 'ORDERING_PROVIDER',
   OtherProvider = 'OTHER_PROVIDER',
   PreferredProvider = 'PREFERRED_PROVIDER',
   PrimaryProvider = 'PRIMARY_PROVIDER',
@@ -1835,7 +1836,7 @@ export type Mutation = {
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
-  updatePatientProviderRelation: PatientPayload;
+  updatePatientProviderRelation: PatientDoctorPayload;
   updatePatientVital: PatientVitalPayload;
   updatePermission: PermissionPayload;
   updatePolicy: PolicyPayload;
@@ -5544,14 +5545,14 @@ export type UpdatePatientProviderRelationMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePatientProviderRelationMutation = { __typename?: 'Mutation', updatePatientProviderRelation: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdatePatientProviderRelationMutation = { __typename?: 'Mutation', updatePatientProviderRelation: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type GetPatientProvidersQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
 
 
-export type GetPatientProvidersQuery = { __typename?: 'Query', getPatientProviders: { __typename?: 'PatientProviderPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, providers?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, patientId?: string | null | undefined, currentProvider?: boolean | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, email?: string | null | undefined, speciality?: Speciality | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined }> | null | undefined } };
+export type GetPatientProvidersQuery = { __typename?: 'Query', getPatientProviders: { __typename?: 'PatientProviderPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, providers?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, patientId?: string | null | undefined, currentProvider?: boolean | null | undefined, otherRelation?: string | null | undefined, relation?: DoctorPatientRelationType | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, email?: string | null | undefined, speciality?: Speciality | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined }> | null | undefined } };
 
 export type GetPatientProviderQueryVariables = Exact<{
   patientProviderInputs: PatientProviderInputs;
@@ -11063,6 +11064,8 @@ export const GetPatientProvidersDocument = gql`
       doctorId
       patientId
       currentProvider
+      otherRelation
+      relation
       createdAt
       updatedAt
       doctor {

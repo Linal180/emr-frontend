@@ -382,6 +382,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           doctorPatientId={doctorPatientId}
           isEdit={isEdit}
           doctorName={doctorName}
+          patientProvidersData={patientProvidersData}
         />
 
       </Box>

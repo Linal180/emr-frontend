@@ -92,7 +92,7 @@ const optionalEmailSchema = (isOptional: boolean) => {
 
 const otherRelationSchema = (isOtherRelation: boolean) => {
   return yup.string()
-    .test('', requiredMessage(OTHER_RELATION), value => isOtherRelation ? true : !!value)
+    .test('', requiredMessage(OTHER_RELATION), value => isOtherRelation ? !!value : true)
 }
 
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }

@@ -4,7 +4,7 @@ import { CareTeamsProps } from '../../../../../../interfacesTypes';
 //components block
 import CreateTeamForm from '../careTeamForm';
 
-const CareTeamProvider = ({ drawerOpened, toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName }: CareTeamsProps) => {
+const CareTeamProvider = ({ drawerOpened, toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }: CareTeamsProps) => {
 
   const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
 
@@ -21,6 +21,7 @@ const CareTeamProvider = ({ drawerOpened, toggleSideDrawer, patientId, reload, d
         doctorPatientId={doctorPatientId}
         isEdit={isEdit}
         doctorName={doctorName}
+        patientProvidersData={patientProvidersData}
         />
     </Drawer>
   )

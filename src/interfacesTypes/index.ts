@@ -31,7 +31,7 @@ import {
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
   VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload,
+  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload, DoctorPatient,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -380,6 +380,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
   shouldOmitFacilityId?: boolean
+  careProviderData?: DoctorPatient[];
 }
 
 export interface CardSelectorProps {
@@ -1223,6 +1224,12 @@ export interface ShareModalTypes extends DialogTypes {
   handleCopy: () => void;
 }
 
+export interface ConfirmModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleSave: () => void;
+}
 export interface SmartyUserData {
   street: string;
   address: string;

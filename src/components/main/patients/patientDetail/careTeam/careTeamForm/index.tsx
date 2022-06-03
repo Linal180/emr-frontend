@@ -16,15 +16,20 @@ import { CloseIcon } from '../../../../../../assets/svgs';
 import InputController from '../../../../../../controller'
 import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
-import { DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery, useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation } from '../../../../../../generated/graphql';
+import { DoctorPatient, DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery, useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation } from '../../../../../../generated/graphql';
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
-  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION,
+  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
 } from '../../../../../../constants';
 import RadioController from '../../../../../../controller/RadioController';
+import ConfirmModal from '../../../../../common/ConfirmModal';
 
-const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName }): JSX.Element => {
+const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }): JSX.Element => {
   const [isOtherRelation, setIsOtherRelation] = useState<boolean>(false);
+  const [openSave, setOpenSave] = useState<boolean>(false);
+  const [relationInput, setRelationInput] = useState<DoctorPatientRelationType>(DoctorPatientRelationType.OtherProvider);
+  const [otherRelationInput, setOtherRelationInput] = useState<string>('');
+  const newPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider)
   const methods = useForm<UpdatePatientProviderInputsProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePatientProviderRelationSchema(isOtherRelation) : updatePatientProviderSchema(isOtherRelation))
@@ -162,33 +167,78 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
 
   const onSubmit: SubmitHandler<UpdatePatientProviderInputsProps> = async (inputs) => {
     const { otherRelation, relation } = inputs;
+    setRelationInput(relation as DoctorPatientRelationType)
+    setOtherRelationInput(otherRelation as string)
+    if (isEdit) {
+      const editPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== item.id)
+      const { id } = editPrimaryProvidersData || {}
+      if (id && relation === DoctorPatientRelationType.PrimaryProvider) {
+        setOpenSave(true)
+      }
+      else {
+        await updatePatientProviderRelation({
+          variables: {
+            updatePatientProviderRelationInputs: {
+              id: doctorPatientId as string,
+              otherRelation,
+              relation: relation as DoctorPatientRelationType,
+            }
+          }
+        })
+      }
+    } else {
+      const { id } = newPrimaryProvidersData || {}
+      if (relation === DoctorPatientRelationType.PrimaryProvider && id) {
+        setOpenSave(true)
+      }
+      else {
+        await updatePatientProvider({
+          variables: {
+            updatePatientProvider: {
+              patientId: patientId as string,
+              providerId: selectedProviderId as string,
+              otherRelation: otherRelation,
+              relation: relation as DoctorPatientRelationType,
+            }
+          }
+        })
+      }
 
+    }
+
+  }
+
+  const submitHandlerData = async () => {
     if (isEdit) {
       await updatePatientProviderRelation({
         variables: {
           updatePatientProviderRelationInputs: {
             id: doctorPatientId as string,
-            otherRelation,
-            relation: relation as DoctorPatientRelationType,
+            otherRelation: otherRelationInput,
+            relation: relationInput as DoctorPatientRelationType,
           }
         }
       })
     } else {
-
       await updatePatientProvider({
         variables: {
           updatePatientProvider: {
             patientId: patientId as string,
-            providerId: doctorId as string,
-            otherRelation,
-            relation: relation as DoctorPatientRelationType,
+            providerId: selectedProviderId as string,
+            otherRelation: otherRelationInput,
+            relation: relationInput as DoctorPatientRelationType,
           }
         }
       })
-    }  
+    }
   }
 
   const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
+
+  const handleSave = () => {
+    setOpenSave(false)
+    submitHandlerData()
+  }
 
   useEffect(() => {
     selectedProviderId && getDoctor({ variables: { getDoctor: { id: selectedProviderId } } })
@@ -200,13 +250,12 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
   }, [getPatientProvider, isEdit, doctorId, patientId])
 
   useEffect(() => {
-    if (relation === DoctorPatientRelationType.OtherProvider) {
-      setIsOtherRelation(true)
-    }
+    setIsOtherRelation(relation === DoctorPatientRelationType.OtherProvider)
   }, [relation, watch])
 
   return (
     <Box maxWidth={500}>
+      {JSON.stringify(isOtherRelation)} =========
       <FormProvider {...methods}>
         {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -227,6 +276,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
                 shouldOmitFacilityId
                 name="providerId"
                 label={USUAL_PROVIDER_ID}
+                careProviderData={patientProvidersData as DoctorPatient[]}
               />
             }
 
@@ -301,6 +351,14 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
           </Box>
         </form>
       </FormProvider>
+
+      <ConfirmModal
+        title={UPDATE_PRIMARY_PROVIDER}
+        isOpen={openSave}
+        description={PRIMARY_PROVIDER_DESCRIPTION}
+        handleSave={handleSave}
+        actionText={YES}
+        setOpen={(open: boolean) => setOpenSave(open)} />
     </Box>
   )
 }

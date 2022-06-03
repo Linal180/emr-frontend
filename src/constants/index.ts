@@ -548,6 +548,8 @@ export const FACILITY_HOURS_END = "Facility hours end";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const FACILITY_HOURS_START = "Facility hours start";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
+export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
+export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -3494,6 +3496,10 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
 
 export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
   {
+    name: formatValue(DoctorPatientRelationType.PrimaryProvider),
+    id: DoctorPatientRelationType.PrimaryProvider,
+  },
+  {
     name: formatValue(DoctorPatientRelationType.BackupProvider),
     id: DoctorPatientRelationType.BackupProvider,
   },
@@ -3504,6 +3510,10 @@ export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
   {
     name: formatValue(DoctorPatientRelationType.ReferringProvider),
     id: DoctorPatientRelationType.ReferringProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OrderingProvider),
+    id: DoctorPatientRelationType.OrderingProvider,
   },
   {
     name: formatValue(DoctorPatientRelationType.OtherProvider),

@@ -406,6 +406,8 @@ query GetPatientProviders($getPatient: GetPatient!) {
       doctorId
       patientId
       currentProvider
+      otherRelation
+      relation
       createdAt
       updatedAt
 

@@ -3,7 +3,7 @@ import { Box, Card, Typography } from "@material-ui/core";
 // common block
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // constants block
-import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, CARE_TEAM, PRIMARY_PROVIDER }
+import { ADD_PROVIDER_INFORMATION, ADD_PROVIDER_TEXT, CARE_TEAM }
   from "../../../../../constants";
 import { BLUE_FOUR, WHITE_FOUR } from "../../../../../theme";
 import { formatValue } from "../../../../../utils";
@@ -38,7 +38,7 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
         {(loading) ? (
           <ViewDataLoader columns={12} rows={2} />
         ) : (patientProvidersData?.map((item) => {
-          const { doctor, id, currentProvider } = item || {}
+          const { doctor, id, relation } = item || {}
           const { email, firstName, lastName, speciality, id: providerId } = doctor || {}
           const doctorName = `${firstName} ${lastName}`
           return (
@@ -62,15 +62,15 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
                   </Box>
                 </Box>
 
-                {currentProvider === true && <Box className={classes.status} component='span' color={BLUE_FOUR} border={`1px solid ${BLUE_FOUR}`}>
-                  {PRIMARY_PROVIDER}
+                {relation && <Box className={classes.status} component='span' color={BLUE_FOUR} border={`1px solid ${BLUE_FOUR}`}>
+                  {formatValue(relation as string)}
                 </Box>}
               </Box>
 
             </>
           )
         }))}
-        <Box onClick={() =>handleAdd()} className={classes.addProvider} display='flex'>
+        <Box onClick={() => handleAdd()} className={classes.addProvider} display='flex'>
           <Box mr={2}>
             <AddSlotIcon />
           </Box>
