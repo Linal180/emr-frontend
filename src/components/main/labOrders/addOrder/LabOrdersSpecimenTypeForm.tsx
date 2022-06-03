@@ -69,9 +69,6 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
     })
   }, [getSpecimenType])
 
-  console.log("testField", testField)
-
-
   return (
     <>
       {specimenTypeFields.map((_, subIndex) => {
