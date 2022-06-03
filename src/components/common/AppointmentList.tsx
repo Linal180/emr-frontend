@@ -27,16 +27,12 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
 
   const handlePatientCheckIn = async (id: string) => {
     const { data } = await updateAppointment({
-<<<<<<< HEAD
-      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
-=======
       variables: {
         updateAppointmentInput: {
           id, status: AppointmentStatus.CheckedIn,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
->>>>>>> 12dc777c94a84f3d43786456f64f9c0f1a271029
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
