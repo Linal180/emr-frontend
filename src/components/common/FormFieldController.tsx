@@ -12,16 +12,27 @@ import ServiceSelector from './formBuilder/ServiceSelector';
 import SlotsComponent from './formBuilder/SlotsComponent'
 import ProviderSelector from './formBuilder/DoctorSelector'
 import PaymentSelector from './formBuilder/PaymentSelector'
+import FacilitySelector from './formBuilder/FacilitySelector';
 //field renderer component
-export const FieldController = ({ item, isCreating, facilityId, state }: FieldComponentProps) => {
+export const FieldController = ({ item, isCreating, facilityId, state, practiceId,dispatcher }: FieldComponentProps) => {
   //hooks
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
 
-  if (facilityId && apiCall) {
+  if ((facilityId || practiceId) && apiCall) {
     switch (apiCall) {
+      case FormBuilderApiSelector.PRACTICE_FACILITIES:
+        return <FacilitySelector
+          isRequired={required || true}
+          label={label}
+          name={fieldId}
+          practiceId={practiceId || ''}
+          dispatcher={dispatcher}
+          addEmpty
+        />
+
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
           isRequired={required || true}
@@ -30,7 +41,6 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
           facilityId={facilityId}
           addEmpty
         />
-
       case FormBuilderApiSelector.SERVICE_SLOT:
         return <SlotsComponent facilityId={facilityId || ""} state={state} />
 

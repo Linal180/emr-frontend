@@ -5296,7 +5296,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -9250,6 +9250,7 @@ export const GetPublicFormDocument = gql`
       id
       type
       facilityId
+      practiceId
       name
       isActive
       layout {

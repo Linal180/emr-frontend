@@ -31,7 +31,7 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType } = state
+  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId } = state
   const { handleSubmit } = methods;
 
   //mutation
@@ -48,12 +48,13 @@ const PublicFormPreview = () => {
           const { status } = response;
 
           if (form && status && status === 200) {
-            const { name, layout, isActive, facilityId, type } = form;
+            const { name, layout, isActive, facilityId, type, practiceId } = form;
             const { sections } = layout;
 
             if (isActive) {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
               facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
+              practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
               sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
@@ -187,7 +188,13 @@ const PublicFormPreview = () => {
                                   md={parseColumnGrid(field?.column)}
                                   key={`${item?.id}-${field?.fieldId}`}
                                 >
-                                  <InputController item={field} facilityId={facilityId} state={state} />
+                                  <InputController
+                                    item={field}
+                                    facilityId={facilityId}
+                                    state={state}
+                                    practiceId={practiceId}
+                                    dispatcher={dispatch}
+                                  />
                                 </Grid>
                               ))}
                             </Grid>

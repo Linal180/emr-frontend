@@ -108,8 +108,6 @@ const AddForm = () => {
             practiceId && !facilityId && setValue('isPractice', true)
             facilityId && dispatch({ type: ActionType.SET_FACILITY, formFacility: facilityId })
             practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
-            // facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
-            // practiceId && setValue('practiceId', setRecord(practiceId, practiceId))
             const { sections } = layout
             sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
             const facilityName = facilityId && getFacilityNameHandler(facilityId)
@@ -167,22 +165,31 @@ const AddForm = () => {
       const { getFacility } = data
       const { facility, response } = getFacility || {}
       const { status } = response || {}
-      if(status === 200){
-        
+      if (status === 200) {
+        const { id, name } = facility || {}
+        if (id && name) {
+          dispatch({ type: ActionType.SET_FACILITY, formFacility: '' })
+          setValue('facilityId', setRecord(id, name))
+        }
       }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const [getPractice] = useGetPracticeLazyQuery({
     onCompleted: (data) => {
-
+      const { getPractice } = data
+      const { practice, response } = getPractice || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { id, name } = practice || {}
+        if (id && name) {
+          dispatch({ type: ActionType.SET_PRACTICE, formPractice: '' })
+          setValue('practiceId', setRecord(id, name))
+        }
+      }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const getFormHandler = useCallback(() => {

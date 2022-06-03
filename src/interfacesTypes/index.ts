@@ -18,7 +18,7 @@ import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
-import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
+import { Action as PublicFormBuilderAction, State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
@@ -792,7 +792,7 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
-export interface PolicyCardProps extends GeneralFormProps{
+export interface PolicyCardProps extends GeneralFormProps {
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
   setPolicyToEdit?: Function
@@ -964,7 +964,7 @@ export interface InsuranceCreateInput {
   pricingProductType?: SelectorOption
   notes?: string
   policyHolderId?: string
-  employer?: string 
+  employer?: string
   suffix?: string
   firstName?: string
   middleName?: string
@@ -1215,8 +1215,10 @@ export interface FieldComponentProps {
   item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
-  facilityId?: string
-  state?: ExternalFormBuilderState
+  facilityId?: string;
+  practiceId?: string;
+  state?: ExternalFormBuilderState;
+  dispatcher?: Dispatch<PublicFormBuilderAction>
 }
 
 export interface ShareModalTypes extends DialogTypes {
@@ -1595,7 +1597,7 @@ export interface UpdatePatientProviderInputsProps {
 
 export interface CareTeamsProps {
   toggleSideDrawer?: Function;
-  drawerOpened? : boolean;
+  drawerOpened?: boolean;
   patientId?: string;
   loading?: boolean;
   reload?: Function;
@@ -1620,4 +1622,10 @@ export interface SwitchControllerProps extends IControlLabel {
   controllerName: string;
   isHelperText?: boolean;
   autoFocus?: boolean
+}
+
+export interface FormBuilderFacilitySelectorProps extends SelectorProps {
+  patientId?: string
+  practiceId: string
+  dispatcher?: Dispatch<PublicFormBuilderAction>
 }
