@@ -393,7 +393,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
           && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
+          name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
   }
@@ -523,22 +523,6 @@ export const renderOptionsForSelector = (options: SelectorOption[]) => {
 
   return data;
 }
-
-// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
-//   const data: SelectorOption[] = [];
-
-//   if (!!reactions) {
-//     for (let reaction of reactions) {
-//       if (reaction) {
-//         const { id, name } = reaction;
-
-//         name && data.push({ id, name: formatValue(name) })
-//       }
-//     }
-//   }
-
-//   return data;
-// }
 
 export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
   const data: multiOptionType[] = [];
@@ -1222,12 +1206,13 @@ export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string
     case UnitType.Centimeter:
       const height = centimeterToInches(patientHeight);
       return height?.toString()
+
     case UnitType.Inch:
       return PatientHeight
+
     default:
       return PatientHeight
   }
-
 }
 
 export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
@@ -1411,12 +1396,15 @@ export const practiceChartOptions = (chartBgColor: string) => {
   }
 }
 
-export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+export const renderArrayAsSelectorOptions = (array: string[] | number[], id = '') => {
   let result: SelectorOption[] = [];
 
   if (!!array) {
     for (let item of array) {
-      result.push({ id: item.toString(), name: item.toString() })
+      result.push({
+        id: id ?? item.toString(),
+        name: typeof item === 'string' ? formatValue(item) : item.toString()
+      })
     }
   }
 
@@ -1501,14 +1489,13 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatValue(member)
+        name: formatValue(member).trim()
       }
     });
   } else return [EMPTY_OPTION]
 }
 
 export const getAppointmentStatus = (status: string) => {
-  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == ", status)
   switch (status) {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
@@ -1541,3 +1528,38 @@ export const getAppointmentStatus = (status: string) => {
       return AppointmentStatus.Initiated;
   }
 }
+
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+  switch (value) {
+    case AppointmentStatus.Initiated:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.CheckedIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.Rescheduled:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.Initiated, AppointmentStatus.CheckedIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.CheckedIn:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.InLobby:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InSession, AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.InSession:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.NoShow:
+    case AppointmentStatus.Cancelled:
+    case AppointmentStatus.Completed:
+    default:
+      return [EMPTY_OPTION]
+  }
+};

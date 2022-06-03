@@ -1609,6 +1609,8 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
+export type StatusInputProps = { status: SelectorOption }
+
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
 }

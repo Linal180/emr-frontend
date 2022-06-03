@@ -17,15 +17,15 @@ import NoDataFoundComponent from "./NoDataFoundComponent";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { AppointmentsTableProps, SelectorOption } from "../../interfacesTypes";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin, renderPairSelectorOptions, getAppointmentStatus, setRecord,
-  convertDateFromUnix
+  isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
+  AppointmentStatusStateMachine
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
@@ -38,8 +38,6 @@ import {
 } from "../../constants";
 
 dotenv.config()
-
-type StatusInputProps = { status: SelectorOption }
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
@@ -340,11 +338,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 label=""
                                 value={{ id, name: text }}
                                 name="status"
-                                options={renderPairSelectorOptions(id, Object.values(AppointmentStatus))}
+                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                               />
                             </FormProvider>
-                            : <Box onClick={() => id && handleStatusUpdate(id, text)} className={`${classes.status} pointer-cursor`} component='span' color={textColor} border={`1px solid ${textColor}`}>
+                            : <Box onClick={() => id && handleStatusUpdate(id, text)}
+                              className={`${classes.status} pointer-cursor`}
+                              component='span' color={textColor}
+                              border={`1px solid ${textColor}`}
+                            >
                               {text}
                             </Box>}
                         </Box>}
