@@ -25,7 +25,7 @@ import {
   ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY,
   NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
-  PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN,
+  OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, NOTES, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, ADDRESS_CTD, SSN,
   LEGAL_SEX, AMOUNT,
 } from "../constants";
 
@@ -88,6 +88,11 @@ const notRequiredOTP = (label: string, isRequired: boolean) => {
 const optionalEmailSchema = (isOptional: boolean) => {
   return yup.string().email(INVALID_EMAIL)
     .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
+}
+
+const otherRelationSchema = (isOtherRelation: boolean) => {
+  return yup.string()
+    .test('', requiredMessage(OTHER_RELATION), value => isOtherRelation ? !!value : true)
 }
 
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
@@ -989,10 +994,19 @@ export const basicPatientDoctorSchema = {
   languagesSpoken: notRequiredStringOnly(LANGUAGE_SPOKEN),
 };
 
-export const updatePatientProviderSchema = yup.object({
+export const updatePatientProviderSchema = (isOtherRelation: boolean) => yup.object({
   providerId: selectorSchema(PROVIDER),
   phone: notRequiredPhone(PHONE),
   speciality: selectorSchema(SPECIALTY),
+  otherRelation: otherRelationSchema(isOtherRelation),
+  ...firstLastNameSchema,
+  ...emailSchema,
+})
+
+export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) => yup.object({
+  phone: notRequiredPhone(PHONE),
+  speciality: selectorSchema(SPECIALTY),
+  otherRelation: otherRelationSchema(isOtherRelation),
   ...firstLastNameSchema,
   ...emailSchema,
 })
