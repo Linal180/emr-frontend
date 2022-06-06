@@ -1,5 +1,5 @@
 
-import { FormControl, InputLabel } from '@material-ui/core';
+import { FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 //interfaces, styles, constants
 import { FieldComponentProps } from '../../interfacesTypes';
@@ -63,8 +63,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           name={fieldId}
           control={control}
           defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-          render={({ field }) => (
-            <FormControl fullWidth margin="normal">
+          render={({ field, fieldState }) => (
+            <FormControl fullWidth margin="normal" >
               <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
                 {required ? `${label} *` : label}
               </InputLabel>
@@ -81,14 +81,20 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       name={fieldId}
       control={control}
       defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-      render={({ field }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
-            {required ? `${label} *` : label}
-          </InputLabel>
-          <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
-        </FormControl>
-      )}
+      render={({ field, fieldState }) => {
+        const { invalid, error: { message } = {} } = fieldState
+        return (
+          <FormControl fullWidth margin="normal" error={Boolean(invalid)} id={fieldId}>
+            <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
+              {required ? `${label} *` : label}
+            </InputLabel>
+            <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
+            <FormHelperText>
+              {message}
+            </FormHelperText>
+          </FormControl>
+        )
+      }}
     />
   )
 }

@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
+  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue, ControllerFieldState,
 } from "react-hook-form";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -1218,7 +1218,8 @@ export interface FieldComponentProps {
   facilityId?: string;
   practiceId?: string;
   state?: ExternalFormBuilderState;
-  dispatcher?: Dispatch<PublicFormBuilderAction>
+  dispatcher?: Dispatch<PublicFormBuilderAction>;
+  fieldState?: ControllerFieldState
 }
 
 export interface ShareModalTypes extends DialogTypes {

@@ -1,8 +1,9 @@
 //packages block
+import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress, Card } from '@material-ui/core';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useParams } from 'react-router';
 //components block
 import InputController from '../../../common/FormFieldController';
 import CardComponent from '../../../common/CardComponent';
@@ -22,16 +23,17 @@ import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { GREY } from '../../../../theme';
 import { State, Action, initialState, externalFormBuilderReducer, ActionType } from '../../../../reducers/externalFormBuilderReducer';
+import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
 //constants
 const initialValues = {};
 //component
 const PublicFormPreview = () => {
   //hooks
-  const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
   const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId } = state
+  const methods = useForm<any>({ defaultValues: initialValues ,resolver: yupResolver(getFormBuilderValidation(formValues))});
   const { handleSubmit } = methods;
 
   //mutation
