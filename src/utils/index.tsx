@@ -6,7 +6,7 @@ import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip, capitalize
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -170,7 +170,7 @@ export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
 
-export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
+export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;

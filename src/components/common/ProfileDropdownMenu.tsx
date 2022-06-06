@@ -160,7 +160,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
           </Grid>
 
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} alignItems="center">
               <Grid item md={8}>
                 <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>
                   {LOCK_SCREEN}
