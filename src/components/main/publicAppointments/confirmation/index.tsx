@@ -12,7 +12,7 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { GREY_ELEVEN, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
-  AppointmentPayload, Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
+  AppointmentPayload, AppointmentStatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
 } from "../../../../generated/graphql";
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -50,7 +50,7 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
           if (appointment && status && status === 200) {
             const { status } = appointment
 
-            if (status === Appointmentstatus.Cancelled) {
+            if (status === AppointmentStatus.Cancelled) {
               history.push(PATIENT_APPOINTMENT_CANCEL)
             }
 

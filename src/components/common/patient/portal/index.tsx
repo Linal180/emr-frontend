@@ -16,7 +16,9 @@ import { ParamsType, PortalTableProps } from "../../../../interfacesTypes";
 import { useSendInviteToPatientMutation } from "../../../../generated/graphql";
 import {
   EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED, PORTAL_DUMMY_DATA, REVOKE_ACCESS, ENABLE_ACCESS_PORTAL,
-  DISABLE_ACCESS_PORTAL
+  DISABLE_ACCESS_PORTAL,
+  NOT_FOUND_EXCEPTION,
+  PATIENT_CANT_BE_INVITED
 } from "../../../../constants";
 
 const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
@@ -27,11 +29,12 @@ const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
 
   const [sendInviteToPatient, { loading }] = useSendInviteToPatientMutation({
     onError({ message }) {
-      Alert.error(message)
+      Alert.error(message === NOT_FOUND_EXCEPTION ? PATIENT_CANT_BE_INVITED : message)
     },
 
     onCompleted(data) {
       if (data) {
+
         const { sendInviteToPatient } = data;
 
         if (sendInviteToPatient) {

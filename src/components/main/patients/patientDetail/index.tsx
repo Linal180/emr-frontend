@@ -15,15 +15,17 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import BarChart2Component from '../../../common/charts/PracticesByYear';
 import PatientProfileHero from '../../../common/patient/profileHero';
-import EnounterComponent from '../../patients/patientDetail/encounters';
+import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import EncounterComponent from '../../patients/patientDetail/encounters';
 // constants, history, styling block
+import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
+import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -38,21 +40,22 @@ import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
-  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE, HEART_RATE_VALUE,
+  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
+  HEART_RATE_VALUE, VISITS,
 } from "../../../../constants";
-import { getFormattedDate } from '../../../../utils';
-import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
+import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData, patientProvidersData }, dispatch] =
+  const [{ openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [{
+  const [state, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+  const {
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
-  }, appointmentDispatch] = useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
-
+  } = state
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -116,7 +119,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            appointmentStatus: Appointmentstatus.Initiated.toLocaleLowerCase(),
+            appointmentStatus: AppointmentStatus.Initiated.toLocaleLowerCase(),
             paginationOptions: {
               limit: PAGE_LIMIT, page: pageComing
             },
@@ -134,7 +137,12 @@ const PatientDetailsComponent = (): JSX.Element => {
     type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
   });
 
-  const [getPatientProvider, { loading: getPatientLoading }] = useGetPatientProviderLazyQuery({
+  const handleProviderEdit = (id: string, providerId: string) => {
+    dispatch({ type: ActionType.SET_DOCTOR_PATIENT_ID, doctorPatientId: id })
+    dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: providerId })
+  }
+
+  const [getPatientProviders, { loading: getPatientLoading }] = useGetPatientProvidersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -142,11 +150,11 @@ const PatientDetailsComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { getPatientProvider } = data;
+        const { getPatientProviders } = data;
 
-        if (getPatientProvider) {
+        if (getPatientProviders) {
 
-          const { providers } = getPatientProvider;
+          const { providers } = getPatientProviders;
           dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
         }
       }
@@ -155,13 +163,13 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchAllPatientsProviders = useCallback(async () => {
     try {
-      id && await getPatientProvider({
+      id && await getPatientProviders({
         variables: {
           getPatient: { id }
         }
       })
     } catch (error) { }
-  }, [id, getPatientProvider])
+  }, [id, getPatientProviders])
 
   useEffect(() => {
     fetchAllPatientsProviders()
@@ -264,7 +272,12 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Grid item md={6} sm={12} xs={12}>
                 <Card>
-                  <BarChart2Component year={{ id: '2022', name: '2022' }} />
+                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
+                    <Typography variant="h4">{VISITS}</Typography>
+                  </Box>
+
+                  {/* Implement patient visits by year */}
+                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
                 </Card>
               </Grid>
             </Grid>
@@ -274,7 +287,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-                  <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} />
+                  <AppointmentList appointments={upComing} type={AppointmentStatus.Initiated} />
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -297,20 +310,27 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
-                <EnounterComponent />
+                <EncounterComponent />
               </Grid>
             </Grid>
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
                 <CareTeamComponent
-                  toggleSideDrawer={toggleSideDrawer} patientId={id} loading={getPatientLoading} reload={() => fetchAllPatientsProviders()}  patientProvidersData={patientProvidersData}
+                  onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
+                  toggleSideDrawer={toggleSideDrawer}
+                  patientId={id}
+                  loading={getPatientLoading}
+                  reload={() => fetchAllPatientsProviders()}
+                  patientProvidersData={patientProvidersData}
+                  drawerOpened={drawerOpened}
+                  patientDispatcher={dispatch}
                 />
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={Appointmentstatus.Completed} />
+                  <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -353,7 +373,18 @@ const PatientDetailsComponent = (): JSX.Element => {
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <CareTeamProvider drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer} patientId={id} reload={() => fetchAllPatientsProviders()} />
+        <CareTeamProvider
+          drawerOpened={drawerOpened}
+          toggleSideDrawer={toggleSideDrawer}
+          patientId={id}
+          reload={() => fetchAllPatientsProviders()}
+          doctorId={doctorId}
+          doctorPatientId={doctorPatientId}
+          isEdit={isEdit}
+          doctorName={doctorName}
+          patientProvidersData={patientProvidersData}
+        />
+
       </Box>
 
       <ConfirmationModal

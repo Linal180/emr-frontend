@@ -30,8 +30,8 @@ import {
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Doctor,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
   CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
-  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, Appointmentstatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload,
+  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
+  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload, DoctorPatient,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -380,6 +380,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
   shouldOmitFacilityId?: boolean
+  careProviderData?: DoctorPatient[];
 }
 
 export interface CardSelectorProps {
@@ -1223,6 +1224,12 @@ export interface ShareModalTypes extends DialogTypes {
   handleCopy: () => void;
 }
 
+export interface ConfirmModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleSave: () => void;
+}
 export interface SmartyUserData {
   street: string;
   address: string;
@@ -1564,7 +1571,7 @@ export interface CheckboxControllerProps extends IControlLabel {
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];
-  type?: Appointmentstatus;
+  type?: AppointmentStatus;
   reload?: Function;
   showHeader?: boolean;
 };
@@ -1588,15 +1595,23 @@ export interface UpdatePatientProviderInputsProps {
   lastName: string;
   email: string;
   phone: string;
+  relation: string;
+  otherRelation?: string;
 }
 
 export interface CareTeamsProps {
-  toggleSideDrawer?: Function;
-  drawerOpened? : boolean;
-  patientId?: string;
   loading?: boolean;
-  reload?: Function;
+  isEdit?: boolean;
+  patientId?: string;
+  doctorId?: string;
+  doctorPatientId?: string;
+  doctorName?: string;
+  drawerOpened? : boolean;
   patientProvidersData?: PatientProviderPayload['providers']
+  onEdit?: Function;
+  reload?: Function;
+  toggleSideDrawer?: Function;
+  patientDispatcher?: Dispatch<PatientAction>
 }
 
 export interface PracticeChartProps {

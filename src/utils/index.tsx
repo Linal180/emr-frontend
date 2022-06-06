@@ -11,27 +11,24 @@ import {
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
+import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   SelectorOption, TableAlignType, UserFormType
 } from "../interfacesTypes";
 import {
-  Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
+  Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, AppointmentStatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
   AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
-  UnitType,
-  SnoMedCodes,
-  Insurance,
-  PracticeUsersWithRoles,
+  UnitType, SnoMedCodes, Insurance, PracticeUsersWithRoles,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
-  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE
+  VIEW_APPOINTMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE, EMPTY_OPTION, MISSING
 } from "../constants";
 
 export const handleLogout = () => {
@@ -52,7 +49,7 @@ export const formatValue = (value: string) => {
   value.split("_").map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
-  return formatted;
+  return formatted.trim();
 };
 
 export const formatServiceCode = (value: string) => {
@@ -93,6 +90,10 @@ export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boo
       }
     </Typography>
   </TableCell>
+);
+
+export const renderMissing = () => (
+  <Typography variant='h6' className="danger">{MISSING}</Typography>
 );
 
 export const requiredLabel = (label: string) => {
@@ -737,12 +738,76 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   })
 
 export const appointmentStatus = (status: string) => {
-  const cancelled = status === Appointmentstatus.Cancelled;
+  switch (status) {
+    case AppointmentStatus.NoShow:
+      return {
+        text: formatValue(AppointmentStatus.NoShow),
+        bgColor: RED_THREE,
+        textColor: WHITE
+      }
 
-  return {
-    text: cancelled ? CANCELLED : INITIATED,
-    bgColor: cancelled ? BLUE_FIVE : RED_ONE,
-    textColor: cancelled ? RED : GREEN
+    case AppointmentStatus.Cancelled:
+      return {
+        text: formatValue(AppointmentStatus.Cancelled),
+        bgColor: RED,
+        textColor: RED
+      }
+
+    case AppointmentStatus.CheckedIn:
+      return {
+        text: formatValue(AppointmentStatus.CheckedIn),
+        bgColor: GREEN_ONE,
+        textColor: GREEN
+      }
+
+    case AppointmentStatus.Completed:
+      return {
+        text: formatValue(AppointmentStatus.Completed),
+        bgColor: GREEN,
+        textColor: GREEN_ONE
+      }
+
+    case AppointmentStatus.InLobby:
+      return {
+        text: formatValue(AppointmentStatus.InLobby),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
+
+    case AppointmentStatus.InSession:
+      return {
+        text: formatValue(AppointmentStatus.InSession),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
+
+    case AppointmentStatus.Initiated:
+      return {
+        text: formatValue(AppointmentStatus.Initiated),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
+
+    case AppointmentStatus.Rescheduled:
+      return {
+        text: formatValue(AppointmentStatus.Rescheduled),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
+
+    case AppointmentStatus.SelfCheckedIn:
+      return {
+        text: formatValue(AppointmentStatus.SelfCheckedIn),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
+
+    default:
+      return {
+        text: formatValue(AppointmentStatus.Initiated),
+        bgColor: GREEN,
+        textColor: GREEN
+      }
   }
 };
 
@@ -1157,7 +1222,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   return ""
 }
 
-export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modalName:ITEM_MODULE){
+export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
   const data: SelectorOption[] = [];
 
   if (!!list) {
@@ -1170,7 +1235,7 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modal
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
-  
+
           data.push({ id: insuranceId, name: `${payerId} | ${payerName}` })
           break;
         default:
@@ -1242,9 +1307,9 @@ export const practiceChartOptions = (chartBgColor: string) => {
     },
 
     tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table style="margin:auto;padding:0">',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        '<td style="padding:0;"><b>{point.y}</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true,
@@ -1273,6 +1338,18 @@ export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
   if (!!array) {
     for (let item of array) {
       result.push({ id: item.toString(), name: item.toString() })
+    }
+  }
+
+  return result;
+};
+
+export const renderPairSelectorOptions = (id: string, array: string[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id, name: formatValue(item).trim().toString() })
     }
   }
 
@@ -1338,15 +1415,50 @@ export const getShortName = (name: string) => {
   return shortName;
 }
 
-export function mapEnum<enumType> (enumerable: enumType): SelectorOption[] {
-  // get all the members of the enum
-  let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
+  if (enumerable) {
+    let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
 
-  // now map through the enum values
-  return enumMembers.map(m => {
-    return {
-      id: m,
-      name: formatValue(m)
-    }
-  });
+    return enumMembers.map(member => {
+      return {
+        id: member,
+        name: formatValue(member)
+      }
+    });
+  } else return [EMPTY_OPTION]
+}
+
+export const getAppointmentStatus = (status: string) => {
+  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == " ,status)
+  switch (status) {
+    case formatValue(AppointmentStatus.Cancelled):
+      return AppointmentStatus.Cancelled;
+
+    case formatValue(AppointmentStatus.CheckedIn):
+      return AppointmentStatus.CheckedIn;
+
+    case formatValue(AppointmentStatus.Completed):
+      return AppointmentStatus.Completed;
+
+    case formatValue(AppointmentStatus.InLobby):
+      return AppointmentStatus.InLobby;
+
+    case formatValue(AppointmentStatus.InSession):
+      return AppointmentStatus.InSession;
+
+    case formatValue(AppointmentStatus.Initiated):
+      return AppointmentStatus.Initiated;
+
+    case formatValue(AppointmentStatus.NoShow):
+      return AppointmentStatus.NoShow;
+
+    case formatValue(AppointmentStatus.Rescheduled):
+      return AppointmentStatus.Rescheduled;
+
+    case formatValue(AppointmentStatus.SelfCheckedIn):
+      return AppointmentStatus.SelfCheckedIn;
+
+    default:
+      return AppointmentStatus.Initiated;
+  }
 }

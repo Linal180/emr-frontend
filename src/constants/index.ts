@@ -23,8 +23,10 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity,
+  DoctorPatientRelationType, FormType, ElementType, FieldOptionsInputType, AppointmentStatus, AllergySeverity, SmokingStatus,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
+  PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType,
+  Policy_Holder_Gender_Identity,
 } from "../generated/graphql";
 
 // regex
@@ -109,6 +111,10 @@ export const NOTES = "Notes";
 export const ACUTE = "Acute";
 export const CHRONIC = "Chronic";
 export const LOCK_TIME_OUT = 604800000;
+export const BASIC_DETAILS = "Basic Details";
+export const DEMOGRAPHIC = "Demographic";
+export const BILLING_DETAILS = "Billing Details";
+export const EMERGENCY_CONTACTS = "Emergency Contacts";
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -406,7 +412,8 @@ export const PROVIDER_MANAGEMENT = "Provider Management";
 export const PROVIDER_DETAILS = "Provider Details";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const ADD_PROVIDER_TEXT = "Add Provider";
-export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
+export const ADD_PROVIDER_INFORMATION = "Click here to add Provider information";
+export const SEARCH_PATIENT_NAME_ID = "Patient Name, Patient ID or Insurance Number etc...";
 export const EMERGENCY_ACCESS = "Emergency Access";
 export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
@@ -545,6 +552,8 @@ export const FACILITY_HOURS_END = "Facility hours end";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const FACILITY_HOURS_START = "Facility hours start";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
+export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
+export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -860,6 +869,7 @@ export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
 export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
 export const OTHER_PROVIDER = "Other Provider"
+export const OTHER_RELATION = "Other Relation"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -872,12 +882,14 @@ export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
+export const VISITS = "Visits";
 export const SEARCH = "Search";
 export const SIGNED = "Signed";
 export const DELETE = "Delete";
 export const UPLOAD = "Upload";
 export const HOME_TEXT = "Home";
 export const PENDING = "Pending";
+export const MISSING = "Missing";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -957,6 +969,7 @@ export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const COPAY_TYPE = "Copay Type";
+export const EDIT_PROVIDER = "Edit Provider";
 export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
@@ -1003,6 +1016,7 @@ export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
 export const USER_ROLE_PLACEHOLDER = "User Role";
+export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
 export const GENDER_IDENTITY = "Gender Identity";
@@ -1128,6 +1142,7 @@ export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose your Payment Method";
+export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
 export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
@@ -1252,14 +1267,26 @@ export const FACILITY_INFO_ROUTE = "facility-information";
 export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
+// Register-Patient Routes
+export const IDENTIFICATION_ROUTE = "identification";
+export const CONTACT_INFORMATION_ROUTE = "contact-information";
+export const PROVIDER_REGISTRATION__ROUTE = "provider-registration";
+export const PRIVACY__ROUTE = "privacy";
+export const EMERGENCY_CONTACT_ROUTE = "emergency-contact";
+export const GUARANTOR_ROUTE = "guarantor";
+export const MAILING_ADDRESS_ROUTE = "mailing-address";
+export const EMPLOYMENT_ROUTE = "employment";
+export const DEMOGRAPHICS_ROUTE = "demographics";
+export const BILLING_ROUTE = "billing";
+
 // HELPER TEXT MESSAGES
-export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
@@ -1307,7 +1334,6 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const EDIT_PROVIDER = "Edit Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1328,7 +1354,6 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
-export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1390,19 +1415,20 @@ export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
-export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
-  "Resource can't be deleted.";
+export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
+export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
+export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient Can't be invited";
 export const WRONG_EMAIL_OR_PASSWORD =
-  "You have entered wrong email or password";
+"You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
-  "User with this email already exists";
+"User with this email already exists";
 export const LOGIN_TEXT_MESSAGE =
   "Enter your credentials to login to your portal";
-export const APPOINTMENT_BOOKED_SUCCESSFULLY =
+  export const APPOINTMENT_BOOKED_SUCCESSFULLY =
   "Appointment is booked successfully";
-export const APPOINTMENT_CANCEL_TEXT =
+  export const APPOINTMENT_CANCEL_TEXT =
   "Your appointment is cancelled successfully";
-export const RESET_PASSWORD_SUCCESS =
+  export const RESET_PASSWORD_SUCCESS =
   "Your password has been changed successfully.";
 export const LOGIN_MESSAGE =
   "Please sign in to explore all that BOCA+ has to offer.";
@@ -1454,10 +1480,10 @@ export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
-export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP = 
-"This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
-export const COPAY_AMOUNTS_TOOLTIP = 
-"These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP =
+  "This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP =
+  "These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1475,7 +1501,7 @@ export const UPIN_INFO =
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
+export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -1646,29 +1672,29 @@ export const LAB_TEST_STATUSES: SelectorOption[] = [
   { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
 
-export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE= mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
+export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE = mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
 
-export const MAPPED_POLICY_ORDER_OF_BENEFIT= mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
+export const MAPPED_POLICY_ORDER_OF_BENEFIT = mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
 
-export const MAPPED_PRICING_PRODUCT_TYPE= mapEnum<typeof PricingProductType>(PricingProductType)
+export const MAPPED_PRICING_PRODUCT_TYPE = mapEnum<typeof PricingProductType>(PricingProductType)
 
-export const MAPPED_COPAY_TYPE= mapEnum<typeof CopayType>(CopayType)
+export const MAPPED_COPAY_TYPE = mapEnum<typeof CopayType>(CopayType)
 
-export const MAPPED_POLICY_GENDER= mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
 
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
   {
-    id: Appointmentstatus.Cancelled,
-    name: formatValue(Appointmentstatus.Cancelled),
+    id: AppointmentStatus.Cancelled,
+    name: formatValue(AppointmentStatus.Cancelled),
   },
   {
-    id: Appointmentstatus.Completed,
-    name: formatValue(Appointmentstatus.Completed),
+    id: AppointmentStatus.Completed,
+    name: formatValue(AppointmentStatus.Completed),
   },
   {
-    id: Appointmentstatus.Initiated,
-    name: formatValue(Appointmentstatus.Initiated),
+    id: AppointmentStatus.Initiated,
+    name: formatValue(AppointmentStatus.Initiated),
   },
 ];
 
@@ -2533,7 +2559,7 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
-  insurance= 'insurance'
+  insurance = 'insurance'
 }
 
 export const DUMMY_ENCOUNTERS = [
@@ -2542,17 +2568,17 @@ export const DUMMY_ENCOUNTERS = [
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
   },
   {
     id: 2,
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
-  }  
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
+  }
 ];
 
 export enum CARD_LAYOUT_MODAL {
@@ -3186,6 +3212,41 @@ export const FacilityMenuNav = [
   },
 ];
 
+export const RegisterPatientMenuNav = [
+  {
+    title: IDENTIFICATION,
+    linkTo: IDENTIFICATION_ROUTE,
+  },
+  {
+    title: CONTACT_INFORMATION,
+    linkTo: CONTACT_INFORMATION_ROUTE,
+  },
+  {
+    title: PROVIDER_REGISTRATION_DATES,
+    linkTo: PROVIDER_REGISTRATION__ROUTE,
+  },
+  {
+    title: PRIVACY,
+    linkTo: PRIVACY__ROUTE,
+  },
+  {
+    title: EMERGENCY_CONTACT,
+    linkTo: EMERGENCY_CONTACT_ROUTE,
+  },
+  {
+    title: GUARANTOR,
+    linkTo: GUARANTOR_ROUTE,
+  },
+  {
+    title: EMPLOYMENT,
+    linkTo: EMPLOYMENT_ROUTE,
+  },
+  {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
+  },
+];
+
 export const MAPPED_WEEK_DAYS = [
   {
     id: "Monday",
@@ -3485,6 +3546,33 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
 
+export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
+  {
+    name: formatValue(DoctorPatientRelationType.PrimaryProvider),
+    id: DoctorPatientRelationType.PrimaryProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.BackupProvider),
+    id: DoctorPatientRelationType.BackupProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.PreferredProvider),
+    id: DoctorPatientRelationType.PreferredProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.ReferringProvider),
+    id: DoctorPatientRelationType.ReferringProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OrderingProvider),
+    id: DoctorPatientRelationType.OrderingProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OtherProvider),
+    id: DoctorPatientRelationType.OtherProvider,
+  },
+]
+
 export const PATIENT_HEIGHT_UNITS = [
   { id: UnitType.Inch, name: IN_TEXT },
   { id: UnitType.Centimeter, name: CM_TEXT },
@@ -3691,7 +3779,7 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
 ];
 
 export const INITIAL_COPAY_VALUE = {
-  copayType: setRecord('',''),
+  copayType: setRecord('', ''),
   amount: ''
 }
 
@@ -3707,20 +3795,20 @@ export const areaChartOne = {
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    
+
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {
@@ -3784,13 +3872,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {
