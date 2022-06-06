@@ -1628,4 +1628,5 @@ export interface FormBuilderFacilitySelectorProps extends SelectorProps {
   patientId?: string
   practiceId: string
   dispatcher?: Dispatch<PublicFormBuilderAction>
+  state?: ExternalFormBuilderState
 }

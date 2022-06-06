@@ -1,5 +1,6 @@
 import { getFormInitialValues } from "../constants";
 import { FormType, SectionsInputs } from "../generated/graphql";
+import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
   isActive: boolean;
@@ -11,6 +12,7 @@ export interface State {
   facilityId: string;
   serviceId: string;
   practiceId: string;
+  facilityFieldId: SelectorOption;
 }
 
 export const initialState: State = {
@@ -22,7 +24,11 @@ export const initialState: State = {
   formType: FormType.Appointment,
   facilityId: '',
   serviceId: "",
-  practiceId: ""
+  practiceId: "",
+  facilityFieldId: {
+    id: "",
+    name: ""
+  }
 }
 
 export enum ActionType {
@@ -34,7 +40,8 @@ export enum ActionType {
   SET_FORM_TYPE = 'setFormType',
   SET_FACILITY_ID = 'setFacilityId',
   SET_SERVICE_ID = 'setServiceId',
-  SET_PRACTICE_ID = 'setPracticeId'
+  SET_PRACTICE_ID = 'setPracticeId',
+  SET_FACILITY_FIELD_ID = 'setFacilityFieldId'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -42,8 +49,9 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_UPLOAD_IMAGE; uploadImage: boolean } |
 { type: ActionType.SET_FORM_NAME; formName: string } |
 { type: ActionType.SET_FORM_VALUES; formValues: SectionsInputs[] } |
-{ type: ActionType.SET_FORM_TYPE; formType: FormType } |
+{ type: ActionType.SET_FACILITY_FIELD_ID; facilityFieldId: SelectorOption } |
 { type: ActionType.SET_FACILITY_ID; facilityId: string } |
+{ type: ActionType.SET_FORM_TYPE; formType: FormType } |
 { type: ActionType.SET_SERVICE_ID; serviceId: string } |
 { type: ActionType.SET_PRACTICE_ID; practiceId: string }
 
@@ -97,11 +105,17 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
         ...state,
         serviceId: action.serviceId
       }
-      
+
     case ActionType.SET_PRACTICE_ID:
       return {
         ...state,
         practiceId: action.practiceId
+      }
+
+    case ActionType.SET_FACILITY_FIELD_ID:
+      return {
+        ...state,
+        facilityFieldId: action.facilityFieldId
       }
   }
 }

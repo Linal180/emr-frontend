@@ -12,11 +12,12 @@ import { facilityReducer, Action, initialState, State, ActionType } from "../../
 import { ActionType as FormActionType } from '../../../reducers/externalFormBuilderReducer'
 
 const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, practiceId, dispatcher
+  name, label, disabled, isRequired, addEmpty, practiceId, dispatcher, state: formState
 }): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { page, searchQuery, facilities } = state;
+  const { facilityFieldId } = formState || {}
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
 
   const [findAllFacility] = useFindAllFacilityListLazyQuery({
@@ -68,7 +69,7 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
         return (
           <Autocomplete
             options={updatedOptions ?? []}
-            value={field.value}
+            value={facilityFieldId}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}
@@ -92,8 +93,8 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
             )}
             onChange={(_, data) => {
               const { id } = data || {}
-              id && dispatcher && dispatcher({ type: FormActionType.SET_FACILITY_ID, facilityId: id })
-              field.onChange(data)
+              id && dispatcher && dispatcher({ type: FormActionType.SET_FACILITY_FIELD_ID, facilityFieldId: data })
+              field.onChange(id)
             }}
           />
         );
