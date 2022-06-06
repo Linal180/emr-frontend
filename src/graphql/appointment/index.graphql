@@ -76,6 +76,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       billingStatus
       checkedInAt
       selfCheckIn
+      checkInActiveStep
       
       appointmentType {
         id

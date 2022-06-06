@@ -22,7 +22,7 @@ import { patientVitalUpdateSchema } from '../../../../../validationSchemas';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
 import { SlashIcon } from '../../../../../assets/svgs';
 
-export const VitalListingTable = ({ patientVitals, patientStates, setPatientVitals }: VitalListingTableProps) => {
+export const VitalListingTable = ({ patientVitals, patientStates, setPatientVitals, shouldDisableEdit }: VitalListingTableProps) => {
 
   const { heightUnit: { id: heightId }, weightUnit: { id: weightId }, headCircumferenceUnit: {
     id: headCircumferenceId }, feverUnit: { id: feverId } } = patientStates;
@@ -316,7 +316,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`}
-                        scope="row" onDoubleClick={() => editHandler(id || '', VITAL_LABELS.pulseRate, pulseRate || '')}>
+                        scope="row" onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || '', VITAL_LABELS.pulseRate, pulseRate || '')}>
                         <Typography>
                           {pulseRate || DASHES}
                         </Typography>
@@ -342,7 +342,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.respiratoryRate, respiratoryRate || '')}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.respiratoryRate, respiratoryRate || '')}
                       >{respiratoryRate || DASHES}</TableCell>)
                   })}
                 </TableRow>
@@ -363,7 +363,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             onBlur={handleSubmit(onSubmit)}
                             notStep
                             isHelperText
-                            
+
                           />
                           <Box mx={1} height={'100%'}>
                             <SlashIcon />
@@ -377,12 +377,12 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             onBlur={handleSubmit(onSubmit)}
                             notStep
                             isHelperText
-                            
+
                           />
                         </Box>
                       </TableCell> :
                       (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.bloodPressure,
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.bloodPressure,
                           systolicBloodPressure || '', diastolicBloodPressure || '')}
                       >
                         {(systolicBloodPressure && `${systolicBloodPressure}/${diastolicBloodPressure}`) || DASHES}
@@ -407,7 +407,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.oxygenSaturation, oxygenSaturation || '')}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.oxygenSaturation, oxygenSaturation || '')}
                       >{oxygenSaturation || DASHES}</TableCell>)
                   })}
                 </TableRow>
@@ -432,7 +432,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientHeight, height, weight)}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.PatientHeight, height, weight)}
                       >
                         {height || DASHES}
                       </TableCell>)
@@ -458,7 +458,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientWeight, weight, height)}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.PatientWeight, weight, height)}
                       >
                         {weight || DASHES}
                       </TableCell>)
@@ -490,7 +490,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PainRange, PainRange || '')}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.PainRange, PainRange || '')}
                       >{PainRange || DASHES}</TableCell>)
                   })}
                 </TableRow>
@@ -512,7 +512,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.smokingStatus, smokingStatus || '', status)}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.smokingStatus, smokingStatus || '', status)}
                       >
                         <Typography noWrap>
                           {status || DASHES}
@@ -540,7 +540,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientHeadCircumference, head)}
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.patientHeadCircumference, head)}
                       >
                         <Typography>
                           {head || DASHES}
@@ -567,7 +567,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientTemperature, fever)}>
+                        onDoubleClick={shouldDisableEdit ? () => { } : () => editHandler(id || "", VITAL_LABELS.patientTemperature, fever)}>
                         <Typography>
                           {fever || DASHES}
                         </Typography>

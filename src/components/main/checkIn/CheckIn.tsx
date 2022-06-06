@@ -1,63 +1,19 @@
 //packages import
-import { FC, useCallback, useEffect } from "react";
-import { useParams } from "react-router";
-import { ChevronRight } from "@material-ui/icons";
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
-// components block
-import Alert from "../../common/Alert";
+import { ChevronRight } from "@material-ui/icons";
+import { FC } from "react";
 //constants, interfaces, utils, types
-import { ActionType, } from "../../../reducers/appointmentReducer";
-import { CheckInComponentProps, ParamsType } from "../../../interfacesTypes";
-import { AppointmentPayload, useGetAppointmentLazyQuery } from "../../../generated/graphql";
-import {
-  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
-  PROVIDER_NAME, REASON
-} from "../../../constants";
+import { APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE, PROVIDER_NAME, REASON } from "../../../constants";
+import { CheckInComponentProps } from "../../../interfacesTypes";
 
-const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, appointmentDispatcher, handleStep }) => {
-  const { appointmentId } = useParams<ParamsType>()
-  const { appointment } = appointmentState;
-  const { appointmentType, provider, primaryInsurance, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
+const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispatcher, handleStep}) => {
+  const { appointment, primaryInsurance } = appointmentState;
+  const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
+  const { firstName, lastName } = provider ?? {}
   const { name: facilityName } = facility ?? {}
   const { name: serviceName } = appointmentType ?? {}
-  const { firstName, lastName } = provider ?? {}
 
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
-
-  const [getAppointment] = useGetAppointmentLazyQuery({
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError({ message }) {
-      Alert.error(message);
-    },
-
-    async onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
-
-      if (response) {
-        const { status } = response;
-        if (appointment && status && status === 200) {
-
-          appointmentDispatcher({
-            type: ActionType.SET_APPOINTMENT,
-            appointment: appointment as AppointmentPayload['appointment']
-          })
-        }
-      }
-    },
-  });
-
-  const fetchAppointment = useCallback(async () => {
-    appointmentId && await getAppointment({
-      variables: { getAppointment: { id: appointmentId } },
-    });
-  }, [getAppointment, appointmentId]);
-
-  useEffect(() => {
-    fetchAppointment()
-  }, [appointmentId, fetchAppointment]);
 
   return (
     <Card>

@@ -92,7 +92,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
         const { policy } = fetchPolicy
 
         const { coinsurancePercentage, copays, expirationDate, groupNumber, insurance, issueDate,
-          memberId, notes, orderOfBenifit, policyHolder, primaryCareProvider, referringProvider, pricingProductType, policyHolderRelationship } = policy ?? {}
+          memberId, notes, orderOfBenefit, policyHolder, primaryCareProvider, referringProvider, pricingProductType, policyHolderRelationship } = policy ?? {}
 
         const { address, addressCTD, certificationNumber, city, dob, employer,
           firstName, lastName, middleName, sex, ssn, state, suffix, zipCode, id: policyHolderIdToUpdate } = policyHolder ?? {}
@@ -111,7 +111,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
         issueDate && setValue('issueDate', issueDate)
         memberId && setValue('certificationNumber', memberId)
         notes && setValue('notes', notes)
-        orderOfBenifit && setValue('orderOfBenefit', setRecord(orderOfBenifit, orderOfBenifit))
+        orderOfBenefit && setValue('orderOfBenefit', setRecord(orderOfBenefit, orderOfBenefit))
         policyHolderRelationship && setValue('patientRelationship', setRecord(policyHolderRelationship, policyHolderRelationship))
 
         if (insurance) {
@@ -203,7 +203,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
             memberId: certificationNumber,
             groupNumber: policyNumber,
             notes,
-            ...(orderOfBenefit?.id && { orderOfBenifit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
             patientId: patientId,
             ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
             ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
@@ -231,7 +231,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
             memberId: certificationNumber,
             groupNumber: policyNumber,
             notes,
-            ...(orderOfBenefit?.id && { orderOfBenifit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
             patientId: patientId,
             ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
             ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),

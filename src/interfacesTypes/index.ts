@@ -1,38 +1,27 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction, RefObject } from "react";
-import { RouteProps } from "react-router-dom";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
+import { ComponentType, Dispatch, ElementType, ReactNode, RefObject, SetStateAction } from "react";
 import {
-  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
+  Control, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
 } from "react-hook-form";
-// graphql block
-import { Action } from "../reducers/mediaReducer";
-import { serviceAction } from "../reducers/serviceReducer";
-import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
+import { RouteProps } from "react-router-dom";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
+import { AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs, FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput } from "../generated/graphql";
+import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
-import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
-import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
-import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import {
-  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
-  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
-  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Doctor,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput,
-  VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload, AppointmentStatus, UpdateAttachmentInput,
-  Maybe, PatientVitals, Practice, PracticePayload, PatientProviderPayload, DoctorPatient,
-} from "../generated/graphql";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+// graphql block
+import { Action } from "../reducers/mediaReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -51,6 +40,7 @@ export interface BackdropInputType {
 
 export interface CalendarChart {
   isCalendar: boolean;
+  shouldDisableEdit?: boolean;
 }
 
 export interface AuthContextProps {
@@ -350,6 +340,20 @@ export interface CardChartingOption {
   description: string;
 }
 
+export interface TableCodesProps {
+  id: string;
+  code: string;
+  description: string;
+  price?: string;
+}
+
+export interface CodeTablesData {
+  [CodeType.Icd_10Code]?: TableCodesProps[]
+  [CodeType.CptCode]?: TableCodesProps[]
+  [CodeType.HcpcsCode]?: TableCodesProps[]
+  [CodeType.CustomCode]?: TableCodesProps[]
+}
+
 export interface SelectorProps {
   name: string
   label: string
@@ -499,6 +503,7 @@ export interface PickerProps {
   isRequired?: boolean;
   clearable?: boolean
   disableFuture?: boolean
+  disabled?: boolean
 }
 
 export interface TimePickerProps {
@@ -792,6 +797,13 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface TableSelectorProps {
+  title: string
+  shouldShowPrice?: boolean
+  moduleName: TABLE_SELECTOR_MODULES
+  handleCodes: Function
+}
+
 export interface PolicyCardProps extends GeneralFormProps{
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
@@ -812,6 +824,20 @@ export interface PolicyAttachmentProps {
 export interface LabOrderCreateProps {
   appointmentInfo?: SelectorOption
   handleStep?: Function
+  shouldDisableEdit?: boolean
+}
+
+export interface CreateBillingProps {
+  billingStatus: SelectorOption
+  paymentType: SelectorOption
+  amount: string
+  employment?: boolean
+  autoAccident?: boolean
+  otherAccident: boolean
+  onsetDateType?: SelectorOption
+  onsetDate?: string
+  otherDateType?: SelectorOption
+  otherDate?: string
 }
 
 type PhoneInputTypes =
@@ -1072,16 +1098,25 @@ export interface PatientCardsProps extends GeneralFormProps {
   dispatch?: Dispatch<PatientAction>
   state?: PatientState
   shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
 }
 
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
 }
 
 export interface AddPatientModalProps {
   isOpen: boolean;
   setIsOpen: Function;
   facilityId: string | undefined;
+}
+
+export interface CopayModalProps{
+  isOpen: boolean;
+  setIsOpen: Function;
+  insuranceId?: string;
+  billingStatus?: string
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
@@ -1465,6 +1500,7 @@ export interface VitalListingTableProps {
   patientVitals: PatientVitalsPayload['patientVitals'];
   patientStates: PatientState;
   setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
+  shouldDisableEdit?: boolean
 }
 
 export interface VitalFormInput {
@@ -1491,6 +1527,7 @@ export interface AddPatientVitalsProps {
 export interface PatientVitalsListingProps {
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
+  shouldDisableEdit?: boolean
 }
 
 export interface VitalsLabelsProps {
@@ -1628,4 +1665,25 @@ export type StatusInputProps = { status: SelectorOption }
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
+}
+
+export interface ChartComponentProps {
+  shouldDisableEdit?: boolean
+}
+
+export interface BillingComponentProps extends GeneralFormProps{
+  shouldDisableEdit?: boolean
+}
+
+export interface CodeTypeInterface {
+  icdCodes?: Code[]
+  hcpcsCode?: Code[]
+  customCode?: Code[]
+  cptCode?: Code[]
+}
+
+export interface CodesTableProps {
+  title: string
+  tableData?: TableCodesProps[]
+  shouldShowPrice?: boolean
 }
