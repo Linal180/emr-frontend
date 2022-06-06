@@ -331,7 +331,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
-                        {id && <Box>
+                        {id && <Box className={classes.selectorBox}>
                           {isEdit && appointmentId === id ?
                             <FormProvider {...methods}>
                               <Selector

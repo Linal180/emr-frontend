@@ -11,7 +11,7 @@ import {
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE } from "../theme";
+import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   SelectorOption, TableAlignType, UserFormType
@@ -855,8 +855,8 @@ export const appointmentStatus = (status: string) => {
     case AppointmentStatus.Rescheduled:
       return {
         text: formatValue(AppointmentStatus.Rescheduled),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: BLUE,
+        textColor: BLUE
       }
 
     case AppointmentStatus.SelfCheckedIn:
