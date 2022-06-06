@@ -1651,6 +1651,11 @@ export interface CareTeamsProps {
   patientDispatcher?: Dispatch<PatientAction>
 }
 
+export interface SideDrawerProps {
+  drawerOpened : boolean;
+  toggleSideDrawer?: Function;
+}
+
 export interface PracticeChartProps {
   practiceId: string;
 }
