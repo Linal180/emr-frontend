@@ -27,12 +27,12 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientProviderPayload,
+  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
   PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  VerifyCodeInput, PatientProviderPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1127,6 +1127,7 @@ export interface AddPatientModalProps {
 export interface AddDocumentModalProps {
   isOpen: boolean;
   patientId: string;
+  facilityId: string;
   patientName: string;
   setIsOpen: Function;
 }
@@ -1709,3 +1710,7 @@ export interface CodesTableProps {
 
 export type DocumentInputProps = { name: string } & { documentType: SelectorOption }
   & { provider: SelectorOption } & { date: string } & { comments: string } & { patientName: string }
+
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
+}

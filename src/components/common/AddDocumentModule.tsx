@@ -13,9 +13,10 @@ import InputController from "../../controller";
 import { AttachmentType } from "../../generated/graphql";
 import { addDocumentSchema } from "../../validationSchemas";
 import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../interfacesTypes";
-import { ADD_DOCUMENT, CANCEL, COMMENTS, DATE, DOCUMENT_NAME, DOCUMENT_TYPE, NAME, PATIENT_NAME, PROVIDER, UPLOAD_DOCUMENT } from "../../constants";
+import { ADD_DOCUMENT, CANCEL, COMMENTS, DATE, DOCUMENT_NAME, DOCUMENT_TYPE, PATIENT_NAME, PROVIDER, UPLOAD_DOCUMENT } from "../../constants";
+import DoctorSelector from "./Selector/DoctorSelector";
 
-const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patientName, patientId }): JSX.Element => {
+const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patientName, patientId, facilityId }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<DocumentInputProps>({
     mode: "all",
@@ -75,8 +76,10 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patien
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                <Selector
+                <DoctorSelector
                   isRequired
+                  addEmpty
+                  facilityId={facilityId}
                   label={PROVIDER}
                   name="provider"
                 />
