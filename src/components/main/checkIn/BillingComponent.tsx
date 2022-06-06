@@ -65,40 +65,42 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
 
   const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
     onCompleted(data) {
-      const { fetchBillingDetailsByAppointmentId } = data
-      const { billing } = fetchBillingDetailsByAppointmentId
-      const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
-        autoAccident, codes, employment, onsetDate, otherDate, otherAccident } = billing ?? {}
+      if (data) {
+        const { fetchBillingDetailsByAppointmentId } = data
+        const { billing } = fetchBillingDetailsByAppointmentId
+        const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident } = billing ?? {}
 
-      const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
-        const codeType = codeValues.codeType
-        const codeData = {
-          id: codeValues.id,
-          code: codeValues.code ?? '',
-          description: codeValues.description ?? '',
-          price: codeValues.price ?? ''
-        }
+        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
+          const codeType = codeValues.codeType
+          const codeData = {
+            id: codeValues.id,
+            code: codeValues.code ?? '',
+            description: codeValues.description ?? '',
+            price: codeValues.price ?? ''
+          }
 
-        if (acc[codeType]) {
-          acc[codeType]?.push(codeData)
+          if (acc[codeType]) {
+            acc[codeType]?.push(codeData)
+            return acc
+          }
+
+          acc[codeType] = [codeData]
           return acc
-        }
+        }, {})
 
-        acc[codeType] = [codeData]
-        return acc
-      }, {})
+        setTableCodesData(transformedCodes ?? {})
 
-      setTableCodesData(transformedCodes ?? {})
-
-      setOtherAccident(otherAccident ?? false)
-      setAutoAccident(autoAccident ?? false)
-      setEmployment(employment ?? false)
-      setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
-      setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
-      setValue('otherDateType', setRecord(otherDateType, otherDateType))
-      setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
-      setValue('otherDate', otherDate ?? '')
-      setValue('onsetDate', onsetDate ?? '')
+        setOtherAccident(otherAccident ?? false)
+        setAutoAccident(autoAccident ?? false)
+        setEmployment(employment ?? false)
+        setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
+        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
+        setValue('otherDateType', setRecord(otherDateType, otherDateType))
+        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
+        setValue('otherDate', otherDate ?? '')
+        setValue('onsetDate', onsetDate ?? '')
+      }
     }
   })
 
