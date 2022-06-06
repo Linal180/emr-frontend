@@ -3639,6 +3639,10 @@ export const RegisterPatientMenuNav = [
     linkTo: IDENTIFICATION_ROUTE,
   },
   {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
+  },
+  {
     title: CONTACT_INFORMATION,
     linkTo: CONTACT_INFORMATION_ROUTE,
   },
@@ -3653,18 +3657,6 @@ export const RegisterPatientMenuNav = [
   {
     title: EMERGENCY_CONTACT,
     linkTo: EMERGENCY_CONTACT_ROUTE,
-  },
-  {
-    title: GUARANTOR,
-    linkTo: GUARANTOR_ROUTE,
-  },
-  {
-    title: EMPLOYMENT,
-    linkTo: EMPLOYMENT_ROUTE,
-  },
-  {
-    title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
 ];
 
