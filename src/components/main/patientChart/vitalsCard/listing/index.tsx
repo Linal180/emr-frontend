@@ -13,7 +13,7 @@ import { ParamsType, PatientVitalsListingProps } from '../../../../../interfaces
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { usePatientVitalListingStyles } from '../../../../../styles/patientVitalsStyles';
 
-const PatientVitalsListing = ({ patientStates, dispatcher }: PatientVitalsListingProps) => {
+const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: PatientVitalsListingProps) => {
   const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
 
   const classes = usePatientVitalListingStyles()
@@ -74,12 +74,12 @@ const PatientVitalsListing = ({ patientStates, dispatcher }: PatientVitalsListin
             <Grid item xs={2}>
               <VitalsLabels patientStates={patientStates} />
             </Grid>
-            <Grid item xs={2}>
+            {!shouldDisableEdit && <Grid item xs={2}>
               <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} dispatcher={dispatcher} />
-            </Grid>
+            </Grid>}
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
-                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} />
+                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} shouldDisableEdit={shouldDisableEdit}/>
               </Box>
             </Grid>
           </Grid>

@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback } from "react";
+import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback, FC } from "react";
 import { useParams } from "react-router";
 import { Box, Menu, Typography } from "@material-ui/core";
 // components block
@@ -9,7 +9,7 @@ import FilterSearch from "../../common/FilterSearch";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
 import { GREY_SEVEN } from "../../../../../theme";
-import { ParamsType } from "../../../../../interfacesTypes";
+import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
 import {
@@ -24,7 +24,7 @@ import {
 } from "../../../../../generated/graphql";
 import { NoDataIcon } from "../../../../../assets/svgs";
 
-const ProblemList = (): JSX.Element => {
+const ProblemList: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
   const [patientProblems, setPatientProblems] = useState<PatientProblemsPayload['patientProblems']>([])
@@ -127,10 +127,10 @@ const ProblemList = (): JSX.Element => {
   useEffect(() => {
     handleSearch('')
   }, [handleSearch])
-
+  
   return (
     <CardLayout openSearch={isSearchOpen} cardId={PROBLEMS_TEXT} cardTitle={PROBLEMS_TEXT}
-      hasAdd
+      hasAdd={!shouldDisableEdit}
       modal={CARD_LAYOUT_MODAL.ICDCodes}
       dispatcher={dispatch}
       isMenuOpen={isMenuOpen}
