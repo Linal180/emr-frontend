@@ -14,11 +14,11 @@ import {
   UnitType, UserForms, WeightType
 } from "../generated/graphql";
 import history from "../history";
+import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   SelectorOption, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
-import { ACUTE, GREEN, GREEN_ONE, MILD, MODERATE, RED, RED_THREE, VERY_MILD, WHITE } from "../theme";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -844,8 +844,8 @@ export const appointmentStatus = (status: string) => {
     case AppointmentStatus.Rescheduled:
       return {
         text: formatValue(AppointmentStatus.Rescheduled),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: BLUE,
+        textColor: BLUE
       }
 
     case AppointmentStatus.SelfCheckedIn:
