@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
-import FormCard from './FormCard';
 import Alert from "../../../common/Alert";
 import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
