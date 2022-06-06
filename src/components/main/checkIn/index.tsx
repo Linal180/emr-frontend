@@ -1,50 +1,32 @@
 // packages block
-import { useParams } from "react-router";
-import clsx from 'clsx';
-import { ChangeEvent, Reducer, useReducer, useRef, useState } from "react";
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
-  Box, Button, Card, Collapse, colors, FormControl, Grid, IconButton, InputLabel, Step,
-  StepIconProps, StepLabel, Stepper, Table, TableBody, TableCell, TableHead, TableRow, Typography
+  Box, Button, Card, colors, Step,
+  StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
-import { AddCircleOutline, Check, ChevronRight } from '@material-ui/icons';
+import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useParams } from "react-router";
+// constants, interfaces, utils block
+import { CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VITALS_TEXT } from "../../../constants";
+import { AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation } from "../../../generated/graphql";
+import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
+import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../reducers/mediaReducer";
+import { Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState } from "../../../reducers/patientReducer";
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { convertDateFromUnix, getFormattedDate } from "../../../utils";
+import Alert from "../../common/Alert";
+import PageHeader from "../../common/PageHeader";
+import PatientProfileHero from "../../common/patient/profileHero";
+import ChartCards from "../patientChart/chartCards";
+import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
+import InsuranceComponent from "../patients/patientDetail/insurance";
+import PatientForm from "../patients/patientForm";
+import BillingComponent from "./BillingComponent";
 // component block
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
-import Search from "../../common/Search";
-import Selector from '../../common/Selector';
-import PageHeader from "../../common/PageHeader";
-import PatientForm from "../patients/patientForm";
-import InputController from '../../../controller';
-import ChartCards from "../patientChart/chartCards";
-import PatientProfileHero from "../../common/patient/profileHero";
-import InsuranceComponent from "../patients/patientDetail/insurance";
-import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
-// constants, history, styling block
-import { ClearIcon } from "../../../assets/svgs";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { getFormattedDate, renderTh } from "../../../utils";
-import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
-import { AttachmentsPayload, PatientPayload } from "../../../generated/graphql";
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { appointmentReducer, State, Action, initialState } from "../../../reducers/appointmentReducer";
-import {
-  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
-  patientReducer, State as PatientState
-} from "../../../reducers/patientReducer";
-import {
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState,
-  mediaReducer, State as mediaState
-} from "../../../reducers/mediaReducer";
-import {
-  ACTIONS, ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS, CHART_TEXT, CHECKOUT,
-  CHECK_IN_STEPS, CODE, CPT_CODES, CUSTOM_CODES, DESCRIPTION, EMPLOYMENT, EMPTY_OPTION, HCFA_DESC, HCPCS_CODES,
-  ICD_TEN_CODES, ICD_TEN_CODES_DATA, INSURANCE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, YES,
-  OTHER_DATE_TYPE, PATIENT_INFO, PATIENT_PAYMENT_TYPE, PRICE, RECORD_VITALS, TO_BILLING, TO_CHART, VITALS_TEXT,
-} from "../../../constants";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -63,477 +45,242 @@ const CheckInStepIcon = (props: StepIconProps) => {
 
 const CheckInComponent = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
+  const [, patientDispatcher] =
+    useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
+  const [, mediaDispatcher] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const { appointment } = state
-  const { appointmentType, id: appointmentId, scheduleStartDateTime } = appointment ?? {}
+  const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
+
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
+  const { appointmentId, id: patientId } = useParams<ParamsType>()
+  const patientRef = useRef<FormForwardRef>();
+  const [activeStep, setActiveStep] = useState<number>(0);
   const appointmentInfo = {
     name: `${appointmentType?.name ?? ''}  ${appointmentTime}`,
     id: appointmentId ?? ''
   }
 
-  const patientRef = useRef<FormForwardRef>();
+  const shouldDisableEdit = status === AppointmentStatus.Completed
 
-  const [, patientDispatcher] =
-    useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
-  const [, mediaDispatcher] =
-    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  useEffect(() => {
+    setActiveStep(Number(checkInActiveStep) ?? 0)
+  }, [checkInActiveStep])
 
-  const classes = useTableStyles();
-  const classesToggle = usePublicAppointmentStyles();
-  const [activeStep, setActiveStep] = useState(0);
-  const [isChecked, setIsChecked] = useState(false);
-  const [open, setOpen] = useState<boolean>(false);
-  const { id: patientId } = useParams<ParamsType>()
-  const search = (query: string) => { }
+  const [getAppointment] = useGetAppointmentLazyQuery({
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
-  const handleStep = (step: number) => setActiveStep(step);
+    onError({ message }) {
+      Alert.error(message);
+    },
 
-  const methods = useForm<any>({ mode: "all" });
-  const { handleSubmit, setValue, control } = methods;
-  const onSubmit: SubmitHandler<any> = () => { }
+    async onCompleted(data) {
+      const { getAppointment } = data;
+      const { appointment, response } = getAppointment ?? {}
+
+      if (response) {
+        const { status } = response;
+        if (appointment && status && status === 200) {
+
+          dispatch({ type: ActionType.SET_APPOINTMENT, appointment: appointment as AppointmentPayload['appointment'] })
+        }
+      }
+    },
+  });
+
+  const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: ({
+      id: patientId ?? ''
+    }),
+
+    onCompleted(data) {
+      const { fetchPatientInsurances } = data || {}
+
+      if (fetchPatientInsurances) {
+        const { policies, response } = fetchPatientInsurances
+        if (response && response.status === 200) {
+          const primaryInsurance = policies.find((policy)=>policy.orderOfBenefit===OrderOfBenefitType.Primary)
+          if(!!primaryInsurance){
+            dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance.insurance?.payerName ?? ''})
+            return
+          }
+          const { insurance } = policies[0]
+          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: insurance?.payerName ?? ''})
+        }
+      }
+    }
+  });
+
+  useEffect(() => {
+    fetchPatientInsurances()
+  }, [fetchPatientInsurances])
+
+  const fetchAppointment = useCallback(async () => {
+    appointmentId && await getAppointment({
+      variables: { getAppointment: { id: appointmentId?.toString() ?? '' } },
+    });
+  }, [getAppointment, appointmentId]);
+
+  useEffect(() => {
+    appointmentId && fetchAppointment()
+  }, [appointmentId, fetchAppointment]);
+
+  const [updateAppointment] = useUpdateAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+  });
+
+  const handleCheckIn = useCallback(async (id: string, patientId: string) => {
+    const { data } = await updateAppointment({
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.CheckedIn,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
+    })
+
+    const { updateAppointment: updateAppointmentResponse } = data ?? {}
+    const { response } = updateAppointmentResponse ?? {}
+    if (response) {
+      const { status } = response
+
+      if (patientId && status && status === 200) {
+        fetchAppointment()
+      }
+    }
+  },[fetchAppointment, updateAppointment])
+
+  useEffect(()=>{
+    if(status===AppointmentStatus.Initiated){
+      handleCheckIn(appointmentId || '', patientId || '')
+    }
+  },[appointmentId, handleCheckIn, patientId, status])
+
+  const handleStep = (step: number) => {
+    updateAppointment({
+      variables: {
+        updateAppointmentInput: {
+          id: appointmentId ?? '',
+          checkInActiveStep: String(step)
+        }
+      }
+    })
+    setActiveStep(step);
+  };
 
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
+        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep}/>
       case 1:
         return <PatientInfo />
       case 2:
         return <Insurance />
       case 3:
-        return <Vitals />
-      case 4:
         return <Chart />
+      case 4:
+        return <Vitals />
       case 5:
         return <LabOrders appointmentInfo={appointmentInfo} handleStep={handleStep} />
       case 6:
-        return <Billing />
+        return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return 'Unknown step';
     }
   }
 
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    setIsChecked(checked);
-    setValue('employment', checked)
-  };
-
   const handlePatientUpdate = () => {
-    patientRef.current?.submit()
+    !shouldDisableEdit && patientRef.current?.submit()
     handleStep(2)
   }
 
   // 1- PATIENT-INFO
   const PatientInfo = () =>
-    <Card>
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{PATIENT_INFO}</Typography>
+    <>
+      <Card>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-        <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-          {INSURANCE}
-          <ChevronRight />
-        </Button>
-      </Box>
+          <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
+            {INSURANCE}
+            <ChevronRight />
+          </Button>
+        </Box>
+
+        <Box p={3}>
+          <PatientForm
+            id={patientId}
+            isEdit
+            shouldShowBread={false}
+            ref={patientRef}
+            shouldDisableEdit={shouldDisableEdit}
+          />
+        </Box>
+
 
       <Box p={3}><PatientForm id={patientId} isEdit shouldShowBread={false} ref={patientRef} /></Box>
-    </Card>;
+    </Card>
+    </>
 
   // 2- INSURANCE
   const Insurance = () =>
-    <Card>
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{INSURANCE}</Typography>
+    <>
+      <Card>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{INSURANCE}</Typography>
 
-        <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-          {RECORD_VITALS}
-          <ChevronRight />
-        </Button>
-      </Box>
-      <InsuranceComponent />
-      <Box p={2}></Box>
-    </Card>;
+          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
+            {TO_CHART}
+            <ChevronRight />
+          </Button>
+        </Box>
+        <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+        <Box p={2}></Box>
+      </Card>
+    </>
 
-  // 3- VITALS
-  const Vitals = () =>
-    <Card>
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{VITALS_TEXT}</Typography>
-
-        <Button variant="contained" color="primary">
-          {TO_CHART}
-          <ChevronRight />
-        </Button>
-      </Box>
-
-      <VitalsChartingTable isCalendar={false} />
-    </Card>;
-
-  // 4- CHART
+  // 3- CHART
   const Chart = () =>
-    <Card>
-      <Box p={2} display="flex" justifyContent="space-between"
-        alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}
-      >
-        <Typography variant="h4">{CHART_TEXT}</Typography>
+    <>
+      <Card>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{CHART_TEXT}</Typography>
 
-        <Button variant="contained" color="primary">
-          {TO_BILLING}
-          <ChevronRight />
-        </Button>
-      </Box>
+          <Button variant="contained" color="primary" onClick={() => handleStep(4)}>
+            {RECORD_VITALS}
+            <ChevronRight />
+          </Button>
+        </Box>
 
-      <ChartCards />
-    </Card>;
+        <ChartCards shouldDisableEdit={shouldDisableEdit} />
+      </Card>
+    </>
 
-  // 5- BILLING
-  const Billing = () =>
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <Box p={2} display="flex" justifyContent="space-between"
-            alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}
-          >
-            <Typography variant="h4">{BILLING}</Typography>
+  // 4- VITALS
+  const Vitals = () =>
+    <>
+      <Card>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{VITALS_TEXT}</Typography>
 
-            <Button variant="contained" color="primary">
-              {CHECKOUT}
-              <ChevronRight />
-            </Button>
-          </Box>
+          <Button variant="contained" color="primary" onClick={() => handleStep(5)}>
+            {TO_LAB_ORDERS}
+            <ChevronRight />
+          </Button>
+        </Box>
 
-          <Box mt={1.5} p={3}>
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  name="billingStatus"
-                  label={BILLING_STATUS}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  name="paymentType"
-                  label={PATIENT_PAYMENT_TYPE}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="amount"
-                  controllerLabel={AMOUNT_DOLLAR}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <Box>
-                  <Collapse in={!open} mountOnEnter unmountOnExit>
-                    <Box pb={3}
-                      onClick={() => setOpen(!open)}
-                      className="billing-box" display="flex" alignItems="center"
-                    >
-                      <AddCircleOutline color='inherit' />
-
-                      <Typography>{ADD_ANOTHER_PATIENT_PAYMENT}</Typography>
-                    </Box>
-                  </Collapse>
-
-                  <Collapse in={open} mountOnEnter unmountOnExit>
-                    <Box>
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
-                            name="paymentType"
-                            label={PATIENT_PAYMENT_TYPE}
-                            value={EMPTY_OPTION}
-                            options={[]}
-                          />
-                        </Grid>
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            fieldType="text"
-                            controllerName="amount"
-                            controllerLabel={AMOUNT_DOLLAR}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </Collapse>
-                </Box>
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  name="onsetDateType"
-                  label={ONSET_DATE_TYPE}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="onsetDate"
-                  controllerLabel={ONSET_DATE}
-                />
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  name="otherDateType"
-                  label={OTHER_DATE_TYPE}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="otherDate"
-                  controllerLabel={OTHER_DATE}
-                />
-              </Grid>
-            </Grid>
-
-            <Typography variant="h5">{HCFA_DESC}</Typography>
-
-            <Box p={2} />
-
-            <Grid container spacing={3}>
-              <Grid item md={2} sm={12} xs={12}>
-                <Controller
-                  name='employment'
-                  control={control}
-                  render={() => (
-                    <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                      <InputLabel shrink>{EMPLOYMENT}</InputLabel>
-
-                      <label className="toggle-main">
-                        <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
-                        <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='employment' />
-                        <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
-                      </label>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <Controller
-                  name='autoAccident'
-                  control={control}
-                  render={() => (
-                    <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                      <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
-
-                      <label className="toggle-main">
-                        <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
-                        <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='autoAccident' />
-                        <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
-                      </label>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <Controller
-                  name='otherAccident'
-                  control={control}
-                  render={() => (
-                    <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                      <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
-
-                      <label className="toggle-main">
-                        <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
-                        <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='otherAccident' />
-                        <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
-                      </label>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </Card>
-
-        <Box p={2} />
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <Card>
-              <Box p={2} className={classes.mainTableContainer}>
-                <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h4">{ICD_TEN_CODES}</Typography>
-
-                  <Search search={search} />
-                </Box>
-
-                <Box className="table-overflow">
-                  <Table aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        {renderTh(CODE)}
-                        {renderTh(DESCRIPTION)}
-                        {renderTh(ACTIONS)}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {ICD_TEN_CODES_DATA.map(({
-                        code, description
-                      }) =>
-                        <TableRow>
-                          <TableCell scope="row">{code}</TableCell>
-                          <TableCell scope="row">{description}</TableCell>
-                          <TableCell scope="row">
-                            <IconButton>
-                              <ClearIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Box>
-            </Card>
-
-            <Box p={2} />
-
-            <Card>
-              <Box p={2} className={classes.mainTableContainer}>
-                <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h4">{HCPCS_CODES}</Typography>
-
-                  <Search search={search} />
-                </Box>
-
-                <Box className="table-overflow">
-                  <Table aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        {renderTh(CODE)}
-                        {renderTh(DESCRIPTION)}
-                        {renderTh(PRICE)}
-                        {renderTh(ACTIONS)}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {ICD_TEN_CODES_DATA.map(({
-                        code, description
-                      }) =>
-                        <TableRow>
-                          <TableCell scope="row">{code}</TableCell>
-                          <TableCell scope="row">{description}</TableCell>
-                          <TableCell scope="row"></TableCell>
-                          <TableCell scope="row">
-                            <IconButton>
-                              <ClearIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Box>
-            </Card>
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
-            <Card>
-              <Box p={2} className={classes.mainTableContainer}>
-                <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h4">{CPT_CODES}</Typography>
-
-                  <Search search={Search} />
-                </Box>
-
-                <Box className="table-overflow">
-                  <Table aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        {renderTh(CODE)}
-                        {renderTh(DESCRIPTION)}
-                        {renderTh(PRICE)}
-                        {renderTh(ACTIONS)}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {ICD_TEN_CODES_DATA.map(({
-                        code, description
-                      }) =>
-                        <TableRow>
-                          <TableCell scope="row">{code}</TableCell>
-                          <TableCell scope="row">{description}</TableCell>
-                          <TableCell scope="row"></TableCell>
-                          <TableCell scope="row">
-                            <IconButton>
-                              <ClearIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Box>
-            </Card>
-
-            <Box p={2} />
-
-            <Card>
-              <Box p={2} className={classes.mainTableContainer}>
-                <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                  <Typography variant="h4">{CUSTOM_CODES}</Typography>
-
-                  <Search search={search} />
-                </Box>
-
-                <Box className="table-overflow">
-                  <Table aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        {renderTh(CODE)}
-                        {renderTh(DESCRIPTION)}
-                        {renderTh(PRICE)}
-                        {renderTh(ACTIONS)}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {ICD_TEN_CODES_DATA.map(({code, description}) =>
-                        <TableRow>
-                          <TableCell scope="row">{code}</TableCell>
-                          <TableCell scope="row">{description}</TableCell>
-                          <TableCell scope="row"></TableCell>
-                          <TableCell scope="row">
-                            <IconButton>
-                              <ClearIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </form>
-    </FormProvider>;
+        <VitalsChartingTable isCalendar={false} shouldDisableEdit={shouldDisableEdit} />
+      </Card>
+    </>
 
   return (
     <>

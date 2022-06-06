@@ -63,6 +63,7 @@ export interface State {
     patientId: string;
     providerId: string;
   };
+  primaryInsurance: string
 }
 
 export const initialState: State = {
@@ -124,6 +125,7 @@ export const initialState: State = {
     patientId: "",
     providerId: '',
   },
+  primaryInsurance: ''
 }
 
 export enum ActionType {
@@ -178,6 +180,7 @@ export enum ActionType {
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_PRIMARY_INSURANCE = 'setPrimaryInsurance'
 }
 
 export type Action =
@@ -231,6 +234,7 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -528,6 +532,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         totalPagesCompleted: action.totalPagesCompleted
+      }
+    case ActionType.SET_PRIMARY_INSURANCE:
+      return {
+        ...state,
+        primaryInsurance: action.primaryInsurance
       }
   }
 };

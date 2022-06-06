@@ -1,35 +1,24 @@
 // packages block
-import { ReactNode, memo } from "react";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import axios from "axios";
 import moment from "moment";
+import { memo, ReactNode } from "react";
 import { pluck } from "underscore";
-import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import {
-  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip, capitalize
-} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
+import { ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
+  UnitType, UserForms, WeightType
+} from "../generated/graphql";
 import history from "../history";
 import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, UserFormType
+  SelectorOption, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
-import {
-  Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, AppointmentStatus, PracticesPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
-  AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
-  UnitType, SnoMedCodes, Insurance, PracticeUsersWithRoles,
-} from "../generated/graphql"
-import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INVOICES_ROUTE, N_A,
-  SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
-  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE, EMPTY_OPTION, MISSING
-} from "../constants";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -1308,6 +1297,30 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
     }
   }
 
+  return data;
+};
+
+export function renderTableOptions<ListOptionTypes>(list: ListOptionTypes[],modalName:TABLE_SELECTOR_MODULES){
+  const data: TableCodesProps[] = [];
+
+  if (!!list) {
+    for (let item of list) {
+      switch (modalName) {
+        case TABLE_SELECTOR_MODULES.icdCodes:
+          let { id: icdCodeId, description, code } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodeId, code, description: description || '' })
+          break;
+        case TABLE_SELECTOR_MODULES.cptCode:
+          let { id: cptCodeId, name } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, code:cptCodeId, description: `${name?.slice(0,100)}...` || '' })
+          break;
+        default:
+          break;
+      }
+    }
+  }
   return data;
 };
 

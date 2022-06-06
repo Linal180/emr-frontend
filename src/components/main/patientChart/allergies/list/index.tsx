@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback } from "react";
+import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback, FC } from "react";
 import { useParams } from "react-router";
 import { Box, Menu, Typography } from "@material-ui/core";
 // components block
@@ -9,7 +9,7 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import AllergiesModal1Component from "../../common/FilterSearch";
 // interfaces/types block
 import { GREY_SEVEN } from "../../../../../theme";
-import { ParamsType } from "../../../../../interfacesTypes";
+import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
 import {
@@ -24,7 +24,7 @@ import {
 } from "../../../../../generated/graphql";
 import { NoDataIcon } from "../../../../../assets/svgs";
 
-const AllergyList = (): JSX.Element => {
+const AllergyList: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
@@ -136,7 +136,7 @@ const AllergyList = (): JSX.Element => {
 
   return (
     <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
-      hasAdd
+      hasAdd={!shouldDisableEdit}
       modal={CARD_LAYOUT_MODAL.Allergies}
       dispatcher={dispatch}
       isMenuOpen={isMenuOpen}
