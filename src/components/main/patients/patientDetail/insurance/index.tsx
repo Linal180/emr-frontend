@@ -1,22 +1,21 @@
 // packages block
-import { Box, Card, Collapse, colors, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
-// constant, utils, svg and styles block
+import { Box, Card, Collapse, colors, IconButton, Typography } from "@material-ui/core";
+// components
+import PolicyCard from "./PolicyCard";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
+// constant, utils, svgs, interfaces, graphql and styles block
+import { ParamsType } from "../../../../../interfacesTypes";
+import { getFormatDateString } from '../../../../../utils';
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
+import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
+import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
 import {
   ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_TEXT,
   ID_TEXT, INSURANCE_POLICY_DETAILS, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
-import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
-//interfaces, graphql
-import { ParamsType } from "../../../../../interfacesTypes";
-import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { getFormatDateString } from '../../../../../utils';
-import ViewDataLoader from "../../../../common/ViewDataLoader";
-// components
-import PolicyCard from "./PolicyCard";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()

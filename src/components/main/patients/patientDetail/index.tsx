@@ -15,10 +15,10 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-import EncounterComponent from '../../patients/patientDetail/encounters';
 // constants, history, styling block
 import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
@@ -99,7 +99,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -310,7 +310,7 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
-                <EncounterComponent />
+                <EncounterList />
               </Grid>
             </Grid>
 
