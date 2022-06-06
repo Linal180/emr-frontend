@@ -53,7 +53,7 @@ const PaymentSelector: FC<FieldComponentProps> = ({ item }): JSX.Element => {
               </RadioGroup>
             </FormControl>
           </FormControl>
-          <Box >
+          <Box>
             {getPaymentComponent(field.value || '')}
           </Box>
         </Fragment>)}
