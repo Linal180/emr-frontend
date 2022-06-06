@@ -140,7 +140,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     const { id: selectedFacilityId } = facilityId
     const serviceInput = {
       name: name || '', duration: duration || "", isActive: checked,
-      price: price || "", facilityId: selectedFacilityId || "", color: color || ''
+      price: price || "", facilityId: selectedFacilityId || "", color: color || 'black'
     };
 
     if (isEdit) {
