@@ -196,7 +196,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
-          const { copays, id } = policies.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
+          const { copays, id } = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
           const totalAmount = copays?.reduce((acc, copay) => {
             return acc += copay.amount ? +copay.amount : 0
           }, 0)
