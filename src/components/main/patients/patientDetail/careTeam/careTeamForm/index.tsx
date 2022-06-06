@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Typography, Grid, IconButton } from '@material-ui/core';
@@ -10,26 +10,78 @@ import PhoneField from '../../../../../common/PhoneInput';
 import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 // constants, history, styling block
 import history from '../../../../../../history';
-import { setRecord } from '../../../../../../utils';
+import { renderItem, setRecord } from '../../../../../../utils';
 import { GREY_SIXTEEN } from '../../../../../../theme';
 import { CloseIcon } from '../../../../../../assets/svgs';
 import InputController from '../../../../../../controller'
-import { updatePatientProviderSchema } from '../../../../../../validationSchemas';
+import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
-import { useGetDoctorLazyQuery, useUpdatePatientProviderMutation } from '../../../../../../generated/graphql';
+import { DoctorPatient, DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery, useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation } from '../../../../../../generated/graphql';
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
-  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT,
+  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
 } from '../../../../../../constants';
+import RadioController from '../../../../../../controller/RadioController';
+import ConfirmModal from '../../../../../common/ConfirmModal';
 
-const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload }): JSX.Element => {
+const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }): JSX.Element => {
+  const [isOtherRelation, setIsOtherRelation] = useState<boolean>(false);
+  const [openSave, setOpenSave] = useState<boolean>(false);
+  const [relationInput, setRelationInput] = useState<DoctorPatientRelationType>(DoctorPatientRelationType.OtherProvider);
+  const [otherRelationInput, setOtherRelationInput] = useState<string>('');
+  const newPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider)
   const methods = useForm<UpdatePatientProviderInputsProps>({
     mode: "all",
-    resolver: yupResolver(updatePatientProviderSchema)
+    resolver: yupResolver(isEdit ? updatePatientProviderRelationSchema(isOtherRelation) : updatePatientProviderSchema(isOtherRelation))
   });
 
-  const { handleSubmit, setValue, watch } = methods
-  const { providerId: { id: selectedProviderId } = {} } = watch()
+  const { handleSubmit, setValue, watch, formState: { errors } } = methods
+  const { providerId: { id: selectedProviderId } = {}, relation } = watch()
+
+  const [getPatientProvider] = useGetPatientProviderLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(DOCTORS_ROUTE)
+    },
+
+    onCompleted(data) {
+      const { getPatientProvider } = data || {};
+
+      if (getPatientProvider) {
+        const { response, provider } = getPatientProvider
+
+        if (response) {
+          const { status } = response
+
+          if (provider && status && status === 200) {
+            const { otherRelation, relation, doctor } = provider
+            const { lastName, firstName, speciality, contacts } = doctor || {}
+
+            lastName && setValue('lastName', lastName)
+            firstName && setValue('firstName', firstName)
+            otherRelation && setValue('otherRelation', otherRelation)
+            relation && setValue('relation', relation)
+            speciality && setValue('speciality', setRecord(speciality, speciality))
+
+            if (contacts && contacts.length > 0) {
+              const primaryContact = contacts.filter(contact => contact.primaryContact)[0]
+
+              if (primaryContact) {
+                const { email, phone, } = primaryContact
+                email && setValue('email', email)
+                phone && setValue('phone', phone)
+
+              }
+            }
+          }
+        }
+      }
+    }
+  });
 
   const [getDoctor] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -93,16 +145,88 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
     }
   });
 
-  const onSubmit: SubmitHandler<UpdatePatientProviderInputsProps> = async (inputs) => {
-    const { providerId } = inputs;
-    const { id: selectedProviderId } = providerId;
-    if (patientId && selectedProviderId) {
+  const [updatePatientProviderRelation] = useUpdatePatientProviderRelationMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
 
+    onCompleted(data) {
+      const { updatePatientProviderRelation: { response } } = data
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(PATIENT_PROVIDER_UPDATED);
+          reload && reload()
+          toggleSideDrawer && toggleSideDrawer()
+        }
+      }
+    }
+  });
+
+  const onSubmit: SubmitHandler<UpdatePatientProviderInputsProps> = async (inputs) => {
+    const { otherRelation, relation } = inputs;
+    setRelationInput(relation as DoctorPatientRelationType)
+    setOtherRelationInput(otherRelation as string)
+    if (isEdit) {
+      const editPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== item.id)
+      const { id } = editPrimaryProvidersData || {}
+      if (id && relation === DoctorPatientRelationType.PrimaryProvider) {
+        setOpenSave(true)
+      }
+      else {
+        await updatePatientProviderRelation({
+          variables: {
+            updatePatientProviderRelationInputs: {
+              id: doctorPatientId as string,
+              otherRelation,
+              relation: relation as DoctorPatientRelationType,
+            }
+          }
+        })
+      }
+    } else {
+      const { id } = newPrimaryProvidersData || {}
+      if (relation === DoctorPatientRelationType.PrimaryProvider && id) {
+        setOpenSave(true)
+      }
+      else {
+        await updatePatientProvider({
+          variables: {
+            updatePatientProvider: {
+              patientId: patientId as string,
+              providerId: selectedProviderId as string,
+              otherRelation: otherRelation,
+              relation: relation as DoctorPatientRelationType,
+            }
+          }
+        })
+      }
+
+    }
+
+  }
+
+  const submitHandlerData = async () => {
+    if (isEdit) {
+      await updatePatientProviderRelation({
+        variables: {
+          updatePatientProviderRelationInputs: {
+            id: doctorPatientId as string,
+            otherRelation: otherRelationInput,
+            relation: relationInput as DoctorPatientRelationType,
+          }
+        }
+      })
+    } else {
       await updatePatientProvider({
         variables: {
           updatePatientProvider: {
-            patientId: patientId,
-            providerId: selectedProviderId
+            patientId: patientId as string,
+            providerId: selectedProviderId as string,
+            otherRelation: otherRelationInput,
+            relation: relationInput as DoctorPatientRelationType,
           }
         }
       })
@@ -111,15 +235,29 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
 
   const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
 
+  const handleSave = () => {
+    setOpenSave(false)
+    submitHandlerData()
+  }
 
   useEffect(() => {
-    if (selectedProviderId)
-      getDoctor({ variables: { getDoctor: { id: selectedProviderId } } })
+    selectedProviderId && getDoctor({ variables: { getDoctor: { id: selectedProviderId } } })
   }, [getDoctor, selectedProviderId])
+
+  useEffect(() => {
+    if (isEdit)
+      getPatientProvider({ variables: { patientProviderInputs: { patientId: patientId as string, providerId: doctorId as string } } })
+  }, [getPatientProvider, isEdit, doctorId, patientId])
+
+  useEffect(() => {
+    setIsOtherRelation(relation === DoctorPatientRelationType.OtherProvider)
+  }, [relation, watch])
 
   return (
     <Box maxWidth={500}>
+      {JSON.stringify(isOtherRelation)} =========
       <FormProvider {...methods}>
+        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             display="flex" justifyContent="space-between"
@@ -132,12 +270,15 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
           </Box>
 
           <Box mt={2} p={3}>
-            <DoctorSelector
-              isRequired
-              shouldOmitFacilityId
-              name="providerId"
-              label={USUAL_PROVIDER_ID}
-            />
+            {isEdit ? renderItem(USUAL_PROVIDER_ID, doctorName) :
+              <DoctorSelector
+                isRequired
+                shouldOmitFacilityId
+                name="providerId"
+                label={USUAL_PROVIDER_ID}
+                careProviderData={patientProvidersData as DoctorPatient[]}
+              />
+            }
 
             <Box p={3} />
 
@@ -187,61 +328,21 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
                 />
               </Grid>
 
-              {/* <Grid item md={12} sm={12} xs={12}>
-                <Box mb={2}>
-                  <FormLabel component="legend">{RELATIONSHIP_TO_PATIENT}</FormLabel>
-                </Box>
+              <Grid item md={12} sm={12} xs={12}>
+                <RadioController
+                  name='relation'
+                  options={MAPPED_DOCTOR_PATIENT_RELATION}
+                  label={'Relationship to Patient'} />
 
-                <FormControl component="fieldset">
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" />
-                      }
-                      label={PREFERRED_PROVIDER_IN_PRACTICE}
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" />
-                      }
-                      label={BACKUP_PROVIDER_IN_PRACTICE}
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" />
-                      }
-                      label={PRIMARY_PROVIDER}
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" />
-                      }
-                      label={REFERRING_PROVIDER}
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" />
-                      }
-                      label={OTHER_PROVIDER}
-                    />
-                  </FormGroup>
-                </FormControl>
               </Grid>
 
-              <Box p={1} />
-
-              <Grid item md={12} sm={12} xs={12}>
+              {relation === DoctorPatientRelationType.OtherProvider &&
                 <InputController
                   fieldType="text"
-                  controllerLabel={RELATION}
-                  controllerName="realtion"
-                  placeholder={ENTER_RELATION}
-                />
-              </Grid> */}
+                  controllerName="otherRelation"
+                  placeholder="Enter Relation"
+                  margin={'none'}
+                />}
             </Grid>
           </Box>
 
@@ -250,6 +351,14 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload 
           </Box>
         </form>
       </FormProvider>
+
+      <ConfirmModal
+        title={UPDATE_PRIMARY_PROVIDER}
+        isOpen={openSave}
+        description={PRIMARY_PROVIDER_DESCRIPTION}
+        handleSave={handleSave}
+        actionText={YES}
+        setOpen={(open: boolean) => setOpenSave(open)} />
     </Box>
   )
 }

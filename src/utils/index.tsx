@@ -6,7 +6,7 @@ import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip, capitalize
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -171,7 +171,7 @@ export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
 
-export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
+export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
@@ -228,6 +228,86 @@ export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
+
+export const calculateAge = (dateString: string) => {
+  let now = new Date();
+
+  let yearNow = now.getFullYear();
+  let monthNow = now.getMonth();
+  let dateNow = now.getDate();
+
+  let dob = new Date(parseInt(dateString.substring(6, 10)),
+    parseInt(dateString.substring(0, 2)) - 1,
+    parseInt(dateString.substring(3, 5))
+  );
+
+  let yearDob = dob.getFullYear();
+  let monthDob = dob.getMonth();
+  let dateDob = dob.getDate();
+  let age = {
+    years: 0,
+    months: 0,
+    days: 0
+  };
+  let ageString = "";
+  let yearString = "";
+  let monthString = "";
+  let dayString = "";
+
+
+  let yearAge = yearNow - yearDob;
+  let monthAge = 0
+  let dateAge = 0
+
+  if (monthNow >= monthDob)
+    monthAge = monthNow - monthDob;
+  else {
+    yearAge--;
+    monthAge = 12 + monthNow - monthDob;
+  }
+
+  if (dateNow >= dateDob)
+    dateAge = dateNow - dateDob;
+  else {
+    monthAge--;
+    dateAge = 31 + dateNow - dateDob;
+
+    if (monthAge < 0) {
+      monthAge = 11;
+      yearAge--;
+    }
+  }
+
+  age = {
+    years: yearAge,
+    months: monthAge,
+    days: dateAge
+  };
+
+  if (age.years > 1) yearString = " years";
+  else yearString = " year";
+  if (age.months > 1) monthString = " months";
+  else monthString = " month";
+  if (age.days > 1) dayString = " days";
+  else dayString = " day";
+
+  if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.months + monthString + "," + age.days + dayString;
+  else if ((age.years === 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days === 0))
+    ageString = age.years + yearString;
+  else if ((age.years > 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.years + yearString + ", " + age.months + monthString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.months + monthString + ", " + age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.days + dayString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.months + monthString;
+
+  return `${ageString} old`;
+}
 
 export const getDateWithDay = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -313,7 +393,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
           && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
+          name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
   }
@@ -443,22 +523,6 @@ export const renderOptionsForSelector = (options: SelectorOption[]) => {
 
   return data;
 }
-
-// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
-//   const data: SelectorOption[] = [];
-
-//   if (!!reactions) {
-//     for (let reaction of reactions) {
-//       if (reaction) {
-//         const { id, name } = reaction;
-
-//         name && data.push({ id, name: formatValue(name) })
-//       }
-//     }
-//   }
-
-//   return data;
-// }
 
 export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
   const data: multiOptionType[] = [];
@@ -827,7 +891,6 @@ export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) =>
     case ProblemSeverity.Acute:
       return ACUTE;
   }
-
 };
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
@@ -1122,7 +1185,7 @@ export const ounceToPounds = (o: number) => (o / 16)
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  var arr = url.split(','),
+  let arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1143,12 +1206,13 @@ export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string
     case UnitType.Centimeter:
       const height = centimeterToInches(patientHeight);
       return height?.toString()
+
     case UnitType.Inch:
       return PatientHeight
+
     default:
       return PatientHeight
   }
-
 }
 
 export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
@@ -1332,12 +1396,15 @@ export const practiceChartOptions = (chartBgColor: string) => {
   }
 }
 
-export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+export const renderArrayAsSelectorOptions = (array: string[] | number[], id = '') => {
   let result: SelectorOption[] = [];
 
   if (!!array) {
     for (let item of array) {
-      result.push({ id: item.toString(), name: item.toString() })
+      result.push({
+        id: id ?? item.toString(),
+        name: typeof item === 'string' ? formatValue(item) : item.toString()
+      })
     }
   }
 
@@ -1422,14 +1489,13 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatValue(member)
+        name: formatValue(member).trim()
       }
     });
   } else return [EMPTY_OPTION]
 }
 
 export const getAppointmentStatus = (status: string) => {
-  console.log(formatValue(AppointmentStatus.NoShow) === status, formatValue(AppointmentStatus.NoShow), " == " ,status)
   switch (status) {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
@@ -1462,3 +1528,42 @@ export const getAppointmentStatus = (status: string) => {
       return AppointmentStatus.Initiated;
   }
 }
+
+export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
+  return status === AppointmentStatus.Initiated
+}
+
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+  switch (value) {
+    case AppointmentStatus.Initiated:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.CheckedIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.Rescheduled:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.Initiated, AppointmentStatus.CheckedIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.CheckedIn:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.InLobby:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InSession, AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.InSession:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.Completed], id
+      )
+
+    case AppointmentStatus.NoShow:
+    case AppointmentStatus.Cancelled:
+    case AppointmentStatus.Completed:
+    default:
+      return [EMPTY_OPTION]
+  }
+};
