@@ -72,14 +72,14 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               </Box>
             </Box> :
             <DropzoneImage
-              filesLimit={filesLimit}
+              filesLimit={filesLimit || 1}
               title={title}
               reload={reload}
               itemId={itemId}
               isEdit={isEdit}
               ref={dropZoneRef}
               handleClose={handleClose}
-              providerName={providerName}
+              providerName={providerName || ''}
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}

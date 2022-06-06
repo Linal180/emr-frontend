@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button
 } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
@@ -35,17 +35,24 @@ import {
   SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY,
 } from "../../../../constants";
 import {
-  AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  AttachmentsPayload, AttachmentType, PatientPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
+import AddDocumentModal from "../../AddDocumentModule";
 
-const DocumentsTable: FC = (): JSX.Element => {
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
+}
+
+const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
   const { roles } = user || {}
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
+  const { firstName: patientFirstName, lastName: patientLastName } = patient || {}
+  const patientName = `${patientFirstName || ''} ${patientLastName || ''}`.trim()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
     resolver: yupResolver(attachmentNameUpdateSchema)
@@ -53,7 +60,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { setValue, handleSubmit } = methods;
   const [{
     isEdit, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
-    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab
+    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab, isOpen
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -255,7 +262,8 @@ const DocumentsTable: FC = (): JSX.Element => {
           </Box>
         </Box>
 
-        {!isSignedTab && <MediaCards
+        <Button variant="contained" color="primary" onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>Upload</Button>
+        {/* {!isSignedTab && <MediaCards
           itemId={id}
           button={true}
           notDescription={true}
@@ -265,7 +273,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           title={ATTACHMENT_TITLES.ProviderUploads}
           attachmentData={attachmentData || undefined}
           reload={() => reloadAttachments()}
-        />}
+        />} */}
       </Box>
 
       <Box className="table-overflow">
@@ -364,6 +372,13 @@ const DocumentsTable: FC = (): JSX.Element => {
           </Box>
         }
       </Box>
+
+      <AddDocumentModal
+        isOpen={isOpen}
+        patientId={id}
+        patientName={patientName}
+        setIsOpen={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })}
+      />
 
       <ConfirmationModal
         title={DOCUMENT}

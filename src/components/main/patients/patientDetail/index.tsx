@@ -360,7 +360,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable />
+            <DocumentsTable patient={patientData} />
           </TabPanel>
 
           <TabPanel value="9">
