@@ -61,9 +61,9 @@ export const SimpleSelectComponent = memo(({ item, field }: FieldComponentProps)
   )
 })
 //multi select Field component
-export const MultiSelectComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+export const MultiSelectComponent = ({ item, field }: FieldComponentProps) => {
   const classes = useFormBuilderSidebarStyles()
-  const { type, placeholder, options, css, required, fieldId } = item;
+  const { type, placeholder, options, css, fieldId } = item;
   return (
     <TextField
       fullWidth
@@ -89,7 +89,6 @@ export const MultiSelectComponent = ({ item, field, isCreating }: FieldComponent
         }
       }}
       defaultValue={[]}
-      required={isCreating ? undefined : required}
       className={css}
       type={getFieldType(type)}
       {...field}
@@ -113,8 +112,8 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
 }
 
 //file Field component
-export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) => {
-  const { type, placeholder, css, required, fieldId, defaultValue } = item;
+export const FileFieldComponent = ({ item }: FieldComponentProps) => {
+  const { type, placeholder, css, fieldId, defaultValue } = item;
   const { register } = useFormContext();
   return (
     <TextField
@@ -124,8 +123,7 @@ export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) =>
         displayEmpty: true
       }}
       id={fieldId}
-      defaultValue={defaultValue || ''}
-      required={isCreating ? undefined : required}
+      defaultValue={defaultValue || ""}
       className={css}
       placeholder={placeholder ? placeholder : ""}
       type={getFieldType(type)}

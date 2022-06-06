@@ -25,19 +25,16 @@ export const getFormBuilderValidation = (formSection: SectionsInputs[]) => {
             validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
             break;
           case ElementType.Select:
-            validation[fieldId] = isMultiSelect ? (required ? yup.array().of(yup.object().shape({
-              name: yup.string().required(),
-              value: yup.string().required(),
-            })).required(requiredMessage(label)) : yup.array().of(yup.object().shape({
-              name: yup.string(),
-              value: yup.string()
-            }))) : (required ? yup.string().required(requiredMessage(label)) : yup.string())
+            validation[fieldId] = isMultiSelect ? (required ? yup.array().min(1, requiredMessage(label)).required(requiredMessage(label)) : yup.array().of(yup.string().required())) : (required ? yup.string().required(requiredMessage(label)) : yup.string())
             break;
           case ElementType.Date:
             validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
             break
           case ElementType.File:
             validation[fieldId] = required ? yup.mixed().required(requiredMessage(label)) : yup.mixed()
+            break;
+          case ElementType.Number:
+            validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
             break;
           default:
             break;
