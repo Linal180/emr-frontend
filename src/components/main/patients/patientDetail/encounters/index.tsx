@@ -1,17 +1,15 @@
 // packages block
 import { Box, Typography, Button, Card } from "@material-ui/core";
-// interfaces, constants, utils blocks
+// styles, constants blocks
 import { WHITE_FOUR } from "../../../../../theme";
-
 import { VIEW, DUMMY_ENCOUNTERS, ENCOUNTERS } from "../../../../../constants";
 
-const AppointmentList = ({ headerTitle }: any) => {
-
+const EncounterList = () => {
   return (
     <Card className="card-box-shadow">
       <Box p={3}>
         <Box mb={2}>
-          <Typography variant="h3" >{ENCOUNTERS}</Typography>
+          <Typography variant="h3">{ENCOUNTERS}</Typography>
         </Box>
 
         {DUMMY_ENCOUNTERS?.map(encounter => {
@@ -45,4 +43,4 @@ const AppointmentList = ({ headerTitle }: any) => {
   )
 };
 
-export default AppointmentList;
+export default EncounterList;
