@@ -7,6 +7,8 @@ import { Box, Button, Typography, Grid, IconButton } from '@material-ui/core';
 import Alert from '../../../../../common/Alert';
 import Selector from '../../../../../common/Selector';
 import PhoneField from '../../../../../common/PhoneInput';
+import ConfirmModal from '../../../../../common/ConfirmModal';
+import RadioController from '../../../../../../controller/RadioController';
 import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 // constants, history, styling block
 import history from '../../../../../../history';
@@ -14,17 +16,21 @@ import { renderItem, setRecord } from '../../../../../../utils';
 import { GREY_SIXTEEN } from '../../../../../../theme';
 import { CloseIcon } from '../../../../../../assets/svgs';
 import InputController from '../../../../../../controller'
-import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
-import { DoctorPatient, DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery, useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation } from '../../../../../../generated/graphql';
+import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
+import {
+  DoctorPatient, DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery,
+  useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation
+} from '../../../../../../generated/graphql';
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
-  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED, ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
+  DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
+   ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
 } from '../../../../../../constants';
-import RadioController from '../../../../../../controller/RadioController';
-import ConfirmModal from '../../../../../common/ConfirmModal';
 
-const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }): JSX.Element => {
+const CareTeamForm: FC<CareTeamsProps> = ({
+  toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData
+}): JSX.Element => {
   const [isOtherRelation, setIsOtherRelation] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
   const [relationInput, setRelationInput] = useState<DoctorPatientRelationType>(DoctorPatientRelationType.OtherProvider);
@@ -32,10 +38,12 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
   const newPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider)
   const methods = useForm<UpdatePatientProviderInputsProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? updatePatientProviderRelationSchema(isOtherRelation) : updatePatientProviderSchema(isOtherRelation))
+    resolver: yupResolver(isEdit
+      ? updatePatientProviderRelationSchema(isOtherRelation) : updatePatientProviderSchema(isOtherRelation)
+    )
   });
 
-  const { handleSubmit, setValue, watch, formState: { errors } } = methods
+  const { handleSubmit, setValue, watch } = methods
   const { providerId: { id: selectedProviderId } = {}, relation } = watch()
 
   const [getPatientProvider] = useGetPatientProviderLazyQuery({
@@ -255,9 +263,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({ toggleSideDrawer, patientId, reload,
 
   return (
     <Box maxWidth={500}>
-      {JSON.stringify(isOtherRelation)} =========
       <FormProvider {...methods}>
-        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             display="flex" justifyContent="space-between"
