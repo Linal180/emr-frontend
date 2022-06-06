@@ -714,6 +714,9 @@ background: #E5EAEE;
 .patient-information-form .MuiInputLabel-formControl{ 
   position: relative;
 }
+.MuiDropzoneSnackbar-message{
+  word-break: break-word;
+}
 
 /* media queries */
 @media(max-width : 768px){
