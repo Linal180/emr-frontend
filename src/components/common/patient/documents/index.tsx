@@ -1,49 +1,48 @@
 // packages block
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button
-} from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
+import SideDrawer from "../../SideDrawer";
 import TableLoader from "../../TableLoader";
 import InputController from "../../../../controller";
-import AddDocumentModal from "../../AddDocumentModule";
+import AddDocumentModal from "./AddDocumentModule";
 import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
-import { GRAY_SIX } from "../../../../theme";
+import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import { DocumentsTableProps, ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { DownloadIcon, SignedIcon, TrashNewIcon, UploadIcon, } from "../../../../assets/svgs";
+import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
+import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
-  getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
-} from "../../../../utils";
-import {
-  mediaReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/mediaReducer";
-import {
-  DownloadIcon, SignedIcon, TrashNewIcon,
-} from "../../../../assets/svgs";
+  AttachmentsPayload, PatientPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
+} from "../../../../generated/graphql";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
   SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY, UPLOAD,
 } from "../../../../constants";
-import {
-  AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-  useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
-} from "../../../../generated/graphql";
+
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
+}
 
 const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
   const { roles } = user || {}
+  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
+
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
   const { firstName: patientFirstName, lastName: patientLastName, facilityId } = patient || {}
@@ -54,10 +53,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   });
   const { setValue, handleSubmit } = methods;
   const [{
-    isEdit, attachmentsData, attachmentId, openDelete,
-    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab, isOpen
+    isEdit, attachmentsData, attachmentId, openDelete, isSignedTab,
+    deleteAttachmentId, documentTab, openSign, providerName,
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+
+  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   const [getAttachment] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -252,18 +253,40 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
             onClick={() => dispatch({ type: ActionType.SET_DOCUMENT_TAB, documentTab: !documentTab })}
             ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
           >
-            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'} onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}>{PENDING}</Typography>
-            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'} onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}>{SIGNED}</Typography>
+            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'}
+              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
+            >
+              {PENDING}
+            </Typography>
+
+            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'}
+              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
+            >
+              {SIGNED}
+            </Typography>
           </Box>
         </Box>
 
-        {!isSignedTab &&
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-            {UPLOAD}
-          </Button>}
+        <SideDrawer
+          drawerOpened={drawerOpened}
+          toggleSideDrawer={toggleSideDrawer}
+        >
+          <Box maxWidth={500}>
+            <AddDocumentModal
+              patientId={id}
+              facilityId={facilityId || ''}
+              patientName={patientName}
+              toggleSideDrawer={toggleSideDrawer}
+            />
+          </Box>
+        </SideDrawer>
+
+        {!isSignedTab && <Button onClick={toggleSideDrawer} variant="contained"
+          startIcon={<UploadIcon />} color="primary"
+        >
+          {UPLOAD}
+        </Button>}
+
         {/* {!isSignedTab && <MediaCards
           itemId={id}
           button={true}
@@ -373,14 +396,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           </Box>
         }
       </Box>
-
-      <AddDocumentModal
-        isOpen={isOpen}
-        patientId={id}
-        patientName={patientName}
-        facilityId={facilityId || ''}
-        setIsOpen={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })}
-      />
 
       <ConfirmationModal
         title={DOCUMENT}

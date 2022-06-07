@@ -1119,11 +1119,10 @@ export interface AddPatientModalProps {
 }
 
 export interface AddDocumentModalProps {
-  isOpen: boolean;
   patientId: string;
   facilityId: string;
   patientName: string;
-  setIsOpen: Function;
+  toggleSideDrawer: Function;
 }
 
 export interface CopayModalProps {
@@ -1663,6 +1662,11 @@ export interface CareTeamsProps {
   reload?: Function;
   toggleSideDrawer?: Function;
   patientDispatcher?: Dispatch<PatientAction>
+}
+
+export interface SideDrawerProps {
+  drawerOpened : boolean;
+  toggleSideDrawer?: Function;
 }
 
 export interface PracticeChartProps {
