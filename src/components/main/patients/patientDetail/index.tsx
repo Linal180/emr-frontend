@@ -18,7 +18,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import NoDataComponent from '../../../common/NoDataComponent';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import { getFormattedDate } from '../../../../utils';
@@ -45,6 +45,7 @@ import {
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
   HEART_RATE_VALUE, VISITS,
 } from "../../../../constants";
+
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -292,7 +293,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent/>
                     </Box>
                   )}
 
@@ -335,7 +336,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent />
                     </Box>
                   )}
 
