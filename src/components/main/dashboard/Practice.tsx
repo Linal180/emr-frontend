@@ -222,7 +222,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Grid container spacing={3}>
         <Grid item md={8}>
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
 
@@ -232,7 +232,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
@@ -242,7 +242,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={PINK_TWO}>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
               <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
             </Box>
 
@@ -251,7 +251,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
 
         <Grid item md={4}>
-          <Card>
+          {/* <Card>
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{EMERGENCY_ACCESS_LOG}</Typography>
 
@@ -289,9 +289,9 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 </Box>
               )
             })}
-          </Card>
+          </Card> */}
 
-          <Box p={2} />
+          {/* <Box p={2} /> */}
 
           <Card>
             <Box px={2} mb={2} fontWeight="bold" display='flex' justifyContent='space-between' alignItems='center'>
