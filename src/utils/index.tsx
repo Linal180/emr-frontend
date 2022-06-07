@@ -1580,3 +1580,6 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
       return [EMPTY_OPTION]
   }
 };
+
+export const appointmentChargesDescription = (amount: string) =>
+<Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
