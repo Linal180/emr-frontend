@@ -23,7 +23,7 @@ import {
 
 const LockComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
-  const { fetchAllFacilityList, setFacilityList, setPracticeList, setRoleList } = useContext(ListContext);
+  const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: localStorage.getItem(EMAIL) || '',
@@ -84,7 +84,6 @@ const LockComponent = (): JSX.Element => {
     handleLogout()
     setFacilityList([])
     setRoleList([])
-    setPracticeList([])
   }
 
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;

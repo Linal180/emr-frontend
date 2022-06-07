@@ -17,7 +17,7 @@ import {
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl } = useContext(AuthContext);
-  const { setFacilityList, setRoleList, setPracticeList, } = useContext(ListContext)
+  const { setFacilityList, setRoleList } = useContext(ListContext)
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
@@ -46,7 +46,6 @@ const ProfileDropdownMenu = (): JSX.Element => {
     handleLogout();
     setFacilityList([]);
     setRoleList([])
-    setPracticeList([])
   };
 
   useEffect(() => {

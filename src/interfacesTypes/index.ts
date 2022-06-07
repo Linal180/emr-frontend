@@ -1,36 +1,38 @@
 // packages block
+import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { ComponentType, Dispatch, ElementType, ReactNode, RefObject, SetStateAction } from "react";
 import {
   Control, ValidationRule, FieldValues, ControllerRenderProps, ControllerFieldState, UseFormSetValue
 } from "react-hook-form";
-//constants, reducers, graphql
+// constants, reducers, graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
-import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
-import { Action as PublicFormBuilderAction, State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
+import { State as ExternalFormBuilderState, Action as PublicFormBuilderAction } from "../reducers/externalFormBuilderReducer";
+import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
 import {
-  AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus, Attachment, Code, AttachmentType,
-  CodeType, CreateAppointmentInput, CreateContactInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
-  CreatePatientAllergyInput, CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
-  CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs, FormElement, Gender,
-  IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientProviderPayload, PatientsPayload, PatientVitals,
-  PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
-  RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput,
-  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
+  Attachment, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput,
+  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
+  CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
+  CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
+  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
+  PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
+  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
+  ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
+  UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
+  VerifyCodeInput, PatientProviderPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -39,10 +41,7 @@ export interface PrivateRouteProps extends RouteProps {
 }
 
 type Key = string | number | undefined;
-
-export interface CloseSnackbarProps {
-  id: Key;
-}
+export interface CloseSnackbarProps { id: Key }
 
 export interface BackdropInputType {
   loading: boolean;
@@ -90,19 +89,13 @@ export interface ListContextInterface {
   roleList: RolesPayload["roles"];
   setRoleList: Function;
   fetchAllRoleList: Function;
-  practiceList: PracticesPayload["practices"];
-  setPracticeList: Function;
-  fetchAllPracticeList: Function;
   facilityList: FacilitiesPayload["facilities"];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  deletePracticeList: Function;
   deleteRoleList: Function;
   deleteFacilityList: Function;
-  addPracticeList: Function;
   addRoleList: Function;
   addFacilityList: Function;
-  updatePracticeList: Function;
   updateRoleList: Function;
   updateFacilityList: Function;
 }
@@ -879,16 +872,20 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
-  ref?: RefObject<unknown>;
   itemId: string;
   title?: string;
   isEdit?: boolean;
+  filesLimit: number;
   isProfile?: boolean;
+  ref: FormForwardRef;
+  providerName: string;
   description?: string;
   attachmentId: string;
   isDisabled?: boolean;
   hasHighlight?: boolean;
   attachment?: Attachment;
+  attachmentName?: string;
+  attachmentMetadata?: any;
   imageModuleType: AttachmentType;
   reload: Function;
   handleClose: Function;
@@ -1128,6 +1125,15 @@ export interface AddPatientModalProps {
   isOpen: boolean;
   setIsOpen: Function;
   facilityId: string | undefined;
+}
+
+export interface AddDocumentModalProps {
+  patientId: string;
+  facilityId: string;
+  patientName: string;
+  attachmentId: string;
+  toggleSideDrawer: Function;
+  fetchDocuments: Function;
 }
 
 export interface CopayModalProps {
@@ -1674,6 +1680,11 @@ export interface CareTeamsProps {
   patientDispatcher?: Dispatch<PatientAction>
 }
 
+export interface SideDrawerProps {
+  drawerOpened : boolean;
+  toggleSideDrawer?: Function;
+}
+
 export interface PracticeChartProps {
   practiceId: string;
 }
@@ -1721,4 +1732,11 @@ export interface CodesTableProps {
   title: string
   tableData?: TableCodesProps[]
   shouldShowPrice?: boolean
+}
+
+export type DocumentInputProps = { name: string } & { documentType: SelectorOption }
+  & { provider: SelectorOption } & { date: string } & { comments: string } & { patientName: string }
+
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
 }

@@ -479,7 +479,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       handleSubmit(onSubmit)()
     }
   }));
-  console.log("shouldDisableEdit", shouldDisableEdit)
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
