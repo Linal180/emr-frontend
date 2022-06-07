@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
+  Control, ValidationRule, FieldValues, ControllerRenderProps, ControllerFieldState, UseFormSetValue
 } from "react-hook-form";
 // constants, reducers, graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -14,12 +14,12 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
-import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
+import { State as ExternalFormBuilderState, Action as PublicFormBuilderAction } from "../reducers/externalFormBuilderReducer";
 import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
@@ -461,7 +461,8 @@ export interface CustomInputControlProps extends IControlLabel {
   onBlur?: Function;
   notStep?: boolean;
   isHelperText?: boolean;
-  autoFocus?: boolean
+  autoFocus?: boolean;
+  isHtmlValidate?: boolean
 }
 
 export interface TooltipData {
@@ -1108,6 +1109,13 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
 }
 
+export interface FacilityCardsProps extends GeneralFormProps {
+  getFacilityLoading: boolean;
+  dispatch?: Dispatch<FacilityAction>
+  state?: FacilityState
+  isSuper?: boolean
+}
+
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
@@ -1247,6 +1255,8 @@ export interface FormBuilderFormInitial {
   name: string;
   type: SelectorOption;
   facilityId: SelectorOption;
+  practiceId: SelectorOption;
+  isPractice: boolean;
 }
 
 export interface LoaderProps {
@@ -1264,8 +1274,11 @@ export interface FieldComponentProps {
   item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
-  facilityId?: string
-  state?: ExternalFormBuilderState
+  facilityId?: string;
+  practiceId?: string;
+  state?: ExternalFormBuilderState;
+  dispatcher?: Dispatch<PublicFormBuilderAction>;
+  fieldState?: ControllerFieldState
 }
 
 export interface ShareModalTypes extends DialogTypes {
@@ -1688,6 +1701,18 @@ export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
 }
 
+export interface SwitchControllerProps extends IControlLabel {
+  controllerName: string;
+  isHelperText?: boolean;
+  autoFocus?: boolean
+}
+
+export interface FormBuilderFacilitySelectorProps extends SelectorProps {
+  patientId?: string
+  practiceId: string
+  dispatcher?: Dispatch<PublicFormBuilderAction>
+  state?: ExternalFormBuilderState
+}
 export interface ChartComponentProps {
   shouldDisableEdit?: boolean
 }

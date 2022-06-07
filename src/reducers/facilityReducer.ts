@@ -1,3 +1,4 @@
+import { usStreet } from "smartystreets-javascript-sdk";
 import { FacilitiesPayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
 import { DaySchedule } from "../interfacesTypes";
 
@@ -22,6 +23,9 @@ export interface State {
   deleteScheduleId: string;
   openScheduleDelete: boolean;
   facilitySchedules: SchedulesPayload['schedules'];
+  isVerified: boolean;
+  addressOpen: boolean;
+  data: usStreet.Candidate[];
 }
 
 export const initialState: State = {
@@ -45,6 +49,9 @@ export const initialState: State = {
   deleteScheduleId: '',
   openScheduleDelete: false,
   facilitySchedules: [],
+  isVerified: false,
+  addressOpen: false,
+  data: [],
 }
 
 export enum ActionType {
@@ -68,6 +75,9 @@ export enum ActionType {
   SET_DELETE_SCHEDULE_ID = 'setDeleteScheduleId',
   SET_OPEN_SCHEDULE_DELETE = 'setOpenScheduleDelete',
   SET_FACILITY_SCHEDULES = 'setFacilitySchedules',
+  SET_IS_VERIFIED = 'setIsVerified',
+  SET_ADDRESS_OPEN = 'setAddressOpen',
+  SET_DATA = 'setData',
 }
 
 export type Action =
@@ -91,6 +101,9 @@ export type Action =
   | { type: ActionType.SET_DELETE_SCHEDULE_ID; deleteScheduleId: string }
   | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
   | { type: ActionType.SET_FACILITY_SCHEDULES, facilitySchedules: SchedulesPayload['schedules'] }
+  | { type: ActionType.SET_IS_VERIFIED; isVerified: boolean }
+  | { type: ActionType.SET_DATA; data: usStreet.Candidate[] }
+  | { type: ActionType.SET_ADDRESS_OPEN; addressOpen: boolean }
 
 export const facilityReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -212,6 +225,24 @@ export const facilityReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilitySchedules: action.facilitySchedules
+      }
+
+    case ActionType.SET_IS_VERIFIED:
+      return {
+        ...state,
+        isVerified: action.isVerified
+      }
+
+    case ActionType.SET_ADDRESS_OPEN:
+      return {
+        ...state,
+        addressOpen: action.addressOpen
+      }
+
+    case ActionType.SET_DATA:
+      return {
+        ...state,
+        data: action.data
       }
   };
 }

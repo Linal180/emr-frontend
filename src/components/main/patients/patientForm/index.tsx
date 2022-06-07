@@ -45,7 +45,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({

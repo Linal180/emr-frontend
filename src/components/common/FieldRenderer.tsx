@@ -4,7 +4,7 @@ import { memo, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip } from '@material-ui/core'
+import { TextField, MenuItem, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip } from '@material-ui/core'
 //component
 import RadioButton from '../../components/common/RadioButton'
 //constant, interfaces, svgs, utils
@@ -17,18 +17,13 @@ import { CalendarIcon } from '../../assets/svgs';
 import PhoneInput from 'react-phone-input-2';
 
 //text field component
-export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
-  const { type, textArea, placeholder, css, required, defaultValue } = item;
+export const TextFieldComponent = ({ item, field }: FieldComponentProps) => {
+  const { type, textArea, placeholder, css, defaultValue } = item;
   return (
     <TextField
       fullWidth
       variant="outlined"
-      // select={type === ElementType.Select}
-      // SelectProps={{
-      //   displayEmpty: true
-      // }}
       defaultValue={defaultValue || ''}
-      required={isCreating ? undefined : required}
       className={css}
       multiline={textArea}
       minRows={textArea ? 5 : undefined}
@@ -41,8 +36,8 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
   )
 }
 //simple select Field component
-export const SimpleSelectComponent = memo(({ item, field, isCreating }: FieldComponentProps) => {
-  const { type, placeholder, options, css, required, fieldId } = item;
+export const SimpleSelectComponent = memo(({ item, field }: FieldComponentProps) => {
+  const { type, placeholder, options, css, fieldId } = item;
 
   return (
     <TextField
@@ -54,7 +49,6 @@ export const SimpleSelectComponent = memo(({ item, field, isCreating }: FieldCom
         MenuProps: MENU_PROPS
       }}
       defaultValue={''}
-      required={isCreating ? undefined : required}
       className={css}
       type={getFieldType(type)}
       {...field}
@@ -67,9 +61,9 @@ export const SimpleSelectComponent = memo(({ item, field, isCreating }: FieldCom
   )
 })
 //multi select Field component
-export const MultiSelectComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+export const MultiSelectComponent = ({ item, field }: FieldComponentProps) => {
   const classes = useFormBuilderSidebarStyles()
-  const { type, placeholder, options, css, required, fieldId } = item;
+  const { type, placeholder, options, css, fieldId } = item;
   return (
     <TextField
       fullWidth
@@ -95,7 +89,6 @@ export const MultiSelectComponent = ({ item, field, isCreating }: FieldComponent
         }
       }}
       defaultValue={[]}
-      required={isCreating ? undefined : required}
       className={css}
       type={getFieldType(type)}
       {...field}
@@ -119,8 +112,8 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
 }
 
 //file Field component
-export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) => {
-  const { type, placeholder, css, required, fieldId, defaultValue } = item;
+export const FileFieldComponent = ({ item }: FieldComponentProps) => {
+  const { type, placeholder, css, fieldId, defaultValue } = item;
   const { register } = useFormContext();
   return (
     <TextField
@@ -130,8 +123,7 @@ export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) =>
         displayEmpty: true
       }}
       id={fieldId}
-      defaultValue={defaultValue || ''}
-      required={isCreating ? undefined : required}
+      defaultValue={defaultValue || ""}
       className={css}
       placeholder={placeholder ? placeholder : ""}
       type={getFieldType(type)}
@@ -143,53 +135,48 @@ export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) =>
 
 //radio group component
 export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
-  const { defaultValue, fieldId, name } = item;
+  const { defaultValue, fieldId, name, options } = item;
   return (
-    <FormControl component="fieldset">
-      <RadioGroup
-        defaultValue={defaultValue}
-        name={name}
-        {...field}
-      >
-        {item?.options?.map((option, index) => (
-          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<RadioButton />} label={option.name} />
-        ))}
-      </RadioGroup>
-    </FormControl>
+    <RadioGroup
+      defaultValue={defaultValue}
+      name={name}
+      {...field}
+    >
+      {options?.map((option, index) => (
+        <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<RadioButton />} label={option.name} />
+      ))}
+    </RadioGroup>
   )
 }
 
 //checkbox component
 export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
-  const { defaultValue, fieldId } = item;
+  const { defaultValue, fieldId, options } = item;
   const { control } = useFormContext();
   useFieldArray({ control, name: fieldId });
 
   return (
-    <FormControl>
-      <FormGroup
-        aria-labelledby={fieldId}
-        defaultValue={defaultValue}
-      >
-        {item?.options?.map((option, index) => (
-          <Controller
-            name={`${fieldId}.${index}.${option.name}`}
-            key={`${fieldId}-${index}-${option.name}-field`}
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />)}
-          />
-        ))}
-      </FormGroup>
-    </FormControl>
+    <FormGroup
+      aria-labelledby={fieldId}
+      defaultValue={defaultValue}
+    >
+      {options?.map((option, index) => (
+        <Controller
+          name={`${fieldId}.${index}.${option.name}`}
+          key={`${fieldId}-${index}-${option.name}-field`}
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />)}
+        />
+      ))}
+    </FormGroup>
   )
 }
 //date component
-export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
+export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const [date, setDate] = useState<Date | null>(new Date())
   const { name, value, onChange } = field || {}
-  const { required } = item || {}
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -199,7 +186,6 @@ export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentPr
         variant="inline"
         format="MM/dd/yyyy"
         inputVariant="outlined"
-        required={required}
         fullWidth
         KeyboardButtonProps={{ 'aria-label': 'change date', }}
         open={openPicker}
@@ -222,16 +208,12 @@ export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentPr
 export const PhoneFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
   const [phoneNo, setPhoneNo] = useState<string>('')
   const { value, onChange } = field || {}
-  const { required } = item
 
   return (
     <PhoneInput
       country='us'
       disableDropdown
       disableCountryCode
-      inputProps={{
-        required: isCreating ? false : required
-      }}
       value={isCreating ? phoneNo : value}
       onlyCountries={['us']}
       placeholder='(111) 111-1111'

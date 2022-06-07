@@ -141,6 +141,7 @@ export type Appointment = {
   checkInActiveStep?: Maybe<Scalars['String']>;
   checkedInAt?: Maybe<Scalars['String']>;
   checkedOutAt?: Maybe<Scalars['String']>;
+  contract?: Maybe<Contract>;
   createdAt?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
   facility?: Maybe<Facility>;
@@ -481,6 +482,14 @@ export type ContactsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type Contract = {
+  __typename?: 'Contract';
+  appointment?: Maybe<Appointment>;
+  contractNumber?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  organizationName?: Maybe<Scalars['String']>;
+};
+
 export type Copay = {
   __typename?: 'Copay';
   amount?: Maybe<Scalars['String']>;
@@ -542,12 +551,14 @@ export type CreateAppointmentInput = {
   appointmentTypeId: Scalars['String'];
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus: BillingStatus;
+  contractNumber?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
+  organizationName?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
@@ -756,6 +767,7 @@ export type CreateFormInput = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   layout: LayoutJsonInputType;
   name: Scalars['String'];
+  practiceId?: Maybe<Scalars['String']>;
   type?: Maybe<FormType>;
 };
 
@@ -841,7 +853,7 @@ export type CreatePatientItemInput = {
   dob?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   ethnicity?: Maybe<Ethnicity>;
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender?: Maybe<Genderidentity>;
@@ -1356,6 +1368,7 @@ export type Form = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   layout: LayoutJsonType;
   name?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   type: FormType;
   updatedAt?: Maybe<Scalars['String']>;
   userForms?: Maybe<Array<UserForms>>;
@@ -1386,6 +1399,7 @@ export type FormInput = {
   formType?: Maybe<FormType>;
   isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type FormMediaPayload = {
@@ -2839,6 +2853,7 @@ export type PaymentInputsAfterAppointment = {
 
 /** The patient payment type assigned */
 export enum PaymentType {
+  Contract = 'CONTRACT',
   Insurance = 'INSURANCE',
   Self = 'SELF'
 }
@@ -4336,6 +4351,7 @@ export type UpdateAppointmentInput = {
   checkInActiveStep?: Maybe<Scalars['String']>;
   checkedInAt?: Maybe<Scalars['String']>;
   checkedOutAt?: Maybe<Scalars['String']>;
+  contractNumber?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -4343,6 +4359,7 @@ export type UpdateAppointmentInput = {
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
+  organizationName?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
@@ -4547,6 +4564,7 @@ export type UpdateFormInput = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   layout?: Maybe<LayoutJsonInputType>;
   name?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   type?: Maybe<FormType>;
 };
 
@@ -5507,7 +5525,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, name?: string | null, createdAt?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalCount?: number | null, totalPages?: number | null } | null } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -5521,7 +5539,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, tableContactType?: string | null | undefined, apiCall?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -5535,7 +5553,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -9471,6 +9489,7 @@ export const FindAllFormsDocument = gql`
       id
       type
       facilityId
+      practiceId
       name
       createdAt
       isActive
@@ -9589,6 +9608,7 @@ export const GetFormDocument = gql`
       name
       type
       facilityId
+      practiceId
       isActive
       layout {
         sections {
@@ -9701,6 +9721,7 @@ export const GetPublicFormDocument = gql`
       id
       type
       facilityId
+      practiceId
       name
       isActive
       layout {

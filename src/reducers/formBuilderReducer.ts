@@ -11,7 +11,9 @@ export interface State {
   formValues: SectionsInputs[];
   isEdit: string;
   sectionValue: string;
-  preDefinedComponent: FormsPayload['forms']
+  preDefinedComponent: FormsPayload['forms'],
+  formFacility: string;
+  formPractice: string;
 }
 
 export const initialState: State = {
@@ -23,7 +25,9 @@ export const initialState: State = {
   formValues: getFormInitialValues(),
   isEdit: '',
   sectionValue: '',
-  preDefinedComponent: []
+  preDefinedComponent: [],
+  formFacility: "",
+  formPractice: ""
 }
 
 export enum ActionType {
@@ -36,6 +40,8 @@ export enum ActionType {
   SET_SECTION_EDIT = 'setEdit',
   SET_SECTION_VALUE = 'setSectionValue',
   SET_PRE_DEFINED_COMPONENTS = 'setPreDefinedComponents',
+  SET_FACILITY = "setFacility",
+  SET_PRACTICE = "setPractice"
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -46,7 +52,9 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_FORM_VALUES; formValues: SectionsInputs[] } |
 { type: ActionType.SET_SECTION_EDIT; isEdit: string } |
 { type: ActionType.SET_SECTION_VALUE; sectionValue: string } |
-{ type: ActionType.SET_PRE_DEFINED_COMPONENTS; preDefinedComponent: FormsPayload['forms'] }
+{ type: ActionType.SET_PRE_DEFINED_COMPONENTS; preDefinedComponent: FormsPayload['forms'] } |
+{ type: ActionType.SET_FACILITY; formFacility: string } |
+{ type: ActionType.SET_PRACTICE; formPractice: string }
 
 export const formBuilderReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -104,7 +112,16 @@ export const formBuilderReducer = (state: State, action: Action): State => {
         preDefinedComponent: action.preDefinedComponent
       }
 
-    default:
-      return state
+    case ActionType.SET_FACILITY:
+      return {
+        ...state,
+        formFacility: action.formFacility
+      }
+
+    case ActionType.SET_PRACTICE:
+      return {
+        ...state,
+        formPractice: action.formPractice
+      }
   }
 }
