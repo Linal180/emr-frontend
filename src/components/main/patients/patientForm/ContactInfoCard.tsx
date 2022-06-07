@@ -1,27 +1,26 @@
 //packages import
+import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography } from "@material-ui/core"
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography } from "@material-ui/core"
-//components import
-import Alert from "../../../common/Alert"
-import Selector from "../../../common/Selector"
-import PhoneField from "../../../common/PhoneInput"
-import InputController from "../../../../controller"
-import SmartyModal from "../../../common/SmartyModal"
-import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
-import { verifyAddress } from "../../../common/smartyAddress"
-//constants, interfaces and utils import
-import { ActionType, } from "../../../../reducers/patientReducer"
-import { SmartyUserData, PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL,
-  EMPTY_OPTION, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
+  ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
   VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
 } from "../../../../constants"
+import InputController from "../../../../controller"
+import { PatientCardsProps, SmartyUserData } from "../../../../interfacesTypes"
+//constants, interfaces and utils import
+import { ActionType } from "../../../../reducers/patientReducer"
+//components import
+import Alert from "../../../common/Alert"
+import CardComponent from "../../../common/CardComponent"
+import PhoneField from "../../../common/PhoneInput"
+import Selector from "../../../common/Selector"
+import { verifyAddress } from "../../../common/smartyAddress"
+import SmartyModal from "../../../common/SmartyModal"
+import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
+const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const methods = useFormContext()
   const { watch, setValue } = methods;
@@ -74,6 +73,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
           <>
             <Grid item md={12} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired
                 fieldType="text"
                 controllerName="basicAddress"
@@ -83,6 +83,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
             <Grid item md={12} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 fieldType="text"
                 controllerName="basicAddress2"
                 controllerLabel={ADDRESS_2}
@@ -93,6 +94,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               <Grid container spacing={1} alignItems={'center'}>
                 <Grid item md={10} sm={10} xs={10}>
                   <InputController
+                    disabled={shouldDisableEdit}
                     isRequired
                     fieldType="text"
                     controllerName="basicZipCode"
@@ -122,6 +124,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
             <Grid container spacing={3}>
               <Grid item md={4}>
                 <InputController
+                  disabled={shouldDisableEdit}
                   isRequired
                   fieldType="text"
                   controllerName="basicCity"
@@ -131,20 +134,22 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
               <Grid item md={4}>
                 <Selector
+                  disabled={shouldDisableEdit}
                   isRequired
                   name="basicState"
                   label={STATE}
-                  value={EMPTY_OPTION}
+                  addEmpty
                   options={MAPPED_STATES}
                 />
               </Grid>
 
               <Grid item md={4}>
                 <Selector
+                  disabled={shouldDisableEdit}
                   isRequired
                   name="basicCountry"
                   label={COUNTRY}
-                  value={EMPTY_OPTION}
+                  addEmpty
                   options={MAPPED_COUNTRIES}
                 />
               </Grid>
@@ -157,7 +162,10 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                     <FormControlLabel
                       label={DONT_WANT_TO_SHARE_EMAIL}
                       control={
-                        <Checkbox color="primary" checked={optionalEmail}
+                        <Checkbox
+                          disabled={shouldDisableEdit}
+                          color="primary"
+                          checked={optionalEmail}
                           onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
                         />
                       }
@@ -167,6 +175,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               </FormControl>
 
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired={!optionalEmail}
                 fieldType="text"
                 controllerName="basicEmail"
@@ -176,11 +185,11 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="basicPhone" label={MOBILE_PHONE} />
+                <PhoneField name="basicPhone" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
               </Grid>
-              
+
               <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="basicMobile" label={HOME_PHONE} />
+                <PhoneField name="basicMobile" label={HOME_PHONE} disabled={shouldDisableEdit} />
               </Grid>
             </Grid>
           </>
