@@ -16,9 +16,6 @@ import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType, Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus, Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
-<<<<<<< HEAD
-import React from "react";
-=======
 import {
   ColumnTypes, FormBuilderFormInitial,
   FormInitialType, ItemsTypes, LabOrdersResultOption, SelectOptions, SelectorOption, SpecimenTypeOption, StepLabelType, TestOption
@@ -27,7 +24,6 @@ import {
 import {
   formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord
 } from "../utils";
->>>>>>> 7e621de6cf774a730e0fed25e39e6ca516fe0ddd
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;

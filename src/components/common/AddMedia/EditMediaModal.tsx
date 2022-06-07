@@ -113,7 +113,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
           </Box>
         </DialogActions>
       </form>
-    </Dialog >
+    </Dialog>
   )
 }
 
