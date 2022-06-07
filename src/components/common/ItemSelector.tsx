@@ -7,7 +7,10 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 import { INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants'
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
-import { DocumentType, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
+import {
+  DocumentType, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
+  useSearchSnoMedCodesLazyQuery
+} from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
   name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery
@@ -15,7 +18,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
   const [options, setOptions] = useState<SelectorOption[]>([])
-
 
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -36,8 +38,8 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (searchSnoMedCodeByIcdCodes) {
           const { snoMedCodes } = searchSnoMedCodeByIcdCodes
 
-
-          !!snoMedCodes && setOptions(renderListOptions<SnoMedCodes>(snoMedCodes as SnoMedCodes[], modalName))
+          !!snoMedCodes &&
+            setOptions(renderListOptions<SnoMedCodes>(snoMedCodes as SnoMedCodes[], modalName))
         }
       }
     },
@@ -62,16 +64,17 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (fetchAllInsurances) {
           const { insurances } = fetchAllInsurances
 
-          !!insurances && setOptions(renderListOptions<Insurance>(insurances as Insurance[], modalName))
+          !!insurances &&
+            setOptions(renderListOptions<Insurance>(insurances as Insurance[], modalName))
         }
       }
     },
   })
-  
+
   const [fetchDocumentTypes] = useFetchDocumentTypesLazyQuery({
     variables: {
       documentTypeInput: {
-        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        paginationOptions: { page: 1, limit: 30 },
         documentTypeName: query ? query : '',
       }
     },
@@ -87,7 +90,8 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (fetchDocumentTypes) {
           const { documentTypes } = fetchDocumentTypes
 
-          !!documentTypes && setOptions(renderListOptions<DocumentType>(documentTypes as DocumentType[], modalName))
+          !!documentTypes &&
+            setOptions(renderListOptions<DocumentType>(documentTypes as DocumentType[], modalName))
         }
       }
     },

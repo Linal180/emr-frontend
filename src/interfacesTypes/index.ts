@@ -871,18 +871,19 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
-  ref: FormForwardRef;
   itemId: string;
   title?: string;
   isEdit?: boolean;
   filesLimit: number;
   isProfile?: boolean;
+  ref: FormForwardRef;
   providerName: string;
   description?: string;
   attachmentId: string;
   isDisabled?: boolean;
   hasHighlight?: boolean;
   attachment?: Attachment;
+  attachmentName?: string;
   attachmentMetadata?: any;
   imageModuleType: AttachmentType;
   reload: Function;
@@ -1122,7 +1123,9 @@ export interface AddDocumentModalProps {
   patientId: string;
   facilityId: string;
   patientName: string;
+  attachmentId: string;
   toggleSideDrawer: Function;
+  fetchDocuments: Function;
 }
 
 export interface CopayModalProps {

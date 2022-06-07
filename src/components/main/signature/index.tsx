@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } f
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
 // constants, history, styling block
+import history from '../../../history';
 import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
@@ -20,7 +21,6 @@ import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
   SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE,
 } from '../../../constants';
-import history from '../../../history';
 
 const SignatureComponent = (): JSX.Element => {
   const { currentUser, user } = useContext(AuthContext);
@@ -87,7 +87,7 @@ const SignatureComponent = (): JSX.Element => {
 
         if (attachments) {
           setSignAttachment(attachments.filter(attachment =>
-            attachment && attachment.title === ATTACHMENT_TITLES.Signature)[0]
+            attachment && attachment.title === ATTACHMENT_TITLES.Signature)[0] as AttachmentPayload['attachment']
           )
 
           signAttachment?.id && getAttachment({

@@ -1,26 +1,26 @@
 // packages block
 import { FC, useCallback, useEffect, useRef } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, useForm } from "react-hook-form";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 // components block
-import Selector from '../../Selector';
 import DatePicker from "../../DatePicker";
+import ItemSelector from "../../ItemSelector";
 import DropzoneImage from "../../DropZoneImage";
 import InputController from "../../../../controller";
-import DoctorSelector from "../../Selector/DoctorSelector";
+// import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
 import { GREY_SIXTEEN } from "../../../../theme";
 import { AttachmentType } from "../../../../generated/graphql";
 import { addDocumentSchema } from "../../../../validationSchemas";
 import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../../../interfacesTypes";
 import {
-  ASSIGN_TO_ME, CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, PATIENT_NAME, PROVIDER,
-  SAVE_TEXT,
+  ATTACHMENT_TITLES,
+  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
 } from "../../../../constants";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
-  toggleSideDrawer, patientName, patientId, facilityId
+  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<DocumentInputProps>({
@@ -30,20 +30,12 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   const { reset, handleSubmit, watch, setValue } = methods;
   const { name, documentType, provider } = watch()
   const { name: providerName } = provider || {}
-  const { name: documentMeta } = documentType || {}
+  const { name: documentMeta, id: documentMetaId } = documentType || {}
 
   const handleClose = useCallback(() => {
     reset();
     toggleSideDrawer()
   }, [toggleSideDrawer, reset])
-
-  const onSubmit: SubmitHandler<DocumentInputProps> = async ({
-    name, documentType, comments, date, patientName, provider
-  }) => {
-    console.log(name, "name", documentType, "documentType", comments, "comments", date, "date", patientName, "patientName", provider, "provider",)
-    dropZoneRef.current?.submit()
-  };
-
 
   useEffect(() => {
     patientName && setValue('patientName', patientName)
@@ -51,7 +43,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(() => dropZoneRef.current?.submit())}>
         <Box
           display="flex" justifyContent="space-between" alignItems="center"
           borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
@@ -65,7 +57,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
 
             <Box p={1} />
 
-            <Button variant="contained" color="primary">{SAVE_TEXT}</Button>
+            <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
           </Box>
         </Box>
 
@@ -90,20 +82,19 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <Selector
+              <ItemSelector
                 isRequired
                 label={DOCUMENT_TYPE}
                 name="documentType"
-                options={[{ id: AttachmentType.Patient, name: AttachmentType.Patient }]}
+                modalName={ITEM_MODULE.documentTypes}
               />
-
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
               <DatePicker label={DATE} name='date' isRequired />
             </Grid>
 
-            <Grid item md={7} sm={12} xs={12}>
+            {/* <Grid item md={7} sm={12} xs={12}>
               <DoctorSelector
                 isRequired
                 addEmpty
@@ -117,7 +108,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
               <Box mt={2.5} display="flex" justifyContent="flex-end">
                 <Button variant="contained" color="secondary">{ASSIGN_TO_ME}</Button>
               </Box>
-            </Grid>
+            </Grid> */}
 
             <Grid item md={12} sm={12} xs={12}>
               <InputController
@@ -130,16 +121,17 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
 
             <Grid item md={12} sm={12} xs={12}>
               <DropzoneImage
-                title={name}
                 filesLimit={1}
                 isEdit={false}
                 ref={dropZoneRef}
                 attachmentId={''}
                 itemId={patientId}
+                attachmentName={name}
                 providerName={providerName || ''}
-                attachmentMetadata={{ documentType: documentMeta }}
                 imageModuleType={AttachmentType.Patient}
-                reload={() => { }}
+                title={ATTACHMENT_TITLES.ProviderUploads}
+                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta  }}
+                reload={() => fetchDocuments()}
                 handleClose={handleClose}
                 setAttachments={() => { }}
               />

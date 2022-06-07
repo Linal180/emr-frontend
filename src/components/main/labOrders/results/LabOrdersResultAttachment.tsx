@@ -210,9 +210,8 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
                   </TableRow>
                 ) : (
                   labOrderAttachments?.map((labOrderAttachment) => {
-                    const {
-                      attachmentName, id, comments
-                    } = labOrderAttachment || {};
+                    const { attachmentName, id, attachmentMetadata } = labOrderAttachment || {};
+                    const { comments } = attachmentMetadata || {}
 
                     return (
                       <TableRow key={id}>

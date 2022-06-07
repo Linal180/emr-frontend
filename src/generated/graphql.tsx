@@ -228,13 +228,9 @@ export type Attachment = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
-  comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
-  providerName?: Maybe<Scalars['String']>;
-  signedAt?: Maybe<Scalars['String']>;
-  signedBy?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -253,13 +249,16 @@ export type AttachmentMetadata = {
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   documentType?: Maybe<DocumentType>;
   documentTypeId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNum?: Maybe<Scalars['String']>;
-  pending?: Maybe<Scalars['Boolean']>;
   policyId?: Maybe<Scalars['String']>;
+  providerName?: Maybe<Scalars['String']>;
+  signedAt?: Maybe<Scalars['String']>;
+  signedBy?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
 };
 
@@ -5082,7 +5081,7 @@ export type GetAttachmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, signedAt?: string | null, signedBy?: string | null, providerName?: string | null, attachmentName?: string | null, createdAt: string, updatedAt: string } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, attachmentName?: string | null, createdAt: string, updatedAt: string, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null, signedBy?: string | null, providerName?: string | null, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type UpdateAttachmentDataMutationVariables = Exact<{
   updateAttachmentInput: UpdateAttachmentInput;
@@ -5096,7 +5095,7 @@ export type CreateAttachmentDataMutationVariables = Exact<{
 }>;
 
 
-export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null, error?: string | null } | null, attachment?: { __typename?: 'Attachment', id: string, url?: string | null, key?: string | null, type: AttachmentType, typeId: string, providerName?: string | null, createdAt: string, updatedAt: string } | null } };
+export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null, error?: string | null } | null, attachment?: { __typename?: 'Attachment', id: string, url?: string | null, key?: string | null, type: AttachmentType, typeId: string, createdAt: string, updatedAt: string } | null } };
 
 export type RemoveAttachmentDataMutationVariables = Exact<{
   removeAttachment: RemoveAttachment;
@@ -5124,14 +5123,14 @@ export type GetAttachmentsByLabOrderQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, comments?: string | null, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', labOrderNum?: string | null } | null } | null> | null } };
+export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, labOrderNum?: string | null } | null } | null> | null } };
 
 export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
   getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, comments?: string | null, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', policyId?: string | null } | null } | null> | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
 
 export type FetchDocumentTypeByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -6554,12 +6553,18 @@ export const GetAttachmentsDocument = gql`
       type
       title
       typeId
-      signedAt
-      signedBy
-      providerName
       attachmentName
       createdAt
       updatedAt
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        documentType {
+          id
+          type
+        }
+      }
     }
     pagination {
       page
@@ -6658,7 +6663,6 @@ export const CreateAttachmentDataDocument = gql`
       key
       type
       typeId
-      providerName
       createdAt
       updatedAt
     }
@@ -6810,8 +6814,8 @@ export const GetAttachmentsByLabOrderDocument = gql`
       attachmentName
       url
       type
-      comments
       attachmentMetadata {
+        comments
         labOrderNum
       }
       attachmentMetadataId
@@ -6856,8 +6860,8 @@ export const GetAttachmentsByPolicyIdDocument = gql`
       attachmentName
       url
       type
-      comments
       attachmentMetadata {
+        comments
         policyId
       }
       attachmentMetadataId

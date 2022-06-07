@@ -19,7 +19,7 @@ import {
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -70,6 +70,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       itemId && formData.append("typeId", itemId);
       attachmentId && formData.append("id", attachmentId);
       providerName && formData.append("providerName", providerName);
+      attachmentName && formData.append("attachmentName", attachmentName);
+
       if (attachmentMetadata) {
         for (var key in attachmentMetadata) {
           formData.append(key, attachmentMetadata[key]);

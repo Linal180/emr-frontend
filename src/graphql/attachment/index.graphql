@@ -13,12 +13,20 @@ query GetAttachments($getAttachment: GetAttachment!){
       type
       title
       typeId
-      signedAt
-      signedBy
-      providerName
       attachmentName
       createdAt
       updatedAt
+
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        
+        documentType {
+          id
+          type
+        }
+      }
     }
 
     pagination {
@@ -64,7 +72,6 @@ mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
       key
       type
       typeId
-      providerName
       createdAt
       updatedAt
     }
@@ -106,8 +113,9 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
       attachmentName
       url
       type
-      comments
+
       attachmentMetadata{
+        comments
         labOrderNum
       }
       attachmentMetadataId
@@ -123,8 +131,9 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
       attachmentName
       url
       type
-      comments
+
       attachmentMetadata{
+        comments
         policyId
       }
       attachmentMetadataId

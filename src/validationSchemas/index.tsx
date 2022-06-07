@@ -1023,7 +1023,7 @@ export const createBillingSchema = yup.object({
 
 export const addDocumentSchema = yup.object({
   comments: yup.string(),
-  provider: selectorSchema(PROVIDER),
+  // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
   date: yup.string().required(requiredMessage(DATE)),
   name: yup.string().required(requiredMessage(DOCUMENT_NAME)),
