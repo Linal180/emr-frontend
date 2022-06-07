@@ -15,12 +15,13 @@ import { GREY } from '../../../../theme';
 import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, appointmentChargesDescription,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
   PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER, PAY_VIA_ACH,
 } from '../../../../constants';
 import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
 import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
 import ACHPaymentComponent from '../achPayment'
+import { appointmentChargesDescription } from '../../../../utils';
 
 const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -177,7 +178,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
-          <Box mt={5} p={5}>
+          <Box mt={5} p={5} className="paypal-card-wrap">
             {appointmentPaymentToken ? (
               <Box>
                 {!achPayment && (<Fragment>

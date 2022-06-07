@@ -1,15 +1,17 @@
 // packages block
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, Grid } from "@material-ui/core";
 import { FC, useCallback } from "react";
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, Button, CircularProgress, Dialog, Grid } from "@material-ui/core";
 // components block
-import CardComponent from "./CardComponent";
-import Selector from "./Selector";
 import Alert from "./Alert";
+import Selector from "./Selector";
+import CardComponent from "./CardComponent";
 import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
-import { ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE } from "../../constants";
+import { 
+  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE 
+} from "../../constants";
 import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
 import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
 import { createCopaySchema } from "../../validationSchemas";
@@ -92,24 +94,26 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
                   controllerLabel={AMOUNT_WITH_DOLLAR}
                 />
               </Grid>
+
+              <Grid item md={12} sm={12} xs={12}>
+                <Box pb={3} display='flex' justifyContent='flex-end' alignItems='center'>
+                  <Button onClick={handleClose} color="default">
+                    {CANCEL}
+                  </Button>
+
+                  <Box p={1} />
+
+                  <Button type="submit" variant="contained" color="primary"
+                    disabled={createCopayLoading}
+                  >
+                    {CREATE_COPAY}
+
+                    {createCopayLoading && <CircularProgress size={20} color="inherit" />}
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
           </CardComponent>
-
-          <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center' pr={4}>
-            <Button onClick={handleClose} color="default">
-              {CANCEL}
-            </Button>
-
-            <Box p={1} />
-
-            <Button type="submit" variant="contained" color="primary"
-              disabled={createCopayLoading}
-            >
-              {CREATE_COPAY}
-
-              {createCopayLoading && <CircularProgress size={20} color="inherit" />}
-            </Button>
-          </Box>
         </form>
       </FormProvider>
     </Dialog>

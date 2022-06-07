@@ -119,6 +119,7 @@ export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
+export const NO_WHITE_SPACE_ALLOWED_FOR_INPUT = "No white space allowed at beginning of input";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const UPDATE_MEDIA = "Update media";
@@ -209,6 +210,7 @@ export const FEVER_TEXT = "Temperature"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
+export const CLOSE = "Close";
 export const UPDATE = "Update";
 export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
@@ -3642,6 +3644,10 @@ export const RegisterPatientMenuNav = [
     linkTo: IDENTIFICATION_ROUTE,
   },
   {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
+  },
+  {
     title: CONTACT_INFORMATION,
     linkTo: CONTACT_INFORMATION_ROUTE,
   },
@@ -3656,18 +3662,6 @@ export const RegisterPatientMenuNav = [
   {
     title: EMERGENCY_CONTACT,
     linkTo: EMERGENCY_CONTACT_ROUTE,
-  },
-  {
-    title: GUARANTOR,
-    linkTo: GUARANTOR_ROUTE,
-  },
-  {
-    title: EMPLOYMENT,
-    linkTo: EMPLOYMENT_ROUTE,
-  },
-  {
-    title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
 ];
 
