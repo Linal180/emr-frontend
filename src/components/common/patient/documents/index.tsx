@@ -322,8 +322,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                     const {
                       id, createdAt, url, attachmentName,  attachmentMetadata
                     } = attachment || {};
-                    const { documentType, signedAt, signedBy } = attachmentMetadata || {}
-                    const { type: documentTypeName } = documentType || {}
+                    const { signedAt, signedBy } = attachmentMetadata || {}
+                    // const { type: documentTypeName } = documentType || {}
 
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
@@ -334,7 +334,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                       <TableRow>
                         <TableCell scope="row">
                           <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachmentName || '')}>
-                            {filteredFileName}  --- {documentTypeName}
+                            {filteredFileName}
                           </Box>
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
