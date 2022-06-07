@@ -4364,12 +4364,13 @@ export enum FormBuilderApiSelector {
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities'
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent'
 }
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',
   NO_INSURANCE = 'no_insurance',
   CONTRACT = 'contract',
-  INTERNATIONAL_TRAVELER = 'international_traveler'
+  INTERNATIONAL_TRAVELER = 'international_traveler',
 }

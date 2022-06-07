@@ -256,6 +256,7 @@ export type AttachmentMetadata = {
   documentTypeId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNum?: Maybe<Scalars['String']>;
+  pending?: Maybe<Scalars['Boolean']>;
   policyId?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
@@ -1184,6 +1185,7 @@ export type ElementInputs = {
 export enum ElementType {
   Checkbox = 'CHECKBOX',
   Color = 'COLOR',
+  Custom = 'CUSTOM',
   Date = 'DATE',
   Dropdown = 'DROPDOWN',
   Email = 'EMAIL',
@@ -5141,28 +5143,14 @@ export type GetAttachmentsByLabOrderQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, labOrderNum?: string | null } | null } | null> | null } };
+export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', labOrderNum?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
   getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
-
-export type FetchDocumentTypeByNameQueryVariables = Exact<{
-  name: Scalars['String'];
-}>;
-
-
-export type FetchDocumentTypeByNameQuery = { __typename?: 'Query', fetchDocumentTypeByName: { __typename?: 'DocumentTypePayload', documentType?: { __typename?: 'DocumentType', type?: string | null, id: string } | null } };
-
-export type FetchDocumentTypesQueryVariables = Exact<{
-  documentTypeInput: DocumentTypeInput;
-}>;
-
-
-export type FetchDocumentTypesQuery = { __typename?: 'Query', fetchDocumentTypes: { __typename?: 'DocumentTypesPayload', documentTypes?: Array<{ __typename?: 'DocumentType', type?: string | null, id: string, practiceId?: string | null } | null> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', policyId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -6833,7 +6821,6 @@ export const GetAttachmentsByLabOrderDocument = gql`
       url
       type
       attachmentMetadata {
-        comments
         labOrderNum
       }
       attachmentMetadataId
@@ -6879,7 +6866,6 @@ export const GetAttachmentsByPolicyIdDocument = gql`
       url
       type
       attachmentMetadata {
-        comments
         policyId
       }
       attachmentMetadataId

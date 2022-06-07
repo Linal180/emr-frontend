@@ -1633,7 +1633,8 @@ export interface ACHPaymentComponentProps {
 export interface CheckboxControllerProps extends IControlLabel {
   controllerName: string;
   isHelperText?: boolean;
-  autoFocus?: boolean
+  autoFocus?: boolean;
+  title?: string
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];

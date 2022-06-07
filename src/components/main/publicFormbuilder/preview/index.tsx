@@ -180,29 +180,37 @@ const PublicFormPreview = () => {
                   </Box>
                   <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
                     <Grid container spacing={3} alignItems='stretch'>
-                      {formValues?.map((item, index) => (
-                        <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                          <CardComponent cardTitle={item?.name} isFullHeight>
-                            <Grid container spacing={3}>
-                              {item?.fields?.map((field) => (
-                                <Grid
-                                  item
-                                  md={parseColumnGrid(field?.column)}
-                                  key={`${item?.id}-${field?.fieldId}`}
-                                >
-                                  <InputController
-                                    item={field}
-                                    facilityId={facilityId}
-                                    state={state}
-                                    practiceId={practiceId}
-                                    dispatcher={dispatch}
-                                  />
-                                </Grid>
-                              ))}
-                            </Grid>
-                          </CardComponent>
-                        </Grid>
-                      ))}
+                      {formValues?.map((item, index) => {
+                        const { col, fields, id, name } = item
+                        return (
+                          <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
+                            <CardComponent cardTitle={name} isFullHeight>
+                              <Grid container spacing={3}>
+                                {fields?.map((field) => {
+                                  const { column, fieldId } = field
+                                  return (
+                                    <Grid
+                                      item
+                                      md={parseColumnGrid(column)}
+                                      key={`${id}-${fieldId}`}
+                                    >
+                                      <InputController
+                                        item={field}
+                                        facilityId={facilityId}
+                                        state={state}
+                                        practiceId={practiceId}
+                                        dispatcher={dispatch}
+                                      />
+                                    </Grid>
+                                  )
+                                }
+                                )}
+                              </Grid>
+                            </CardComponent>
+                          </Grid>
+                        )
+                      }
+                      )}
                     </Grid>
                   </Box>
                 </form>
