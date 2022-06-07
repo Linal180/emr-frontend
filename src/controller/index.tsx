@@ -58,7 +58,6 @@ const InputController: FC<CustomInputControlProps> = ({
             multiline={multiline}
             minRows={3}
             className={className}
-            required={isRequired}
             disabled={disabled}
             id={controllerName}
             autoFocus={autoFocus}

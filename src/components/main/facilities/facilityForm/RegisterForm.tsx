@@ -1,12 +1,14 @@
 // package block
 import { createRef, FC, useState } from 'react';
 import { Box, Grid, List, ListItem, Typography } from '@material-ui/core';
-import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator } from '@material-ui/lab';
+import {
+  Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator
+} from '@material-ui/lab';
 // component block
 import FacilityInfoCard from './FacilityInfoCard';
+import BusinessHoursCard from './BusinuessHoursCard';
 import BillingProfileCard from './BillingProfileCard';
 import FacilityLocationCard from './FacilityLocationCard';
-import BusinessHoursCard from './BusinuessHoursCard';
 // utils. interfaces, constants
 import { FacilityCardsProps } from '../../../../interfacesTypes';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
@@ -15,11 +17,9 @@ import {
   BILLING_PROFILE, BILLING_PROFILE_ROUTE, BUSINESS_HOURS, FACILITY_INFO, FACILITY_INFO_ROUTE
 } from '../../../../constants';
 
-
 const RegisterFormComponent: FC<FacilityCardsProps> = ({ getFacilityLoading, dispatch, state, isSuper }) => {
   const classes = useFacilityStyles()
   const [activeBlock, setActiveBlock] = useState<string>(FacilityMenuNav[0].title)
-
   const patientCardBoxProps = { maxHeight: "calc(100vh - 210px)", className: "overflowY-auto" }
 
   const facilityInfoRef = createRef<HTMLDivElement>()
