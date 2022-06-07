@@ -1,5 +1,5 @@
 // package block
-import React, { FC, useState } from 'react';
+import { createRef, FC, useState } from 'react';
 import { Box, Grid, List, ListItem, Typography } from '@material-ui/core';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator } from '@material-ui/lab';
 // component block
@@ -28,14 +28,14 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
 
   const patientCardBoxProps = { maxHeight: "calc(100vh - 210px)", className: "overflowY-auto" }
 
-  const identificationRef = React.createRef<HTMLDivElement>()
-  const contactRef = React.createRef<HTMLDivElement>()
-  const providerRegisterationRef = React.createRef<HTMLDivElement>()
-  const privacyRef = React.createRef<HTMLDivElement>()
-  const emergencyContactRef = React.createRef<HTMLDivElement>()
-  const guarrenterRef = React.createRef<HTMLDivElement>()
-  const employmentRef = React.createRef<HTMLDivElement>()
-  const demographicsRef = React.createRef<HTMLDivElement>()
+  const identificationRef = createRef<HTMLDivElement>()
+  const contactRef = createRef<HTMLDivElement>()
+  const providerRegisterationRef = createRef<HTMLDivElement>()
+  const privacyRef = createRef<HTMLDivElement>()
+  const emergencyContactRef = createRef<HTMLDivElement>()
+  const guarrenterRef = createRef<HTMLDivElement>()
+  const employmentRef = createRef<HTMLDivElement>()
+  const demographicsRef = createRef<HTMLDivElement>()
 
   const handleScroll = (moduleName: string) => {
     setActiveBlock(moduleName)
