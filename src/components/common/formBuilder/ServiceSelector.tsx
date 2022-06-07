@@ -14,7 +14,6 @@ import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../genera
 
 const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
   const { control } = useFormContext()
-
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services, serviceType } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
@@ -63,9 +62,10 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
 
   return (
     <Controller
-      rules={{ required: true }}
+      rules={{ required: isRequired }}
       name={name}
       control={control}
+      defaultValue={''}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete

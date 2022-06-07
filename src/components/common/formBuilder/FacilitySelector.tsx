@@ -61,10 +61,10 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
 
   return (
     <Controller
-      rules={{ required: true }}
+      rules={{ required: isRequired }}
       name={name}
       control={control}
-      defaultValue={updatedOptions[0]}
+      defaultValue={''}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete

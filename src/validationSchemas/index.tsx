@@ -67,12 +67,12 @@ const nameSchema = (label: string) => {
     .required(requiredMessage(label))
 }
 
-const notRequiredPhone = (label: string) => {
+export const notRequiredPhone = (label: string) => {
   return yup.string()
     .test('', MinLength(label, 10), value => !value ? !value : !!value && value.length >= 10)
 }
 
-const requiredPhone = (label: string) => {
+export const requiredPhone = (label: string) => {
   return yup.string().min(10, MinLength(label, 10))
     .max(15, MaxLength(label, 15)).required(requiredMessage(label))
 }
@@ -117,7 +117,7 @@ const dobSchema = {
 //       value => moment().diff(moment(value), 'years') < 100)
 // }
 
-const selectorSchema = (label: string) => yup.object().shape({
+export const selectorSchema = (label: string) => yup.object().shape({
   name: yup.string().required(),
   id: yup.string().required()
 }).test('', requiredMessage(label), ({ id, name }) => !!id && !!name);

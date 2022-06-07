@@ -25,6 +25,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
   if ((facilityId || practiceId) && apiCall) {
     switch (apiCall) {
+      
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
           isRequired={required || true}
@@ -44,6 +45,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           label={label}
           addEmpty
         />
+
       case FormBuilderApiSelector.SERVICE_SLOT:
         return <SlotsComponent facilityId={facilityField || facilityId || ""} state={state} />
 
@@ -58,6 +60,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
         return <PaymentSelector item={item} />
+        
       default:
         return <Controller
           name={fieldId}
