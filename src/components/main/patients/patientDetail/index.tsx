@@ -15,20 +15,21 @@ import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-import EncounterComponent from '../../patients/patientDetail/encounters';
 // constants, history, styling block
+import { WHITE } from '../../../../theme';
 import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import {
-  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
-  useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
-} from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, 
+  useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
+} from '../../../../generated/graphql';
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -44,18 +45,18 @@ import {
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
   HEART_RATE_VALUE, VISITS,
 } from "../../../../constants";
-import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData, patientProvidersData }, dispatch] =
+  const [{ openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [{
+  const [state, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+  const {
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
-  }, appointmentDispatch] = useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
-
+  } = state
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -99,7 +100,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -137,7 +138,12 @@ const PatientDetailsComponent = (): JSX.Element => {
     type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
   });
 
-  const [getPatientProvider, { loading: getPatientLoading }] = useGetPatientProviderLazyQuery({
+  const handleProviderEdit = (id: string, providerId: string) => {
+    dispatch({ type: ActionType.SET_DOCTOR_PATIENT_ID, doctorPatientId: id })
+    dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: providerId })
+  }
+
+  const [getPatientProviders, { loading: getPatientLoading }] = useGetPatientProvidersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -145,11 +151,11 @@ const PatientDetailsComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { getPatientProvider } = data;
+        const { getPatientProviders } = data;
 
-        if (getPatientProvider) {
+        if (getPatientProviders) {
 
-          const { providers } = getPatientProvider;
+          const { providers } = getPatientProviders;
           dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
         }
       }
@@ -158,13 +164,13 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchAllPatientsProviders = useCallback(async () => {
     try {
-      id && await getPatientProvider({
+      id && await getPatientProviders({
         variables: {
           getPatient: { id }
         }
       })
     } catch (error) { }
-  }, [id, getPatientProvider])
+  }, [id, getPatientProviders])
 
   useEffect(() => {
     fetchAllPatientsProviders()
@@ -305,14 +311,21 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
-                <EncounterComponent />
+                <EncounterList />
               </Grid>
             </Grid>
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12} md={6}>
                 <CareTeamComponent
-                  toggleSideDrawer={toggleSideDrawer} patientId={id} loading={getPatientLoading} reload={() => fetchAllPatientsProviders()} patientProvidersData={patientProvidersData}
+                  onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
+                  toggleSideDrawer={toggleSideDrawer}
+                  patientId={id}
+                  loading={getPatientLoading}
+                  reload={() => fetchAllPatientsProviders()}
+                  patientProvidersData={patientProvidersData}
+                  drawerOpened={drawerOpened}
+                  patientDispatcher={dispatch}
                 />
               </Grid>
 
@@ -362,11 +375,17 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       <Box className="careTeam-side-drawer">
         <CareTeamProvider
-          patientId={id}
           drawerOpened={drawerOpened}
           toggleSideDrawer={toggleSideDrawer}
+          patientId={id}
           reload={() => fetchAllPatientsProviders()}
+          doctorId={doctorId}
+          doctorPatientId={doctorPatientId}
+          isEdit={isEdit}
+          doctorName={doctorName}
+          patientProvidersData={patientProvidersData}
         />
+
       </Box>
 
       <ConfirmationModal

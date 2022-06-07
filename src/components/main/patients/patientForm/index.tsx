@@ -1,35 +1,34 @@
 // packages block
-import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress } from "@material-ui/core";
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import {
+  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+} from "../../../../constants";
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import {
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
+  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
+} from "../../../../generated/graphql";
+// interfaces, graphql, constants block /styles
+import history from '../../../../history';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 // components block
-import FormCard from './FormCard';
 import Alert from "../../../common/Alert";
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
-// interfaces, graphql, constants block /styles
-import history from '../../../../history';
-import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
-import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
-import {
-  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION,
-  FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD,
-  PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED,
-  SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
-} from "../../../../constants";
-import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
-  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
-  useUpdatePatientMutation
-} from "../../../../generated/graphql";
+import RegisterFormComponent from './RegisterForm';
+
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
-  { id, isEdit, shouldShowBread = true }, ref
+  { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
@@ -68,11 +67,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         if (patient) {
           const {
             suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, email,
-            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
-            releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
-            sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
-            statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients, registrationDate, smsPermission
+            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice, releaseOfInfoBill,
+            callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer, sexualOrientation,
+            genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts, statementDelivereOnline,
+            statementNote, statementNoteDateFrom, statementNoteDateTo, facility, medicationHistoryAuthority,
+            doctorPatients, registrationDate, smsPermission
           } = patient;
 
           if (facility) {
@@ -480,7 +479,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       handleSubmit(onSubmit)()
     }
   }));
-
+  console.log("shouldDisableEdit", shouldDisableEdit)
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -503,16 +502,16 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           </Button>
         </Box>}
 
-        <FormCard
+        <RegisterFormComponent
           isEdit={isEdit}
           dispatch={dispatch} state={state}
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}
+          shouldDisableEdit={shouldDisableEdit}
         />
       </form>
     </FormProvider>
   );
 });
 
-export default PatientForm;
-
+export default PatientForm

@@ -52,7 +52,7 @@ const PaymentSelector: FC<FieldComponentProps> = ({ item }): JSX.Element => {
             </RadioGroup>
             <FormHelperText>{message}</FormHelperText>
           </FormControl>
-          <Box >
+          <Box>
             {getPaymentComponent(field.value || '')}
           </Box>
         </Fragment>)}

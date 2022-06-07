@@ -9,7 +9,7 @@ import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import { CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY } from "../../../../constants"
 
-const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
+const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
 
   return (
@@ -23,6 +23,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={shouldDisableEdit}
                       color="primary"
                       checked={privacyNotice}
                       onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: event.target.checked })}
@@ -34,6 +35,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={shouldDisableEdit}
                       color="primary"
                       checked={releaseOfInfoBill}
                       onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: event.target.checked })}
@@ -52,6 +54,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                     <FormControlLabel
                       control={
                         <Checkbox
+                          disabled={shouldDisableEdit}
                           color="primary"
                           checked={callToConsent}
                           onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: event.target.checked })}
@@ -70,6 +73,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                     <FormControlLabel
                       control={
                         <Checkbox
+                          disabled={shouldDisableEdit}
                           color="primary"
                           checked={medicationHistoryAuthority}
                           onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: event.target.checked })}
@@ -90,6 +94,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                     <FormControlLabel
                       control={
                         <Checkbox
+                          disabled={shouldDisableEdit}
                           color="primary"
                           checked={smsPermission}
                           onChange={(event) => dispatch && dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: event.target.checked })}

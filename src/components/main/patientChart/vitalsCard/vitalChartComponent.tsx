@@ -22,7 +22,7 @@ import {
 } from "../../../../reducers/mediaReducer";
 import { GRAY_SIX } from "../../../../theme";
 
-const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => {
+const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar, shouldDisableEdit }): JSX.Element => {
   const [patientStates, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -151,7 +151,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => 
 
       <Box>
         <Box className="table-overflow">
-          <VitalsListing patientStates={patientStates} dispatcher={dispatch} />
+          <VitalsListing patientStates={patientStates} dispatcher={dispatch} shouldDisableEdit={shouldDisableEdit}/>
         </Box>
       </Box>
 

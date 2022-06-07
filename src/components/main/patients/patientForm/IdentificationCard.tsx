@@ -1,27 +1,28 @@
 // packages block
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
-// components block
-import Selector from "../../../common/Selector"
-import DatePicker from "../../../common/DatePicker"
-import InputController from "../../../../controller"
-import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
-// constants, interfaces block
-import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  DOB, EMPTY_OPTION, FIRST_NAME, FIRST_NAME_USED, IDENTIFICATION,
+  DOB, FIRST_NAME, FIRST_NAME_USED, IDENTIFICATION,
   LAST_NAME, LEGAL_SEX, MAPPED_GENDER_IDENTITY, MIDDLE_NAME, MOTHERS_MAIDEN_NAME,
   PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, SSN, SUFFIX
 } from "../../../../constants"
+import InputController from "../../../../controller"
+// constants, interfaces block
+import { PatientCardsProps } from "../../../../interfacesTypes"
+import CardComponent from "../../../common/CardComponent"
+import DatePicker from "../../../common/DatePicker"
+// components block
+import Selector from "../../../common/Selector"
+import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
+const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) =>
   <CardComponent cardTitle={IDENTIFICATION}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="suffix"
               controllerLabel={SUFFIX}
@@ -30,6 +31,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
 
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="firstName"
@@ -41,6 +43,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="middleName"
               controllerLabel={MIDDLE_NAME}
@@ -49,6 +52,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
 
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="lastName"
@@ -60,6 +64,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="firstNameUsed"
               controllerLabel={FIRST_NAME_USED}
@@ -68,6 +73,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
 
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="prefferedName"
               controllerLabel={PREFERRED_NAME}
@@ -78,6 +84,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="previousFirstName"
               controllerLabel={PREVIOUS_FIRST_NAME}
@@ -86,6 +93,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
 
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="previouslastName"
               controllerLabel={PREVIOUS_LAST_NAME}
@@ -96,6 +104,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="motherMaidenName"
               controllerLabel={MOTHERS_MAIDEN_NAME}
@@ -104,6 +113,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
 
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="ssn"
@@ -115,16 +125,17 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading }) =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <Selector
+              disabled={shouldDisableEdit}
               isRequired
               name="gender"
               label={LEGAL_SEX}
-              value={EMPTY_OPTION}
+              addEmpty
               options={MAPPED_GENDER_IDENTITY}
             />
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
-            <DatePicker isRequired name="dob" label={DOB} />
+            <DatePicker isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
           </Grid>
         </Grid>
       </>

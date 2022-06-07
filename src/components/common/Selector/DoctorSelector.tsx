@@ -1,5 +1,5 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect, useContext, useMemo } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
@@ -14,7 +14,7 @@ import {
 } from "../../../reducers/doctorReducer";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId=false
+  name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId = false, careProviderData
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
@@ -26,7 +26,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const isSuperAndPracAdmin = isSuper || isPracAdmin
 
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { page, searchQuery, doctors } = state;
+  const { page, searchQuery, doctors, allDoctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
@@ -35,7 +35,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
+      dispatch({ type: ActionType.SET_ALL_DOCTORS, allDoctors: [] })
     },
 
     onCompleted(data) {
@@ -43,7 +43,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
 
       if (findAllDoctor) {
         const { pagination, doctors } = findAllDoctor
-        doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
+        doctors && dispatch({ type: ActionType.SET_ALL_DOCTORS, allDoctors: doctors as AllDoctorPayload['doctors'] })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -57,22 +57,22 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorsInputs = isSuper ? { ...pageInputs } :
-      isPracAdmin ? { practiceId, ...pageInputs } : 
-      isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPracAdmin ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-      if(shouldOmitFacilityId){
-        if(isPracAdmin && isFacAdmin){
+      if (shouldOmitFacilityId) {
+        if (isPracAdmin && isFacAdmin) {
           doctorsInputs && await findAllDoctor({
             variables: {
               doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery, 
+                ...doctorsInputs, doctorFirstName: searchQuery,
               }
             }
           })
-          return 
+          return
         }
 
-        if(isPracAdmin || isFacAdmin){
+        if (isPracAdmin || isFacAdmin) {
           doctorsInputs && await findAllDoctor({
             variables: {
               doctorInput: {
@@ -80,7 +80,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
               }
             }
           })
-          return 
+          return
         }
 
         doctorsInputs && await findAllDoctor({
@@ -89,7 +89,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
               ...doctorsInputs, doctorFirstName: searchQuery
             }
           }
-        }) 
+        })
 
         return
       }
@@ -119,6 +119,20 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   useEffect(() => {
     dispatch({ type: ActionType.SET_DOCTORS, doctors: [] as AllDoctorPayload['doctors'] })
   }, [selectedFacilityId])
+
+  useMemo(() => {
+    if (allDoctors?.length && careProviderData?.length) {
+      const careProvider = careProviderData?.map(({ doctorId }) => doctorId)
+      const filterDoctor = allDoctors?.filter((item) => {
+        const { id } = item || {}
+        return !careProvider?.includes(id)
+      })
+      filterDoctor && dispatch({ type: ActionType.SET_DOCTORS, doctors: filterDoctor as AllDoctorPayload['doctors'] })
+    }
+    else {
+      dispatch({ type: ActionType.SET_DOCTORS, doctors: allDoctors as AllDoctorPayload['doctors'] })
+    }
+  }, [careProviderData, allDoctors])
 
   return (
     <Controller

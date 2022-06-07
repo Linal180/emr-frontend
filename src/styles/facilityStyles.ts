@@ -11,7 +11,7 @@ export const useFacilityStyles = makeStyles(() => ({
     position: 'sticky',
     top: 120,
     maxWidth: 330,
-    width: '100%'
+    width: '100%',
   },
 
   addSlot: {
@@ -44,5 +44,20 @@ export const useFacilityStyles = makeStyles(() => ({
     paddingBottom: 4,
     paddingTop: 4,
     borderBottom: `1px solid ${GRAY_SIX}`,
-  }
+  },
+
+  patientTimeline: {
+    "& .MuiTimelineItem-missingOppositeContent:before": {
+      padding: 0,
+    },
+
+    "& .MuiTimelineContent-root": {
+      padding: 0,
+    },
+
+    "& .MuiTimelineItem-root": {
+      minHeight: 76,
+    },
+  },
+
 }));

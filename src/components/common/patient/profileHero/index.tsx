@@ -1,5 +1,4 @@
 import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
-import moment from "moment";
 import { useParams } from "react-router-dom";
 import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
 // components block
@@ -9,10 +8,13 @@ import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate, renderMissing } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
+  getFormatDateString
+} from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
@@ -122,11 +124,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, sexAtBirth, contacts, doctorPatients, createdAt
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
@@ -142,7 +143,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   const ProfileDetails = [
     {
       icon: ProfileUserIcon(),
-      description: `${PATIENT_AGE} Yrs Old`
+      description: calculateAge(dob || '')
     },
     {
       icon: HashIcon(),
@@ -237,7 +238,11 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     {`${firstName} ${lastName}`}
                   </Box>
 
-                  <Typography variant="body2">({patientRecord})</Typography>
+                  <Box display="flex" flexWrap="wrap" alignItems="center">
+                    <Typography variant="body2">
+                      {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+                    </Typography>
+                  </Box>
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">

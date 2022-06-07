@@ -64,9 +64,25 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
+  selectorBox: {
+
+    "& .MuiFormControl-fullWidth": {
+      width: 120,
+      borderRadius: 8,
+    },
+
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: 'WHITE',
+      borderRadius: 8,
+      padding: '0 5px',
+      minHeight: 34,
+    },
+  },
+
   status: {
+    width: 120,
     fontWeight: 'bold',
-    fontSize: '0.75rem',
+    fontSize: '0.9rem',
     borderRadius: 8,
     padding: '8px 15px',
     display: 'inline-block',

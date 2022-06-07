@@ -37,29 +37,20 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
   const { testField } = watch()
 
   useEffect(() => {
+    console.group("use")
     testField.map(async (testFieldValues, index) => {
       const { test, specimenTypeField } = testFieldValues ?? {}
       if (test.name?.toLowerCase().includes('coronavirus')) {
-        const transformedSpecimenTypeField = specimenTypeField?.map((specimenTypeFieldValues) => {
-          return {
-            ...specimenTypeFieldValues,
-            specimenType: specimenType ?? EMPTY_OPTION
-          }
+        specimenTypeField?.forEach((specimenTypeFieldValues, subIndex) => {
+          const { collectionDate, collectionTime, specimenNotes } = specimenTypeFieldValues ?? {}
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionDate`,collectionDate)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionTime`,collectionTime)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenNotes`,specimenNotes)
+          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenType`,specimenType ?? EMPTY_OPTION)
         })
-        transformedSpecimenTypeField?.map((value, subIndex) => {
-          const { collectionDate, collectionTime, specimenNotes, specimenType } = value ?? {}
-
-          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionDate`, collectionDate)
-          setValue(`testField.${index}.specimenTypeField.${subIndex}.collectionTime`, collectionTime)
-          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenNotes`, specimenNotes)
-          setValue(`testField.${index}.specimenTypeField.${subIndex}.specimenType`, specimenType)
-          
-          return null;
-        })
-
       }
     })
-  }, [setValue, specimenType, testField, numberOfSpecimens])
+  }, [setValue, specimenType, testField, numberOfSpecimens, testField.length])
 
   useEffect(() => {
     getSpecimenType({
@@ -68,9 +59,6 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
       }
     })
   }, [getSpecimenType])
-
-  console.log("testField", testField)
-
 
   return (
     <>

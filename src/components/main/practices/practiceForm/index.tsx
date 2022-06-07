@@ -240,7 +240,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           <Typography>{PRACTICE_IDENTIFIER}</Typography>
 
                           <Grid container spacing={3}>
-                            <Grid item md={3} sm={12} xs={12}>
+                            <Grid item md={2} sm={12} xs={12}>
                               <InputController
                                 placeholder={EIN}
                                 fieldType="text"
@@ -248,7 +248,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               />
                             </Grid>
 
-                            <Grid item md={3} sm={12} xs={12}>
+                            <Grid item md={2} sm={12} xs={12}>
                               <InputController
                                 placeholder={UPIN}
                                 fieldType="text"
@@ -311,7 +311,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={8} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               isRequired
                               fieldType="email"
@@ -320,7 +320,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={4} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <PhoneField name="userPhone" label={PHONE} />
                           </Grid>
                         </Grid>
