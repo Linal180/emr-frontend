@@ -27,9 +27,7 @@ import {
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const {
-    deletePracticeList, setFacilityList, fetchAllFacilityList, setRoleList, setPracticeList
-  } = useContext(ListContext)
+  const { setFacilityList, fetchAllFacilityList, setRoleList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -62,7 +60,7 @@ const PracticeTable: FC = (): JSX.Element => {
             const { totalPages } = pagination
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
-        } 
+        }
       } else {
         dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
       }
@@ -88,10 +86,8 @@ const PracticeTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
-            deletePracticeList(deletePracticeId);
             setFacilityList([])
             setRoleList([])
-            setPracticeList([])
             fetchAllFacilityList()
           }
         }

@@ -1,5 +1,5 @@
 // packages block
-import { FC, useImperativeHandle, useState, forwardRef, useContext } from "react";
+import { useImperativeHandle, useState, forwardRef, useContext } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -13,10 +13,11 @@ import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 import {
-  MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType, MediaStaffDataType, MediaUserDataType
+  DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
+  MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
 
-const DropzoneImage: FC<any> = forwardRef(({
+const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata
 }, ref): JSX.Element => {

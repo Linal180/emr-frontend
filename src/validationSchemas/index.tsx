@@ -1,6 +1,8 @@
 // packages block
 import moment from "moment";
 import * as yup from "yup";
+// utils and constants block
+import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
@@ -24,10 +26,9 @@ import {
   NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
   OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, SSN,
-  LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE,
+  LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE,
+  DOCUMENT_NAME,
 } from "../constants";
-// utils and constants block
-import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
   return yup.string()
@@ -122,10 +123,10 @@ const dobSchema = {
 //       value => moment().diff(moment(value), 'years') < 100)
 // }
 
-const selectorSchema = (label: string) => yup.object().shape({
+const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   name: yup.string().required(),
   id: yup.string().required()
-}).test('', requiredMessage(label), ({ id, name }) => !!id && !!name);
+}).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
 const stateSchema = (isRequired: boolean) => {
   return yup.object().shape({
@@ -278,7 +279,7 @@ const staffBasicSchema = {
 export const createStaffSchema = yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  roleType: selectorSchema(ROLE)
+  roleType: selectorSchema(ROLE, true)
 })
 
 export const updateStaffSchema = yup.object({
@@ -431,16 +432,13 @@ export const guardianPatientSchema = {
 };
 
 export const guarantorPatientSchema = {
-  guarantorRelationship: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(requiredMessage(RELATIONSHIP)),
   guarantorState: stateSchema(true),
   guarantorCountry: countrySchema(false),
   guarantorPhone: requiredPhone(MOBILE_NUMBER),
   guarantorSuffix: notRequiredStringOnly(SUFFIX),
   guarantorAddress: addressValidation(ADDRESS, true),
   guarantorEmployerName: notRequiredStringOnly(NAME),
+  guarantorRelationship: selectorSchema(RELATIONSHIP),
   guarantorAddress2: addressValidation(ADDRESS, false),
   guarantorMiddleName: notRequiredStringOnly(MIDDLE_NAME),
   guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
@@ -1012,13 +1010,21 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
   ...firstLastNameSchema,
   ...emailSchema,
 })
-export const createCopaySchema = yup.object({ 
+export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
   amount: yup.string()
 })
 
-export const createBillingSchema = yup.object({ 
+export const createBillingSchema = yup.object({
   billingStatus: selectorSchema(BILLING_STATUS),
   paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
   amount: yup.string()
+})
+
+export const addDocumentSchema = yup.object({
+  comments: yup.string(),
+  provider: selectorSchema(PROVIDER),
+  documentType: selectorSchema(DOCUMENT_TYPE),
+  date: yup.string().required(requiredMessage(DATE)),
+  name: yup.string().required(requiredMessage(DOCUMENT_NAME)),
 })
