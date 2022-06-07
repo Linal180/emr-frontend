@@ -64,13 +64,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
   });
 
   const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
-    onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
-    },
-
     onCompleted(data) {
       const { fetchBillingDetailsByAppointmentId } = data
       const { billing } = fetchBillingDetailsByAppointmentId

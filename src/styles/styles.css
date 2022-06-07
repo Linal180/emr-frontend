@@ -400,6 +400,10 @@ body .MuiTabPanel-root {
   background-color: #f3f4f6 !important;
 }
 
+.braintree-sheet__header .braintree-sheet__header-label{
+  padding-bottom: 10px;
+}
+
 .facilityActive {
   background-color: #0056B1 !important;
 }

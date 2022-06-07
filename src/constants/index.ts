@@ -119,6 +119,7 @@ export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
+export const NO_WHITE_SPACE_ALLOWED_FOR_INPUT = "No white space allowed at beginning of input";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const UPDATE_MEDIA = "Update media";
@@ -209,6 +210,7 @@ export const FEVER_TEXT = "Temperature"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
+export const CLOSE = "Close";
 export const UPDATE = "Update";
 export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
@@ -950,6 +952,7 @@ export const EFFECTIVE_TEXT = "EFFECTIVE";
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
+export const ASSIGN_TO_ME = "Assign To Me";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
@@ -1003,12 +1006,12 @@ export const STATEMENT_NOTE = "Statement note";
 export const PRIVACY_NOTICE = "Privacy Notice";
 export const DISABLE_ACCESS_PORTAL = "Enabled";
 export const PAY_VIA_PAYPAL = "Pay via PayPal";
+export const USUAL_PROVIDER = "Usual Provider";
 export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
-export const USUAL_PROVIDER = "Usual Provider";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
@@ -1024,6 +1027,7 @@ export const USER_ROLE_PLACEHOLDER = "User Role";
 export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
+export const UPLOAD_DOCUMENT = "Upload Document";
 export const GENDER_IDENTITY = "Gender Identity";
 export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
@@ -1033,9 +1037,9 @@ export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
+export const DOCUMENT_DETAILS = "Document Details";
 export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
-export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const APP_NAME_FORMAT = 'First Middle Last';
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
@@ -1053,13 +1057,13 @@ export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const YOU_HAVE_ENTERED = "You have entered:";
-export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
 export const USER_STATUS_PLACEHOLDER = "User Status";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
+export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
@@ -1479,8 +1483,6 @@ export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
   "You don't have permission to change emergency access status.";
-export const appointmentChargesDescription = (amount: string) =>
-  `You will be charged $${amount} for this appointment booking.`;
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
@@ -3642,6 +3644,10 @@ export const RegisterPatientMenuNav = [
     linkTo: IDENTIFICATION_ROUTE,
   },
   {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
+  },
+  {
     title: CONTACT_INFORMATION,
     linkTo: CONTACT_INFORMATION_ROUTE,
   },
@@ -3656,18 +3662,6 @@ export const RegisterPatientMenuNav = [
   {
     title: EMERGENCY_CONTACT,
     linkTo: EMERGENCY_CONTACT_ROUTE,
-  },
-  {
-    title: GUARANTOR,
-    linkTo: GUARANTOR_ROUTE,
-  },
-  {
-    title: EMPLOYMENT,
-    linkTo: EMPLOYMENT_ROUTE,
-  },
-  {
-    title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
 ];
 
