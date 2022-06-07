@@ -7,7 +7,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 import { INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants'
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
-import { Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
+import { DocumentType, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
   name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery
@@ -67,13 +67,39 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       }
     },
   })
+  
+  const [fetchDocumentTypes] = useFetchDocumentTypesLazyQuery({
+    variables: {
+      documentTypeInput: {
+        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        documentTypeName: query ? query : '',
+      }
+    },
+
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchDocumentTypes } = data
+
+        if (fetchDocumentTypes) {
+          const { documentTypes } = fetchDocumentTypes
+
+          !!documentTypes && setOptions(renderListOptions<DocumentType>(documentTypes as DocumentType[], modalName))
+        }
+      }
+    },
+  })
 
   const fetchList = useCallback(async () => {
     try {
       if (modalName === ITEM_MODULE.snoMedCode) await getSnoMedCodes();
       if (modalName === ITEM_MODULE.insurance) await getInsurances();
+      if (modalName === ITEM_MODULE.documentTypes) await fetchDocumentTypes();
     } catch (error) { }
-  }, [getInsurances, getSnoMedCodes, modalName])
+  }, [fetchDocumentTypes, getInsurances, getSnoMedCodes, modalName])
 
   useEffect(() => {
     (!query.length || query.length > 2) && fetchList()
@@ -85,6 +111,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         const { id, name } = value
         modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
         modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
+        modalName === ITEM_MODULE.documentTypes && setValue('documentTypeId', value)
       }
     }
   }, [isEdit, modalName, setValue, value])

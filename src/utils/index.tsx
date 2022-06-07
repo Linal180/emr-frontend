@@ -10,7 +10,7 @@ import { pluck } from "underscore";
 import client from "../apollo";
 import { ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
 import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
   UnitType, UserForms, WeightType
 } from "../generated/graphql";
 import history from "../history";
@@ -1291,6 +1291,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: insuranceId, name: `${payerId} | ${payerName}` })
           break;
+        case ITEM_MODULE.documentTypes:
+          let { id: documentTypeId, type } = (item as unknown as DocumentType) || {};
+
+          data.push({ id: documentTypeId, name: type })
+          break;
         default:
           break;
       }
@@ -1300,7 +1305,7 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
   return data;
 };
 
-export function renderTableOptions<ListOptionTypes>(list: ListOptionTypes[],modalName:TABLE_SELECTOR_MODULES){
+export function renderTableOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: TABLE_SELECTOR_MODULES) {
   const data: TableCodesProps[] = [];
 
   if (!!list) {
@@ -1314,7 +1319,7 @@ export function renderTableOptions<ListOptionTypes>(list: ListOptionTypes[],moda
         case TABLE_SELECTOR_MODULES.cptCode:
           let { id: cptCodeId, name } = (item as unknown as SelectorOption) || {};
 
-          data.push({ id: cptCodeId, code:cptCodeId, description: `${name?.slice(0,100)}...` || '' })
+          data.push({ id: cptCodeId, code: cptCodeId, description: `${name?.slice(0, 100)}...` || '' })
           break;
         default:
           break;

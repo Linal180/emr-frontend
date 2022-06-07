@@ -248,27 +248,16 @@ export type AttachmentMediaPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-/** The type is assigned */
-export enum AttachmentMetaDataType {
-  DrivingLicense1 = 'DRIVING_LICENSE1',
-  DrivingLicense2 = 'DRIVING_LICENSE2',
-  InsuranceCard1 = 'INSURANCE_CARD1',
-  InsuranceCard2 = 'INSURANCE_CARD2',
-  LabOrders = 'LAB_ORDERS',
-  ProfilePicture = 'PROFILE_PICTURE',
-  ProviderUploads = 'PROVIDER_UPLOADS',
-  Signature = 'SIGNATURE'
-}
-
 export type AttachmentMetadata = {
   __typename?: 'AttachmentMetadata';
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
+  documentType?: Maybe<DocumentType>;
+  documentTypeId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNum?: Maybe<Scalars['String']>;
-  metadataType: AttachmentMetaDataType;
   pending?: Maybe<Scalars['Boolean']>;
   policyId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
@@ -577,10 +566,11 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentTypeId?: Maybe<Scalars['String']>;
+  documentTypeName?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
-  /** enum type for module type - Upload Media */
-  metadataType?: Maybe<AttachmentMetaDataType>;
   policyId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;
@@ -1126,6 +1116,37 @@ export enum DoctorPatientRelationType {
 export type DoctorPayload = {
   __typename?: 'DoctorPayload';
   doctor?: Maybe<Doctor>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type DocumentType = {
+  __typename?: 'DocumentType';
+  attachments?: Maybe<Array<AttachmentMetadata>>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  practice?: Maybe<Practice>;
+  practiceId?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+};
+
+export type DocumentTypeInput = {
+  documentPracticeId?: Maybe<Scalars['String']>;
+  documentTypeName?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type DocumentTypePayload = {
+  __typename?: 'DocumentTypePayload';
+  documentType?: Maybe<DocumentType>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type DocumentTypesPayload = {
+  __typename?: 'DocumentTypesPayload';
+  documentTypes?: Maybe<Array<Maybe<DocumentType>>>;
+  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -2995,6 +3016,7 @@ export type Practice = {
   attachments?: Maybe<Array<Attachment>>;
   champus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  documentTypes?: Maybe<Array<DocumentType>>;
   ein?: Maybe<Scalars['String']>;
   facilities?: Maybe<Array<Facility>>;
   fax?: Maybe<Scalars['String']>;
@@ -3179,6 +3201,9 @@ export type Query = {
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
+  fetchDocumentType: DocumentTypesPayload;
+  fetchDocumentTypeByName: DocumentTypePayload;
+  fetchDocumentTypes: DocumentTypesPayload;
   fetchEmergencyAccessUsers: EmergencyAccessUserPayload;
   fetchICDCodes: IcdCodesPayload;
   fetchInsurance: InsurancesPayload;
@@ -3287,6 +3312,21 @@ export type QueryFetchAllUsersArgs = {
 
 export type QueryFetchBillingDetailsByAppointmentIdArgs = {
   appointmentId: Scalars['String'];
+};
+
+
+export type QueryFetchDocumentTypeArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryFetchDocumentTypeByNameArgs = {
+  name: Scalars['String'];
+};
+
+
+export type QueryFetchDocumentTypesArgs = {
+  documentTypeInput: DocumentTypeInput;
 };
 
 
@@ -4329,11 +4369,12 @@ export type UpdateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentTypeId?: Maybe<Scalars['String']>;
+  documentTypeName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
-  /** enum type for module type - Upload Media */
-  metadataType?: Maybe<AttachmentMetaDataType>;
   policyId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;
@@ -5083,14 +5124,28 @@ export type GetAttachmentsByLabOrderQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', metadataType: AttachmentMetaDataType, labOrderNum?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type GetAttachmentsByLabOrderQuery = { __typename?: 'Query', getAttachmentsByLabOrder: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', labOrderNum?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
   getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', metadataType: AttachmentMetaDataType, policyId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null | undefined, attachmentName?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, comments?: string | null | undefined, attachmentMetadataId?: string | null | undefined, attachmentMetadata?: { __typename?: 'AttachmentMetadata', policyId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
+export type FetchDocumentTypeByNameQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type FetchDocumentTypeByNameQuery = { __typename?: 'Query', fetchDocumentTypeByName: { __typename?: 'DocumentTypePayload', documentType?: { __typename?: 'DocumentType', type?: string | null | undefined, id: string } | null | undefined } };
+
+export type FetchDocumentTypesQueryVariables = Exact<{
+  documentTypeInput: DocumentTypeInput;
+}>;
+
+
+export type FetchDocumentTypesQuery = { __typename?: 'Query', fetchDocumentTypes: { __typename?: 'DocumentTypesPayload', documentTypes?: Array<{ __typename?: 'DocumentType', type?: string | null | undefined, id: string, practiceId?: string | null | undefined } | null | undefined> | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -6757,7 +6812,6 @@ export const GetAttachmentsByLabOrderDocument = gql`
       type
       comments
       attachmentMetadata {
-        metadataType
         labOrderNum
       }
       attachmentMetadataId
@@ -6804,7 +6858,6 @@ export const GetAttachmentsByPolicyIdDocument = gql`
       type
       comments
       attachmentMetadata {
-        metadataType
         policyId
       }
       attachmentMetadataId
@@ -6840,6 +6893,92 @@ export function useGetAttachmentsByPolicyIdLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetAttachmentsByPolicyIdQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdQuery>;
 export type GetAttachmentsByPolicyIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdLazyQuery>;
 export type GetAttachmentsByPolicyIdQueryResult = Apollo.QueryResult<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>;
+export const FetchDocumentTypeByNameDocument = gql`
+    query FetchDocumentTypeByName($name: String!) {
+  fetchDocumentTypeByName(name: $name) {
+    documentType {
+      type
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchDocumentTypeByNameQuery__
+ *
+ * To run a query within a React component, call `useFetchDocumentTypeByNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchDocumentTypeByNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchDocumentTypeByNameQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useFetchDocumentTypeByNameQuery(baseOptions: Apollo.QueryHookOptions<FetchDocumentTypeByNameQuery, FetchDocumentTypeByNameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchDocumentTypeByNameQuery, FetchDocumentTypeByNameQueryVariables>(FetchDocumentTypeByNameDocument, options);
+      }
+export function useFetchDocumentTypeByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchDocumentTypeByNameQuery, FetchDocumentTypeByNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchDocumentTypeByNameQuery, FetchDocumentTypeByNameQueryVariables>(FetchDocumentTypeByNameDocument, options);
+        }
+export type FetchDocumentTypeByNameQueryHookResult = ReturnType<typeof useFetchDocumentTypeByNameQuery>;
+export type FetchDocumentTypeByNameLazyQueryHookResult = ReturnType<typeof useFetchDocumentTypeByNameLazyQuery>;
+export type FetchDocumentTypeByNameQueryResult = Apollo.QueryResult<FetchDocumentTypeByNameQuery, FetchDocumentTypeByNameQueryVariables>;
+export const FetchDocumentTypesDocument = gql`
+    query FetchDocumentTypes($documentTypeInput: DocumentTypeInput!) {
+  fetchDocumentTypes(documentTypeInput: $documentTypeInput) {
+    documentTypes {
+      type
+      id
+      practiceId
+    }
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchDocumentTypesQuery__
+ *
+ * To run a query within a React component, call `useFetchDocumentTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchDocumentTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchDocumentTypesQuery({
+ *   variables: {
+ *      documentTypeInput: // value for 'documentTypeInput'
+ *   },
+ * });
+ */
+export function useFetchDocumentTypesQuery(baseOptions: Apollo.QueryHookOptions<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>(FetchDocumentTypesDocument, options);
+      }
+export function useFetchDocumentTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>(FetchDocumentTypesDocument, options);
+        }
+export type FetchDocumentTypesQueryHookResult = ReturnType<typeof useFetchDocumentTypesQuery>;
+export type FetchDocumentTypesLazyQueryHookResult = ReturnType<typeof useFetchDocumentTypesLazyQuery>;
+export type FetchDocumentTypesQueryResult = Apollo.QueryResult<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
