@@ -251,9 +251,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
     try {
-      id && name && await updateAppointment({
-        variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
-      })
+      if (id && name && name !== '--') {
+        await updateAppointment({
+          variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
+        })
+      } else clearEdit()
     } catch (error) { }
   }
 

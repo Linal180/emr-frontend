@@ -4,45 +4,39 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, Grid, IconButton
-} from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
+import SideDrawer from "../../SideDrawer";
 import TableLoader from "../../TableLoader";
-import MediaCards from "../../AddMedia/MediaCards";
 import InputController from "../../../../controller";
+import AddDocumentModal from "./AddDocumentModule";
 import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
-import { GRAY_SIX, GREY_SIXTEEN } from "../../../../theme";
+import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
+import { DownloadIcon, SignedIcon, TrashNewIcon,} from "../../../../assets/svgs";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
+import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
-  getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
-} from "../../../../utils";
-import {
-  mediaReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/mediaReducer";
-import {
-  CloseIcon,
-  DownloadIcon, SignedIcon, TrashNewIcon,
-} from "../../../../assets/svgs";
-import {
-  ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY, EMPTY_OPTION, SAVE_TEXT, UPLOAD_DOCUMENT, UPLOAD,
-} from "../../../../constants";
-import {
-  AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  AttachmentsPayload, PatientPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
-import Selector from "../../Selector";
-import SideDrawer from "../../SideDrawer";
+import {
+  ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
+   SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY, UPLOAD,
+} from "../../../../constants";
 
-const DocumentsTable: FC = (): JSX.Element => {
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
+}
+
+const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
@@ -51,6 +45,8 @@ const DocumentsTable: FC = (): JSX.Element => {
 
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
+  const { firstName: patientFirstName, lastName: patientLastName } = patient || {}
+  const patientName = `${patientFirstName || ''} ${patientLastName || ''}`.trim()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
     resolver: yupResolver(attachmentNameUpdateSchema)
@@ -58,7 +54,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { setValue, handleSubmit } = methods;
   const [{
     isEdit, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
-    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab
+    deleteAttachmentId, documentTab, openSign, providerName, isSignedTab, isOpen
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -263,15 +259,22 @@ const DocumentsTable: FC = (): JSX.Element => {
             <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'} onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}>{SIGNED}</Typography>
           </Box>
         </Box>
-        
-        <SideDrawer 
+
+        <SideDrawer
           drawerOpened={drawerOpened}
           toggleSideDrawer={toggleSideDrawer}
         >
-          <h1>component here..</h1>
+          <Box maxWidth={500}>
+            <AddDocumentModal
+              toggleSideDrawer={toggleSideDrawer}
+              patientId={""}
+              patientName={""} />
+          </Box>
         </SideDrawer>
 
         <Button onClick={toggleSideDrawer} variant="contained" color="primary">{UPLOAD}</Button>
+
+        {/* <Button variant="contained" color="primary" onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>Upload</Button> */}
 
         {/* {!isSignedTab && <MediaCards
           itemId={id}
@@ -383,6 +386,13 @@ const DocumentsTable: FC = (): JSX.Element => {
         }
       </Box>
 
+      {/* <AddDocumentModal
+        isOpen={isOpen}
+        patientId={id}
+        patientName={patientName}
+        setIsOpen={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })}
+      /> */}
+
       <ConfirmationModal
         title={DOCUMENT}
         isOpen={openDelete}
@@ -406,66 +416,6 @@ const DocumentsTable: FC = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
         }
       />
-
-      <Box maxWidth={500}>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box
-              display="flex" justifyContent="space-between"
-              borderBottom={`1px solid ${GREY_SIXTEEN}`} px={2} pt={2} pb={1}
-            >
-              <Typography variant='h3'>{'ADD_PROVIDER_TEXT'}</Typography>
-              <IconButton>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-
-            <Box mt={2} p={3}>
-                
-
-              <Box p={3} />
-
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="firstName"
-                    controllerLabel={'FIRST_NAME'}
-                    placeholder="Chadwick"
-                    disabled
-                  />
-                </Grid>
-
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    isRequired
-                    name="speciality"
-                    label={''}
-                    value={EMPTY_OPTION}
-                    options={[]}
-                    disabled
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="otherRelation"
-                    placeholder="Enter Relation"
-                    margin={'none'}
-                  />
-
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Box py={3} pr={3} display="flex" justifyContent="flex-end" borderTop={`1px solid ${GREY_SIXTEEN}`}>
-              <Button type="submit" variant="contained" color="secondary" size='large'>{SAVE_TEXT}</Button>
-            </Box>
-          </form>
-        </FormProvider>
-      </Box>
     </Box>
   );
 };
