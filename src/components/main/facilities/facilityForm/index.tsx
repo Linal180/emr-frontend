@@ -30,7 +30,7 @@ import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
+import { formatServiceCode, getTimeString, isSuperAdmin, renderItem, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
@@ -648,12 +648,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           <>
                             <Grid container spacing={3}>
                               <Grid item xs={12} sm={12} md={12}>
-                                <InputController
+                                {isEdit ? renderItem(EMAIL, email) : <InputController
                                   isRequired
                                   fieldType="text"
                                   controllerName="email"
                                   controllerLabel={EMAIL}
-                                />
+                                />}
                               </Grid>
                             </Grid>
 
