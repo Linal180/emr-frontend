@@ -10,7 +10,7 @@ import DropzoneImage from "../DropZoneImage";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 import { TrashNewIcon } from "../../../assets/svgs";
-import { EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
+import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
@@ -88,7 +88,16 @@ const EditMediaModel: FC<MediaModalTypes> = ({
         </DialogContent>
 
         <DialogActions>
-          <Box px={2} py={1} display="flex">
+          <Box  py={1} display="flex">
+            <Button                             
+              type="button"
+              onClick={handleClose}               
+            >
+              {CANCEL}
+            </Button>
+
+            <Box px={1} />
+            
             <Button
               variant="contained"
               color="primary"
@@ -104,7 +113,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
           </Box>
         </DialogActions>
       </form>
-    </Dialog>
+    </Dialog >
   )
 }
 
