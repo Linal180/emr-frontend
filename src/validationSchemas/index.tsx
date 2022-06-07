@@ -24,7 +24,7 @@ import {
   NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
   OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, SSN,
-  LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE,
+  LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE, FORM_TYPE,
 } from "../constants";
 // utils and constants block
 import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
@@ -67,12 +67,12 @@ const nameSchema = (label: string) => {
     .required(requiredMessage(label))
 }
 
-const notRequiredPhone = (label: string) => {
+export const notRequiredPhone = (label: string) => {
   return yup.string()
     .test('', MinLength(label, 10), value => !value ? !value : !!value && value.length >= 10)
 }
 
-const requiredPhone = (label: string) => {
+export const requiredPhone = (label: string) => {
   return yup.string().min(10, MinLength(label, 10))
     .max(15, MaxLength(label, 15)).required(requiredMessage(label))
 }
@@ -122,7 +122,7 @@ const dobSchema = {
 //       value => moment().diff(moment(value), 'years') < 100)
 // }
 
-const selectorSchema = (label: string) => yup.object().shape({
+export const selectorSchema = (label: string) => yup.object().shape({
   name: yup.string().required(),
   id: yup.string().required()
 }).test('', requiredMessage(label), ({ id, name }) => !!id && !!name);
@@ -590,14 +590,18 @@ export const roleSchema = yup.object({
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({
-  type: selectorSchema(''),
-  facilityId: selectorSchema(FACILITY),
+  type: selectorSchema(FORM_TYPE),
+  isPractice: yup.boolean(),
+  facilityId: yup.object().shape({ name: yup.string(), id: yup.string() })
+    .test('', requiredMessage(FACILITY), ({ id, name }, { parent: { isPractice } }) => {
+      return isPractice ? isPractice : id && name
+    }),
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
     .max(250, MaxLength(FORM_NAME, 250)).required(),
 });
 
 export const createFormBuilderSchema = yup.object({
-  type: selectorSchema(''),
+  type: selectorSchema(FORM_TYPE),
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
     .max(250, MaxLength(FORM_NAME, 250)).required(),
 });

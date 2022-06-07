@@ -79,6 +79,10 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const CONTRACT_NO = 'Contract No';
+export const ORGANIZATION_NAME = 'Organization Name';
+export const FACILITY_FORM = 'Facility Form';
+export const PRACTICE_FORM = 'Practice Form';
 export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
@@ -139,7 +143,7 @@ export const CARE_TEAM = "Care Team";
 export const FORM_NAME = "Form name";
 export const THANK_YOU_TEXT = "Thank you!";
 export const FORM_SUBMIT_TEXT = "Form Submit";
-export const FORM_TYPE = "Select a form type";
+export const FORM_TYPE = "Form type";
 export const ADD_COLUMNS_TEXT = "Add Columns";
 export const FORM_EMBED_TITLE = "Embed your form builder";
 export const FORM_NOT_PUBLISHED = "Form is not published";
@@ -387,6 +391,7 @@ export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
 export const NOT_PUBLISHED = "Not Published";
+export const DRAFT_TEXT = "Draft";
 export const TO_BILLING = "To Billing";
 export const TO_LAB_ORDERS = "To Lab Orders";
 export const UPLOAD_LOGO = "Upload Logo";
@@ -3551,6 +3556,11 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
     name: "",
     id: "",
   },
+  practiceId: {
+    name: "",
+    id: "",
+  },
+  isPractice: false
 };
 
 export const getFormInitialValues = () => [
@@ -4346,7 +4356,8 @@ export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
-  PAYMENT_TYPE = 'paymentType'
+  PAYMENT_TYPE = 'paymentType',
+  PRACTICE_FACILITIES = 'practiceFacilities'
 }
 
 export enum FormBuilderPaymentTypes {

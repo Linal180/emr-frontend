@@ -4,34 +4,36 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderServices, requiredLabel } from "../../../utils";
-import {
-  serviceReducer, serviceAction, initialState, State, ActionType
-} from "../../../reducers/serviceReducer";
+import { renderFacilities, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { FormBuilderFacilitySelectorProps } from "../../../interfacesTypes";
+import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
+import { facilityReducer, Action, initialState, State, ActionType } from "../../../reducers/facilityReducer";
+import { ActionType as FormActionType } from '../../../reducers/externalFormBuilderReducer'
 
-const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
+const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, practiceId, dispatcher, state: formState
+}): JSX.Element => {
   const { control } = useFormContext()
-  const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
-  const { page, searchQuery, services, serviceType } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const { page, searchQuery, facilities } = state;
+  const { facilityFieldId } = formState || {}
+  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
 
-  const [findAllService] = useFindAllServiceListLazyQuery({
+  const [findAllFacility] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_SERVICES, services: [] })
+      dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
     },
 
     onCompleted(data) {
-      const { findAllServices } = data || {};
+      const { findAllFacility } = data || {};
 
-      if (findAllServices) {
-        const { pagination, services } = findAllServices
-        services && dispatch({ type: ActionType.SET_SERVICES, services: services as ServicesPayload['services'] })
+      if (findAllFacility) {
+        const { pagination, facilities } = findAllFacility
+        facilities && dispatch({ type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities'] })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -41,24 +43,21 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
     }
   });
 
-  const fetchAllServices = useCallback(async () => {
+  const fetchAllFacilities = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      facilityId && await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId: facilityId } }
+      const facilitiesInputs = { practiceId, ...pageInputs }
+      practiceId && facilitiesInputs && await findAllFacility({
+        variables: { facilityInput: { ...facilitiesInputs, facilityName: searchQuery } }
       })
     } catch (error) { }
-  }, [page, findAllService, searchQuery, facilityId])
+  }, [page, practiceId, findAllFacility, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
-      fetchAllServices()
+      fetchAllFacilities()
     }
-  }, [page, searchQuery, fetchAllServices]);
-
-  useEffect(() => {
-    dispatch({ type: ActionType.SET_SERVICES, services: [] as ServicesPayload['services'] })
-  }, [facilityId])
+  }, [page, searchQuery, fetchAllFacilities]);
 
   return (
     <Controller
@@ -70,7 +69,7 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
         return (
           <Autocomplete
             options={updatedOptions ?? []}
-            value={serviceType}
+            value={facilityFieldId}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}
@@ -81,7 +80,6 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
-
                 </Box>
                 <TextField
                   {...params}
@@ -95,8 +93,8 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
             )}
             onChange={(_, data) => {
               const { id } = data || {}
+              id && dispatcher && dispatcher({ type: FormActionType.SET_FACILITY_FIELD_ID, facilityFieldId: data })
               field.onChange(id)
-              dispatch({ type: ActionType.SET_SERVICE_TYPE, serviceType: data })
             }}
           />
         );
@@ -105,4 +103,4 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
   );
 };
 
-export default ServiceSelector;
+export default FacilitySelector;

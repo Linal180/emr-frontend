@@ -1,8 +1,9 @@
 //packages block
+import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress, Card } from '@material-ui/core';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useParams } from 'react-router';
 //components block
 import InputController from '../../../common/FormFieldController';
 import CardComponent from '../../../common/CardComponent';
@@ -22,16 +23,17 @@ import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { GREY } from '../../../../theme';
 import { State, Action, initialState, externalFormBuilderReducer, ActionType } from '../../../../reducers/externalFormBuilderReducer';
+import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
 //constants
 const initialValues = {};
 //component
 const PublicFormPreview = () => {
   //hooks
-  const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType } = state
+  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId, paymentType } = state
+  const methods = useForm<any>({ defaultValues: initialValues, resolver: yupResolver(getFormBuilderValidation(formValues, paymentType)) });
   const { handleSubmit } = methods;
 
   //mutation
@@ -48,12 +50,13 @@ const PublicFormPreview = () => {
           const { status } = response;
 
           if (form && status && status === 200) {
-            const { name, layout, isActive, facilityId, type } = form;
+            const { name, layout, isActive, facilityId, type, practiceId } = form;
             const { sections } = layout;
 
             if (isActive) {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
               facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
+              practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
               sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
@@ -187,7 +190,13 @@ const PublicFormPreview = () => {
                                   md={parseColumnGrid(field?.column)}
                                   key={`${item?.id}-${field?.fieldId}`}
                                 >
-                                  <InputController item={field} facilityId={facilityId} state={state} />
+                                  <InputController
+                                    item={field}
+                                    facilityId={facilityId}
+                                    state={state}
+                                    practiceId={practiceId}
+                                    dispatcher={dispatch}
+                                  />
                                 </Grid>
                               ))}
                             </Grid>
