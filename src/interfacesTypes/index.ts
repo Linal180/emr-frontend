@@ -15,7 +15,7 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -1099,6 +1099,13 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+}
+
+export interface FacilityCardsProps extends GeneralFormProps {
+  getFacilityLoading: boolean;
+  dispatch?: Dispatch<FacilityAction>
+  state?: FacilityState
+  isSuper?: boolean
 }
 
 export interface PatientFormProps extends GeneralFormProps {

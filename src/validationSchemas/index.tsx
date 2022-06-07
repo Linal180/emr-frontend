@@ -200,7 +200,7 @@ export const contactSchema = {
   ...emailSchema,
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
-  phone: requiredPhone(MOBILE),
+  phone: requiredPhone(PHONE),
   country: countrySchema(false),
   pager: notRequiredPhone(PAGER),
   mobile: notRequiredPhone(PHONE),
