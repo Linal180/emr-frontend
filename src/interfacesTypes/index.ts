@@ -89,19 +89,13 @@ export interface ListContextInterface {
   roleList: RolesPayload["roles"];
   setRoleList: Function;
   fetchAllRoleList: Function;
-  practiceList: PracticesPayload["practices"];
-  setPracticeList: Function;
-  fetchAllPracticeList: Function;
   facilityList: FacilitiesPayload["facilities"];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  deletePracticeList: Function;
   deleteRoleList: Function;
   deleteFacilityList: Function;
-  addPracticeList: Function;
   addRoleList: Function;
   addFacilityList: Function;
-  updatePracticeList: Function;
   updateRoleList: Function;
   updateFacilityList: Function;
 }

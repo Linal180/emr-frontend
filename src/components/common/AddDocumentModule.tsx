@@ -9,29 +9,38 @@ import DatePicker from "./DatePicker";
 import DropzoneImage from "./DropZoneImage";
 import CardComponent from "./CardComponent";
 import InputController from "../../controller";
+import DoctorSelector from "./Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
 import { AttachmentType } from "../../generated/graphql";
 import { addDocumentSchema } from "../../validationSchemas";
 import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../interfacesTypes";
-import { ADD_DOCUMENT, CANCEL, COMMENTS, DATE, DOCUMENT_NAME, DOCUMENT_TYPE, PATIENT_NAME, PROVIDER, UPLOAD_DOCUMENT } from "../../constants";
-import DoctorSelector from "./Selector/DoctorSelector";
+import {
+  ADD_DOCUMENT, CANCEL, COMMENTS, DATE, DOCUMENT_NAME, DOCUMENT_TYPE, PATIENT_NAME, PROVIDER, UPLOAD_DOCUMENT
+} from "../../constants";
 
-const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patientName, patientId, facilityId }): JSX.Element => {
+const AddDocumentModal: FC<AddDocumentModalProps> = ({
+  isOpen, setIsOpen, patientName, patientId, facilityId
+}): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(addDocumentSchema)
   });
   const { reset, handleSubmit, watch, setValue } = methods;
-  const { name, documentType } = watch()
+  const { name, documentType, provider } = watch()
+  const { name: providerName } = provider || {}
+  const { name: documentMeta } = documentType || {}
 
   const handleClose = useCallback(() => {
     reset();
     setIsOpen(false)
   }, [setIsOpen, reset])
 
-  const onSubmit: SubmitHandler<DocumentInputProps> = async ({ name, documentType }) => {
-
+  const onSubmit: SubmitHandler<DocumentInputProps> = async ({
+    name, documentType, comments, date, patientName, provider
+  }) => {
+    console.log(name, "name", documentType, "documentType", comments, "comments", date, "date", patientName, "patientName", provider, "provider",)
+    dropZoneRef.current?.submit()
   };
 
   useEffect(() => {
@@ -68,6 +77,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patien
                   isRequired
                   label={DOCUMENT_TYPE}
                   name="documentType"
+                  options={[{ id: AttachmentType.Patient, name: AttachmentType.Patient }]}
                 />
               </Grid>
 
@@ -102,8 +112,8 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({ isOpen, setIsOpen, patien
               ref={dropZoneRef}
               attachmentId={''}
               itemId={patientId}
-              providerName={'Admin'}
-              attachmentMetadata={{ documentType }}
+              providerName={providerName || ''}
+              attachmentMetadata={{ documentType: documentMeta }}
               imageModuleType={AttachmentType.Patient}
               reload={() => { }}
               handleClose={handleClose}
