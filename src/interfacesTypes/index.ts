@@ -14,9 +14,9 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
@@ -1110,6 +1110,13 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+}
+
+export interface FacilityCardsProps extends GeneralFormProps {
+  getFacilityLoading: boolean;
+  dispatch?: Dispatch<FacilityAction>
+  state?: FacilityState
+  isSuper?: boolean
 }
 
 export interface PatientFormProps extends GeneralFormProps {

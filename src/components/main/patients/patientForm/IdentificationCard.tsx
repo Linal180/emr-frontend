@@ -129,7 +129,6 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
               isRequired
               name="gender"
               label={LEGAL_SEX}
-              addEmpty
               options={MAPPED_GENDER_IDENTITY}
             />
           </Grid>
