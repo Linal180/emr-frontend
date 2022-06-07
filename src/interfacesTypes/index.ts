@@ -27,12 +27,12 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientProviderPayload,
+  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
   PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  VerifyCodeInput, PatientProviderPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -89,19 +89,13 @@ export interface ListContextInterface {
   roleList: RolesPayload["roles"];
   setRoleList: Function;
   fetchAllRoleList: Function;
-  practiceList: PracticesPayload["practices"];
-  setPracticeList: Function;
-  fetchAllPracticeList: Function;
   facilityList: FacilitiesPayload["facilities"];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  deletePracticeList: Function;
   deleteRoleList: Function;
   deleteFacilityList: Function;
-  addPracticeList: Function;
   addRoleList: Function;
   addFacilityList: Function;
-  updatePracticeList: Function;
   updateRoleList: Function;
   updateFacilityList: Function;
 }
@@ -1126,6 +1120,7 @@ export interface AddPatientModalProps {
 
 export interface AddDocumentModalProps {
   patientId: string;
+  facilityId: string;
   patientName: string;
   toggleSideDrawer: Function;
 }
@@ -1713,3 +1708,7 @@ export interface CodesTableProps {
 
 export type DocumentInputProps = { name: string } & { documentType: SelectorOption }
   & { provider: SelectorOption } & { date: string } & { comments: string } & { patientName: string }
+
+export interface DocumentsTableProps {
+  patient: PatientPayload['patient']
+}

@@ -1481,8 +1481,8 @@ export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
-export const EMERGENCY_ACCESS_ERROR_MESSGE =
-  "You don't have permission to change emrgency access status.";
+export const EMERGENCY_ACCESS_ERROR_MESSAGE =
+  "You don't have permission to change emergency access status.";
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 

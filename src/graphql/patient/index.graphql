@@ -79,6 +79,7 @@ query GetPatient($getPatient: GetPatient!) {
       middleName
       lastName
       suffix
+      facilityId
       inviteAccepted
       patientRecord
       firstNameUsed

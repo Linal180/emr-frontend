@@ -19,7 +19,7 @@ import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import { DownloadIcon, SignedIcon, TrashNewIcon,} from "../../../../assets/svgs";
+import { DownloadIcon, SignedIcon, TrashNewIcon, } from "../../../../assets/svgs";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
 import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
@@ -29,7 +29,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-   SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY, UPLOAD,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY, UPLOAD,
 } from "../../../../constants";
 
 export interface DocumentsTableProps {
@@ -45,7 +45,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
-  const { firstName: patientFirstName, lastName: patientLastName } = patient || {}
+  const { firstName: patientFirstName, lastName: patientLastName, facilityId } = patient || {}
   const patientName = `${patientFirstName || ''} ${patientLastName || ''}`.trim()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
@@ -53,7 +53,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   });
   const { setValue, handleSubmit } = methods;
   const [{
-    isEdit, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
+    isEdit, attachmentsData, attachmentId, openDelete,
     deleteAttachmentId, documentTab, openSign, providerName, isSignedTab, isOpen
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
@@ -266,6 +266,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         >
           <Box maxWidth={500}>
             <AddDocumentModal
+              facilityId=""
               toggleSideDrawer={toggleSideDrawer}
               patientId={""}
               patientName={""} />
@@ -390,6 +391,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         isOpen={isOpen}
         patientId={id}
         patientName={patientName}
+        facilityId={facilityId || ''}
         setIsOpen={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })}
       /> */}
 
