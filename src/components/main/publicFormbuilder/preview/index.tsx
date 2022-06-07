@@ -32,8 +32,8 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId } = state
-  const methods = useForm<any>({ defaultValues: initialValues ,resolver: yupResolver(getFormBuilderValidation(formValues))});
+  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId, paymentType } = state
+  const methods = useForm<any>({ defaultValues: initialValues, resolver: yupResolver(getFormBuilderValidation(formValues, paymentType)) });
   const { handleSubmit } = methods;
 
   //mutation

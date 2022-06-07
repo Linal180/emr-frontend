@@ -25,7 +25,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
   if ((facilityId || practiceId) && apiCall) {
     switch (apiCall) {
-      
+
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
           isRequired={required || true}
@@ -59,8 +59,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         />
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
-        return <PaymentSelector item={item} />
-        
+        return <PaymentSelector item={item} dispatcher={dispatcher} />
+
       default:
         return <Controller
           name={fieldId}

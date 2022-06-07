@@ -79,6 +79,8 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const CONTRACT_NO = 'Contract No';
+export const ORGANIZATION_NAME = 'Organization Name';
 export const FACILITY_FORM = 'Facility Form';
 export const PRACTICE_FORM = 'Practice Form';
 export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;

@@ -1,12 +1,12 @@
 // packages block
 import * as yup from "yup";
 import { notRequiredPhone, requiredPhone } from ".";
-import { FormBuilderApiSelector } from "../constants";
+import { COMPANY_NAME, CONTRACT_NO, FormBuilderApiSelector, FormBuilderPaymentTypes, GROUP_NUMBER, MEMBER_ID, ORGANIZATION_NAME } from "../constants";
 //graphql, utils
 import { ElementType, SectionsInputs } from "../generated/graphql";
 import { invalidMessage, requiredMessage } from "../utils";
 //schema
-export const getFormBuilderValidation = (formSection: SectionsInputs[]) => {
+export const getFormBuilderValidation = (formSection: SectionsInputs[], paymentType: string) => {
   let validation: any = {}
   formSection?.map((section) => {
     const { fields } = section || {}
@@ -47,9 +47,27 @@ export const getFormBuilderValidation = (formSection: SectionsInputs[]) => {
           case FormBuilderApiSelector.FACILITY_PROVIDERS:
             validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
             break;
+
           case FormBuilderApiSelector.PAYMENT_TYPE:
             validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+
+            switch (paymentType) {
+              case FormBuilderPaymentTypes.INSURANCE:
+                validation['companyName'] = yup.string().required(requiredMessage(COMPANY_NAME))
+                validation['memberId'] = yup.string().required(requiredMessage(MEMBER_ID))
+                validation['groupNumber'] = yup.string().required(requiredMessage(GROUP_NUMBER))
+                break
+
+              case FormBuilderPaymentTypes.CONTRACT:
+                validation['contractNumber'] = yup.string().required(requiredMessage(CONTRACT_NO))
+                validation['organizationName'] = yup.string().required(requiredMessage(ORGANIZATION_NAME))
+                break
+
+              default:
+                break;
+            }
             break;
+            
           case FormBuilderApiSelector.PRACTICE_FACILITIES:
             validation[fieldId] = yup.string().required(requiredMessage(label))
             break;
