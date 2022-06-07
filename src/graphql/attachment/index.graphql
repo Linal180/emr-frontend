@@ -108,7 +108,6 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
       type
       comments
       attachmentMetadata{
-        metadataType
         labOrderNum
       }
       attachmentMetadataId
@@ -126,10 +125,39 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
       type
       comments
       attachmentMetadata{
-        metadataType
         policyId
       }
       attachmentMetadataId
+    }
+  }
+}
+
+query FetchDocumentTypeByName($name: String!) {
+  fetchDocumentTypeByName(name: $name) {
+    documentType{
+      type
+      id
+    }
+  }
+}
+
+query FetchDocumentTypes($documentTypeInput: DocumentTypeInput!) {
+  fetchDocumentTypes(documentTypeInput: $documentTypeInput) {
+    documentTypes{
+      type
+      id
+      practiceId
+    }
+
+    response {
+      error
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
     }
   }
 }

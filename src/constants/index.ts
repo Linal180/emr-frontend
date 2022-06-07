@@ -858,6 +858,7 @@ export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const QUICK_APPOINTMENTS = "Quick Appointments";
 export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
+export const PATIENT_INSURANCE = "Patient Insurance";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
@@ -2978,7 +2979,8 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
-  insurance = 'insurance'
+  insurance = 'insurance',
+  documentTypes = 'documentTypes'
 }
 
 export enum TABLE_SELECTOR_MODULES {
