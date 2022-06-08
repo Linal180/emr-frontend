@@ -39,7 +39,7 @@ import {
   VIEW_APPOINTMENTS_ROUTE, YES, FORBIDDEN_EXCEPTION,
 } from "../../../constants";
 
-const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
+const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id, appointmentId } = useParams<ParamsType>()
   const [employment, setEmployment] = useState(false);
@@ -54,7 +54,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
     mode: "all",
     resolver: yupResolver(createBillingSchema)
   });
-  const { handleSubmit, setValue, control } = methods;
+  const { handleSubmit, setValue, control, watch } = methods;
+  const { paymentType } = watch()
+  const { id: paymentTypeId } = paymentType ?? {}
+  const shouldShowInsuranceFields = paymentTypeId === PatientPaymentType.NoInsurance
 
   const [createBilling, { loading: createBillingLoading }] = useCreateBillingMutation({
     onError({ message }) {
@@ -65,6 +68,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
     },
 
     onCompleted(data) {
+      if (labOrderNumber) {
+        history.push(`/patients/${id}/details/10`)
+        return
+      }
       history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
     }
   });
@@ -160,7 +167,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
       }, [])
 
       const createBillingInput = {
-        appointmentId: appointmentId || '',
+        ...(appointmentId && { appointmentId: appointmentId || '' }),
         autoAccident: autoAccident,
         employment: employment,
         otherAccident: otherAccident,
@@ -172,7 +179,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
         patientBillingStatus: billingStatusId as PatientBillingStatus,
         patientPaymentType: paymentTypeId as PatientPaymentType,
         patientId: id ?? '',
-        codes: transformedBillingCodes
+        codes: transformedBillingCodes,
+        ...(labOrderNumber && { labOrderNumber: labOrderNumber })
       }
 
       createBilling({
@@ -249,7 +257,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
             <Typography variant="h4">{BILLING}</Typography>
 
             {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
-              {CHECKOUT}
+              {submitButtonText ?? CHECKOUT}
               {createBillingLoading && <CircularProgress size={20} color="inherit" />}
               <ChevronRight />
             </Button>}
@@ -261,17 +269,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
                 <Selector
                   disabled={shouldDisableEdit}
                   isRequired
-                  name="billingStatus"
-                  label={BILLING_STATUS}
-                  value={EMPTY_OPTION}
-                  options={MAPPED_PATIENT_BILLING_STATUS}
-                />
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  disabled={shouldDisableEdit}
-                  isRequired
                   name="paymentType"
                   label={PATIENT_PAYMENT_TYPE}
                   value={EMPTY_OPTION}
@@ -279,123 +276,140 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
                 />
               </Grid>
 
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="amount"
-                  controllerLabel={AMOUNT_DOLLAR}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                {!shouldDisableEdit && <Box>
-                  <Box pb={3}
-                    onClick={() => setIsModalOpen(!isModalOpen)}
-                    className="billing-box" display="flex" alignItems="center"
-                  >
-                    <AddCircleOutline color='inherit' />
-
-                    <Typography>{ADD_ANOTHER_PATIENT_PAYMENT}</Typography>
-                  </Box>
-                </Box>}
-              </Grid>
-
-              <Typography variant="h5">{HCFA_DESC}</Typography>
-
-              <Box p={2} />
-
-              <Grid container spacing={3}>
-                <Grid item md={2} sm={12} xs={12}>
-                  <Controller
-                    name='employment'
-                    control={control}
-                    render={() => (
-                      <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                        <InputLabel shrink>{EMPLOYMENT}</InputLabel>
-
-                        <label className="toggle-main">
-                          <Box color={employment ? WHITE : GREY_SEVEN}>{YES}</Box>
-                          <AntSwitch checked={employment} onChange={(event) => { toggleHandleChange(event, 'employment') }} name='employment' />
-                          <Box color={employment ? GREY_SEVEN : WHITE}>{NO}</Box>
-                        </label>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={12} xs={12}>
-                  <Controller
-                    name='autoAccident'
-                    control={control}
-                    render={() => (
-                      <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                        <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
-
-                        <label className="toggle-main">
-                          <Box color={autoAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                          <AntSwitch checked={autoAccident} onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} name='autoAccident' />
-                          <Box color={autoAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                        </label>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={12} xs={12}>
-                  <Controller
-                    name='otherAccident'
-                    control={control}
-                    render={() => (
-                      <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                        <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
-
-                        <label className="toggle-main">
-                          <Box color={otherAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                          <AntSwitch checked={otherAccident} onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} name='otherAccident' />
-                          <Box color={otherAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                        </label>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-              </Grid>
-
               <Grid item md={3} sm={12} xs={12}>
                 <Selector
                   disabled={shouldDisableEdit}
-                  name="onsetDateType"
-                  label={ONSET_DATE_TYPE}
+                  isRequired
+                  name="billingStatus"
+                  label={BILLING_STATUS}
                   value={EMPTY_OPTION}
-                  options={MAPPED_ONSET_DATE_TYPE}
+                  options={MAPPED_PATIENT_BILLING_STATUS}
                 />
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
-                <DatePicker
-                  disabled={shouldDisableEdit}
-                  name="onsetDate"
-                  label={ONSET_DATE}
-                />
-              </Grid>
+              {
+                !shouldShowInsuranceFields && (
+                  <>
+                    <Grid item md={2} sm={12} xs={12}>
+                      <InputController
+                        disabled={shouldDisableEdit}
+                        fieldType="text"
+                        controllerName="amount"
+                        controllerLabel={AMOUNT_DOLLAR}
+                      />
+                    </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  disabled={shouldDisableEdit}
-                  name="otherDateType"
-                  label={OTHER_DATE_TYPE}
-                  value={EMPTY_OPTION}
-                  options={MAPPED_OTHER_DATE_TYPE}
-                />
-              </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                      {!shouldDisableEdit && <Box>
+                        <Box pb={3}
+                          onClick={() => setIsModalOpen(!isModalOpen)}
+                          className="billing-box" display="flex" alignItems="center"
+                        >
+                          <AddCircleOutline color='inherit' />
 
-              <Grid item md={3} sm={12} xs={12}>
-                <DatePicker
-                  disabled={shouldDisableEdit}
-                  name="otherDate"
-                  label={OTHER_DATE}
-                />
-              </Grid>
+                          <Typography>{ADD_ANOTHER_PATIENT_PAYMENT}</Typography>
+                        </Box>
+                      </Box>}
+                    </Grid>
+
+                    <Typography variant="h5">{HCFA_DESC}</Typography>
+
+                    <Box p={2} />
+
+                    <Grid container spacing={3}>
+                      <Grid item md={2} sm={12} xs={12}>
+                        <Controller
+                          name='employment'
+                          control={control}
+                          render={() => (
+                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>{EMPLOYMENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={employment ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={employment} onChange={(event) => { toggleHandleChange(event, 'employment') }} name='employment' />
+                                <Box color={employment ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      </Grid>
+
+                      <Grid item md={2} sm={12} xs={12}>
+                        <Controller
+                          name='autoAccident'
+                          control={control}
+                          render={() => (
+                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={autoAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={autoAccident} onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} name='autoAccident' />
+                                <Box color={autoAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      </Grid>
+
+                      <Grid item md={2} sm={12} xs={12}>
+                        <Controller
+                          name='otherAccident'
+                          control={control}
+                          render={() => (
+                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={otherAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={otherAccident} onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} name='otherAccident' />
+                                <Box color={otherAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <Selector
+                        disabled={shouldDisableEdit}
+                        name="onsetDateType"
+                        label={ONSET_DATE_TYPE}
+                        value={EMPTY_OPTION}
+                        options={MAPPED_ONSET_DATE_TYPE}
+                      />
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <DatePicker
+                        disabled={shouldDisableEdit}
+                        name="onsetDate"
+                        label={ONSET_DATE}
+                      />
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <Selector
+                        disabled={shouldDisableEdit}
+                        name="otherDateType"
+                        label={OTHER_DATE_TYPE}
+                        value={EMPTY_OPTION}
+                        options={MAPPED_OTHER_DATE_TYPE}
+                      />
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <DatePicker
+                        disabled={shouldDisableEdit}
+                        name="otherDate"
+                        label={OTHER_DATE}
+                      />
+                    </Grid>
+                  </>
+                )
+              }
             </Grid>
           </Box>
         </Card>
