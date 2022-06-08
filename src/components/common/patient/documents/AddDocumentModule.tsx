@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -13,11 +13,12 @@ import InputController from "../../../../controller";
 import { GREY_SIXTEEN } from "../../../../theme";
 import { AttachmentType } from "../../../../generated/graphql";
 import { addDocumentSchema } from "../../../../validationSchemas";
-import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../../../interfacesTypes";
+import { AddDocumentModalProps, DocumentInputProps, FormForwardRef, SelectorOption } from "../../../../interfacesTypes";
 import {
   ATTACHMENT_TITLES,
-  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
+  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, EMPTY_OPTION, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
 } from "../../../../constants";
+import { setRecord } from "../../../../utils";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
   toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment
@@ -28,9 +29,11 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
     resolver: yupResolver(addDocumentSchema)
   });
   const { reset, handleSubmit, watch, setValue } = methods;
-  const { attachmentName, documentType, provider } = watch()
+  const { attachmentName, documentType, provider, comments, date } = watch()
   const { name: providerName } = provider || {}
   const { name: documentMeta, id: documentMetaId } = documentType || {}
+
+  const [documentTypeId, setDocumentTypeId] = useState<SelectorOption>(EMPTY_OPTION)
 
   const handleClose = useCallback(() => {
     reset();
@@ -47,8 +50,16 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   }
 
   const setPreview = useCallback(() => {
+    const { attachmentMetadata, attachmentName } = attachment ?? {}
+    const { comments, documentDate, documentType } = attachmentMetadata ?? {}
+    const { id, type } = documentType ?? {}
     // set form values in edit cases
-  }, [])
+    setValue('attachmentName', attachmentName || '')
+    setValue('comments', comments || '')
+    setValue('date', documentDate || '')
+    setValue('documentType', setRecord(id || '', type || ''))
+    setDocumentTypeId(setRecord(id || '', type || ''))
+  }, [attachment, setValue])
 
   useEffect(() => {
     attachmentId && setPreview()
@@ -95,12 +106,21 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <ItemSelector
+              {attachmentId ? documentTypeId.id && <ItemSelector
                 isRequired
+                isEdit={!!attachmentId}
                 label={DOCUMENT_TYPE}
                 name="documentType"
                 modalName={ITEM_MODULE.documentTypes}
-              />
+                value={documentTypeId}
+              /> : <ItemSelector
+                isRequired
+                isEdit={!!attachmentId}
+                label={DOCUMENT_TYPE}
+                name="documentType"
+                modalName={ITEM_MODULE.documentTypes}
+                value={documentTypeId}
+              />}
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
@@ -143,7 +163,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                 providerName={providerName || ''}
                 imageModuleType={AttachmentType.Patient}
                 title={ATTACHMENT_TITLES.ProviderUploads}
-                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta }}
+                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta, comments, documentDate: date  }}
                 reload={() => fetchDocuments()}
                 handleClose={handleClose}
                 setAttachments={() => { }}

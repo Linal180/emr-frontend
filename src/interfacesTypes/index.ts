@@ -1127,7 +1127,7 @@ export interface AddPatientModalProps {
   facilityId: string | undefined;
 }
 
-export interface AddDocumentModalProps {
+export interface AddDocumentModalProps extends GeneralFormProps {
   patientId: string;
   facilityId: string;
   patientName: string;

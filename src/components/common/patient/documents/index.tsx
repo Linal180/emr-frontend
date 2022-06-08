@@ -208,21 +208,23 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }
 
   const onSubmit: SubmitHandler<DocumentInputProps> = async ({
-    attachmentName, documentType, provider, comments
+    attachmentName, documentType, provider, comments, date
   }) => {
     const { id: selectedDocumentType } = documentType || {}
 
     attachmentId && await updateAttachmentData({
       variables: {
         updateAttachmentInput: {
-          id: attachmentId, attachmentName, comments, documentTypeId: selectedDocumentType
+          id: attachmentId, attachmentName, comments, documentTypeId: selectedDocumentType, documentDate: date
         }
       }
     })
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    toggleSideDrawer()
   }
 
   const signDocument = async () => {
-    id && await updateAttachmentData({
+    attachmentId && await updateAttachmentData({
       variables: {
         updateAttachmentInput: {
           id: attachmentId, signedBy: providerName, signedAt: getTimestamps(new Date().toString())
@@ -248,13 +250,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
   }, [admin, firstName, lastName])
 
-  useEffect(() => {
-    if (!drawerOpened) {
-      dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
-      dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
-    }
-  }, [attachmentId, drawerOpened])
-
   return (
     <Box className={classes.mainTableContainer}>
       <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
@@ -278,6 +273,24 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
             </Typography>
           </Box>
         </Box>
+
+        <SideDrawer
+          drawerOpened={drawerOpened}
+          toggleSideDrawer={toggleSideDrawer}
+        >
+          <Box maxWidth={500}>
+            <AddDocumentModal
+              patientId={id}
+              attachment={attachmentData}
+              attachmentId={attachmentId}
+              facilityId={facilityId || ''}
+              patientName={patientName}
+              toggleSideDrawer={toggleSideDrawer}
+              fetchDocuments={() => reloadAttachments()}
+              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
+            />
+          </Box>
+        </SideDrawer>
 
         <SideDrawer
           drawerOpened={drawerOpened}
