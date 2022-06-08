@@ -1250,11 +1250,11 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 
-export const generateString = () => {
+export const generateString = (numberOfRounds = 2 ) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   const charactersLength = characters.length - 2;
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < numberOfRounds; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result + Math.floor(100000 + Math.random() * 9000);

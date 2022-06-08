@@ -25,7 +25,7 @@ import {
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
   DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
-   ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
+  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({
@@ -38,6 +38,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
   const newPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider)
   const methods = useForm<UpdatePatientProviderInputsProps>({
     mode: "all",
+    defaultValues: { relation: DoctorPatientRelationType.OtherProvider },
     resolver: yupResolver(isEdit
       ? updatePatientProviderRelationSchema(isOtherRelation) : updatePatientProviderSchema(isOtherRelation)
     )
@@ -211,7 +212,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
           }
         })
       }
-
     }
   }
 

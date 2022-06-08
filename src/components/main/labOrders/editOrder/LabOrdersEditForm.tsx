@@ -30,6 +30,7 @@ import { convertDateFromUnix, formatValue, getFormatDateString } from '../../../
 const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [testsToRemove, setTestsToRemove] = useState<string[]>([])
+  const [accessionNumber, setAccessionNumber] = useState<string>('')
   const [diagnosesIds, setDiagnosesIds] = useState<multiOptionType[]>([])
 
   const methods = useForm<LabOrdersCreateFormInput>({
@@ -53,7 +54,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
       if (findLabTestsByOrderNum) {
         const { labTests } = findLabTestsByOrderNum
 
-        const { labTestStatus, diagnoses, appointment } = labTests?.[0] ?? {}
+        const { labTestStatus, diagnoses, appointment, accessionNumber } = labTests?.[0] ?? {}
         const transformedDiagnoses = diagnoses?.map((diagnose) => {
           return {
             value: diagnose?.id ?? '',
@@ -70,6 +71,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
           id: appointment.id,
           name: `${appointment.appointmentType?.name} ${convertDateFromUnix(appointment.scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`
         })
+
+        setAccessionNumber(accessionNumber || '')
 
         const transformedLabTests = labTests?.map((labTest) => {
           const { test, testNotes, testTime, testDate, testSpecimens, id: testId } = labTest ?? {}
@@ -103,7 +106,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             specimenTypeField: transformedTestSpecimens
           }
         }) ?? []
-        
+
         setValue('testField', transformedLabTests)
       }
     }
@@ -173,7 +176,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         testNotes,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
         testTime,
-        orderNumber: orderNum
+        orderNumber: orderNum,
+        accessionNumber: accessionNumber
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined

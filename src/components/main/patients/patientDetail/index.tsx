@@ -294,7 +294,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataComponent/>
+                      <NoDataComponent />
                     </Box>
                   )}
 
@@ -317,43 +317,28 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
             </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent
-                  onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
-                  toggleSideDrawer={toggleSideDrawer}
-                  patientId={id}
-                  loading={getPatientLoading}
-                  reload={() => fetchAllPatientsProviders()}
-                  patientProvidersData={patientProvidersData}
-                  drawerOpened={drawerOpened}
-                  patientDispatcher={dispatch}
-                />
-              </Grid>
+            <Grid xs={12} sm={12} md={6} spacing={3}>
+              <CardComponent cardTitle={PAST_APPOINTMENTS}>
+                <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
 
-              <Grid item xs={12} sm={12} md={6}>
-                <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
+                {((!upComingLoading && completed?.length === 0) || upComingError) && (
+                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                    <NoDataComponent />
+                  </Box>
+                )}
 
-                  {((!upComingLoading && completed?.length === 0) || upComingError) && (
-                    <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataComponent />
-                    </Box>
-                  )}
-
-                  {totalPagesCompleted > 1 &&
-                    <Box my={2} display="flex" justifyContent="flex-end">
-                      <Pagination
-                        count={totalPagesCompleted}
-                        shape="rounded"
-                        variant="outlined"
-                        page={pageCompleted}
-                        onChange={handleCompletedChange}
-                      />
-                    </Box>
-                  }
-                </CardComponent>
-              </Grid>
+                {totalPagesCompleted > 1 &&
+                  <Box my={2} display="flex" justifyContent="flex-end">
+                    <Pagination
+                      count={totalPagesCompleted}
+                      shape="rounded"
+                      variant="outlined"
+                      page={pageCompleted}
+                      onChange={handleCompletedChange}
+                    />
+                  </Box>
+                }
+              </CardComponent>
             </Grid>
           </TabPanel>
 
@@ -372,14 +357,27 @@ const PatientDetailsComponent = (): JSX.Element => {
           <TabPanel value="10">
             <LabOrdersTable />
           </TabPanel>
+
+          <TabPanel value="11">
+            <CareTeamComponent
+              onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
+              toggleSideDrawer={toggleSideDrawer}
+              patientId={id}
+              loading={getPatientLoading}
+              reload={() => fetchAllPatientsProviders()}
+              patientProvidersData={patientProvidersData}
+              drawerOpened={drawerOpened}
+              patientDispatcher={dispatch}
+            />
+          </TabPanel>
         </Box>
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <SideDrawer             
+        <SideDrawer
           drawerOpened={drawerOpened}
           toggleSideDrawer={toggleSideDrawer} >
-          <CareTeamProvider            
+          <CareTeamProvider
             toggleSideDrawer={toggleSideDrawer}
             patientId={id}
             reload={() => fetchAllPatientsProviders()}

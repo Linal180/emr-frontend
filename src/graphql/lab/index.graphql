@@ -212,11 +212,25 @@ mutation CreateLabTest($createLabTestInput: CreateLabTestInput!){
       status
       message
     }
+
+    labTest {
+      orderNumber
+    }
   }
 }
 
 mutation UpdateLabTest($updateLabTestInput: UpdateLabTestInput!){
   updateLabTest(updateLabTestInput: $updateLabTestInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateLabTestsByOrderNum($updateLabTestItemInput: CreateLabTestItemInput!){
+  updateLabTestsByOrderNum(updateLabTestItemInput: $updateLabTestItemInput){
     response {
       error
       status

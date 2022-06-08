@@ -5703,7 +5703,7 @@ export type CreateLabTestMutationVariables = Exact<{
 }>;
 
 
-export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, labTest?: { __typename?: 'LabTests', orderNumber?: string | null | undefined } | null | undefined } };
 
 export type UpdateLabTestMutationVariables = Exact<{
   updateLabTestInput: UpdateLabTestInput;
@@ -5711,6 +5711,13 @@ export type UpdateLabTestMutationVariables = Exact<{
 
 
 export type UpdateLabTestMutation = { __typename?: 'Mutation', updateLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdateLabTestsByOrderNumMutationVariables = Exact<{
+  updateLabTestItemInput: CreateLabTestItemInput;
+}>;
+
+
+export type UpdateLabTestsByOrderNumMutation = { __typename?: 'Mutation', updateLabTestsByOrderNum: { __typename?: 'LabTestsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type RemoveLabTestMutationVariables = Exact<{
   removeLabTest: RemoveLabTest;
@@ -10790,6 +10797,9 @@ export const CreateLabTestDocument = gql`
       status
       message
     }
+    labTest {
+      orderNumber
+    }
   }
 }
     `;
@@ -10856,6 +10866,43 @@ export function useUpdateLabTestMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateLabTestMutationHookResult = ReturnType<typeof useUpdateLabTestMutation>;
 export type UpdateLabTestMutationResult = Apollo.MutationResult<UpdateLabTestMutation>;
 export type UpdateLabTestMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
+export const UpdateLabTestsByOrderNumDocument = gql`
+    mutation UpdateLabTestsByOrderNum($updateLabTestItemInput: CreateLabTestItemInput!) {
+  updateLabTestsByOrderNum(updateLabTestItemInput: $updateLabTestItemInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateLabTestsByOrderNumMutationFn = Apollo.MutationFunction<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>;
+
+/**
+ * __useUpdateLabTestsByOrderNumMutation__
+ *
+ * To run a mutation, you first call `useUpdateLabTestsByOrderNumMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLabTestsByOrderNumMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLabTestsByOrderNumMutation, { data, loading, error }] = useUpdateLabTestsByOrderNumMutation({
+ *   variables: {
+ *      updateLabTestItemInput: // value for 'updateLabTestItemInput'
+ *   },
+ * });
+ */
+export function useUpdateLabTestsByOrderNumMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>(UpdateLabTestsByOrderNumDocument, options);
+      }
+export type UpdateLabTestsByOrderNumMutationHookResult = ReturnType<typeof useUpdateLabTestsByOrderNumMutation>;
+export type UpdateLabTestsByOrderNumMutationResult = Apollo.MutationResult<UpdateLabTestsByOrderNumMutation>;
+export type UpdateLabTestsByOrderNumMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>;
 export const RemoveLabTestDocument = gql`
     mutation RemoveLabTest($removeLabTest: RemoveLabTest!) {
   removeLabTest(removeLabTest: $removeLabTest) {

@@ -831,6 +831,11 @@ export interface LabOrderCreateProps {
   shouldDisableEdit?: boolean
 }
 
+export interface LabOrderProviderProps {
+  labOrderNumber?: string
+  handleStep?: Function
+}
+
 export interface CreateBillingProps {
   billingStatus: SelectorOption
   paymentType: SelectorOption
@@ -842,6 +847,12 @@ export interface CreateBillingProps {
   onsetDate?: string
   otherDateType?: SelectorOption
   otherDate?: string
+}
+
+export interface CreateLabTestProviderProps {
+  referringProviderId?: SelectorOption
+  primaryProviderId?: SelectorOption
+  providerNotes?: string
 }
 
 type PhoneInputTypes =
@@ -935,7 +946,7 @@ export interface LabOrdersSpecimenTypeInput {
   index: number
 };
 
-export interface LabOrdersResultOption {
+export interface LabOrdersResultOption1 {
   observationId?: string
   resultValue?: string
   resultUnits?: string
@@ -944,11 +955,16 @@ export interface LabOrdersResultOption {
   abnormalFlag?: SelectorOption
 }
 
+export interface LabOrdersResultOption2 {
+  observationId?: string
+  resultValue?: SelectorOption
+}
+
 export interface LoinsCodeFields {
   testId: string
   loinccode: string
   description: string
-  resultsField: LabOrdersResultOption[]
+  resultsField: (LabOrdersResultOption1 | LabOrdersResultOption2)[]
 }
 
 export interface LabOrderResultsFormInput {
@@ -1725,6 +1741,8 @@ export interface ChartComponentProps {
 
 export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
+  submitButtonText?: string
+  labOrderNumber?: string
 }
 
 export interface CodeTypeInterface {
