@@ -1,8 +1,8 @@
 // packages block
 import { FC, useCallback, useEffect, useRef } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm } from "react-hook-form";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 import DatePicker from "../../DatePicker";
 import ItemSelector from "../../ItemSelector";
@@ -20,7 +20,7 @@ import {
 } from "../../../../constants";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
-  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId
+  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<DocumentInputProps>({
@@ -28,7 +28,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
     resolver: yupResolver(addDocumentSchema)
   });
   const { reset, handleSubmit, watch, setValue } = methods;
-  const { name, documentType, provider } = watch()
+  const { attachmentName, documentType, provider } = watch()
   const { name: providerName } = provider || {}
   const { name: documentMeta, id: documentMetaId } = documentType || {}
 
@@ -41,9 +41,22 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
     patientName && setValue('patientName', patientName)
   }, [patientId, patientName, setValue])
 
+  const onSubmit: SubmitHandler<DocumentInputProps> = async (inputs) => {
+    attachmentId ? submitUpdate(inputs)
+      : dropZoneRef.current?.submit()
+  }
+
+  const setPreview = useCallback(() => {
+    // set form values in edit cases
+  }, [])
+
+  useEffect(() => {
+    attachmentId && setPreview()
+  }, [attachmentId, setPreview])
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(() => dropZoneRef.current?.submit())}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           display="flex" justifyContent="space-between" alignItems="center"
           borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
@@ -76,7 +89,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
               <InputController
                 isRequired
                 fieldType="text"
-                controllerName="name"
+                controllerName="attachmentName"
                 controllerLabel={DOCUMENT_NAME}
               />
             </Grid>
@@ -119,23 +132,23 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
               />
             </Grid>
 
-            <Grid item md={12} sm={12} xs={12}>
+            {!attachmentId && <Grid item md={12} sm={12} xs={12}>
               <DropzoneImage
                 filesLimit={1}
                 isEdit={false}
                 ref={dropZoneRef}
                 attachmentId={''}
                 itemId={patientId}
-                attachmentName={name}
+                attachmentName={attachmentName || ''}
                 providerName={providerName || ''}
                 imageModuleType={AttachmentType.Patient}
                 title={ATTACHMENT_TITLES.ProviderUploads}
-                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta  }}
+                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta }}
                 reload={() => fetchDocuments()}
                 handleClose={handleClose}
                 setAttachments={() => { }}
               />
-            </Grid>
+            </Grid>}
           </Grid>
         </Box>
       </form>

@@ -1030,5 +1030,5 @@ export const addDocumentSchema = yup.object({
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
   date: yup.string().required(requiredMessage(DATE)),
-  name: yup.string().required(requiredMessage(DOCUMENT_NAME)),
+  attachmentName: yup.string().required(requiredMessage(DOCUMENT_NAME)),
 })

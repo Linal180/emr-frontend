@@ -32,7 +32,7 @@ import {
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput, PatientProviderPayload,
+  VerifyCodeInput, PatientProviderPayload, AttachmentPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1132,8 +1132,10 @@ export interface AddDocumentModalProps {
   facilityId: string;
   patientName: string;
   attachmentId: string;
-  toggleSideDrawer: Function;
+  attachment: AttachmentPayload['attachment'];
+  submitUpdate: Function;
   fetchDocuments: Function;
+  toggleSideDrawer: Function;
 }
 
 export interface CopayModalProps {
@@ -1588,7 +1590,11 @@ export interface PredefinedComponentsProps {
   dispatch: Dispatch<FormBuilderAction>
 }
 
-export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName' | 'comments'>
+  & { documentType: SelectorOption }
+
+export type DocumentInputProps = UpdateAttachmentDataInputs
+  & { provider: SelectorOption } & { date: string } & { patientName: string }
 
 export interface PatientNoteModalProps {
   patientStates: PatientState;
@@ -1681,7 +1687,7 @@ export interface CareTeamsProps {
 }
 
 export interface SideDrawerProps {
-  drawerOpened : boolean;
+  drawerOpened: boolean;
   toggleSideDrawer?: Function;
 }
 
@@ -1733,9 +1739,6 @@ export interface CodesTableProps {
   tableData?: TableCodesProps[]
   shouldShowPrice?: boolean
 }
-
-export type DocumentInputProps = { name: string } & { documentType: SelectorOption }
-  & { provider: SelectorOption } & { date: string } & { comments: string } & { patientName: string }
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']
