@@ -3574,7 +3574,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
     name: "",
     id: "",
   },
-  isPractice: false
+  isPractice: false,
 };
 
 export const getFormInitialValues = () => [

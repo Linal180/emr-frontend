@@ -218,77 +218,66 @@ const PatientDetailsComponent = (): JSX.Element => {
           <Box p={1} />
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3} >
-                    <BloodPressureIcon />
-                    <Box>
-                      <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
-                      <Typography component="span" align='right'>
-                        {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
-                      </Typography>
+            <Box mb={2} pb={4} className='masonry-container'>
+              <Box className='masonry-box'>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3} >
+                        <BloodPressureIcon />
+                        <Box>
+                          <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
+                          <Typography component="span" align='right'>
+                            {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box className='bloodPressure-measurement'>
+                        <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
+                          <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
+                        </Typography>
+
+                        <Typography className='measure-frequency primary' component="span">
+                          {BLOOD_PRESSURE_RANGES.Normal}
+                        </Typography>
+                      </Box>
+
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartOne} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
 
-                  <Box className='bloodPressure-measurement'>
-                    <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
-                      <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
-                    </Typography>
+                  <Grid item md={6} xs={12} sm={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3}>
+                        <HeartRateIcon />
 
-                    <Typography className='measure-frequency primary' component="span">
-                      {BLOOD_PRESSURE_RANGES.Normal}
-                    </Typography>
-                  </Box>
+                        <Box>
+                          <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
 
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartOne} />
-                  </Box>
-                </Box>
-              </Grid>
+                          <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                        </Box>
+                      </Box>
 
-              <Grid item md={3} xs={12} sm={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3}>
-                    <HeartRateIcon />
+                      <Box className='heartRate-measurement'>
+                        <Typography variant="h2">{HEART_RATE_VALUE}
+                          <span className='measure-unit'>{HEART_RATE_UNIT}</span>
+                        </Typography>
 
-                    <Box>
-                      <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
+                        <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                      </Box>
 
-                      <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartTwo} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
+                </Grid>
+              </Box>
 
-                  <Box className='heartRate-measurement'>
-                    <Typography variant="h2">{HEART_RATE_VALUE}
-                      <span className='measure-unit'>{HEART_RATE_UNIT}</span>
-                    </Typography>
-
-                    <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
-                  </Box>
-
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartTwo} />
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <Card>
-                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
-                    <Typography variant="h4">{VISITS}</Typography>
-                  </Box>
-
-                  {/* Implement patient visits by year */}
-                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
-                </Card>
-              </Grid>
-            </Grid>
-
-            <Box p={2} />
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
                   <AppointmentList appointments={upComing} type={AppointmentStatus.Initiated} />
 
@@ -310,36 +299,47 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Grid>
+              </Box>
 
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
+                <CardComponent cardTitle={PAST_APPOINTMENTS}>
+                  <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
+
+                  {((!upComingLoading && completed?.length === 0) || upComingError) && (
+                    <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                      <NoDataComponent />
+                    </Box>
+                  )}
+
+                  {totalPagesCompleted > 1 &&
+                    <Box my={2} display="flex" justifyContent="flex-end">
+                      <Pagination
+                        count={totalPagesCompleted}
+                        shape="rounded"
+                        variant="outlined"
+                        page={pageCompleted}
+                        onChange={handleCompletedChange}
+                      />
+                    </Box>
+                  }
+                </CardComponent>
+              </Box>
+
+              <Box className='masonry-box'>
+                <Card>
+                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
+                    <Typography variant="h4">{VISITS}</Typography>
+                  </Box>
+
+                  {/* Implement patient visits by year */}
+                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
+                </Card>
+              </Box>
+
+              <Box className='masonry-box'>
                 <EncounterList />
-              </Grid>
-            </Grid>
-
-            <Grid xs={12} sm={12} md={6} spacing={3}>
-              <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
-
-                {((!upComingLoading && completed?.length === 0) || upComingError) && (
-                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                    <NoDataComponent />
-                  </Box>
-                )}
-
-                {totalPagesCompleted > 1 &&
-                  <Box my={2} display="flex" justifyContent="flex-end">
-                    <Pagination
-                      count={totalPagesCompleted}
-                      shape="rounded"
-                      variant="outlined"
-                      page={pageCompleted}
-                      onChange={handleCompletedChange}
-                    />
-                  </Box>
-                }
-              </CardComponent>
-            </Grid>
+              </Box>
+            </Box>
           </TabPanel>
 
           <TabPanel value="2">
