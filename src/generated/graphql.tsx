@@ -252,6 +252,7 @@ export type AttachmentMetadata = {
   attachmentId?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
+  documentDate?: Maybe<Scalars['String']>;
   documentType?: Maybe<DocumentType>;
   documentTypeId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -303,6 +304,7 @@ export type Billing = {
   createdAt?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
+  labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType: OnsetDateType;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -345,6 +347,7 @@ export type BillingInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
+  labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -576,6 +579,7 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentDate?: Maybe<Scalars['String']>;
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
@@ -797,7 +801,10 @@ export type CreateLabTestItemInput = {
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
+  primaryProviderId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
+  referringProviderId?: Maybe<Scalars['String']>;
   status?: Maybe<LabTestStatus>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
@@ -1075,7 +1082,9 @@ export type Doctor = {
   practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  primaryProviderLabTests?: Maybe<Array<LabTests>>;
   providerIntials?: Maybe<Scalars['String']>;
+  referringProviderLabTests?: Maybe<Array<LabTests>>;
   schedule?: Maybe<Array<Schedule>>;
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -1744,7 +1753,12 @@ export type LabTests = {
   orderNumber?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  primaryProvider?: Maybe<Doctor>;
+  primaryProviderId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
+  referringProvider?: Maybe<Doctor>;
+  referringProviderId?: Maybe<Scalars['String']>;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
@@ -1941,6 +1955,7 @@ export type Mutation = {
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
   updateLabTestObservation: LabTestObservationPayload;
+  updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
@@ -2367,6 +2382,11 @@ export type MutationUpdateLabTestArgs = {
 
 export type MutationUpdateLabTestObservationArgs = {
   updateLabTestObservationInput: UpdateLabTestObservationInput;
+};
+
+
+export type MutationUpdateLabTestsByOrderNumArgs = {
+  updateLabTestItemInput: CreateLabTestItemInput;
 };
 
 
@@ -4386,6 +4406,7 @@ export type UpdateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentDate?: Maybe<Scalars['String']>;
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -4585,7 +4606,10 @@ export type UpdateLabTestItemInput = {
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  primaryProviderId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
+  referringProviderId?: Maybe<Scalars['String']>;
   status?: Maybe<LabTestStatus>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
@@ -5100,7 +5124,7 @@ export type GetAttachmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null | undefined, signedBy?: string | null | undefined, providerName?: string | null | undefined, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null | undefined, signedBy?: string | null | undefined, providerName?: string | null | undefined, comments?: string | null | undefined, documentDate?: string | null | undefined, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type UpdateAttachmentDataMutationVariables = Exact<{
   updateAttachmentInput: UpdateAttachmentInput;
@@ -5680,7 +5704,7 @@ export type CreateLabTestMutationVariables = Exact<{
 }>;
 
 
-export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, labTest?: { __typename?: 'LabTests', orderNumber?: string | null | undefined } | null | undefined } };
 
 export type UpdateLabTestMutationVariables = Exact<{
   updateLabTestInput: UpdateLabTestInput;
@@ -5688,6 +5712,13 @@ export type UpdateLabTestMutationVariables = Exact<{
 
 
 export type UpdateLabTestMutation = { __typename?: 'Mutation', updateLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdateLabTestsByOrderNumMutationVariables = Exact<{
+  updateLabTestItemInput: CreateLabTestItemInput;
+}>;
+
+
+export type UpdateLabTestsByOrderNumMutation = { __typename?: 'Mutation', updateLabTestsByOrderNum: { __typename?: 'LabTestsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type RemoveLabTestMutationVariables = Exact<{
   removeLabTest: RemoveLabTest;
@@ -6579,6 +6610,8 @@ export const GetAttachmentsDocument = gql`
         signedAt
         signedBy
         providerName
+        comments
+        documentDate
         documentType {
           id
           type
@@ -10765,6 +10798,9 @@ export const CreateLabTestDocument = gql`
       status
       message
     }
+    labTest {
+      orderNumber
+    }
   }
 }
     `;
@@ -10831,6 +10867,43 @@ export function useUpdateLabTestMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateLabTestMutationHookResult = ReturnType<typeof useUpdateLabTestMutation>;
 export type UpdateLabTestMutationResult = Apollo.MutationResult<UpdateLabTestMutation>;
 export type UpdateLabTestMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
+export const UpdateLabTestsByOrderNumDocument = gql`
+    mutation UpdateLabTestsByOrderNum($updateLabTestItemInput: CreateLabTestItemInput!) {
+  updateLabTestsByOrderNum(updateLabTestItemInput: $updateLabTestItemInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateLabTestsByOrderNumMutationFn = Apollo.MutationFunction<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>;
+
+/**
+ * __useUpdateLabTestsByOrderNumMutation__
+ *
+ * To run a mutation, you first call `useUpdateLabTestsByOrderNumMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLabTestsByOrderNumMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLabTestsByOrderNumMutation, { data, loading, error }] = useUpdateLabTestsByOrderNumMutation({
+ *   variables: {
+ *      updateLabTestItemInput: // value for 'updateLabTestItemInput'
+ *   },
+ * });
+ */
+export function useUpdateLabTestsByOrderNumMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>(UpdateLabTestsByOrderNumDocument, options);
+      }
+export type UpdateLabTestsByOrderNumMutationHookResult = ReturnType<typeof useUpdateLabTestsByOrderNumMutation>;
+export type UpdateLabTestsByOrderNumMutationResult = Apollo.MutationResult<UpdateLabTestsByOrderNumMutation>;
+export type UpdateLabTestsByOrderNumMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestsByOrderNumMutation, UpdateLabTestsByOrderNumMutationVariables>;
 export const RemoveLabTestDocument = gql`
     mutation RemoveLabTest($removeLabTest: RemoveLabTest!) {
   removeLabTest(removeLabTest: $removeLabTest) {

@@ -19,10 +19,11 @@ import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { DownloadIcon, SignedIcon, TrashNewIcon, UploadIcon, } from "../../../../assets/svgs";
-import { DocumentsTableProps, ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
 import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
+  AttachmentPayload,
   AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
@@ -42,14 +43,14 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const classes = useTableStyles()
   const { firstName: patientFirstName, lastName: patientLastName, facilityId } = patient || {}
   const patientName = `${patientFirstName || ''} ${patientLastName || ''}`.trim()
-  const methods = useForm<UpdateAttachmentDataInputs>({
+  const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(attachmentNameUpdateSchema)
   });
-  const { setValue, handleSubmit } = methods;
+  const { handleSubmit } = methods;
   const [{
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    documentTab, openSign, providerName,
+    documentTab, openSign, providerName, attachmentData
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -197,23 +198,33 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     })
   }
 
-  const handleEdit = (attachmentId: string, name: string) => {
+  const handleEdit = (attachmentId: string, attachment: AttachmentPayload['attachment']) => {
     if (attachmentId) {
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
       dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
-      setValue('attachmentName', name)
+      attachment && dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: attachment })
       toggleSideDrawer()
     }
   }
 
-  const onSubmit: SubmitHandler<UpdateAttachmentDataInputs> = async ({ attachmentName }) => {
+  const onSubmit: SubmitHandler<DocumentInputProps> = async ({
+    attachmentName, documentType, provider, comments, date
+  }) => {
+    const { id: selectedDocumentType } = documentType || {}
+
     attachmentId && await updateAttachmentData({
-      variables: { updateAttachmentInput: { id: attachmentId, attachmentName } }
+      variables: {
+        updateAttachmentInput: {
+          id: attachmentId, attachmentName, comments, documentTypeId: selectedDocumentType, documentDate: date
+        }
+      }
     })
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    toggleSideDrawer()
   }
 
   const signDocument = async () => {
-    id && await updateAttachmentData({
+    attachmentId && await updateAttachmentData({
       variables: {
         updateAttachmentInput: {
           id: attachmentId, signedBy: providerName, signedAt: getTimestamps(new Date().toString())
@@ -238,10 +249,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   useEffect(() => {
     dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
   }, [admin, firstName, lastName])
-
-  useEffect(() => {
-    drawerOpened && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
-  }, [attachmentId, drawerOpened])
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -273,12 +280,32 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         >
           <Box maxWidth={500}>
             <AddDocumentModal
-              attachmentId={attachmentId}
               patientId={id}
+              attachment={attachmentData}
+              attachmentId={attachmentId}
               facilityId={facilityId || ''}
               patientName={patientName}
               toggleSideDrawer={toggleSideDrawer}
               fetchDocuments={() => reloadAttachments()}
+              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
+            />
+          </Box>
+        </SideDrawer>
+
+        <SideDrawer
+          drawerOpened={drawerOpened}
+          toggleSideDrawer={toggleSideDrawer}
+        >
+          <Box maxWidth={500}>
+            <AddDocumentModal
+              patientId={id}
+              attachment={attachmentData}
+              attachmentId={attachmentId}
+              facilityId={facilityId || ''}
+              patientName={patientName}
+              toggleSideDrawer={toggleSideDrawer}
+              fetchDocuments={() => reloadAttachments()}
+              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
             />
           </Box>
         </SideDrawer>
@@ -320,10 +347,10 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                 ) : (
                   attachmentsData?.map((attachment) => {
                     const {
-                      id, createdAt, url, attachmentName,  attachmentMetadata
+                      id, createdAt, url, attachmentName, attachmentMetadata
                     } = attachment || {};
-                    const { documentType, signedAt, signedBy } = attachmentMetadata || {}
-                    const { type: documentTypeName } = documentType || {}
+                    const { signedAt, signedBy } = attachmentMetadata || {}
+                    // const { type: documentTypeName } = documentType || {}
 
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
@@ -333,8 +360,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                     return id && (
                       <TableRow>
                         <TableCell scope="row">
-                          <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachmentName || '')}>
-                            {filteredFileName}  --- {documentTypeName}
+                          <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachment)}>
+                            {filteredFileName}
                           </Box>
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>

@@ -2,7 +2,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Box, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
 //components
-import NoDataFoundComponent from "../NoDataFoundComponent";
+import NoDataComponent from "../NoDataComponent";
 import Search from "../Search";
 //constants, interfaces, utils
 import { ClearIcon } from "../../../assets/svgs";
@@ -11,6 +11,7 @@ import { IcdCodes, useFetchIcdCodesLazyQuery } from "../../../generated/graphql"
 import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { renderTableOptions, renderTh, setRecord } from "../../../utils";
+
 
 const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName, shouldShowPrice }) => {
   const classes = useTableStyles();
@@ -141,7 +142,7 @@ const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName,
 
           {((!(loading) && !tableData?.length) || (error)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
-              <NoDataFoundComponent />
+              <NoDataComponent/>
             </Box>
           )}
         </Box>
