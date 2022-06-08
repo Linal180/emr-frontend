@@ -80,12 +80,13 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   status: {
-    width: 120,
+    minWidth: 120,
     fontWeight: 'bold',
     fontSize: '0.9rem',
     borderRadius: 8,
     padding: '8px 15px',
     display: 'inline-block',
+    textAlign: 'center',
   },
 
   iconsBackground: {

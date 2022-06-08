@@ -1,24 +1,24 @@
 //packages Import
 import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { Box, Grid, Typography } from "@material-ui/core";
-import { RemoveCircleOutline } from "@material-ui/icons";
+import { Box, Grid, IconButton, Typography } from "@material-ui/core";
 import { useParams } from "react-router";
 //components Import
-import MediaCards from "../../../../common/AddMedia/MediaCards";
 import Alert from "../../../../common/Alert";
+import MediaCards from "../../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 //constants, types, interfaces imports 
 import {
-  ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION,
-  INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE, PATIENT_INSURANCE
+  ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD, 
+  NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE, PATIENT_INSURANCE
 } from "../../../../../constants";
 import {
-  Attachment, AttachmentType,
-  useFetchDocumentTypeByNameLazyQuery,
-  useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation
+  Attachment, AttachmentType, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentsByPolicyIdLazyQuery, 
+  useRemoveAttachmentMediaMutation
 } from "../../../../../generated/graphql";
 import { ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
+import { TrashOutlinedIcon } from "../../../../../assets/svgs";
+import { BLUE } from "../../../../../theme";
 
 const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }) => {
   const { id: patientId } = useParams<ParamsType>()
@@ -115,16 +115,22 @@ const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }
     setOpenDelete(false)
   }
 
-
   return (
     <Box minWidth="100%" pt={3}>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
+          <Box p={1} />
           {
             attachments.map((attachment) => {
               return (
-                <li>{attachment.attachmentName}    <RemoveCircleOutline onClick={() => onDeleteClick(attachment?.id || '')} /> </li>
+                <Box mt={1} color={BLUE} display="flex" alignItems="center">
+                  <li className="word-break">{attachment.attachmentName}</li>
+                  <Box p={0.5} />
+                  <IconButton onClick={() => onDeleteClick(attachment?.id || '')}>
+                    <TrashOutlinedIcon />
+                  </IconButton>
+                </Box>
               )
             })
           }
