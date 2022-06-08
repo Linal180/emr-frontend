@@ -86,6 +86,7 @@ export const useTableStyles = makeStyles(() => ({
     borderRadius: 8,
     padding: '8px 15px',
     display: 'inline-block',
+    textAlign: 'center',
   },
 
   iconsBackground: {
