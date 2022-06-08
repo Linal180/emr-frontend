@@ -1294,6 +1294,9 @@ export const MAILING_ADDRESS_ROUTE = "mailing-address";
 export const EMPLOYMENT_ROUTE = "employment";
 export const DEMOGRAPHICS_ROUTE = "demographics";
 export const BILLING_ROUTE = "billing";
+export const NEXT_OF_KIN_ROUTE = "next-of-kin";
+export const GUARDIAN_ROUTE = "guardian";
+
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -3676,6 +3679,22 @@ export const RegisterPatientMenuNav = [
     title: EMERGENCY_CONTACT,
     linkTo: EMERGENCY_CONTACT_ROUTE,
   },
+  {
+    title: NEXT_OF_KIN,
+    linkTo: NEXT_OF_KIN_ROUTE,
+  },
+  {
+    title: GUARDIAN,
+    linkTo: GUARDIAN_ROUTE,
+  },
+  {
+    title: GUARANTOR,
+    linkTo: GUARANTOR_ROUTE,
+  },
+  {
+    title: EMPLOYMENT,
+    linkTo: EMPLOYMENT_ROUTE,
+  },  
 ];
 
 export const MAPPED_WEEK_DAYS = [

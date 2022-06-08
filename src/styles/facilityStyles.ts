@@ -56,7 +56,7 @@ export const useFacilityStyles = makeStyles(() => ({
     },
 
     "& .MuiTimelineItem-root": {
-      minHeight: 76,
+      minHeight: 65,
     },
   },
 
