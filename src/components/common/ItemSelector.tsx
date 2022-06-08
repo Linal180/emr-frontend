@@ -115,7 +115,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         const { id, name } = value
         modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
         modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
-        modalName === ITEM_MODULE.documentTypes && setValue('documentTypeId', value)
+        modalName === ITEM_MODULE.documentTypes && setValue('documentType', value)
       }
     }
   }, [isEdit, modalName, setValue, value])

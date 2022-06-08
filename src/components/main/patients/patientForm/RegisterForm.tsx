@@ -16,10 +16,10 @@ import RegistrationDatesCard from './RegistrationDatesCard';
 // utils. interfaces, constants
 import { PatientCardsProps } from '../../../../interfacesTypes';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { 
-  CONTACT_INFORMATION, CONTACT_INFORMATION_ROUTE, DEMOGRAPHICS, DEMOGRAPHICS_ROUTE, EMERGENCY_CONTACT, EMERGENCY_CONTACT_ROUTE, 
-  EMPLOYMENT, GUARANTOR, IDENTIFICATION, IDENTIFICATION_ROUTE, PRIVACY, PRIVACY__ROUTE, PROVIDER_REGISTRATION_DATES, 
-  PROVIDER_REGISTRATION__ROUTE, RegisterPatientMenuNav 
+import {
+  CONTACT_INFORMATION, CONTACT_INFORMATION_ROUTE, DEMOGRAPHICS, DEMOGRAPHICS_ROUTE, EMERGENCY_CONTACT, EMERGENCY_CONTACT_ROUTE,
+  EMPLOYMENT, EMPLOYMENT_ROUTE, GUARANTOR, GUARANTOR_ROUTE, GUARDIAN, GUARDIAN_ROUTE, IDENTIFICATION, IDENTIFICATION_ROUTE, NEXT_OF_KIN, NEXT_OF_KIN_ROUTE, PRIVACY, PRIVACY__ROUTE, PROVIDER_REGISTRATION_DATES,
+  PROVIDER_REGISTRATION__ROUTE, RegisterPatientMenuNav
 } from '../../../../constants';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispatch, isEdit, state, shouldDisableEdit }) => {
@@ -36,6 +36,9 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
   const guarrenterRef = createRef<HTMLDivElement>()
   const employmentRef = createRef<HTMLDivElement>()
   const demographicsRef = createRef<HTMLDivElement>()
+  const guardianRef = createRef<HTMLDivElement>()
+  const nextOfKinRef = createRef<HTMLDivElement>()
+
 
   const handleScroll = (moduleName: string) => {
     setActiveBlock(moduleName)
@@ -56,6 +59,10 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
         return employmentRef?.current?.scrollIntoView({ behavior: 'smooth' });
       case DEMOGRAPHICS:
         return demographicsRef?.current?.scrollIntoView({ behavior: 'smooth' });
+        case NEXT_OF_KIN:
+        return nextOfKinRef?.current?.scrollIntoView({ behavior: 'smooth' });
+        case GUARDIAN:
+        return guardianRef?.current?.scrollIntoView({ behavior: 'smooth' });
       default:
         break;
     }
@@ -65,7 +72,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
     <Box display='flex' position='relative'>
       <Box mr={2} ml={2} p={1} display='flex'>
         <List>
-          {RegisterPatientMenuNav.map((item,index) => {
+          {RegisterPatientMenuNav.map((item, index) => {
             return (
               <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
                 <Timeline>
@@ -73,7 +80,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                     <TimelineSeparator >
                       <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
 
-                      {(index+1) !== RegisterPatientMenuNav.length && <TimelineConnector />}
+                      {(index + 1) !== RegisterPatientMenuNav.length && <TimelineConnector />}
                     </TimelineSeparator>
                     <TimelineContent />
                   </TimelineItem>
@@ -105,7 +112,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
 
             <Box pb={3} />
 
-            <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={()=>setActiveBlock(CONTACT_INFORMATION) }>
+            <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)}>
               <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
 
@@ -125,23 +132,31 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
 
             <Grid md={12} id={EMERGENCY_CONTACT_ROUTE} ref={emergencyContactRef}>
               <EmergencyContactCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            </Grid>
 
-              <Box pb={3} />
+            <Box pb={3} />
 
+
+            <Grid md={12} id={NEXT_OF_KIN_ROUTE} ref={nextOfKinRef}>
               <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            </Grid>
 
-              <Box pb={3} />
+            <Box pb={3} />
 
+            <Grid md={12} id={GUARDIAN_ROUTE} ref={guardianRef}>
               <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            </Grid>
 
-              <Box pb={3} />
+            <Box pb={3} />
 
+            <Grid md={12} id={GUARANTOR_ROUTE} ref={guarrenterRef}>
               <GuarantorCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
+            </Grid>
+            <Box pb={3} />
 
-              <Box pb={3} />
-
+            <Grid md={12} id={EMPLOYMENT_ROUTE} ref={employmentRef}>
               <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>s
+            </Grid>
           </Grid>
         </Box>
       </Box>

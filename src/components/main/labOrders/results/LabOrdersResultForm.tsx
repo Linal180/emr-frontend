@@ -15,12 +15,12 @@ import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 // interfaces, graphql, constants block
 import history from '../../../../history';
 import { GREY, GREY_THREE } from '../../../../theme';
-import { getFormatDateString } from '../../../../utils';
+import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
 import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
-import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
+import { GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
-  ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LAB_TEXT, LOINC_CODE,
-  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, OTHER_OPTION, RECEIVED_DATE,
+  ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, LAB_TEXT, LOINC_CODE,
+  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION, RECEIVED_DATE,
   RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import {
@@ -32,6 +32,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
   const [doctorSignOff, setDoctorSignOff] = useState(false);
+  const [accessionNumber, setAccessionNumber] = useState<string>('');
   const methods = useForm<LabOrderResultsFormInput>({ mode: "all" });
   const { handleSubmit, setValue, control } = methods;
 
@@ -67,7 +68,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
-    const { assignedProvider, accessionNumber, collectedDate, receivedDate, labName, venderName } = values ?? {}
+    const { assignedProvider, collectedDate, receivedDate, labName, venderName } = values ?? {}
 
     if (resultsToRemove.length) {
       resultsToRemove.forEach(async (resultId) => {
@@ -93,7 +94,6 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
               status: LabTestStatus.ResultReceived,
               collectedDate: getFormatDateString(collectedDate, 'MM-DD-YYYY'),
               receivedDate: getFormatDateString(receivedDate, 'MM-DD-YYYY'),
-              accessionNumber: accessionNumber,
               labName: labName?.id ?? '',
               vendorName: venderName ?? '',
               ...(assignedProvider?.id && { doctorId: assignedProvider?.id ?? '' })
@@ -103,7 +103,25 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
       })
 
       const transformedObservations = resultsField.map((resultsFieldValues) => {
-        const { abnormalFlag, normalRange, normalRangeUnits, observationId, resultUnits, resultValue } = resultsFieldValues ?? {}
+        let observationId = ''
+        let abnormalFlag: SelectorOption = { id: '', name: '' }
+        let normalRange = ''
+        let normalRangeUnits = ''
+        let resultUnits = ''
+        let resultValue = ''
+        if (description.includes('corona')) {
+          const resultFieldValue = resultsFieldValues as LabOrdersResultOption2 ?? {}
+          resultValue = resultFieldValue.resultValue?.id || ''
+          observationId = resultFieldValue.observationId || ''
+        } else {
+          const resultFieldValue = resultsFieldValues as LabOrdersResultOption1 ?? {}
+          observationId = resultFieldValue.observationId || ''
+          abnormalFlag = resultFieldValue.abnormalFlag || setRecord('', '')
+          normalRange = resultFieldValue.normalRange || ''
+          normalRangeUnits = resultFieldValue.normalRangeUnits || ''
+          resultUnits = resultFieldValue.resultUnits || ''
+          resultValue = resultFieldValue.resultValue || ''
+        }
 
         return {
           id: observationId ?? '',
@@ -150,22 +168,29 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { component, loincNum, unitsRequired } = test ?? {}
 
           setValue('labName', {
-            id: labName ?? '',
-            name: labName ?? ''
+            id: labName ?? OTHER_OPTION.id,
+            name: labName ?? OTHER_OPTION.name
           })
-          setValue('accessionNumber', accessionNumber ?? '')
           setValue('assignedProvider', {
             id: doctor?.id ?? '',
             name: `${doctor?.firstName ?? ''} ${doctor?.lastName ?? ''}`.trim()
           })
           setValue('venderName', vendorName ?? '')
-          setValue('collectedDate',collectedDate ?? testSpecimens?.[0]?.collectionDate ?? '')
+          setValue('collectedDate', collectedDate ?? testSpecimens?.[0]?.collectionDate ?? '')
           setValue('receivedDate', receivedDate ?? '')
+          setAccessionNumber(accessionNumber || '')
 
           const transformedObservations = testObservations?.map((testObservation) => {
             const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id, doctorsSignOff } = testObservation ?? {}
 
             setDoctorSignOff(doctorsSignOff || false)
+
+            if (component?.includes('corona')) {
+              return {
+                observationId: id,
+                resultValue: setRecord(resultValue || '', resultValue || ''),
+              }
+            }
 
             return {
               observationId: id,
@@ -184,7 +209,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             testId: id ?? '',
             loinccode: loincNum ?? '',
             description: component ?? '',
-            resultsField: transformedObservations?.length ? transformedObservations : [{ ...ORDERS_RESULT_INITIAL_VALUES, resultUnits: unitsRequired ?? '' }]
+            resultsField: transformedObservations?.length ? transformedObservations : [component?.includes('corona') ? ORDERS_RESULT_INITIAL_VALUES_2 : { ...ORDERS_RESULT_INITIAL_VALUES_1, resultUnits: unitsRequired ?? '' }]
           }
         }) ?? []
 
@@ -230,8 +255,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                   <Selector
                     name="labName"
                     label={LAB_TEXT}
-                    value={EMPTY_OPTION}
-                    options={[EMPTY_OPTION, OTHER_OPTION]}
+                    options={[OTHER_OPTION]}
                   />
                 </Grid>
 
@@ -240,11 +264,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="accessionNumber"
-                    controllerLabel={ACCESSION_NUMBER}
-                  />
+                  {renderItem(ACCESSION_NUMBER, accessionNumber)}
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
@@ -285,42 +305,44 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 </FormGroup>
               </Box>
 
-              <Grid container spacing={3}>
-                {resultFields?.map((resultField, index) => {
-                  return (
-                    <Box mb={2} borderBottom={(resultFields.length - 1) === index ? 'none' : `2px solid ${GREY}`} key={index}>
-                      <Grid container spacing={3}>
-                        <Grid item md={12}>
-                          <Box p={1.5} display='flex'>
-                            <Grid container>
-                              <Grid item md={4}>
-                                <Typography variant='h6'>{LOINC_CODE}</Typography>
+              {resultFields?.map((resultField, index) => {
+                return (
+                  <Box mb={2} borderBottom={(resultFields.length - 1) === index ? 'none' : `2px solid ${GREY}`} key={index}>
+                    <Grid container spacing={3}>
+                      <Grid item md={12}>
+                        <Grid container>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <Box p={1.5} display='flex'>
+                              <Grid container>
+                                <Grid item md={4}>
+                                  <Typography variant='h6'>{LOINC_CODE}</Typography>
 
-                                <Box py={0.6} mb={2} color={GREY_THREE}>
-                                  <Typography variant='body1'>{resultField.loinccode}</Typography>
-                                </Box>
+                                  <Box py={0.6} mb={2} color={GREY_THREE}>
+                                    <Typography variant='body1'>{resultField.loinccode}</Typography>
+                                  </Box>
+                                </Grid>
+
+                                <Grid item md={8}>
+                                  <Typography variant='h6'>{DESCRIPTION}</Typography>
+
+                                  <Box py={0.6} mb={2} color={GREY_THREE}>
+                                    <Typography variant='body1'>{resultField.description}</Typography>
+                                  </Box>
+                                </Grid>
                               </Grid>
-
-                              <Grid item md={8}>
-                                <Typography variant='h6'>{DESCRIPTION}</Typography>
-
-                                <Box py={0.6} mb={2} color={GREY_THREE}>
-                                  <Typography variant='body1'>{resultField.description}</Typography>
-                                </Box>
-                              </Grid>
-                            </Grid>
-                          </Box>
-                        </Grid>
-
-                        <Grid item md={12}>
-                          <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove} />
+                            </Box>
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Box>
-                  )
-                })
-                }
-              </Grid>
+
+                      <Grid item md={12}>
+                        <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove} />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )
+              })
+              }
 
               <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
                 {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
