@@ -252,6 +252,7 @@ export type AttachmentMetadata = {
   attachmentId?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
+  documentDate?: Maybe<Scalars['String']>;
   documentType?: Maybe<DocumentType>;
   documentTypeId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -578,6 +579,7 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentDate?: Maybe<Scalars['String']>;
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
@@ -4403,6 +4405,7 @@ export type UpdateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  documentDate?: Maybe<Scalars['String']>;
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -5120,7 +5123,7 @@ export type GetAttachmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null | undefined, signedBy?: string | null | undefined, providerName?: string | null | undefined, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null | undefined, signedBy?: string | null | undefined, providerName?: string | null | undefined, comments?: string | null | undefined, documentDate?: string | null | undefined, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type UpdateAttachmentDataMutationVariables = Exact<{
   updateAttachmentInput: UpdateAttachmentInput;
@@ -6606,6 +6609,8 @@ export const GetAttachmentsDocument = gql`
         signedAt
         signedBy
         providerName
+        comments
+        documentDate
         documentType {
           id
           type
