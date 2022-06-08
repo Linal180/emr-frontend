@@ -1032,6 +1032,9 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
+    else if(typeof values[property] === 'boolean'){
+      arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
+    }
     else {
       arr.push({ FormsElementsId: property, value: values[property] || '', arrayOfStrings: [], arrayOfObjects: [] })
     }

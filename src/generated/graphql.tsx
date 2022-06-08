@@ -1193,6 +1193,7 @@ export type ElementInputs = {
 export enum ElementType {
   Checkbox = 'CHECKBOX',
   Color = 'COLOR',
+  Custom = 'CUSTOM',
   Date = 'DATE',
   Dropdown = 'DROPDOWN',
   Email = 'EMAIL',

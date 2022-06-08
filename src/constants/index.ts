@@ -79,6 +79,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
 export const FACILITY_FORM = 'Facility Form';
@@ -4397,12 +4398,13 @@ export enum FormBuilderApiSelector {
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities'
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent'
 }
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',
   NO_INSURANCE = 'no_insurance',
   CONTRACT = 'contract',
-  INTERNATIONAL_TRAVELER = 'international_traveler'
+  INTERNATIONAL_TRAVELER = 'international_traveler',
 }
