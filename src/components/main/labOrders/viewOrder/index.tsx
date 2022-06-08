@@ -5,7 +5,7 @@ import { Box, Card, Divider, Grid, Step, StepIconProps, StepLabel, Stepper, Typo
 import LabOrdersComponent from '../orderListing';
 import PageHeader from '../../../common/PageHeader';
 import LabOrdersCreateForm from '../addOrder/LabOrdersCreateForm';
-import LabOrdersPaymentForm from '../addOrder/LabOrdersPaymentForm';
+import LabOrdersProviderForm from '../addOrder/LabOrdersProviderForm';
 // constants block
 import clsx from 'clsx';
 import { Check } from '@material-ui/icons';
@@ -41,7 +41,7 @@ const ViewLabOrdersComponent: FC = () => {
       case 0:
         return <CreateOrderForm />
       case 1:
-        return <PaymentOrderForm />
+        return <ProviderOrderForm />
       default:
         return 'Unknown step';
     }
@@ -49,7 +49,7 @@ const ViewLabOrdersComponent: FC = () => {
 
   const CreateOrderForm = () => <LabOrdersCreateForm />
 
-  const PaymentOrderForm = () => <LabOrdersPaymentForm />
+  const ProviderOrderForm = () => <LabOrdersProviderForm />
 
   return (
     <>
