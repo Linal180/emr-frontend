@@ -2742,6 +2742,10 @@ export const PROFILE_TOP_TABS = [
     title: "Lab Orders",
     value: "10",
   },
+  {
+    title: "Care Team",
+    value: "11",
+  },
 ];
 
 export const DOCTOR_TOP_TABS = [
