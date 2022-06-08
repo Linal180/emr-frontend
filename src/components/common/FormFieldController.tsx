@@ -27,7 +27,6 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
   if (type === ElementType.Custom && apiCall) {
     switch (apiCall) {
-
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
           isRequired={required || true}
@@ -71,14 +70,15 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           name={fieldId}
           control={control}
           defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-          render={({ field, fieldState }) => (
+          render={({ field, fieldState }) => 
+          {return(
             <FormControl fullWidth margin="normal" >
               <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
                 {required ? `${label} *` : label}
               </InputLabel>
               <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
             </FormControl>
-          )}
+          )}}
         />
     }
   }

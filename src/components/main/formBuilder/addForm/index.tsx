@@ -25,7 +25,6 @@ import { AuthContext } from '../../../../context';
 import { FormAddIcon } from '../../../../assets/svgs';
 import { GREY_EIGHT, WHITE } from '../../../../theme';
 import { isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
-import { ListContext } from '../../../../context/listContext';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
@@ -36,9 +35,9 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
-  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
-  FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
-  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED, ITEMS_ID, PRACTICE,
+  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
+  CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
+  PRE_DEFINED, ITEMS_ID, PRACTICE,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -52,7 +51,6 @@ const AddForm = () => {
 
   const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
-  const { facilityList } = useContext(ListContext)
   const { user } = useContext(AuthContext);
   const { roles, facility, } = user || {};
   const { id: facilityId, practiceId } = facility || {};
@@ -110,8 +108,8 @@ const AddForm = () => {
             practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
             const { sections } = layout
             sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
-            const facilityName = facilityId && getFacilityNameHandler(facilityId)
-            if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
+            // const facilityName = facilityId && getFacilityNameHandler(facilityId)
+            // if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
       }
@@ -449,13 +447,6 @@ const AddForm = () => {
   const delColHandler = (index: number) => {
     const arr = formValues?.filter((item, i) => i !== index)
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
-  }
-
-  const getFacilityNameHandler = (facilityId: string) => {
-    const facility = facilityList?.find((item) => item?.id === facilityId)
-    const { name } = facility || {}
-
-    return name;
   }
 
   const handleCreateTemplate = async () => {
