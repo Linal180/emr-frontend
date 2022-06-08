@@ -251,9 +251,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
     try {
-      id && name && await updateAppointment({
-        variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
-      })
+      if (id && name && name !== '--') {
+        await updateAppointment({
+          variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
+        })
+      } else clearEdit()
     } catch (error) { }
   }
 
@@ -350,7 +352,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                               />
                             </FormProvider>
-                            : <Box onClick={() => id && handleStatusUpdate(id, text)}
+                            : <Box textAlign="center" onClick={() => id && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
                               border={`1px solid ${textColor}`}

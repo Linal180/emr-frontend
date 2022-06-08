@@ -7,31 +7,37 @@ import { AddCircleOutline, ChevronRight } from '@material-ui/icons';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
-//constants block
-import {
-  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
-  CHECKOUT, CPT_CODES, CUSTOM_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION, HCFA_DESC,
-  HCPCS_CODES, ICD_TEN_CODES, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
-  MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
-  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES, VIEW_APPOINTMENTS_ROUTE, YES
-} from "../../../constants";
 //components block
-import InputController from '../../../controller';
-import { Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery, useFetchPatientInsurancesLazyQuery } from "../../../generated/graphql";
-import history from "../../../history";
-import { BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType } from "../../../interfacesTypes";
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { formatValue, setRecord } from "../../../utils";
-import { createBillingSchema } from "../../../validationSchemas";
 import Alert from "../../common/Alert";
+import Selector from '../../common/Selector';
 import CodesTable from "../../common/CodesTable";
 import CopayModal from "../../common/CopayModal";
 import DatePicker from "../../common/DatePicker";
-import Selector from '../../common/Selector';
+import InputController from '../../../controller';
 import TableSelector from "../../common/Selector/TableSelector";
-
+//constants block
+import history from "../../../history";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { formatValue, setRecord } from "../../../utils";
+import { createBillingSchema } from "../../../validationSchemas";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import {
+  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
+} from "../../../interfacesTypes";
+import {
+  Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
+  PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery,
+  useFetchPatientInsurancesLazyQuery
+} from "../../../generated/graphql";
+import {
+  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
+  CHECKOUT, CPT_CODES, CUSTOM_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION,
+  HCFA_DESC, HCPCS_CODES, ICD_TEN_CODES, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
+  MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
+  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES,
+  VIEW_APPOINTMENTS_ROUTE, YES, FORBIDDEN_EXCEPTION,
+} from "../../../constants";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
   const classesToggle = usePublicAppointmentStyles();
@@ -64,48 +70,43 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
   });
 
   const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
-    onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
-    },
-
     onCompleted(data) {
-      const { fetchBillingDetailsByAppointmentId } = data
-      const { billing } = fetchBillingDetailsByAppointmentId
-      const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
-        autoAccident, codes, employment, onsetDate, otherDate, otherAccident } = billing ?? {}
+      if (data) {
+        const { fetchBillingDetailsByAppointmentId } = data ?? {}
+        const { billing } = fetchBillingDetailsByAppointmentId ?? {}
+        const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident } = billing ?? {}
 
-      const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
-        const codeType = codeValues.codeType
-        const codeData = {
-          id: codeValues.id,
-          code: codeValues.code ?? '',
-          description: codeValues.description ?? '',
-          price: codeValues.price ?? ''
-        }
+        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
+          const codeType = codeValues.codeType
+          const codeData = {
+            id: codeValues.id,
+            code: codeValues.code ?? '',
+            description: codeValues.description ?? '',
+            price: codeValues.price ?? ''
+          }
 
-        if (acc[codeType]) {
-          acc[codeType]?.push(codeData)
+          if (acc[codeType]) {
+            acc[codeType]?.push(codeData)
+            return acc
+          }
+
+          acc[codeType] = [codeData]
           return acc
-        }
+        }, {})
 
-        acc[codeType] = [codeData]
-        return acc
-      }, {})
+        setTableCodesData(transformedCodes ?? {})
 
-      setTableCodesData(transformedCodes ?? {})
-
-      setOtherAccident(otherAccident ?? false)
-      setAutoAccident(autoAccident ?? false)
-      setEmployment(employment ?? false)
-      setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
-      setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
-      setValue('otherDateType', setRecord(otherDateType, otherDateType))
-      setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
-      setValue('otherDate', otherDate ?? '')
-      setValue('onsetDate', onsetDate ?? '')
+        setOtherAccident(otherAccident ?? false)
+        setAutoAccident(autoAccident ?? false)
+        setEmployment(employment ?? false)
+        setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
+        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
+        setValue('otherDateType', setRecord(otherDateType, otherDateType))
+        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
+        setValue('otherDate', otherDate ?? '')
+        setValue('onsetDate', onsetDate ?? '')
+      }
     }
   })
 
@@ -196,7 +197,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit }) => {
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
-          const { copays, id } = policies.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
+          const { copays, id } = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
           const totalAmount = copays?.reduce((acc, copay) => {
             return acc += copay.amount ? +copay.amount : 0
           }, 0)

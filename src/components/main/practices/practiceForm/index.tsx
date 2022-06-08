@@ -32,10 +32,7 @@ import {
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const {
-    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, setPracticeList,
-    setRoleList
-  } = useContext(ListContext)
+  const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
@@ -90,7 +87,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPractice: { response, practice } } = data;
+      const { createPractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -98,10 +95,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          addPracticeList(practice)
           setFacilityList([])
           setRoleList([])
-          setPracticeList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -115,7 +110,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updatePractice: { response, practice } } = data;
+      const { updatePractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -123,7 +118,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          updatePracticeList(practice)
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }

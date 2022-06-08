@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } f
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
 // constants, history, styling block
+import history from '../../../history';
 import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
@@ -18,9 +19,8 @@ import {
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE,
+  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON,
 } from '../../../constants';
-import history from '../../../history';
 
 const SignatureComponent = (): JSX.Element => {
   const { currentUser, user } = useContext(AuthContext);
@@ -87,7 +87,7 @@ const SignatureComponent = (): JSX.Element => {
 
         if (attachments) {
           setSignAttachment(attachments.filter(attachment =>
-            attachment && attachment.title === ATTACHMENT_TITLES.Signature)[0]
+            attachment && attachment.title === ATTACHMENT_TITLES.Signature)[0] as AttachmentPayload['attachment']
           )
 
           signAttachment?.id && getAttachment({
@@ -216,12 +216,18 @@ const SignatureComponent = (): JSX.Element => {
                 </Box>
               }
 
-              <Box mb={4} onClick={() => setOpen(!open)}>
-                <Button type="submit" disabled={isLoading} variant="outlined" color='secondary'>
-                  {signatureUrl ? UPDATE_SIGNATURE : ADD_SIGNATURE}
+              <Box mb={4} display="flex" justifyContent="space-between" alignItems="center">
+                {!signatureUrl  &&  <Button onClick={() => setOpen(!open)} type="submit" disabled={isLoading} variant="outlined" color='secondary'>
+                  {ADD_SIGNATURE}
 
                   {isLoading && <CircularProgress size={20} color="inherit" />}
-                </Button>
+                </Button>}
+
+                <Box display="flex" alignItems="center">
+                  <Typography variant='h5' color='textPrimary'>{UPDATED_ON}</Typography>
+                  <Box p={1} />
+                  <Typography variant='h6' color='secondary'>12:00</Typography>
+                </Box>
               </Box>
             </Collapse>
 

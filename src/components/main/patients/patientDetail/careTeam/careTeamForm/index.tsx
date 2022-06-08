@@ -213,7 +213,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
       }
 
     }
-
   }
 
   const submitHandlerData = async () => {

@@ -45,7 +45,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
@@ -479,40 +479,38 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       handleSubmit(onSubmit)()
     }
   }));
-  console.log("shouldDisableEdit", shouldDisableEdit)
+
   return (
-    <>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-            <Box display="flex">
-              <BackButton to={`${PATIENTS_ROUTE}`} />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display="flex">
+            <BackButton to={`${PATIENTS_ROUTE}`} />
 
-              <Box ml={2}>
-                <PageHeader
-                  title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
-                  path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
-                />
-              </Box>
+            <Box ml={2}>
+              <PageHeader
+                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
+                path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+              />
             </Box>
+          </Box>
 
-            <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-              {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
+          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
-              {disableSubmit && <CircularProgress size={20} color="inherit" />}
-            </Button>
-          </Box>}
+            {disableSubmit && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>}
 
-          <RegisterFormComponent
-            isEdit={isEdit}
-            dispatch={dispatch} state={state}
-            shouldShowBread={shouldShowBread}
-            getPatientLoading={getPatientLoading}
-            shouldDisableEdit={shouldDisableEdit}
-          />
-        </form>
-      </FormProvider>
-    </>
+        <RegisterFormComponent
+          isEdit={isEdit}
+          dispatch={dispatch} state={state}
+          shouldShowBread={shouldShowBread}
+          getPatientLoading={getPatientLoading}
+          shouldDisableEdit={shouldDisableEdit}
+        />
+      </form>
+    </FormProvider>
   );
 });
 

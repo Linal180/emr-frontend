@@ -106,7 +106,6 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
                 disabled={shouldDisableEdit}
                 name="sexAtBirth"
                 label={SEX_AT_BIRTH}
-                addEmpty
                 options={MAPPED_GENDER_IDENTITY}
               />
             </Grid>

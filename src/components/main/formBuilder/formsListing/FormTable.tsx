@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
-import { getFormatDate, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
+import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
@@ -23,16 +23,19 @@ import {
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
   TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE,
-  FORM_EMBED_TITLE, CREATED_ON, NOT_PUBLISHED, PUBLISHED, FORM_BUILDER_RESPONSES
+  FORM_EMBED_TITLE, CREATED_ON, DRAFT_TEXT, PUBLISHED, FORM_BUILDER_RESPONSES, FACILITY_FORM, PRACTICE_FORM,
+  FORM_TYPE
 } from "../../../../constants";
+import { GREEN, MODERATE } from "../../../../theme";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { roles, facility } = user || {};
-  const { id: facilityId } = facility || {}
+  const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   //states
   const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
@@ -102,14 +105,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : { facilityId, ...pageInputs, isSystemForm: false }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
         },
       })
     } catch (error) { }
-  }, [findAllForms, page, facilityId, isSuper])
+  }, [findAllForms, page, facilityId, isSuper, practiceId, isPracticeUser])
 
 
   useEffect(() => {
@@ -183,9 +186,10 @@ const FormBuilderTable: FC = (): JSX.Element => {
             <TableRow>
               {renderTh(NAME)}
               {renderTh(TYPE)}
-              {isSuper && renderTh(FACILITY_NAME)}
+              {(isSuper || isPracticeUser) && renderTh(FACILITY_NAME)}
               {renderTh(CREATED_ON)}
               {renderTh(PUBLISHED)}
+              {(isSuper || isPracticeUser) && renderTh(FORM_TYPE)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -199,7 +203,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               forms?.map((record: FormPayload['form']) => {
-                const { id, type, name, facilityId, layout, createdAt, isActive } = record || {};
+                const { id, type, name, facilityId, layout, createdAt, isActive, practiceId } = record || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -208,9 +212,22 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
+                    {(isSuper || isPracticeUser) && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
-                    <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
+                    <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
+                    <TableCell scope="row">
+                      {facilityId && <Box className={classes.status}
+                        component='span' color={MODERATE} border={`1px solid ${MODERATE}`}>
+                        {FACILITY_FORM}
+                        {practiceId && !facilityId && PRACTICE_FORM}
+                      </Box>}
+
+                      {practiceId && !facilityId && <Box className={classes.status}
+                        component='span' color={GREEN} border={`1px solid ${GREEN}`}>
+                        {PRACTICE_FORM}
+                      </Box>}
+                        {!practiceId && !facilityId && "--" }
+                    </TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
