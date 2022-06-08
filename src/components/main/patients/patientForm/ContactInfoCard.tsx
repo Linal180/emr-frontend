@@ -20,7 +20,7 @@ import { verifyAddress } from "../../../common/smartyAddress"
 import SmartyModal from "../../../common/SmartyModal"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
+const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, saveBtnId, saveBtnRef }) => {
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const methods = useFormContext()
   const { watch, setValue } = methods;
@@ -68,7 +68,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
   return (
     <>
-      <CardComponent cardTitle={CONTACT_INFORMATION}>
+      <CardComponent cardTitle={CONTACT_INFORMATION} saveBtn saveBtnId={saveBtnId} saveBtnRef={saveBtnRef}>
         {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
           <>
             <Grid item md={12} sm={12} xs={12}>

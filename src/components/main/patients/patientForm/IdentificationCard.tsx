@@ -15,8 +15,8 @@ import DatePicker from "../../../common/DatePicker"
 import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) =>
-  <CardComponent cardTitle={IDENTIFICATION}>
+const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, saveBtnId, saveBtnRef , activeBar}) =>
+  <CardComponent cardTitle={IDENTIFICATION} saveBtn saveBtnId={saveBtnId} saveBtnRef={saveBtnRef} activeBar={activeBar}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>

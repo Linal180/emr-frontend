@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
+import { ComponentType, Dispatch, ElementType, ReactNode, RefObject, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
@@ -233,7 +233,11 @@ export interface CardComponentType extends Children {
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
   onEditClick?: () => void;
-  isFullHeight?: boolean
+  isFullHeight?: boolean;
+  saveBtn?: boolean;
+  saveBtnRef?:RefObject<HTMLDivElement>
+  saveBtnId?: string;
+  activeBar?: Function
 }
 
 export interface ChartingCardComponentType {
@@ -1123,6 +1127,9 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  saveBtnRef?:RefObject<HTMLDivElement>
+  saveBtnId?: string
+  activeBar?: Function
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
