@@ -18,7 +18,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import NoDataComponent from '../../../common/NoDataComponent';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import { getFormattedDate } from '../../../../utils';
@@ -27,7 +27,7 @@ import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, 
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
   useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
 import {
@@ -45,6 +45,8 @@ import {
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
   HEART_RATE_VALUE, VISITS,
 } from "../../../../constants";
+import SideDrawer from '../../../common/SideDrawer';
+
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -100,7 +102,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -186,9 +188,9 @@ const PatientDetailsComponent = (): JSX.Element => {
     <Box>
       <TabContext value={tabValue}>
         <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <Box display="flex" flexWrap="wrap"  maxWidth="100%">
-            <TabList onChange={handleChange} 
-              variant="scrollable" 
+          <Box display="flex" flexWrap="wrap" maxWidth="100%">
+            <TabList onChange={handleChange}
+              variant="scrollable"
               aria-label="Profile top tabs">
               {PROFILE_TOP_TABS.map(item => (
                 <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
@@ -292,7 +294,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent/>
                     </Box>
                   )}
 
@@ -335,7 +337,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent />
                     </Box>
                   )}
 
@@ -360,7 +362,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable />
+            <DocumentsTable patient={patientData} />
           </TabPanel>
 
           <TabPanel value="9">
@@ -374,18 +376,20 @@ const PatientDetailsComponent = (): JSX.Element => {
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <CareTeamProvider
+        <SideDrawer             
           drawerOpened={drawerOpened}
-          toggleSideDrawer={toggleSideDrawer}
-          patientId={id}
-          reload={() => fetchAllPatientsProviders()}
-          doctorId={doctorId}
-          doctorPatientId={doctorPatientId}
-          isEdit={isEdit}
-          doctorName={doctorName}
-          patientProvidersData={patientProvidersData}
-        />
-
+          toggleSideDrawer={toggleSideDrawer} >
+          <CareTeamProvider            
+            toggleSideDrawer={toggleSideDrawer}
+            patientId={id}
+            reload={() => fetchAllPatientsProviders()}
+            doctorId={doctorId}
+            doctorPatientId={doctorPatientId}
+            isEdit={isEdit}
+            doctorName={doctorName}
+            patientProvidersData={patientProvidersData}
+          />
+        </SideDrawer>
       </Box>
 
       <ConfirmationModal

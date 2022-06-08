@@ -104,13 +104,13 @@ const CheckInComponent = (): JSX.Element => {
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
-          const primaryInsurance = policies.find((policy)=>policy.orderOfBenefit===OrderOfBenefitType.Primary)
-          if(!!primaryInsurance){
-            dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance.insurance?.payerName ?? ''})
+          const primaryInsurance = policies?.find((policy) => policy.orderOfBenefit === OrderOfBenefitType.Primary)
+          if (!!primaryInsurance) {
+            dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
             return
           }
-          const { insurance } = policies[0]
-          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: insurance?.payerName ?? ''})
+          const { insurance } = policies[0] ?? {}
+          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: insurance?.payerName ?? '' })
         }
       }
     }
@@ -157,13 +157,13 @@ const CheckInComponent = (): JSX.Element => {
         fetchAppointment()
       }
     }
-  },[fetchAppointment, updateAppointment])
+  }, [fetchAppointment, updateAppointment])
 
-  useEffect(()=>{
-    if(status===AppointmentStatus.Initiated){
+  useEffect(() => {
+    if (status === AppointmentStatus.Initiated) {
       handleCheckIn(appointmentId || '', patientId || '')
     }
-  },[appointmentId, handleCheckIn, patientId, status])
+  }, [appointmentId, handleCheckIn, patientId, status])
 
   const handleStep = (step: number) => {
     updateAppointment({
@@ -180,7 +180,7 @@ const CheckInComponent = (): JSX.Element => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep}/>
+        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
       case 1:
         return <PatientInfo />
       case 2:
@@ -225,10 +225,7 @@ const CheckInComponent = (): JSX.Element => {
             shouldDisableEdit={shouldDisableEdit}
           />
         </Box>
-
-
-      <Box p={3}><PatientForm id={patientId} isEdit shouldShowBread={false} ref={patientRef} /></Box>
-    </Card>
+      </Card>
     </>
 
   // 2- INSURANCE

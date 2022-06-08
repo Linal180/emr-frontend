@@ -8,19 +8,46 @@ import MediaCards from "../../../../common/AddMedia/MediaCards";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 //constants, types, interfaces imports 
-import { ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, 
-        INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE } from "../../../../../constants";
-import { Attachment, AttachmentMetaDataType, AttachmentType, 
-         useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation } from "../../../../../generated/graphql";
+import {
+  ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION,
+  INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE, PATIENT_INSURANCE
+} from "../../../../../constants";
+import {
+  Attachment, AttachmentType,
+  useFetchDocumentTypeByNameLazyQuery,
+  useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation
+} from "../../../../../generated/graphql";
 import { ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
 
 const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
+  const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [{ attachmentUrl, attachmentData, attachments }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+
+  const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      name: PATIENT_INSURANCE
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchDocumentTypeByName } = data ?? {}
+        const { documentType } = fetchDocumentTypeByName ?? {}
+        const { id } = documentType ?? {}
+        setDocumentTypeId(id || '')
+      }
+    }
+  })
+
+  useEffect(() => {
+    fetchDocumentType()
+  }, [fetchDocumentType])
 
   const [getAttachments] = useGetAttachmentsByPolicyIdLazyQuery({
     variables: {
@@ -114,7 +141,7 @@ const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }
             attachmentData={attachmentData || undefined}
             filesLimit={2}
             reload={() => handleReload()}
-            attachmentMetadata={{ metadataType: AttachmentMetaDataType.InsuranceCard1, policyId: policyId ?? '' }}
+            attachmentMetadata={{ documentTypeId, policyId: policyId ?? '' }}
           />
 
           <ConfirmationModal

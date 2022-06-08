@@ -40,7 +40,7 @@ const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element 
       },
 
       labels: {
-        overflow: ''
+        overflow: 'justify',
       }
     },
 
