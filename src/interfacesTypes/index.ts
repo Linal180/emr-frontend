@@ -32,7 +32,7 @@ import {
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput, PatientProviderPayload,
+  VerifyCodeInput, PatientProviderPayload, AttachmentPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -831,6 +831,11 @@ export interface LabOrderCreateProps {
   shouldDisableEdit?: boolean
 }
 
+export interface LabOrderProviderProps {
+  labOrderNumber?: string
+  handleStep?: Function
+}
+
 export interface CreateBillingProps {
   billingStatus: SelectorOption
   paymentType: SelectorOption
@@ -842,6 +847,12 @@ export interface CreateBillingProps {
   onsetDate?: string
   otherDateType?: SelectorOption
   otherDate?: string
+}
+
+export interface CreateLabTestProviderProps {
+  referringProviderId?: SelectorOption
+  primaryProviderId?: SelectorOption
+  providerNotes?: string
 }
 
 type PhoneInputTypes =
@@ -935,7 +946,7 @@ export interface LabOrdersSpecimenTypeInput {
   index: number
 };
 
-export interface LabOrdersResultOption {
+export interface LabOrdersResultOption1 {
   observationId?: string
   resultValue?: string
   resultUnits?: string
@@ -944,11 +955,16 @@ export interface LabOrdersResultOption {
   abnormalFlag?: SelectorOption
 }
 
+export interface LabOrdersResultOption2 {
+  observationId?: string
+  resultValue?: SelectorOption
+}
+
 export interface LoinsCodeFields {
   testId: string
   loinccode: string
   description: string
-  resultsField: LabOrdersResultOption[]
+  resultsField: (LabOrdersResultOption1 | LabOrdersResultOption2)[]
 }
 
 export interface LabOrderResultsFormInput {
@@ -1127,13 +1143,15 @@ export interface AddPatientModalProps {
   facilityId: string | undefined;
 }
 
-export interface AddDocumentModalProps {
+export interface AddDocumentModalProps extends GeneralFormProps {
   patientId: string;
   facilityId: string;
   patientName: string;
   attachmentId: string;
-  toggleSideDrawer: Function;
+  attachment: AttachmentPayload['attachment'];
+  submitUpdate: Function;
   fetchDocuments: Function;
+  toggleSideDrawer: Function;
 }
 
 export interface CopayModalProps {
@@ -1588,7 +1606,11 @@ export interface PredefinedComponentsProps {
   dispatch: Dispatch<FormBuilderAction>
 }
 
-export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName' | 'comments'>
+  & { documentType: SelectorOption }
+
+export type DocumentInputProps = UpdateAttachmentDataInputs
+  & { provider: SelectorOption } & { date: string } & { patientName: string }
 
 export interface PatientNoteModalProps {
   patientStates: PatientState;
@@ -1633,7 +1655,8 @@ export interface ACHPaymentComponentProps {
 export interface CheckboxControllerProps extends IControlLabel {
   controllerName: string;
   isHelperText?: boolean;
-  autoFocus?: boolean
+  autoFocus?: boolean;
+  title?: string
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];
@@ -1681,7 +1704,7 @@ export interface CareTeamsProps {
 }
 
 export interface SideDrawerProps {
-  drawerOpened : boolean;
+  drawerOpened: boolean;
   toggleSideDrawer?: Function;
 }
 
@@ -1719,6 +1742,8 @@ export interface ChartComponentProps {
 
 export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
+  submitButtonText?: string
+  labOrderNumber?: string
 }
 
 export interface CodeTypeInterface {
@@ -1733,9 +1758,6 @@ export interface CodesTableProps {
   tableData?: TableCodesProps[]
   shouldShowPrice?: boolean
 }
-
-export type DocumentInputProps = { name: string } & { documentType: SelectorOption }
-  & { provider: SelectorOption } & { date: string } & { comments: string } & { patientName: string }
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']

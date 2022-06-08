@@ -27,7 +27,7 @@ import {
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
   OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, SSN,
   LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE,
-  DOCUMENT_NAME, FORM_TYPE
+  DOCUMENT_NAME, FORM_TYPE, PRIMARY_PROVIDER
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1030,5 +1030,11 @@ export const addDocumentSchema = yup.object({
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
   date: yup.string().required(requiredMessage(DATE)),
-  name: yup.string().required(requiredMessage(DOCUMENT_NAME)),
+  attachmentName: yup.string().required(requiredMessage(DOCUMENT_NAME)),
+})
+
+export const addLabProviderDetailsSchema = yup.object({
+  comments: yup.string(),
+  primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
+  referringProviderId: selectorSchema(REFERRING_PROVIDER),
 })

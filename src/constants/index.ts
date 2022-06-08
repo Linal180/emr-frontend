@@ -18,7 +18,7 @@ import {
 } from "../generated/graphql";
 import {
   ColumnTypes, FormBuilderFormInitial,
-  FormInitialType, ItemsTypes, LabOrdersResultOption, SelectOptions, SelectorOption, SpecimenTypeOption, StepLabelType, TestOption
+  FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption, SpecimenTypeOption, StepLabelType, TestOption
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
@@ -79,6 +79,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
 export const FACILITY_FORM = 'Facility Form';
@@ -1186,6 +1187,7 @@ export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order 
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
@@ -2742,6 +2744,10 @@ export const PROFILE_TOP_TABS = [
     title: "Lab Orders",
     value: "10",
   },
+  {
+    title: "Care Team",
+    value: "11",
+  },
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -3556,6 +3562,11 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
   { id: AbnormalFlag.VerySusceptible, name: formatValue(AbnormalFlag.VerySusceptible) }
 ];
 
+export const COVID_RESULT_OPTIONS: SelectorOption[] = [
+  { id: 'Detected', name: 'Detected' },
+  { id: 'Not Detected', name: 'Not Detected'  },
+]
+
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   name: "",
   type: {
@@ -3570,7 +3581,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
     name: "",
     id: "",
   },
-  isPractice: false
+  isPractice: false,
 };
 
 export const getFormInitialValues = () => [
@@ -3612,12 +3623,16 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   testTime: moment().format('HH:mm:ss'),
 };
 
-export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
+export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
   resultUnits: '',
   resultValue: '',
   abnormalFlag: { id: '', name: '' },
+};
+
+export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
+  resultValue: { id: '', name: '' },
 };
 
 
@@ -3632,7 +3647,7 @@ export const CHECK_IN_STEPS = [
 ];
 
 export const LAB_ORDER_STEPS = [
-  LAB_ORDER, PAYMENT
+  LAB_ORDER, PROVIDER_DETAILS, PAYMENT
 ];
 
 export const FacilityMenuNav = [
@@ -4383,12 +4398,13 @@ export enum FormBuilderApiSelector {
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities'
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent'
 }
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',
   NO_INSURANCE = 'no_insurance',
   CONTRACT = 'contract',
-  INTERNATIONAL_TRAVELER = 'international_traveler'
+  INTERNATIONAL_TRAVELER = 'international_traveler',
 }
