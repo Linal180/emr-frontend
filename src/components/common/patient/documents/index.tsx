@@ -17,7 +17,7 @@ import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import { DownloadIcon, SignedIcon, TrashNewIcon, UploadIcon, } from "../../../../assets/svgs";
+import { SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
 import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
 import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
@@ -365,7 +365,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                             }
 
                             <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
-                              <DownloadIcon />
+                              {/* <DownloadIcon /> */}
+                              <VisibilityOnIcon />
                             </Box>
 
                             <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
