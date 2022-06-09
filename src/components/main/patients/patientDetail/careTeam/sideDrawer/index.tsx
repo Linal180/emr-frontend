@@ -6,7 +6,6 @@ import CreateTeamForm from '../careTeamForm';
 const CareTeamProvider = ({toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }: CareTeamsProps) => {
 
   return (
-
     <CreateTeamForm
       toggleSideDrawer={toggleSideDrawer&&toggleSideDrawer}
       patientId={patientId} reload={reload}
@@ -16,7 +15,6 @@ const CareTeamProvider = ({toggleSideDrawer, patientId, reload, doctorId, doctor
       doctorName={doctorName}
       patientProvidersData={patientProvidersData}
     />
-
   )
 }
 

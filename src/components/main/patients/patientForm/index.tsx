@@ -483,19 +483,23 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={shouldShowBread ? 0 :4}>
           <Box display="flex">
-            <BackButton to={`${PATIENTS_ROUTE}`} />
+            {shouldShowBread &&
+              <>
+                <BackButton to={`${PATIENTS_ROUTE}`} />
 
-            <Box ml={2}>
-              <PageHeader
-                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
-                path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
-              />
-            </Box>
+                <Box ml={2}>
+                  <PageHeader
+                    title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
+                    path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+                  />
+                </Box>
+              </>
+            }
           </Box>
-
-          <Button type="submit" variant="contained" color={shouldShowBread?"primary":"secondary"} disabled={disableSubmit}>
+          
+          <Button type="submit" variant="contained" color={shouldShowBread ? "primary" : "secondary"} disabled={disableSubmit}>
             {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
