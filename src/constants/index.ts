@@ -4381,7 +4381,8 @@ export enum FormBuilderApiSelector {
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
   PRACTICE_FACILITIES = 'practiceFacilities',
-  PATIENT_CONSENT = 'patientConsent'
+  PATIENT_CONSENT = 'patientConsent',
+  TERMS_CONDITIONS = 'termsConditions'
 }
 
 export enum FormBuilderPaymentTypes {
