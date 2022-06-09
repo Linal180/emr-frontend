@@ -225,7 +225,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Box>}
 
                       {practiceId && !facilityId && <Box className={classes.status}
-                        component='span' color={GREEN} border={`1px solid ${GREEN}`}>
+                        component='span' color={GREEN}>
                         {PRACTICE_FORM}
                       </Box>}
                       {!practiceId && !facilityId && "--"}

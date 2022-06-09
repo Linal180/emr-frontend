@@ -356,7 +356,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 onOutsideClick={clearEdit}
                               />
                             </FormProvider>
-                            : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && status!==AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
                               display="flex"
