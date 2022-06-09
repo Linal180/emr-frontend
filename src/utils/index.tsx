@@ -1319,9 +1319,9 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
           data.push({ id: icdCodesId, name: `${code} | ${description}` })
           break;
         case ITEM_MODULE.cptCode:
-          let { id: cptCodeId, name:cptCodeName } = (item as unknown as SelectorOption) || {};
+          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
 
-          data.push({ id: cptCodeId, name: cptCodeName?.slice(0,100) })
+          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
@@ -1581,6 +1581,31 @@ export const getAppointmentStatus = (status: string) => {
 
     default:
       return AppointmentStatus.Initiated;
+  }
+}
+
+export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
+  if(AppointmentStatus.Discharged){
+    return 'Completed'
+  }
+  
+  switch (checkInActiveStep) {
+    case 0:
+      return status === AppointmentStatus.CheckIn ? 'Initiated' : 'Pending';
+    case 1:
+      return 'With Staff';
+    case 2:
+      return 'With Staff';
+    case 3:
+      return 'With Provider';
+    case 4:
+      return 'With Provider';
+    case 5:
+      return 'With Provider';
+    case 6:
+        return status === AppointmentStatus.Discharged ? 'Completed' : 'Billing';
+    default:
+      return ''
   }
 }
 
