@@ -58,20 +58,6 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
     onError() {
       return null
     },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-
-        if (preSignedUrl) {
-          window.open(preSignedUrl);
-
-          preSignedUrl && dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl })
-        }
-      }
-    },
   });
 
   const [getAttachments] = useGetAttachmentsByPolicyIdLazyQuery({
@@ -103,7 +89,6 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
             const { data } = getAttachmentResp ?? {}
             const { getAttachment: getAttachmentResponse } = data ?? {}
             const { preSignedUrl } = getAttachmentResponse ?? {}
-            console.log("getAttachmentResp", preSignedUrl)
             return {
               attachmentId: attachmentInfo?.id || '',
               preSignedUrl: preSignedUrl || ''
@@ -192,20 +177,6 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
               })}
             </Grid>
           </Box>
-
-          {/* <MediaCards
-            itemId={patientId ?? ''}
-            button={true}
-            notDescription={true}
-            imageSide={attachmentUrl}
-            buttonText={ADD_UPLOAD_IMAGES}
-            moduleType={AttachmentType.Patient}
-            title={ATTACHMENT_TITLES.InsuranceCard1}
-            attachmentData={attachmentData || undefined}
-            filesLimit={2}
-            reload={() => handleReload()}
-            attachmentMetadata={{ documentTypeId, policyId: policyId ?? '' }}
-          /> */}
 
           <DropzoneImage
             filesLimit={2}

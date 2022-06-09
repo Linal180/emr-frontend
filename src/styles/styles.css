@@ -739,9 +739,13 @@ body .MuiTabPanel-root {
 }
 
 .appointment-view-list .MuiTable-root tbody tr td:first-child{
+  max-width: 200px;
+}
+
+.appointment-view-list .MuiTable-root tbody tr .custom-cell{
   padding: 0 0 5px 0;
 }
-.appointment-view-list .MuiTable-root tbody tr td:first-child div{
+.appointment-view-list .MuiTable-root tbody tr .custom-cell{
   padding: 14px 11px 14px 30px;
 }
 

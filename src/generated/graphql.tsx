@@ -196,14 +196,14 @@ export type AppointmentPayload = {
 /** The patient appointment status type assigned */
 export enum AppointmentStatus {
   Cancelled = 'CANCELLED',
-  CheckedIn = 'CHECKED_IN',
-  Completed = 'COMPLETED',
+  CheckIn = 'CHECK_IN',
+  Discharged = 'DISCHARGED',
   Initiated = 'INITIATED',
   InLobby = 'IN_LOBBY',
   InSession = 'IN_SESSION',
   NoShow = 'NO_SHOW',
   Rescheduled = 'RESCHEDULED',
-  SelfCheckedIn = 'SELF_CHECKED_IN'
+  SelfCheckIn = 'SELF_CHECK_IN'
 }
 
 export type AppointmentsPayload = {
