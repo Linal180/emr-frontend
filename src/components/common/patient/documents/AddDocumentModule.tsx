@@ -10,6 +10,7 @@ import DropzoneImage from "../../DropZoneImage";
 import InputController from "../../../../controller";
 // import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
+import { setRecord } from "../../../../utils";
 import { GREY_SIXTEEN } from "../../../../theme";
 import { AttachmentType } from "../../../../generated/graphql";
 import { addDocumentSchema } from "../../../../validationSchemas";
@@ -18,7 +19,6 @@ import {
   ATTACHMENT_TITLES,
   CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, EMPTY_OPTION, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
 } from "../../../../constants";
-import { setRecord } from "../../../../utils";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
   toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment

@@ -23,8 +23,7 @@ import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../..
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
 import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
-  AttachmentPayload,
-  AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
 import {
@@ -54,7 +53,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
-  const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
+  const toggleSideDrawer = () => {
+    setDrawerOpened(!drawerOpened)
+    // if(!drawerOpened && attachmentId){
+    //   dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
+    //   dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
+    // }
+  }
 
   const [getAttachment] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -117,7 +122,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
       closeDeleteModal();
       Alert.error(message);
     },
@@ -133,7 +137,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
           if (message && status && status === 200) {
             Alert.success(message)
-            dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
             closeDeleteModal();
             getAttachments()
           }
@@ -208,7 +211,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }
 
   const onSubmit: SubmitHandler<DocumentInputProps> = async ({
-    attachmentName, documentType, provider, comments, date
+    attachmentName, documentType, comments, date
   }) => {
     const { id: selectedDocumentType } = documentType || {}
 
@@ -361,7 +364,9 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                       <TableRow>
                         <TableCell scope="row">
                           <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachment)}>
-                            {filteredFileName}
+                            <Typography color='secondary'>
+                              {filteredFileName}
+                            </Typography>
                           </Box>
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
