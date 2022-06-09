@@ -25,17 +25,17 @@ import {
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine,
-  canUpdateAppointmentStatus
+  AppointmentStatusStateMachine, canUpdateAppointmentStatus
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
   useGetAppointmentsLazyQuery, useUpdateAppointmentMutation, AppointmentStatus
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
+  ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, VIEW_ENCOUNTER
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
+   VIEW_ENCOUNTER
 } from "../../constants";
 
 dotenv.config()
@@ -292,7 +292,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             <TableHead>
               <TableRow>
                 {renderTh(TYPE)}
-                {!doctorId && renderTh(DOCTOR)}
                 {renderTh(PATIENT)}
                 {renderTh(DATE)}
                 {renderTh(TIME)}
@@ -305,24 +304,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={10} numberOfColumns={7} />
                   </TableCell>
                 </TableRow>
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime
                   } = appointment || {};
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
-                  const { firstName: doctorFN, lastName: doctorLN } = provider || {};
                   const { text, textColor } = appointmentStatus(status || '')
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{type}</TableCell>
-                      {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
 
                       <TableCell scope="row">
@@ -350,6 +347,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 name="status"
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                                onOutsideClick={clearEdit}
                               />
                             </FormProvider>
                             : <Box textAlign="center" onClick={() => id && handleStatusUpdate(id, text)}
