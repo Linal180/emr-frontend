@@ -35,8 +35,8 @@ import {
   ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
   AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-   VIEW_ENCOUNTER,
-   MINUTES
+  VIEW_ENCOUNTER,
+  MINUTES
 } from "../../constants";
 
 dotenv.config()
@@ -283,7 +283,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
+      <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
         <Box py={2} mb={2} maxWidth={450}>
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
@@ -321,11 +321,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">
-                          <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
-                            <Typography>{getStandardTime(scheduleStartDateTime || '')}</Typography>
-                            <Box pr={0.1} />
-                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES}</Typography>
-                          </Box>
+                        <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
+                          className="custom-cell"
+                        >
+                          <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                          <Box px={0.5} />
+                          <Typography variant="body2">
+                            ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+                          </Typography>
+                        </Box>
                       </TableCell>
 
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
