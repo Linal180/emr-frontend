@@ -480,10 +480,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     }
   }));
 
-  const handleNextStep = () => {
-     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
-  };
-
   const handleFinish = (e: any) => {
     console.log(e)
   };
@@ -513,7 +509,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         {activeStep < 5 ?
           <Button
             variant="contained" color='primary'
-            disabled={updatePatientLoading} onClick={handleNextStep}
+            disabled={updatePatientLoading} onClick={() => dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })}
             type={'button'}
           >
             {SAVE_TEXT}

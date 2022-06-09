@@ -2615,7 +2615,7 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   },
 ];
 
-export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
+export const StepperIcons: { [index: string]: number } = { };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
@@ -3562,7 +3562,7 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
 
 export const COVID_RESULT_OPTIONS: SelectorOption[] = [
   { id: 'Detected', name: 'Detected' },
-  { id: 'Not Detected', name: 'Not Detected'  },
+  { id: 'Not Detected', name: 'Not Detected' },
 ]
 
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
@@ -3670,27 +3670,21 @@ export const FacilityMenuNav = [
 export const RegisterPatientMenuNav = [
   {
     title: IDENTIFICATION,
-    linkTo: IDENTIFICATION_ROUTE,
   },
   {
     title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
   {
     title: CONTACT_INFORMATION,
-    linkTo: CONTACT_INFORMATION_ROUTE,
   },
   {
     title: PROVIDER_REGISTRATION_DATES,
-    linkTo: PROVIDER_REGISTRATION__ROUTE,
   },
   {
     title: PRIVACY,
-    linkTo: PRIVACY__ROUTE,
   },
   {
     title: EMERGENCY_CONTACT,
-    linkTo: EMERGENCY_CONTACT_ROUTE,
   },
 ];
 

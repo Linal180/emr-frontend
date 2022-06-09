@@ -471,6 +471,9 @@ export interface TooltipData {
   format: string;
 }
 
+export interface StepperData {
+  title: string;
+}
 
 export interface SearchComponentProps {
   search: Function;
@@ -611,6 +614,7 @@ export interface FormVerification {
 
 export interface StepperComponentProps {
   activeStep: number;
+  stepperData?: StepperData[]
 }
 
 interface BasicContactControlInputs {

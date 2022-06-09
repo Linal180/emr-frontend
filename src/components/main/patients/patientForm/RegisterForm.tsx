@@ -2,20 +2,21 @@
 import { FC } from 'react';
 import { Box, Card } from '@material-ui/core';
 // component block
-import StepperCard from './StepperCard';
 import GuarantorCard from './GuarantorCard';
 import EmploymentCard from './EmploymentCard';
 import ContactInfoCard from './ContactInfoCard';
 import IdentificationCard from './IdentificationCard';
 import PatientNextKinCard from './PatientNextKinCard';
 import PatientPrivacyCard from './PatientPrivacyCard';
-import PatientDemographicsCard from "./DemographicsCard";
+import StepperCard from '../../../common/StepperCard';
 import PatientGuardianCard from './PatientGuardianCard';
+import PatientDemographicsCard from "./DemographicsCard";
 import EmergencyContactCard from './EmergencyContactCard';
 import RegistrationDatesCard from './RegistrationDatesCard';
 // utils. interfaces, constants
 import { PatientCardsProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { RegisterPatientMenuNav } from '../../../../constants';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispatch, isEdit, state, shouldDisableEdit }) => {
   const classes = useExternalPatientStyles()
@@ -26,7 +27,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
     <Box display="flex" flexWrap="wrap" gridGap={20}>
       <Box className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
-          <StepperCard activeStep={activeStep as number} />
+          <StepperCard stepperData={RegisterPatientMenuNav} activeStep={activeStep as number} />
         </Card>
       </Box>
 
