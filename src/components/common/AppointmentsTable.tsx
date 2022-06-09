@@ -240,16 +240,18 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   }
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
-    const isCheckedInStatus = getAppointmentStatus(name || '')===AppointmentStatus.CheckIn
-    console.log(id,name,"name",isCheckedInStatus)
     try {
+      const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.CheckIn
+
       if (id && name && name !== '--') {
         await updateAppointment({
-          variables: { updateAppointmentInput: { 
-            id, 
-            status: getAppointmentStatus(name) as AppointmentStatus,
-            ...(isCheckedInStatus && {checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')})
-          } }
+          variables: {
+            updateAppointmentInput: {
+              id,
+              status: getAppointmentStatus(name) as AppointmentStatus,
+              ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
+            }
+          }
         })
       } else clearEdit()
     } catch (error) { }
@@ -308,7 +310,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const {
                     id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep
                   } = appointment || {};
-                  console.log("checkInActiveStep",checkInActiveStep)
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
@@ -356,14 +357,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 onOutsideClick={clearEdit}
                               />
                             </FormProvider>
-                            : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && status!==AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
                               display="flex"
                               flexDirection="column"
                             >
                               {text}
-                              <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0),status ?? '')}</Box>
+                              <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')}</Box>
                             </Box>}
                         </Box>}
                       </TableCell>

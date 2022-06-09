@@ -1585,13 +1585,21 @@ export const getAppointmentStatus = (status: string) => {
 }
 
 export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
-  if(AppointmentStatus.Discharged){
+  if(status===AppointmentStatus.Discharged){
     return 'Completed'
+  }
+
+  if(status === AppointmentStatus.Initiated){
+    return 'Pending'
+  }
+
+  if(status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled){
+    return ''
   }
   
   switch (checkInActiveStep) {
     case 0:
-      return status === AppointmentStatus.CheckIn ? 'Initiated' : 'Pending';
+      return 'Initiated';
     case 1:
       return 'With Staff';
     case 2:
@@ -1603,7 +1611,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
     case 5:
       return 'With Provider';
     case 6:
-        return status === AppointmentStatus.Discharged ? 'Completed' : 'Billing';
+        return 'Billing';
     default:
       return ''
   }
