@@ -35,7 +35,8 @@ import {
   ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
   AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-   VIEW_ENCOUNTER
+   VIEW_ENCOUNTER,
+   MINUTES
 } from "../../constants";
 
 dotenv.config()
@@ -292,8 +293,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             <TableHead>
               <TableRow>
                 {renderTh(TIME)}
-                {renderTh(TYPE)}
                 {renderTh(PATIENT)}
+                {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(STATUS)}
@@ -320,17 +321,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">
-                        <Box display="flex"
-                          flexDirection="column" alignContent="end">
-                          <Box borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
-                            <Typography>{getStandardTime(scheduleStartDateTime || '')} </Typography>
-                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} mins</Typography>
+                          <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
+                            <Typography>{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                            <Box pr={0.1} />
+                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES}</Typography>
                           </Box>
-                        </Box>
                       </TableCell>
 
-                      <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">
                         <Box display='flex' flexDirection='column'>
                           {getDateWithDay(scheduleStartDateTime || '')}
