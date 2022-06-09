@@ -208,8 +208,7 @@ const LabOrdersTable = (): JSX.Element => {
                             />
                           </>
                             :
-                            <Box className={classes.status} component='span' color={textColor}
-                              border={`1px solid ${textColor}`}
+                            <Box className={classes.status} component='span' color={textColor}                              
                               onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
                             >
                               {formatValue(labTestStatus ?? '')}

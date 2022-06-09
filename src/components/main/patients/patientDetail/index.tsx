@@ -214,9 +214,7 @@ const PatientDetailsComponent = (): JSX.Element => {
               mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
             }
           />
-
-          <Box p={1} />
-
+          
           <TabPanel value="1">
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
