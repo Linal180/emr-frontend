@@ -65,6 +65,7 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   selectorBox: {
+    maxWidth: 120,
 
     "& .MuiFormControl-fullWidth": {
       width: 120,

@@ -265,7 +265,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
             <Box pt={3} pb={5}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={5} sm={12} xs={12}>
                   <ItemSelector
                     isRequired
                     isEdit={isEdit}
