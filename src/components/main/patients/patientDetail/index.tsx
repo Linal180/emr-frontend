@@ -303,7 +303,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
+                  <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>

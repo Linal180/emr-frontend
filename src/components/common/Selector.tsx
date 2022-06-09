@@ -9,7 +9,7 @@ import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur,onSelect, value
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, onOutsideClick
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
@@ -27,7 +27,7 @@ const Selector: FC<SelectorProps> = ({
             disableClearable
             value={field.value}
             disabled={disabled}
-            getOptionSelected={(option,value)=>option.id===value.id}
+            getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
@@ -53,6 +53,7 @@ const Selector: FC<SelectorProps> = ({
               field.onChange(data)
               onSelect && onSelect(data)
             }}
+            onBlur={() => onOutsideClick && onOutsideClick()}
           />
         );
       }}
