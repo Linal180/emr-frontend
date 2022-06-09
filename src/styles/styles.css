@@ -738,6 +738,13 @@ body .MuiTabPanel-root {
   break-inside: avoid;
 }
 
+.appointment-view-list .MuiTable-root tbody tr td:first-child{
+  padding: 0 0 5px 0;
+}
+.appointment-view-list .MuiTable-root tbody tr td:first-child div{
+  padding: 14px 11px 14px 30px;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {
