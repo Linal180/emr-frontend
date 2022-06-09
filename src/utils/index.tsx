@@ -1635,19 +1635,15 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
 
     case AppointmentStatus.CheckIn:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Discharged], id
+        [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
       )
 
     case AppointmentStatus.InLobby:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InSession, AppointmentStatus.Discharged], id
+        [AppointmentStatus.InSession], id
       )
 
     case AppointmentStatus.InSession:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Discharged], id
-      )
-
     case AppointmentStatus.NoShow:
     case AppointmentStatus.Cancelled:
     case AppointmentStatus.Discharged:

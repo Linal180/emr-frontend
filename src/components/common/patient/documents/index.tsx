@@ -2,7 +2,6 @@
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
 // components block
@@ -18,13 +17,12 @@ import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import { DownloadIcon, SignedIcon, TrashNewIcon, UploadIcon, } from "../../../../assets/svgs";
+import { SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
 import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
 import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
-  AttachmentPayload,
-  AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
 import {
@@ -55,6 +53,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
+  
+  const handleUpload = () => {
+    dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
+    dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
+    toggleSideDrawer()
+  }
 
   const [getAttachment] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -117,7 +121,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
       closeDeleteModal();
       Alert.error(message);
     },
@@ -133,7 +136,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
           if (message && status && status === 200) {
             Alert.success(message)
-            dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
             closeDeleteModal();
             getAttachments()
           }
@@ -200,7 +202,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const handleEdit = (attachmentId: string, attachment: AttachmentPayload['attachment']) => {
     if (attachmentId) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
       dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
       attachment && dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: attachment })
       toggleSideDrawer()
@@ -208,7 +209,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }
 
   const onSubmit: SubmitHandler<DocumentInputProps> = async ({
-    attachmentName, documentType, provider, comments, date
+    attachmentName, documentType, comments, date
   }) => {
     const { id: selectedDocumentType } = documentType || {}
 
@@ -219,7 +220,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         }
       }
     })
-    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
     toggleSideDrawer()
   }
 
@@ -290,7 +290,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           />
         </SideDrawer>
 
-        {!isSignedTab && <Button onClick={toggleSideDrawer} variant="contained"
+        {!isSignedTab && <Button onClick={handleUpload} variant="contained"
           startIcon={<UploadIcon />} color="primary"
         >
           {UPLOAD}
@@ -327,24 +327,24 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                 ) : (
                   attachmentsData?.map((attachment) => {
                     const {
-                      id, createdAt, url, attachmentName, attachmentMetadata
+                      id, createdAt, attachmentName, attachmentMetadata
                     } = attachment || {};
-                    const { signedAt, signedBy } = attachmentMetadata || {}
-                    // const { type: documentTypeName } = documentType || {}
+                    const { signedAt, signedBy, documentType } = attachmentMetadata || {}
+                    const { type } = documentType || {}
 
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
-                    const fileExtension: DefaultExtensionType =
-                      url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
 
                     return id && (
                       <TableRow>
                         <TableCell scope="row">
                           <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachment)}>
-                            {filteredFileName}
+                            <Typography color='secondary'>
+                              {filteredFileName}
+                            </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell scope="row">{fileExtension}</TableCell>
+                        <TableCell scope="row">{type}</TableCell>
                         {/* <TableCell scope="row">{addedBy}</TableCell> */}
                         {documentTab &&
                           <>
@@ -365,7 +365,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                             }
 
                             <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
-                              <DownloadIcon />
+                              {/* <DownloadIcon /> */}
+                              <VisibilityOnIcon />
                             </Box>
 
                             <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>

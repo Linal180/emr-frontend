@@ -22,9 +22,10 @@ import {
   useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation
 } from '../../../../../../generated/graphql';
 import {
-  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
+  EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, SAVE_TEXT, SPECIALTY, CANCEL, PROVIDER,
   DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
-  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER, CANCEL,
+  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, 
+  UPDATE_PRIMARY_PROVIDER, 
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({
@@ -281,12 +282,12 @@ const CareTeamForm: FC<CareTeamsProps> = ({
           </Box>
 
           <Box mt={2} p={3}>
-            {isEdit ? renderItem(USUAL_PROVIDER_ID, doctorName) :
+            {isEdit ? renderItem(PROVIDER, doctorName) :
               <DoctorSelector
                 isRequired
                 shouldOmitFacilityId
                 name="providerId"
-                label={USUAL_PROVIDER_ID}
+                label={PROVIDER}
                 careProviderData={patientProvidersData as DoctorPatient[]}
               />
             }
