@@ -1,39 +1,38 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, RefObject, SetStateAction } from "react";
+import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ValidationRule, FieldValues, ControllerRenderProps, ControllerFieldState, UseFormSetValue
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
 } from "react-hook-form";
-// constants, reducers, graphql block
-import { Action } from "../reducers/mediaReducer";
-import { serviceAction } from "../reducers/serviceReducer";
-import { Action as ChartAction } from "../reducers/chartReducer";
-import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
-import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
-import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
-import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
-import { State as ExternalFormBuilderState, Action as PublicFormBuilderAction } from "../reducers/externalFormBuilderReducer";
-import { CARD_LAYOUT_MODAL, ITEM_MODULE, TABLE_SELECTOR_MODULES } from "../constants";
+import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
-  Attachment, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput,
+  Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput,
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
-  PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
+  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput, PatientProviderPayload, AttachmentPayload,
+  VerifyCodeInput
 } from "../generated/graphql";
+import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
+import { Action as ChartAction } from "../reducers/chartReducer";
+import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PublicFormBuilderAction, State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
+import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
+import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+// constants, reducers, graphql block
+import { Action } from "../reducers/mediaReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -529,6 +528,11 @@ export type ParamsType = {
   appointmentId?: string
 }
 
+export interface PreSignedUrlInterface {
+  attachmentId: string
+  preSignedUrl?: string
+}
+
 export type ExtendedStaffInputProps = Omit<
   CreateStaffItemInput,
   "facilityId" | "roleType" | "gender"
@@ -805,7 +809,7 @@ export interface GeneralFormProps {
 export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
-  moduleName: TABLE_SELECTOR_MODULES
+  moduleName: ITEM_MODULE
   handleCodes: Function
 }
 
@@ -903,6 +907,7 @@ export interface DropzoneImageType {
   handleClose: Function;
   setActiveStep?: Function;
   setAttachments: Function;
+  acceptableFilesType?: string[]
 }
 
 interface Message {
