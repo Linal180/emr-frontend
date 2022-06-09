@@ -205,7 +205,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
           />
         </Grid>
       </Grid>
-    </Box >
+    </Box>
   )
 })
 
