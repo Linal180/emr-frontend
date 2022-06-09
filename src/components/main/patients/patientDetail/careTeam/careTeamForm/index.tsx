@@ -2,7 +2,7 @@
 import { FC, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Typography, Grid, IconButton } from '@material-ui/core';
+import { Box, Button, Typography, Grid, } from '@material-ui/core';
 //components block
 import Alert from '../../../../../common/Alert';
 import Selector from '../../../../../common/Selector';
@@ -14,7 +14,6 @@ import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 import history from '../../../../../../history';
 import { renderItem, setRecord } from '../../../../../../utils';
 import { GREY_SIXTEEN } from '../../../../../../theme';
-import { CloseIcon } from '../../../../../../assets/svgs';
 import InputController from '../../../../../../controller'
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
 import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
@@ -25,7 +24,7 @@ import {
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, USUAL_PROVIDER_ID, SAVE_TEXT, SPECIALTY,
   DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
-  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER,
+  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, UPDATE_PRIMARY_PROVIDER, CANCEL,
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({
@@ -265,13 +264,20 @@ const CareTeamForm: FC<CareTeamsProps> = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
-            display="flex" justifyContent="space-between"
-            borderBottom={`1px solid ${GREY_SIXTEEN}`} px={2} pt={2} pb={1}
+            display="flex" justifyContent="space-between" alignItems="center"
+            borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
             <Typography variant='h3'>{ADD_PROVIDER_TEXT}</Typography>
-            <IconButton onClick={closeSlider}>
-              <CloseIcon />
-            </IconButton>
+
+            <Box display="flex" alignItems="center">
+              <Button onClick={closeSlider} variant="text" color="inherit" className="danger">
+                {CANCEL}
+              </Button>
+
+              <Box p={1} />
+
+              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+            </Box>
           </Box>
 
           <Box mt={2} p={3}>
@@ -285,7 +291,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
               />
             }
 
-            <Box p={3} />
+            <Box p={1} />
 
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
@@ -338,7 +344,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
                   name='relation'
                   options={MAPPED_DOCTOR_PATIENT_RELATION}
                   label={'Relationship to Patient'} />
-
               </Grid>
 
               {relation === DoctorPatientRelationType.OtherProvider &&
@@ -349,10 +354,8 @@ const CareTeamForm: FC<CareTeamsProps> = ({
                   margin={'none'}
                 />}
             </Grid>
-          </Box>
 
-          <Box py={3} pr={3} display="flex" justifyContent="flex-end" borderTop={`1px solid ${GREY_SIXTEEN}`}>
-            <Button type="submit" variant="contained" color="secondary" size='large'>{SAVE_TEXT}</Button>
+            <Box p={1} />
           </Box>
         </form>
       </FormProvider>

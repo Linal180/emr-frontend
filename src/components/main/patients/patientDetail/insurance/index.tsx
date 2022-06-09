@@ -1,5 +1,5 @@
 // packages block
-import { Box, Card, Collapse, colors, IconButton, Typography } from "@material-ui/core";
+import { Box, Card, Collapse, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
@@ -102,8 +102,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   return (
     <Card>
       <Box p={3}>
-        <Box pb={2} mb={5} borderBottom={`1px solid ${colors.grey[300]}`}>
-        </Box>
         {fetchAllPoliciesLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={true} /> :
           <>
             {policies.map((policy) => {

@@ -302,6 +302,8 @@ const CheckInComponent = (): JSX.Element => {
         }
       />
 
+      <Box p={2} />
+
       <Card>
         <Box px={3} pt={1} pb={1}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
