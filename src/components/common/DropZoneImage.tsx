@@ -19,7 +19,7 @@ import {
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -231,7 +231,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               previewGridClasses={{ item: 'media-inner-image' }}
               filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
-              acceptedFiles={ACCEPTABLE_FILES}
+              acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
               onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
               dropzoneText={imageEdit ?

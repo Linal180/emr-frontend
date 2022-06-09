@@ -166,7 +166,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               )
             })}
 
-            {filteredOrderOfBenefitOptions.length &&
+            {!!filteredOrderOfBenefitOptions.length &&
               !shouldDisableEdit && <>
                 <Collapse in={!open} mountOnEnter unmountOnExit>
                   <Box onClick={() => {

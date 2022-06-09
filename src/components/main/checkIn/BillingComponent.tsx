@@ -7,37 +7,36 @@ import { AddCircleOutline, ChevronRight } from '@material-ui/icons';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
-//components block
-import Alert from "../../common/Alert";
-import Selector from '../../common/Selector';
-import CodesTable from "../../common/CodesTable";
-import CopayModal from "../../common/CopayModal";
-import DatePicker from "../../common/DatePicker";
-import InputController from '../../../controller';
-import TableSelector from "../../common/Selector/TableSelector";
-//constants block
-import history from "../../../history";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { formatValue, setRecord } from "../../../utils";
-import { createBillingSchema } from "../../../validationSchemas";
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
-  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
-} from "../../../interfacesTypes";
+  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
+  CHECKOUT, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
+  MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
+  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES,
+  VIEW_APPOINTMENTS_ROUTE, YES
+} from "../../../constants";
+import InputController from '../../../controller';
 import {
   Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
   PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery,
   useFetchPatientInsurancesLazyQuery
 } from "../../../generated/graphql";
+//constants block
+import history from "../../../history";
 import {
-  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
-  CHECKOUT, CPT_CODES, CUSTOM_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION,
-  HCFA_DESC, HCPCS_CODES, ICD_TEN_CODES, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
-  MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
-  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES,
-  VIEW_APPOINTMENTS_ROUTE, YES, FORBIDDEN_EXCEPTION,
-} from "../../../constants";
+  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
+} from "../../../interfacesTypes";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { formatValue, setRecord } from "../../../utils";
+import { createBillingSchema } from "../../../validationSchemas";
+//components block
+import Alert from "../../common/Alert";
+import CodesTable from "../../common/CodesTable";
+import CopayModal from "../../common/CopayModal";
+import DatePicker from "../../common/DatePicker";
+import Selector from '../../common/Selector';
+import TableSelector from "../../common/Selector/TableSelector";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const classesToggle = usePublicAppointmentStyles();
@@ -128,8 +127,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   }, [appointmentId, fetchBillingDetailsByAppointmentId])
 
   useEffect(() => {
-    fetchBillingDetails();
-  }, [fetchBillingDetails]);
+    shouldDisableEdit && fetchBillingDetails();
+  }, [fetchBillingDetails, shouldDisableEdit]);
 
   const getCodeType = (codeName: TABLE_SELECTOR_MODULES) => {
     switch (codeName) {
@@ -421,28 +420,28 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.icdCodes} title={ICD_TEN_CODES} />
+                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
             }
             <Box p={2} />
-            {
+            {/* {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.HcpcsCode)} shouldShowPrice tableData={tableCodesData.HCPCS_CODE} /> :
                 <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.hcpcsCode} title={HCPCS_CODES} shouldShowPrice />
-            }
+            } */}
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
             {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.cptCode} title={CPT_CODES} shouldShowPrice />
+                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
             }
             <Box p={2} />
-            {
+            {/* {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.CustomCode)} shouldShowPrice tableData={tableCodesData.CUSTOM_CODE} /> :
                 <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.customCode} title={CUSTOM_CODES} shouldShowPrice />
-            }
+            } */}
           </Grid>
         </Grid>
       </form>

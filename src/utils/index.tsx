@@ -1309,6 +1309,16 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: snoMedCodeId, name: referencedComponentId })
           break;
+        case ITEM_MODULE.icdCodes:
+          let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          break;
+        case ITEM_MODULE.cptCode:
+          let { id: cptCodeId, name:cptCodeName } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, name: cptCodeName?.slice(0,100) })
+          break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
 
