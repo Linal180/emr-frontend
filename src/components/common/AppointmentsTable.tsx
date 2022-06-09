@@ -1,32 +1,39 @@
 // packages block
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
-import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STATUS, TIME, TYPE, VIEW_ENCOUNTER
-} from "../../constants";
-import { AuthContext } from "../../context";
-import {
-  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery, useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
-} from "../../generated/graphql";
-// graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
-import { useTableStyles } from "../../styles/tableStyles";
-import { appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord } from "../../utils";
+import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
+// graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import history from "../../history";
+import { useTableStyles } from "../../styles/tableStyles";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import {
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
+  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+} from "../../utils";
+import {
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STATUS, TIME, TYPE, VIEW_ENCOUNTER
+} from "../../constants";
+import { AuthContext } from "../../context";
+import {
+  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
+  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
+} from "../../generated/graphql";
 
 dotenv.config()
 
@@ -357,7 +364,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 onOutsideClick={clearEdit}
                               />
                             </FormProvider>
-                            : <Box p={0} onClick={() => id && status!==AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
                               display="flex"
