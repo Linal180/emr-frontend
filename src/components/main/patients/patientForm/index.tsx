@@ -4,9 +4,9 @@ import { Box, Button, CircularProgress } from "@material-ui/core";
 import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, DONE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SAVE_TEXT, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
 } from "../../../../constants";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
@@ -36,7 +36,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail, activeStep
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
@@ -480,10 +480,18 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     }
   }));
 
+  const handleNextStep = () => {
+     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
+  };
+
+  const handleFinish = (e: any) => {
+    console.log(e)
+  };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -495,12 +503,32 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             </Box>
           </Box>
 
-          <Button type="submit" variant="contained" color={shouldShowBread?"primary":"secondary"} disabled={disableSubmit}>
+          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
             {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>
+        </Box>}
+
+        {activeStep < 5 ?
+          <Button
+            variant="contained" color='primary'
+            disabled={updatePatientLoading} onClick={handleNextStep}
+            type={'button'}
+          >
+            {SAVE_TEXT}
+
+            {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
+          </Button>
+          :
+          <Button
+            variant="contained" color='primary' type="button"
+            onClick={handleFinish} disabled={updatePatientLoading}
+          >
+            {DONE}
+          </Button>
+
+        }
 
         <RegisterFormComponent
           isEdit={isEdit}
