@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useParams } from "react-router";
 // constants, interfaces, utils block
-import { CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VITALS_TEXT } from "../../../constants";
+import { CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VIEW_APPOINTMENTS_ROUTE, VITALS_TEXT } from "../../../constants";
 import { AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation } from "../../../generated/graphql";
 import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
@@ -17,6 +17,7 @@ import { Action as PatientAction, ActionType as PatientActionType, initialState 
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate } from "../../../utils";
 import Alert from "../../common/Alert";
+import BackButton from "../../common/BackButton";
 import PageHeader from "../../common/PageHeader";
 import PatientProfileHero from "../../common/patient/profileHero";
 import ChartCards from "../patientChart/chartCards";
@@ -281,7 +282,15 @@ const CheckInComponent = (): JSX.Element => {
 
   return (
     <>
-      {appointmentTime && <PageHeader title={`Encounter on ${appointmentTime}`} />}
+      {appointmentTime &&
+        <Box display='flex' alignItems='center'>
+          <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
+
+          <Box ml={2} pt={2}>
+            <PageHeader title={`Encounter on ${appointmentTime}`} />
+          </Box>
+        </Box>
+      }
 
       <PatientProfileHero
         isCheckIn
@@ -292,7 +301,6 @@ const CheckInComponent = (): JSX.Element => {
           mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
         }
       />
-      <Box p={2} />
 
       <Card>
         <Box px={3} pt={1} pb={1}>

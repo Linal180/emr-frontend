@@ -134,28 +134,28 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                         </IconButton>}
                       </Box>
 
-                      <Box display='flex' alignItems='center'>
-                        <Box minWidth={200} mr={10}>
+                      <Box display='flex' alignItems='center' flexWrap='wrap'>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
                           <Typography variant="body2">{payerId}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{ID_TEXT}</Typography>
                           <Typography variant="body2">{groupNumber}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{COPAY_TEXT}</Typography>
                           <Typography variant="body2">${amount}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
                           <Typography variant="body2">{`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}</Typography>
                         </Box>
 
-                        <Box minWidth={200}>
+                        <Box minWidth={200} my={2}>
                           <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
                           <Typography variant="body2">{CHECK_ELIGIBILITY_TODAY}</Typography>
                         </Box>
