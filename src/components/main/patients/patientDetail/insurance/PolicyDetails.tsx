@@ -140,7 +140,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             label={REFERRING_PROVIDER}
             name="referringProvider"
             shouldOmitFacilityId
-            addEmpty
           />
         </Grid>
 
@@ -149,7 +148,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             label={PRIMARY_CARE_PROVIDER}
             name="primaryCareProvider"
             shouldOmitFacilityId
-            addEmpty
           />
         </Grid>
 

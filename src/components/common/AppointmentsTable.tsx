@@ -1,43 +1,32 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { Link } from "react-router-dom";
-import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import {
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STATUS, TIME, TYPE, VIEW_ENCOUNTER
+} from "../../constants";
+import { AuthContext } from "../../context";
+import {
+  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery, useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
+} from "../../generated/graphql";
+// graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import history from "../../history";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import { useTableStyles } from "../../styles/tableStyles";
+import { appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord } from "../../utils";
 // components block
 import Alert from "./Alert";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
-// graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
-import { AuthContext } from "../../context";
-import { useTableStyles } from "../../styles/tableStyles";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import {
-  appointmentReducer, Action, initialState, State, ActionType
-} from "../../reducers/appointmentReducer";
-import {
-  getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine, canUpdateAppointmentStatus, getStandardTimeDuration
-} from "../../utils";
-import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation, AppointmentStatus
-} from "../../generated/graphql";
-import {
-  ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-   VIEW_ENCOUNTER,
-   MINUTES
-} from "../../constants";
 
 dotenv.config()
 
@@ -251,10 +240,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   }
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
+    const isCheckedInStatus = getAppointmentStatus(name || '')===AppointmentStatus.CheckIn
+    console.log(id,name,"name",isCheckedInStatus)
     try {
       if (id && name && name !== '--') {
         await updateAppointment({
-          variables: { updateAppointmentInput: { id, status: getAppointmentStatus(name) as AppointmentStatus } }
+          variables: { updateAppointmentInput: { 
+            id, 
+            status: getAppointmentStatus(name) as AppointmentStatus,
+            ...(isCheckedInStatus && {checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')})
+          } }
         })
       } else clearEdit()
     } catch (error) { }
@@ -283,7 +278,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
+      <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
         <Box py={2} mb={2} maxWidth={450}>
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
@@ -311,8 +306,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep
                   } = appointment || {};
+                  console.log("checkInActiveStep",checkInActiveStep)
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
@@ -321,11 +317,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">
-                          <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
-                            <Typography>{getStandardTime(scheduleStartDateTime || '')}</Typography>
-                            <Box pr={0.1} />
-                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES}</Typography>
-                          </Box>
+                        <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
+                          className="custom-cell"
+                        >
+                          <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                          <Box px={0.5} />
+                          <Typography variant="body2">
+                            ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+                          </Typography>
+                        </Box>
                       </TableCell>
 
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
@@ -359,12 +359,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
+                              display="flex"
+                              flexDirection="column"
                             >
                               {text}
+                              <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0),status ?? '')}</Box>
                             </Box>}
                         </Box>}
                       </TableCell>
-
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           {status && <Box className={classes.iconsBackground}

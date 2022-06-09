@@ -20,6 +20,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       reason
       primaryInsurance
       billingStatus
+      checkInActiveStep
       
       provider {
         id
