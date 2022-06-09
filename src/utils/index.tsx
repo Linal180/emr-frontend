@@ -1313,6 +1313,16 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: snoMedCodeId, name: referencedComponentId })
           break;
+        case ITEM_MODULE.icdCodes:
+          let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          break;
+        case ITEM_MODULE.cptCode:
+          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
+          break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
 
@@ -1571,6 +1581,39 @@ export const getAppointmentStatus = (status: string) => {
 
     default:
       return AppointmentStatus.Initiated;
+  }
+}
+
+export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
+  if(status===AppointmentStatus.Discharged){
+    return 'Completed'
+  }
+
+  if(status === AppointmentStatus.Initiated){
+    return 'Pending'
+  }
+
+  if(status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled){
+    return ''
+  }
+  
+  switch (checkInActiveStep) {
+    case 0:
+      return 'Initiated';
+    case 1:
+      return 'With Staff';
+    case 2:
+      return 'With Staff';
+    case 3:
+      return 'With Provider';
+    case 4:
+      return 'With Provider';
+    case 5:
+      return 'With Provider';
+    case 6:
+        return 'Billing';
+    default:
+      return ''
   }
 }
 

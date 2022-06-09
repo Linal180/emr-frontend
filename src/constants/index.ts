@@ -2993,7 +2993,10 @@ export const DUMMY_APPOINTMENTS = [
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
   insurance = 'insurance',
-  documentTypes = 'documentTypes'
+  documentTypes = 'documentTypes',
+  icdCodes = 'IcdCodes',
+  cptCode = 'CPTCode',
+
 }
 
 export enum TABLE_SELECTOR_MODULES {
