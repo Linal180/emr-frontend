@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { Box, Grid, Tab, } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
+import DoctorProfileHero from "./profileHero";
 import DoctorScheduleForm from "../schedules";
 import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants, history, styling block
@@ -18,13 +19,13 @@ import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
-import DoctorProfileHero from "./profileHero";
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { doctorFacilityId, currentTab, } = state;
+  const { currentTab, doctor } = state;
+  const { facilityId: doctorFacilityId } = doctor || {}
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -54,7 +55,7 @@ const DoctorDetailComponent = (): JSX.Element => {
           <TabPanel value="1" />
           <TabPanel value="2">
             <Grid spacing={3}>
-              <DoctorScheduleForm doctorFacilityId={doctorFacilityId} />
+              <DoctorScheduleForm doctorFacilityId={doctorFacilityId || ''} />
             </Grid>
           </TabPanel>
 
