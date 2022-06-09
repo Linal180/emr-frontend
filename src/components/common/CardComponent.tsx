@@ -20,7 +20,7 @@ const CardComponent: FC<CardComponentType> = ({
                     <Save />
                   </IconButton>
                 )}
-                
+
                 <IconButton onClick={onEditClick} aria-label="settings">
                   <ArrowBack />
                 </IconButton>

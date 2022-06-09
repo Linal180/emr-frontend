@@ -1,10 +1,12 @@
 // packages block
 import * as yup from "yup";
-import { notRequiredPhone, requiredPhone } from ".";
-import { COMPANY_NAME, CONTRACT_NO, FormBuilderApiSelector, FormBuilderPaymentTypes, GROUP_NUMBER, MEMBER_ID, ORGANIZATION_NAME } from "../constants";
 //graphql, utils
-import { ElementType, SectionsInputs } from "../generated/graphql";
+import { notRequiredPhone, requiredPhone } from ".";
 import { invalidMessage, requiredMessage } from "../utils";
+import { ElementType, SectionsInputs } from "../generated/graphql";
+import {
+  COMPANY_NAME, CONTRACT_NO, FormBuilderApiSelector, FormBuilderPaymentTypes, GROUP_NUMBER, MEMBER_ID, ORGANIZATION_NAME
+} from "../constants";
 //schema
 export const getFormBuilderValidation = (formSection: SectionsInputs[], paymentType: string) => {
   let validation: any = {}
@@ -67,15 +69,22 @@ export const getFormBuilderValidation = (formSection: SectionsInputs[], paymentT
                 break;
             }
             break;
-            
+
           case FormBuilderApiSelector.PRACTICE_FACILITIES:
             validation[fieldId] = yup.string().required(requiredMessage(label))
             break;
+
           case FormBuilderApiSelector.SERVICE_SELECT:
             validation[fieldId] = yup.string().required(requiredMessage(label))
             break;
+
           case FormBuilderApiSelector.SERVICE_SLOT:
             break;
+
+          case FormBuilderApiSelector.TERMS_CONDITIONS:
+            validation[fieldId] = yup.boolean().oneOf([true, null], requiredMessage(label))
+            break;
+
           default:
             break;
         }

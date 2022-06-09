@@ -5,7 +5,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
@@ -25,7 +25,7 @@ import {
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine, canUpdateAppointmentStatus
+  AppointmentStatusStateMachine, canUpdateAppointmentStatus, getStandardTimeDuration
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
@@ -287,14 +287,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
 
-        <Box className="table-overflow">
+        <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
+                {renderTh(TIME)}
                 {renderTh(TYPE)}
                 {renderTh(PATIENT)}
                 {renderTh(DATE)}
-                {renderTh(TIME)}
                 {renderTh(FACILITY)}
                 {renderTh(STATUS)}
                 {renderTh(ACTION, "center")}
@@ -315,13 +315,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
-                  const { text, textColor } = appointmentStatus(status || '')
+                  const { text, textColor, bgColor } = appointmentStatus(status || '')
 
                   return (
                     <TableRow key={id}>
+                      <TableCell scope="row">
+                        <Box display="flex"
+                          flexDirection="column" alignContent="end">
+                          <Box borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
+                            <Typography>{getStandardTime(scheduleStartDateTime || '')} </Typography>
+                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} mins</Typography>
+                          </Box>
+                        </Box>
+                      </TableCell>
+
                       <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
-
                       <TableCell scope="row">
                         <Box display='flex' flexDirection='column'>
                           {getDateWithDay(scheduleStartDateTime || '')}
@@ -333,10 +342,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         </Box>
                       </TableCell>
 
-                      <TableCell scope="row">
-                        {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
-                      </TableCell>
                       <TableCell scope="row">{name}</TableCell>
+
                       <TableCell scope="row">
                         {id && <Box className={classes.selectorBox}>
                           {isEdit && appointmentId === id ?
@@ -350,10 +357,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 onOutsideClick={clearEdit}
                               />
                             </FormProvider>
-                            : <Box textAlign="center" onClick={() => id && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
-                              border={`1px solid ${textColor}`}
                             >
                               {text}
                             </Box>}
