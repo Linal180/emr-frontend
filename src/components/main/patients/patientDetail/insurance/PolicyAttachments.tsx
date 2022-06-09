@@ -14,7 +14,6 @@ import {
 } from "../../../../../generated/graphql";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps, PreSignedUrlInterface } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
-import { BLUE } from "../../../../../theme";
 //components Import
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
@@ -93,18 +92,18 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
 
         if (getAttachmentsByPolicyId) {
           const { attachments } = getAttachmentsByPolicyId
-           const preSignedUrls= await Promise.all(attachments?.map(async(attachmentInfo)=>{
-            const getAttachmentResp= await getAttachment({
-              variables:{
-                getMedia:{
-                  id:attachmentInfo?.id
+          const preSignedUrls = await Promise.all(attachments?.map(async (attachmentInfo) => {
+            const getAttachmentResp = await getAttachment({
+              variables: {
+                getMedia: {
+                  id: attachmentInfo?.id
                 }
               }
             })
             const { data } = getAttachmentResp ?? {}
             const { getAttachment: getAttachmentResponse } = data ?? {}
             const { preSignedUrl } = getAttachmentResponse ?? {}
-            console.log("getAttachmentResp",preSignedUrl)
+            console.log("getAttachmentResp", preSignedUrl)
             return {
               attachmentId: attachmentInfo?.id || '',
               preSignedUrl: preSignedUrl || ''
@@ -172,21 +171,27 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
-          <Box p={1} />
-          {
-            preSignedUrl.map((attachment) => {
-              return (
-                <Box mt={1} color={BLUE} display="flex" alignItems="center">
-                  <img src={attachment?.preSignedUrl} alt={attachment?.preSignedUrl}/>
-                  <Box p={0.5} />
-                  <IconButton onClick={() => onDeleteClick(attachment?.attachmentId || '')}>
-                    <TrashOutlinedIcon />
-                  </IconButton>
-                </Box>
-              )
-            })
-          }
-          <Box p={2} />
+          <Box my={3}>
+            <Grid container spacing={3}>
+              {preSignedUrl.map((attachment) => {
+                return (
+                  <Grid item md={3} sm={12} xs={12}>
+                    <Box className="card-box">
+                      <Box className="card-img">
+                        <img src={attachment?.preSignedUrl} alt={attachment?.preSignedUrl} />
+                      </Box>
+
+                      <Box className="card-overlay">
+                        <IconButton className="del-icon" onClick={() => onDeleteClick(attachment?.attachmentId || '')}>
+                          <TrashOutlinedIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Grid>
+                )
+              })}
+            </Grid>
+          </Box>
 
           {/* <MediaCards
             itemId={patientId ?? ''}
@@ -229,7 +234,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
           />
         </Grid>
       </Grid>
-    </Box>
+    </Box >
   )
 })
 
