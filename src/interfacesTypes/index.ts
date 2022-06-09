@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
+import { ComponentType, Dispatch, ElementType, ReactNode, RefObject, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
@@ -233,7 +233,7 @@ export interface CardComponentType extends Children {
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
   onEditClick?: () => void;
-  isFullHeight?: boolean
+  isFullHeight?: boolean;
 }
 
 export interface ChartingCardComponentType {
@@ -369,8 +369,9 @@ export interface SelectorProps {
   value?: SelectorOption
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
-  onBlur?: Function
-  onSelect?: Function
+  onBlur?: Function;
+  onSelect?: Function;
+  onOutsideClick?: Function;
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -1655,7 +1656,8 @@ export interface ACHPaymentComponentProps {
 export interface CheckboxControllerProps extends IControlLabel {
   controllerName: string;
   isHelperText?: boolean;
-  autoFocus?: boolean
+  autoFocus?: boolean;
+  title?: string
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];

@@ -212,7 +212,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {(isSuper || isPracticeUser) && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
+                    {(isSuper || isPracticeUser) && facilityId ?
+                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> :
+                      <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
                     <TableCell scope="row">
@@ -226,7 +228,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         component='span' color={GREEN} border={`1px solid ${GREEN}`}>
                         {PRACTICE_FORM}
                       </Box>}
-                        {!practiceId && !facilityId && "--" }
+                      {!practiceId && !facilityId && "--"}
                     </TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

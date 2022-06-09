@@ -7,9 +7,12 @@ import ViewDataLoader from "../../../common/ViewDataLoader"
 //constants, interfaces, reducer imports
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
-import { CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY } from "../../../../constants"
+import {
+  CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE,
+  PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
+} from "../../../../constants"
 
-const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
+const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit}) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
 
   return (
@@ -29,7 +32,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                       onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: event.target.checked })}
                     />
                   }
-                  label="Privacy Notice"
+                  label={PRIVACY_NOTICE}
                 />
 
                 <FormControlLabel
@@ -41,7 +44,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                       onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: event.target.checked })}
                     />
                   }
-                  label="Release of Billing Information and Assignment of Benefits"
+                  label={RELEASE_OF_BILLING_INFO}
                 />
               </FormGroup>
             </FormControl>
@@ -60,7 +63,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                           onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: event.target.checked })}
                         />
                       }
-                      label="Granted"
+                      label={GRANTED_TEXT}
                     />
                   </Box>
                 </FormGroup>
@@ -79,7 +82,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
                           onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: event.target.checked })}
                         />
                       }
-                      label="Granted"
+                      label={GRANTED_TEXT}
                     />
                   </Box>
                 </FormGroup>

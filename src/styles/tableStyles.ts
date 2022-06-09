@@ -65,6 +65,7 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   selectorBox: {
+    maxWidth: 120,
 
     "& .MuiFormControl-fullWidth": {
       width: 120,
@@ -81,12 +82,12 @@ export const useTableStyles = makeStyles(() => ({
 
   status: {
     minWidth: 120,
-    fontWeight: 'bold',
-    fontSize: '0.9rem',
+    fontWeight: 500,
+    fontSize: '0.875rem',
     borderRadius: 8,
-    padding: '8px 15px',
+    padding: '0',
     display: 'inline-block',
-    textAlign: 'center',
+    textAlign: 'left',
   },
 
   iconsBackground: {

@@ -5,7 +5,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
@@ -25,17 +25,18 @@ import {
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine,
-  canUpdateAppointmentStatus
+  AppointmentStatusStateMachine, canUpdateAppointmentStatus, getStandardTimeDuration
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
   useGetAppointmentsLazyQuery, useUpdateAppointmentMutation, AppointmentStatus
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
+  ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, VIEW_ENCOUNTER
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
+   VIEW_ENCOUNTER,
+   MINUTES
 } from "../../constants";
 
 dotenv.config()
@@ -263,7 +264,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckedIn,
+          id, status: AppointmentStatus.CheckIn,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
@@ -287,15 +288,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
 
-        <Box className="table-overflow">
+        <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(TYPE)}
-                {!doctorId && renderTh(DOCTOR)}
-                {renderTh(PATIENT)}
-                {renderTh(DATE)}
                 {renderTh(TIME)}
+                {renderTh(PATIENT)}
+                {renderTh(TYPE)}
+                {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(STATUS)}
                 {renderTh(ACTION, "center")}
@@ -305,41 +305,44 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={10} numberOfColumns={7} />
                   </TableCell>
                 </TableRow>
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime
                   } = appointment || {};
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
-                  const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-                  const { text, textColor } = appointmentStatus(status || '')
+                  const { text, textColor, bgColor } = appointmentStatus(status || '')
 
                   return (
                     <TableRow key={id}>
-                      <TableCell scope="row">{type}</TableCell>
-                      {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
-                      <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">
+                          <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
+                            <Typography>{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                            <Box pr={0.1} />
+                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES}</Typography>
+                          </Box>
+                      </TableCell>
 
+                      <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">
                         <Box display='flex' flexDirection='column'>
                           {getDateWithDay(scheduleStartDateTime || '')}
 
-                          {status === AppointmentStatus.CheckedIn &&
+                          {status === AppointmentStatus.CheckIn &&
                             <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
                               {VIEW_ENCOUNTER}
                             </Link>}
                         </Box>
                       </TableCell>
 
-                      <TableCell scope="row">
-                        {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
-                      </TableCell>
                       <TableCell scope="row">{name}</TableCell>
+
                       <TableCell scope="row">
                         {id && <Box className={classes.selectorBox}>
                           {isEdit && appointmentId === id ?
@@ -350,12 +353,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 name="status"
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                                onOutsideClick={clearEdit}
                               />
                             </FormProvider>
-                            : <Box textAlign="center" onClick={() => id && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
-                              border={`1px solid ${textColor}`}
                             >
                               {text}
                             </Box>}

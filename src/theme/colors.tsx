@@ -1,3 +1,4 @@
+export const GRAY_SIMPLE = "gray";
 export const GRAY = "#f9f9f9";
 export const GRAY_ONE = "#ECF0F3"
 export const GRAY_THREE = "#464E5F"
@@ -21,6 +22,7 @@ export const WHITE_THREE = "#F3F6F9";
 export const WHITE_FOUR = "#E4E6EF";
 export const WHITE_SIX = "#F1FAFF";
 
+export const BLUE_SIMPLE = "blue";
 export const BLUE_THREE = "#00A3FF";
 export const BLUE_FOUR = "#1BC5BD"
 export const BLUE_FIVE = "#C9F7F5"
@@ -29,6 +31,11 @@ export const BLUE_SEVEN = "#3699FF";
 export const BLUE_NINE = "#3f51b5";
 export const BLUE_TEN = "#21E1D8";
 
+export const LIGHT_GREEN = "lightgreen";
+export const LIGHT_GREEN_ONE = "#56c356"
+export const DARK_GREEN = "darkgreen";
+
+export const ORANGE_SIMPLE = "orange";
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
 
@@ -74,6 +81,7 @@ export const WHITE = "#FFFFFF";
 export const RED = "#DD1010";
 export const RED_ONE = "#F64E60";
 
+export const PURPLE = "purple";
 export const PURPLE_ONE = "#7239EA";
 export const PURPLE_TWO = "#A075F8";
 
@@ -81,3 +89,20 @@ export const MILD = "#FFA800";
 export const ACUTE = "#DD1010";
 export const MODERATE = "#FF6B00";
 export const VERY_MILD = "#FFC700";
+
+
+// APPOINTMENT STATUS RGBA-COLORS
+
+export const GREEN_RGBA = `rgba(0,128,0,0.1)`;
+export const RED_THREE_RGBA = `rgba(244,67,54,0.1)`;
+export const RED_RGBA = `rgba(255,0,0,0.1)`;
+export const LIGHT_GREEN_RGBA = `rgba(144,238,144,0.1)`;
+export const DARK_GREEN_RGBA =  `rgba(0,100,0,0.1)`;
+export const BLUE_SEVEN_RGBA = `rgba(54,153,255,0.1)`;
+export const ORANGE_SIMPLE_RGBA = `rgba(255,162,0, 0.1)`;
+export const GRAY_SIMPLE_RGBA = `rgba(128,128,128,0.1)`;
+export const PURPLE_RGBA = `rgba(128,0,128,0.1)`;
+export const BLUE_RGBA = `rgba(0,0,255,0.1)`;
+
+
+

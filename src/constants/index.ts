@@ -79,6 +79,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
 export const FACILITY_FORM = 'Facility Form';
@@ -1295,8 +1296,6 @@ export const MAILING_ADDRESS_ROUTE = "mailing-address";
 export const EMPLOYMENT_ROUTE = "employment";
 export const DEMOGRAPHICS_ROUTE = "demographics";
 export const BILLING_ROUTE = "billing";
-export const NEXT_OF_KIN_ROUTE = "next-of-kin";
-export const GUARDIAN_ROUTE = "guardian";
 
 
 // HELPER TEXT MESSAGES
@@ -1716,8 +1715,8 @@ export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
     name: formatValue(AppointmentStatus.Cancelled),
   },
   {
-    id: AppointmentStatus.Completed,
-    name: formatValue(AppointmentStatus.Completed),
+    id: AppointmentStatus.Discharged,
+    name: formatValue(AppointmentStatus.Discharged),
   },
   {
     id: AppointmentStatus.Initiated,
@@ -3693,22 +3692,6 @@ export const RegisterPatientMenuNav = [
     title: EMERGENCY_CONTACT,
     linkTo: EMERGENCY_CONTACT_ROUTE,
   },
-  {
-    title: NEXT_OF_KIN,
-    linkTo: NEXT_OF_KIN_ROUTE,
-  },
-  {
-    title: GUARDIAN,
-    linkTo: GUARDIAN_ROUTE,
-  },
-  {
-    title: GUARANTOR,
-    linkTo: GUARANTOR_ROUTE,
-  },
-  {
-    title: EMPLOYMENT,
-    linkTo: EMPLOYMENT_ROUTE,
-  },  
 ];
 
 export const MAPPED_WEEK_DAYS = [
@@ -4397,12 +4380,14 @@ export enum FormBuilderApiSelector {
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities'
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent',
+  TERMS_CONDITIONS = 'termsConditions'
 }
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',
   NO_INSURANCE = 'no_insurance',
   CONTRACT = 'contract',
-  INTERNATIONAL_TRAVELER = 'international_traveler'
+  INTERNATIONAL_TRAVELER = 'international_traveler',
 }

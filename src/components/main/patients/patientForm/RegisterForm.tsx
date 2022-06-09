@@ -18,7 +18,7 @@ import { PatientCardsProps } from '../../../../interfacesTypes';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import {
   CONTACT_INFORMATION, CONTACT_INFORMATION_ROUTE, DEMOGRAPHICS, DEMOGRAPHICS_ROUTE, EMERGENCY_CONTACT, EMERGENCY_CONTACT_ROUTE,
-  EMPLOYMENT, EMPLOYMENT_ROUTE, GUARANTOR, GUARANTOR_ROUTE, GUARDIAN, GUARDIAN_ROUTE, IDENTIFICATION, IDENTIFICATION_ROUTE, NEXT_OF_KIN, NEXT_OF_KIN_ROUTE, PRIVACY, PRIVACY__ROUTE, PROVIDER_REGISTRATION_DATES,
+  EMPLOYMENT, GUARANTOR, IDENTIFICATION, IDENTIFICATION_ROUTE, PRIVACY, PRIVACY__ROUTE, PROVIDER_REGISTRATION_DATES,
   PROVIDER_REGISTRATION__ROUTE, RegisterPatientMenuNav
 } from '../../../../constants';
 
@@ -36,9 +36,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
   const guarrenterRef = createRef<HTMLDivElement>()
   const employmentRef = createRef<HTMLDivElement>()
   const demographicsRef = createRef<HTMLDivElement>()
-  const guardianRef = createRef<HTMLDivElement>()
-  const nextOfKinRef = createRef<HTMLDivElement>()
-
 
   const handleScroll = (moduleName: string) => {
     setActiveBlock(moduleName)
@@ -59,10 +56,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
         return employmentRef?.current?.scrollIntoView({ behavior: 'smooth' });
       case DEMOGRAPHICS:
         return demographicsRef?.current?.scrollIntoView({ behavior: 'smooth' });
-        case NEXT_OF_KIN:
-        return nextOfKinRef?.current?.scrollIntoView({ behavior: 'smooth' });
-        case GUARDIAN:
-        return guardianRef?.current?.scrollIntoView({ behavior: 'smooth' });
       default:
         break;
     }
@@ -101,60 +94,52 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
         <Box {...patientCardBoxProps}>
           <Grid spacing={3}>
             <Grid md={12} id={IDENTIFICATION_ROUTE} ref={identificationRef}>
-              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={DEMOGRAPHICS_ROUTE} ref={demographicsRef}>
-              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
+              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
-            <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)}>
-              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
+            <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)} >
+              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PROVIDER_REGISTRATION__ROUTE} ref={providerRegisterationRef}>
-              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit} />
+              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PRIVACY__ROUTE} ref={privacyRef}>
-              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
+              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={EMERGENCY_CONTACT_ROUTE} ref={emergencyContactRef}>
               <EmergencyContactCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
 
-            <Box pb={3} />
+              <Box pb={3} />
 
-
-            <Grid md={12} id={NEXT_OF_KIN_ROUTE} ref={nextOfKinRef}>
               <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
 
-            <Box pb={3} />
+              <Box pb={3} />
 
-            <Grid md={12} id={GUARDIAN_ROUTE} ref={guardianRef}>
               <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
 
-            <Box pb={3} />
+              <Box pb={3} />
 
-            <Grid md={12} id={GUARANTOR_ROUTE} ref={guarrenterRef}>
               <GuarantorCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
-            <Box pb={3} />
 
-            <Grid md={12} id={EMPLOYMENT_ROUTE} ref={employmentRef}>
+              <Box pb={3} />
+
               <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
           </Grid>

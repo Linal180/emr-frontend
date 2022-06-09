@@ -483,7 +483,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+       <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -495,12 +495,12 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             </Box>
           </Box>
 
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+          <Button type="submit" variant="contained" color={shouldShowBread?"primary":"secondary"} disabled={disableSubmit}>
             {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>}
+        </Box>
 
         <RegisterFormComponent
           isEdit={isEdit}

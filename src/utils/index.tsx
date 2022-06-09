@@ -1,24 +1,39 @@
 // packages block
-import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography, withStyles } from "@material-ui/core";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
-import { memo, ReactNode } from "react";
 import { pluck } from "underscore";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import {
+  Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
+  withStyles
+} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
-import { ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
-  UnitType, UserForms, WeightType
-} from "../generated/graphql";
 import history from "../history";
-import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
+  TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
+import {
+  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
+  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE
+} from "../theme";
+import {
+  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
+  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
+  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
+  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
+  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -642,6 +657,15 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
+export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {
+  if (!strtimestamp && !endtimestamp) return "";
+
+  var startTime = moment(new Date(parseInt(strtimestamp)));
+  var endTime = moment(new Date(parseInt(endtimestamp)));
+
+  return endTime.diff(startTime, 'minutes');
+};
+
 export const getDayFromTimestamps = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -795,70 +819,70 @@ export const appointmentStatus = (status: string) => {
     case AppointmentStatus.NoShow:
       return {
         text: formatValue(AppointmentStatus.NoShow),
-        bgColor: RED_THREE,
-        textColor: WHITE
+        bgColor: RED_THREE_RGBA,
+        textColor: RED_THREE,
       }
 
     case AppointmentStatus.Cancelled:
       return {
         text: formatValue(AppointmentStatus.Cancelled),
-        bgColor: RED,
+        bgColor: RED_RGBA,
         textColor: RED
       }
 
-    case AppointmentStatus.CheckedIn:
+    case AppointmentStatus.CheckIn:
       return {
-        text: formatValue(AppointmentStatus.CheckedIn),
-        bgColor: GREEN_ONE,
-        textColor: GREEN
+        text: formatValue(AppointmentStatus.CheckIn),
+        bgColor: LIGHT_GREEN_RGBA,
+        textColor: LIGHT_GREEN_ONE
       }
 
-    case AppointmentStatus.Completed:
+    case AppointmentStatus.Discharged:
       return {
-        text: formatValue(AppointmentStatus.Completed),
-        bgColor: GREEN,
-        textColor: GREEN_ONE
+        text: formatValue(AppointmentStatus.Discharged),
+        bgColor: DARK_GREEN_RGBA,
+        textColor: DARK_GREEN
       }
 
     case AppointmentStatus.InLobby:
       return {
         text: formatValue(AppointmentStatus.InLobby),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: BLUE_SEVEN_RGBA,
+        textColor: BLUE_SEVEN
       }
 
     case AppointmentStatus.InSession:
       return {
         text: formatValue(AppointmentStatus.InSession),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: ORANGE_SIMPLE_RGBA,
+        textColor: ORANGE_SIMPLE
       }
 
     case AppointmentStatus.Initiated:
       return {
         text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: GRAY_SIMPLE_RGBA,
+        textColor: GRAY_SIMPLE
       }
 
     case AppointmentStatus.Rescheduled:
       return {
         text: formatValue(AppointmentStatus.Rescheduled),
-        bgColor: BLUE,
-        textColor: BLUE
+        bgColor: PURPLE_RGBA,
+        textColor: PURPLE
       }
 
-    case AppointmentStatus.SelfCheckedIn:
+    case AppointmentStatus.SelfCheckIn:
       return {
-        text: formatValue(AppointmentStatus.SelfCheckedIn),
-        bgColor: GREEN,
+        text: formatValue(AppointmentStatus.SelfCheckIn),
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
 
     default:
       return {
         text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
   }
@@ -1031,6 +1055,9 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
           arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
         }
       }
+    }
+    else if (typeof values[property] === 'boolean') {
+      arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }
     else {
       arr.push({ FormsElementsId: property, value: values[property] || '', arrayOfStrings: [], arrayOfObjects: [] })
@@ -1250,7 +1277,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 
-export const generateString = (numberOfRounds = 2 ) => {
+export const generateString = (numberOfRounds = 2) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   const charactersLength = characters.length - 2;
@@ -1518,11 +1545,11 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
 
-    case formatValue(AppointmentStatus.CheckedIn):
-      return AppointmentStatus.CheckedIn;
+    case formatValue(AppointmentStatus.CheckIn):
+      return AppointmentStatus.CheckIn;
 
-    case formatValue(AppointmentStatus.Completed):
-      return AppointmentStatus.Completed;
+    case formatValue(AppointmentStatus.Discharged):
+      return AppointmentStatus.Discharged;
 
     case formatValue(AppointmentStatus.InLobby):
       return AppointmentStatus.InLobby;
@@ -1539,8 +1566,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Rescheduled):
       return AppointmentStatus.Rescheduled;
 
-    case formatValue(AppointmentStatus.SelfCheckedIn):
-      return AppointmentStatus.SelfCheckedIn;
+    case formatValue(AppointmentStatus.SelfCheckIn):
+      return AppointmentStatus.SelfCheckIn;
 
     default:
       return AppointmentStatus.Initiated;
@@ -1555,36 +1582,36 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
   switch (value) {
     case AppointmentStatus.Initiated:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.CheckedIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.CheckIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
     case AppointmentStatus.Rescheduled:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Initiated, AppointmentStatus.CheckedIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.Initiated, AppointmentStatus.CheckIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
-    case AppointmentStatus.CheckedIn:
+    case AppointmentStatus.CheckIn:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Completed], id
+        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Discharged], id
       )
 
     case AppointmentStatus.InLobby:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InSession, AppointmentStatus.Completed], id
+        [AppointmentStatus.InSession, AppointmentStatus.Discharged], id
       )
 
     case AppointmentStatus.InSession:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Completed], id
+        [AppointmentStatus.Discharged], id
       )
 
     case AppointmentStatus.NoShow:
     case AppointmentStatus.Cancelled:
-    case AppointmentStatus.Completed:
+    case AppointmentStatus.Discharged:
     default:
       return [EMPTY_OPTION]
   }
 };
 
 export const appointmentChargesDescription = (amount: string) =>
-<Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
+  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
