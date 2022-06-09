@@ -2,7 +2,6 @@
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
 // components block
@@ -53,12 +52,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
-  const toggleSideDrawer = () => {
-    setDrawerOpened(!drawerOpened)
-    // if(!drawerOpened && attachmentId){
-    //   dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
-    //   dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
-    // }
+  const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
+  
+  const handleUpload = () => {
+    dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
+    dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
+    toggleSideDrawer()
   }
 
   const [getAttachment] = useGetAttachmentLazyQuery({
@@ -203,7 +202,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const handleEdit = (attachmentId: string, attachment: AttachmentPayload['attachment']) => {
     if (attachmentId) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
       dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
       attachment && dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: attachment })
       toggleSideDrawer()
@@ -222,7 +220,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         }
       }
     })
-    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
     toggleSideDrawer()
   }
 
@@ -293,7 +290,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           />
         </SideDrawer>
 
-        {!isSignedTab && <Button onClick={toggleSideDrawer} variant="contained"
+        {!isSignedTab && <Button onClick={handleUpload} variant="contained"
           startIcon={<UploadIcon />} color="primary"
         >
           {UPLOAD}
@@ -330,15 +327,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                 ) : (
                   attachmentsData?.map((attachment) => {
                     const {
-                      id, createdAt, url, attachmentName, attachmentMetadata
+                      id, createdAt, attachmentName, attachmentMetadata
                     } = attachment || {};
-                    const { signedAt, signedBy } = attachmentMetadata || {}
-                    // const { type: documentTypeName } = documentType || {}
+                    const { signedAt, signedBy, documentType } = attachmentMetadata || {}
+                    const { type } = documentType || {}
 
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
-                    const fileExtension: DefaultExtensionType =
-                      url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
 
                     return id && (
                       <TableRow>
@@ -349,7 +344,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                             </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell scope="row">{fileExtension}</TableCell>
+                        <TableCell scope="row">{type}</TableCell>
                         {/* <TableCell scope="row">{addedBy}</TableCell> */}
                         {documentTab &&
                           <>
