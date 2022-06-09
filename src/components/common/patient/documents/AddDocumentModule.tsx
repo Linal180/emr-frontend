@@ -66,113 +66,115 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   }, [attachmentId, setPreview])
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box
-          display="flex" justifyContent="space-between" alignItems="center"
-          borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
-        >
-          <Typography variant='h3'>{DOCUMENT_DETAILS}</Typography>
+    <Box maxWidth={500}>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            display="flex" justifyContent="space-between" alignItems="center"
+            borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
+          >
+            <Typography variant='h3'>{DOCUMENT_DETAILS}</Typography>
 
-          <Box display="flex" alignItems="center">
-            <Button onClick={handleClose} variant="text" color="inherit" className="danger">
-              {CANCEL}
-            </Button>
+            <Box display="flex" alignItems="center">
+              <Button onClick={handleClose} variant="text" color="inherit" className="danger">
+                {CANCEL}
+              </Button>
 
-            <Box p={1} />
+              <Box p={1} />
 
-            <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+            </Box>
           </Box>
-        </Box>
 
-        <Box p={3} mt={2}>
-          <Grid container spacing={3}>
-            <Grid item md={12} sm={12} xs={12}>
-              <InputController
-                disabled
-                fieldType="text"
-                controllerName="patientName"
-                controllerLabel={PATIENT_NAME}
-              />
+          <Box p={3} mt={2}>
+            <Grid container spacing={3}>
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  disabled
+                  fieldType="text"
+                  controllerName="patientName"
+                  controllerLabel={PATIENT_NAME}
+                />
+              </Grid>
+
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  isRequired
+                  fieldType="text"
+                  controllerName="attachmentName"
+                  controllerLabel={DOCUMENT_NAME}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                {attachmentId ? documentTypeId.id && <ItemSelector
+                  isRequired
+                  isEdit={!!attachmentId}
+                  label={DOCUMENT_TYPE}
+                  name="documentType"
+                  modalName={ITEM_MODULE.documentTypes}
+                  value={documentTypeId}
+                /> : <ItemSelector
+                  isRequired
+                  isEdit={!!attachmentId}
+                  label={DOCUMENT_TYPE}
+                  name="documentType"
+                  modalName={ITEM_MODULE.documentTypes}
+                  value={documentTypeId}
+                />}
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <DatePicker label={DATE} name='date' isRequired />
+              </Grid>
+
+              {/* <Grid item md={7} sm={12} xs={12}>
+                <DoctorSelector
+                  isRequired
+                  addEmpty
+                  facilityId={facilityId}
+                  label={PROVIDER}
+                  name="provider"
+                />
+              </Grid>
+
+              <Grid item md={5} sm={12} xs={12}>
+                <Box mt={2.5} display="flex" justifyContent="flex-end">
+                  <Button variant="contained" color="secondary">{ASSIGN_TO_ME}</Button>
+                </Box>
+              </Grid> */}
+
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  multiline
+                  fieldType="text"
+                  controllerName="comments"
+                  controllerLabel={COMMENTS}
+                />
+              </Grid>
+
+              {!attachmentId && <Grid item md={12} sm={12} xs={12}>
+                <DropzoneImage
+                  filesLimit={1}
+                  isEdit={false}
+                  ref={dropZoneRef}
+                  attachmentId={''}
+                  itemId={patientId}
+                  attachmentName={attachmentName || ''}
+                  providerName={providerName || ''}
+                  imageModuleType={AttachmentType.Patient}
+                  title={ATTACHMENT_TITLES.ProviderUploads}
+                  attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta, comments, documentDate: date  }}
+                  reload={() => fetchDocuments()}
+                  handleClose={handleClose}
+                  setAttachments={() => { }}
+                />
+              </Grid>}
             </Grid>
-
-            <Grid item md={12} sm={12} xs={12}>
-              <InputController
-                isRequired
-                fieldType="text"
-                controllerName="attachmentName"
-                controllerLabel={DOCUMENT_NAME}
-              />
-            </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              {attachmentId ? documentTypeId.id && <ItemSelector
-                isRequired
-                isEdit={!!attachmentId}
-                label={DOCUMENT_TYPE}
-                name="documentType"
-                modalName={ITEM_MODULE.documentTypes}
-                value={documentTypeId}
-              /> : <ItemSelector
-                isRequired
-                isEdit={!!attachmentId}
-                label={DOCUMENT_TYPE}
-                name="documentType"
-                modalName={ITEM_MODULE.documentTypes}
-                value={documentTypeId}
-              />}
-            </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              <DatePicker label={DATE} name='date' isRequired />
-            </Grid>
-
-            {/* <Grid item md={7} sm={12} xs={12}>
-              <DoctorSelector
-                isRequired
-                addEmpty
-                facilityId={facilityId}
-                label={PROVIDER}
-                name="provider"
-              />
-            </Grid>
-
-            <Grid item md={5} sm={12} xs={12}>
-              <Box mt={2.5} display="flex" justifyContent="flex-end">
-                <Button variant="contained" color="secondary">{ASSIGN_TO_ME}</Button>
-              </Box>
-            </Grid> */}
-
-            <Grid item md={12} sm={12} xs={12}>
-              <InputController
-                multiline
-                fieldType="text"
-                controllerName="comments"
-                controllerLabel={COMMENTS}
-              />
-            </Grid>
-
-            {!attachmentId && <Grid item md={12} sm={12} xs={12}>
-              <DropzoneImage
-                filesLimit={1}
-                isEdit={false}
-                ref={dropZoneRef}
-                attachmentId={''}
-                itemId={patientId}
-                attachmentName={attachmentName || ''}
-                providerName={providerName || ''}
-                imageModuleType={AttachmentType.Patient}
-                title={ATTACHMENT_TITLES.ProviderUploads}
-                attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta, comments, documentDate: date  }}
-                reload={() => fetchDocuments()}
-                handleClose={handleClose}
-                setAttachments={() => { }}
-              />
-            </Grid>}
-          </Grid>
-        </Box>
-      </form>
-    </FormProvider>
+          </Box>
+        </form>
+      </FormProvider>
+    </Box>
   );
 };
 

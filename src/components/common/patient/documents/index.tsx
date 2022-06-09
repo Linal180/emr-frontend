@@ -278,36 +278,16 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           drawerOpened={drawerOpened}
           toggleSideDrawer={toggleSideDrawer}
         >
-          <Box maxWidth={500}>
-            <AddDocumentModal
-              patientId={id}
-              attachment={attachmentData}
-              attachmentId={attachmentId}
-              facilityId={facilityId || ''}
-              patientName={patientName}
-              toggleSideDrawer={toggleSideDrawer}
-              fetchDocuments={() => reloadAttachments()}
-              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
-            />
-          </Box>
-        </SideDrawer>
-
-        <SideDrawer
-          drawerOpened={drawerOpened}
-          toggleSideDrawer={toggleSideDrawer}
-        >
-          <Box maxWidth={500}>
-            <AddDocumentModal
-              patientId={id}
-              attachment={attachmentData}
-              attachmentId={attachmentId}
-              facilityId={facilityId || ''}
-              patientName={patientName}
-              toggleSideDrawer={toggleSideDrawer}
-              fetchDocuments={() => reloadAttachments()}
-              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
-            />
-          </Box>
+          <AddDocumentModal
+            patientId={id}
+            attachment={attachmentData}
+            attachmentId={attachmentId}
+            facilityId={facilityId || ''}
+            patientName={patientName}
+            toggleSideDrawer={toggleSideDrawer}
+            fetchDocuments={() => reloadAttachments()}
+            submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
+          />
         </SideDrawer>
 
         {!isSignedTab && <Button onClick={toggleSideDrawer} variant="contained"
