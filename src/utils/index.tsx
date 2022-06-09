@@ -1585,15 +1585,15 @@ export const getAppointmentStatus = (status: string) => {
 }
 
 export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
-  if(AppointmentStatus.Discharged){
+  if(status===AppointmentStatus.Discharged){
     return 'Completed'
   }
 
-  if(AppointmentStatus.Initiated){
+  if(status === AppointmentStatus.Initiated){
     return 'Pending'
   }
 
-  if(AppointmentStatus.Cancelled || AppointmentStatus.NoShow || AppointmentStatus.Rescheduled){
+  if(status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled){
     return ''
   }
   
