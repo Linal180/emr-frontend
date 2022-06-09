@@ -6,10 +6,9 @@ import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
-import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
@@ -324,14 +323,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Card>
         </Box>
       </Collapse>
-
-      <Box my={2}>
-        {!isChart && !isCheckIn && <Box pr={1}>
-          <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-            {EDIT_PATIENT}
-          </Button>
-        </Box>}
-      </Box>
     </>
   )
 };
