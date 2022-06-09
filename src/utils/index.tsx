@@ -8,16 +8,27 @@ import { memo, ReactNode } from "react";
 import { pluck } from "underscore";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
-import { ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
+import { 
+  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, 
+  ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, 
+  SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE 
+} from "../constants";
 import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, 
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, 
+  LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, 
+  RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
   UnitType, UserForms, WeightType
 } from "../generated/graphql";
 import history from "../history";
-import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
+import { 
+  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN, ORANGE, PURPLE, GREEN_RGBA, 
+  RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA, GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, 
+  LIGHT_GREEN_ONE 
+} from "../theme";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption, TableAlignType, TableCodesProps, 
+  UserFormType
 } from "../interfacesTypes";
 
 export const handleLogout = () => {
@@ -642,6 +653,15 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
+export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {  
+  if (!strtimestamp && !endtimestamp) return "";
+ 
+  var startTime = moment(new Date(parseInt(strtimestamp)));
+  var endTime = moment(new Date(parseInt(endtimestamp)));
+
+  return endTime.diff(startTime, 'minutes');
+};
+
 export const getDayFromTimestamps = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -795,70 +815,70 @@ export const appointmentStatus = (status: string) => {
     case AppointmentStatus.NoShow:
       return {
         text: formatValue(AppointmentStatus.NoShow),
-        bgColor: RED_THREE,
-        textColor: RED,
+        bgColor: RED_THREE_RGBA,
+        textColor: RED_THREE,
       }
 
     case AppointmentStatus.Cancelled:
       return {
         text: formatValue(AppointmentStatus.Cancelled),
-        bgColor: RED,
+        bgColor: RED_RGBA,
         textColor: RED
       }
 
     case AppointmentStatus.CheckedIn:
       return {
         text: formatValue(AppointmentStatus.CheckedIn),
-        bgColor: GREEN_ONE,
-        textColor: GREEN
+        bgColor: LIGHT_GREEN_RGBA,
+        textColor: LIGHT_GREEN_ONE
       }
 
     case AppointmentStatus.Completed:
       return {
         text: formatValue(AppointmentStatus.Completed),
-        bgColor: GREEN,
-        textColor: GREEN_ONE
+        bgColor: DARK_GREEN_RGBA,
+        textColor: DARK_GREEN
       }
 
     case AppointmentStatus.InLobby:
       return {
         text: formatValue(AppointmentStatus.InLobby),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: BLUE_SEVEN_RGBA,
+        textColor: BLUE_SEVEN
       }
 
     case AppointmentStatus.InSession:
       return {
         text: formatValue(AppointmentStatus.InSession),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: ORANGE_SIMPLE_RGBA,
+        textColor: ORANGE
       }
 
     case AppointmentStatus.Initiated:
       return {
         text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: GRAY_SIMPLE_RGBA,
+        textColor: GRAY_SIMPLE
       }
 
     case AppointmentStatus.Rescheduled:
       return {
         text: formatValue(AppointmentStatus.Rescheduled),
-        bgColor: BLUE,
-        textColor: BLUE
+        bgColor: PURPLE_RGBA,
+        textColor: PURPLE
       }
 
     case AppointmentStatus.SelfCheckedIn:
       return {
         text: formatValue(AppointmentStatus.SelfCheckedIn),
-        bgColor: GREEN,
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
 
     default:
       return {
         text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
   }
@@ -1032,7 +1052,7 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
-    else if(typeof values[property] === 'boolean'){
+    else if (typeof values[property] === 'boolean') {
       arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }
     else {
@@ -1253,7 +1273,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 
-export const generateString = (numberOfRounds = 2 ) => {
+export const generateString = (numberOfRounds = 2) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   const charactersLength = characters.length - 2;
@@ -1590,4 +1610,4 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
 };
 
 export const appointmentChargesDescription = (amount: string) =>
-<Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
+  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
