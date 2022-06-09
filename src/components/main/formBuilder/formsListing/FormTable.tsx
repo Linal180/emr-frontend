@@ -219,7 +219,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
                     <TableCell scope="row">
                       {facilityId && <Box className={classes.status}
-                        component='span' color={MODERATE} border={`1px solid ${MODERATE}`}>
+                        component='span' color={MODERATE}>
                         {FACILITY_FORM}
                         {practiceId && !facilityId && PRACTICE_FORM}
                       </Box>}
