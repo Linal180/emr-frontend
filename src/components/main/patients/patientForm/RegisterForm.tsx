@@ -47,7 +47,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                   )
         }
       </Box>
-    </Box >
+    </Box>
   )
 }
 
