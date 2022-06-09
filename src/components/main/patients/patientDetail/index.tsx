@@ -21,6 +21,7 @@ import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataComponent from '../../../common/NoDataComponent';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
+import history from "../../../../history";
 import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
@@ -43,7 +44,7 @@ import {
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE, VISITS,
+  HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
 import SideDrawer from '../../../common/SideDrawer';
 
@@ -198,7 +199,13 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabList>
           </Box>
 
-          <Box pr={2}>
+          <Box pr={2} display="flex" alignItems="center">
+            <Box px={2}>
+              <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                {EDIT_PATIENT}
+              </Button>
+            </Box>
+
             <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
               <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
             </Link>

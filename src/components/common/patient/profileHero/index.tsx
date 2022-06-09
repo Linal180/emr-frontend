@@ -324,14 +324,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Card>
         </Box>
       </Collapse>
-
-      <Box my={4}>
-        {!isChart && !isCheckIn && <Box pr={1}>
-          <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-            {EDIT_PATIENT}
-          </Button>
-        </Box>}
-      </Box>
     </>
   )
 };
