@@ -62,7 +62,7 @@ const CheckInComponent = (): JSX.Element => {
     id: appointmentId ?? ''
   }
 
-  const shouldDisableEdit = status === AppointmentStatus.Completed
+  const shouldDisableEdit = status === AppointmentStatus.Discharged
 
   useEffect(() => {
     setActiveStep(Number(checkInActiveStep) ?? 0)
@@ -143,7 +143,7 @@ const CheckInComponent = (): JSX.Element => {
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckedIn,
+          id, status: AppointmentStatus.CheckIn,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }

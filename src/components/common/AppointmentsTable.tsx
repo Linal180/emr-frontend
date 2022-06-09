@@ -25,9 +25,7 @@ import {
 import {
   getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
   isFacilityAdmin, isPracticeAdmin, getAppointmentStatus, setRecord, convertDateFromUnix,
-  AppointmentStatusStateMachine,
-  canUpdateAppointmentStatus,
-  getStandardTimeDuration
+  AppointmentStatusStateMachine, canUpdateAppointmentStatus, getStandardTimeDuration
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
@@ -36,7 +34,9 @@ import {
 import {
   ACTION, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, VIEW_ENCOUNTER
+  AppointmentSearchingTooltipData, CHECK_IN_ROUTE, EMPTY_OPTION, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
+  VIEW_ENCOUNTER,
+  MINUTES
 } from "../../constants";
 
 dotenv.config()
@@ -264,7 +264,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckedIn,
+          id, status: AppointmentStatus.CheckIn,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
@@ -283,7 +283,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
+      <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
         <Box py={2} mb={2} maxWidth={450}>
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
@@ -293,8 +293,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             <TableHead>
               <TableRow>
                 {renderTh(TIME)}
-                {renderTh(TYPE)}
                 {renderTh(PATIENT)}
+                {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(STATUS)}
@@ -305,7 +305,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={10} numberOfColumns={7} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -321,24 +321,24 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">
-                        <Box display="flex"
-                          flexDirection="column" alignContent="end">
-                          <Box borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}>
-                            <Typography>{getStandardTime(scheduleStartDateTime || '')} </Typography>
-                            <Typography>{getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} mins</Typography>
-                          </Box>
+                        <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
+                          className="custom-cell"
+                        >
+                          <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                          <Box px={0.5} />
+                          <Typography variant="body2">
+                            ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+                          </Typography>
                         </Box>
                       </TableCell>
 
-                      <TableCell scope="row">{type}</TableCell>
-
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
-
+                      <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">
                         <Box display='flex' flexDirection='column'>
                           {getDateWithDay(scheduleStartDateTime || '')}
 
-                          {status === AppointmentStatus.CheckedIn &&
+                          {status === AppointmentStatus.CheckIn &&
                             <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
                               {VIEW_ENCOUNTER}
                             </Link>}
@@ -357,6 +357,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 name="status"
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                                onOutsideClick={clearEdit}
                               />
                             </FormProvider>
                             : <Box p={0} onClick={() => id && handleStatusUpdate(id, text)}

@@ -368,8 +368,9 @@ export interface SelectorProps {
   value?: SelectorOption
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
-  onBlur?: Function
-  onSelect?: Function
+  onBlur?: Function;
+  onSelect?: Function;
+  onOutsideClick?: Function;
 }
 
 export interface PatientSelectorProps extends SelectorProps {

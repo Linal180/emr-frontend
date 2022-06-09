@@ -1715,8 +1715,8 @@ export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
     name: formatValue(AppointmentStatus.Cancelled),
   },
   {
-    id: AppointmentStatus.Completed,
-    name: formatValue(AppointmentStatus.Completed),
+    id: AppointmentStatus.Discharged,
+    name: formatValue(AppointmentStatus.Discharged),
   },
   {
     id: AppointmentStatus.Initiated,

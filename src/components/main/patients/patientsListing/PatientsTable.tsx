@@ -95,7 +95,10 @@ const PatientsTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery, dob, selectedProviderId, dos, selectedLocationId])
+  }, [
+    page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery,
+    dob, selectedProviderId, dos, selectedLocationId
+  ])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
