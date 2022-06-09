@@ -10,13 +10,14 @@ import Selector from '../../../common/Selector';
 import TimePicker from "../../../common/TimePicker";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from "../../../common/ViewDataLoader";
+import ServiceSelector from "../../../common/Selector/ServiceSelector";
 // interfaces/types block, theme, svgs and constants
+import { AuthContext } from '../../../../context';
 import { ActionType } from "../../../../reducers/doctorReducer";
-import { AuthContext, FacilityContext } from '../../../../context';
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  checkPermission, getDayFromTimestamps, getTimeString, renderServices, setRecord, setTimeDay
+  checkPermission, getDayFromTimestamps, getTimeString, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -33,7 +34,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 }): JSX.Element => {
   const { id: doctorId } = useParams<ParamsType>();
   const { userPermissions } = useContext(AuthContext)
-  const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
@@ -125,7 +125,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   });
 
   useEffect(() => {
-    fetchAllServicesList(doctorFacilityId)
     reset()
 
     if (isEdit && id) {
@@ -133,7 +132,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
         variables: { getSchedule: { id } }
       })
     }
-  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit, reset])
+  }, [doctorFacilityId, getSchedule, id, isEdit, reset])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}
@@ -158,8 +157,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           }
         })
       }
-    } else
-      Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
+    } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
@@ -203,12 +201,12 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           </Grid>
                         </Grid>
 
-                        <Selector
+                        <ServiceSelector
+                          addEmpty
                           isRequired
-                          value={EMPTY_OPTION}
-                          label={APPOINTMENT_TYPE}
                           name="serviceId"
-                          options={renderServices(serviceList)}
+                          label={APPOINTMENT_TYPE}
+                          facilityId={doctorFacilityId}
                         />
                       </>
                     )}
