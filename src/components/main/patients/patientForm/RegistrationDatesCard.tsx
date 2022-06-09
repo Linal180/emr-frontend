@@ -16,7 +16,7 @@ import {
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
 
-const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit, saveBtnId, saveBtnRef }) => {
+const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit }) => {
   const { facilityName, doctorName } = state || {}
   const methods = useFormContext<PatientInputProps>()
   const { watch } = methods;
@@ -25,7 +25,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdi
   } = watch();
 
   return (
-    <CardComponent cardTitle={REGISTRATION_DATES} saveBtn saveBtnId={saveBtnId} saveBtnRef={saveBtnRef}>
+    <CardComponent cardTitle={REGISTRATION_DATES}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>

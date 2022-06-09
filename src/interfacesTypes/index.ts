@@ -234,10 +234,6 @@ export interface CardComponentType extends Children {
   disableEditIcon?: boolean;
   onEditClick?: () => void;
   isFullHeight?: boolean;
-  saveBtn?: boolean;
-  saveBtnRef?:RefObject<HTMLDivElement>
-  saveBtnId?: string;
-  activeBar?: Function
 }
 
 export interface ChartingCardComponentType {
@@ -1127,9 +1123,6 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
-  saveBtnRef?:RefObject<HTMLDivElement>
-  saveBtnId?: string
-  activeBar?: Function
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {

@@ -20,7 +20,7 @@ import CardComponent from "../../../common/CardComponent"
 import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, saveBtnId, saveBtnRef }) => {
+const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
   const { control, setValue } = useFormContext()
   const classes = usePublicAppointmentStyles();
   const { isChecked } = state || {}
@@ -32,7 +32,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
   };
 
   return (
-    <CardComponent cardTitle={DEMOGRAPHICS} saveBtn saveBtnId={saveBtnId} saveBtnRef={saveBtnRef}>
+    <CardComponent cardTitle={DEMOGRAPHICS}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>

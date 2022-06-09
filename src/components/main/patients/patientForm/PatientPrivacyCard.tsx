@@ -12,11 +12,11 @@ import {
   PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
 } from "../../../../constants"
 
-const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, saveBtnId, saveBtnRef }) => {
+const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit}) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
 
   return (
-    <CardComponent cardTitle={PRIVACY} saveBtn saveBtnId={saveBtnId} saveBtnRef={saveBtnRef}>
+    <CardComponent cardTitle={PRIVACY}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid item md={12} sm={12} xs={12}>

@@ -22,7 +22,7 @@ import {
   PROVIDER_REGISTRATION__ROUTE, RegisterPatientMenuNav
 } from '../../../../constants';
 
-const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, activeBar }) => {
+const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispatch, isEdit, state, shouldDisableEdit }) => {
   const classes = useFacilityStyles()
   const [activeBlock, setActiveBlock] = useState<string>(RegisterPatientMenuNav[0].title)
 
@@ -94,31 +94,31 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
         <Box {...patientCardBoxProps}>
           <Grid spacing={3}>
             <Grid md={12} id={IDENTIFICATION_ROUTE} ref={identificationRef}>
-              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} saveBtnRef={demographicsRef} saveBtnId={DEMOGRAPHICS_ROUTE} activeBar={() => setActiveBlock(DEMOGRAPHICS)} />
+              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={DEMOGRAPHICS_ROUTE} ref={demographicsRef}>
-              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} saveBtnRef={contactRef} saveBtnId={CONTACT_INFORMATION_ROUTE} />
+              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)} >
-              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} saveBtnRef={providerRegisterationRef} saveBtnId={PROVIDER_REGISTRATION__ROUTE} />
+              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PROVIDER_REGISTRATION__ROUTE} ref={providerRegisterationRef}>
-              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit} saveBtnRef={privacyRef} saveBtnId={PRIVACY__ROUTE} />
+              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PRIVACY__ROUTE} ref={privacyRef}>
-              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} saveBtnRef={emergencyContactRef} saveBtnId={EMERGENCY_CONTACT_ROUTE} />
+              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
             </Grid>
 
             <Box pb={3} />
