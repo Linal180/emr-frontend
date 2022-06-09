@@ -796,7 +796,7 @@ export const appointmentStatus = (status: string) => {
       return {
         text: formatValue(AppointmentStatus.NoShow),
         bgColor: RED_THREE,
-        textColor: WHITE
+        textColor: RED,
       }
 
     case AppointmentStatus.Cancelled:
