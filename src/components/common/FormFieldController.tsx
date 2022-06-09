@@ -77,7 +77,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
           render={({ field, fieldState }) => {
             return (
-              <FormControl fullWidth margin="normal" >
+              <FormControl fullWidth margin="normal">
                 <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
                   {required ? `${label} *` : label}
                 </InputLabel>

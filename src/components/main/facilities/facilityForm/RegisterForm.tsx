@@ -52,7 +52,7 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({ getFacilityLoading, dis
               <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
                 <Timeline>
                   <TimelineItem>
-                    <TimelineSeparator >
+                    <TimelineSeparator>
                       <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
 
                       {(index + 1) !== FacilityMenuNav.length && <TimelineConnector />}
@@ -99,7 +99,7 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({ getFacilityLoading, dis
           </Grid>
         </Box>
       </Box>
-    </Box >
+    </Box>
   )
 }
 

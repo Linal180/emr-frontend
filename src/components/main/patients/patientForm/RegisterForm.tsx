@@ -70,7 +70,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
               <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
                 <Timeline>
                   <TimelineItem>
-                    <TimelineSeparator >
+                    <TimelineSeparator>
                       <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
 
                       {(index + 1) !== RegisterPatientMenuNav.length && <TimelineConnector />}
