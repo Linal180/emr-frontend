@@ -493,7 +493,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         {JSON.stringify(errors)}
         {shouldShowBread &&
           <Box display="flex">
-            <BackButton to={`${PATIENTS_ROUTE}`} />
+                <BackButton to={`${PATIENTS_ROUTE}`} />
 
             <Box ml={2}>
               <PageHeader

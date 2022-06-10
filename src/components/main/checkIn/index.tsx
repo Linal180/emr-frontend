@@ -302,12 +302,18 @@ const CheckInComponent = (): JSX.Element => {
         }
       />
 
+      <Box p={2} />
+
       <Card>
         <Box px={3} pt={1} pb={1}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>{label}</StepLabel>
+                <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                  <Box className='pointer-cursor'>
+                    {label}
+                  </Box>
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
