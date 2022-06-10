@@ -8,7 +8,7 @@ import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
@@ -25,7 +25,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart, isCheckIn }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -293,7 +293,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
                 <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  <Typography variant="body2">... {MORE_INFO}</Typography>
+                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                    : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
 
                 {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>

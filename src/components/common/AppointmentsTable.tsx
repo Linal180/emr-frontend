@@ -27,7 +27,7 @@ import {
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
-  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STATUS, TIME, TYPE, VIEW_ENCOUNTER
+  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -202,10 +202,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
       appointments.splice(index, 1, updatedAppointment)
 
-      dispatch({
-        type: ActionType.SET_APPOINTMENTS,
-        appointments
-      })
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments })
     }
   }
 
@@ -248,19 +245,23 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
     try {
-      const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.CheckIn
+      if (getAppointmentStatus(name || '') === AppointmentStatus.Rescheduled) {
+        history.push(`${APPOINTMENTS_ROUTE}/${id}`)
+      } else {
+        const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.CheckIn
 
-      if (id && name && name !== '--') {
-        await updateAppointment({
-          variables: {
-            updateAppointmentInput: {
-              id,
-              status: getAppointmentStatus(name) as AppointmentStatus,
-              ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
+        if (id && name && name !== '--') {
+          await updateAppointment({
+            variables: {
+              updateAppointmentInput: {
+                id,
+                status: getAppointmentStatus(name) as AppointmentStatus,
+                ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
+              }
             }
-          }
-        })
-      } else clearEdit()
+          })
+        } else clearEdit()
+      }
     } catch (error) { }
   }
 
@@ -302,6 +303,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(STATUS)}
+                {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
@@ -309,7 +311,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={7} />
+                    <TableLoader numberOfRows={10} numberOfColumns={8} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -371,8 +373,19 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               flexDirection="column"
                             >
                               {text}
-                              <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')}</Box>
                             </Box>}
+                        </Box>}
+                      </TableCell>
+                      <TableCell scope="row">
+                        {id && <Box className={classes.selectorBox}>
+                          <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
+                            className={classes.status}
+                            component='span' color={textColor}
+                            display="flex"
+                            flexDirection="column"
+                          >
+                            <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')}</Box>
+                          </Box>
                         </Box>}
                       </TableCell>
                       <TableCell scope="row">
