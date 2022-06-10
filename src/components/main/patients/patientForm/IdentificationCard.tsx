@@ -7,6 +7,7 @@ import {
   PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, SSN, SUFFIX
 } from "../../../../constants"
 import InputController from "../../../../controller"
+import SnnController from "../../../../controller/SnnController"
 // constants, interfaces block
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import CardComponent from "../../../common/CardComponent"
@@ -15,7 +16,7 @@ import DatePicker from "../../../common/DatePicker"
 import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit}) =>
+const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, isEdit }) =>
   <CardComponent cardTitle={IDENTIFICATION}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
@@ -112,13 +113,23 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              isRequired
-              fieldType="text"
-              controllerName="ssn"
-              controllerLabel={SSN}
-            />
+            {isEdit ?
+              <SnnController
+                isRequired
+                fieldType="text"
+                controllerName="ssn"
+                controllerLabel={SSN}
+                disabled={shouldDisableEdit}
+              />
+              :
+              <InputController
+                isRequired
+                fieldType="text"
+                controllerName="ssn"
+                controllerLabel={SSN}
+                disabled={shouldDisableEdit}
+              />
+            }
           </Grid>
         </Grid>
 

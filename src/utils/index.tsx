@@ -1654,3 +1654,9 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
 
 export const appointmentChargesDescription = (amount: string) =>
   <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
+
+export const getFilteredSSN = (value: string) => {
+  const [,, last4] = value.split('-')
+
+  return `**-***-${last4}`
+}
