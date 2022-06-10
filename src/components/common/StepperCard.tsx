@@ -5,8 +5,9 @@ import CustomStepIcon from './CustomStepIcon';
 // constants, interfaces and styles block
 import { StepperComponentProps } from "../../interfacesTypes";
 import { CustomConnector, useExternalPatientStyles } from "../../styles/publicAppointmentStyles/externalPatientStyles";
+import { ActionType } from '../../reducers/patientReducer';
 
-const StepperCard = ({ activeStep, stepperData }: StepperComponentProps) => {
+const StepperCard = ({ activeStep, stepperData, dispatch }: StepperComponentProps) => {
   const classes = useExternalPatientStyles();
   const matches = useMediaQuery('(min-width:960px)');
 
@@ -22,7 +23,9 @@ const StepperCard = ({ activeStep, stepperData }: StepperComponentProps) => {
       {stepperData?.map(({ title }, index) => {
         return (
           <Step key={`${index}-${title}`}>
-            <StepLabel StepIconComponent={CustomStepIcon}>
+            <StepLabel className='pointer-cursor' StepIconComponent={CustomStepIcon} onClick={() => dispatch && dispatch({
+              type: ActionType.SET_ACTIVE_STEP, activeStep: index
+            })}>
               <Typography variant="h4" component="h5">
                 {title}
               </Typography>

@@ -2427,6 +2427,7 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2507,6 +2508,14 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   {
     id: Genderidentity.NotExclusive,
     name: formatValue(Genderidentity.NotExclusive),
+  },
+  {
+    id: Genderidentity.TransgenderFemale,
+    name: formatValue(Genderidentity.TransgenderFemale),
+  },
+  {
+    id: Genderidentity.TransgenderMale,
+    name: formatValue(Genderidentity.TransgenderMale),
   },
 ];
 

@@ -12,11 +12,11 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector"
 import { renderItem } from "../../../../utils"
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
 import {
-  DECREASED_DATE, DOCTOR, EXPIRATION_DATE, FACILITY, ISSUE_DATE, REGISTRATION_DATE,
+  DECREASED_DATE, DOCTOR, FACILITY, REGISTRATION_DATE,
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
 
-const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit }) => {
+const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit, dispatch, disableSubmit }) => {
   const { facilityName, doctorName } = state || {}
   const methods = useFormContext<PatientInputProps>()
   const { watch } = methods;
@@ -25,7 +25,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdi
   } = watch();
 
   return (
-    <CardComponent cardTitle={REGISTRATION_DATES}>
+    <CardComponent cardTitle={REGISTRATION_DATES} state={state}  saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
@@ -59,16 +59,6 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdi
 
             <Grid item md={6} sm={12} xs={12}>
               <DatePicker name="deceasedDate" label={DECREASED_DATE} disabled={shouldDisableEdit} />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
-              <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} disabled={shouldDisableEdit} />
-            </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>
         </>

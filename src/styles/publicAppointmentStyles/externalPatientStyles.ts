@@ -83,12 +83,6 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   stepperContainer: {
-    height: "calc(100vh - 130px)",
-
-    "@media (max-width:960px)": {
-      height: "auto",
-    },
-
     "& .MuiStepper-root": {
       marginTop: 40,
       padding: 30,

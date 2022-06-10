@@ -241,7 +241,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const onSubmit = async ({ id, name }: SelectorOption) => {
     const isCheckedInStatus = getAppointmentStatus(name || '')===AppointmentStatus.CheckIn
-    console.log(id,name,"name",isCheckedInStatus)
     try {
       if (id && name && name !== '--') {
         await updateAppointment({
@@ -308,7 +307,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const {
                     id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep
                   } = appointment || {};
-                  console.log("checkInActiveStep",checkInActiveStep)
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};

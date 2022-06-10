@@ -233,6 +233,9 @@ export interface CardComponentType extends Children {
   disableEditIcon?: boolean;
   onEditClick?: () => void;
   isFullHeight?: boolean;
+  saveBtn?: boolean;
+  state?: PatientState;
+  disableSubmit?: boolean;
 }
 
 export interface ChartingCardComponentType {
@@ -618,7 +621,8 @@ export interface FormVerification {
 
 export interface StepperComponentProps {
   activeStep: number;
-  stepperData?: StepperData[]
+  stepperData?: StepperData[];
+  dispatch?: Dispatch<PatientAction>
 }
 
 interface BasicContactControlInputs {
@@ -1133,6 +1137,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  disableSubmit?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {

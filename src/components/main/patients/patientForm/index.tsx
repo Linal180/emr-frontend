@@ -1,12 +1,12 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, DONE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  ADD_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SAVE_TEXT, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
 } from "../../../../constants";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
@@ -18,7 +18,7 @@ import history from '../../../../history';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
+import { extendedPatientSchema } from '../../../../validationSchemas';
 // components block
 import Alert from "../../../common/Alert";
 import BackButton from '../../../common/BackButton';
@@ -36,13 +36,15 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail, activeStep
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
+    activeStep
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema())
+    //  isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
   });
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, formState: {errors} } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
@@ -251,7 +253,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
         if (status && status === 200) {
           Alert.success(PATIENT_CREATED);
-          history.push(PATIENTS_ROUTE)
+          // history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -298,23 +300,23 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
     if (user) {
       const { id: userId } = user;
-      const { id: selectedRace } = race;
-      const { id: selectedGender } = gender;
-      const { id: selectedPronouns } = pronouns;
-      const { id: selectedFacility } = facilityId;
-      const { id: selectedEthnicity } = ethnicity;
-      const { id: selectedCountry } = basicCountry;
-      const { id: selectedSexAtBirth } = sexAtBirth;
-      const { id: selectedBasicState } = basicState;
-      const { id: selectedMaritalStatus } = maritialStatus;
-      const { id: selectedGenderIdentity } = genderIdentity;
-      const { id: selectedGuarantorState } = guarantorState;
-      const { id: selectedUsualProvider } = usualProviderId;
-      const { id: selectedKinRelationship } = kinRelationship;
-      const { id: selectedGuarantorCountry } = guarantorCountry;
-      const { id: selectedSexualOrientation } = sexualOrientation;
-      const { id: selectedGuarantorRelationship } = guarantorRelationship;
-      const { id: selectedEmergencyRelationship } = emergencyRelationship;
+      const { id: selectedRace } = race || {};
+      const { id: selectedGender } = gender || {};
+      const { id: selectedPronouns } = pronouns || {};
+      const { id: selectedFacility } = facilityId || {};
+      const { id: selectedEthnicity } = ethnicity || {};
+      const { id: selectedCountry } = basicCountry || {};
+      const { id: selectedSexAtBirth } = sexAtBirth || {};
+      const { id: selectedBasicState } = basicState || {};
+      const { id: selectedMaritalStatus } = maritialStatus || {};
+      const { id: selectedGenderIdentity } = genderIdentity || {};
+      const { id: selectedGuarantorState } = guarantorState || {};
+      const { id: selectedUsualProvider } = usualProviderId || {};
+      const { id: selectedKinRelationship } = kinRelationship || {};
+      const { id: selectedGuarantorCountry } = guarantorCountry || {};
+      const { id: selectedSexualOrientation } = sexualOrientation || {};
+      const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
+      const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
 
       let practiceId = '';
       if (selectedFacility) {
@@ -382,7 +384,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
       };
 
-      if (isEdit && id) {
+      if (id) {
         const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
         const contactIdInput = basicContactId ?
           { id: basicContactId, ...contactInput } : { ...contactInput }
@@ -408,6 +410,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
+        })
       } else {
         const optionalInputs = {
           usualProviderId: selectedUsualProvider || '', adminId: userId || '',
@@ -426,15 +431,17 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
+        })
       }
     } else
       Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
   };
 
   useEffect(() => {
-    if (isEdit) {
-      id ?
-        getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
+    if (id) {
+        getPatient({ variables: { getPatient: { id } } })
     }
   }, [getPatient, id, isEdit])
 
@@ -480,14 +487,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     }
   }));
 
-  const handleFinish = (e: any) => {
-    console.log(e)
-  };
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        {JSON.stringify(errors)}
+        {shouldShowBread &&
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -497,37 +501,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
                 path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
               />
             </Box>
-          </Box>
-
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
-
-            {disableSubmit && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>}
-
-        {activeStep < 5 ?
-          <Button
-            variant="contained" color='primary'
-            disabled={updatePatientLoading} onClick={() => dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })}
-            type={'button'}
-          >
-            {SAVE_TEXT}
-
-            {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
-          </Button>
-          :
-          <Button
-            variant="contained" color='primary' type="button"
-            onClick={handleFinish} disabled={updatePatientLoading}
-          >
-            {DONE}
-          </Button>
-
-        }
+          </Box>}
 
         <RegisterFormComponent
           isEdit={isEdit}
+          disableSubmit={disableSubmit}
           dispatch={dispatch} state={state}
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}

@@ -1,43 +1,70 @@
 // packages block
 import { FC } from "react";
 import { Edit, Save, ArrowBack } from "@material-ui/icons";
-import { Card, CardContent, CardHeader, IconButton, Box } from "@material-ui/core";
+import { Card, CardContent, CardHeader, IconButton, Box, Button, CircularProgress } from "@material-ui/core";
 // interfaces/types block
 import { CardComponentType } from "../../interfacesTypes";
+import { SAVE_TEXT, CREATE_PATIENT, UPDATE_PATIENT } from "../../constants";
 
 const CardComponent: FC<CardComponentType> = ({
-  children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight
-}): JSX.Element => (
-  <Card className={isFullHeight ? "fullMinHeight card-box-shadow" : " card-box-shadow"}>
-    <CardHeader
-      action={
-        hasEdit && (
-          <Box display="flex" alignItems="center">
-            {isEdit ? (
-              <Box>
-                {!hideSaveIcon && (
-                  <IconButton disabled={disableSaveIcon} type="submit" color="primary" aria-label="settings">
-                    <Save />
+  children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight, saveBtn, state, disableSubmit
+}): JSX.Element => {
+  const { activeStep } = state || {}
+
+  return (
+    <Card className={isFullHeight ? "fullMinHeight card-box-shadow" : " card-box-shadow"}>
+      <CardHeader
+        action={
+          hasEdit ? (
+            <Box display="flex" alignItems="center">
+              {isEdit ? (
+                <Box>
+                  {!hideSaveIcon && (
+                    <IconButton disabled={disableSaveIcon} type="submit" color="primary" aria-label="settings">
+                      <Save />
+                    </IconButton>
+                  )}
+
+                  <IconButton onClick={onEditClick} aria-label="settings">
+                    <ArrowBack />
                   </IconButton>
-                )}
-
-                <IconButton onClick={onEditClick} aria-label="settings">
-                  <ArrowBack />
+                </Box>
+              ) : (
+                <IconButton disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
+                  <Edit />
                 </IconButton>
-              </Box>
-            ) : (
-              <IconButton disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
-                <Edit />
-              </IconButton>
-            )}
-          </Box>
-        )
-      }
-      title={cardTitle}
-    />
+              )}
+            </Box>
+          ) : saveBtn
+            ? typeof activeStep === 'number' &&
+              activeStep < 5 ?
+              <Button
+                variant="contained" color='primary' type='submit'
+                disabled={disableSubmit} 
+                
+              >
+                {SAVE_TEXT}
 
-    <CardContent>{children}</CardContent>
-  </Card>
-);
+                {disableSubmit && <CircularProgress size={20} color="inherit" />}
+              </Button>
+              :
+              <Button
+                variant="contained" color='primary' type="submit"
+                disabled={disableSubmit}
+              >
+                {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
+
+                {disableSubmit && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            : ''
+
+        }
+        title={cardTitle}
+      />
+
+      <CardContent>{children}</CardContent>
+    </Card >
+  )
+};
 
 export default CardComponent;

@@ -1,22 +1,17 @@
 // packages block
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
-import {
-  DOB, FIRST_NAME, FIRST_NAME_USED, IDENTIFICATION,
-  LAST_NAME, LEGAL_SEX, MAPPED_GENDER_IDENTITY, MIDDLE_NAME, MOTHERS_MAIDEN_NAME,
-  PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, SSN, SUFFIX
-} from "../../../../constants"
+import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME } from "../../../../constants"
 import InputController from "../../../../controller"
 // constants, interfaces block
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import CardComponent from "../../../common/CardComponent"
 import DatePicker from "../../../common/DatePicker"
 // components block
-import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit}) =>
-  <CardComponent cardTitle={IDENTIFICATION}>
+const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit }) =>
+  <CardComponent cardTitle={IDENTIFICATION} state={state}  saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>
@@ -65,71 +60,10 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
           <Grid item md={6} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="firstNameUsed"
-              controllerLabel={FIRST_NAME_USED}
-            />
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="prefferedName"
-              controllerLabel={PREFERRED_NAME}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="previousFirstName"
-              controllerLabel={PREVIOUS_FIRST_NAME}
-            />
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="previouslastName"
-              controllerLabel={PREVIOUS_LAST_NAME}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="motherMaidenName"
-              controllerLabel={MOTHERS_MAIDEN_NAME}
-            />
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="ssn"
               controllerLabel={SSN}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              isRequired
-              name="gender"
-              label={LEGAL_SEX}
-              options={MAPPED_GENDER_IDENTITY}
             />
           </Grid>
 

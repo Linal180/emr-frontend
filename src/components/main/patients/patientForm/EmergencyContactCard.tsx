@@ -11,9 +11,9 @@ import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
-const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
+const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, dispatch, disableSubmit, isEdit }) => {
   return (
-    <CardComponent cardTitle={EMERGENCY_CONTACT}>
+    <CardComponent cardTitle={EMERGENCY_CONTACT} saveBtn state={state}  disableSubmit={disableSubmit} isEdit={isEdit}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
