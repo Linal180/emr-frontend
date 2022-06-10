@@ -2738,6 +2738,18 @@ export type PatientInviteInput = {
   id: Scalars['String'];
 };
 
+export type PatientPastUpcomingAppointment = {
+  __typename?: 'PatientPastUpcomingAppointment';
+  pastAppointment?: Maybe<Appointment>;
+  upcomingAppointment?: Maybe<Appointment>;
+};
+
+export type PatientPastUpcomingAppointmentPayload = {
+  __typename?: 'PatientPastUpcomingAppointmentPayload';
+  appointments?: Maybe<PatientPastUpcomingAppointment>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientPayload = {
   __typename?: 'PatientPayload';
   patient?: Maybe<Patient>;
@@ -3288,6 +3300,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientProvider: PatientDoctorPayload;
   getPatientProviders: PatientProviderPayload;
@@ -3596,6 +3609,11 @@ export type QueryGetPatientAllergyArgs = {
 
 
 export type QueryGetPatientAppointmentArgs = {
+  getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientPastUpcomingAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
 };
 
@@ -5119,6 +5137,13 @@ export type UpdateAppointmentStatusMutationVariables = Exact<{
 
 export type UpdateAppointmentStatusMutation = { __typename?: 'Mutation', updateAppointmentStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus } | null } };
 
+export type GetPatientNearestAppointmentsQueryVariables = Exact<{
+  getPatientAppointmentInput: GetPatientAppointmentInput;
+}>;
+
+
+export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null } | null } };
+
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
@@ -6589,6 +6614,55 @@ export function useUpdateAppointmentStatusMutation(baseOptions?: Apollo.Mutation
 export type UpdateAppointmentStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationResult = Apollo.MutationResult<UpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentStatusMutation, UpdateAppointmentStatusMutationVariables>;
+export const GetPatientNearestAppointmentsDocument = gql`
+    query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppointmentInput!) {
+  getPatientPastUpcomingAppointment(
+    getPatientAppointmentInput: $getPatientAppointmentInput
+  ) {
+    response {
+      status
+    }
+    appointments {
+      pastAppointment {
+        id
+        scheduleStartDateTime
+      }
+      upcomingAppointment {
+        id
+        scheduleStartDateTime
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientNearestAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useGetPatientNearestAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientNearestAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientNearestAppointmentsQuery({
+ *   variables: {
+ *      getPatientAppointmentInput: // value for 'getPatientAppointmentInput'
+ *   },
+ * });
+ */
+export function useGetPatientNearestAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>(GetPatientNearestAppointmentsDocument, options);
+      }
+export function useGetPatientNearestAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>(GetPatientNearestAppointmentsDocument, options);
+        }
+export type GetPatientNearestAppointmentsQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsQuery>;
+export type GetPatientNearestAppointmentsLazyQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsLazyQuery>;
+export type GetPatientNearestAppointmentsQueryResult = Apollo.QueryResult<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
