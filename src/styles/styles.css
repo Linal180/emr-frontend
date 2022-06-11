@@ -802,4 +802,10 @@ body .MuiTabPanel-root {
     position: relative;
     top: 0;
   }
+
+  .patient-add-form .MuiInputLabel-formControl{
+    position: relative;
+    top:0;
+    margin-bottom: 0.875rem;
+  }
 }
