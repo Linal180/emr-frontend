@@ -47,6 +47,7 @@ import {
   HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
 import SideDrawer from '../../../common/SideDrawer';
+import AgreementsComponent from './agreements';
 
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -374,6 +375,10 @@ const PatientDetailsComponent = (): JSX.Element => {
               drawerOpened={drawerOpened}
               patientDispatcher={dispatch}
             />
+          </TabPanel>
+
+          <TabPanel value="12">
+            <AgreementsComponent />
           </TabPanel>
         </Box>
       </TabContext>
