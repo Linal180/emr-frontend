@@ -1390,6 +1390,7 @@ export const PATIENT_CREATED = "Patient created successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const PROFILE_UPDATE = "Profile is updated successfully";
+export const CHANGES_SAVED = "Changes saved successfully!";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -2431,6 +2432,7 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2469,12 +2471,16 @@ export const MAPPED_RACE: SelectorOption[] = [
 export const MAPPED_ETHNICITY: SelectorOption[] = [
   { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
-    id: Ethnicity.CenteralAmerican,
-    name: formatValue(Ethnicity.CenteralAmerican),
+    id: Ethnicity.DeclineToSpecify,
+    name: formatValue(Ethnicity.DeclineToSpecify),
   },
   {
-    id: Ethnicity.CenteralAmericanIndian,
-    name: formatValue(Ethnicity.CenteralAmericanIndian),
+    id: Ethnicity.HispanicOrLatino,
+    name: formatValue(Ethnicity.HispanicOrLatino),
+  },
+  {
+    id: Ethnicity.NotHispanicOrLatino,
+    name: formatValue(Ethnicity.NotHispanicOrLatino),
   },
 ];
 
@@ -2509,8 +2515,16 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
-    id: Genderidentity.NotExclusive,
-    name: formatValue(Genderidentity.NotExclusive),
+    id: Genderidentity.DeclineToSpecify,
+    name: formatValue(Genderidentity.DeclineToSpecify),
+  },
+  {
+    id: Genderidentity.TransgenderFemale,
+    name: formatValue(Genderidentity.TransgenderFemale),
+  },
+  {
+    id: Genderidentity.TransgenderMale,
+    name: formatValue(Genderidentity.TransgenderMale),
   },
 ];
 
@@ -2619,7 +2633,7 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   },
 ];
 
-export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
+export const StepperIcons: { [index: string]: number } = { };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
@@ -3569,7 +3583,7 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
 
 export const COVID_RESULT_OPTIONS: SelectorOption[] = [
   { id: 'Detected', name: 'Detected' },
-  { id: 'Not Detected', name: 'Not Detected'  },
+  { id: 'Not Detected', name: 'Not Detected' },
 ]
 
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
@@ -3677,27 +3691,21 @@ export const FacilityMenuNav = [
 export const RegisterPatientMenuNav = [
   {
     title: IDENTIFICATION,
-    linkTo: IDENTIFICATION_ROUTE,
   },
   {
     title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
   {
     title: CONTACT_INFORMATION,
-    linkTo: CONTACT_INFORMATION_ROUTE,
   },
   {
     title: PROVIDER_REGISTRATION_DATES,
-    linkTo: PROVIDER_REGISTRATION__ROUTE,
   },
   {
     title: PRIVACY,
-    linkTo: PRIVACY__ROUTE,
   },
   {
     title: EMERGENCY_CONTACT,
-    linkTo: EMERGENCY_CONTACT_ROUTE,
   },
 ];
 
