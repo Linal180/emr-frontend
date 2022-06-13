@@ -692,6 +692,10 @@ interface EmployerControlInputs {
   employerPhone: string;
   employerIndustry: string;
   employerUsualOccupation: string;
+  employerCity: string;
+  employerState: SelectorOption;
+  employerZipCode: string;
+  employerAddress: string;
 }
 
 interface RegisterUserInputs {

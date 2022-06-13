@@ -184,6 +184,10 @@ query GetPatient($getPatient: GetPatient!) {
         mobile
         industry
         usualOccupation
+        city
+        state
+        zipCode
+        address
         createdAt
         updatedAt
       }

@@ -224,7 +224,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (employer) {
-            const { id: employerId, name, email, phone, industry, usualOccupation } = employer;
+            const { id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
@@ -232,6 +232,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             phone && setValue('employerPhone', phone)
             industry && setValue('employerIndustry', industry)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
+            address && setValue('employerAddress', address)
+            city && setValue('employerCity', city)
+            state && setValue("employerState", setRecord(state, state))
+            address && setValue('employerAddress', address)
+            zipCode && setValue("employerZipCode", zipCode)
           }
         }
       }
@@ -305,6 +310,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
+      employerAddress, employerCity, employerState, employerZipCode
     } = inputs;
 
     if (user) {
@@ -326,6 +332,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedSexualOrientation } = sexualOrientation || {};
       const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
       const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
+      const { id: selectedEmployerState } = employerState || {};
 
       let practiceId = '';
       if (selectedFacility) {
@@ -392,6 +399,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const employerInput = {
         name: employerName, email: employerEmail, phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
+        address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState,
       };
 
       if (id || patientId) {

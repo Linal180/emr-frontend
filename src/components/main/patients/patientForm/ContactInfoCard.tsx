@@ -68,7 +68,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
   return (
     <>
-      <CardComponent cardTitle={CONTACT_INFORMATION} state={state}  saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+      <CardComponent cardTitle={CONTACT_INFORMATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
         {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
           <>
             <Grid item md={12} sm={12} xs={12}>
@@ -91,7 +91,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
             <Grid item md={12} sm={12} xs={12}>
               <Grid container spacing={1} alignItems={'center'}>
-                <Grid item md={10} sm={10} xs={10}>
+                <Grid item md={4} sm={10} xs={10}>
                   <InputController
                     disabled={shouldDisableEdit}
                     fieldType="text"
@@ -116,20 +116,20 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                     </Box>
                   }
                 </Grid>
+
+                <Grid item md={6}>
+                  <InputController
+                    disabled={shouldDisableEdit}
+                    fieldType="text"
+                    controllerName="basicCity"
+                    controllerLabel={CITY}
+                  />
+                </Grid>
               </Grid>
             </Grid>
 
             <Grid container spacing={3}>
-              <Grid item md={4}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="basicCity"
-                  controllerLabel={CITY}
-                />
-              </Grid>
-
-              <Grid item md={4}>
+              <Grid item md={6}>
                 <Selector
                   disabled={shouldDisableEdit}
                   name="basicState"
@@ -139,7 +139,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                 />
               </Grid>
 
-              <Grid item md={4}>
+              <Grid item md={6}>
                 <Selector
                   disabled={shouldDisableEdit}
                   name="basicCountry"
