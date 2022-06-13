@@ -3277,6 +3277,7 @@ export type Query = {
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   findAllTestSpecimenTypes: TestSpecimenTypesPayload;
+  findAllUpcomingAppointments: AppointmentsPayload;
   findAllUsersForms: UserFormsPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
@@ -3500,6 +3501,11 @@ export type QueryFindAllStaffArgs = {
 
 export type QueryFindAllTestSpecimenTypesArgs = {
   testSpecimenTypeInput: TestSpecimenTypeInput;
+};
+
+
+export type QueryFindAllUpcomingAppointmentsArgs = {
+  upComingAppointmentsInput: UpComingAppointmentsInput;
 };
 
 
@@ -4368,6 +4374,13 @@ export enum UnitType {
   Inch = 'INCH'
 }
 
+export type UpComingAppointmentsInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  providerId?: Maybe<Scalars['String']>;
+};
+
 export type UpdateAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
@@ -5143,6 +5156,13 @@ export type GetPatientNearestAppointmentsQueryVariables = Exact<{
 
 
 export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null } | null } };
+
+export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
+  upComingAppointmentsInput: UpComingAppointmentsInput;
+}>;
+
+
+export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -6663,6 +6683,66 @@ export function useGetPatientNearestAppointmentsLazyQuery(baseOptions?: Apollo.L
 export type GetPatientNearestAppointmentsQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsQuery>;
 export type GetPatientNearestAppointmentsLazyQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsLazyQuery>;
 export type GetPatientNearestAppointmentsQueryResult = Apollo.QueryResult<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>;
+export const FindAllUpcomingAppointmentsDocument = gql`
+    query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!) {
+  findAllUpcomingAppointments(
+    upComingAppointmentsInput: $upComingAppointmentsInput
+  ) {
+    response {
+      status
+    }
+    appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      appointmentType {
+        id
+        name
+        duration
+      }
+      provider {
+        id
+        firstName
+        lastName
+      }
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllUpcomingAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useFindAllUpcomingAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllUpcomingAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllUpcomingAppointmentsQuery({
+ *   variables: {
+ *      upComingAppointmentsInput: // value for 'upComingAppointmentsInput'
+ *   },
+ * });
+ */
+export function useFindAllUpcomingAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>(FindAllUpcomingAppointmentsDocument, options);
+      }
+export function useFindAllUpcomingAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>(FindAllUpcomingAppointmentsDocument, options);
+        }
+export type FindAllUpcomingAppointmentsQueryHookResult = ReturnType<typeof useFindAllUpcomingAppointmentsQuery>;
+export type FindAllUpcomingAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllUpcomingAppointmentsLazyQuery>;
+export type FindAllUpcomingAppointmentsQueryResult = Apollo.QueryResult<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {

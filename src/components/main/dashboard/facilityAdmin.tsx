@@ -7,7 +7,7 @@ import PieChart3Component from "../../common/charts/pieChart3";
 import PieChart4Component from "../../common/charts/pieChart4";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
-import UpcomingAppointments from "../../common/Dashboard/UpcomingAppointments";
+import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
 import { BLUE, BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE, GRAY_SEVEN, } from "../../../theme";
 // svgs block, styles, history
