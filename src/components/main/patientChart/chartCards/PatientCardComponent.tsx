@@ -134,7 +134,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                 <Typography variant="h6">{NO_RECORDS}</Typography>
               </Box>) :
                 <Grid container spacing={2}>
-                  <Grid item xs={12} >
+                  <Grid item xs={12}>
                     <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                       <Typography className={classes.cardContentDateText}>{LATEST_RECORDED_DATE}</Typography>
                       <Typography>

@@ -46,6 +46,10 @@ body {
   height: 100%;
 }
 
+.fullMinHeight {
+  min-height: 100%;
+}
+
 .draft-wrapper {
   border: 1px solid rgba(0, 0, 0, 0.23);
   border-radius: 4px;
@@ -324,6 +328,10 @@ body .MuiTabPanel-root {
   color: #DD1010;
 }
 
+.pt-0 {
+  padding-top: 0 !important;
+}
+
 .btnDanger {
   color: #ffffff !important;
   background-color: #DD1010 !important;
@@ -394,6 +402,10 @@ body .MuiTabPanel-root {
 .braintree-sheet__content--form .braintree-form__field-group .braintree-form__field .braintree-form__hosted-field {
   border: none !important;
   background-color: #f3f4f6 !important;
+}
+
+.braintree-sheet__header .braintree-sheet__header-label {
+  padding-bottom: 10px;
 }
 
 .facilityActive {
@@ -523,29 +535,25 @@ body .MuiTabPanel-root {
 }
 
 /* Dashboard-charts-styling */
-.chartContainer > div > div
-{
+.chartContainer>div>div {
   height: 300px !important;
 }
 
-.chartContainer svg
-{
+.chartContainer svg {
   height: 320px !important;
   transform: scale(1.25) !important;
 }
 
-.pieChart2Container > div > div
-{
+.pieChart2Container>div>div {
   height: 200px !important;
 }
 
-.pieChart2Container svg
-{
+.pieChart2Container svg {
   height: 320px !important;
   transform: scale(1.2) !important;
 }
 
-.chartContainerSmall > div > div {
+.chartContainerSmall>div>div {
   height: 180px !important;
   overflow: hidden !important;
 }
@@ -556,10 +564,9 @@ body .MuiTabPanel-root {
 }
 
 .practice-bar-chart-container text,
-.barChart3Container text ,
+.barChart3Container text,
 .practice-users-chart-container text,
-.practice-users-roles-container text   
-{
+.practice-users-roles-container text {
   color: #ffffff !important;
   fill: #ffffff !important;
 }
@@ -569,31 +576,27 @@ body .MuiTabPanel-root {
 .barChart3Container .highcharts-color-0,
 .practice-bar-chart-container .highcharts-legend-item,
 .barChart2Container .highcharts-legend-item,
-.barChart3Container .highcharts-legend-item
-{
+.barChart3Container .highcharts-legend-item {
   display: none !important;
 }
 
-.practice-bar-chart-container .highcharts-axis-labels text, 
+.practice-bar-chart-container .highcharts-axis-labels text,
 .barChart2Container .highcharts-axis-labels text,
 .barChart3Container .highcharts-axis-labels text,
 .practice-users-chart-container .highcharts-axis-labels text,
 .practice-users-roles-container .highcharts-axis-labels text,
-.barChart6Container .highcharts-axis-labels text
-{
+.barChart6Container .highcharts-axis-labels text {
   font-weight: 600 !important;
 }
 
 .practice-users-chart-container .highcharts-grid-line,
-.practice-users-roles-container .highcharts-grid-line
-{
+.practice-users-roles-container .highcharts-grid-line {
   display: none !important;
 }
 
 .practice-users-chart-container .highcharts-axis,
 .practice-users-roles-container .highcharts-axis,
-.practice-bar-chart-container .highcharts-axis
-{
+.practice-bar-chart-container .highcharts-axis {
   display: none !important;
 }
 
@@ -601,23 +604,21 @@ body .MuiTabPanel-root {
   color: #acacac !important;
   fill: #acacac !important;
 }
- 
-.Recent-Activity-Timeline 
-.MuiTimelineItem-missingOppositeContent:before {
-    display: none;
+
+.recent-activity-timeline .MuiTimelineItem-missingOppositeContent:before {
+  display: none;
 }
 
-.Recent-Activity-Timeline p{
+.recent-activity-timeline p {
   color: #7E8299;
 }
 
-.Recent-Activity-Timeline 
-.MuiTimelineDot-root {
-   border-width: 4px;
+.recent-activity-timeline .MuiTimelineDot-root {
+  border-width: 4px;
 }
 
-.Recent-Activity-Timeline  .MuiTimelineConnector-root{
-background: #E5EAEE;
+.recent-activity-timeline .MuiTimelineConnector-root {
+  background: #E5EAEE;
 }
 
 .overflowVisible {
@@ -628,7 +629,7 @@ background: #E5EAEE;
   padding: 0px !important;
 }
 
-.media-inner-image > img {
+.media-inner-image>img {
   height: 150px !important;
 }
 
@@ -641,68 +642,168 @@ background: #E5EAEE;
 }
 
 .highcharts-container {
-  width:auto !important
+  width: auto !important;
 }
-.card-chart{
+
+.card-chart {
   background: #FFFFFF;
   box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09);
   border-radius: 8px;
   position: relative;
 }
+
 .areaBloodPressureChart .highcharts-container {
   transform: translate(-60px, 221px) scale(1.5) !important;
 }
 
-.areaChartContainer > div > div
-{
+.areaChartContainer>div>div {
   height: 300px !important;
 }
 
-.areaChartContainer svg
-{
+.areaChartContainer svg {
   height: 230px !important;
   transform: scale(1.5) !important;
 }
 
-.bloodPressure-measurement{
-    position: absolute;
-    left: 30px;
-    top: 135px;
-    color: #CA6B6E;
-    z-index: 1;
+.bloodPressure-measurement {
+  position: absolute;
+  left: 30px;
+  top: 135px;
+  color: #CA6B6E;
+  z-index: 1;
 }
-.bloodPressure-measurement .measure-unit{
+
+.bloodPressure-measurement .measure-unit {
   font-size: 14px;
   color: #464E5F;
 }
-.heartRate-measurement{
+
+.heartRate-measurement {
   position: absolute;
   left: 30px;
   top: 135px;
   color: #1BC5BD;
   z-index: 1;
 }
-.heartRate-measurement .measure-unit{
+
+.heartRate-measurement .measure-unit {
   font-size: 14px;
   color: #464E5F;
   margin-left: 10px;
 }
-.measure-frequency{
+
+.measure-frequency {
   font-style: normal;
   font-weight: 600;
   font-size: 10px;
   line-height: 15px;
   color: #ffff;
-  padding: 4px 8px  4px 8px;
+  padding: 4px 8px 4px 8px;
   border-radius: 4px;
 }
-.primary{
+
+.primary {
   background-color: #03CC83;
 }
-.danger-bg{
+
+.danger-bg {
   background-color: #DD1010;
 }
-.card-box-shadow{
+
+.card-box-shadow {
   box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09) !important;
   border-radius: 8px !important;
+}
+
+.patient-information-form .MuiInputLabel-formControl {
+  position: relative;
+}
+
+.MuiDropzoneSnackbar-message {
+  word-break: break-word;
+}
+
+.word-break {
+  word-break: break-all;
+}
+
+/* masonry-css */
+.masonry-container {
+  -webkit-column-count: 2;
+  -webkit-column-gap: 1.5%;
+  -webkit-column-width: 48%;
+  column-count: 2;
+  column-gap: 1.5%;
+  column-width: 48%;
+}
+
+.masonry-box {
+  margin-bottom: 30px;
+  break-inside: avoid;
+}
+
+.appointment-view-list .MuiTable-root tbody tr td:first-child{
+  max-width: 200px;
+}
+
+.appointment-view-list .MuiTable-root tbody tr .custom-cell{
+  padding: 0 0 5px 0;
+}
+.appointment-view-list .MuiTable-root tbody tr .custom-cell{
+  padding: 14px 11px 14px 30px;
+}
+
+.card-box {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.card-overlay {
+  position: absolute;
+  left:0;  
+  top: 100%;
+  width:100%;
+  height:100%;
+  z-index: 1;
+  transition:all 350ms cubic-bezier(0, 0, 0.2, 1);
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  background:rgba(62, 62, 62, 0.7);
+}
+
+.card-overlay .del-icon,
+.card-overlay .del-icon:hover
+{
+  background-color: white;
+}
+
+.card-box:hover .card-overlay {
+  top: 0;
+}
+
+.card-img {
+  max-width: 100%;
+  height: 100%;
+  max-height: 280px;
+  overflow: hidden;
+}
+
+.card-img> img {
+  object-fit: contain;
+  height: 100%;
+}
+
+/* media queries */
+@media(max-width : 768px) {
+  .facility-registration-form {
+    flex-direction: column;
+  }
+
+  .facility-registration-form .facility-menu-navbar {
+    max-width: 100%;
+    position: relative;
+    top: 0;
+  }
 }

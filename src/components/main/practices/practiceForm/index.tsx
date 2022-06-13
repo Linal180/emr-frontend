@@ -21,19 +21,18 @@ import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
-  ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE, FACILITY_NAME, FAX, FIRST_NAME,
-  LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_NAME, PRACTICE_MANAGEMENT_ROUTE, FORBIDDEN_EXCEPTION,
-  COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
-  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, PRACTICE_MANAGEMENT_TEXT, PRACTICE_BREAD, PRACTICE_NEW_BREAD,
-  PRACTICE_EDIT_BREAD,
+  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
+  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, USER_DETAILS_TEXT, PRACTICE_NAME,
+  COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
+  LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
+  PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
+  ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
+  PRACTICE_NEW_BREAD,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const {
-    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, setPracticeList,
-    setRoleList
-  } = useContext(ListContext)
+  const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
@@ -88,7 +87,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPractice: { response, practice } } = data;
+      const { createPractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -96,10 +95,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          addPracticeList(practice)
           setFacilityList([])
           setRoleList([])
-          setPracticeList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -113,7 +110,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updatePractice: { response, practice } } = data;
+      const { updatePractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -121,7 +118,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          updatePracticeList(practice)
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }
@@ -238,7 +234,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           <Typography>{PRACTICE_IDENTIFIER}</Typography>
 
                           <Grid container spacing={3}>
-                            <Grid item md={3} sm={12} xs={12}>
+                            <Grid item md={2} sm={12} xs={12}>
                               <InputController
                                 placeholder={EIN}
                                 fieldType="text"
@@ -246,7 +242,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               />
                             </Grid>
 
-                            <Grid item md={3} sm={12} xs={12}>
+                            <Grid item md={2} sm={12} xs={12}>
                               <InputController
                                 placeholder={UPIN}
                                 fieldType="text"
@@ -309,7 +305,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={8} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               isRequired
                               fieldType="email"
@@ -318,7 +314,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={4} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <PhoneField name="userPhone" label={PHONE} />
                           </Grid>
                         </Grid>

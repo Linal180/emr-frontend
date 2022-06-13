@@ -1,62 +1,35 @@
 // packages block
 import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
-import {
-  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot,
-  TimelineItem, TimelineSeparator
-} from '@material-ui/lab';
-import {
-  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup,
-  Grid, List, ListItem, Tab, Typography
-} from "@material-ui/core";
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { Box, Button, CircularProgress, Tab } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorScheduleForm from './schedules';
-import Selector from '../../../common/Selector';
-import TimePicker from '../../../common/TimePicker';
-import PhoneField from '../../../common/PhoneInput';
+import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
-import InputController from '../../../../controller';
-import SmartyModal from '../../../common/SmartyModal';
-import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
-import PracticeSelector from '../../../common/Selector/PracticeSelector';
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
+import { getAddressByZipcode } from '../../../common/smartyAddress';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
-import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
-import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
+import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
   FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE,
-  COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER,
-  CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER,
-  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END, FACILITY_HOURS_START,
-  ZIP, SERVICE_CODE, UPDATE_FACILITY, CITY, FACILITY_LOCATION, FACILITY_REGISTRATION, PRACTICE,
-  CLIA_ID_NUMBER_INFO, CREATE_FACILITY, EMPTY_OPTION, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
-  BUSINESS_HOURS, FACILITY_SCHEDULE, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
-  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, SYSTEM_ROLES, SETTINGS_ROUTE,
+  FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
+  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
-  const [isVerified, setIsVerified] = useState(false)
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
@@ -66,10 +39,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchedulerSchema)
   });
   const { reset, handleSubmit, setValue, watch } = methods;
-  const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
-  const [{ sameAddress, addBilling, billingId, contactId }, dispatch] =
-    useReducer<Reducer<State, Action>>(facilityReducer, initialState)
-  const classes = useFacilityStyles()
+  const { zipCode } = watch()
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const { billingId, contactId } = state
   const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
@@ -267,70 +239,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const copyAddress = () => {
-    fax && setValue("billingFax", fax)
-    city && setValue("billingCity", city)
-    phone && setValue("billingPhone", phone)
-    email && setValue("billingEmail", email)
-    state && setValue("billingState", state)
-    zipCode && setValue("billingZipCode", zipCode)
-    address && setValue("billingAddress", address)
-    country && setValue("billingCountry", country)
-    address2 && setValue("billingAddress2", address2)
-  };
-
-  const resetBillingAddress = () => {
-    setValue("billingFax", '')
-    setValue("billingCity", '')
-    setValue("billingPhone", '')
-    setValue("billingEmail", '')
-    setValue("billingAddress", '')
-    setValue("billingZipCode", '')
-    setValue("billingAddress2", '')
-    setValue("billingState", setRecord('', ''))
-    setValue("billingCountry", setRecord('', ''))
-  };
-
-  const setBillingValues = (checked: boolean) => checked ? copyAddress() : resetBillingAddress()
-
-  const cancelBilling = () => {
-    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: false })
-    dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })
-
-    resetBillingAddress()
-  };
-
-  const handleSameAddress = (checked: boolean) => {
-    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
-
-    setBillingValues(checked);
-  }
-
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     setTabValue(newValue)
-
-  const path = history.location?.hash;
-
-  const verifyAddressHandler = async () => {
-    if (zipCode && city && address) {
-      const { id } = state
-      const data = await verifyAddress(zipCode, city, id, address, address2);
-      setUserData((prev) => ({ ...prev, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` }))
-      const { status, options } = data || {}
-
-      if (status) {
-        setData(options)
-        setAddressOpen(true)
-      }
-      else {
-        setData([])
-        setAddressOpen(true)
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_AND_CITY)
-    }
-  }
 
   const getAddressHandler = useCallback(async () => {
 
@@ -351,17 +261,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   useEffect(() => {
     zipCode?.length === 5 && getAddressHandler()
   }, [zipCode, getAddressHandler]);
-
-  useEffect(() => {
-    setIsVerified(false)
-  }, [zipCode, city, state, address, address2, watch])
-
-  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
-    deliveryLine1 && setValue('address', deliveryLine1);
-    zipCode && plus4Code && setValue('zipCode', `${zipCode}-${plus4Code}`);
-    cityName && setValue('city', cityName);
-    setTimeout(() => { setIsVerified(true) }, 0);
-  }
 
   return (
     <TabContext value={tabValue}>
@@ -391,388 +290,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               </Button>
             </Box>
 
-            <Box display='flex' position='relative'>
-              <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' className={classes.navbar}>
-                <List>
-                  {FacilityMenuNav.map((item) => {
-                    return (
-                      <a href={`#${item.linkTo}`} className={`#${item.linkTo}` === path ? 'active' : ''}>
-                        <Box display='flex'>
-                          <Timeline>
-                            <TimelineItem>
-                              <TimelineSeparator>
-                                <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
-                                {item.title !== BUSINESS_HOURS && <TimelineConnector />}
-                              </TimelineSeparator>
-                              <TimelineContent />
-                            </TimelineItem>
-                          </Timeline>
-                          <ListItem button className={`#${item.linkTo}` === path ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
-                            <Typography variant='h5'>
-                              {item.title}
-                            </Typography>
-                          </ListItem>
-                        </Box>
-                      </a>
-                    )
-                  })}
-                </List>
-              </Box>
-
-              <Box width='100%'>
-                <Box maxHeight="calc(100vh - 260px)" className="overflowY-auto">
-                  <Grid spacing={3}>
-                    <Grid md={12} id={FACILITY_INFO_ROUTE}>
-                      <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
-                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                          <>
-                            <Grid container spacing={3}>
-                              <Grid item md={isSuper ? 6 : 12}>
-                                <InputController
-                                  isRequired
-                                  fieldType="text"
-                                  controllerName="name"
-                                  controllerLabel={NAME}
-                                />
-                              </Grid>
-
-                              {isSuper &&
-                                <Grid item md={6}>
-                                  <PracticeSelector
-                                    isRequired
-                                    label={PRACTICE}
-                                    name="practice"
-                                  />
-                                </Grid>
-                              }
-                            </Grid>
-
-                            <Grid container spacing={3}>
-                              <Grid item md={6}>
-                                <Selector
-                                  isRequired
-                                  value={EMPTY_OPTION}
-                                  label={SERVICE_CODE}
-                                  name="serviceCode"
-                                  options={MAPPED_SERVICE_CODES}
-                                />
-                              </Grid>
-
-                              <Grid item md={6}>
-                                <Selector
-                                  isRequired
-                                  value={EMPTY_OPTION}
-                                  label={TIME_ZONE_TEXT}
-                                  name="timeZone"
-                                  options={MAPPED_TIME_ZONES}
-                                />
-                              </Grid>
-                            </Grid>
-                          </>
-                        )}
-                      </CardComponent>
-                    </Grid>
-
-                    <Box pb={3} />
-
-                    <Grid md={12} id={BILLING_PROFILE_ROUTE}>
-                      <CardComponent cardTitle={BILLING_PROFILE} isEdit={true}>
-                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                          <>
-                            <Collapse in={!addBilling} mountOnEnter unmountOnExit>
-                              <Box pb={3}
-                                onClick={() => dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
-                                className="billing-box" display="flex" alignItems="center"
-                              >
-                                <AddCircleOutline color='inherit' />
-
-                                <Typography>{ADD_FACILITY_BILLING}</Typography>
-                              </Box>
-                            </Collapse>
-
-                            <Collapse in={addBilling} mountOnEnter unmountOnExit>
-                              <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
-                                <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
-                                <Button color='secondary' variant='contained'>{CANCEL}</Button>
-                              </Box>
-
-                              <FormControl component="fieldset">
-                                <FormGroup>
-                                  <Box mr={3} mb={2} mt={2}>
-                                    <FormControlLabel
-                                      label={SAME_AS_FACILITY_LOCATION}
-                                      control={
-                                        <Checkbox color="primary" checked={sameAddress}
-                                          onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                                        />
-                                      }
-                                    />
-                                  </Box>
-                                </FormGroup>
-                              </FormControl>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={8}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="billingEmail"
-                                    controllerLabel={EMAIL}
-                                  />
-                                </Grid>
-
-                                <Grid item md={4}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="billingZipCode"
-                                    controllerLabel={ZIP}
-                                  />
-                                </Grid>
-                              </Grid>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <PhoneField name="billingPhone" label={PHONE} />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <PhoneField name="billingFax" label={FAX} />
-                                </Grid>
-                              </Grid>
-
-                              <InputController
-                                fieldType="text"
-                                controllerName="billingAddress"
-                                controllerLabel={ADDRESS}
-                              />
-
-                              <InputController
-                                fieldType="text"
-                                controllerName="billingAddress2"
-                                controllerLabel={ADDRESS_2}
-                              />
-
-                              <Grid container spacing={3}>
-                                <Grid item md={4}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="billingCity"
-                                    controllerLabel={CITY}
-                                  />
-                                </Grid>
-
-                                <Grid item md={4}>
-                                  <Selector
-                                    value={EMPTY_OPTION}
-                                    label={STATE}
-                                    name="billingState"
-                                    options={MAPPED_STATES}
-                                  />
-                                </Grid>
-
-                                <Grid item md={4}>
-                                  <Selector
-                                    label={COUNTRY}
-                                    value={EMPTY_OPTION}
-                                    name="billingCountry"
-                                    options={MAPPED_COUNTRIES}
-                                  />
-                                </Grid>
-                              </Grid>
-
-                              <Box py={2}>
-                                <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
-                              </Box>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={6}>
-                                  <InputController
-                                    info={CLIA_ID_NUMBER_INFO}
-                                    fieldType="text"
-                                    controllerName="cliaIdNumber"
-                                    controllerLabel={CLIA_ID_NUMBER}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6}>
-                                  <InputController
-                                    info={FEDERAL_TAX_ID_INFO}
-                                    fieldType="text"
-                                    controllerName="federalTaxId"
-                                    controllerLabel={FEDERAL_TAX_ID}
-                                  />
-                                </Grid>
-                              </Grid>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={6}>
-                                  <InputController
-                                    info={TAXONOMY_CODE_INFO}
-                                    fieldType="text"
-                                    controllerName="tamxonomyCode"
-                                    controllerLabel={TAXONOMY_CODE}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6}>
-                                  <InputController
-                                    info={NPI_INFO}
-                                    fieldType="text"
-                                    controllerName="npi"
-                                    controllerLabel={NPI}
-                                  />
-                                </Grid>
-                              </Grid>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={6}>
-                                  <InputController
-                                    info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
-                                    fieldType="text"
-                                    controllerName="mammographyCertificationNumber"
-                                    controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Collapse>
-                          </>
-                        )}
-                      </CardComponent>
-                    </Grid>
-
-                    <Box pb={3} />
-
-                    <Grid md={12} id={FACILITY_LOCATION_ROUTE}>
-                      <CardComponent cardTitle={FACILITY_LOCATION} isEdit={true}>
-                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                          <>
-                            <Grid container spacing={3}>
-                              <Grid item md={12}>
-                                <InputController
-                                  isRequired
-                                  fieldType="text"
-                                  controllerName="email"
-                                  controllerLabel={EMAIL}
-                                />
-                              </Grid>
-                            </Grid>
-
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                <PhoneField name="phone" label={PHONE} />
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                <PhoneField name="fax" label={FAX} />
-                              </Grid>
-                            </Grid>
-
-                            <InputController
-                              fieldType="text"
-                              controllerName="address"
-                              controllerLabel={ADDRESS}
-                            />
-                            <Grid container spacing={3}>
-
-                              <Grid item md={6}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="address2"
-                                  controllerLabel={ADDRESS_2}
-                                />
-                              </Grid>
-
-                              <Grid item md={6}>
-                                <Grid container spacing={1} alignItems={'center'}>
-                                  <Grid item md={10} sm={10} xs={10}>
-                                    <InputController
-                                      fieldType="text"
-                                      controllerName="zipCode"
-                                      controllerLabel={ZIP}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={2}>
-                                    {!isVerified ? <Box>
-                                      <Button onClick={verifyAddressHandler} disabled={!Boolean(city && address)}>
-                                        <Typography color={!Boolean(city && address) ? "initial" : 'primary'}>
-                                          {VERIFY_ADDRESS}
-                                        </Typography>
-                                      </Button>
-                                    </Box> :
-                                      <Box display={'flex'} alignItems={'center'}>
-                                        <CheckBoxIcon color='primary' />
-                                        <Box ml={0.2}>
-                                          <Typography>{VERIFIED}</Typography>
-                                        </Box>
-                                      </Box>
-                                    }
-                                  </Grid>
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid container spacing={3}>
-                              <Grid item md={4}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="city"
-                                  controllerLabel={CITY}
-                                />
-                              </Grid>
-
-                              <Grid item md={4}>
-                                <Selector
-                                  value={EMPTY_OPTION}
-                                  label={STATE}
-                                  name="state"
-                                  options={MAPPED_STATES}
-                                />
-                              </Grid>
-
-                              <Grid item md={4}>
-                                <Selector
-                                  name="country"
-                                  label={COUNTRY}
-                                  value={EMPTY_OPTION}
-                                  options={MAPPED_COUNTRIES}
-                                />
-                              </Grid>
-                            </Grid>
-                          </>
-                        )}
-                      </CardComponent>
-                    </Grid>
-
-                    <Box pb={3} />
-
-                    <Grid md={12} id={FACILITY_SCHEDULE_ROUTE}>
-                      <CardComponent cardTitle={BUSINESS_HOURS} isEdit={true}>
-                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                          <>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                <TimePicker
-                                  isRequired
-                                  label={FACILITY_HOURS_START}
-                                  name="startTime"
-                                />
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                <TimePicker
-                                  isRequired
-                                  label={FACILITY_HOURS_END}
-                                  name="endTime"
-                                />
-                              </Grid>
-                            </Grid>
-                          </>
-                        )}
-                      </CardComponent>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Box>
-            </Box>
+            <RegisterFormComponent
+              dispatch={dispatch}
+              state={state}
+              getFacilityLoading={getFacilityLoading}
+              isSuper={isSuper}
+            />
           </form>
         </FormProvider>
       </TabPanel>
@@ -780,10 +303,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <TabPanel value='2'>
         <DoctorScheduleForm />
       </TabPanel>
-
-      <SmartyModal
-        isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler} />
     </TabContext>
   );
 };

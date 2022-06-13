@@ -1,5 +1,5 @@
 // packages block
-import { FC, useImperativeHandle, useState, forwardRef, useContext } from "react";
+import { useImperativeHandle, useState, forwardRef, useContext } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -13,12 +13,13 @@ import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 import {
-  MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType, MediaStaffDataType, MediaUserDataType
+  DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
+  MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
 
-const DropzoneImage: FC<any> = forwardRef(({
+const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -69,6 +70,8 @@ const DropzoneImage: FC<any> = forwardRef(({
       itemId && formData.append("typeId", itemId);
       attachmentId && formData.append("id", attachmentId);
       providerName && formData.append("providerName", providerName);
+      attachmentName && formData.append("attachmentName", attachmentName);
+
       if (attachmentMetadata) {
         for (var key in attachmentMetadata) {
           formData.append(key, attachmentMetadata[key]);
@@ -228,7 +231,7 @@ const DropzoneImage: FC<any> = forwardRef(({
               previewGridClasses={{ item: 'media-inner-image' }}
               filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
-              acceptedFiles={ACCEPTABLE_FILES}
+              acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
               onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
               dropzoneText={imageEdit ?

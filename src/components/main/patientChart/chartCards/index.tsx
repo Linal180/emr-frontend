@@ -1,39 +1,44 @@
 // packages block
 import { FC, ChangeEvent, Reducer, useReducer, ReactElement, useState, } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import {
   Box, Button, Card, Grid, IconButton, Tab, Table, TableBody, TableCell, TableHead, TableRow, Typography, Dialog, DialogActions,
-  DialogTitle, DialogContent, colors,
+  DialogTitle, DialogContent, FormControl,
 } from "@material-ui/core";
 // components block
 import Selector from '../../../common/Selector';
-import BackButton from '../../../common/BackButton';
+import DatePicker from '../../../common/DatePicker';
 import InputController from '../../../../controller';
 // interfaces, graphql, constants block /styles
 import { renderTh } from '../../../../utils';
-import { GREEN_TWO, GREY_THREE, } from '../../../../theme';
 import { PatientInputProps } from '../../../../interfacesTypes';
-import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { AddBlackIcon, FormEditNewIcon, PrinterBlackIcon, } from '../../../../assets/svgs';
+import { useHeaderStyles } from '../../../../styles/headerStyles';
+import { AntSwitch, useChartingStyles } from "../../../../styles/chartingStyles";
+import { GRAY_THREE, GREEN, GREY_TWO, ORANGE_ONE, WHITE, } from '../../../../theme';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import { AddWhiteIcon, EditOutlinedIcon, FormEditNewIcon, PrinterWhiteIcon, TrashOutlinedSmallIcon, } from '../../../../assets/svgs';
 import {
-  ADD_VITALS, BLOOD_PRESSURE_TEXT_AND_UNIT, BMI_TEXT_AND_UNIT, EMPTY_OPTION, FEVER_TEXT_AND_UNIT, FORMER_SMOKER,
-  FUNCTIONAL_HEARTBURN, HEAD_TEXT_AND_UNIT, HEIGHT_TEXT_AND_UNIT, ICD_TEN_CODE, LAST_READING_DATE, OXYGEN_SATURATION_TEXT_AND_UNIT,
-  PAIN_TEXT_AND_UNIT, PATIENT_CHARTING_TABS, PROBLEMS_DUMMY_DATA, PROBLEMS_TEXT, PULSE_TEXT_AND_UNIT, RECENT_READINGS, VITALS_TEXT,
-  RESPIRATORY_TEXT_AND_UNIT, SAVE_TEXT, SMOKING_STATUS_TEXT, SNOMED_CODE, UNITS, VITALS_DUMMY_DATA, WEIGHT_TEXT_AND_UNIT, EDIT_PROBLEMS, 
-  REMOVE_TEXT, ALLERGIES_TEXT, ALLERGIES_DUMMY_DATA, EDIT_ALLERGY, ADD_ANOTHER_REACTION,
+  ADD_VITALS, EMPTY_OPTION, PATIENT_CHARTING_TABS, PROBLEMS_TEXT, VITALS_TEXT, SAVE_TEXT, SMOKING_STATUS_TEXT, ALLERGIES_TEXT, 
+  PRINT_CHART, ADD_NEW_TEXT, VITALS_TABLE_DUMMY_DATA, DATE, FEVER, PULSE_TEXT, RESPIRATORY_RATE_TEXT, BPM_TEXT, RPM_TEXT, 
+  BLOOD_PRESSURE_TEXT, MMHG_TEXT, OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, BMI_TEXT, KG_PER_METER_SQUARE_TEXT, PAIN_TEXT, 
+  HEAD_CIRCUMFERENCE, CANCEL_TEXT, ICD_CODE, ONSET_DATE, TYPE, NOTES, STATUS, ACTIONS, PROBLEM_TEXT, PROBLEMS_TABLE_DUMMY_DATA,
 } from "../../../../constants";
-import { AddCircleOutline } from '@material-ui/icons';
 
 const ChartCards: FC = (): JSX.Element => {
   const classes = useChartingStyles()
+  const headerClasses = useHeaderStyles();
+  const feverUnits = ['degF', 'degC'];
+  const heightUnits = ['IN', 'CM'];
+  const headUnits = ['IN', 'CM'];
+  const weightUnits = ['LB', 'OZ', 'KG'];
+  const [checked, setChecked] = useState<boolean>(false)
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -42,6 +47,7 @@ const ChartCards: FC = (): JSX.Element => {
   const methods = useForm<PatientInputProps>({
     mode: "all",
   });
+  const { control } = methods
 
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -51,11 +57,15 @@ const ChartCards: FC = (): JSX.Element => {
 
   const renderIcon = () => {
     return (
-      <IconButton onClick={handleClickOpen}>
+      <IconButton onClick={() => setOpen(true)}>
         <FormEditNewIcon />
       </IconButton>
     )
   }
+
+  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(!checked)
+  };
 
   return (
 
@@ -74,7 +84,7 @@ const ChartCards: FC = (): JSX.Element => {
         </Grid> 
       </Grid> */}
 
-      <Box>
+      <Box mt={3}>
         <TabContext value={tabValue} >
           <Grid container spacing={3}>
             <Grid item md={2} sm={4} xs={12}>
@@ -93,202 +103,47 @@ const ChartCards: FC = (): JSX.Element => {
 
             <Grid item md={10} sm={8} xs={12}>
               <TabPanel value="1" className='tab-panel'>
-                <Grid container direction='row' spacing={3}>
-                  <Grid item md={6} sm={8} xs={12}>
-                    <Card>
-                      <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant='h4'>{RECENT_READINGS}</Typography>
-
-                          <Box display="flex" alignItems="center">
-                            <Box className={classes.iconBox}>
-                              <IconButton>
-                                <PrinterBlackIcon />
-                              </IconButton>
-                            </Box>
-
-                            <Box ml={1} className={classes.iconBox}>
-                              <IconButton>
-                                <AddBlackIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
-                        </Box>
-
-                        <Box p={3}>
-                          <Box py={2}>
-                            <Typography display='inline' variant='h4'>{LAST_READING_DATE}</Typography>
-
-                            <Typography display='inline' variant='h4' color='primary'>May 2, 2022</Typography>
-                          </Box>
-
-                          {VITALS_DUMMY_DATA.map((item, index) => (
-                            <Box key={index} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                              <Box>
-                                <Typography variant="h4" color='error'>{item.value}</Typography>
-                                <Typography variant="body2">{item.name}</Typography>
-                              </Box>
-
-                              <Box textAlign='right'>
-                                <Typography variant="h5" color='primary'>{item.value}</Typography>
-                                <Typography variant="body2">{item.name}</Typography>
-                              </Box>
-                            </Box>
-                          ))}
-
-                          <Box my={2}>
-                            <Typography variant='h4'>{FORMER_SMOKER}</Typography>
-                            <Typography variant="body2">{SMOKING_STATUS_TEXT}</Typography>
-                          </Box>
-                        </Box>
-                      </Box>
-                    </Card>
-                  </Grid>
-
-                  <Grid item md={6} sm={8} xs={12}>
-                    <Card>
-                      <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant='h4'>{ADD_VITALS}</Typography>
-
-                          <Button variant='contained' color='primary'>{SAVE_TEXT}</Button>
-                        </Box>
-
-                        <Box p={3}>
-                          <FormProvider {...methods}>
-                            <form>
-                              <Grid container spacing={3}>
-                                <Grid item md={4} sm={12} xs={12}>
-                                  <Box mt={1} className={classes.unitsDropdown}>
-                                    <Selector
-                                      name="units"
-                                      label={UNITS}
-                                      value={EMPTY_OPTION}
-                                    />
-                                  </Box>
-                                </Grid>
-                              </Grid>
-
-                              <Grid container spacing={3}>
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={PULSE_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={BLOOD_PRESSURE_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={OXYGEN_SATURATION_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={RESPIRATORY_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={FEVER_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={PAIN_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={HEIGHT_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={WEIGHT_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={BMI_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="pulse"
-                                    controllerLabel={HEAD_TEXT_AND_UNIT}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <Selector
-                                    value={EMPTY_OPTION}
-                                    label={SMOKING_STATUS_TEXT}
-                                    name="smokingStatus"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </form>
-                          </FormProvider>
-                        </Box>
-                      </Box>
-                    </Card>
-                  </Grid>
-                </Grid>
-
-                <Box p={2} />
-
                 <Grid container spacing={3}>
                   <Grid item md={12} sm={12} xs={12}>
                     <Card>
                       <Box className={classes.cardBox}>
                         <FormProvider {...methods}>
                           <form>
-                            <Box px={2} pt={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                              <Box mt={1} className={classes.tableHeaderDropdown}>
-                                <Selector
-                                  name="units"
-                                  label={''}
-                                  value={EMPTY_OPTION}
-                                />
+                            <Box px={2} pt={2} display="flex" justifyContent="space-between" alignItems="center">
+                              <Box display="flex" alignItems="center">
+                                <Box className={classes.tableHeaderDropdown}>
+                                  <Selector
+                                    name="units"
+                                    label={''}
+                                    value={EMPTY_OPTION}
+                                  />
+                                </Box>
+
+                                <Box p={2} />
+
+                                <Box className={classes.tableHeaderDropdown}>
+                                  <Selector
+                                    name="results"
+                                    label={''}
+                                    value={EMPTY_OPTION}
+                                  />
+                                </Box>
                               </Box>
 
-                              <Box mt={1} className={classes.tableHeaderDropdown}>
-                                <Selector
-                                  name="results"
-                                  label={''}
-                                  value={EMPTY_OPTION}
-                                />
+                              <Box display="flex" alignItems="center">
+                                <Button variant='contained' color='secondary'>
+                                  <PrinterWhiteIcon />
+                                  <Box p={0.5} />
+                                  {PRINT_CHART}
+                                </Button>
+
+                                <Box p={1} />
+
+                                <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
+                                  <AddWhiteIcon />
+                                  <Box p={0.5} />
+                                  {ADD_NEW_TEXT}
+                                </Button>
                               </Box>
                             </Box>
                           </form>
@@ -308,126 +163,339 @@ const ChartCards: FC = (): JSX.Element => {
                             </TableHead>
 
                             <TableBody>
-                              <TableRow>
-                                <TableCell scope="row"></TableCell>
-                                <TableCell scope="row"></TableCell>
-                                <TableCell scope="row"></TableCell>
-                                <TableCell scope="row"></TableCell>
-                                <TableCell scope="row"></TableCell>
-                                <TableCell scope="row"></TableCell>
-                              </TableRow>
+                              {VITALS_TABLE_DUMMY_DATA.map(({
+                                vitals, valueOne, valueTwo, valueThree, valueFour, valueFive
+                              }) => {
+                                return (
+                                  <TableRow>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{vitals}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{valueOne}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{valueTwo}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{valueThree}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{valueFour}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography variant='h6'>{valueFive}</Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              })}
                             </TableBody>
                           </Table>
                         </Box>
                       </Box>
                     </Card>
 
+                    {/* DIALOG */}
                     <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
                       <DialogTitle>
-                        <Typography variant="h4">WED, 22/4/2022</Typography>
+                        <Typography variant="h4">{ADD_VITALS}</Typography>
                       </DialogTitle>
 
-                      <DialogContent>
+                      <DialogContent className={classes.chartModalBox}>
                         <FormProvider {...methods}>
                           <form>
-                            <Grid container spacing={3}>
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="fever"
-                                  controllerLabel={FEVER_TEXT_AND_UNIT}
-                                />
+                            <Box>
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{DATE}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <DatePicker name={''} label={''} />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}></Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="pulse"
-                                  controllerLabel={PULSE_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{FEVER}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="fever"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Controller
+                                    name='basicAddress'
+                                    control={control}
+                                    render={() => (
+                                      <FormControl fullWidth className={headerClasses.toggleContainer}>
+                                        <Box className={classes.toggleMain}>
+                                          <label className="toggle-main">
+                                            <Box color={checked ? WHITE : GRAY_THREE} pr={1}>{feverUnits[0]}</Box>
+                                            <AntSwitch checked={checked} onChange={(event) => { toggleHandleChange(event) }} name='basicAddress' />
+                                            <Box color={checked ? GRAY_THREE : WHITE}>{feverUnits[1]}</Box>
+                                          </label>
+                                        </Box>
+                                      </FormControl>
+                                    )}
+                                  />
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="respiratory"
-                                  controllerLabel={RESPIRATORY_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{PULSE_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="pulse"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Box ml={2} color={GREY_TWO}>
+                                    <strong>{BPM_TEXT}</strong>
+                                  </Box>
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="bloodPressure"
-                                  controllerLabel={BLOOD_PRESSURE_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{RESPIRATORY_RATE_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="respiratory"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Box ml={2} color={GREY_TWO}>
+                                    <strong>{RPM_TEXT}</strong>
+                                  </Box>
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="oxygenSaturation"
-                                  controllerLabel={OXYGEN_SATURATION_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{BLOOD_PRESSURE_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <Grid container>
+                                    <Grid item md={5}>
+                                      <InputController
+                                        fieldType="text"
+                                        controllerName="bloodPressure"
+                                        controllerLabel={''}
+                                      />
+                                    </Grid>
+
+                                    <Grid item md={2}></Grid>
+
+                                    <Grid item md={5}>
+                                      <InputController
+                                        fieldType="text"
+                                        controllerName="bloodPressure"
+                                        controllerLabel={''}
+                                      />
+                                    </Grid>
+                                  </Grid>
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Box ml={2} color={GREY_TWO}>
+                                    <strong>{MMHG_TEXT}</strong>
+                                  </Box>
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="height"
-                                  controllerLabel={HEIGHT_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{OXYGEN_SATURATION_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="oxygen"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Box ml={2} color={GREY_TWO}>
+                                    <strong>%</strong>
+                                  </Box>
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="weight"
-                                  controllerLabel={WEIGHT_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{HEIGHT_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="height"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Controller
+                                    name='emergencyAddress'
+                                    control={control}
+                                    render={() => (
+                                      <FormControl fullWidth className={headerClasses.toggleContainer}>
+                                        <Box className={classes.toggleMain}>
+                                          <label className="toggle-main">
+                                            <Box color={checked ? WHITE : GRAY_THREE} pr={1}>{heightUnits[0]}</Box>
+                                            <AntSwitch checked={checked} onChange={(event) => { toggleHandleChange(event) }} name='emergencyAddress' />
+                                            <Box color={checked ? GRAY_THREE : WHITE}>{heightUnits[1]}</Box>
+                                          </label>
+                                        </Box>
+                                      </FormControl>
+                                    )}
+                                  />
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="bmi"
-                                  controllerLabel={BMI_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{WEIGHT_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="weight"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Controller
+                                    name='emergencyAddress'
+                                    control={control}
+                                    render={() => (
+                                      <FormControl fullWidth className={headerClasses.toggleContainer}>
+                                        <Box className={classes.toggleMain}>
+                                          <label className="toggle-main">
+                                            <Box color={checked ? WHITE : GRAY_THREE} pr={1}>{weightUnits[0]}</Box>
+                                            <AntSwitch checked={checked} onChange={(event) => { toggleHandleChange(event) }} name='emergencyAddress' />
+                                            <Box color={checked ? GRAY_THREE : WHITE}>{weightUnits[1]}</Box>
+                                          </label>
+                                        </Box>
+                                      </FormControl>
+                                    )}
+                                  />
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="pain"
-                                  controllerLabel={PAIN_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{BMI_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="bmi"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Box ml={2} color={GREY_TWO}>
+                                    <strong>{KG_PER_METER_SQUARE_TEXT}</strong>
+                                  </Box>
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="headCircumference"
-                                  controllerLabel={HEAD_TEXT_AND_UNIT}
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{PAIN_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="pain"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
                               </Grid>
 
-                              <Grid item md={4} sm={12} xs={12}>
-                                <Selector
-                                  value={EMPTY_OPTION}
-                                  label={SMOKING_STATUS_TEXT}
-                                  name="smokingStatus"
-                                />
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{SMOKING_STATUS_TEXT}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <Selector
+                                    value={EMPTY_OPTION}
+                                    label={''}
+                                    name="smokingStatus"
+                                  />
+                                </Grid>
                               </Grid>
-                            </Grid>
+
+                              <Grid container alignContent='center' alignItems='center'>
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Typography variant='body1'>{HEAD_CIRCUMFERENCE}</Typography>
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="headCircumference"
+                                    controllerLabel={''}
+                                  />
+                                </Grid>
+
+                                <Grid item md={3} sm={12} xs={12}>
+                                  <Controller
+                                    name='emergencyAddress'
+                                    control={control}
+                                    render={() => (
+                                      <FormControl fullWidth className={headerClasses.toggleContainer}>
+                                        <Box className={classes.toggleMain}>
+                                          <label className="toggle-main">
+                                            <Box color={checked ? WHITE : GRAY_THREE} pr={1}>{headUnits[0]}</Box>
+                                            <AntSwitch checked={checked} onChange={(event) => { toggleHandleChange(event) }} name='emergencyAddress' />
+                                            <Box color={checked ? GRAY_THREE : WHITE}>{headUnits[1]}</Box>
+                                          </label>
+                                        </Box>
+                                      </FormControl>
+                                    )}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Box>
                           </form>
                         </FormProvider>
                       </DialogContent>
 
                       <DialogActions>
-                        <Box display='flex' justifyContent='flex-end'>
-                          <Button variant='contained' color="primary">
-                            {SAVE_TEXT}
-                          </Button>
+                        <Box display='flex' justifyContent='flex-end' alignItems='center'>
+                          <Button variant='outlined' color='default'>{CANCEL_TEXT}</Button>
+                          <Box p={1} />
+                          <Button variant='contained' color='primary'>{SAVE_TEXT}</Button>
                         </Box>
                       </DialogActions>
                     </Dialog>
@@ -436,92 +504,82 @@ const ChartCards: FC = (): JSX.Element => {
               </TabPanel>
 
               <TabPanel value="2" className='tab-panel'>
-                <Grid container direction='row' spacing={3}>
-                  <Grid item md={6} sm={8} xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <Card>
                       <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant='h4'>{PROBLEMS_TEXT}</Typography>
+                        <FormProvider {...methods}>
+                          <form>
+                            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant='h3'>{PROBLEMS_TEXT}</Typography>
 
-                          <Box display="flex" alignItems="center">
-                            <Box className={classes.iconBox}>
-                              <IconButton>
-                                <PrinterBlackIcon />
-                              </IconButton>
+                              <Button variant='contained' color='primary'>
+                                <AddWhiteIcon />
+                                <Box p={0.5} />
+                                {ADD_NEW_TEXT}
+                              </Button>
                             </Box>
+                          </form>
+                        </FormProvider>
 
-                            <Box ml={1} className={classes.iconBox}>
-                              <IconButton>
-                                <AddBlackIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
-                        </Box>
+                        <Box className={classes.tableBox}>
+                          <Table aria-label="customized table">
+                            <TableHead>
+                              <TableRow>
+                                {renderTh(ICD_CODE)}
+                                {renderTh(PROBLEM_TEXT)}
+                                {renderTh(ONSET_DATE)}
+                                {renderTh(TYPE)}
+                                {renderTh(NOTES)}
+                                {renderTh(STATUS)}
+                                {renderTh(ACTIONS)}
+                              </TableRow>
+                            </TableHead>
 
-                        <Box p={3}>
-                          {PROBLEMS_DUMMY_DATA.map((item, index) => (
-                            <Box key={index} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                              <ul>
-                                <li>
-                                  <Typography variant="h6" color='secondary'>{item.name}</Typography>
-                                  <Typography variant="body2" color='textPrimary'>{item.value}</Typography>
-                                </li>
-                              </ul>
+                            <TableBody>
+                              {PROBLEMS_TABLE_DUMMY_DATA.map(({
+                                code, problem, onsetDate, type, notes, status, edit,
+                              }) => {
+                                return (
+                                  <TableRow>
+                                    <TableCell scope="row">
+                                      <Typography>{code}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography>{problem}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography>{onsetDate}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                                        {type}
+                                      </Box>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography className={classes.textOverflow}>{notes}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box className={classes.activeBox} bgcolor={GREEN}>
+                                        {status}
+                                      </Box>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box display='flex' alignItems='center'>
+                                        <IconButton>
+                                          <EditOutlinedIcon />
+                                        </IconButton>
 
-                              <Box textAlign='right' color={GREY_THREE}>
-                                <Typography variant="h6">{item.status}</Typography>
-                              </Box>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Box>
-                    </Card>
-                  </Grid>
-
-                  <Grid item md={6} sm={8} xs={12}>
-                    <Card>
-                      <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          {/* <Typography variant='h4'>{ADD_PROBLEMS}</Typography> */}
-                          <Typography variant='h4'>{EDIT_PROBLEMS}</Typography>
-
-                          {/* <Button variant='contained' color='primary'>{ADD}</Button> */}
-                          <Box display='flex' alignItems='center'>
-                            <Button variant='outlined' color='inherit' className='danger'>{REMOVE_TEXT}</Button>
-                            <Box p={1} />
-                            <Button variant='contained' color='primary' size='medium'>{SAVE_TEXT}</Button>
-                          </Box>
-                        </Box>
-
-                        <Box p={3}>
-                          <FormProvider {...methods}>
-                            <form>
-                              {/* <Typography variant="h6">{TYPE}</Typography> */}
-                              {/* Add Filer Search component here */}
-
-                              <Box display='flex' alignItems='center'>
-                                <BackButton to={''} />
-
-                                <Box ml={2}>
-                                  <Typography variant="h6">{FUNCTIONAL_HEARTBURN}</Typography>
-
-                                  <Box mt={1} display="flex">
-                                    <Box display="flex" color={GREY_THREE}>
-                                      <Typography variant="h6" >{ICD_TEN_CODE}&nbsp;</Typography>
-                                      <Typography variant="body2">R12</Typography>
-                                    </Box>
-
-                                    <Box mx={2} py={1.5} borderLeft={`1px solid ${colors.grey[400]}`}></Box>
-
-                                    <Box display="flex" color={GREY_THREE}>
-                                      <Typography variant="h6" >{SNOMED_CODE}&nbsp;</Typography>
-                                      <Typography variant="body2">722876002</Typography>
-                                    </Box>
-                                  </Box>
-                                </Box>
-                              </Box>
-                            </form>
-                          </FormProvider>
+                                        <IconButton>
+                                          <TrashOutlinedSmallIcon />
+                                        </IconButton>
+                                      </Box>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              })}
+                            </TableBody>
+                          </Table>
                         </Box>
                       </Box>
                     </Card>
@@ -530,89 +588,82 @@ const ChartCards: FC = (): JSX.Element => {
               </TabPanel>
 
               <TabPanel value="3" className='tab-panel'>
-                <Grid container direction='row' spacing={3}>
-                  <Grid item md={6} sm={8} xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <Card>
                       <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant='h4'>{ALLERGIES_TEXT}</Typography>
+                        <FormProvider {...methods}>
+                          <form>
+                            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                          <Box display="flex" alignItems="center">
-                            <Box className={classes.iconBox}>
-                              <IconButton>
-                                <PrinterBlackIcon />
-                              </IconButton>
+                              <Button variant='contained' color='primary'>
+                                <AddWhiteIcon />
+                                <Box p={0.5} />
+                                {ADD_NEW_TEXT}
+                              </Button>
                             </Box>
+                          </form>
+                        </FormProvider>
+                        
+                        <Box className={classes.tableBox}>
+                          <Table aria-label="customized table">
+                            <TableHead>
+                              <TableRow>
+                                {renderTh(ALLERGIES_TEXT)}
+                                {renderTh(PROBLEM_TEXT)}
+                                {renderTh(ONSET_DATE)}
+                                {renderTh(TYPE)}
+                                {renderTh(NOTES)}
+                                {renderTh(STATUS)}
+                                {renderTh(ACTIONS)}
+                              </TableRow>
+                            </TableHead>
 
-                            <Box ml={1} className={classes.iconBox}>
-                              <IconButton>
-                                <AddBlackIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
-                        </Box>
+                            <TableBody>
+                              {PROBLEMS_TABLE_DUMMY_DATA.map(({
+                                code, problem, onsetDate, type, notes, status, edit,
+                              }) => {
+                                return (
+                                  <TableRow>
+                                    <TableCell scope="row">
+                                      <Typography>{code}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography>{problem}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography>{onsetDate}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                                        {type}
+                                      </Box>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Typography className={classes.textOverflow}>{notes}</Typography>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box className={classes.activeBox} bgcolor={GREEN}>
+                                        {status}
+                                      </Box>
+                                    </TableCell>
+                                    <TableCell scope="row">
+                                      <Box display='flex' alignItems='center'>
+                                        <IconButton>
+                                          <EditOutlinedIcon />
+                                        </IconButton>
 
-                        <Box p={3}>
-                          {ALLERGIES_DUMMY_DATA.map((item, index) => (
-                            <Box key={index} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                              <ul>
-                                <li>
-                                  <Typography variant="h6" color='secondary'>{item.name}</Typography>
-                                  <Typography variant="body2" color='textPrimary'>{item.value}</Typography>
-                                </li>
-                              </ul>
-
-                              <Box textAlign='right' color={GREY_THREE}>
-                                <Typography variant="h6">{item.status}</Typography>
-                              </Box>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Box>
-                    </Card>
-                  </Grid>
-
-                  <Grid item md={6} sm={8} xs={12}>
-                    <Card>
-                      <Box className={classes.cardBox}>
-                        <Box p={2} bgcolor={GREEN_TWO} display="flex" justifyContent="space-between" alignItems="center">
-                          {/* <Typography variant='h4'>{ADD_ALLERGY}</Typography> */}
-                          <Typography variant='h4'>{EDIT_ALLERGY}</Typography>
-
-                          {/* <Button variant='contained' color='primary'>{ADD}</Button> */}
-                          <Box display='flex' alignItems='center'>
-                            <Button variant='outlined' color='inherit' className='danger'>{REMOVE_TEXT}</Button>
-                            <Box p={1} />
-                            <Button variant='contained' color='primary' size='medium'>{SAVE_TEXT}</Button>
-                          </Box>
-                        </Box>
-
-                        <Box p={3}>
-                          <FormProvider {...methods}>
-                            <form>
-                              {/* <Typography variant="h6">{TYPE}</Typography> */}
-                              {/* Add Filer Search component here */}
-
-                              <Box display='flex' alignItems='center'>
-                                <BackButton to={''} />
-
-                                <Box ml={2}>
-                                  <Typography variant="h5">Peanut</Typography>
-                                </Box>
-                              </Box>
-
-                              {/* <Box mt={5} width='100%' style={{ border: '1px solid red' }}> */}
-                                <Box my={3} pb={2}
-                                  onClick={() => { }}
-                                  className="billing-box" display="flex" alignItems="center" justifyContent='flex-end'
-                                >
-                                  <AddCircleOutline color='inherit' />
-
-                                  <Typography>{ADD_ANOTHER_REACTION}</Typography>
-                                </Box>
-                              {/* </Box> */}
-                            </form>
-                          </FormProvider>
+                                        <IconButton>
+                                          <TrashOutlinedSmallIcon />
+                                        </IconButton>
+                                      </Box>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              })}
+                            </TableBody>
+                          </Table>
                         </Box>
                       </Box>
                     </Card>
@@ -624,6 +675,30 @@ const ChartCards: FC = (): JSX.Element => {
         </TabContext>
       </Box>
     </>
+    // import AllergyList from '../allergies/list';
+    // import PatientCardComponent from "./PatientCardComponent";
+    // import ProblemList from '../problems/list';
+    // // interfaces, graphql, constants block /styles
+    // import { PATIENT_CHARTING_DATA, VITALS_TEXT } from "../../../../constants";
+    // import { ChartComponentProps } from '../../../../interfacesTypes';
+
+    // const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
+    //   const [isVitals] = useState<boolean>(true)
+
+    //   return (
+    //     <Grid container spacing={3}>
+    //       <Grid item md={4} sm={12} xs={12}>
+    //         <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd={!shouldDisableEdit} cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
+    //       </Grid>
+
+    //       <Grid item md={4} sm={12} xs={12}>
+    //         <AllergyList shouldDisableEdit={shouldDisableEdit} />
+    //       </Grid>
+
+    //       <Grid item md={4} sm={12} xs={12}>
+    //         <ProblemList shouldDisableEdit={shouldDisableEdit} />
+    //       </Grid>
+    //     </Grid>
   );
 };
 export default ChartCards;

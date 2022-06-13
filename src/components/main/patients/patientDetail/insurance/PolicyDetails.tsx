@@ -2,21 +2,21 @@
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+//constants, types, interfaces, utils import
+import {
+  ADD_ANOTHER_COPAY_AMOUNT, AMOUNT_WITH_DOLLAR, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, REFERRING_PROVIDER,
+  EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
+  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES, 
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER,
+} from "../../../../../constants";
+import InputController from "../../../../../controller";
+import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
+import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
+import { formatValue, setRecord } from "../../../../../utils";
 //components import
 import DatePicker from "../../../../common/DatePicker";
 import Selector from "../../../../common/Selector";
 import DoctorSelector from "../../../../common/Selector/DoctorSelector";
-import InputController from "../../../../../controller";
-//constants, types, interfaces, utils import
-import {
-  ADD_ANOTHER_COPAY_AMOUNT, AMOUNT, COINSURANCE_PERCENTAGE, COPAY_TYPE,
-  EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
-  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, NOTES, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER,
-  PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER
-} from "../../../../../constants";
-import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
-import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
-import { formatValue, setRecord } from "../../../../../utils";
 
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
@@ -40,6 +40,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={4} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
             controllerName="certificationNumber"
             controllerLabel={MEMBER_ID_CERTIFICATE_NUMBER}
           />
@@ -101,9 +102,10 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
-                    fieldType="text"
+                    info={COPAY_AMOUNTS_TOOLTIP}
+                    fieldType="number"
                     controllerName={`copayFields.${index}.amount`}
-                    controllerLabel={AMOUNT}
+                    controllerLabel={AMOUNT_WITH_DOLLAR}
                   />
                 </Grid>
               </Grid>
@@ -127,9 +129,9 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={2} sm={12} xs={12}>
           <InputController
-            fieldType="text"
+            fieldType="number"
             controllerName="coInsurancePercentage"
-            controllerLabel={COINSURANCE_PERCENTAGE}
+            controllerLabel={COINSURANCE_PERCENTAGE} 
           />
         </Grid>
 
@@ -138,7 +140,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             label={REFERRING_PROVIDER}
             name="referringProvider"
             shouldOmitFacilityId
-            addEmpty
           />
         </Grid>
 
@@ -147,7 +148,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             label={PRIMARY_CARE_PROVIDER}
             name="primaryCareProvider"
             shouldOmitFacilityId
-            addEmpty
           />
         </Grid>
 

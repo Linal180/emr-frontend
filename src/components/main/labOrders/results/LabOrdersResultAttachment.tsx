@@ -26,9 +26,10 @@ import {
   ACTION, ADD_RESULT_FILE, ATTACHMENT_TITLES, COMMENTS, DELETE_LAB_ORDER_RESULT_DESCRIPTION,
   LAB_RESULTS_LIMIT, NOT_FOUND_EXCEPTION, RESULT_FILE_NAME, USER_NOT_FOUND_EXCEPTION_MESSAGE,
   LAB_ORDER_RESULT,
+  LAB_TEXT,
 } from '../../../../constants';
 import {
-  AttachmentMetaDataType, AttachmentsPayload, AttachmentType, useGetAttachmentsByLabOrderLazyQuery,
+  AttachmentsPayload, AttachmentType, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentsByLabOrderLazyQuery,
   useRemoveAttachmentMediaMutation, useUpdateAttachmentDataMutation
 } from '../../../../generated/graphql';
 
@@ -39,6 +40,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
 
   const [labOrderAttachments, setLabOrderAttachments] = useState<AttachmentsPayload['attachments']>([])
   const [labResultId, setLabResultId] = useState<string>('')
+  const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all" });
 
   const { handleSubmit, setValue } = methods
@@ -106,6 +108,27 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
       }
     }
   });
+
+  const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      name: LAB_TEXT
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchDocumentTypeByName } = data ?? {}
+        const { documentType } = fetchDocumentTypeByName ?? {}
+        const { id } = documentType ?? {}
+        setDocumentTypeId(id || '')
+      }
+    }
+  })
+
+  useEffect(() => {
+    fetchDocumentType()
+  }, [fetchDocumentType])
 
   const fetchAttachmentsByLabOrder = useCallback(async () => {
     try {
@@ -187,9 +210,8 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
                   </TableRow>
                 ) : (
                   labOrderAttachments?.map((labOrderAttachment) => {
-                    const {
-                      attachmentName, id, comments
-                    } = labOrderAttachment || {};
+                    const { attachmentName, id, attachmentMetadata } = labOrderAttachment || {};
+                    const { comments } = attachmentMetadata || {}
 
                     return (
                       <TableRow key={id}>
@@ -265,7 +287,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
               attachmentData={attachmentData || undefined}
               filesLimit={LAB_RESULTS_LIMIT}
               reload={() => fetchAttachmentsByLabOrder()}
-              attachmentMetadata={{ metadataType: AttachmentMetaDataType.LabOrders, labOrderNum: orderNum }}
+              attachmentMetadata={{ documentTypeId, labOrderNum: orderNum }}
             />
 
             <ConfirmationModal

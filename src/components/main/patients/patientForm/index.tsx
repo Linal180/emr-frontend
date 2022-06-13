@@ -3,12 +3,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress } from "@material-ui/core";
 import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER } from "../../../../constants";
+import {
+  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+} from "../../../../constants";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
-  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
-  useUpdatePatientMutation
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
+  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
 } from "../../../../generated/graphql";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
@@ -21,25 +24,28 @@ import Alert from "../../../common/Alert";
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
-import PatientCard from './PatientCard';
+import RegisterFormComponent from './RegisterForm';
 
-const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id, isEdit, shouldShowBread= true },ref): JSX.Element => {
+
+const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
+  { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
+): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? extendedEditPatientSchema : extendedPatientSchema)
+    resolver: yupResolver(isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
   });
   const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
@@ -61,11 +67,11 @@ const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id
         if (patient) {
           const {
             suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, email,
-            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
-            releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
-            sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
-            statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients, registrationDate, smsPermission
+            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice, releaseOfInfoBill,
+            callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer, sexualOrientation,
+            genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts, statementDelivereOnline,
+            statementNote, statementNoteDateFrom, statementNoteDateTo, facility, medicationHistoryAuthority,
+            doctorPatients, registrationDate, smsPermission
           } = patient;
 
           if (facility) {
@@ -321,7 +327,7 @@ const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail, facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        email: basicEmail || '', facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -477,30 +483,39 @@ const PatientForm= forwardRef<FormForwardRef | undefined,PatientFormProps>(({ id
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-      {shouldShowBread &&  <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={shouldShowBread ? 0 :4}>
           <Box display="flex">
-            <BackButton to={`${PATIENTS_ROUTE}`} />
+            {shouldShowBread &&
+              <>
+                <BackButton to={`${PATIENTS_ROUTE}`} />
 
-            <Box ml={2}>
-              <PageHeader
-                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
-                path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
-              />
-            </Box>
+                <Box ml={2}>
+                  <PageHeader
+                    title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
+                    path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+                  />
+                </Box>
+              </>
+            }
           </Box>
-
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+          
+          <Button type="submit" variant="contained" color={shouldShowBread ? "primary" : "secondary"} disabled={disableSubmit}>
             {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
             {disableSubmit && <CircularProgress size={20} color="inherit" />}
           </Button>
-        </Box>}
+        </Box>
 
-        <PatientCard shouldShowBread={shouldShowBread} getPatientLoading={getPatientLoading} isEdit={isEdit} dispatch={dispatch} state={state}/>
+        <RegisterFormComponent
+          isEdit={isEdit}
+          dispatch={dispatch} state={state}
+          shouldShowBread={shouldShowBread}
+          getPatientLoading={getPatientLoading}
+          shouldDisableEdit={shouldDisableEdit}
+        />
       </form>
     </FormProvider>
   );
 });
 
-export default PatientForm;
-
+export default PatientForm

@@ -73,7 +73,7 @@ export const useDashboardStyles = makeStyles(() =>
         border: 'none',
         borderRadius: 10,
         backgroundColor: GREY_TWELVE,
-        width: "12ch",
+        width: "14ch",
         height: 45,
         paddingLeft: 8,
         paddingRight: 8,

@@ -79,6 +79,7 @@ query GetPatient($getPatient: GetPatient!) {
       middleName
       lastName
       suffix
+      facilityId
       inviteAccepted
       patientRecord
       firstNameUsed
@@ -124,6 +125,8 @@ query GetPatient($getPatient: GetPatient!) {
         id
         doctorId
         currentProvider
+        otherRelation
+        relation
 
         doctor {
           id
@@ -282,6 +285,8 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!) {
         id
         doctorId
         currentProvider
+        otherRelation
+        relation
 
         doctor {
           id
@@ -379,8 +384,17 @@ mutation UpdatePatientProvider($updatePatientProvider: UpdatePatientProvider!){
   }
 }
 
-query GetPatientProvider($getPatient: GetPatient!) {
-  getPatientProvider(getPatient: $getPatient) {
+mutation UpdatePatientProviderRelation($updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!){
+  updatePatientProviderRelation(updatePatientProviderRelationInputs: $updatePatientProviderRelationInputs){
+     response {
+      status
+      message
+    }   
+  }
+}
+
+query GetPatientProviders($getPatient: GetPatient!) {
+  getPatientProviders(getPatient: $getPatient) {
     response {
       name
       error
@@ -393,6 +407,8 @@ query GetPatientProvider($getPatient: GetPatient!) {
       doctorId
       patientId
       currentProvider
+      otherRelation
+      relation
       createdAt
       updatedAt
 
@@ -413,5 +429,44 @@ query GetPatientProvider($getPatient: GetPatient!) {
             }
         }
       }
+  }
+}
+
+query GetPatientProvider($patientProviderInputs: PatientProviderInputs!) {
+  getPatientProvider(patientProviderInputs: $patientProviderInputs) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    provider {
+      id
+      doctorId
+      patientId
+      currentProvider
+      otherRelation
+      relation
+      createdAt
+      updatedAt
+
+      doctor {
+          id
+          firstName
+          lastName
+          email
+          speciality
+
+          contacts {
+            id
+            name
+            city
+            email
+            phone
+            primaryContact
+            }
+        }
+      } 
   }
 }

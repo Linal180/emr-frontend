@@ -17,7 +17,7 @@ import {
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl } = useContext(AuthContext);
-  const { setFacilityList, setRoleList, setPracticeList, } = useContext(ListContext)
+  const { setFacilityList, setRoleList } = useContext(ListContext)
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
@@ -46,7 +46,6 @@ const ProfileDropdownMenu = (): JSX.Element => {
     handleLogout();
     setFacilityList([]);
     setRoleList([])
-    setPracticeList([])
   };
 
   useEffect(() => {
@@ -160,7 +159,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
           </Grid>
 
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} alignItems="center">
               <Grid item md={8}>
                 <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>
                   {LOCK_SCREEN}

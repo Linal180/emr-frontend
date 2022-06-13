@@ -1,31 +1,28 @@
-//packages import
+// packages block
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
-//components import
-import InputController from "../../../../controller";
-import CardComponent from "../../../common/CardComponent";
-import PhoneField from "../../../common/PhoneInput";
-import Selector from "../../../common/Selector";
-import ViewDataLoader from "../../../common/ViewDataLoader";
-//tyoes, interfaces, utils import
 import {
-  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, EMPTY_OPTION,
-  FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
+  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
   MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
   MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../constants";
+import InputController from "../../../../controller";
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/patientReducer";
+// interfaces, utils block
 import { setRecord } from "../../../../utils";
+import CardComponent from "../../../common/CardComponent";
+import PhoneField from "../../../common/PhoneInput";
+// components block
+import Selector from "../../../common/Selector";
+import ViewDataLoader from "../../../common/ViewDataLoader";
 
-
-const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch }) => {
+const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
   const methods = useFormContext<PatientInputProps>()
+  const { sameAddress } = state || {}
   const { watch, setValue } = methods
   const { basicAddress, basicAddress2, basicCity, basicCountry, basicEmail, basicState, basicZipCode } = watch()
-
-  const { sameAddress } = state || {}
 
   const copyAddress = () => {
     basicAddress && setValue("guarantorAddress", basicAddress)
@@ -61,10 +58,11 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
         <>
           <Grid item md={12} sm={12} xs={12}>
             <Selector
+              addEmpty
+              disabled={shouldDisableEdit}
               isRequired
               name="guarantorRelationship"
               label={GUARANTOR_RELATION}
-              value={EMPTY_OPTION}
               options={MAPPED_RELATIONSHIP_TYPE}
             />
           </Grid>
@@ -76,6 +74,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 fieldType="text"
                 controllerName="guarantorSuffix"
                 controllerLabel={SUFFIX}
@@ -84,6 +83,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
             <Grid item md={6} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired
                 fieldType="text"
                 controllerName="guarantorFirstName"
@@ -95,6 +95,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 fieldType="text"
                 controllerName="guarantorMiddleName"
                 controllerLabel={MIDDLE_NAME}
@@ -103,6 +104,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
             <Grid item md={6} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired
                 fieldType="text"
                 controllerName="guarantorLastName"
@@ -113,13 +115,14 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="guarantorEmployerName"
               controllerLabel={EMPLOYER}
             />
           </Grid>
 
-          <FormControl component="fieldset">
+          <FormControl component="fieldset" disabled={shouldDisableEdit}>
             <FormGroup>
               <Box mr={3} mb={2} mt={2}>
                 <FormControlLabel
@@ -136,6 +139,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="guarantorZipCode"
@@ -145,6 +149,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="text"
               controllerName="guarantorAddress"
@@ -154,6 +159,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="guarantorAddress2"
               controllerLabel={ADDRESS_2}
@@ -163,6 +169,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
           <Grid container spacing={3}>
             <Grid item md={4}>
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired
                 fieldType="text"
                 controllerName="guarantorCity"
@@ -172,19 +179,21 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
 
             <Grid item md={4}>
               <Selector
+                addEmpty
+                disabled={shouldDisableEdit}
                 isRequired
                 name="guarantorState"
                 label={STATE}
-                value={EMPTY_OPTION}
                 options={MAPPED_STATES}
               />
             </Grid>
 
             <Grid item md={4}>
               <Selector
+                addEmpty
+                disabled={shouldDisableEdit}
                 name="guarantorCountry"
                 label={COUNTRY}
-                value={EMPTY_OPTION}
                 options={MAPPED_COUNTRIES}
               />
             </Grid>
@@ -193,6 +202,7 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <InputController
+                disabled={shouldDisableEdit}
                 isRequired
                 fieldType="text"
                 controllerName="guarantorSsn"
@@ -201,12 +211,13 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <PhoneField isRequired name="guarantorPhone" label={PHONE} />
+              <PhoneField isRequired name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
+              disabled={shouldDisableEdit}
               isRequired
               fieldType="email"
               controllerName="guarantorEmail"
@@ -219,4 +230,4 @@ const PatientGuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state,
   )
 }
 
-export default PatientGuarantorCard
+export default GuarantorCard;

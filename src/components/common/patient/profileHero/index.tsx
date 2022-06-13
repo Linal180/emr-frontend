@@ -1,5 +1,4 @@
 import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
-import moment from "moment";
 import { useParams } from "react-router-dom";
 import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
 // components block
@@ -7,12 +6,14 @@ import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
-import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, NOTES, MORE_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
+  getFormatDateString
+} from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
@@ -24,7 +25,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart, isCheckIn }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -122,27 +123,26 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, sexAtBirth, contacts, doctorPatients, createdAt
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  // const patientName = `${firstName} ${lastName}`;
-  const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
 
   if (selfContact && selfContact[0]) {
-    const { phone, email, country, state } = selfContact[0]
-    selfPhoneNumber = formatPhone(phone || '') || "--"
-    selfEmail = patientEmail ? patientEmail : email || "--"
-    selfCurrentLocation = `${country ? country : N_A} ${state ? state : ''}`
+    const { phone, email, state, address, city, zipCode } = selfContact[0]
+    selfPhoneNumber = formatPhone(phone || '') || ""
+    selfEmail = patientEmail ? patientEmail : email || ""
+    const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
+    selfCurrentLocation = selfAddress.trim() ? selfAddress : ''
   }
 
   const ProfileDetails = [
     {
       icon: ProfileUserIcon(),
-      description: `${PATIENT_AGE} Yrs Old`
+      description: calculateAge(dob || '')
     },
     {
       icon: HashIcon(),
@@ -203,7 +203,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   return (
     <>
-
       <Box className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
           <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
@@ -238,18 +237,26 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     {`${firstName} ${lastName}`}
                   </Box>
 
-                  <Typography variant="body2">({patientRecord})</Typography>
+                  <Box display="flex" flexWrap="wrap" alignItems="center">
+                    <Typography variant="body2">
+                      {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+                    </Typography>
+                  </Box>
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`}
-                      className={classes.profileInfoItem}
-                    >
-                      <Box>{item.icon}</Box>
-                      <Typography variant="body1">{item.description}</Typography>
-                    </Box>
-                  ))}
+                  {ProfileDetails.map((item, index) => {
+                    const { icon, description } = item
+
+                    return (
+                      <Box display="flex" flexWrap="wrap" key={`${description}-${index}`}
+                        className={classes.profileInfoItem}
+                      >
+                        <Box>{icon}</Box>
+                        <Typography variant="body1">{description ? description : renderMissing()}</Typography>
+                      </Box>
+                    )
+                  })}
 
                   <div ref={noteRef}
                     className={`${classes.profileNoteInfoItem} pointer-cursor`}
@@ -293,7 +300,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                   {SCHEDULE_APPOINTMENTS_TEXT}
                 </Button> */
                 }
-
               </Box>
             </Box>
           </Box>
@@ -317,14 +323,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Card>
         </Box>
       </Collapse>
-
-      <Box my={4}>
-        {!isChart && <Box pr={1}>
-          <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-            {EDIT_PATIENT}
-          </Button>
-        </Box>}
-      </Box>
     </>
   )
 };

@@ -10,10 +10,10 @@ import { US_DATE_FORMAT } from '../../constants';
 import { PickerProps } from "../../interfacesTypes";
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
-const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = false, disableFuture=true }): JSX.Element => {
+const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = false, disableFuture = true, disabled }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control, setValue } = useFormContext()
-  
+
   return (
     <Controller
       name={name}
@@ -35,9 +35,10 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = fals
               KeyboardButtonProps={{ 'aria-label': 'change date', }}
               open={openPicker}
               placeholder={US_DATE_FORMAT}
+              disabled={disabled}
               value={field.value}
-              onClick={() => setOpenPicker(!openPicker)}
-              onClose={() => setOpenPicker(!openPicker)}
+              onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
+              onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
               onChange={field.onChange}
               onKeyDown={(e) => e.preventDefault()}
               error={invalid}
@@ -46,12 +47,12 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = fals
               disableFuture={disableFuture}
               maxDate="2100-01-31"
               keyboardIcon={<CalendarIcon />}
-              InputProps={ clearable ? {
-                startAdornment: <IconButton aria-label="clear" onClick={()=> setValue(name, null)}>
+              InputProps={clearable ? {
+                startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>
                   <ClearIcon />
                 </IconButton>
-              }: undefined
-            }
+              } : undefined
+              }
             />
           </MuiPickersUtilsProvider>
         </FormControl>

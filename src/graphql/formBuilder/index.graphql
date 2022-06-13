@@ -21,6 +21,7 @@ query findAllForms($formInput: FormInput!) {
       id
       type
       facilityId
+      practiceId
       name
       createdAt
       isActive
@@ -46,6 +47,8 @@ query findAllForms($formInput: FormInput!) {
             fieldId
             textArea
             isMultiSelect
+            apiCall
+            tableContactType
 
             options {
               name
@@ -86,6 +89,7 @@ query getForm($getForm: GetForm!) {
       name
       type
       facilityId
+      practiceId
       isActive
 
       layout {
@@ -109,6 +113,8 @@ query getForm($getForm: GetForm!) {
             fieldId
             textArea
             isMultiSelect
+            tableContactType
+            apiCall
 
             options {
               name
@@ -145,6 +151,7 @@ query getPublicForm($getForm: GetForm!) {
       id
       type
       facilityId
+      practiceId
       name
       isActive
 
@@ -169,6 +176,8 @@ query getPublicForm($getForm: GetForm!) {
             fieldId
             textArea
             isMultiSelect
+            apiCall
+            tableContactType
 
             options {
               name

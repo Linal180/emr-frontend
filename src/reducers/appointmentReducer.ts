@@ -8,6 +8,7 @@ export interface State {
   page: number;
   instance: any;
   offset: number;
+  isEdit: boolean;
   agreed: boolean;
   copied: boolean;
   appEdit: boolean;
@@ -15,6 +16,7 @@ export interface State {
   appPaid: boolean;
   serviceId: string;
   appStatus: string;
+  patientId: string;
   facilityId: string;
   totalPages: number;
   providerId: string;
@@ -61,6 +63,7 @@ export interface State {
     patientId: string;
     providerId: string;
   };
+  primaryInsurance: string
 }
 
 export const initialState: State = {
@@ -72,6 +75,8 @@ export const initialState: State = {
   doctor: null,
   totalPages: 0,
   copied: false,
+  isEdit: false,
+  patientId: '',
   agreed: false,
   appEdit: false,
   instance: null,
@@ -120,6 +125,7 @@ export const initialState: State = {
     patientId: "",
     providerId: '',
   },
+  primaryInsurance: ''
 }
 
 export enum ActionType {
@@ -128,6 +134,7 @@ export enum ActionType {
   SET_COPIED = 'setCopied',
   SET_AGREED = 'setAgreed',
   SET_DOCTOR = 'setDoctor',
+  SET_IS_EDIT = 'setIsEdit',
   SET_APP_EDIT = 'setAppEdit',
   SET_APP_OPEN = 'setAppOpen',
   SET_APP_PAID = 'setAppPaid',
@@ -135,6 +142,7 @@ export enum ActionType {
   SET_FACILITY = 'setFacility',
   SET_UP_COMING = 'setUpComing',
   SET_COMPLETED = 'setComplete',
+  SET_PATIENT_ID = 'setPatientId',
   SET_APP_DETAIL = 'setAppDetail',
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
@@ -172,6 +180,7 @@ export enum ActionType {
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_PRIMARY_INSURANCE = 'setPrimaryInsurance'
 }
 
 export type Action =
@@ -179,10 +188,12 @@ export type Action =
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }
+  | { type: ActionType.SET_IS_EDIT, isEdit: boolean }
   | { type: ActionType.SET_APP_EDIT; appEdit: boolean }
   | { type: ActionType.SET_APP_OPEN; appOpen: boolean }
   | { type: ActionType.SET_APP_PAID; appPaid: boolean }
   | { type: ActionType.SET_APP_STATUS; appStatus: string }
+  | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
   | { type: ActionType.SET_PAGE_COMING; pageComing: number }
@@ -223,6 +234,7 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -245,6 +257,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         agreed: action.agreed
+      }
+
+    case ActionType.SET_IS_EDIT:
+      return {
+        ...state,
+        isEdit: action.isEdit
       }
 
     case ActionType.SET_DATE:
@@ -287,6 +305,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientName: action.patientName
+      }
+
+    case ActionType.SET_PATIENT_ID:
+      return {
+        ...state,
+        patientId: action.patientId
       }
 
     case ActionType.SET_PROVIDER_NAME:
@@ -508,6 +532,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         totalPagesCompleted: action.totalPagesCompleted
+      }
+    case ActionType.SET_PRIMARY_INSURANCE:
+      return {
+        ...state,
+        primaryInsurance: action.primaryInsurance
       }
   }
 };

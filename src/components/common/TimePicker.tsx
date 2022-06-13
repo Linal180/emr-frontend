@@ -23,6 +23,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
           <OutlinedInput
             id={`${name}-dialog`}
             {...field}
+            className="timePickerIcon"
             type="time"
             defaultValue="07:30"
             error={invalid}

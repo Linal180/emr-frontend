@@ -1,5 +1,5 @@
 import { AllDoctorPayload, DoctorPayload, SlotsPayload, SchedulesPayload } from "../generated/graphql"
-import { DaySchedule } from "../interfacesTypes";
+import { DaySchedule, SelectorOption } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -23,11 +23,14 @@ export interface State {
   doctors: AllDoctorPayload['doctors'];
   doctorSlots: SlotsPayload['slots'];
   doctorSchedules: SchedulesPayload['schedules'];
+  provider: SelectorOption;
+  allDoctors: AllDoctorPayload['doctors'];
 }
 
 export const initialState: State = {
   page: 1,
   doctors: [],
+  allDoctors: [],
   doctor: null,
   totalPages: 0,
   contactId: '',
@@ -47,6 +50,10 @@ export const initialState: State = {
   doctorFacilityId: "",
   scheduleOpenModal: false,
   openScheduleDelete: false,
+  provider: {
+    id: "",
+    name: ""
+  }
 }
 
 export enum ActionType {
@@ -71,6 +78,8 @@ export enum ActionType {
   SET_DELETE_SCHEDULE_ID = 'setDeleteScheduleId',
   SET_SCHEDULE_OPEN_MODAL = 'setScheduleOpenModal',
   SET_OPEN_SCHEDULE_DELETE = 'setOpenScheduleDelete',
+  SET_PROVIDER = 'setProvider',
+  SET_ALL_DOCTORS = 'setAllDoctors'
 }
 
 export type Action =
@@ -95,7 +104,9 @@ export type Action =
   | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
   | { type: ActionType.SET_DOCTOR_SLOTS; doctorSlots: SlotsPayload['slots'] }
   | { type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: SchedulesPayload['schedules'] }
-
+  | { type: ActionType.SET_PROVIDER, provider: SelectorOption }
+  | { type: ActionType.SET_ALL_DOCTORS; allDoctors: AllDoctorPayload['doctors'] }
+  
 export const doctorReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case ActionType.SET_PAGE:
@@ -176,6 +187,12 @@ export const doctorReducer = (state: State, action: Action): State => {
         doctor: action.doctor
       }
 
+    case ActionType.SET_ALL_DOCTORS:
+      return {
+        ...state,
+        allDoctors: action.allDoctors
+      }
+
     case ActionType.SET_DOCTORS:
       return {
         ...state,
@@ -222,6 +239,12 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         serviceId: action.serviceId
+      }
+
+    case ActionType.SET_PROVIDER:
+      return {
+        ...state,
+        provider: action.provider
       }
   };
 }

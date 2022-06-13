@@ -24,9 +24,8 @@ import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
 import Alert from '../../../common/Alert';
 import { generateString, getFormatDateString, renderItem } from '../../../../utils';
-import history from '../../../../history';
 
-const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.Element => {
+const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }): JSX.Element => {
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
     defaultValues: {
@@ -51,24 +50,29 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.
         Alert.error(message)
     },
 
-    onCompleted() {
-      Alert.success('Lab Orders Created Successfully');
-      // history.push(LOGIN_ROUTE)
-      !appointmentInfo && history.push(`/patients/${patientId}/details/10`)
-      reset()
+    onCompleted(data) {
+      if (data) {
+        const { createLabTest } = data ?? {}
+        const { labTest } = createLabTest ?? {}
+        const { orderNumber } = labTest ?? {}
+        Alert.success('Lab Orders Created Successfully');
+        !appointmentInfo && handleStep && handleStep(1, orderNumber)
+        reset()
+      }
     }
   });
 
   const onSubmit: SubmitHandler<LabOrdersCreateFormInput> = async (values) => {
     const orderNumber = generateString()
+    const accessionNumber = generateString(6)
     const { appointment, labTestStatus, diagnosesIds, testField } = values
-    let appointmentId=''
-    if(appointmentInfo){
-      appointmentId= appointmentInfo.id
-    }else{
-      appointmentId=appointment?.id ?? ''
+    let appointmentId = ''
+    if (appointmentInfo) {
+      appointmentId = appointmentInfo.id
+    } else {
+      appointmentId = appointment?.id ?? ''
     }
-     
+
     const { id: testStatus } = labTestStatus ?? {}
 
     testField.forEach(async (testFieldValues) => {
@@ -81,7 +85,8 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.
         testNotes,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
         testTime,
-        orderNumber
+        orderNumber,
+        accessionNumber
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined
@@ -120,6 +125,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.
     })
   }
 
+
   return (
     <>
       <FormProvider {...methods}>
@@ -128,19 +134,17 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo }): JSX.
             <Box p={2}>
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
-
-
               </Box>
 
               <Grid container spacing={3}>
                 <Grid item md={4} sm={12} xs={12}>
                   {appointmentInfo ? renderItem(APPOINTMENT_TEXT, appointmentInfo.name) :
-                      <AppointmentSelector
-                        label={APPOINTMENT_TEXT}
-                        name="appointment"
-                        addEmpty
-                        patientId={patientId}
-                      />}
+                    <AppointmentSelector
+                      label={APPOINTMENT_TEXT}
+                      name="appointment"
+                      addEmpty
+                      patientId={patientId}
+                    />}
                 </Grid>
 
                 <Grid item md={4} sm={12} xs={12}>

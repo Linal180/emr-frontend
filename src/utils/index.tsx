@@ -6,33 +6,34 @@ import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip
+  Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
+  withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE } from "../theme";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
+  TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
-  Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType, SlotsPayload, DoctorPatient,
-  AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
-  UnitType,
-  SnoMedCodes,
-  Insurance,
-  PracticeUsersWithRoles,
-} from "../generated/graphql"
+  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
+  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE
+} from "../theme";
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
-  SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
-  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL, ITEM_MODULE
+  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
+  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
+  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE
 } from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
+  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
+  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -52,7 +53,7 @@ export const formatValue = (value: string) => {
   value.split("_").map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
-  return formatted;
+  return formatted.trim();
 };
 
 export const formatServiceCode = (value: string) => {
@@ -97,6 +98,10 @@ export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boo
     {renderIcon && renderIcon()}
     </Box>
   </TableCell>
+);
+
+export const renderMissing = () => (
+  <Typography variant='h6' className="danger">{MISSING}</Typography>
 );
 
 export const requiredLabel = (label: string) => {
@@ -174,7 +179,7 @@ export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
 
-export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
+export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
@@ -231,6 +236,86 @@ export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
+
+export const calculateAge = (dateString: string) => {
+  let now = new Date();
+
+  let yearNow = now.getFullYear();
+  let monthNow = now.getMonth();
+  let dateNow = now.getDate();
+
+  let dob = new Date(parseInt(dateString.substring(6, 10)),
+    parseInt(dateString.substring(0, 2)) - 1,
+    parseInt(dateString.substring(3, 5))
+  );
+
+  let yearDob = dob.getFullYear();
+  let monthDob = dob.getMonth();
+  let dateDob = dob.getDate();
+  let age = {
+    years: 0,
+    months: 0,
+    days: 0
+  };
+  let ageString = "";
+  let yearString = "";
+  let monthString = "";
+  let dayString = "";
+
+
+  let yearAge = yearNow - yearDob;
+  let monthAge = 0
+  let dateAge = 0
+
+  if (monthNow >= monthDob)
+    monthAge = monthNow - monthDob;
+  else {
+    yearAge--;
+    monthAge = 12 + monthNow - monthDob;
+  }
+
+  if (dateNow >= dateDob)
+    dateAge = dateNow - dateDob;
+  else {
+    monthAge--;
+    dateAge = 31 + dateNow - dateDob;
+
+    if (monthAge < 0) {
+      monthAge = 11;
+      yearAge--;
+    }
+  }
+
+  age = {
+    years: yearAge,
+    months: monthAge,
+    days: dateAge
+  };
+
+  if (age.years > 1) yearString = " years";
+  else yearString = " year";
+  if (age.months > 1) monthString = " months";
+  else monthString = " month";
+  if (age.days > 1) dayString = " days";
+  else dayString = " day";
+
+  if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.months + monthString + "," + age.days + dayString;
+  else if ((age.years === 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days === 0))
+    ageString = age.years + yearString;
+  else if ((age.years > 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.years + yearString + ", " + age.months + monthString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days > 0))
+    ageString = age.months + monthString + ", " + age.days + dayString;
+  else if ((age.years > 0) && (age.months === 0) && (age.days > 0))
+    ageString = age.years + yearString + ", " + age.days + dayString;
+  else if ((age.years === 0) && (age.months > 0) && (age.days === 0))
+    ageString = age.months + monthString;
+
+  return `${ageString} old`;
+}
 
 export const getDateWithDay = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -316,7 +401,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
           && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
+          name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
   }
@@ -447,22 +532,6 @@ export const renderOptionsForSelector = (options: SelectorOption[]) => {
   return data;
 }
 
-// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
-//   const data: SelectorOption[] = [];
-
-//   if (!!reactions) {
-//     for (let reaction of reactions) {
-//       if (reaction) {
-//         const { id, name } = reaction;
-
-//         name && data.push({ id, name: formatValue(name) })
-//       }
-//     }
-//   }
-
-//   return data;
-// }
-
 export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
   const data: multiOptionType[] = [];
 
@@ -590,6 +659,15 @@ export const getStandardTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+};
+
+export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {
+  if (!strtimestamp && !endtimestamp) return "";
+
+  var startTime = moment(new Date(parseInt(strtimestamp)));
+  var endTime = moment(new Date(parseInt(endtimestamp)));
+
+  return endTime.diff(startTime, 'minutes');
 };
 
 export const getDayFromTimestamps = (timestamp: string) => {
@@ -741,12 +819,76 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   })
 
 export const appointmentStatus = (status: string) => {
-  const cancelled = status === Appointmentstatus.Cancelled;
+  switch (status) {
+    case AppointmentStatus.NoShow:
+      return {
+        text: formatValue(AppointmentStatus.NoShow),
+        bgColor: RED_THREE_RGBA,
+        textColor: RED_THREE,
+      }
 
-  return {
-    text: cancelled ? CANCELLED : INITIATED,
-    bgColor: cancelled ? BLUE_FIVE : RED_ONE,
-    textColor: cancelled ? RED : GREEN
+    case AppointmentStatus.Cancelled:
+      return {
+        text: formatValue(AppointmentStatus.Cancelled),
+        bgColor: RED_RGBA,
+        textColor: RED
+      }
+
+    case AppointmentStatus.CheckIn:
+      return {
+        text: formatValue(AppointmentStatus.CheckIn),
+        bgColor: LIGHT_GREEN_RGBA,
+        textColor: LIGHT_GREEN_ONE
+      }
+
+    case AppointmentStatus.Discharged:
+      return {
+        text: formatValue(AppointmentStatus.Discharged),
+        bgColor: DARK_GREEN_RGBA,
+        textColor: DARK_GREEN
+      }
+
+    case AppointmentStatus.InLobby:
+      return {
+        text: formatValue(AppointmentStatus.InLobby),
+        bgColor: BLUE_SEVEN_RGBA,
+        textColor: BLUE_SEVEN
+      }
+
+    case AppointmentStatus.InSession:
+      return {
+        text: formatValue(AppointmentStatus.InSession),
+        bgColor: ORANGE_SIMPLE_RGBA,
+        textColor: ORANGE_SIMPLE
+      }
+
+    case AppointmentStatus.Initiated:
+      return {
+        text: formatValue(AppointmentStatus.Initiated),
+        bgColor: GRAY_SIMPLE_RGBA,
+        textColor: GRAY_SIMPLE
+      }
+
+    case AppointmentStatus.Rescheduled:
+      return {
+        text: formatValue(AppointmentStatus.Rescheduled),
+        bgColor: PURPLE_RGBA,
+        textColor: PURPLE
+      }
+
+    case AppointmentStatus.SelfCheckIn:
+      return {
+        text: formatValue(AppointmentStatus.SelfCheckIn),
+        bgColor: GREEN_RGBA,
+        textColor: GREEN
+      }
+
+    default:
+      return {
+        text: formatValue(AppointmentStatus.Initiated),
+        bgColor: GREEN_RGBA,
+        textColor: GREEN
+      }
   }
 };
 
@@ -766,7 +908,6 @@ export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) =>
     case ProblemSeverity.Acute:
       return ACUTE;
   }
-
 };
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
@@ -919,8 +1060,11 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
+    else if (typeof values[property] === 'boolean') {
+      arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
+    }
     else {
-      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [], arrayOfObjects: [] })
+      arr.push({ FormsElementsId: property, value: values[property] || '', arrayOfStrings: [], arrayOfObjects: [] })
     }
   }
   return arr;
@@ -950,6 +1094,8 @@ export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolea
       return ''
     case ElementType.Checkbox:
       return []
+    case ElementType.Date:
+      return new Date()
     default:
       return ''
   }
@@ -1059,7 +1205,7 @@ export const ounceToPounds = (o: number) => (o / 16)
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  var arr = url.split(','),
+  let arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1080,12 +1226,13 @@ export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string
     case UnitType.Centimeter:
       const height = centimeterToInches(patientHeight);
       return height?.toString()
+
     case UnitType.Inch:
       return PatientHeight
+
     default:
       return PatientHeight
   }
-
 }
 
 export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
@@ -1134,11 +1281,11 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 
-export const generateString = () => {
+export const generateString = (numberOfRounds = 2) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   const charactersLength = characters.length - 2;
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < numberOfRounds; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result + Math.floor(100000 + Math.random() * 9000);
@@ -1159,7 +1306,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   return ""
 }
 
-export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modalName:ITEM_MODULE){
+export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
   const data: SelectorOption[] = [];
 
   if (!!list) {
@@ -1170,10 +1317,25 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modal
 
           data.push({ id: snoMedCodeId, name: referencedComponentId })
           break;
+        case ITEM_MODULE.icdCodes:
+          let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          break;
+        case ITEM_MODULE.cptCode:
+          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
+          break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
-  
+
           data.push({ id: insuranceId, name: `${payerId} | ${payerName}` })
+          break;
+        case ITEM_MODULE.documentTypes:
+          let { id: documentTypeId, type } = (item as unknown as DocumentType) || {};
+
+          data.push({ id: documentTypeId, name: type })
           break;
         default:
           break;
@@ -1181,6 +1343,30 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[],modal
     }
   }
 
+  return data;
+};
+
+export function renderTableOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: TABLE_SELECTOR_MODULES) {
+  const data: TableCodesProps[] = [];
+
+  if (!!list) {
+    for (let item of list) {
+      switch (modalName) {
+        case TABLE_SELECTOR_MODULES.icdCodes:
+          let { id: icdCodeId, description, code } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodeId, code, description: description || '' })
+          break;
+        case TABLE_SELECTOR_MODULES.cptCode:
+          let { id: cptCodeId, name } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, code: cptCodeId, description: `${name?.slice(0, 100)}...` || '' })
+          break;
+        default:
+          break;
+      }
+    }
+  }
   return data;
 };
 
@@ -1244,9 +1430,9 @@ export const practiceChartOptions = (chartBgColor: string) => {
     },
 
     tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table style="margin:auto;padding:0">',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        '<td style="padding:0;"><b>{point.y}</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true,
@@ -1269,12 +1455,27 @@ export const practiceChartOptions = (chartBgColor: string) => {
   }
 }
 
-export const renderArrayAsSelectorOptions = (array: string[] | number[]) => {
+export const renderArrayAsSelectorOptions = (array: string[] | number[], id = '') => {
   let result: SelectorOption[] = [];
 
   if (!!array) {
     for (let item of array) {
-      result.push({ id: item.toString(), name: item.toString() })
+      result.push({
+        id: id ?? item.toString(),
+        name: typeof item === 'string' ? formatValue(item) : item.toString()
+      })
+    }
+  }
+
+  return result;
+};
+
+export const renderPairSelectorOptions = (id: string, array: string[]) => {
+  let result: SelectorOption[] = [];
+
+  if (!!array) {
+    for (let item of array) {
+      result.push({ id, name: formatValue(item).trim().toString() })
     }
   }
 
@@ -1340,15 +1541,120 @@ export const getShortName = (name: string) => {
   return shortName;
 }
 
-export function mapEnum<enumType> (enumerable: enumType): SelectorOption[] {
-  // get all the members of the enum
-  let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
+  if (enumerable) {
+    let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
 
-  // now map through the enum values
-  return enumMembers.map(m => {
-    return {
-      id: m,
-      name: formatValue(m)
-    }
-  });
+    return enumMembers.map(member => {
+      return {
+        id: member,
+        name: formatValue(member).trim()
+      }
+    });
+  } else return [EMPTY_OPTION]
 }
+
+export const getAppointmentStatus = (status: string) => {
+  switch (status) {
+    case formatValue(AppointmentStatus.Cancelled):
+      return AppointmentStatus.Cancelled;
+
+    case formatValue(AppointmentStatus.CheckIn):
+      return AppointmentStatus.CheckIn;
+
+    case formatValue(AppointmentStatus.Discharged):
+      return AppointmentStatus.Discharged;
+
+    case formatValue(AppointmentStatus.InLobby):
+      return AppointmentStatus.InLobby;
+
+    case formatValue(AppointmentStatus.InSession):
+      return AppointmentStatus.InSession;
+
+    case formatValue(AppointmentStatus.Initiated):
+      return AppointmentStatus.Initiated;
+
+    case formatValue(AppointmentStatus.NoShow):
+      return AppointmentStatus.NoShow;
+
+    case formatValue(AppointmentStatus.Rescheduled):
+      return AppointmentStatus.Rescheduled;
+
+    case formatValue(AppointmentStatus.SelfCheckIn):
+      return AppointmentStatus.SelfCheckIn;
+
+    default:
+      return AppointmentStatus.Initiated;
+  }
+}
+
+export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
+  if(status===AppointmentStatus.Discharged){
+    return 'Completed'
+  }
+
+  if(status === AppointmentStatus.Initiated){
+    return 'Pending'
+  }
+
+  if(status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled){
+    return ''
+  }
+  
+  switch (checkInActiveStep) {
+    case 0:
+      return 'Initiated';
+    case 1:
+      return 'With Staff';
+    case 2:
+      return 'With Staff';
+    case 3:
+      return 'With Provider';
+    case 4:
+      return 'With Provider';
+    case 5:
+      return 'With Provider';
+    case 6:
+        return 'Billing';
+    default:
+      return ''
+  }
+}
+
+export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
+  return status === AppointmentStatus.Initiated
+}
+
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+  switch (value) {
+    case AppointmentStatus.Initiated:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.CheckIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.Rescheduled:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.Initiated, AppointmentStatus.CheckIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+      )
+
+    case AppointmentStatus.CheckIn:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
+      )
+
+    case AppointmentStatus.InLobby:
+      return renderArrayAsSelectorOptions(
+        [AppointmentStatus.InSession], id
+      )
+
+    case AppointmentStatus.InSession:
+    case AppointmentStatus.NoShow:
+    case AppointmentStatus.Cancelled:
+    case AppointmentStatus.Discharged:
+    default:
+      return [EMPTY_OPTION]
+  }
+};
+
+export const appointmentChargesDescription = (amount: string) =>
+  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 

@@ -1,29 +1,33 @@
 //packages block
+import { Phone as PhoneIcon } from '@material-ui/icons';
+import moment from "moment-timezone";
 import states from "states-us";
 import { v4 as uuid } from "uuid";
-import moment from "moment-timezone";
-import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
-import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
-import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
-// graphql and interfaces block
+//assets
+import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
+import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
+import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord,
-} from "../utils";
-import {
-  SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
-  FormInitialType, TestOption, SpecimenTypeOption, LabOrdersResultOption,
-} from "../interfacesTypes";
-import {
-  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
-  DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon, NewAvatarIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
+  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, 
+  NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, EditOutlinedIcon,
+  TrashOutlinedIcon
 } from "../assets/svgs";
 import {
-  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag, PolicyHolderRelationshipType, OrderOfBenefitType, PricingProductType, CopayType, Policy_Holder_Gender_Identity,
+  AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType, 
+  Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus, 
+  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType, 
+  PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns, Race, 
+  RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
+import {
+  ColumnTypes, FormBuilderFormInitial,
+  FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption, 
+  SpecimenTypeOption, StepLabelType, TestOption
+} from "../interfacesTypes";
+// graphql and interfaces block
+import {
+  formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord
+} from "../utils";
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
@@ -79,6 +83,12 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const GRANTED_TEXT = 'Granted';
+export const CONTRACT_NO = 'Contract No';
+export const ORGANIZATION_NAME = 'Organization Name';
+export const FACILITY_FORM = 'Facility Form';
+export const PRACTICE_FORM = 'Practice Form';
+export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
@@ -106,6 +116,10 @@ export const NOTES = "Notes";
 export const ACUTE = "Acute";
 export const CHRONIC = "Chronic";
 export const LOCK_TIME_OUT = 604800000;
+export const BASIC_DETAILS = "Basic Details";
+export const DEMOGRAPHIC = "Demographic";
+export const BILLING_DETAILS = "Billing Details";
+export const EMERGENCY_CONTACTS = "Emergency Contacts";
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -114,6 +128,7 @@ export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
+export const NO_WHITE_SPACE_ALLOWED_FOR_INPUT = "No white space allowed at beginning of input";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const UPDATE_MEDIA = "Update media";
@@ -133,7 +148,7 @@ export const CARE_TEAM = "Care Team";
 export const FORM_NAME = "Form name";
 export const THANK_YOU_TEXT = "Thank you!";
 export const FORM_SUBMIT_TEXT = "Form Submit";
-export const FORM_TYPE = "Select a form type";
+export const FORM_TYPE = "Form type";
 export const ADD_COLUMNS_TEXT = "Add Columns";
 export const FORM_EMBED_TITLE = "Embed your form builder";
 export const FORM_NOT_PUBLISHED = "Form is not published";
@@ -211,9 +226,11 @@ export const PAIN_TEXT = "Pain"
 export const SMOKING_STATUS_TEXT = "Smoking Status"
 export const HEAD_CIRCUMFERENCE = "Head Circumference"
 export const FEVER_TEXT = "Temperature"
+export const FEVER = "Fever"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
+export const CLOSE = "Close";
 export const UPDATE = "Update";
 export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
@@ -244,6 +261,7 @@ export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const SAME_AS_PATIENT = "Same as patient";
+export const DONT_WANT_TO_SHARE_EMAIL = "Don't want to share email";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
@@ -283,6 +301,7 @@ export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
 export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
+export const TERTIARY_INSURANCE = "Tertiary Insurance";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const ADD_STAFF = "Add Staff";
@@ -329,6 +348,7 @@ export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const ADD_COPAY = "Add Copay";
 export const ADD_PRACTICE = "Add practice";
 export const EDIT_PRACTICE = "Edit practice";
 export const ADD_PATIENT_MODAL = "Add New Patient";
@@ -339,6 +359,7 @@ export const SET_TIME_ZONE = "Set Time Zone";
 export const UPDATE_DOCTOR = "Update Doctor";
 export const UPDATE_PATIENT = "Update Patient";
 export const CREATE_PATIENT = "Create Patient";
+export const CREATE_COPAY = "Create Copay";
 export const UPDATE_FACILITY = "Update Facility";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
@@ -386,14 +407,18 @@ export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
 export const NOT_PUBLISHED = "Not Published";
+export const DRAFT_TEXT = "Draft";
 export const TO_BILLING = "To Billing";
+export const TO_LAB_ORDERS = "To Lab Orders";
 export const UPLOAD_LOGO = "Upload Logo";
 export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
+export const PROBLEM_TEXT = "Problem";
 export const ALLERGIES_TEXT = "Allergies";
+export const ALLERGIE_TEXT = "Allergies";
 export const CARE_PLAN_TEXT = "Care Plan";
 export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
@@ -411,7 +436,8 @@ export const PROVIDER_MANAGEMENT = "Provider Management";
 export const PROVIDER_DETAILS = "Provider Details";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const ADD_PROVIDER_TEXT = "Add Provider";
-export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
+export const ADD_PROVIDER_INFORMATION = "Click here to add Provider information";
+export const SEARCH_PATIENT_NAME_ID = "Patient Name, Patient ID or Insurance Number etc...";
 export const EMERGENCY_ACCESS = "Emergency Access";
 export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
@@ -452,6 +478,7 @@ export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_TEN_CODE = "ICD-10 Code:";
+export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
@@ -552,6 +579,8 @@ export const FACILITY_HOURS_END = "Facility hours end";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const FACILITY_HOURS_START = "Facility hours start";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
+export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
+export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -562,6 +591,7 @@ export const UPIN = "UPIN";
 export const PAGER = "Pager";
 export const TO_TEXT = "To:";
 export const TAX_ID = "Tax ID";
+export const GO_BACK = "Go Back";
 export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
 export const MEDICARE = "Medicare";
@@ -698,6 +728,7 @@ export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
 export const VITAL_LIST_PAGE_LIMIT = 5;
 export const ADD_RECORD = "Add Record";
+export const PRINT_CHART = "Print Chart";
 export const NEW_PATIENT = "New Patient";
 export const ADD_ALLERGY = "Add Allergy";
 export const EDIT_ALLERGY = "Edit Allergy";
@@ -864,6 +895,7 @@ export const QUICK_APPOINTMENTS = "Quick Appointments";
 export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
+export const PATIENT_INSURANCE = "Patient Insurance";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
@@ -877,22 +909,27 @@ export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
 export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
 export const OTHER_PROVIDER = "Other Provider"
+export const OTHER_RELATION = "Other Relation"
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
+export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
+export const VISITS = "Visits";
 export const SEARCH = "Search";
 export const SIGNED = "Signed";
 export const DELETE = "Delete";
 export const UPLOAD = "Upload";
 export const HOME_TEXT = "Home";
 export const PENDING = "Pending";
+export const MISSING = "Missing";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -901,6 +938,7 @@ export const ROLES_TEXT = "Roles";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
+export const COPAY_TEXT = "COPAY";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -920,7 +958,6 @@ export const ID_NUMBER = "ID Number";
 export const YOUR_NAME = "Your Name";
 export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
-export const LAB_ORDERS = "Lab Orders";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
 export const SIGNED_AT = "Signed at";
@@ -928,12 +965,15 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
+export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
+export const COPAY_TYPE = "Copay Type";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
+export const UPDATED_ON = "Updated On:";
 export const SCHEDULE_TEXT = "Schedule";
 export const YES_CANCEL = "Yes, Cancel";
 export const SSN_FORMAT = '000-00-0000';
@@ -948,9 +988,11 @@ export const POLICY_NAME = "Policy Name";
 export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
+export const EFFECTIVE_TEXT = "EFFECTIVE";
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
+export const ASSIGN_TO_ME = "Assign To Me";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
@@ -967,12 +1009,13 @@ export const CLAIM_FEED_TEXT = "Claim Feed";
 export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
+export const DOCUMENT_TYPE = "Document Type";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
-export const COPAY_TYPE = "Copay Type";
-export const AMOUNT = "Amount";
+export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
+export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
 export const ADD_SIGNATURE = "Add Signature";
@@ -982,14 +1025,20 @@ export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
 export const REVOKE_ACCESS = "Revoke Access";
 export const FORMER_SMOKER = "Former Smoker";
+export const PRICE_WITH_DOLLAR = "Price ($)";
+export const POLICY_NAME_TEXT = "POLICY NAME";
 export const DECREASED_DATE = "Deceased Date";
+export const ELIGIBILITY_TEXT = "ELIGIBILITY";
+export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const PREFERRED_NAME = "Preferred Name";
 export const HOLD_STATEMENT = "Hold Statement";
 export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
 export const ADDRESS_NUMBER = "Address Number";
+export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const CONTACT_NUMBER = "Contact Number";
+export const VIEW_ENCOUNTER = "View Encounter";
 export const ENTER_RELATION = "Enter Relation";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
@@ -998,8 +1047,8 @@ export const STATEMENT_NOTE = "Statement note";
 export const PRIVACY_NOTICE = "Privacy Notice";
 export const DISABLE_ACCESS_PORTAL = "Enabled";
 export const PAY_VIA_PAYPAL = "Pay via PayPal";
-export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const USUAL_PROVIDER = "Usual Provider";
+export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
@@ -1016,8 +1065,10 @@ export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
 export const USER_ROLE_PLACEHOLDER = "User Role";
+export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
+export const UPLOAD_DOCUMENT = "Upload Document";
 export const GENDER_IDENTITY = "Gender Identity";
 export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
@@ -1027,9 +1078,9 @@ export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
+export const DOCUMENT_DETAILS = "Document Details";
 export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
-export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const APP_NAME_FORMAT = 'First Middle Last';
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
@@ -1140,6 +1191,7 @@ export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose your Payment Method";
+export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
 export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
@@ -1167,6 +1219,7 @@ export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order 
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
@@ -1264,14 +1317,27 @@ export const FACILITY_INFO_ROUTE = "facility-information";
 export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
+// Register-Patient Routes
+export const IDENTIFICATION_ROUTE = "identification";
+export const CONTACT_INFORMATION_ROUTE = "contact-information";
+export const PROVIDER_REGISTRATION__ROUTE = "provider-registration";
+export const PRIVACY__ROUTE = "privacy";
+export const EMERGENCY_CONTACT_ROUTE = "emergency-contact";
+export const GUARANTOR_ROUTE = "guarantor";
+export const MAILING_ADDRESS_ROUTE = "mailing-address";
+export const EMPLOYMENT_ROUTE = "employment";
+export const DEMOGRAPHICS_ROUTE = "demographics";
+export const BILLING_ROUTE = "billing";
+
+
 // HELPER TEXT MESSAGES
-export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
@@ -1319,7 +1385,6 @@ export const INVALID_EMAIL = "Invalid email address";
 export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const EDIT_PROVIDER = "Eidt Provider"
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
 export const FACILITY_NOT_FOUND = "Facility not found!";
 export const PRACTICE_NOT_FOUND = "Practice not found!";
@@ -1340,7 +1405,6 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
-export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1402,8 +1466,9 @@ export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
-export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
-  "Resource can't be deleted.";
+export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
+export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
+export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient Can't be invited";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
@@ -1458,14 +1523,16 @@ export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
-export const EMERGENCY_ACCESS_ERROR_MESSGE =
-  "You don't have permission to change emrgency access status.";
-export const appointmentChargesDescription = (amount: string) =>
-  `You will be charged $${amount} for this appointment booking.`;
+export const EMERGENCY_ACCESS_ERROR_MESSAGE =
+  "You don't have permission to change emergency access status.";
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
+export const MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP =
+  "This field contains the payer-returned member ID or certification number. If you believe that this value was sent in error, you can set the verified eligibility status in the Eligibility section of this page using the 'Practice Override' reason. This will stop auto-updates of this field for ten days.";
+export const COPAY_AMOUNTS_TOOLTIP =
+  "These field(s) can be edited to store copay amounts by service-type. Some fields are pre-populated with payer-returned values and can be over-written by editing the field. These fields will no longer auto-populate after they have been edited.";
 export const FEDERAL_TAX_ID_INFO =
   "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const NPI_INFO =
@@ -1482,9 +1549,8 @@ export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
-
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export const YEARS = [2017, 2018, 2019, 2020,2021, 2022]
+export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022]
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -1655,29 +1721,38 @@ export const LAB_TEST_STATUSES: SelectorOption[] = [
   { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
 
-export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE= mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
+export const MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE = mapEnum<typeof PolicyHolderRelationshipType>(PolicyHolderRelationshipType)
 
-export const MAPPED_POLICY_ORDER_OF_BENEFIT= mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
+export const MAPPED_POLICY_ORDER_OF_BENEFIT = mapEnum<typeof OrderOfBenefitType>(OrderOfBenefitType)
 
-export const MAPPED_PRICING_PRODUCT_TYPE= mapEnum<typeof PricingProductType>(PricingProductType)
+export const MAPPED_PRICING_PRODUCT_TYPE = mapEnum<typeof PricingProductType>(PricingProductType)
 
-export const MAPPED_COPAY_TYPE= mapEnum<typeof CopayType>(CopayType)
+export const MAPPED_COPAY_TYPE = mapEnum<typeof CopayType>(CopayType)
 
-export const MAPPED_POLICY_GENDER= mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
+
+export const MAPPED_PATIENT_BILLING_STATUS = mapEnum<typeof PatientBillingStatus>(PatientBillingStatus)
+
+export const MAPPED_PATIENT_PAYMENT_TYPE = mapEnum<typeof PatientPaymentType>(PatientPaymentType)
+
+export const MAPPED_ONSET_DATE_TYPE = mapEnum<typeof OnsetDateType>(OnsetDateType)
+
+export const MAPPED_OTHER_DATE_TYPE = mapEnum<typeof OtherDateType>(OtherDateType)
+
 
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
   {
-    id: Appointmentstatus.Cancelled,
-    name: formatValue(Appointmentstatus.Cancelled),
+    id: AppointmentStatus.Cancelled,
+    name: formatValue(AppointmentStatus.Cancelled),
   },
   {
-    id: Appointmentstatus.Completed,
-    name: formatValue(Appointmentstatus.Completed),
+    id: AppointmentStatus.Discharged,
+    name: formatValue(AppointmentStatus.Discharged),
   },
   {
-    id: Appointmentstatus.Initiated,
-    name: formatValue(Appointmentstatus.Initiated),
+    id: AppointmentStatus.Initiated,
+    name: formatValue(AppointmentStatus.Initiated),
   },
 ];
 
@@ -1894,6 +1969,409 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
     name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic),
   },
 ];
+
+export const TEMPORARY_CPT_CODES = [
+  {
+    cptCode: "86318",
+    description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip);"
+  },
+  {
+    cptCode: "86328",
+    description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
+  },
+  {
+    cptCode: "86408",
+    description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); screen"
+  },
+  {
+    cptCode: "86409",
+    description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); titer"
+  },
+  {
+    cptCode: "86413",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) antibody, quantitative"
+  },
+  {
+    cptCode: "86769",
+    description: "Antibody; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
+  },
+  {
+    cptCode: "87301",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; adenovirus enteric types 40/41"
+  },
+  {
+    cptCode: "87305",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Aspergillus"
+  },
+  {
+    cptCode: "87320",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Chlamydia trachomatis"
+  },
+  {
+    cptCode: "87324",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Clostridium difficile toxin(s)"
+  },
+  {
+    cptCode: "87327",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Cryptococcus neoformans"
+  },
+  {
+    cptCode: "87328",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; cryptosporidium"
+  },
+  {
+    cptCode: "87329",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; giardia"
+  },
+  {
+    cptCode: "87332",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; cytomegalovirus"
+  },
+  {
+    cptCode: "87335",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Escherichia coli 0157"
+  },
+  {
+    cptCode: "87336",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Entamoeba histolytica dispar group"
+  },
+  {
+    cptCode: "87337",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Entamoeba histolytica group"
+  },
+  {
+    cptCode: "87338",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Helicobacter pylori, stool"
+  },
+  {
+    cptCode: "87339",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Helicobacter pylori"
+  },
+  {
+    cptCode: "87340",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis B surface antigen (HBsAg)"
+  },
+  {
+    cptCode: "87341",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis B surface antigen (HBsAg) neutralization"
+  },
+  {
+    cptCode: "87350",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis Be antigen (HBeAg)"
+  },
+  {
+    cptCode: "87380",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis, delta agent"
+  },
+  {
+    cptCode: "87385",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Histoplasma capsulatum"
+  },
+  {
+    cptCode: "87389",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-1 antigen(s), with HIV-1 and HIV-2 antibodies, single result"
+  },
+  {
+    cptCode: "87390",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-1"
+  },
+  {
+    cptCode: "87391",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-2"
+  },
+  {
+    cptCode: "87400",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Influenza, A or B, each"
+  },
+  {
+    cptCode: "87420",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; respiratory syncytial virus"
+  },
+  {
+    cptCode: "87425",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; rotavirus"
+  },
+  {
+    cptCode: "87426",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; severe acute respiratory syndrome coronavirus (eg, SARS-CoV, SARS-CoV-2 [COVID-19])"
+  },
+  {
+    cptCode: "87427",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Shiga-like toxin"
+  },
+  {
+    cptCode: "87428",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; severe acute respiratory syndrome coronavirus (eg, SARS-CoV, SARS-CoV-2 [COVID-19]) and influenza virus types A and B"
+  },
+  {
+    cptCode: "87430",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Streptococcus, group A"
+  },
+  {
+    cptCode: "87449",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; not otherwise specified, each organism"
+  },
+  {
+    cptCode: "87451",
+    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; polyvalent for multiple organisms, each polyvalent antiserum"
+  },
+  {
+    cptCode: "87635",
+    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), amplified probe technique"
+  },
+  {
+    cptCode: "87636",
+    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) and influenza virus types A and B, multiplex amplified probe technique"
+  },
+  {
+    cptCode: "87637",
+    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), influenza virus types A and B, and respiratory syncytial virus, multiplex amplified probe technique"
+  },
+  {
+    cptCode: "87802",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Streptococcus, group B"
+  },
+  {
+    cptCode: "87803",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Clostridium difficile toxin A"
+  },
+  {
+    cptCode: "87806",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; HIV-1 antigen(s), with HIV-1 and HIV-2 antibodies"
+  },
+  {
+    cptCode: "87804",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Influenza"
+  },
+  {
+    cptCode: "87807",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; respiratory syncytial virus"
+  },
+  {
+    cptCode: "87811",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
+  },
+  {
+    cptCode: "87808",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Trichomonas vaginalis"
+  },
+  {
+    cptCode: "87809",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; adenovirus"
+  },
+  {
+    cptCode: "87810",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Chlamydia trachomatis"
+  },
+  {
+    cptCode: "87850",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Neisseria gonorrhoeae"
+  },
+  {
+    cptCode: "87880",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Streptococcus, group A"
+  },
+  {
+    cptCode: "87899",
+    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; not otherwise specified"
+  },
+  {
+    cptCode: "87913",
+    description: "Infectious agent genotype analysis by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]), mutation identification in targeted region(s)"
+  },
+  {
+    cptCode: "0202U",
+    description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
+  },
+  {
+    cptCode: "0223U",
+    description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
+  },
+  {
+    cptCode: "0224U",
+    description: "Antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), includes titer(s), when performed"
+  },
+  {
+    cptCode: "0225U",
+    description: "Infectious disease (bacterial or viral respiratory tract infection) pathogen-specific DNA and RNA, 21 targets, including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), amplified probe technique, including multiplex reverse transcription for RNA targets, each analyte reported as detected or not detected"
+  },
+  {
+    cptCode: "0226U",
+    description: "Surrogate viral neutralization test (sVNT), severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), ELISA, plasma, serum"
+  },
+  {
+    cptCode: "0240U",
+    description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 3 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B), upper respiratory specimen, each pathogen reported as detected or not detected"
+  },
+  {
+    cptCode: "0241U",
+    description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 4 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B, respiratory syncytial virus [RSV]), upper respiratory specimen, each pathogen reported as detected or not detected"
+  },
+  {
+    cptCode: "99072",
+    description: "Additional supplies, materials, and clinical staff time over and above those usually included in an office visit or other non-facility service(s), when performed during a Public Health Emergency, as defined by law, due to respiratory-transmitted infectious disease"
+  },
+  {
+    cptCode: "0001A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
+  },
+  {
+    cptCode: "0002A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; second dose"
+  },
+  {
+    cptCode: "0003A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; third dose"
+  },
+  {
+    cptCode: "0004A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; booster dose"
+  },
+  {
+    cptCode: "0051A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; first dose"
+  },
+  {
+    cptCode: "0052A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; second dose"
+  },
+  {
+    cptCode: "0053A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; third dose"
+  },
+  {
+    cptCode: "0054A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; booster dose"
+  },
+  {
+    cptCode: "0071A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; first dose"
+  },
+  {
+    cptCode: "0072A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; second dose"
+  },
+  {
+    cptCode: "0073A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; third dose"
+  },
+  {
+    cptCode: "0074A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; booster dose"
+  },
+  {
+    cptCode: "0081A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; first dose"
+  },
+  {
+    cptCode: "0082A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; second dose"
+  },
+  {
+    cptCode: "0011A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; first dose"
+  },
+  {
+    cptCode: "0012A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; second dose"
+  },
+  {
+    cptCode: "0013A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; third dose"
+  },
+  {
+    cptCode: "0064A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.25 mL dosage, booster dose"
+  },
+  {
+    cptCode: "0094A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.5 mL dosage, booster dose"
+  },
+  {
+    cptCode: "0021A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; first dose"
+  },
+  {
+    cptCode: "0022A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; second dose"
+  },
+  {
+    cptCode: "0031A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; single dose"
+  },
+  {
+    cptCode: "0034A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; booster dose"
+  },
+  {
+    cptCode: "0041A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage; first dose"
+  },
+  {
+    cptCode: "0042A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage; second dose"
+  },
+  {
+    cptCode: "0104A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, monovalent, preservative free, 5 mcg/0.5 mL dosage, adjuvant AS03 emulsion, booster dose"
+  },
+  {
+    cptCode: "0111A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage; first dose"
+  },
+  {
+    cptCode: "0112A",
+    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage; second dose"
+  },
+  {
+    cptCode: "91300",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted, for intramuscular use"
+  },
+  {
+    cptCode: "91305",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation, for intramuscular use"
+  },
+  {
+    cptCode: "91307",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation, for intramuscular use"
+  },
+  {
+    cptCode: "91308",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation, for intramuscular use"
+  },
+  {
+    cptCode: "91301",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91306",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.25 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91311",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91309",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.5 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91302",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91303",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91304",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage, for intramuscular use"
+  },
+  {
+    cptCode: "91310",
+    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, monovalent, preservative free, 5 mcg/0.5 mL dosage, adjuvant AS03 emulsion, for intramuscular use"
+  }
+]
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
   {
@@ -2296,6 +2774,10 @@ export const PROFILE_TOP_TABS = [
     title: "Lab Orders",
     value: "10",
   },
+  {
+    title: "Care Team",
+    value: "11",
+  },
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -2542,7 +3024,18 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
-  insurance= 'insurance'
+  insurance = 'insurance',
+  documentTypes = 'documentTypes',
+  icdCodes = 'IcdCodes',
+  cptCode = 'CPTCode',
+
+}
+
+export enum TABLE_SELECTOR_MODULES {
+  icdCodes = 'IcdCodes',
+  cptCode = 'CPTCode',
+  hcpcsCode = 'HCPCSCode',
+  customCode = 'CustomCode'
 }
 
 export const DUMMY_ENCOUNTERS = [
@@ -2551,17 +3044,17 @@ export const DUMMY_ENCOUNTERS = [
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
   },
   {
     id: 2,
     serviceName: "Sick Visit",
     scheduleDateTime: "March 16, 2022 at 3:15 PM",
     duration: "50 Minutes",
-    doctorName : 'Dr. Jenny Wilson',
-    hospitalName : 'Community Hospital'
-  }  
+    doctorName: 'Dr. Jenny Wilson',
+    hospitalName: 'Community Hospital'
+  }
 ];
 
 export enum CARD_LAYOUT_MODAL {
@@ -2889,6 +3382,22 @@ export const ITEMS: ItemsTypes[] = [
     isMultiSelect: false,
   },
   {
+    icon: PhoneIcon,
+    fieldId: uuid(),
+    label: "Phone Input",
+    type: ElementType.Tel,
+    name: uuid(),
+    css: "",
+    column: 12,
+    placeholder: "",
+    required: false,
+    errorMsg: "",
+    defaultValue: "",
+    options: [],
+    textArea: false,
+    isMultiSelect: false,
+  },
+  {
     icon: RadioGroupIcon,
     fieldId: uuid(),
     label: "Radio Group",
@@ -3086,6 +3595,11 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
   { id: AbnormalFlag.VerySusceptible, name: formatValue(AbnormalFlag.VerySusceptible) }
 ];
 
+export const COVID_RESULT_OPTIONS: SelectorOption[] = [
+  { id: 'Detected', name: 'Detected' },
+  { id: 'Not Detected', name: 'Not Detected'  },
+]
+
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   name: "",
   type: {
@@ -3096,6 +3610,11 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
     name: "",
     id: "",
   },
+  practiceId: {
+    name: "",
+    id: "",
+  },
+  isPractice: false,
 };
 
 export const getFormInitialValues = () => [
@@ -3125,19 +3644,19 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
   specimenType: { id: '', name: '' },
-  collectionDate: '',
+  collectionDate: moment().toString(),
   specimenNotes: '',
-  collectionTime: ''
+  collectionTime: moment().format('HH:mm:ss')
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   test: { id: '', name: '' },
-  testDate: '',
+  testDate: moment().toString(),
   testNotes: '',
-  testTime: '',
+  testTime: moment().format('HH:mm:ss'),
 };
 
-export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
+export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
   resultUnits: '',
@@ -3145,19 +3664,23 @@ export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
   abnormalFlag: { id: '', name: '' },
 };
 
+export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
+  resultValue: { id: '', name: '' },
+};
+
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
   INSURANCE,
-  VITALS_TEXT,
   CHART_TEXT,
+  VITALS_TEXT,
   LAB_ORDERS,
   BILLING_TEXT,
 ];
 
 export const LAB_ORDER_STEPS = [
-  LAB_ORDER, PAYMENT
+  LAB_ORDER, PROVIDER_DETAILS, PAYMENT
 ];
 
 export const FacilityMenuNav = [
@@ -3166,16 +3689,43 @@ export const FacilityMenuNav = [
     linkTo: FACILITY_INFO_ROUTE,
   },
   {
-    title: FACILITY_LOCATION,
-    linkTo: FACILITY_LOCATION_ROUTE,
-  },
-  {
     title: BILLING_PROFILE,
     linkTo: BILLING_PROFILE_ROUTE,
   },
   {
+    title: FACILITY_LOCATION,
+    linkTo: FACILITY_LOCATION_ROUTE,
+  },
+  {
     title: BUSINESS_HOURS,
     linkTo: FACILITY_SCHEDULE_ROUTE,
+  },
+];
+
+export const RegisterPatientMenuNav = [
+  {
+    title: IDENTIFICATION,
+    linkTo: IDENTIFICATION_ROUTE,
+  },
+  {
+    title: DEMOGRAPHICS,
+    linkTo: DEMOGRAPHICS_ROUTE,
+  },
+  {
+    title: CONTACT_INFORMATION,
+    linkTo: CONTACT_INFORMATION_ROUTE,
+  },
+  {
+    title: PROVIDER_REGISTRATION_DATES,
+    linkTo: PROVIDER_REGISTRATION__ROUTE,
+  },
+  {
+    title: PRIVACY,
+    linkTo: PRIVACY__ROUTE,
+  },
+  {
+    title: EMERGENCY_CONTACT,
+    linkTo: EMERGENCY_CONTACT_ROUTE,
   },
 ];
 
@@ -3419,11 +3969,11 @@ export const FORM_BUILDER_FIELDS_TABS = [
 
 export const FORM_BUILDER_ADD_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Components",
     value: "1",
   },
   {
-    title: "Components",
+    title: "Fields",
     value: "2",
   },
 ]
@@ -3477,6 +4027,33 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.NeverSmoked, name: formatValue(SmokingStatus.NeverSmoked) },
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
+
+export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
+  {
+    name: formatValue(DoctorPatientRelationType.PrimaryProvider),
+    id: DoctorPatientRelationType.PrimaryProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.BackupProvider),
+    id: DoctorPatientRelationType.BackupProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.PreferredProvider),
+    id: DoctorPatientRelationType.PreferredProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.ReferringProvider),
+    id: DoctorPatientRelationType.ReferringProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OrderingProvider),
+    id: DoctorPatientRelationType.OrderingProvider,
+  },
+  {
+    name: formatValue(DoctorPatientRelationType.OtherProvider),
+    id: DoctorPatientRelationType.OtherProvider,
+  },
+]
 
 export const PATIENT_HEIGHT_UNITS = [
   { id: UnitType.Inch, name: IN_TEXT },
@@ -3684,7 +4261,7 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
 ];
 
 export const INITIAL_COPAY_VALUE = {
-  copayType: setRecord('',''),
+  copayType: setRecord('', ''),
   amount: ''
 }
 
@@ -3694,25 +4271,26 @@ export const MAPPED_REGIONS: SelectorOption[] = states.map(
 
 export const areaChartOne = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
-    
+
   },
   accessibility: {
     description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
   },
   title: {
     text: 'Blood Pressure',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {
@@ -3727,10 +4305,10 @@ export const areaChartOne = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
-    style : { 'zIndex' :'1' }
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}',
+  //   style: { 'zIndex' :'1' },
+  // },
   plotOptions: {
     area: {
       marker: {
@@ -3764,6 +4342,7 @@ export const areaChartOne = {
 
 export const areaChartTwo = {
   credits: { enabled: false },
+  tooltip: { enabled: false },
   chart: {
     type: 'area',
     styledMode: false,
@@ -3775,13 +4354,13 @@ export const areaChartTwo = {
   },
   title: {
     text: 'Heart Rate',
-    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display" : "none" },
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600", "display": "none" },
     margin: 100,
     align: 'right'
   },
   subtitle: {
     text: 'Last Reading: May 2, 2022',
-    style: { "color": "gray", "fontSize": "14px", "display" : "none" },
+    style: { "color": "gray", "fontSize": "14px", "display": "none" },
     align: 'right'
   },
   xAxis: {
@@ -3796,9 +4375,9 @@ export const areaChartTwo = {
       text: 'Nuclear weapon states'
     },
   },
-  tooltip: {
-    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-  },
+  // tooltip: {
+  //   pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  // },
   plotOptions: {
     area: {
       marker: {
@@ -3924,5 +4503,116 @@ export const ALLERGIES_DUMMY_DATA = [
     name: "Pollen",
     value: "Breathing Problem, Mild",
     status: "Active"
+  },
+]
+
+export enum FormBuilderApiSelector {
+  SERVICE_SELECT = 'serviceSelect',
+  SERVICE_SLOT = 'serviceSlot',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType',
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent',
+  TERMS_CONDITIONS = 'termsConditions'
+}
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler',
+}
+
+export const VITALS_TABLE_DUMMY_DATA = [
+  {
+    vitals: "Fever (°C)",
+    valueOne: 98,
+    valueTwo: 102,
+    valueThree: 98,
+    valueFour: 98,
+    valueFive: 98,
+  },
+  {
+    vitals: "Pulse (bpm)",
+    valueOne: 80,
+    valueTwo: 90,
+    valueThree: 80,
+    valueFour: 80,
+    valueFive: 80,
+  },
+  {
+    vitals: "Respiratory Rate (rpm)",
+    valueOne: 40,
+    valueTwo: 30,
+    valueThree: 40,
+    valueFour: 40,
+    valueFive: 40,
+  },
+  {
+    vitals: "Blood Pressure (mmHg)",
+    valueOne: 180/100,
+    valueTwo: 120/80,
+    valueThree: 120/80,
+    valueFour: 120/80,
+    valueFive: 120/80,
+  },
+  {
+    vitals: "Oxygen Saturation (%)",
+    valueOne: 98,
+    valueTwo: 85,
+    valueThree: 98,
+    valueFour: 98,
+    valueFive: 98,
+  },
+  {
+    vitals: "Smoking Status",
+    valueOne: "Former Smoker",
+    valueTwo: "Former Smoker",
+    valueThree: "Former Smoker",
+    valueFour: "Former Smoker",
+    valueFive: "Former Smoker",
+  },
+]
+
+export const PROBLEMS_TABLE_DUMMY_DATA = [
+  {
+    code: "C753",
+    problem: "Insect bites",
+    onsetDate: "May 20, 2015",
+    type: "acute",
+    notes: "Amet minim mollit non deserunt ullamco",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "J630",
+    problem: "Chest pain",
+    onsetDate: "May 29, 2017",
+    type: "Moderate",
+    notes: "-",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "L97501",
+    problem: "Fever",
+    onsetDate: "May 12, 2019",
+    type: "Mild",
+    notes: "Amet minim mollit non Amet minim mollit non Amet minim mollit non Amet minim mollit non",
+    status: "Historic",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "S32463B",
+    problem: "Injury, multiple",
+    onsetDate: "April 28, 2016",
+    type: "Very Mild",
+    notes: "Amet minim mollit non deserunt ullamco",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
   },
 ]
