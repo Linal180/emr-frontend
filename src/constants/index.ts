@@ -840,6 +840,7 @@ export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shif
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
+export const ARRIVAL_STATUS = "Arrival Status";
 export const ACTIVATED = "Acitivated";
 export const TEST_NOTES = "Test Notes";
 export const VIEW_BILLING = "View Billing";

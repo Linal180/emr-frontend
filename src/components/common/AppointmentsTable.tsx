@@ -26,8 +26,8 @@ import {
 } from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
+  ARRIVAL_STATUS, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TIME, TYPE, VIEW_ENCOUNTER,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
-  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -302,7 +302,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
-                {renderTh(STATUS)}
+                {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
