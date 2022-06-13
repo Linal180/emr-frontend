@@ -2477,6 +2477,10 @@ export const MAPPED_ETHNICITY: SelectorOption[] = [
     id: Ethnicity.HispanicOrLatino,
     name: formatValue(Ethnicity.HispanicOrLatino),
   },
+  {
+    id: Ethnicity.NotHispanicOrLatino,
+    name: formatValue(Ethnicity.NotHispanicOrLatino),
+  },
 ];
 
 export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
