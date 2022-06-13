@@ -3,6 +3,7 @@ import { Grid } from "@material-ui/core"
 import { FC } from "react"
 import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME } from "../../../../constants"
 import InputController from "../../../../controller"
+import SnnController from "../../../../controller/SnnController"
 // constants, interfaces block
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import CardComponent from "../../../common/CardComponent"

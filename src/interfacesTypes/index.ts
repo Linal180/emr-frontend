@@ -441,7 +441,7 @@ export interface ResetPasswordInputControlProps extends IControlLabel {
   controllerName: ResetPasswordControlTypes;
 }
 
-export type PasswordType = "password" | "text";
+export type PasswordType = "password" | "text" | "ssn";
 
 export interface IShowPasswordProps {
   passwordType: string;
@@ -455,17 +455,18 @@ export type SubMenuTypes = {
 };
 
 export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string;
-  isSearch?: boolean;
   info?: string;
-  clearable?: boolean
-  handleClearField?: (fieldName: any) => void
-  endAdornment?: ReactNode;
+  isSSN?: boolean;
   onBlur?: Function;
   notStep?: boolean;
-  isHelperText?: boolean;
+  isSearch?: boolean;
+  clearable?: boolean;
   autoFocus?: boolean;
-  isHtmlValidate?: boolean
+  controllerName: string;
+  isHelperText?: boolean;
+  isHtmlValidate?: boolean;
+  endAdornment?: ReactNode;
+  handleClearField?: (fieldName: any) => void;
 }
 
 export interface TooltipData {
