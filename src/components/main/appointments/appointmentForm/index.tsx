@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
+import { Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
@@ -25,7 +25,7 @@ import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
@@ -54,6 +54,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [appEndDate] = useState<string>(params.get('endDate') || '')
   const [pId] = useState<string>(params.get('patientId') || '')
   const [pName] = useState<string>(params.get('patientName') || '')
+  const [serviceIds, setServiceId] = useState<multiOptionType[]>([])
   const {
     fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
@@ -69,11 +70,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   });
   const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
-    serviceId: { id: selectedService } = {},
+    serviceId: selectedServiceId,
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     patientId: selectedPatient
   } = watch();
+  const { value: selectedService } = selectedServiceId ?? {}
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -138,7 +140,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           if (serviceId && serviceName) {
             dispatch({ type: ActionType.SET_SERVICE_NAME, serviceName })
-            setValue('serviceId', setRecord(serviceId, serviceName))
+            setValue('serviceId', {
+              value: serviceId,
+              label: serviceName
+            })
+            setServiceId([{
+              value: serviceId,
+              label: serviceName
+            }])
           }
 
           if (providerId) {
@@ -279,7 +288,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
-      serviceId: EMPTY_OPTION,
+      serviceId: { value: '', label: '' },
       patientId: EMPTY_OPTION,
       providerId: EMPTY_OPTION,
       facilityId: { id, name }
@@ -305,7 +314,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
-      const { id: selectedService } = serviceId || {};
+      const { value: selectedService } = serviceId || {};
       const { id: selectedPatient } = patientId || {};
       const { id: selectedProvider } = providerId || {};
       const { id: selectedFacility } = facilityId || {};
@@ -410,7 +419,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid md={8} item>
-                <CardComponent cardTitle={APPOINTMENT}>
+                <Card className='overflowVisible'>
+                  {/* <CardComponent cardTitle={APPOINTMENT}> */}
+                  <Box p={3}>
+                  <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                    <Typography variant='h4'>{APPOINTMENT}</Typography>
+                  </Box>
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
@@ -429,13 +443,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={APPOINTMENT_TYPE}
                           name="serviceId"
                           facilityId={selectedFacility}
-                          addEmpty
+                          isEdit={isEdit}
+                          defaultValues={serviceIds}
                         />
                       </Grid>
                     </Grid>
                   )}
-                </CardComponent>
-
+                  {/* </CardComponent> */}
+                  </Box>
+                </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>

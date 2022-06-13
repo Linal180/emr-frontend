@@ -298,6 +298,7 @@ export const INSURANCE_CARD = "Insurance Card";
 export const DOCUMENT_VERIFICATION = "Document Verification";
 export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
+export const RECURRING_DATE = "Recurring Date";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";

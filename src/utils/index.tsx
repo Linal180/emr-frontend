@@ -421,6 +421,22 @@ export const renderFacilities = (facilities: FacilitiesPayload['facilities']) =>
   return data;
 }
 
+export const renderMultiServices = (services: ServicesPayload['services']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, duration, name } = service;
+
+        service && data.push({ value: id, label: `${name} (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderServices = (services: ServicesPayload['services']) => {
   const data: SelectorOption[] = [];
 
