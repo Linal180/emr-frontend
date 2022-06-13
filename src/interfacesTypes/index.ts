@@ -388,6 +388,7 @@ export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
   shouldOmitFacilityId?: boolean
   careProviderData?: DoctorPatient[];
+  defaultValues?: SelectorOption[]
 }
 
 export interface CardSelectorProps {
@@ -542,9 +543,9 @@ export type ExtendedStaffInputProps = Omit<
 } & { providerIds: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
-  & { serviceId: SelectorOption } & { day: SelectorOption };
+  & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption } & { shouldHaveRecursion: boolean };
 
-export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption | SelectorOption[] } & { shouldHaveRecursion: boolean };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -760,13 +761,13 @@ export type ExtendedAppointmentInputProps = Omit<
   CreateAppointmentInput,
   "patientId" | "facilityId" | "serviceId" | "providerId"
 > & { facilityId: SelectorOption } & { patientId: SelectorOption } & {
-  serviceId: SelectorOption;
+  serviceId: multiOptionType;
 } & { providerId: SelectorOption };
 
 export type ExtendedExternalAppointmentInputProps = Pick<
   CreateExternalAppointmentItemInput,
   "scheduleEndDateTime" | "scheduleStartDateTime"
-> & { serviceId: SelectorOption } & { providerId: SelectorOption } & Pick<
+> & { serviceId: multiOptionType } & { providerId: SelectorOption } & Pick<
   CreatePatientItemInput,
   "firstName" | "lastName" | "email" | "dob"
 > & { phone: string } & { sexAtBirth: SelectorOption };
@@ -1474,6 +1475,11 @@ export interface ReactionSelectorInterface {
   defaultValues?: multiOptionType[]
   margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
+}
+
+export interface ServiceSelectorInterface extends ReactionSelectorInterface {
+  facilityId?: string
+  isMulti?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
