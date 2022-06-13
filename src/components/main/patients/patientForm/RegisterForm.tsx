@@ -66,12 +66,14 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
       <Box mr={2} ml={2} p={1} display='flex'>
         <List>
           {RegisterPatientMenuNav.map((item, index) => {
+            const { title } = item || {}
+
             return (
-              <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
+              <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(title)}>
                 <Timeline>
                   <TimelineItem>
                     <TimelineSeparator>
-                      <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
+                      <TimelineDot className={title === activeBlock ? 'facilityActive' : ''} />
 
                       {(index + 1) !== RegisterPatientMenuNav.length && <TimelineConnector />}
                     </TimelineSeparator>
@@ -79,9 +81,12 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                   </TimelineItem>
                 </Timeline>
 
-                <ListItem button className={item.title === activeBlock ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
-                  <Typography variant='h5' className={item.title === activeBlock ? 'active' : ''}>
-                    {item.title}
+                <ListItem button
+                  className={title === activeBlock ? 'active' : ''}
+                  style={{ display: 'flex', alignItems: 'baseline' }}
+                >
+                  <Typography variant='h5' className={title === activeBlock ? 'active' : ''}>
+                    {title}
                   </Typography>
                 </ListItem>
               </Box>
@@ -94,31 +99,31 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
         <Box {...patientCardBoxProps}>
           <Grid spacing={3}>
             <Grid md={12} id={IDENTIFICATION_ROUTE} ref={identificationRef}>
-              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit}/>
+              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} isEdit={isEdit} />
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={DEMOGRAPHICS_ROUTE} ref={demographicsRef}>
-              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
+              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)} >
-              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
+              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PROVIDER_REGISTRATION__ROUTE} ref={providerRegisterationRef}>
-              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit}/>
+              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
 
             <Box pb={3} />
 
             <Grid md={12} id={PRIVACY__ROUTE} ref={privacyRef}>
-              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit}/>
+              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
             </Grid>
 
             <Box pb={3} />

@@ -128,6 +128,11 @@ const selectorSchema = (label: string, isRequired: boolean = true) => yup.object
   id: yup.string().required()
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
+const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
+  label: yup.string().required(),
+  value: yup.string().required()
+}).test('', requiredMessage(label), (multiValue) => isRequired ? !!multiValue?.value && !!multiValue?.label : true).nullable();
+
 const stateSchema = (isRequired: boolean) => {
   return yup.object().shape({
     name: yup.string(),
@@ -505,7 +510,7 @@ export const settingSchema = yup.object({
 })
 
 export const appointmentSchema = yup.object({
-  serviceId: selectorSchema(APPOINTMENT),
+  serviceId: multiOptionSchema(APPOINTMENT),
   notes: yup.string(),
   patientId: selectorSchema(PATIENT),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
@@ -514,15 +519,27 @@ export const appointmentSchema = yup.object({
 
 export const doctorScheduleSchema = yup.object({
   ...scheduleTimeSchema,
+  day: yup.array().of(
+    selectorSchema(DAY)
+  ).test('', requiredMessage(DAY), (value: any) => !!value && value.length > 0),
+  serviceId: yup.array().of(
+    multiOptionSchema(APPOINTMENT)
+  ).test('', requiredMessage(APPOINTMENT), (value: any) => !!value && value.length > 0),
+})
+
+export const doctorEditScheduleSchema = yup.object({
+  ...scheduleTimeSchema,
   day: selectorSchema(DAY),
-  serviceId: selectorSchema(APPOINTMENT),
+  serviceId: yup.array().of(
+    multiOptionSchema(APPOINTMENT)
+  ).test('', requiredMessage(APPOINTMENT), (value: any) => !!value && value.length > 0),
 })
 
 export const externalAppointmentSchema = yup.object({
   ...dobSchema,
   ...emailSchema,
   ...firstLastNameSchema,
-  serviceId: selectorSchema(APPOINTMENT),
+  serviceId: multiOptionSchema(APPOINTMENT),
 })
 
 export const externalPatientSchema = yup.object({
@@ -605,6 +622,13 @@ export const createFormBuilderSchema = yup.object({
 });
 
 export const facilityScheduleSchema = yup.object({
+  ...scheduleTimeSchema,
+  day: yup.array().of(
+    selectorSchema(DAY)
+  ).test('', requiredMessage(DAY), (value: any) => !!value && value.length > 0),
+})
+
+export const facilityEditScheduleSchema = yup.object({
   ...scheduleTimeSchema,
   day: selectorSchema(DAY),
 })
