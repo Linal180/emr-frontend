@@ -1,32 +1,39 @@
 // packages block
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent } from "@material-ui/core";
+import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent, FormControl, InputLabel } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from '../../../../common/Selector';
 import TimePicker from "../../../../common/TimePicker";
+import DatePicker from "../../../../common/DatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
 import { ActionType } from "../../../../../reducers/facilityReducer";
-import { facilityScheduleSchema } from "../../../../../validationSchemas";
-import { FacilityScheduleInputProps, FacilityScheduleModalProps } from "../../../../../interfacesTypes";
+import { facilityEditScheduleSchema, facilityScheduleSchema } from "../../../../../validationSchemas";
+import { FacilityScheduleInputProps, FacilityScheduleModalProps, SelectorOption } from "../../../../../interfacesTypes";
 import { getDayFromTimestamps, getTimeString, setRecord, setTimeDay } from "../../../../../utils";
 import { useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation } from "../../../../../generated/graphql";
 import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND, FACILITY_SCHEDULE,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND, FACILITY_SCHEDULE, RECURRING_DATE, YES, NO,
 } from "../../../../../constants";
+import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
+import { GREY_SEVEN, WHITE } from "../../../../../theme";
 
 const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
   id, isEdit, facilityDispatcher, isOpen, facilityId, reload
 }): JSX.Element => {
+  const classesToggle = usePublicAppointmentStyles();
   const methods = useForm<FacilityScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(facilityScheduleSchema)
+    resolver: yupResolver(isEdit ? facilityEditScheduleSchema : facilityScheduleSchema)
   });
-  const { reset, handleSubmit, setValue } = methods;
+  const { reset, handleSubmit, setValue, control } = methods;
+
+  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(false)
 
   const [getSchedule, { loading: getScheduleLoading }] = useGetScheduleLazyQuery({
     fetchPolicy: "network-only",
@@ -44,10 +51,12 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
         const { status } = response
 
         if (schedule && status && status === 200) {
-          const { startAt, endAt } = schedule || {};
+          const { startAt, endAt, recurringEndDate } = schedule || {};
 
           endAt && setValue('endAt', getTimeString(endAt))
           startAt && setValue('startAt', getTimeString(startAt))
+          recurringEndDate && setValue('recurringEndDate', recurringEndDate)
+          recurringEndDate && setShouldHaveRecursion(true)
           startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
         }
       }
@@ -112,13 +121,26 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     }
   }, [facilityId, getSchedule, id, isEdit, reset])
 
-  const onSubmit: SubmitHandler<FacilityScheduleInputProps> = async ({ endAt, startAt, day }) => {
-    const { id: dayName } = day || {}
+  const onSubmit: SubmitHandler<FacilityScheduleInputProps> = async ({ endAt, startAt, day, recurringEndDate }) => {
+    let scheduleInput
+    if (isEdit) {
+      const { id: dayName } = day as SelectorOption
+      scheduleInput = {
+        facilityId, servicesIds: [], day: dayName,
+        startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+        recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+      }
+    } else {
+      scheduleInput = (day as SelectorOption[]).map((dayValues) => {
+        const { id: dayName } = dayValues || {}
+        return {
+          facilityId, servicesIds: [], day: dayName,
+          startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+          recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+        }
+      })
+    }
 
-    const scheduleInput = {
-      facilityId, servicesIds: [], day: dayName,
-      startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
-    };
     if (facilityId) {
       if (isEdit) {
         id ?
@@ -130,7 +152,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
       } else {
         await createSchedule({
           variables: {
-            createScheduleInput: [{ ...scheduleInput }]
+            createScheduleInput: scheduleInput
           }
         })
       }
@@ -162,6 +184,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
                         label={PICK_DAY_TEXT}
                         name="day"
                         options={WEEK_DAYS}
+                        isMultiple={!isEdit}
                       />
                     </Grid>
 
@@ -179,6 +202,34 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
                         label={END_TIME}
                         name="endAt"
                       />
+                    </Grid>
+
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Controller
+                          name='shouldHaveRecursion'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>Should Have Recurring Date</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={shouldHaveRecursion} onChange={({ target: { checked } }) => setShouldHaveRecursion(checked)} name='shouldHaveRecursion' />
+                                <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      </Grid>
+
+                      {shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                        <DatePicker
+                          name="recurringEndDate"
+                          label={RECURRING_DATE}
+                          disableFuture={false}
+                        />
+                      </Grid>}
                     </Grid>
                   </Grid>
                 )}
