@@ -699,13 +699,17 @@ export type CreateDoctorItemInput = {
 };
 
 export type CreateEmployerInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type CreateExternalAppointmentInput = {
@@ -1172,9 +1176,10 @@ export type DocumentTypesPayload = {
 
 /** The patient's ethnicity type assigned */
 export enum Ethnicity {
-  CenteralAmerican = 'CENTERAL_AMERICAN',
-  CenteralAmericanIndian = 'CENTERAL_AMERICAN_INDIAN',
-  None = 'NONE'
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
+  HispanicOrLatino = 'HISPANIC_OR_LATINO',
+  None = 'NONE',
+  NotHispanicOrLatino = 'NOT_HISPANIC_OR_LATINO'
 }
 
 export type Element = {
@@ -1227,6 +1232,8 @@ export type EmergencyAccessUserPayload = {
 
 export type Employer = {
   __typename?: 'Employer';
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1236,8 +1243,10 @@ export type Employer = {
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type FacilitiesPayload = {
@@ -1443,10 +1452,10 @@ export type FormsPayload = {
 
 /** The patient's sexual orientation type assigned */
 export enum Genderidentity {
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
   Female = 'FEMALE',
   Male = 'MALE',
   None = 'NONE',
-  NotExclusive = 'NOT_EXCLUSIVE',
   TransgenderFemale = 'TRANSGENDER_FEMALE',
   TransgenderMale = 'TRANSGENDER_MALE'
 }
@@ -4538,6 +4547,8 @@ export type UpdateDoctorItemInput = {
 };
 
 export type UpdateEmployerItemInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
@@ -4545,7 +4556,9 @@ export type UpdateEmployerItemInput = {
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type UpdateFacilityInput = {
@@ -5774,7 +5787,7 @@ export type CreatePatientMutationVariables = Exact<{
 }>;
 
 
-export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string } | null } };
 
 export type UpdatePatientMutationVariables = Exact<{
   updatePatientInput: UpdatePatientInput;
@@ -11337,6 +11350,9 @@ export const CreatePatientDocument = gql`
       error
       status
       message
+    }
+    patient {
+      id
     }
   }
 }

@@ -37,7 +37,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
-    activeStep
+    activeStep, patientId
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
@@ -246,7 +246,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     },
 
     onCompleted(data) {
-      const { createPatient: { response } } = data;
+      const { createPatient: { response, patient } } = data;
 
       if (response) {
         const { status } = response
@@ -254,6 +254,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         if (status && status === 200) {
           Alert.success(PATIENT_CREATED);
           // history.push(PATIENTS_ROUTE)
+         const { id} =  patient || {}
+         id && dispatch({type: ActionType.SET_PATIENT_ID, patientId:id })
         }
       }
     }

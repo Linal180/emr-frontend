@@ -216,6 +216,10 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!) {
       status
       message
     }
+
+    patient {
+      id
+    }
   }
 }
 
