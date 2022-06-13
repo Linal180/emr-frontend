@@ -15,8 +15,8 @@ import EmergencyContactCard from './EmergencyContactCard';
 import RegistrationDatesCard from './RegistrationDatesCard';
 // utils. interfaces, constants
 import { PatientCardsProps } from '../../../../interfacesTypes';
-import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { RegisterPatientMenuNav } from '../../../../constants';
+import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit }) => {
   const classes = useExternalPatientStyles()

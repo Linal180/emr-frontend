@@ -2,20 +2,20 @@
 import { Box, FormControl, Grid, InputLabel } from "@material-ui/core"
 import { ChangeEvent, FC } from "react"
 import { Controller, useFormContext } from "react-hook-form"
-import {
-  DEMOGRAPHICS, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, LEGAL_SEX, MAPPED_ETHNICITY, MAPPED_GENDER_IDENTITY,
-  MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS, RACE, SEXUAL_ORIENTATION
-} from "../../../../constants"
-import InputController from "../../../../controller"
 //interfaces, styles, constants block
+import InputController from "../../../../controller"
+import { GREY_SEVEN, WHITE } from "../../../../theme"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles"
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
-import { GREY_SEVEN, WHITE } from "../../../../theme"
+import {
+  DEMOGRAPHICS, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, LEGAL_SEX, MAPPED_ETHNICITY, MAPPED_GENDER_IDENTITY,
+  MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS, RACE, SEXUAL_ORIENTATION
+} from "../../../../constants"
 //components import
-import CardComponent from "../../../common/CardComponent"
 import Selector from "../../../common/Selector"
+import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
 const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit }) => {

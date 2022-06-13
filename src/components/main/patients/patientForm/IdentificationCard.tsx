@@ -1,15 +1,15 @@
 // packages block
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
-import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME } from "../../../../constants"
-import InputController from "../../../../controller"
-import SnnController from "../../../../controller/SnnController"
-// constants, interfaces block
-import { PatientCardsProps } from "../../../../interfacesTypes"
-import CardComponent from "../../../common/CardComponent"
-import DatePicker from "../../../common/DatePicker"
 // components block
+import DatePicker from "../../../common/DatePicker"
+import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
+// constants, interfaces block
+import InputController from "../../../../controller"
+import { PatientCardsProps } from "../../../../interfacesTypes"
+import SnnController from "../../../../controller/SnnController"
+import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME } from "../../../../constants"
 
 const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit }) =>
   <CardComponent cardTitle={IDENTIFICATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>

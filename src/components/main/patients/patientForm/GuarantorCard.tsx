@@ -1,22 +1,22 @@
 // packages block
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
+// components block
+import Selector from "../../../common/Selector";
+import PhoneField from "../../../common/PhoneInput";
+import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from "../../../common/ViewDataLoader";
+// interfaces, utils block
+import { setRecord } from "../../../../utils";
+import InputController from "../../../../controller";
+import { ActionType } from "../../../../reducers/patientReducer";
+import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
 import {
   ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
   MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
   MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/patientReducer";
-// interfaces, utils block
-import { setRecord } from "../../../../utils";
-import CardComponent from "../../../common/CardComponent";
-import PhoneField from "../../../common/PhoneInput";
-// components block
-import Selector from "../../../common/Selector";
-import ViewDataLoader from "../../../common/ViewDataLoader";
 
 const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
   const methods = useFormContext<PatientInputProps>()

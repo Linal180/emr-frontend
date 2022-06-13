@@ -1,30 +1,30 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box } from "@material-ui/core";
-import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import {
-  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
-  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
-} from "../../../../constants";
-import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
-  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
-} from "../../../../generated/graphql";
-// interfaces, graphql, constants block /styles
-import history from '../../../../history';
-import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import { extendedPatientSchema } from '../../../../validationSchemas';
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 // components block
 import Alert from "../../../common/Alert";
 import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
+// interfaces, graphql, constants block /styles
+import history from '../../../../history';
+import { extendedPatientSchema } from '../../../../validationSchemas';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import {
+  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+} from "../../../../constants";
+import {
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
+  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
+} from "../../../../generated/graphql";
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref

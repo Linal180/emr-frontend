@@ -2,13 +2,13 @@
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
 //constants and interface props
-import { HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP } from "../../../../constants"
-//components import
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
-import CardComponent from "../../../common/CardComponent"
+import { HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP } from "../../../../constants"
+//components import
 import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
+import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
 const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
