@@ -20,7 +20,6 @@ import ViewStaff from "../pages/main/staff/viewStaff";
 import { AutoLogout } from "../pages/main/autoLogout";
 import AddResult from "../pages/main/reports/addResult";
 import { EditRole } from "../pages/main/roles/viewRole";
-import AddDoctor from "../pages/main/doctors/addDoctor";
 import { SetPassword } from "../pages/auth/setPassword";
 import { Roles } from "../pages/main/roles/roleListing";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
@@ -31,6 +30,7 @@ import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
 import { Calendar } from "../pages/main/dashboard/calendar";
 import { ResetPassword } from "../pages/auth/resetPassword";
+import { AddDoctor } from "../pages/main/doctors/addDoctor";
 import { TwoFaAuthentication } from "../pages/main/2FaAuth";
 import Invoices from "../pages/main/billing/invoicesListing";
 import ViewPatient from "../pages/main/patients/viewPatient";
@@ -38,10 +38,12 @@ import { ChangePassword } from "../pages/main/changePassword";
 import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
+import { StaffDashboard } from "../pages/main/dashboard/Staff";
 import { SuperDashboard } from "../pages/main/dashboard/Super";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
 import { AddLabOrders } from "../pages/main/labOrders/addOrder";
 import LabResults from "../pages/main/reports/labResultsListing";
+import { DoctorDashboard } from "../pages/main/dashboard/Doctor";
 import { EditLabOrders } from "../pages/main/labOrders/editOrder";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
@@ -75,7 +77,7 @@ import { AppointmentConfirmation } from "../pages/main/publicAppointments/confir
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { PublicFormPreview, PublicFormFail, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
 // constants, contexts and utils
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../utils";
+import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
 import { AuthContext } from "../context";
 import {
   STAFF_ROUTE, DOCTORS_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, CANCEL_APPOINTMENT,
@@ -124,8 +126,9 @@ const Routes: FC = (): JSX.Element => {
       {isSuperAdmin(roles) ?
         <PrivateRoute exact path={DASHBOARD_ROUTE} component={SuperDashboard} />
         : isPracticeAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
-        : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
-        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
+          : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} />
+            : isOnlyDoctor(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={DoctorDashboard} />
+              : <PrivateRoute exact path={DASHBOARD_ROUTE} component={StaffDashboard} />
       }
 
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} permission={USER_PERMISSIONS.createPractice} />

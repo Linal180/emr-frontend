@@ -3112,29 +3112,6 @@ export const MAPPED_STATUS = [
   },
 ];
 
-export const PROFILE_DETAIL_DATA = [
-  {
-    title: "Allergies",
-    description: LOREM_TEXT_15,
-  },
-  {
-    title: "Past Medical History",
-    description: LOREM_TEXT_15,
-  },
-  {
-    title: "Problems",
-    description: LOREM_TEXT_15,
-  },
-  {
-    title: "Medications",
-    description: LOREM_TEXT_15,
-  },
-  {
-    title: "Family History",
-    description: LOREM_TEXT_15,
-  },
-];
-
 export const PORTAL_DUMMY_DATA = [
   {
     email: "willie.jennings@example.com",
@@ -3159,84 +3136,6 @@ export const PORTAL_DUMMY_DATA = [
     activatedOn: "March 15, 2022. 2:18AM",
     disabledName: "Floyd Miles",
     disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-];
-
-export const LAB_ORDERS_DUMMY_DATA = [
-  {
-    appointment: "2020-04-18 07:31 AM",
-    test: "Blood Sugar Test",
-    date: "2020-03-15 09:06 AM",
-  },
-  {
-    appointment: "2020-06-26 12:10 AM",
-    test: "Vitamin D Test",
-    date: "2020-03-15 09:06 AM",
-  },
-  {
-    appointment: "2020-01-04 02:46 PM",
-    test: "Thallium Scan",
-    date: "2020-02-08 07:31 AM",
-  },
-  {
-    appointment: "2020-01-04 02:46 PM",
-    test: "Vitamin E Test",
-    date: "2020-06-27 01:23 PM",
-  },
-];
-
-export const LAB_ORDERS_LISTING_DATA = [
-  {
-    doctorName: "Courtney Fox",
-    loinsCode: "14444-4",
-    description: "Cholesterol [Mass/volume] in Urine",
-    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
-    entered: "Entered: March 28, 2022, 7:09 a.m.",
-    performed: "Performed: March 28, 2022, 4:08 p.m.",
-    signOff: "Signed Off",
-    status: "Result Received",
-    result: "33 mg/dL",
-    file: "Patient HIPAA Signature",
-    comments: "Report is normal",
-  },
-  {
-    doctorName: "Philip Richards",
-    loinsCode: "13333-3",
-    description: "CD3+CD25+ cells/100 cells in Blood",
-    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
-    entered: "Entered: March 28, 2022, 7:09 a.m.",
-    performed: "Performed: March 28, 2022, 4:08 p.m.",
-    signOff: "Pending",
-    status: "Order Entered",
-    result: "34 %",
-    file: "--",
-    comments: "Report is normal",
-  },
-  {
-    doctorName: "Darrell Fox",
-    loinsCode: "12234-5",
-    description: "Cholesterol [Mass/volume] in Urine",
-    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
-    entered: "Entered: March 28, 2022, 7:09 a.m.",
-    performed: "Performed: March 28, 2022, 4:08 p.m.",
-    signOff: "Pending",
-    status: "Order Entered",
-    result: "42 mg/dL",
-    file: "Result",
-    comments: "Report is normal",
-  },
-  {
-    doctorName: "Ronald Lane",
-    loinsCode: "18577-3",
-    description: "CD3+CD25+ cells/100 cells in Blood",
-    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
-    entered: "Entered: March 28, 2022, 7:09 a.m.",
-    performed: "Performed: March 28, 2022, 4:08 p.m.",
-    signOff: "Pending",
-    status: "Order Entered",
-    result: "35 %",
-    file: "Report",
-    comments: "Report is not normal. refer him for another test...",
   },
 ];
 
@@ -3294,33 +3193,6 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: TIME_ZONE,
     link: "/",
     desc: TIME_ZONE_DESCRIPTION,
-  },
-];
-
-export const EMERGENCY_ACCESS_DUMMY_DATA = [
-  {
-    name: "Cody Fisher",
-    accessDate: "Sep 3, 2020 6:57 AM",
-    drName: "",
-    actionDate: "",
-  },
-  {
-    name: "Ronald Richards",
-    accessDate: "Aug 12, 2020 9:37 AM",
-    drName: "Dr. Harrold Wixen",
-    actionDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    name: "Bessie Cooper",
-    accessDate: "Sep 3, 2020 6:57 AM",
-    drName: "Dr. A. H. John",
-    actionDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    name: "Darlene Robertson",
-    accessDate: "Sep 3, 2020 6:57 AM",
-    drName: "Floyd Miles",
-    actionDate: "On: March 15, 2022. 2:18AM",
   },
 ];
 

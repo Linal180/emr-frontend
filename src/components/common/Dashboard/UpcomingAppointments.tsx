@@ -5,7 +5,12 @@ import { BLUE, GRAY_SEVEN, WHITE } from "../../../theme";
 // history, constant and styles block
 import { UPCOMING_APPOINTMENT_LIST } from "../../../constants";
 
-const AppointmentListComponent: FC = (): JSX.Element => {
+interface UpcomingAppointmentsProps {
+  doctorId?: string;
+  facilityId?: string
+}
+
+const UpcomingAppointments: FC<UpcomingAppointmentsProps> = ({ doctorId, facilityId }): JSX.Element => {
 
   return (
     <>
@@ -44,4 +49,4 @@ const AppointmentListComponent: FC = (): JSX.Element => {
   )
 };
 
-export default AppointmentListComponent;
+export default UpcomingAppointments;

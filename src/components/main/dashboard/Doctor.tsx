@@ -4,14 +4,13 @@ import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
-import AppointmentListComponent from "../../common/Dashboard/appointmentList";
+import UpcomingAppointments from "../../common/Dashboard/UpcomingAppointments";
 import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
-// svgs block, styles, history
+// svgs and constant block
 import { RedirectIcon, } from "../../../assets/svgs";
-// constant
 import { TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, } from "../../../constants";
 
-const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
+const DoctorDashboardComponent: FC = (): JSX.Element => {
 
   return (
     <>
@@ -39,7 +38,7 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
                 </IconButton>
               </Box>
 
-              <AppointmentListComponent />
+              <UpcomingAppointments />
             </Box>
           </Card>
 
@@ -55,7 +54,7 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
                 </IconButton>
               </Box>
 
-              <AppointmentListComponent />
+              <UpcomingAppointments />
             </Box>
           </Card>
 
@@ -72,4 +71,4 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
   )
 };
 
-export default DoctorAdminDashboardComponent;
+export default DoctorDashboardComponent;
