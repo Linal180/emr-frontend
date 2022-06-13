@@ -4,9 +4,9 @@ import { Box } from "@material-ui/core";
 import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  ADD_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
 } from "../../../../constants";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import {
@@ -21,11 +21,10 @@ import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../..
 import { extendedPatientSchema } from '../../../../validationSchemas';
 // components block
 import Alert from "../../../common/Alert";
+import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
-import RegisterFormComponent from './RegisterForm';
-
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
@@ -37,14 +36,13 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
-    activeStep, patientId
+    activeStep, patientId, optionalEmail
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema())
-    //  isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema(optionalEmail))
   });
-  const { handleSubmit, setValue, watch, formState: {errors} } = methods;
+  const { handleSubmit, setValue, watch } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
@@ -87,17 +85,20 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (doctorPatients) {
-            const currentDoctor = doctorPatients.map(doctorPatient => {
-              const { currentProvider, doctor } = doctorPatient
-
-              return currentProvider ? doctor : null
-            })[0];
-
-            if (currentDoctor) {
-              const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-              usualProviderId &&
-                setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient?.currentProvider)
+            if (doesPrimaryProviderExist) {
+              const { doctor } = doesPrimaryProviderExist ?? {}
+              const { firstName, lastName, id } = doctor ?? {}
+              setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+            } else {
+              const currentDoctorPatients = doctorPatients[0]
+              if (currentDoctorPatients) {
+                const { doctor } = currentDoctorPatients || {};
+                const { firstName, lastName, id } = doctor ?? {}
+                setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
+                dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+              }
             }
           }
 
@@ -252,10 +253,16 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_CREATED);
-          // history.push(PATIENTS_ROUTE)
-         const { id} =  patient || {}
-         id && dispatch({type: ActionType.SET_PATIENT_ID, patientId:id })
+          if (activeStep === 0) {
+
+            Alert.success(PATIENT_CREATED);
+          }
+          else {
+            Alert.success(CHANGES_SAVED);
+          }
+          const { id } = patient || {}
+          id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
+          activeStep === 5 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -276,8 +283,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_UPDATED);
-          shouldShowBread && history.push(PATIENTS_ROUTE)
+          activeStep && Alert.success(CHANGES_SAVED);
+          activeStep === 5 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -345,6 +352,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
+        usualProviderId: selectedUsualProvider
       };
 
       const contactInput = {
@@ -386,7 +394,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
       };
 
-      if (id) {
+      if (id || patientId) {
+        const itemId = id || patientId
         const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
         const contactIdInput = basicContactId ?
           { id: basicContactId, ...contactInput } : { ...contactInput }
@@ -402,7 +411,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         await updatePatient({
           variables: {
             updatePatientInput: {
-              updatePatientItemInput: { id, ...patientItemInput },
+              updatePatientItemInput: { id: itemId, ...patientItemInput },
               updateContactInput: { ...contactIdInput },
               updateEmployerInput: { ...employerIdInput },
               updateGuardianContactInput: { ...guardianIdInput },
@@ -443,9 +452,15 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   useEffect(() => {
     if (id) {
-        getPatient({ variables: { getPatient: { id } } })
+      getPatient({ variables: { getPatient: { id } } })
     }
   }, [getPatient, id, isEdit])
+
+  useEffect(() => {
+    if (patientId) {
+      getPatient({ variables: { getPatient: { id: patientId } } })
+    }
+  }, [getPatient, patientId])
 
   const fetchList = useCallback((id: string, name: string) => {
     setValue('usualProviderId', EMPTY_OPTION)
@@ -492,10 +507,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(errors)}
         {shouldShowBread &&
           <Box display="flex">
-                <BackButton to={`${PATIENTS_ROUTE}`} />
+            <BackButton to={`${PATIENTS_ROUTE}`} />
 
             <Box ml={2}>
               <PageHeader

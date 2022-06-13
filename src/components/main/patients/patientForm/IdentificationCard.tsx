@@ -12,7 +12,7 @@ import DatePicker from "../../../common/DatePicker"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 
 const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit }) =>
-  <CardComponent cardTitle={IDENTIFICATION} state={state}  saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+  <CardComponent cardTitle={IDENTIFICATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>
@@ -59,17 +59,27 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
 
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              isRequired
-              fieldType="text"
-              controllerName="ssn"
-              controllerLabel={SSN}
-            />
+            {isEdit ?
+              <SnnController
+                isRequired
+                fieldType="text"
+                controllerName="ssn"
+                controllerLabel={SSN}
+                disabled={shouldDisableEdit}
+              />
+              :
+              <InputController
+                isRequired
+                fieldType="text"
+                controllerName="ssn"
+                controllerLabel={SSN}
+                disabled={shouldDisableEdit}
+              />
+            }
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
-            <DatePicker isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
+            <DatePicker name="dob" label={DOB} disabled={shouldDisableEdit} />
           </Grid>
         </Grid>
       </>

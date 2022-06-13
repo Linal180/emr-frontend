@@ -4,7 +4,7 @@ import { Edit, Save, ArrowBack } from "@material-ui/icons";
 import { Card, CardContent, CardHeader, IconButton, Box, Button, CircularProgress } from "@material-ui/core";
 // interfaces/types block
 import { CardComponentType } from "../../interfacesTypes";
-import { SAVE_TEXT, CREATE_PATIENT, UPDATE_PATIENT } from "../../constants";
+import { SAVE_TEXT } from "../../constants";
 
 const CardComponent: FC<CardComponentType> = ({
   children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight, saveBtn, state, disableSubmit
@@ -37,22 +37,13 @@ const CardComponent: FC<CardComponentType> = ({
             </Box>
           ) : saveBtn
             ? typeof activeStep === 'number' &&
-              activeStep < 5 ?
+              activeStep < 6 &&
               <Button
                 variant="contained" color='primary' type='submit'
                 disabled={disableSubmit} 
                 
               >
                 {SAVE_TEXT}
-
-                {disableSubmit && <CircularProgress size={20} color="inherit" />}
-              </Button>
-              :
-              <Button
-                variant="contained" color='primary' type="submit"
-                disabled={disableSubmit}
-              >
-                {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
 
                 {disableSubmit && <CircularProgress size={20} color="inherit" />}
               </Button>

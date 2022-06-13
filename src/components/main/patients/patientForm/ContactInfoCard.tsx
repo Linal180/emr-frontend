@@ -74,7 +74,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
             <Grid item md={12} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="basicAddress"
                 controllerLabel={ADDRESS}
@@ -95,7 +94,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                 <Grid item md={10} sm={10} xs={10}>
                   <InputController
                     disabled={shouldDisableEdit}
-                    isRequired
                     fieldType="text"
                     controllerName="basicZipCode"
                     controllerLabel={ZIP_CODE}
@@ -125,7 +123,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               <Grid item md={4}>
                 <InputController
                   disabled={shouldDisableEdit}
-                  isRequired
                   fieldType="text"
                   controllerName="basicCity"
                   controllerLabel={CITY}
@@ -135,7 +132,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               <Grid item md={4}>
                 <Selector
                   disabled={shouldDisableEdit}
-                  isRequired
                   name="basicState"
                   label={STATE}
                   addEmpty
@@ -146,10 +142,8 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               <Grid item md={4}>
                 <Selector
                   disabled={shouldDisableEdit}
-                  isRequired
                   name="basicCountry"
                   label={COUNTRY}
-                  addEmpty
                   options={MAPPED_COUNTRIES}
                 />
               </Grid>

@@ -1389,6 +1389,7 @@ export const PATIENT_CREATED = "Patient created successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const PROFILE_UPDATE = "Profile is updated successfully";
+export const CHANGES_SAVED = "Changes saved successfully!";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -2469,12 +2470,12 @@ export const MAPPED_RACE: SelectorOption[] = [
 export const MAPPED_ETHNICITY: SelectorOption[] = [
   { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
-    id: Ethnicity.CenteralAmerican,
-    name: formatValue(Ethnicity.CenteralAmerican),
+    id: Ethnicity.DeclineToSpecify,
+    name: formatValue(Ethnicity.DeclineToSpecify),
   },
   {
-    id: Ethnicity.CenteralAmericanIndian,
-    name: formatValue(Ethnicity.CenteralAmericanIndian),
+    id: Ethnicity.HispanicOrLatino,
+    name: formatValue(Ethnicity.HispanicOrLatino),
   },
 ];
 
@@ -2509,8 +2510,8 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
-    id: Genderidentity.NotExclusive,
-    name: formatValue(Genderidentity.NotExclusive),
+    id: Genderidentity.DeclineToSpecify,
+    name: formatValue(Genderidentity.DeclineToSpecify),
   },
   {
     id: Genderidentity.TransgenderFemale,

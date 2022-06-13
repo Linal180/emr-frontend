@@ -460,7 +460,7 @@ export const employerPatientSchema = {
   employerUsualOccupation: notRequiredStringOnly(USUAL_OCCUPATION),
 };
 
-export const extendedPatientSchema = () => yup.object({
+export const extendedPatientSchema = (isOptional: boolean) => yup.object({
   // ...PatientSchema,
   // ...kinPatientSchema,
   // ...basicContactSchema,
@@ -470,7 +470,7 @@ export const extendedPatientSchema = () => yup.object({
   // ...guarantorPatientSchema,
   // gender: selectorSchema(GENDER),
   // facilityId: selectorSchema(FACILITY),
-  // basicEmail: optionalEmailSchema(isOptional),
+  basicEmail: optionalEmailSchema(isOptional),
   // basicPhone: notRequiredPhone(MOBILE_NUMBER),
   // usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
   ...firstLastNameSchema,

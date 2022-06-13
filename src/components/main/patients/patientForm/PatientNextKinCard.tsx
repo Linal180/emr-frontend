@@ -29,7 +29,6 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
             <Grid item md={6} sm={12} xs={12}>
               <Selector
                 addEmpty
-                isRequired
                 disabled={shouldDisableEdit}
                 name="kinRelationship"
                 label={RELATIONSHIP}

@@ -60,7 +60,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             <Selector
               addEmpty
               disabled={shouldDisableEdit}
-              isRequired
               name="guarantorRelationship"
               label={GUARANTOR_RELATION}
               options={MAPPED_RELATIONSHIP_TYPE}
@@ -84,7 +83,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             <Grid item md={6} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorFirstName"
                 controllerLabel={FIRST_NAME}
@@ -105,7 +103,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             <Grid item md={6} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorLastName"
                 controllerLabel={LAST_NAME}
@@ -140,7 +137,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
           <Grid item md={12} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              isRequired
               fieldType="text"
               controllerName="guarantorZipCode"
               controllerLabel={ZIP_CODE}
@@ -150,7 +146,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
           <Grid item md={12} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              isRequired
               fieldType="text"
               controllerName="guarantorAddress"
               controllerLabel={ADDRESS}
@@ -170,7 +165,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             <Grid item md={4}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorCity"
                 controllerLabel={CITY}
@@ -181,7 +175,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
               <Selector
                 addEmpty
                 disabled={shouldDisableEdit}
-                isRequired
                 name="guarantorState"
                 label={STATE}
                 options={MAPPED_STATES}
@@ -203,7 +196,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             <Grid item md={6} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorSsn"
                 controllerLabel={SSN}
@@ -211,14 +203,13 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <PhoneField isRequired name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
+              <PhoneField name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              isRequired
               fieldType="email"
               controllerName="guarantorEmail"
               controllerLabel={EMAIL}

@@ -16,7 +16,7 @@ import {
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
 
-const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit, dispatch, disableSubmit }) => {
+const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdit, state, shouldDisableEdit, disableSubmit }) => {
   const { facilityName, doctorName } = state || {}
   const methods = useFormContext<PatientInputProps>()
   const { watch } = methods;
@@ -32,7 +32,6 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdi
             <Grid item md={6} sm={12} xs={12}>
               {isEdit ? renderItem(FACILITY, facilityName)
                 : <FacilitySelector
-                  isRequired
                   label={FACILITY}
                   name="facilityId"
                 />
@@ -46,7 +45,6 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, isEdi
                   name="usualProviderId"
                   facilityId={selectedFacility}
                   addEmpty
-                  isRequired
                 />
               }
             </Grid>
