@@ -480,7 +480,7 @@ export const extendedPatientSchema = (isOptional: boolean) => yup.object({
   // usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
   ...firstLastNameSchema,
   ...ssnSchema,
-
+  ...dobSchema,
 })
 
 export const extendedEditPatientSchema = (isOptional: boolean) => yup.object({

@@ -13,11 +13,11 @@ import { EMERGENCY_CONTACT, HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, 
 
 const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, dispatch, disableSubmit, isEdit }) => {
   return (
-    <CardComponent cardTitle={EMERGENCY_CONTACT} saveBtn state={state}  disableSubmit={disableSubmit} isEdit={isEdit}>
+    <CardComponent cardTitle={EMERGENCY_CONTACT} saveBtn state={state} disableSubmit={disableSubmit} isEdit={isEdit}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
                 fieldType="text"
@@ -26,7 +26,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 addEmpty
                 disabled={shouldDisableEdit}
@@ -35,14 +35,12 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
                 options={MAPPED_RELATIONSHIP_TYPE}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="emergencyPhone" label={HOME_PHONE} disabled={shouldDisableEdit} />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="emergencyMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>

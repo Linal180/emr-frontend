@@ -415,7 +415,9 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png",".pdf",".docx", ".doc",".svg"];
+export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3",".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -843,6 +845,7 @@ export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shif
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
+export const ARRIVAL_STATUS = "Arrival Status";
 export const ACTIVATED = "Acitivated";
 export const TEST_NOTES = "Test Notes";
 export const VIEW_BILLING = "View Billing";
@@ -2432,10 +2435,10 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2472,7 +2475,6 @@ export const MAPPED_RACE: SelectorOption[] = [
 ];
 
 export const MAPPED_ETHNICITY: SelectorOption[] = [
-  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
     id: Ethnicity.DeclineToSpecify,
     name: formatValue(Ethnicity.DeclineToSpecify),
@@ -2488,7 +2490,6 @@ export const MAPPED_ETHNICITY: SelectorOption[] = [
 ];
 
 export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
-  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
   {
     id: Sexualorientation.DontKnow,
     name: formatValue(Sexualorientation.DontKnow),
@@ -2514,7 +2515,6 @@ export const MAPPED_GENDER: SelectorOption[] = [
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
-  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
