@@ -15,8 +15,9 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
-  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
+  PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice,
+  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, PracticePayload,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
   VerifyCodeInput
@@ -1270,8 +1271,6 @@ export interface FieldEditModalProps {
 export interface DropContainerPropsTypes {
   formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
-  delFieldHandler: (id: number, index: number) => void;
-  delColHandler: (index: number) => void;
   dispatch: Dispatch<FormBuilderAction>
 }
 
@@ -1290,7 +1289,7 @@ export interface LoaderProps {
 export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
-  data: SectionsInputs[];
+  data: FormTabsInputs[];
   formName: string;
 }
 
@@ -1767,4 +1766,14 @@ export interface CodesTableProps {
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']
+}
+
+
+export interface TabPropertiesTypes {
+  name: string;
+}
+
+export interface TabPropertiesProps{
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
 }

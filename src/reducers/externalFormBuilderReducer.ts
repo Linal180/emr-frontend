@@ -1,5 +1,5 @@
 import { getFormInitialValues } from "../constants";
-import { FormType, SectionsInputs } from "../generated/graphql";
+import { FormType, FormTabsInputs } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -7,7 +7,7 @@ export interface State {
   loader: boolean;
   uploadImage: boolean;
   formName: string;
-  formValues: SectionsInputs[];
+  formValues: FormTabsInputs[];
   formType: FormType;
   facilityId: string;
   serviceId: string;
@@ -48,7 +48,7 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_LOADER; loader: boolean } |
 { type: ActionType.SET_UPLOAD_IMAGE; uploadImage: boolean } |
 { type: ActionType.SET_FORM_NAME; formName: string } |
-{ type: ActionType.SET_FORM_VALUES; formValues: SectionsInputs[] } |
+{ type: ActionType.SET_FORM_VALUES; formValues: FormTabsInputs[] } |
 { type: ActionType.SET_FACILITY_FIELD_ID; facilityFieldId: SelectorOption } |
 { type: ActionType.SET_FACILITY_ID; facilityId: string } |
 { type: ActionType.SET_FORM_TYPE; formType: FormType } |

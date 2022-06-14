@@ -179,6 +179,8 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const ADD_TAB = 'add_tab'
+export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
 export const PATIENT_VITAL_TEXT = 'Patient Vitals'
 export const RPM_TEXT = 'rpm'
@@ -3565,7 +3567,7 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
 
 export const COVID_RESULT_OPTIONS: SelectorOption[] = [
   { id: 'Detected', name: 'Detected' },
-  { id: 'Not Detected', name: 'Not Detected'  },
+  { id: 'Not Detected', name: 'Not Detected' },
 ]
 
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
@@ -3585,13 +3587,16 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   isPractice: false,
 };
 
-export const getFormInitialValues = () => [
-  {
+export const getFormInitialValues = () => [{
+  id: uuid(),
+  name: "tab_1",
+  sections: [{
     id: uuid(),
     col: 12,
     name: "Section",
     fields: [],
-  },
+  }]
+}
 ];
 
 export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {

@@ -51,7 +51,7 @@ const PublicFormPreview = () => {
 
           if (form && status && status === 200) {
             const { name, layout, isActive, facilityId, type, practiceId } = form;
-            const { sections } = layout;
+            const { tabs } = layout;
 
             if (isActive) {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: true })
@@ -59,7 +59,7 @@ const PublicFormPreview = () => {
               practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
-              sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
+              tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
 
             }
             else {
@@ -77,13 +77,16 @@ const PublicFormPreview = () => {
 
   useMemo(() => {
     if (formValues && formValues?.length > 0) {
-      formValues?.map(({ fields }) => fields?.map((field) => {
-        const { apiCall, fieldId } = field
-        if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
-          dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
-        }
-        return field
-      }))
+      formValues?.map((tab) => {
+        const { sections } = tab || {}
+        return sections?.map(({ fields }) => fields?.map((field) => {
+          const { apiCall, fieldId } = field
+          if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
+            dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
+          }
+          return field
+        }))
+      })
     }
   }, [formValues])
 
@@ -180,35 +183,38 @@ const PublicFormPreview = () => {
                   </Box>
                   <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
                     <Grid container spacing={3} alignItems='stretch'>
-                      {formValues?.map((item, index) => {
-                        const { col, fields, id, name } = item
-                        return (
-                          <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
-                            <CardComponent cardTitle={name} isFullHeight>
-                              <Grid container spacing={3}>
-                                {fields?.map((field) => {
-                                  const { column, fieldId } = field
-                                  return (
-                                    <Grid
-                                      item
-                                      md={parseColumnGrid(column)}
-                                      key={`${id}-${fieldId}`}
-                                    >
-                                      <InputController
-                                        item={field}
-                                        facilityId={facilityId}
-                                        state={state}
-                                        practiceId={practiceId}
-                                        dispatcher={dispatch}
-                                      />
-                                    </Grid>
-                                  )
-                                }
-                                )}
-                              </Grid>
-                            </CardComponent>
-                          </Grid>
-                        )
+                      {formValues?.map((tab, index) => {
+                        const { sections } = tab || {}
+                        return sections?.map((item) => {
+                          const { col, fields, id, name } = item
+                          return (
+                            <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
+                              <CardComponent cardTitle={name} isFullHeight>
+                                <Grid container spacing={3}>
+                                  {fields?.map((field) => {
+                                    const { column, fieldId } = field
+                                    return (
+                                      <Grid
+                                        item
+                                        md={parseColumnGrid(column)}
+                                        key={`${id}-${fieldId}`}
+                                      >
+                                        <InputController
+                                          item={field}
+                                          facilityId={facilityId}
+                                          state={state}
+                                          practiceId={practiceId}
+                                          dispatcher={dispatch}
+                                        />
+                                      </Grid>
+                                    )
+                                  }
+                                  )}
+                                </Grid>
+                              </CardComponent>
+                            </Grid>
+                          )
+                        })
                       }
                       )}
                     </Grid>
