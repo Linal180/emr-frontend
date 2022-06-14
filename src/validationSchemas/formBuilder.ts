@@ -8,9 +8,9 @@ import {
   COMPANY_NAME, CONTRACT_NO, FormBuilderApiSelector, FormBuilderPaymentTypes, GROUP_NUMBER, MEMBER_ID, ORGANIZATION_NAME
 } from "../constants";
 //schema
-export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentType: string) => {
+export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentType: string, tabIndex: number) => {
   let validation: any = {}
-  formSection?.map((tab) => {
+  formSection?.filter((_, index) => index === tabIndex)?.map((tab) => {
     const { sections } = tab || {}
     return sections?.map((section) => {
       const { fields } = section || {}

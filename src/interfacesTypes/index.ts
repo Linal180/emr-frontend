@@ -20,7 +20,8 @@ import {
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, PracticePayload,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  VerifyCodeInput,
+  SectionsInputs
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
@@ -1793,7 +1794,14 @@ export interface TabPropertiesTypes {
   name: string;
 }
 
-export interface TabPropertiesProps{
+export interface TabPropertiesProps {
   formState: FormBuilderState;
   dispatch: Dispatch<FormBuilderAction>
+}
+
+
+export interface StepContextProps {
+  state: ExternalFormBuilderState;
+  dispatch: Dispatch<PublicFormBuilderAction>
+  sections: SectionsInputs[]
 }

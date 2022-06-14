@@ -3,27 +3,29 @@ import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
-import { Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step, StepContent } from '@material-ui/core';
+import { Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step } from '@material-ui/core';
 //components block
-import InputController from '../../../common/FormFieldController';
-import CardComponent from '../../../common/CardComponent';
-import ViewDataLoader from '../../../common/ViewDataLoader';
 import Alert from '../../../common/Alert';
+import { StepContext } from './StepContext';
+import ViewDataLoader from '../../../common/ViewDataLoader';
 //interfaces, reducers, utils, constants
-import { ParamsType } from '../../../../interfacesTypes'
-import { getUserFormFormattedValues, parseColumnGrid } from '../../../../utils';
-import { FormType, SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
-import {
-  PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector,
-  APPOINTMENT_SLOT_ERROR_MESSAGE,
-} from '../../../../constants';
+import { GREY } from '../../../../theme';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
-import { GREY } from '../../../../theme';
-import { State, Action, initialState, externalFormBuilderReducer, ActionType } from '../../../../reducers/externalFormBuilderReducer';
+import { ParamsType } from '../../../../interfacesTypes'
+import { getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
+import {
+  State, Action, initialState, externalFormBuilderReducer, ActionType
+} from '../../../../reducers/externalFormBuilderReducer';
+import {
+  FormType, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation
+} from '../../../../generated/graphql';
+import {
+  PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT,
+} from '../../../../constants';
 //constants
 const initialValues = {};
 //component
@@ -32,9 +34,13 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, facilityId, formType, practiceId, paymentType } = state
-  const methods = useForm<any>({ defaultValues: initialValues, resolver: yupResolver(getFormBuilderValidation(formValues, paymentType)) });
+  const { isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep } = state
+  const methods = useForm<any>({
+    defaultValues: initialValues,
+    resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
+  });
   const { handleSubmit } = methods;
+  const isSubmit = formValues?.length - 1 === activeStep
 
   //mutation
   const [getForm] = useGetPublicFormLazyQuery({
@@ -111,7 +117,7 @@ const PublicFormPreview = () => {
   })
 
   const submitHandler = async (values: any) => {
-    if (id) {
+    if (id && isSubmit) {
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
       const formValues = await getUserFormFormattedValues(values, id);
       const data = {
@@ -136,6 +142,9 @@ const PublicFormPreview = () => {
         await createUserForm({ variables: { createUserFormInput: data } })
       }
     }
+    else {
+      nextStepHandler()
+    }
   };
 
   const getFormHandler = useCallback(async () => {
@@ -149,48 +158,9 @@ const PublicFormPreview = () => {
     id ? getFormHandler() : history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
   }, [getFormHandler, id])
 
-  function getStepContent(step: number, sections: SectionsInputs[]) {
-    switch (step) {
-      case step:
-        return <Grid container spacing={3} alignItems='stretch'>
-          {sections?.map((item, index) => {
-            const { col, fields, id, name } = item
-            return (
-              <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
-                <CardComponent cardTitle={name} isFullHeight>
-                  <Grid container spacing={3}>
-                    {fields?.map((field) => {
-                      const { column, fieldId } = field
-                      return (
-                        <Grid
-                          item
-                          md={parseColumnGrid(column)}
-                          key={`${id}-${fieldId}`}
-                        >
-                          <InputController
-                            item={field}
-                            facilityId={facilityId}
-                            state={state}
-                            practiceId={practiceId}
-                            dispatcher={dispatch}
-                          />
-                        </Grid>
-                      )
-                    }
-                    )}
-                  </Grid>
-                </CardComponent>
-              </Grid>
-            )
+  const nextStepHandler = () => !isSubmit && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
 
-          }
-          )}
-        </Grid>
-
-      default:
-        return 'Unknown step';
-    }
-  }
+  const backStepHandler = () => dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
   //render
   return (
@@ -211,33 +181,49 @@ const PublicFormPreview = () => {
                     </Box>
                     <Box display={'flex'} justifyContent={'flex-end'}>
                       <Box marginX={2}>
-                        <Button variant={'contained'}>
-                          {CANCEL_TEXT}
+                        <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
+                          {BACK_TEXT}
                         </Button>
                       </Box>
 
                       <Box>
                         {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
-                        <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
-                          {FORM_SUBMIT_TEXT}
+                        <Button
+                          type={'submit'}
+                          variant={'contained'} color={'primary'}
+                          disabled={loading || uploadImage}
+                        >
+                          {isSubmit ? FORM_SUBMIT_TEXT : NEXT}
                         </Button>
                       </Box>
                     </Box>
                   </Box>
-                  <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-                    <Stepper activeStep={2} orientation="vertical">
-                      {formValues?.map((tab, index) => {
-                        const { sections, name, id } = tab || {}
-                        return <Step key={id}>
-                          <StepLabel>{name}</StepLabel>
-                          <StepContent>
-                            {getStepContent(index, sections)}
-                          </StepContent>
-                        </Step>
-                      }
-                      )}
-                    </Stepper>
-                  </Box>
+                  {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"> */}
+                    <Grid container spacing={3}>
+                      <Grid item xs={2}>
+                        <Stepper activeStep={activeStep} orientation="vertical" >
+                          {formValues?.map((tab, index) => {
+                            const { name, id } = tab || {}
+                            return <Step key={`${id}-${index}`}>
+                              <StepLabel>{name}</StepLabel>
+                            </Step>
+                          }
+                          )}
+                        </Stepper>
+                      </Grid>
+                      <Grid item xs={10}>
+                        {formValues?.map((tab, index) => {
+                          const { sections, name, id } = tab || {}
+                          return <Fragment key={`${id}-${name}`}>
+                            {activeStep === index &&
+                              <StepContext sections={sections} state={state} dispatch={dispatch} />
+                            }
+                          </Fragment>
+                        }
+                        )}
+                      </Grid>
+                    </Grid>
+                  {/* </Box> */}
                 </form>
               </FormProvider>
             </Box> :
