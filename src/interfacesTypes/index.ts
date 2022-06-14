@@ -15,7 +15,7 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
+  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
   PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
@@ -1561,6 +1561,8 @@ export interface VitalListingTableProps {
   patientStates: PatientState;
   setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
   shouldDisableEdit?: boolean
+  setVitalToEdit?: Function
+  setOpen?: Function
 }
 
 export interface VitalFormInput {
@@ -1576,12 +1578,16 @@ export interface VitalFormInput {
   pulseRate: string
   patientHeadCircumference: string
   patientTemperature: string
+  vitalsDate: string
 }
 
-export interface AddPatientVitalsProps {
+export interface AddPatientVitalsProps extends GeneralFormProps {
   fetchPatientAllVitals: Function;
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
+  isOpen?: boolean
+  handleClose?: () => void
+  vitalToEdit?: PatientVitalPayload['patientVital']
 }
 
 export interface PatientVitalsListingProps {
