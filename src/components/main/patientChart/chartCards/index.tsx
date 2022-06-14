@@ -21,28 +21,11 @@ const ChartCards: FC = (): JSX.Element => {
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const methods = useForm<PatientInputProps>({
-    mode: "all",
-  });
-  const { control } = methods
-
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
-
-  const renderIcon = () => {
-    return (
-      <IconButton onClick={() => setOpen(true)}>
-        <FormEditNewIcon />
-      </IconButton>
-    )
-  }
-
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(!checked)
-  };
 
   return (
 
