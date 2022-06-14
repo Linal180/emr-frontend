@@ -2,10 +2,10 @@
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
 //components import
-import InputController from "../../../../controller"
 import CardComponent from "../../../common/CardComponent"
 import ViewDataLoader from "../../../common/ViewDataLoader"
 //types and constants import
+import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { FIRST_NAME, GUARDIAN, LAST_NAME, MIDDLE_NAME, SUFFIX } from "../../../../constants"
 

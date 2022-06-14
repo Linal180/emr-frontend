@@ -300,6 +300,7 @@ export const INSURANCE_CARD = "Insurance Card";
 export const DOCUMENT_VERIFICATION = "Document Verification";
 export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
+export const RECURRING_DATE = "Recurring Date";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
@@ -625,6 +626,7 @@ export const ROLES = "Roles";
 export const ERROR = "error";
 export const UNITS = "Units";
 export const RESET = "Reset";
+export const SSN_INPUT = "ssn";
 export const REASON = "Reason";
 export const MOBILE = "Mobile";
 export const SERIAL_NO = "S.No";
@@ -664,6 +666,7 @@ export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
+export const STAGE = "Stage";
 export const EMR_TEXT = "EMR";
 export const CANCEL = "Cancel";
 export const DOCTOR = "Doctor";
@@ -682,7 +685,6 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const TOKEN = "emr_token";
 export const RESULTS = "Results";
-export const RESULTS_ENTERED = "Results Entered At";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
@@ -720,6 +722,7 @@ export const NEW_APPOINTMENT = "New Appointment";
 export const MEDICAL_BILLING = "Medical Billing";
 export const RESULT_FILE_NAME = "Result File Name";
 export const CLAIM_IN_PROCESS = "Claims in Process";
+export const RESULTS_ENTERED = "Results Entered At";
 export const RECENT_ACTIVITIES = "Recent Activities";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const TOTAL_APPOINTMENTS = "Total Appointments";
@@ -922,6 +925,7 @@ export const ADD_NUM = "Add Number";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
+export const LESS_INFO = "Less Info";
 export const DIAGNOSES = "Diagnoses";
 export const GUARANTOR = "Guarantor";
 export const MEMBER_ID = "Member ID";
@@ -1388,6 +1392,7 @@ export const PATIENT_CREATED = "Patient created successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const PROFILE_UPDATE = "Profile is updated successfully";
+export const CHANGES_SAVED = "Changes saved successfully!";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -2429,6 +2434,7 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2467,12 +2473,16 @@ export const MAPPED_RACE: SelectorOption[] = [
 export const MAPPED_ETHNICITY: SelectorOption[] = [
   { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
-    id: Ethnicity.CenteralAmerican,
-    name: formatValue(Ethnicity.CenteralAmerican),
+    id: Ethnicity.DeclineToSpecify,
+    name: formatValue(Ethnicity.DeclineToSpecify),
   },
   {
-    id: Ethnicity.CenteralAmericanIndian,
-    name: formatValue(Ethnicity.CenteralAmericanIndian),
+    id: Ethnicity.HispanicOrLatino,
+    name: formatValue(Ethnicity.HispanicOrLatino),
+  },
+  {
+    id: Ethnicity.NotHispanicOrLatino,
+    name: formatValue(Ethnicity.NotHispanicOrLatino),
   },
 ];
 
@@ -2507,8 +2517,16 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
-    id: Genderidentity.NotExclusive,
-    name: formatValue(Genderidentity.NotExclusive),
+    id: Genderidentity.DeclineToSpecify,
+    name: formatValue(Genderidentity.DeclineToSpecify),
+  },
+  {
+    id: Genderidentity.TransgenderFemale,
+    name: formatValue(Genderidentity.TransgenderFemale),
+  },
+  {
+    id: Genderidentity.TransgenderMale,
+    name: formatValue(Genderidentity.TransgenderMale),
   },
 ];
 
@@ -2617,7 +2635,7 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   },
 ];
 
-export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
+export const StepperIcons: { [index: string]: number } = { };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
@@ -3678,27 +3696,21 @@ export const FacilityMenuNav = [
 export const RegisterPatientMenuNav = [
   {
     title: IDENTIFICATION,
-    linkTo: IDENTIFICATION_ROUTE,
   },
   {
     title: DEMOGRAPHICS,
-    linkTo: DEMOGRAPHICS_ROUTE,
   },
   {
     title: CONTACT_INFORMATION,
-    linkTo: CONTACT_INFORMATION_ROUTE,
   },
   {
     title: PROVIDER_REGISTRATION_DATES,
-    linkTo: PROVIDER_REGISTRATION__ROUTE,
   },
   {
     title: PRIVACY,
-    linkTo: PRIVACY__ROUTE,
   },
   {
     title: EMERGENCY_CONTACT,
-    linkTo: EMERGENCY_CONTACT_ROUTE,
   },
 ];
 
