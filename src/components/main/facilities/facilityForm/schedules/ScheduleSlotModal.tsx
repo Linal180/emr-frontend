@@ -2,10 +2,12 @@
 import { FC, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent, FormControl, InputLabel } from "@material-ui/core";
+import { 
+  Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent, FormControl, InputLabel, 
+  Typography, FormGroup, FormControlLabel, Checkbox 
+} from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
-import Selector from '../../../../common/Selector';
 import TimePicker from "../../../../common/TimePicker";
 import DatePicker from "../../../../common/DatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
@@ -16,8 +18,8 @@ import { FacilityScheduleInputProps, FacilityScheduleModalProps, SelectorOption 
 import { getDayFromTimestamps, getTimeString, setRecord, setTimeDay } from "../../../../../utils";
 import { useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation } from "../../../../../generated/graphql";
 import {
-  CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND, FACILITY_SCHEDULE, RECURRING_DATE, YES, NO,
+  CANCEL, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE, YES, NO,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND, FACILITY_SCHEDULE, RECURRING_DATE,
 } from "../../../../../constants";
 import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
@@ -27,6 +29,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
   id, isEdit, facilityDispatcher, isOpen, facilityId, reload
 }): JSX.Element => {
   const classesToggle = usePublicAppointmentStyles();
+  const [ids, setIds] = useState<string[]>([])
   const methods = useForm<FacilityScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? facilityEditScheduleSchema : facilityScheduleSchema)
@@ -160,6 +163,16 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
       Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
+  const handleChangeForCheckBox = (id: string) => {
+    if (id) {
+      if (ids.includes(id)) {
+        setIds(ids.filter(permission => permission !== id))
+      } else {
+        setIds([...ids, id])
+      }
+    }
+  };
+
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
   return (
@@ -173,19 +186,27 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
-            <Box className="dialogBg">
+            <Box className="dialogBg pt-0">
               {getScheduleLoading ?
                 <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                   <Grid container spacing={3}>
                     <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={PICK_DAY_TEXT}
-                        name="day"
-                        options={WEEK_DAYS}
-                        isMultiple={!isEdit}
-                      />
+                      <Typography>{PICK_DAY_TEXT}</Typography>
+
+                      <FormGroup>
+                        <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
+                          {WEEK_DAYS.map(day => {
+                            const { id, name } = day
+                            return <FormControlLabel
+                              control={
+                                <Checkbox color="primary" checked={ids.includes(id || '')}
+                                  onChange={() => handleChangeForCheckBox(id || '')} />
+                              }
+                              label={name}
+                            />
+                          })}
+                        </Box>
+                      </FormGroup>
                     </Grid>
 
                     <Grid item md={6} sm={12} xs={12}>
@@ -251,7 +272,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
           </DialogActions>
         </form>
       </FormProvider>
-    </Dialog>
+    </Dialog >
   );
 };
 

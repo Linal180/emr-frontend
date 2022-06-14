@@ -103,7 +103,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -188,28 +188,14 @@ const PatientDetailsComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <Box display="flex" flexWrap="wrap" maxWidth="100%">
-            <TabList onChange={handleChange}
-              variant="scrollable"
-              aria-label="Profile top tabs">
-              {PROFILE_TOP_TABS.map(item => (
-                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-              ))}
-            </TabList>
-          </Box>
-
-          <Box pr={2} display="flex" alignItems="center">
-            <Box px={2}>
-              <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-                {EDIT_PATIENT}
-              </Button>
-            </Box>
-
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
+        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+          <TabList onChange={handleChange}
+            variant="scrollable"
+            aria-label="Profile top tabs">
+            {PROFILE_TOP_TABS.map(item => (
+              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+            ))}
+          </TabList>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -221,7 +207,21 @@ const PatientDetailsComponent = (): JSX.Element => {
               mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
             }
           />
-          
+
+          <Box pt={1.5} pb={1.5} />
+
+          <Box display="flex" alignItems="center">
+            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+              {EDIT_PATIENT}
+            </Button>
+
+            <Box p={1} />
+
+            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+            </Link>
+          </Box>
+
           <TabPanel value="1">
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
