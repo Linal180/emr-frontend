@@ -17,7 +17,7 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
                 fieldType="text"
@@ -26,7 +26,7 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 addEmpty
                 disabled={shouldDisableEdit}
@@ -36,14 +36,12 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
                 options={MAPPED_RELATIONSHIP_TYPE}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="kinPhone" label={HOME_PHONE} disabled={shouldDisableEdit} />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="kinMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>

@@ -80,56 +80,60 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               />
             </Grid>
 
-            <Grid item md={12} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="basicAddress2"
-                controllerLabel={ADDRESS_2}
-              />
-            </Grid>
 
-            <Grid item md={12} sm={12} xs={12}>
-              <Grid container spacing={1} alignItems={'center'}>
-                <Grid item md={4} sm={10} xs={10}>
-                  <InputController
-                    disabled={shouldDisableEdit}
-                    fieldType="text"
-                    controllerName="basicZipCode"
-                    controllerLabel={ZIP_CODE}
-                  />
-                </Grid>
 
-                <Grid item md={2}>
-                  {!isVerified ? <Box>
-                    <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
-                      <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
-                        {VERIFY_ADDRESS}
-                      </Typography>
-                    </Button>
-                  </Box> :
-                    <Box display={'flex'} alignItems={'center'}>
-                      <CheckBoxIcon color='primary' />
-                      <Box ml={0.2}>
-                        <Typography>{VERIFIED}</Typography>
+            <Grid container spacing={3}>
+              <Grid item md={8} sm={12} xs={12}>
+                <InputController
+                  disabled={shouldDisableEdit}
+                  fieldType="text"
+                  controllerName="basicAddress2"
+                  controllerLabel={ADDRESS_2}
+                />
+              </Grid>
+
+              <Grid item md={4} sm={12} xs={12}>
+                <Grid container spacing={1} alignItems={'center'}>
+                  <Grid item md={10} sm={10} xs={10}>
+                    <InputController
+                      disabled={shouldDisableEdit}
+                      fieldType="text"
+                      controllerName="basicZipCode"
+                      controllerLabel={ZIP_CODE}
+                    />
+                  </Grid>
+
+                  <Grid item md={2}>
+                    {!isVerified ? <Box>
+                      <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
+                        <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
+                          {VERIFY_ADDRESS}
+                        </Typography>
+                      </Button>
+                    </Box> :
+                      <Box display={'flex'} alignItems={'center'}>
+                        <CheckBoxIcon color='primary' />
+                        <Box ml={0.2}>
+                          <Typography>{VERIFIED}</Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  }
-                </Grid>
-
-                <Grid item md={6}>
-                  <InputController
-                    disabled={shouldDisableEdit}
-                    fieldType="text"
-                    controllerName="basicCity"
-                    controllerLabel={CITY}
-                  />
+                    }
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
 
             <Grid container spacing={3}>
-              <Grid item md={6}>
+              <Grid item md={4}>
+                <InputController
+                  disabled={shouldDisableEdit}
+                  fieldType="text"
+                  controllerName="basicCity"
+                  controllerLabel={CITY}
+                />
+              </Grid>
+
+              <Grid item md={4}>
                 <Selector
                   disabled={shouldDisableEdit}
                   name="basicState"
@@ -139,7 +143,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                 />
               </Grid>
 
-              <Grid item md={6}>
+              <Grid item md={4}>
                 <Selector
                   disabled={shouldDisableEdit}
                   name="basicCountry"
@@ -149,32 +153,34 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
               </Grid>
             </Grid>
 
-            <Grid item md={12} sm={12} xs={12}>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  <Box mr={3} mb={2} mt={2}>
-                    <FormControlLabel
-                      label={DONT_WANT_TO_SHARE_EMAIL}
-                      control={
-                        <Checkbox
-                          disabled={shouldDisableEdit}
-                          color="primary"
-                          checked={optionalEmail}
-                          onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
-                        />
-                      }
-                    />
-                  </Box>
-                </FormGroup>
-              </FormControl>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <FormControl component="fieldset">
+                  <FormGroup>
+                    <Box mr={3} mb={2} mt={2}>
+                      <FormControlLabel
+                        label={DONT_WANT_TO_SHARE_EMAIL}
+                        control={
+                          <Checkbox
+                            disabled={shouldDisableEdit}
+                            color="primary"
+                            checked={optionalEmail}
+                            onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
+                          />
+                        }
+                      />
+                    </Box>
+                  </FormGroup>
+                </FormControl>
 
-              <InputController
-                disabled={shouldDisableEdit}
-                isRequired={!optionalEmail}
-                fieldType="text"
-                controllerName="basicEmail"
-                controllerLabel={EMAIL}
-              />
+                <InputController
+                  disabled={shouldDisableEdit}
+                  isRequired={!optionalEmail}
+                  fieldType="text"
+                  controllerName="basicEmail"
+                  controllerLabel={EMAIL}
+                />
+              </Grid>
             </Grid>
 
             <Grid container spacing={3}>
