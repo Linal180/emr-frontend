@@ -14,6 +14,7 @@ import { TrashNewIcon } from "../../../assets/svgs";
 import { FormForwardRef, ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { CreateAttachmentInput, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer"
+import { mediaType } from "../../../utils";
 
 dotenv.config()
 
@@ -111,6 +112,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
               attachmentMetadata={attachmentMetadata}
+              acceptableFilesType={mediaType(title)}
             />
           }
         </DialogContent>

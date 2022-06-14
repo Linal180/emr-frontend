@@ -10,7 +10,7 @@ import DropzoneImage from "../../DropZoneImage";
 import InputController from "../../../../controller";
 // import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
-import { setRecord } from "../../../../utils";
+import { mediaType, setRecord } from "../../../../utils";
 import { GREY_SIXTEEN } from "../../../../theme";
 import { AttachmentType } from "../../../../generated/graphql";
 import { addDocumentSchema } from "../../../../validationSchemas";
@@ -168,6 +168,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                   reload={() => fetchDocuments()}
                   handleClose={handleClose}
                   setAttachments={() => { }}
+                  acceptableFilesType={mediaType(ATTACHMENT_TITLES.ProviderUploads)}
                 />
               </Grid>}
             </Grid>

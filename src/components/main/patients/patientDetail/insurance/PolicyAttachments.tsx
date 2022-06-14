@@ -14,6 +14,7 @@ import {
 } from "../../../../../generated/graphql";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps, PreSignedUrlInterface } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
+import { mediaType } from "../../../../../utils";
 //components Import
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
@@ -192,7 +193,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
             reload={() => { }}
             handleClose={() => { }}
             setAttachments={() => { }}
-            acceptableFilesType={[".jpg", ".jpeg", ".png"]}
+            acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
           />
 
           <ConfirmationModal
