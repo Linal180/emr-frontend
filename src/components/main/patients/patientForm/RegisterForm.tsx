@@ -62,7 +62,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
   }
 
   return (
-<<<<<<< HEAD
     <>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={4} lg={3}>
@@ -75,20 +74,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                       <TimelineItem>
                         <TimelineSeparator>
                           <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
-=======
-    <Box display='flex' position='relative'>
-      <Box mr={2} ml={2} p={1} display='flex'>
-        <List>
-          {RegisterPatientMenuNav.map((item, index) => {
-            const { title } = item || {}
-
-            return (
-              <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(title)}>
-                <Timeline>
-                  <TimelineItem>
-                    <TimelineSeparator>
-                      <TimelineDot className={title === activeBlock ? 'facilityActive' : ''} />
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                           {(index + 1) !== RegisterPatientMenuNav.length && <TimelineConnector />}
                         </TimelineSeparator>
@@ -96,7 +81,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                       </TimelineItem>
                     </Timeline>
 
-<<<<<<< HEAD
                     <ListItem button className={item.title === activeBlock ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
                       <Typography variant='h5' className={item.title === activeBlock ? 'active' : ''}>
                         {item.title}
@@ -116,76 +100,30 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({ getPatientLoading, dispa
                 <Grid md={12} id={IDENTIFICATION_ROUTE} ref={identificationRef}>
                   <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
                 </Grid>
-=======
-                <ListItem button
-                  className={title === activeBlock ? 'active' : ''}
-                  style={{ display: 'flex', alignItems: 'baseline' }}
-                >
-                  <Typography variant='h5' className={title === activeBlock ? 'active' : ''}>
-                    {title}
-                  </Typography>
-                </ListItem>
-              </Box>
-            )
-          })}
-        </List>
-      </Box>
-
-      <Box width='100%'>
-        <Box {...patientCardBoxProps}>
-          <Grid spacing={3}>
-            <Grid md={12} id={IDENTIFICATION_ROUTE} ref={identificationRef}>
-              <IdentificationCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} isEdit={isEdit} />
-            </Grid>
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                 <Box pb={3} />
 
-<<<<<<< HEAD
                 <Grid md={12} id={DEMOGRAPHICS_ROUTE} ref={demographicsRef}>
                   <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
                 </Grid>
-=======
-            <Grid md={12} id={DEMOGRAPHICS_ROUTE} ref={demographicsRef}>
-              <PatientDemographicsCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                 <Box pb={3} />
 
-<<<<<<< HEAD
                 <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)} >
                   <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
                 </Grid>
-=======
-            <Grid md={12} id={CONTACT_INFORMATION_ROUTE} ref={contactRef} onTouchMove={() => setActiveBlock(CONTACT_INFORMATION)} >
-              <ContactInfoCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                 <Box pb={3} />
 
-<<<<<<< HEAD
                 <Grid md={12} id={PROVIDER_REGISTRATION__ROUTE} ref={providerRegisterationRef}>
                   <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit} />
                 </Grid>
-=======
-            <Grid md={12} id={PROVIDER_REGISTRATION__ROUTE} ref={providerRegisterationRef}>
-              <RegistrationDatesCard getPatientLoading={getPatientLoading} isEdit={isEdit} state={state} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                 <Box pb={3} />
 
-<<<<<<< HEAD
                 <Grid md={12} id={PRIVACY__ROUTE} ref={privacyRef}>
                   <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
                 </Grid>
-=======
-            <Grid md={12} id={PRIVACY__ROUTE} ref={privacyRef}>
-              <PatientPrivacyCard getPatientLoading={getPatientLoading} state={state} dispatch={dispatch} shouldDisableEdit={shouldDisableEdit} />
-            </Grid>
->>>>>>> 9a10840f6eb84bffa34fbf678b4d1ed322bfcbf1
 
                 <Box pb={3} />
 
