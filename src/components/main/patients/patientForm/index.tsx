@@ -1,31 +1,30 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress } from "@material-ui/core";
-import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
+import { Box } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import {
-  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
-  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
-} from "../../../../constants";
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
+// components block
+import Alert from "../../../common/Alert";
+import RegisterFormComponent from './RegisterForm';
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import { getAddressByZipcode } from '../../../common/smartyAddress';
+// interfaces, graphql, constants block /styles
+import history from '../../../../history';
+import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import {
+  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+} from "../../../../constants";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
   Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
 } from "../../../../generated/graphql";
-// interfaces, graphql, constants block /styles
-import history from '../../../../history';
-import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
-// components block
-import Alert from "../../../common/Alert";
-import BackButton from '../../../common/BackButton';
-import PageHeader from '../../../common/PageHeader';
-import { getAddressByZipcode } from '../../../common/smartyAddress';
-import RegisterFormComponent from './RegisterForm';
-
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
@@ -36,11 +35,12 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
+    activeStep, patientId, optionalEmail
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema(optionalEmail))
   });
   const { handleSubmit, setValue, watch } = methods;
   const {
@@ -85,17 +85,20 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (doctorPatients) {
-            const currentDoctor = doctorPatients.map(doctorPatient => {
-              const { currentProvider, doctor } = doctorPatient
-
-              return currentProvider ? doctor : null
-            })[0];
-
-            if (currentDoctor) {
-              const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-              usualProviderId &&
-                setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient?.currentProvider)
+            if (doesPrimaryProviderExist) {
+              const { doctor } = doesPrimaryProviderExist ?? {}
+              const { firstName, lastName, id } = doctor ?? {}
+              setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+            } else {
+              const currentDoctorPatients = doctorPatients[0]
+              if (currentDoctorPatients) {
+                const { doctor } = currentDoctorPatients || {};
+                const { firstName, lastName, id } = doctor ?? {}
+                setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
+                dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+              }
             }
           }
 
@@ -221,7 +224,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (employer) {
-            const { id: employerId, name, email, phone, industry, usualOccupation } = employer;
+            const { id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
@@ -229,6 +232,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             phone && setValue('employerPhone', phone)
             industry && setValue('employerIndustry', industry)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
+            address && setValue('employerAddress', address)
+            city && setValue('employerCity', city)
+            state && setValue("employerState", setRecord(state, state))
+            address && setValue('employerAddress', address)
+            zipCode && setValue("employerZipCode", zipCode)
           }
         }
       }
@@ -244,14 +252,22 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     },
 
     onCompleted(data) {
-      const { createPatient: { response } } = data;
+      const { createPatient: { response, patient } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_CREATED);
-          history.push(PATIENTS_ROUTE)
+          if (activeStep === 0) {
+
+            Alert.success(PATIENT_CREATED);
+          }
+          else {
+            Alert.success(CHANGES_SAVED);
+          }
+          const { id } = patient || {}
+          id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
+          activeStep === 5 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -272,8 +288,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_UPDATED);
-          shouldShowBread && history.push(PATIENTS_ROUTE)
+          activeStep && Alert.success(CHANGES_SAVED);
+          activeStep === 5 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -294,27 +310,29 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
+      employerAddress, employerCity, employerState, employerZipCode
     } = inputs;
 
     if (user) {
       const { id: userId } = user;
-      const { id: selectedRace } = race;
-      const { id: selectedGender } = gender;
-      const { id: selectedPronouns } = pronouns;
-      const { id: selectedFacility } = facilityId;
-      const { id: selectedEthnicity } = ethnicity;
-      const { id: selectedCountry } = basicCountry;
-      const { id: selectedSexAtBirth } = sexAtBirth;
-      const { id: selectedBasicState } = basicState;
-      const { id: selectedMaritalStatus } = maritialStatus;
-      const { id: selectedGenderIdentity } = genderIdentity;
-      const { id: selectedGuarantorState } = guarantorState;
-      const { id: selectedUsualProvider } = usualProviderId;
-      const { id: selectedKinRelationship } = kinRelationship;
-      const { id: selectedGuarantorCountry } = guarantorCountry;
-      const { id: selectedSexualOrientation } = sexualOrientation;
-      const { id: selectedGuarantorRelationship } = guarantorRelationship;
-      const { id: selectedEmergencyRelationship } = emergencyRelationship;
+      const { id: selectedRace } = race || {};
+      const { id: selectedGender } = gender || {};
+      const { id: selectedPronouns } = pronouns || {};
+      const { id: selectedFacility } = facilityId || {};
+      const { id: selectedEthnicity } = ethnicity || {};
+      const { id: selectedCountry } = basicCountry || {};
+      const { id: selectedSexAtBirth } = sexAtBirth || {};
+      const { id: selectedBasicState } = basicState || {};
+      const { id: selectedMaritalStatus } = maritialStatus || {};
+      const { id: selectedGenderIdentity } = genderIdentity || {};
+      const { id: selectedGuarantorState } = guarantorState || {};
+      const { id: selectedUsualProvider } = usualProviderId || {};
+      const { id: selectedKinRelationship } = kinRelationship || {};
+      const { id: selectedGuarantorCountry } = guarantorCountry || {};
+      const { id: selectedSexualOrientation } = sexualOrientation || {};
+      const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
+      const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
+      const { id: selectedEmployerState } = employerState || {};
 
       let practiceId = '';
       if (selectedFacility) {
@@ -341,6 +359,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
+        usualProviderId: selectedUsualProvider
       };
 
       const contactInput = {
@@ -380,9 +399,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const employerInput = {
         name: employerName, email: employerEmail, phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
+        address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState,
       };
 
-      if (isEdit && id) {
+      if (id || patientId) {
+        const itemId = id || patientId
         const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
         const contactIdInput = basicContactId ?
           { id: basicContactId, ...contactInput } : { ...contactInput }
@@ -398,7 +419,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         await updatePatient({
           variables: {
             updatePatientInput: {
-              updatePatientItemInput: { id, ...patientItemInput },
+              updatePatientItemInput: { id: itemId, ...patientItemInput },
               updateContactInput: { ...contactIdInput },
               updateEmployerInput: { ...employerIdInput },
               updateGuardianContactInput: { ...guardianIdInput },
@@ -407,6 +428,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               updateNextOfKinContactInput: { ...kinContactIdInput },
             }
           }
+        })
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
         })
       } else {
         const optionalInputs = {
@@ -426,17 +450,25 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
+        })
       }
     } else
       Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
   };
 
   useEffect(() => {
-    if (isEdit) {
-      id ?
-        getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
+    if (id) {
+      getPatient({ variables: { getPatient: { id } } })
     }
   }, [getPatient, id, isEdit])
+
+  useEffect(() => {
+    if (patientId) {
+      getPatient({ variables: { getPatient: { id: patientId } } })
+    }
+  }, [getPatient, patientId])
 
   const fetchList = useCallback((id: string, name: string) => {
     setValue('usualProviderId', EMPTY_OPTION)
@@ -483,31 +515,21 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={shouldShowBread ? 0 :4}>
+        {shouldShowBread &&
           <Box display="flex">
-            {shouldShowBread &&
-              <>
-                <BackButton to={`${PATIENTS_ROUTE}`} />
+            <BackButton to={`${PATIENTS_ROUTE}`} />
 
-                <Box ml={2}>
-                  <PageHeader
-                    title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
-                    path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
-                  />
-                </Box>
-              </>
-            }
-          </Box>
-          
-          <Button type="submit" variant="contained" color={shouldShowBread ? "primary" : "secondary"} disabled={disableSubmit}>
-            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
-
-            {disableSubmit && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
+            <Box ml={2}>
+              <PageHeader
+                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
+                path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+              />
+            </Box>
+          </Box>}
 
         <RegisterFormComponent
           isEdit={isEdit}
+          disableSubmit={disableSubmit}
           dispatch={dispatch} state={state}
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}
