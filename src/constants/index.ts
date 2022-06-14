@@ -179,6 +179,8 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const ADD_TAB = 'add_tab'
+export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
 export const PATIENT_VITAL_TEXT = 'Patient Vitals'
 export const RPM_TEXT = 'rpm'
@@ -536,6 +538,7 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
+export const SLOTS_TEXT = "Slots";
 export const CITY = "City";
 export const EMAIL = "Email";
 export const RELATION = "Relation";
@@ -3603,13 +3606,16 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   isPractice: false,
 };
 
-export const getFormInitialValues = () => [
-  {
+export const getFormInitialValues = () => [{
+  id: uuid(),
+  name: "tab_1",
+  sections: [{
     id: uuid(),
     col: 12,
     name: "Section",
     fields: [],
-  },
+  }]
+}
 ];
 
 export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {

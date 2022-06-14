@@ -1,38 +1,19 @@
 //packages block
 import { FC, Fragment } from "react"
 import { Controller, useFormContext } from "react-hook-form"
-import { FormControl, FormControlLabel, RadioGroup, Box, InputLabel, Grid, FormHelperText } from "@material-ui/core"
+import { FormControl, FormControlLabel, RadioGroup, InputLabel, Grid, FormHelperText } from "@material-ui/core"
 //components
 import RadioButton from "../RadioButton"
-import ContractForm from "./ContractForm"
-import InsuranceForm from './InsuranceForm'
 //interfaces, constants, styles
 import { FieldComponentProps } from "../../../interfacesTypes"
-import { FormBuilderPaymentTypes } from "../../../constants"
 import { useFormStyles } from '../../../styles/formsStyles';
 import { ActionType } from "../../../reducers/externalFormBuilderReducer"
 
 const PaymentSelector: FC<FieldComponentProps> = ({ item, dispatcher }): JSX.Element => {
   const { defaultValue, fieldId, options, label, required } = item || {}
 
-  const { control, setValue } = useFormContext();
+  const { control } = useFormContext();
   const classes = useFormStyles();
-
-  const getPaymentComponent = (value: string) => {
-    setValue('companyName', '')
-    setValue('memberId', '')
-    setValue('groupNumber', '')
-    setValue('contractNumber', '')
-    setValue('organizationName', '')
-    switch (value) {
-      case FormBuilderPaymentTypes.INSURANCE:
-        return <InsuranceForm item={item} />
-      case FormBuilderPaymentTypes.CONTRACT:
-        return <ContractForm />
-      default:
-        return <></>
-    }
-  }
 
   return (
     <Controller
@@ -69,9 +50,7 @@ const PaymentSelector: FC<FieldComponentProps> = ({ item, dispatcher }): JSX.Ele
               </RadioGroup>
               <FormHelperText>{message}</FormHelperText>
             </FormControl>
-            <Box>
-              {getPaymentComponent(field.value || '')}
-            </Box>
+
           </Fragment>)
       }}
     />
