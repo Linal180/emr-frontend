@@ -903,7 +903,7 @@ export interface PhoneInputProps {
 
 export interface DropzoneImageType {
   itemId: string;
-  title?: string;
+  title: string;
   isEdit?: boolean;
   filesLimit: number;
   isProfile?: boolean;
@@ -1053,7 +1053,7 @@ export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
   providerName?: string;
   itemId: string;
-  title?: string;
+  title: string;
   isProfile?: boolean;
   description?: string;
   preSignedUrl?: string;
@@ -1069,7 +1069,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  title?: string;
+  title: string;
   button?: boolean;
   imageSide: string;
   buttonText?: string;
