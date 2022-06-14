@@ -699,13 +699,17 @@ export type CreateDoctorItemInput = {
 };
 
 export type CreateEmployerInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type CreateExternalAppointmentInput = {
@@ -1172,9 +1176,10 @@ export type DocumentTypesPayload = {
 
 /** The patient's ethnicity type assigned */
 export enum Ethnicity {
-  CenteralAmerican = 'CENTERAL_AMERICAN',
-  CenteralAmericanIndian = 'CENTERAL_AMERICAN_INDIAN',
-  None = 'NONE'
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
+  HispanicOrLatino = 'HISPANIC_OR_LATINO',
+  None = 'NONE',
+  NotHispanicOrLatino = 'NOT_HISPANIC_OR_LATINO'
 }
 
 export type Element = {
@@ -1227,6 +1232,8 @@ export type EmergencyAccessUserPayload = {
 
 export type Employer = {
   __typename?: 'Employer';
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1236,8 +1243,10 @@ export type Employer = {
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type FacilitiesPayload = {
@@ -1443,10 +1452,10 @@ export type FormsPayload = {
 
 /** The patient's sexual orientation type assigned */
 export enum Genderidentity {
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
   Female = 'FEMALE',
   Male = 'MALE',
   None = 'NONE',
-  NotExclusive = 'NOT_EXCLUSIVE',
   TransgenderFemale = 'TRANSGENDER_FEMALE',
   TransgenderMale = 'TRANSGENDER_MALE'
 }
@@ -2738,6 +2747,18 @@ export type PatientInviteInput = {
   id: Scalars['String'];
 };
 
+export type PatientPastUpcomingAppointment = {
+  __typename?: 'PatientPastUpcomingAppointment';
+  pastAppointment?: Maybe<Appointment>;
+  upcomingAppointment?: Maybe<Appointment>;
+};
+
+export type PatientPastUpcomingAppointmentPayload = {
+  __typename?: 'PatientPastUpcomingAppointmentPayload';
+  appointments?: Maybe<PatientPastUpcomingAppointment>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientPayload = {
   __typename?: 'PatientPayload';
   patient?: Maybe<Patient>;
@@ -3288,6 +3309,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientProvider: PatientDoctorPayload;
   getPatientProviders: PatientProviderPayload;
@@ -3596,6 +3618,11 @@ export type QueryGetPatientAllergyArgs = {
 
 
 export type QueryGetPatientAppointmentArgs = {
+  getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientPastUpcomingAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
 };
 
@@ -4538,6 +4565,8 @@ export type UpdateDoctorItemInput = {
 };
 
 export type UpdateEmployerItemInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
@@ -4545,7 +4574,9 @@ export type UpdateEmployerItemInput = {
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type UpdateFacilityInput = {
@@ -5118,6 +5149,13 @@ export type UpdateAppointmentStatusMutationVariables = Exact<{
 
 
 export type UpdateAppointmentStatusMutation = { __typename?: 'Mutation', updateAppointmentStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus } | null } };
+
+export type GetPatientNearestAppointmentsQueryVariables = Exact<{
+  getPatientAppointmentInput: GetPatientAppointmentInput;
+}>;
+
+
+export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -5760,7 +5798,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode: ServiceCodes, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode: ServiceCode, updatedAt?: string | null } | null } | null } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode: ServiceCodes, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode: ServiceCode, updatedAt?: string | null } | null } | null } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -5774,7 +5812,7 @@ export type CreatePatientMutationVariables = Exact<{
 }>;
 
 
-export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string } | null } };
 
 export type UpdatePatientMutationVariables = Exact<{
   updatePatientInput: UpdatePatientInput;
@@ -5989,7 +6027,7 @@ export type GetScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string } | null }> | null } | null } };
+export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, recurringEndDate?: any | null, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string, duration: string } | null }> | null } | null } };
 
 export type FindAllSchedulesQueryVariables = Exact<{
   scheduleInput: ScheduleInput;
@@ -6589,6 +6627,55 @@ export function useUpdateAppointmentStatusMutation(baseOptions?: Apollo.Mutation
 export type UpdateAppointmentStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationResult = Apollo.MutationResult<UpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentStatusMutation, UpdateAppointmentStatusMutationVariables>;
+export const GetPatientNearestAppointmentsDocument = gql`
+    query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppointmentInput!) {
+  getPatientPastUpcomingAppointment(
+    getPatientAppointmentInput: $getPatientAppointmentInput
+  ) {
+    response {
+      status
+    }
+    appointments {
+      pastAppointment {
+        id
+        scheduleStartDateTime
+      }
+      upcomingAppointment {
+        id
+        scheduleStartDateTime
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientNearestAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useGetPatientNearestAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientNearestAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientNearestAppointmentsQuery({
+ *   variables: {
+ *      getPatientAppointmentInput: // value for 'getPatientAppointmentInput'
+ *   },
+ * });
+ */
+export function useGetPatientNearestAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>(GetPatientNearestAppointmentsDocument, options);
+      }
+export function useGetPatientNearestAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>(GetPatientNearestAppointmentsDocument, options);
+        }
+export type GetPatientNearestAppointmentsQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsQuery>;
+export type GetPatientNearestAppointmentsLazyQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsLazyQuery>;
+export type GetPatientNearestAppointmentsQueryResult = Apollo.QueryResult<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -11251,6 +11338,10 @@ export const GetPatientDocument = gql`
         mobile
         industry
         usualOccupation
+        city
+        state
+        zipCode
+        address
         createdAt
         updatedAt
       }
@@ -11337,6 +11428,9 @@ export const CreatePatientDocument = gql`
       error
       status
       message
+    }
+    patient {
+      id
     }
   }
 }
@@ -12797,6 +12891,7 @@ export const GetScheduleDocument = gql`
     }
     schedule {
       id
+      recurringEndDate
       startAt
       endAt
       createdAt
@@ -12811,6 +12906,7 @@ export const GetScheduleDocument = gql`
         service {
           id
           name
+          duration
         }
       }
     }

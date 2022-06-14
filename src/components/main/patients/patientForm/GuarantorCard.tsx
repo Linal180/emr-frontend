@@ -1,24 +1,25 @@
 // packages block
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core";
+// components block
+import Selector from "../../../common/Selector";
+import PhoneField from "../../../common/PhoneInput";
+import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from "../../../common/ViewDataLoader";
+// interfaces, utils block
+import { setRecord } from "../../../../utils";
+import InputController from "../../../../controller";
+import { ActionType } from "../../../../reducers/patientReducer";
+import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
 import {
   ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
   MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
   MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/patientReducer";
-// interfaces, utils block
-import { setRecord } from "../../../../utils";
-import CardComponent from "../../../common/CardComponent";
-import PhoneField from "../../../common/PhoneInput";
-// components block
-import Selector from "../../../common/Selector";
-import ViewDataLoader from "../../../common/ViewDataLoader";
+import SnnController from "../../../../controller/SnnController";
 
-const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit }) => {
+const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, isEdit }) => {
   const methods = useFormContext<PatientInputProps>()
   const { sameAddress } = state || {}
   const { watch, setValue } = methods
@@ -56,44 +57,40 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
     <CardComponent cardTitle={GUARANTOR}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
-          <Grid item md={12} sm={12} xs={12}>
-            <Selector
-              addEmpty
-              disabled={shouldDisableEdit}
-              isRequired
-              name="guarantorRelationship"
-              label={GUARANTOR_RELATION}
-              options={MAPPED_RELATIONSHIP_TYPE}
-            />
-          </Grid>
-
-          <Box pb={2}>
-            <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
-          </Box>
-
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
-              <InputController
+              <Selector
+                addEmpty
                 disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorSuffix"
-                controllerLabel={SUFFIX}
+                name="guarantorRelationship"
+                label={GUARANTOR_RELATION}
+                options={MAPPED_RELATIONSHIP_TYPE}
               />
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
+                fieldType="text"
+                controllerName="guarantorEmployerName"
+                controllerLabel={EMPLOYER}
+              />
+            </Grid>
+          </Grid>
+
+
+
+          <Grid container spacing={3}>
+            <Grid item md={4} sm={12} xs={12}>
+              <InputController
+                disabled={shouldDisableEdit}
                 fieldType="text"
                 controllerName="guarantorFirstName"
                 controllerLabel={FIRST_NAME}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={4} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
                 fieldType="text"
@@ -102,10 +99,9 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={4} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorLastName"
                 controllerLabel={LAST_NAME}
@@ -113,12 +109,16 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             </Grid>
           </Grid>
 
-          <Grid item md={12} sm={12} xs={12}>
+          <Grid item md={6} sm={12} xs={12}>
+            <Box pb={2}>
+              <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
+            </Box>
+
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
-              controllerName="guarantorEmployerName"
-              controllerLabel={EMPLOYER}
+              controllerName="guarantorSuffix"
+              controllerLabel={SUFFIX}
             />
           </Grid>
 
@@ -137,40 +137,41 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
             </FormGroup>
           </FormControl>
 
-          <Grid item md={12} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              isRequired
-              fieldType="text"
-              controllerName="guarantorZipCode"
-              controllerLabel={ZIP_CODE}
-            />
-          </Grid>
+
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              isRequired
               fieldType="text"
               controllerName="guarantorAddress"
               controllerLabel={ADDRESS}
             />
           </Grid>
 
-          <Grid item md={12} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="guarantorAddress2"
-              controllerLabel={ADDRESS_2}
-            />
+          <Grid container spacing={3}>
+            <Grid item md={8} sm={12} xs={12}>
+              <InputController
+                disabled={shouldDisableEdit}
+                fieldType="text"
+                controllerName="guarantorAddress2"
+                controllerLabel={ADDRESS_2}
+              />
+            </Grid>
+
+            <Grid item md={4} sm={12} xs={12}>
+              <InputController
+                disabled={shouldDisableEdit}
+                fieldType="text"
+                controllerName="guarantorZipCode"
+                controllerLabel={ZIP_CODE}
+              />
+            </Grid>
           </Grid>
 
           <Grid container spacing={3}>
             <Grid item md={4}>
               <InputController
                 disabled={shouldDisableEdit}
-                isRequired
                 fieldType="text"
                 controllerName="guarantorCity"
                 controllerLabel={CITY}
@@ -181,7 +182,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
               <Selector
                 addEmpty
                 disabled={shouldDisableEdit}
-                isRequired
                 name="guarantorState"
                 label={STATE}
                 options={MAPPED_STATES}
@@ -201,24 +201,31 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
 
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                isRequired
-                fieldType="text"
-                controllerName="guarantorSsn"
-                controllerLabel={SSN}
-              />
+              {isEdit ?
+                <SnnController
+                  fieldType="text"
+                  controllerName="guarantorSsn"
+                  controllerLabel={SSN}
+                  disabled={shouldDisableEdit}
+                />
+                :
+                <InputController
+                  fieldType="text"
+                  controllerName="guarantorSsn"
+                  controllerLabel={SSN}
+                  disabled={shouldDisableEdit}
+                />
+              }
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <PhoneField isRequired name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
+              <PhoneField name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>
 
           <Grid item md={12} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
-              isRequired
               fieldType="email"
               controllerName="guarantorEmail"
               controllerLabel={EMAIL}

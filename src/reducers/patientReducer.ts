@@ -2,6 +2,7 @@ import { usStreet } from "smartystreets-javascript-sdk";
 import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
+  AppointmentPayload,
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
   TempUnitType, UnitType, WeightType
 } from "../generated/graphql"
@@ -69,6 +70,8 @@ export interface State {
   doctorPatientId: string;
   doctorId: string;
   isEdit: boolean;
+  nextAppointment: AppointmentPayload['appointment'],
+  lastAppointment: AppointmentPayload['appointment']
 }
 
 export const initialState: State = {
@@ -99,7 +102,7 @@ export const initialState: State = {
   attachmentsData: [],
   deletePatientId: '',
   consentAgreed: false,
-  optionalEmail: false,
+  optionalEmail: true,
   isAppointment: false,
   attachmentData: null,
   guardianContactId: '',
@@ -133,7 +136,9 @@ export const initialState: State = {
   smsPermission: false,
   doctorPatientId: '',
   doctorId: 'string',
-  isEdit: false
+  isEdit: false,
+  nextAppointment: undefined,
+  lastAppointment: undefined
 }
 
 export enum ActionType {
@@ -141,9 +146,11 @@ export enum ActionType {
   SET_DATA = 'setData',
   SET_IS_SMS = 'setIsSms',
   SET_IS_OPEN = "setIsOpen",
+  SET_IS_EDIT = 'setIsEdit',
   SET_PATIENTS = 'setPatients',
   SET_EDIT_HEAD = 'setEditHead',
   SET_EDIT_TEMP = 'setEditTemp',
+  SET_DOCTOR_ID = 'setDoctorId',
   SET_NOTE_OPEN = 'setNoteOpen',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
@@ -174,6 +181,7 @@ export enum ActionType {
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
   SET_KIN_CONTACT_ID = 'setKinContactID',
+  SET_SMS_PERMISSION = 'setSmsPermission',
   SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_PAYMENT_METHOD = 'setPaymentMethod',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
@@ -182,7 +190,10 @@ export enum ActionType {
   SET_CALL_TO_CONSENT = 'setCallToConsent',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
+  SET_NEXT_APPOINTMENT = 'setNextAppointment',
+  SET_LAST_APPOINTMENT = 'setLastAppointment',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
+  SET_DOCTOR_PATIENT_ID = 'setDoctorPatientId',
   SET_DELETE_PATIENT_ID = 'setDeletePatientId',
   SET_PATIENT_NOTE_OPEN = 'setPatientNoteOpen',
   SET_PATIENT_PROVIDERS = 'setPatientProviders',
@@ -193,15 +204,13 @@ export enum ActionType {
   SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
   SET_HEAD_CIRCUMFERENCE_UNIT = 'setHeadCircumferenceUnit',
   SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
-  SET_SMS_PERMISSION = 'setSmsPermission',
-  SET_DOCTOR_PATIENT_ID = 'setDoctorPatientId',
-  SET_DOCTOR_ID = 'setDoctorId',
-  SET_IS_EDIT = 'setIsEdit'
 }
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
   | { type: ActionType.SET_IS_SMS, isSms: boolean }
+  | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
+  | { type: ActionType.SET_DOCTOR_ID; doctorId: string }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
   | { type: ActionType.SET_SELECTION; selection: string }
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
@@ -215,11 +224,11 @@ export type Action =
   | { type: ActionType.SET_EMPLOYER_ID; employerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
+  | { type: ActionType.SET_IS_VERIFIED; isVerified: boolean }
+  | { type: ActionType.SET_DATA; data: usStreet.Candidate[] }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_IS_EDIT_CARD; isEditCard: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
-  | { type: ActionType.SET_IS_VERIFIED; isVerified: boolean }
-  | { type: ActionType.SET_DATA; data: usStreet.Candidate[] }
   | { type: ActionType.SET_EDIT_HEIGHT; isHeightEdit: boolean }
   | { type: ActionType.SET_ADDRESS_OPEN; addressOpen: boolean }
   | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
@@ -228,6 +237,7 @@ export type Action =
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
+  | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
   | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
   | { type: ActionType.SET_OPTIONAL_EMAIL, optionalEmail: boolean }
   | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
@@ -236,9 +246,10 @@ export type Action =
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
+  | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_OPEN_UNITS; openUnits: HTMLElement | null }
   | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: HTMLElement | null }
-  | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
+  | { type: ActionType.SET_DOCTOR_PATIENT_ID; doctorPatientId: string }
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
@@ -254,11 +265,9 @@ export type Action =
   | { type: ActionType.SET_FEVER_UNIT; feverUnit: { id: TempUnitType, name: string } }
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY; medicationHistoryAuthority: boolean }
-  | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
-  | { type: ActionType.SET_DOCTOR_PATIENT_ID; doctorPatientId: string }
-  | { type: ActionType.SET_DOCTOR_ID; doctorId: string }
-  | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
+  | { type: ActionType.SET_LAST_APPOINTMENT, lastAppointment: AppointmentPayload['appointment'] }
+  | { type: ActionType.SET_NEXT_APPOINTMENT, nextAppointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: PatientProviderPayload['providers'] }
   | { type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT; headCircumferenceUnit: { id: HeadCircumferenceType, name: string } }
 
@@ -617,10 +626,22 @@ export const patientReducer = (state: State, action: Action): State => {
         doctorId: action.doctorId
       }
 
-      case ActionType.SET_IS_EDIT:
+    case ActionType.SET_IS_EDIT:
       return {
         ...state,
         isEdit: action.isEdit
+      }
+
+    case ActionType.SET_NEXT_APPOINTMENT:
+      return {
+        ...state,
+        nextAppointment: action.nextAppointment
+      }
+
+    case ActionType.SET_LAST_APPOINTMENT:
+      return {
+        ...state,
+        lastAppointment: action.lastAppointment
       }
   }
 };

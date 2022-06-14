@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, Fragment } from "react";
+import { FC, useState } from "react";
 import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-ui/core";
@@ -23,11 +23,8 @@ const InputController: FC<CustomInputControlProps> = ({
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
   const handleClickShowPassword = () => {
-    if (passwordType === PASSWORD) {
-      setPasswordType(TEXT);
-    } else {
-      setPasswordType(PASSWORD);
-    }
+    if (passwordType === PASSWORD) setPasswordType(TEXT);
+    else setPasswordType(PASSWORD);
   };
 
   return (
@@ -74,7 +71,8 @@ const InputController: FC<CustomInputControlProps> = ({
                 handleShowPassword={handleClickShowPassword}
               />,
             } : clearable ? {
-              endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
+              endAdornment: <IconButton aria-label="clear" onClick={handleClearField ?
+                () => handleClearField(controllerName) : () => { }}>
                 <ClearIcon />
               </IconButton>
             } : fieldType === 'number' ?
