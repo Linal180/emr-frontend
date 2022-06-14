@@ -2430,10 +2430,10 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2470,7 +2470,6 @@ export const MAPPED_RACE: SelectorOption[] = [
 ];
 
 export const MAPPED_ETHNICITY: SelectorOption[] = [
-  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
     id: Ethnicity.DeclineToSpecify,
     name: formatValue(Ethnicity.DeclineToSpecify),
@@ -2486,7 +2485,6 @@ export const MAPPED_ETHNICITY: SelectorOption[] = [
 ];
 
 export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
-  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
   {
     id: Sexualorientation.DontKnow,
     name: formatValue(Sexualorientation.DontKnow),
@@ -2512,7 +2510,6 @@ export const MAPPED_GENDER: SelectorOption[] = [
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
-  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
