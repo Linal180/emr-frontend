@@ -1,44 +1,46 @@
 // packages block
-import { useParams } from "react-router";
-import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
-// components block
-import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
-import TimePicker from "../../../common/TimePicker";
-import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from "../../../common/ViewDataLoader";
-import ServiceSelector from "../../../common/Selector/ServiceSelector";
+import { Box, Button, CircularProgress, Dialog, FormControl, Grid, InputLabel } from "@material-ui/core";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useParams } from "react-router";
+import { APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, RECURRING_DATE, SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WEEK_DAYS, YES } from "../../../../constants";
 // interfaces/types block, theme, svgs and constants
 import { AuthContext } from '../../../../context';
-import { ActionType } from "../../../../reducers/doctorReducer";
-import { doctorScheduleSchema } from "../../../../validationSchemas";
-import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
-import {
-  checkPermission, getDayFromTimestamps, getTimeString, setRecord, setTimeDay
-} from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
 } from "../../../../generated/graphql";
+import { DoctorScheduleModalProps, multiOptionType, ParamsType, ScheduleInputProps, SelectorOption } from "../../../../interfacesTypes";
+import { ActionType } from "../../../../reducers/doctorReducer";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { GREY_SEVEN, WHITE } from "../../../../theme";
 import {
-  CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE, DOCTOR_SCHEDULE,
-  START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
-  PERMISSION_DENIED, USER_PERMISSIONS,
-} from "../../../../constants";
+  checkPermission, getDayFromTimestamps, getTimeString, setRecord, setTimeDay
+} from "../../../../utils";
+import { doctorEditScheduleSchema, doctorScheduleSchema } from "../../../../validationSchemas";
+// components block
+import Alert from "../../../common/Alert";
+import CardComponent from "../../../common/CardComponent";
+import DatePicker from "../../../common/DatePicker";
+import Selector from '../../../common/Selector';
+import ServiceSelector from "../../../common/Selector/ServiceSelector";
+import TimePicker from "../../../common/TimePicker";
+import ViewDataLoader from "../../../common/ViewDataLoader";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
+  const classesToggle = usePublicAppointmentStyles();
   const { id: doctorId } = useParams<ParamsType>();
   const { userPermissions } = useContext(AuthContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(doctorScheduleSchema)
+    resolver: yupResolver(isEdit ? doctorEditScheduleSchema : doctorScheduleSchema)
   });
-  const { reset, handleSubmit, setValue } = methods;
+  const { reset, handleSubmit, setValue, control } = methods;
+  const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
+  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(false)
 
   const handleClose = useCallback(() => {
     reset();
@@ -69,13 +71,22 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
         const { status } = response
 
         if (schedule && status && status === 200) {
-          const { startAt, endAt, scheduleServices } = schedule || {};
-          const { service } = (scheduleServices && scheduleServices[0]) || {}
-          const { id: serviceId, name: serviceName } = (service && service) || {}
+          const { startAt, endAt, scheduleServices, recurringEndDate } = schedule || {};
+          const transformedScheduleServices = scheduleServices?.map(scheduleService => {
+            const { service } = scheduleService ?? {}
+            const { id: serviceId, name: serviceName, duration } = service ?? {}
+            return {
+              value: serviceId || '',
+              label: `${serviceName} (duration: ${duration} minutes)`
+            }
+          }) ?? []
 
           endAt && setValue('endAt', getTimeString(endAt))
           startAt && setValue('startAt', getTimeString(startAt))
-          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
+          recurringEndDate && setValue('recurringEndDate', recurringEndDate)
+          recurringEndDate && setShouldHaveRecursion(true)
+          setValue('serviceId', transformedScheduleServices)
+          setServiceIds(transformedScheduleServices)
           startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
         }
       }
@@ -134,14 +145,28 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     }
   }, [doctorFacilityId, getSchedule, id, isEdit, reset])
 
-  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
-    const { id: selectedService } = serviceId || {}
-    const { id: dayName } = day || {}
+  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day, recurringEndDate }) => {
+    let scheduleInput
+    if (isEdit) {
+      const { id: dayName } = day as SelectorOption
+      const selectedServices = (serviceId as multiOptionType[]).map(service => service.value)
+      scheduleInput = {
+        doctorId, servicesIds: selectedServices || [], day: dayName,
+        startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+        recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+      }
+    } else {
+      scheduleInput = (day as SelectorOption[]).map((dayValues) => {
+        const { id: dayName } = dayValues || {}
+        const selectedServices = (serviceId as multiOptionType[]).map(service => service.value)
+        return {
+          doctorId, servicesIds: selectedServices || [], day: dayName,
+          startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+          recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+        }
+      })
+    }
 
-    const scheduleInput = {
-      doctorId, servicesIds: [selectedService] || [], day: dayName,
-      startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
-    };
     if (doctorId) {
       if (isEdit) {
         id ?
@@ -153,7 +178,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       } else {
         await createSchedule({
           variables: {
-            createScheduleInput: [{ ...scheduleInput }]
+            createScheduleInput: scheduleInput
           }
         })
       }
@@ -177,10 +202,10 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                       <>
                         <Selector
                           isRequired
-                          value={EMPTY_OPTION}
                           label={PICK_DAY_TEXT}
                           name="day"
                           options={WEEK_DAYS}
+                          isMultiple={!isEdit}
                         />
 
                         <Grid container spacing={3}>
@@ -201,12 +226,42 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           </Grid>
                         </Grid>
 
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <Controller
+                              name='shouldHaveRecursion'
+                              control={control}
+                              render={() => (
+                                <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                                  <InputLabel shrink>Should Have Recurring Date</InputLabel>
+
+                                  <label className="toggle-main">
+                                    <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                    <AntSwitch checked={shouldHaveRecursion} onChange={({ target: { checked } }) => setShouldHaveRecursion(checked)} name='shouldHaveRecursion' />
+                                    <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                                  </label>
+                                </FormControl>
+                              )}
+                            />
+                          </Grid>
+
+                          {shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                            <DatePicker
+                              name="recurringEndDate"
+                              label={RECURRING_DATE}
+                              disableFuture={false}
+                            />
+                          </Grid>}
+                        </Grid>
+
                         <ServiceSelector
-                          addEmpty
                           isRequired
                           name="serviceId"
                           label={APPOINTMENT_TYPE}
                           facilityId={doctorFacilityId}
+                          isEdit={isEdit}
+                          defaultValues={serviceIds}
+                          isMulti={true}
                         />
                       </>
                     )}

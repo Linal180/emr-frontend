@@ -233,6 +233,9 @@ export interface CardComponentType extends Children {
   disableEditIcon?: boolean;
   onEditClick?: () => void;
   isFullHeight?: boolean;
+  saveBtn?: boolean;
+  state?: PatientState;
+  disableSubmit?: boolean;
 }
 
 export interface ChartingCardComponentType {
@@ -388,6 +391,7 @@ export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
   shouldOmitFacilityId?: boolean
   careProviderData?: DoctorPatient[];
+  defaultValues?: SelectorOption[]
 }
 
 export interface CardSelectorProps {
@@ -471,6 +475,9 @@ export interface TooltipData {
   format: string;
 }
 
+export interface StepperData {
+  title: string;
+}
 
 export interface SearchComponentProps {
   search: Function;
@@ -542,9 +549,9 @@ export type ExtendedStaffInputProps = Omit<
 } & { providerIds: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
-  & { serviceId: SelectorOption } & { day: SelectorOption };
+  & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption } & { shouldHaveRecursion: boolean };
 
-export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption | SelectorOption[] } & { shouldHaveRecursion: boolean };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -616,6 +623,8 @@ export interface FormVerification {
 
 export interface StepperComponentProps {
   activeStep: number;
+  stepperData?: StepperData[];
+  dispatch?: Dispatch<PatientAction>
 }
 
 interface BasicContactControlInputs {
@@ -684,6 +693,10 @@ interface EmployerControlInputs {
   employerPhone: string;
   employerIndustry: string;
   employerUsualOccupation: string;
+  employerCity: string;
+  employerState: SelectorOption;
+  employerZipCode: string;
+  employerAddress: string;
 }
 
 interface RegisterUserInputs {
@@ -760,13 +773,13 @@ export type ExtendedAppointmentInputProps = Omit<
   CreateAppointmentInput,
   "patientId" | "facilityId" | "serviceId" | "providerId"
 > & { facilityId: SelectorOption } & { patientId: SelectorOption } & {
-  serviceId: SelectorOption;
+  serviceId: multiOptionType;
 } & { providerId: SelectorOption };
 
 export type ExtendedExternalAppointmentInputProps = Pick<
   CreateExternalAppointmentItemInput,
   "scheduleEndDateTime" | "scheduleStartDateTime"
-> & { serviceId: SelectorOption } & { providerId: SelectorOption } & Pick<
+> & { serviceId: multiOptionType } & { providerId: SelectorOption } & Pick<
   CreatePatientItemInput,
   "firstName" | "lastName" | "email" | "dob"
 > & { phone: string } & { sexAtBirth: SelectorOption };
@@ -890,7 +903,7 @@ export interface PhoneInputProps {
 
 export interface DropzoneImageType {
   itemId: string;
-  title?: string;
+  title: string;
   isEdit?: boolean;
   filesLimit: number;
   isProfile?: boolean;
@@ -1040,7 +1053,7 @@ export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
   providerName?: string;
   itemId: string;
-  title?: string;
+  title: string;
   isProfile?: boolean;
   description?: string;
   preSignedUrl?: string;
@@ -1056,7 +1069,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  title?: string;
+  title: string;
   button?: boolean;
   imageSide: string;
   buttonText?: string;
@@ -1130,6 +1143,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  disableSubmit?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
@@ -1474,6 +1488,11 @@ export interface ReactionSelectorInterface {
   defaultValues?: multiOptionType[]
   margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
+}
+
+export interface ServiceSelectorInterface extends ReactionSelectorInterface {
+  facilityId?: string
+  isMulti?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
