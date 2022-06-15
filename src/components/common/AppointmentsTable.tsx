@@ -26,8 +26,8 @@ import {
 } from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-  ARRIVAL_STATUS, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TIME, TYPE, VIEW_ENCOUNTER,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -50,7 +50,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const methods = useForm<StatusInputProps>({
     mode: "all",
   });
-  const { setValue } = methods
+  const { setValue, watch } = methods
+  const { status } = watch()
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -122,14 +123,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     },
 
     onCompleted(data) {
-      const { updateAppointment: { response, appointment } } = data;
+      const { updateAppointment: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
           Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
-          updateAppointmentData(appointment as AppointmentPayload['appointment'])
+          updateAppointmentData()
           clearEdit()
         }
       }
@@ -192,19 +193,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     type: ActionType.SET_PAGE, page: value
   });
 
-  const updateAppointmentData = (appointment: AppointmentPayload['appointment']) => {
-    if (!!appointment && !!appointments && !!appointments?.length) {
-      const updatedAppointment = appointments?.map((apt) => {
-        if (appointment?.id === apt?.id) {
-          return {
-            ...apt,
-            status: appointment?.status
-          }
-        }
-        return apt
-      })
+  const updateAppointmentData = () => {
+    const { id, name } = status || {}
+    const appointment = appointments?.find(appointment => appointment?.id === id)
+    const updatedAppointment = { ...appointment, status: getAppointmentStatus(name || '') } as AppointmentPayload['appointment']
+    const index = appointments?.findIndex(appointment => appointment?.id === id)
 
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: updatedAppointment })
+    if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
+      appointments.splice(index, 1, updatedAppointment)
+
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments })
     }
   }
 
@@ -304,7 +302,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
-                {renderTh(ARRIVAL_STATUS)}
+                {renderTh(STATUS)}
                 {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
@@ -361,11 +359,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             <FormProvider {...methods}>
                               <Selector
                                 label=""
-                                // value={{ id, name: text }}
+                                value={{ id, name: text }}
                                 name="status"
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
+                                isEdit={isEdit}
                               />
                             </FormProvider>
                             : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
