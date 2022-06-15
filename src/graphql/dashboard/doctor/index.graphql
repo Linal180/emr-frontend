@@ -1,0 +1,13 @@
+query FindAllDashboardPatient($patientInput: PatientInput!) {
+  findAllPatient(patientInput: $patientInput) {
+    pagination {
+      totalPages
+    }
+    
+    patients {
+      id
+      lastName
+      firstName
+    }
+  }
+}
