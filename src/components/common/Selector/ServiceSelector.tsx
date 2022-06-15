@@ -10,7 +10,9 @@ import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../genera
 import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
 import { renderMultiServices, requiredLabel } from "../../../utils";
 
-const ServicesSelector: FC<ServiceSelectorInterface> = ({ name, isEdit, label, margin, isRequired, defaultValues, facilityId, isMulti }): JSX.Element => {
+const ServicesSelector: FC<ServiceSelectorInterface> = ({ 
+  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti
+ }): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
   const [values, setValues] = useState<multiOptionType[] | multiOptionType>([])
