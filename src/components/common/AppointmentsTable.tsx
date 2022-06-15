@@ -16,9 +16,10 @@ import TableLoader from "./TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
-  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
+  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -310,7 +311,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
-                {renderTh(STATUS)}
+                {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
