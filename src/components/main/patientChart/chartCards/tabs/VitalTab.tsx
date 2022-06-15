@@ -1,24 +1,23 @@
 import {
   Box, Button, Card, Grid
-} from "@material-ui/core"
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react"
+} from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { FormProvider, useForm } from "react-hook-form"
-import { useParams } from "react-router"
-//components
-import Selector from "../../../../common/Selector"
-import ViewDataLoader from "../../../../common/ViewDataLoader"
-import { AddVitals } from "../../vitalsCard/add"
-import { VitalsLabels } from "../../vitalsCard/listing/labels"
-import { VitalListingTable } from "../../vitalsCard/listing/lists"
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { useParams } from "react-router";
 //constants, interfaces, utils
-import { AddWhiteIcon, PrinterWhiteIcon } from "../../../../../assets/svgs"
-import { ADD_NEW_TEXT, EMPTY_OPTION, PRINT_CHART, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants"
-import { PatientVitalPayload, PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql"
-import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes"
-import { Action, initialState, patientReducer, State } from "../../../../../reducers/patientReducer"
-import { useChartingStyles } from "../../../../../styles/chartingStyles"
-import { usePatientVitalListingStyles } from "../../../../../styles/patientVitalsStyles"
+import { AddWhiteIcon } from "../../../../../assets/svgs";
+import { ADD_NEW_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
+import { PatientVitalPayload, PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
+import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
+import { Action, initialState, patientReducer, State } from "../../../../../reducers/patientReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { usePatientVitalListingStyles } from "../../../../../styles/patientVitalsStyles";
+//components
+import ViewDataLoader from "../../../../common/ViewDataLoader";
+import { AddVitals } from "../../vitalsCard/add";
+import { VitalsLabels } from "../../vitalsCard/listing/labels";
+import { VitalListingTable } from "../../vitalsCard/listing/lists";
 
 const VitalTab = () => {
   const classes = useChartingStyles()
@@ -108,8 +107,8 @@ const VitalTab = () => {
                 <Box className={classes.cardBox}>
                   <FormProvider {...methods}>
                     <form>
-                      <Box px={2} pt={2} display="flex" justifyContent="space-between" alignItems="center">
-                        <Box display="flex" alignItems="center">
+                      <Box px={2} pt={2} pb={2} display="flex" justifyContent="flex-end" alignItems="center">
+                        {/* <Box display="flex" alignItems="center">
                           <Box className={classes.tableHeaderDropdown}>
                             <Selector
                               name="units"
@@ -127,14 +126,14 @@ const VitalTab = () => {
                               value={EMPTY_OPTION}
                             />
                           </Box>
-                        </Box>
+                        </Box> */}
 
                         <Box display="flex" alignItems="center">
-                          <Button variant='contained' color='secondary'>
+                          {/* <Button variant='contained' color='secondary'>
                             <PrinterWhiteIcon />
                             <Box p={0.5} />
                             {PRINT_CHART}
-                          </Button>
+                          </Button> */}
 
                           <Box p={1} />
 

@@ -1815,9 +1815,13 @@ export interface TabPropertiesProps {
   dispatch: Dispatch<FormBuilderAction>
 }
 
-
 export interface StepContextProps {
   state: ExternalFormBuilderState;
   dispatch: Dispatch<PublicFormBuilderAction>
   sections: SectionsInputs[]
+}
+
+export interface StageStatusType {
+  stage: string;
+  stageColor: string;
 }

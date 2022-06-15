@@ -332,6 +332,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')
 
                   return (
                     <TableRow key={id}>
@@ -394,7 +395,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             display="flex"
                             flexDirection="column"
                           >
-                            <Box display="flex" color="black">{getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')}</Box>
+                            <Box display="flex" color={stageColor}>
+                              {stage}
+                            </Box>
                           </Box>
                         </Box>}
                       </TableCell>
@@ -414,7 +417,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => scheduleStartDateTime && id && deleteAppointmentHandler(scheduleStartDateTime, id)}>
+                          <Box className={classes.iconsBackground}
+                            onClick={() => scheduleStartDateTime && id && deleteAppointmentHandler(scheduleStartDateTime, id)}
+                          >
                             <TrashNewIcon />
                           </Box>
                         </Box>

@@ -14,12 +14,13 @@ import client from "../apollo";
 import history from "../history";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
+  StageStatusType,
   TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, BLUE, GREY, PURPLE_ONE
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
@@ -90,7 +91,7 @@ export const renderTh = (
   noWrap?: boolean, renderIcon?: Function
 ) => (
   <TableCell component="th" align={align} className={classes}>
-    <Box display="flex" alignItems="center">
+    <Box display="flex" alignItems="center" justifyContent={align}>
       <Typography component="h5" variant="h5" noWrap={noWrap}>
         {isDangerous ?
           <Box dangerouslySetInnerHTML={{ __html: text }}>
@@ -1609,36 +1610,46 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
+export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
   if (status === AppointmentStatus.Discharged) {
-    return 'Completed'
+    return {
+      stage: 'Completed',
+      stageColor: GREEN
+    }
   }
 
   if (status === AppointmentStatus.Scheduled) {
-    return 'Logged'
+    return {
+      stage: 'Logged',
+      stageColor: ORANGE
+    }
   }
 
   if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
-    return ''
+    return {
+      stage: '',
+      stageColor: ''
+    }
   }
 
   switch (checkInActiveStep) {
     case 0:
-      return 'checked In';
+      return { stage: 'Checked In', stageColor: GREEN_ONE };
     case 1:
-      return 'With Staff';
     case 2:
-      return 'With Staff';
+      return { stage: 'With Staff', stageColor: BLUE };
     case 3:
-      return 'Charting';
     case 4:
-      return 'Charting';
+      return { stage: 'Charting', stageColor: GREY };
     case 5:
-      return 'With Provider';
+      return { stage: 'With Provider', stageColor: BLUE_SEVEN };
     case 6:
-      return 'With Biller';
+      return { stage: 'With Biller', stageColor: PURPLE_ONE };
     default:
-      return ''
+      return {
+        stage: '',
+        stageColor: ''
+      }
   }
 }
 
