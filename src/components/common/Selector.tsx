@@ -1,5 +1,5 @@
 // packages block
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 // utils and interfaces/types block
@@ -16,19 +16,7 @@ const Selector: FC<SelectorProps> = ({
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
   const eleRef = useRef<any>();
 
-  useEffect(()=>{
-    const checkIfClickedOutside = (e:MouseEvent) => {      
-      if (isEdit && eleRef && eleRef.current && eleRef.current.contains && !eleRef.current.contains(e.target)) {
-        onOutsideClick && onOutsideClick()
-      }
-    };
-
-    document.addEventListener("mousedown", checkIfClickedOutside);
-    return () => {
-      document.removeEventListener("mousedown", checkIfClickedOutside);
-    };  
-  })
-  
+ 
   return (
     <Controller
       rules={{ required: true }}
@@ -60,6 +48,7 @@ const Selector: FC<SelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  autoFocus
                   onBlur={() => onBlur && onBlur()}
                 />
 

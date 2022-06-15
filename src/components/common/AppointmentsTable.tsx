@@ -248,7 +248,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       if (getAppointmentStatus(name || '') === AppointmentStatus.Rescheduled) {
         history.push(`${APPOINTMENTS_ROUTE}/${id}`)
       } else {
-        const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.CheckIn
+        const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.Arrived
 
         if (id && name && name !== '--') {
           await updateAppointment({
@@ -269,7 +269,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckIn,
+          id, status: AppointmentStatus.Arrived,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
@@ -344,7 +344,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         <Box display='flex' flexDirection='column'>
                           {getDateWithDay(scheduleStartDateTime || '')}
 
-                          {status === AppointmentStatus.CheckIn &&
+                          {status === AppointmentStatus.Arrived &&
                             <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
                               {VIEW_ENCOUNTER}
                             </Link>}
@@ -361,7 +361,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 label=""
                                 value={{ id, name: text }}
                                 name="status"
-                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
+                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
                                 isEdit={isEdit}

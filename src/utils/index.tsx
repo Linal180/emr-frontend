@@ -1,5 +1,5 @@
 // packages block
-import { memo, ReactNode } from "react";
+import React, { ReactNode, memo } from "react";
 import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
@@ -85,14 +85,22 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string, noWrap?: boolean) => (
+export const renderTh = (
+  text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string,
+  noWrap?: boolean, renderIcon?: Function
+) => (
   <TableCell component="th" align={align} className={classes}>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {isDangerous ?
-        <Box dangerouslySetInnerHTML={{ __html: text }}>
-        </Box> : text
-      }
-    </Typography>
+    <Box display="flex" alignItems="center">
+      <Typography component="h5" variant="h5" noWrap={noWrap}>
+        {isDangerous ?
+          <Box dangerouslySetInnerHTML={{ __html: text }}>
+          </Box> : text
+        }
+
+      </Typography>
+
+      {renderIcon && renderIcon()}
+    </Box>
   </TableCell>
 );
 
