@@ -244,7 +244,6 @@ export type Action =
   | { type: ActionType.SET_PRIVACY_NOTICE; privacyNotice: boolean }
   | { type: ActionType.SET_SMS_PERMISSION; smsPermission: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
-  | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_CALL_TO_CONSENT; callToConsent: boolean }
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_OPEN_UNITS; openUnits: HTMLElement | null }

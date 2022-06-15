@@ -74,16 +74,17 @@ const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: 
             <Grid item xs={2}>
               <VitalsLabels patientStates={patientStates} />
             </Grid>
+
             {!shouldDisableEdit && <Grid item xs={2}>
               <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} dispatcher={dispatcher} />
             </Grid>}
+
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
-                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} shouldDisableEdit={shouldDisableEdit}/>
+                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} shouldDisableEdit={shouldDisableEdit} />
               </Box>
             </Grid>
           </Grid>
-
         </Box>
       }
     </Fragment>
