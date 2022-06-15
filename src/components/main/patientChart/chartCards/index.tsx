@@ -1,26 +1,18 @@
 // packages block
-import { FC, ChangeEvent, Reducer, useReducer, ReactElement, useState, } from 'react';
-import { useForm } from 'react-hook-form';
+import { Box, Card, Grid, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Card, Grid, IconButton, Tab } from "@material-ui/core";
+import { ChangeEvent, FC, ReactElement, Reducer, useReducer } from 'react';
 // components block
-import VitalTab from './tabs/VitalTab';
-import ProblemTab from './tabs/ProblemTab';
 import AllergyTab from './tabs/AllergyTab';
+import ProblemTab from './tabs/ProblemTab';
+import VitalTab from './tabs/VitalTab';
 // interfaces, graphql, constants block /styles
-import { FormEditNewIcon, } from '../../../../assets/svgs';
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
-import { PatientInputProps } from '../../../../interfacesTypes';
-import { useHeaderStyles } from '../../../../styles/headerStyles';
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 
 const ChartCards: FC = (): JSX.Element => {
   const classes = useChartingStyles()
-  const [checked, setChecked] = useState<boolean>(false)
-
-  const [open, setOpen] = useState<boolean>(false);
-
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 

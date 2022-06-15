@@ -16,6 +16,9 @@ export interface State {
   selectedItem: Allergies | IcdCodes | undefined;
   patientVitals: PatientVitalPayload['patientVital'];
   searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  isSubModalOpen: boolean;
+  allergyDeleteId: string;
+  problemDeleteId: string;
 }
 
 export const initialState: State = {
@@ -31,6 +34,9 @@ export const initialState: State = {
   patientVitals: null,
   selectedReactions: [],
   selectedItem: undefined,
+  isSubModalOpen: false,
+  allergyDeleteId: '',
+  problemDeleteId: '',
 }
 
 export enum ActionType {
@@ -46,6 +52,9 @@ export enum ActionType {
   SET_SEARCHED_DATA = 'setSearchedData',
   SET_PATIENT_VITALS = 'setPatientVitals',
   SET_SELECTED_REACTIONS = "SET_SELECTED_REACTIONS",
+  SET_IS_SUB_MODAL_OPEN = "SET_IS_SUB_MODAL_OPEN",
+  SET_ALLERGY_DELETE_ID = "SET_ALLERGY_DELETE_ID",
+  SET_PROBLEM_DELETE_ID = "SET_PROBLEM_DELETE_ID"
 }
 
 export type Action =
@@ -61,6 +70,9 @@ export type Action =
   | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodes | undefined }
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] }
+  | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
+  | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
+  | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -135,6 +147,24 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         reactionPage: action.reactionPage
+      }
+
+    case ActionType.SET_IS_SUB_MODAL_OPEN:
+      return {
+        ...state,
+        isSubModalOpen: action.isSubModalOpen
+      }
+
+    case ActionType.SET_ALLERGY_DELETE_ID:
+      return {
+        ...state,
+        allergyDeleteId: action.allergyDeleteId
+      }
+
+    case ActionType.SET_PROBLEM_DELETE_ID:
+      return {
+        ...state,
+        problemDeleteId: action.problemDeleteId
       }
 
   }
