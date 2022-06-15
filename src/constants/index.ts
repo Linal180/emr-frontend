@@ -329,9 +329,9 @@ export const ADD_SPECIMEN = "Add a Specimen";
 export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
-export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
+  export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
-export const ADD_DOCTOR = "Add Doctor";
+  export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
@@ -435,19 +435,19 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your practice information and settings";
+"Edit your practice information and settings";
 export const PRACTICE_MANAGEMENT_DESCRIPTION =
-  "Add and edit your practice information and settings";
+"Add and edit your practice information and settings";
 export const PROVIDER_DETAILS_DESCRIPTION =
-  "Edit your provider information and settings";
+"Edit your provider information and settings";
 export const FACILITY_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+"Edit your facility information and settings";
 export const PROVIDER_PROFILE_DESCRIPTION =
-  "Edit your provider profile";
+"Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
-  "Add and edit your facility information and settings";
+"Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
-  "Add providers and update their profiles for the EMR";
+"Add providers and update their profiles for the EMR";
 export const STAFF_MANAGEMENT_DESCRIPTION =
   "Add staff and update their profiles for the EMR";
 export const SCHEDULE_DESCRIPTION = "Add or update provider’s schedule";
@@ -457,14 +457,14 @@ export const EMERGENCY_ACCESS_DESCRIPTION =
   "View and manage the users with emergency access";
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
-export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
-export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
+  export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
+  export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
 export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
-export const ICT_TEN = "ICT-10 Codes";
-export const ICD_TEN_CODES = "ICD-10 Codes";
+  export const ICT_TEN = "ICT-10 Codes";
+  export const ICD_TEN_CODES = "ICD-10 Codes";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -484,17 +484,17 @@ export const TESTS_DESCRIPTION =
   "Create and edit lab tests inventory for your practice";
 export const VACCINES_DESCRIPTION =
   "Create and edit vaccine inventory for your practice";
-export const FACILITY_SERVICES_DESCRIPTION =
+  export const FACILITY_SERVICES_DESCRIPTION =
   "Add or update all the services a facility is offering";
-export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
-export const CANCELLED_APPOINTMENT_DESCRIPTION =
+  export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
+  export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const BUSINESS_HOURS = "Business Hours";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION =
-  "Set timings of facility and manage slots";
+"Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_FIELDS = "Form Fields";
@@ -1369,6 +1369,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const CANT_DELETE_ROLE = "Role can't be deleted.";
+export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
