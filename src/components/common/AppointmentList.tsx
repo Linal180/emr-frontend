@@ -29,7 +29,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckIn,
+          id, status: AppointmentStatus.Arrived,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
@@ -71,7 +71,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                 <Typography variant="body1">{SCHEDULED_IN_FACILITY} {facilityName}</Typography>}
             </Box>
 
-            {type === AppointmentStatus.Initiated &&
+            {type === AppointmentStatus.Scheduled &&
               <Box display="flex" my={2}>
                 <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                   <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>

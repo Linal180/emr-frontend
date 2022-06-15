@@ -123,7 +123,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            appointmentStatus: AppointmentStatus.Initiated.toLocaleLowerCase(),
+            appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
             paginationOptions: {
               limit: PAGE_LIMIT, page: pageComing
             },
@@ -284,7 +284,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-                  <AppointmentList appointments={upComing} type={AppointmentStatus.Initiated} />
+                  <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
