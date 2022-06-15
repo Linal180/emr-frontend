@@ -174,7 +174,9 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     } else {
       await addPatientProblem({
         variables: {
-          createProblemInput: { patientId, icdCodeId, ...extendedInput, snowMedCodeId: selectedSnoMedCode }
+          createProblemInput: { patientId, icdCodeId, ...extendedInput, 
+            ...(selectedSnoMedCode && {snowMedCodeId: selectedSnoMedCode })
+          }
         }
       })
     }
