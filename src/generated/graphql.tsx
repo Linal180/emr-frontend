@@ -195,15 +195,15 @@ export type AppointmentPayload = {
 
 /** The patient appointment status type assigned */
 export enum AppointmentStatus {
+  Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
-  CheckIn = 'CHECK_IN',
+  CheckInOnline = 'CHECK_IN_ONLINE',
   Discharged = 'DISCHARGED',
-  Initiated = 'INITIATED',
   InLobby = 'IN_LOBBY',
   InSession = 'IN_SESSION',
   NoShow = 'NO_SHOW',
   Rescheduled = 'RESCHEDULED',
-  SelfCheckIn = 'SELF_CHECK_IN'
+  Scheduled = 'SCHEDULED'
 }
 
 export type AppointmentsPayload = {
@@ -5133,7 +5133,7 @@ export type UpdateAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, billingStatus: BillingStatus } | null | undefined } };
 
 export type CreateExternalAppointmentMutationVariables = Exact<{
   createExternalAppointmentInput: CreateExternalAppointmentInput;
@@ -5332,7 +5332,7 @@ export type FindAllPatientAllergiesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientAllergiesQuery = { __typename?: 'Query', findAllPatientAllergies: { __typename?: 'PatientAllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, comments?: string | null | undefined, isActive?: boolean | null | undefined, allergy?: { __typename: 'Allergies', id: string, name?: string | null | undefined, allergyType: AllergyType } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientAllergiesQuery = { __typename?: 'Query', findAllPatientAllergies: { __typename?: 'PatientAllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, comments?: string | null | undefined, isActive?: boolean | null | undefined, allergy?: { __typename: 'Allergies', id: string, name?: string | null | undefined, allergyType: AllergyType } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined } };
 
 export type GetPatientAllergyQueryVariables = Exact<{
   getPatientAllergy: GetPatientAllergy;
@@ -6409,6 +6409,11 @@ export const UpdateAppointmentDocument = gql`
       error
       status
       message
+    }
+    appointment {
+      id
+      status
+      billingStatus
     }
   }
 }
@@ -7763,6 +7768,10 @@ export const FindAllPatientAllergiesDocument = gql`
         id
         name
       }
+    }
+    pagination {
+      totalPages
+      page
     }
   }
 }

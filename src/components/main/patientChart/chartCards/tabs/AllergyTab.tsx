@@ -1,5 +1,6 @@
 import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import { ACTIONS, ADD_NEW_TEXT, ALLERGIES_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, PROBLEM_TEXT, STATUS, TYPE } from "../../../../../constants";
@@ -20,6 +21,8 @@ const AllergyTab = () => {
   const classes = useChartingStyles()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
   const [{ isSubModalOpen, selectedItem, itemId, allergyDeleteId }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -30,11 +33,11 @@ const AllergyTab = () => {
     setIsOpen(!isOpen)
   }
 
-  const [findAllPatientAllergies, { loading, error }] = useFindAllPatientAllergiesLazyQuery({
-    variables: {
-      patientAllergyInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
-    },
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
+    setPage(page)
+  }
 
+  const [findAllPatientAllergies, { loading, error }] = useFindAllPatientAllergiesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -47,7 +50,7 @@ const AllergyTab = () => {
         const { findAllPatientAllergies } = data;
 
         if (findAllPatientAllergies) {
-          const { response, patientAllergies } = findAllPatientAllergies
+          const { response, patientAllergies, pagination } = findAllPatientAllergies
 
           if (response) {
             const { status } = response
@@ -56,15 +59,24 @@ const AllergyTab = () => {
               setPatientAllergies(patientAllergies as PatientAllergiesPayload['patientAllergies'])
             }
           }
+
+          if (pagination) {
+            const { totalPages } = pagination
+            typeof totalPages === 'number' && setTotalPages(totalPages)
+          }
         }
       }
     }
   });
   const fetchAllergies = useCallback(async () => {
     try {
-      await findAllPatientAllergies()
+      await findAllPatientAllergies({
+        variables: {
+          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: LIST_PAGE_LIMIT } }
+        },
+      })
     } catch (error) { }
-  }, [findAllPatientAllergies]);
+  }, [findAllPatientAllergies, id, page]);
 
   useEffect(() => {
     id && fetchAllergies()
@@ -228,6 +240,18 @@ const AllergyTab = () => {
       </Grid>
       {isOpen &&
         <AddAllergy isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchAllergies()} />}
+
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   )
 }

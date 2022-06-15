@@ -148,7 +148,7 @@ const CheckInComponent = (): JSX.Element => {
     const { data } = await updateAppointment({
       variables: {
         updateAppointmentInput: {
-          id, status: AppointmentStatus.CheckIn,
+          id, status: AppointmentStatus.Arrived,
           checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
         }
       }
@@ -166,7 +166,7 @@ const CheckInComponent = (): JSX.Element => {
   }, [fetchAppointment, updateAppointment])
 
   useEffect(() => {
-    if (status === AppointmentStatus.Initiated) {
+    if (status === AppointmentStatus.Scheduled) {
       handleCheckIn(appointmentId || '', patientId || '')
     }
   }, [appointmentId, handleCheckIn, patientId, status])

@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_PROBLEM, CANCEL, COMMENTS, EMPTY_OPTION, ITEM_MODULE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, 
+  ADD, ADD_PROBLEM, CANCEL, COMMENTS, EMPTY_OPTION, ITEM_MODULE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED,
   SNO_MED_CODE, STATUS, TYPE, UPDATE
 } from '../../../../../constants';
 // component block
@@ -156,8 +156,10 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     const { id: selectedSnoMedCode } = snowMedCodeId || {};
 
     const commonInput = {
-      note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType
+      note,
+      ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
+      problemStartDate,
+      ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
     }
 
     const extendedInput = selectedAppointment ?
@@ -186,8 +188,8 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
       </DialogTitle>
 
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent className={chartingClasses.chartModalBox}>
+        <DialogContent className={chartingClasses.chartModalBox}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box display="flex" alignItems="center">
               <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
                 <PageBackIcon />
@@ -263,24 +265,24 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                   </Grid>
                 </Grid>
               </>}
-          </DialogContent>
+          </form>
+        </DialogContent>
 
-          <DialogActions>
-            <Box display='flex' justifyContent='flex-end' alignItems='center'>
-              <Button variant='text' onClick={closeAddModal}>
-                {CANCEL}
-              </Button>
+        <DialogActions>
+          <Box display='flex' justifyContent='flex-end' alignItems='center'>
+            <Button variant='text' onClick={closeAddModal}>
+              {CANCEL}
+            </Button>
 
-              <Box p={1} />
+            <Box p={1} />
 
-              <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
-                {isEdit ? UPDATE : ADD}
+            <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
+              {isEdit ? UPDATE : ADD}
 
-                {isDisable && <CircularProgress size={20} color="inherit" />}
-              </Button>
-            </Box>
-          </DialogActions>
-        </form>
+              {isDisable && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </DialogActions>
       </FormProvider>
     </Dialog>
   )

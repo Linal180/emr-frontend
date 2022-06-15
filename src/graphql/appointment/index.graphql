@@ -140,6 +140,11 @@ mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
       status
       message
     }
+
+    appointment {
+      id
+      status
+    }
   }
 }
 

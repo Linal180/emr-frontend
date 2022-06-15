@@ -1,21 +1,18 @@
 //packages
+import { Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
 import { FC, MouseEvent, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import {
-  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
-} from "@material-ui/core";
-import { Add as AddIcon } from '@material-ui/icons';
-//components
-import ProblemModal from "./ProblemModal";
 //constants, interfaces, utils 
-import { NoDataIcon, SearchIcon, } from "../../../../../assets/svgs";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import {
-  ADD_PROBLEM, ADD_PROBLEMS, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
+  ADD_PROBLEM, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
 } from "../../../../../constants";
 import { IcdCodes, IcdCodesPayload, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GRAY_SIX, GREY_SEVEN, } from "../../../../../theme";
+import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+//components
+import ProblemModal from "./ProblemModal";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const chartingClasses = useChartingStyles()
@@ -58,7 +55,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     }
   });
   const handleICDSearch = useCallback(async (tabName: string, query: string) => {
-    const queryString = tabName === tabs[1] ? 'corona' : ''
+    const queryString = tabName === tabs[1] ? 'corona' : query
     try {
       await searchIcdCodes({
         variables: {
@@ -77,6 +74,10 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
   const handleSearch = useCallback(async (query: string, tabName?: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({
+      type: ActionType.SET_SEARCHED_DATA,
+      searchedData: []
+    })
 
     if (query.length > 2 || query.length === 0) {
       handleICDSearch(tabName ? tabName : tab, query)
@@ -87,11 +88,6 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
-
-  const handleNewAllergy = ({ currentTarget }: MouseEvent<HTMLElement>) => {
-    dispatch({ type: ActionType.SET_NEW_RECORD, newRecord: searchQuery })
-    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
-  }
 
   const handleTabChange = (name: string) => {
     setTab(name)
@@ -113,44 +109,40 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     </Box>
   );
 
-  const renderSearchData = () =>
-    <Box maxHeight={200} className="overflowY-auto" display="flex"
-      flexDirection="column" alignItems="flex-start"
-    >
-      {!!searchIcdCodesLoading ?
-        <Box alignSelf="center">
-          <CircularProgress size={25} color="inherit" disableShrink />
-        </Box>
-        :
-        (searchedData && searchedData.length > 0 ?
-          searchedData?.map(item => {
-            const { code, description } = item as IcdCodes || {}
+  const renderSearchData = useCallback(() => {
+    return (
+      <Box maxHeight={200} className="overflowY-auto" display="flex"
+        flexDirection="column" alignItems="flex-start"
+      >
+        {!!searchIcdCodesLoading ?
+          <Box alignSelf="center">
+            <CircularProgress size={25} color="inherit" disableShrink />
+          </Box>
+          :
+          (searchedData && searchedData.length > 0 ?
+            searchedData?.map(item => {
+              const { code, description } = item as IcdCodes || {}
 
-            return (
-              <Box key={code} className='pointer-cursor' my={0.2}
-                onClick={(event) => item && handleOpenForm(event, item as IcdCodes)}
-              >
-                <Typography variant='body1' className="hoverClass">{code} - {description}</Typography>
-              </Box>
-            )
-          }) :
-          <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
-            <NoDataIcon />
+              return (
+                <Box key={code} className='pointer-cursor' my={0.2}
+                  onClick={(event) => item && handleOpenForm(event, item as IcdCodes)}
+                >
+                  <Typography variant='body1' className="hoverClass">{code} - {description}</Typography>
+                </Box>
+              )
+            }) :
+            <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+              <NoDataIcon />
 
-            <Typography variant="h6">{NO_RECORDS}</Typography>
+              <Typography variant="h6">{NO_RECORDS}</Typography>
 
-            <Box p={1} />
+              <Box p={1} />
+            </Box>)
+        }
+      </Box>
+    )
+  }, [searchIcdCodesLoading, searchedData])
 
-            {searchQuery &&
-              <Button type="submit" size='small' variant='contained' color='primary'
-                onClick={(event) => handleNewAllergy(event)}
-                startIcon={<AddIcon />}
-              >
-                {ADD_PROBLEMS}
-              </Button>}
-          </Box>)
-      }
-    </Box>
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>

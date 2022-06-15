@@ -1,6 +1,5 @@
 // packages block
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { getDay } from 'date-fns';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { FormEditNewIcon } from '../../../../../assets/svgs';
 import { DASHES } from '../../../../../constants';
@@ -10,7 +9,7 @@ import {
 import { VitalListingTableProps } from '../../../../../interfacesTypes';
 import {
   convertDateFromUnix,
-  fahrenheitToCelsius, formatValue, getFormatDateString, getFormattedDateTime, inchesToCentimeter, kilogramToOunce, kilogramToPounds,
+  fahrenheitToCelsius, formatValue, inchesToCentimeter, kilogramToOunce, kilogramToPounds,
   renderTh, roundOffUpto2Decimal
 } from '../../../../../utils';
 

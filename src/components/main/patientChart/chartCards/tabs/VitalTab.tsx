@@ -1,7 +1,8 @@
 import {
   Box, Button, Card, Grid
 } from "@material-ui/core"
-import { Reducer, useCallback, useEffect, useReducer, useState } from "react"
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react"
+import Pagination from "@material-ui/lab/Pagination";
 import { FormProvider, useForm } from "react-hook-form"
 import { useParams } from "react-router"
 //components
@@ -23,6 +24,8 @@ const VitalTab = () => {
   const classes = useChartingStyles()
   const vitalClasses = usePatientVitalListingStyles()
   const [open, setOpen] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const [vitalToEdit, setVitalToEdit] = useState<PatientVitalPayload['patientVital']>(null);
   const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
   const [patientStates, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -34,14 +37,16 @@ const VitalTab = () => {
     setOpen(false)
   };
 
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
+    setPage(page)
+  }
+
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
   });
 
   const [getPatientVitals, { loading }] = useFindAllPatientVitalsLazyQuery({
-    variables: {
-      patientVitalInput: { patientId: id, paginationOptions: { page: 1, limit: VITAL_LIST_PAGE_LIMIT } }
-    },
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -54,7 +59,7 @@ const VitalTab = () => {
         const { findAllPatientVitals } = data;
 
         if (findAllPatientVitals) {
-          const { response, patientVitals } = findAllPatientVitals
+          const { response, patientVitals, pagination } = findAllPatientVitals
 
           if (response) {
             const { status } = response
@@ -69,6 +74,11 @@ const VitalTab = () => {
               sortedVitals?.length > 0 && setPatientVitals(sortedVitals as PatientVitalsPayload['patientVitals'])
             }
           }
+
+          if (pagination) {
+            const { totalPages } = pagination
+            typeof totalPages === 'number' && setTotalPages(totalPages)
+          }
         }
       }
     }
@@ -76,98 +86,115 @@ const VitalTab = () => {
 
   const fetchPatientAllVitals = useCallback(async () => {
     try {
-      await getPatientVitals()
+      await getPatientVitals({
+        variables: {
+          patientVitalInput: { patientId: id, paginationOptions: { page, limit: VITAL_LIST_PAGE_LIMIT } }
+        },
+      })
     } catch (error) { }
-  }, [getPatientVitals])
+  }, [getPatientVitals, id, page])
 
   useEffect(() => {
     id && fetchPatientAllVitals()
   }, [id, fetchPatientAllVitals])
 
   return (
-    <Grid container spacing={3}>
-      <Grid item md={12} sm={12} xs={12}>
-        <Card>
-          {
-            loading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
-              <Box className={classes.cardBox}>
-                <FormProvider {...methods}>
-                  <form>
-                    <Box px={2} pt={2} display="flex" justifyContent="space-between" alignItems="center">
-                      <Box display="flex" alignItems="center">
-                        <Box className={classes.tableHeaderDropdown}>
-                          <Selector
-                            name="units"
-                            label={''}
-                            value={EMPTY_OPTION}
-                          />
+    <>
+      <Grid container spacing={3}>
+        <Grid item md={12} sm={12} xs={12}>
+          <Card>
+            {
+              loading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
+                <Box className={classes.cardBox}>
+                  <FormProvider {...methods}>
+                    <form>
+                      <Box px={2} pt={2} display="flex" justifyContent="space-between" alignItems="center">
+                        <Box display="flex" alignItems="center">
+                          <Box className={classes.tableHeaderDropdown}>
+                            <Selector
+                              name="units"
+                              label={''}
+                              value={EMPTY_OPTION}
+                            />
+                          </Box>
+
+                          <Box p={2} />
+
+                          <Box className={classes.tableHeaderDropdown}>
+                            <Selector
+                              name="results"
+                              label={''}
+                              value={EMPTY_OPTION}
+                            />
+                          </Box>
                         </Box>
 
-                        <Box p={2} />
+                        <Box display="flex" alignItems="center">
+                          <Button variant='contained' color='secondary'>
+                            <PrinterWhiteIcon />
+                            <Box p={0.5} />
+                            {PRINT_CHART}
+                          </Button>
 
-                        <Box className={classes.tableHeaderDropdown}>
-                          <Selector
-                            name="results"
-                            label={''}
-                            value={EMPTY_OPTION}
-                          />
+                          <Box p={1} />
+
+                          <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
+                            <AddWhiteIcon />
+                            <Box p={0.5} />
+                            {ADD_NEW_TEXT}
+                          </Button>
                         </Box>
                       </Box>
+                    </form>
+                  </FormProvider>
 
-                      <Box display="flex" alignItems="center">
-                        <Button variant='contained' color='secondary'>
-                          <PrinterWhiteIcon />
-                          <Box p={0.5} />
-                          {PRINT_CHART}
-                        </Button>
-
-                        <Box p={1} />
-
-                        <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
-                          <AddWhiteIcon />
-                          <Box p={0.5} />
-                          {ADD_NEW_TEXT}
-                        </Button>
-                      </Box>
-                    </Box>
-                  </form>
-                </FormProvider>
-
-                <Box className={classes.tableBox}>
-                  <Grid container>
-                    <Grid item xs={2}>
-                      <Box>
-                        <VitalsLabels patientStates={patientStates} />
-                      </Box>
+                  <Box className={classes.tableBox}>
+                    <Grid container>
+                      <Grid item xs={2}>
+                        <Box>
+                          <VitalsLabels patientStates={patientStates} />
+                        </Box>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Box className={vitalClasses.listingTable}>
+                          <VitalListingTable
+                            patientVitals={patientVitals}
+                            patientStates={patientStates}
+                            setPatientVitals={setPatientVitals}
+                            setVitalToEdit={setVitalToEdit}
+                            setOpen={setOpen}
+                          />
+                        </Box>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={10}>
-                      <Box className={vitalClasses.listingTable}>
-                        <VitalListingTable
-                          patientVitals={patientVitals}
-                          patientStates={patientStates}
-                          setPatientVitals={setPatientVitals}
-                          setVitalToEdit={setVitalToEdit}
-                          setOpen={setOpen}
-                        />
-                      </Box>
-                    </Grid>
-                  </Grid>
+                  </Box>
                 </Box>
-              </Box>
-          }
-        </Card>
+            }
+          </Card>
 
-        {open && <AddVitals
-          dispatcher={dispatch}
-          fetchPatientAllVitals={fetchPatientAllVitals}
-          patientStates={patientStates}
-          handleClose={handleClose}
-          isOpen={open}
-          vitalToEdit={vitalToEdit}
-          isEdit={!!vitalToEdit}
-        />}
+          {open && <AddVitals
+            dispatcher={dispatch}
+            fetchPatientAllVitals={fetchPatientAllVitals}
+            patientStates={patientStates}
+            handleClose={handleClose}
+            isOpen={open}
+            vitalToEdit={vitalToEdit}
+            isEdit={!!vitalToEdit}
+          />}
+        </Grid>
       </Grid>
-    </Grid>
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" mt={1}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   )
 }
 

@@ -1,8 +1,9 @@
 import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE } from "../../../../../constants";
+import { ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE } from "../../../../../constants";
 import { IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from "../../../../../generated/graphql";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
@@ -20,6 +21,8 @@ const ProblemTab = () => {
   const classes = useChartingStyles()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const [patientProblems, setPatientProblems] = useState<PatientProblemsPayload['patientProblems']>([])
   const [{ isSubModalOpen, selectedItem, itemId, problemDeleteId }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -30,11 +33,11 @@ const ProblemTab = () => {
     setIsOpen(!isOpen)
   }
 
-  const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
-    variables: {
-      patientProblemInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
-    },
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
+    setPage(page)
+  }
 
+  const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -47,7 +50,7 @@ const ProblemTab = () => {
         const { findAllPatientProblem } = data;
 
         if (findAllPatientProblem) {
-          const { response, patientProblems } = findAllPatientProblem
+          const { response, patientProblems, pagination } = findAllPatientProblem
 
           if (response) {
             const { status } = response
@@ -56,6 +59,11 @@ const ProblemTab = () => {
               setPatientProblems(patientProblems as PatientProblemsPayload['patientProblems'])
             }
           }
+
+          if (pagination) {
+            const { totalPages } = pagination
+            typeof totalPages === 'number' && setTotalPages(totalPages)
+          }
         }
       }
     }
@@ -63,9 +71,13 @@ const ProblemTab = () => {
 
   const fetchProblems = useCallback(async () => {
     try {
-      await findAllPatientProblems()
+      await findAllPatientProblems({
+        variables: {
+          patientProblemInput: { patientId: id, paginationOptions: { page, limit: PAGE_LIMIT } }
+        },
+      })
     } catch (error) { }
-  }, [findAllPatientProblems]);
+  }, [findAllPatientProblems, id, page]);
 
   useEffect(() => {
     id && fetchProblems()
@@ -135,15 +147,15 @@ const ProblemTab = () => {
                 <Box className={classes.tableBox}>
                   <Table aria-label="customized table">
                     <TableHead>
-                    <TableRow>
-                    {renderTh(ICD_CODE)}
-                    {renderTh(PROBLEM_TEXT)}
-                    {renderTh(ONSET_DATE)}
-                    {renderTh(TYPE)}
-                    {renderTh(NOTES)}
-                    {renderTh(SEVERITY)}
-                    {renderTh(ACTIONS)}
-                  </TableRow>
+                      <TableRow>
+                        {renderTh(ICD_CODE)}
+                        {renderTh(PROBLEM_TEXT)}
+                        {renderTh(ONSET_DATE)}
+                        {renderTh(TYPE)}
+                        {renderTh(NOTES)}
+                        {renderTh(SEVERITY)}
+                        {renderTh(ACTIONS)}
+                      </TableRow>
                     </TableHead>
 
                     <TableBody>
@@ -151,33 +163,33 @@ const ProblemTab = () => {
                         const { problemSeverity, ICDCode, problemType, note, problemStartDate, id } = patientProblem ?? {}
                         return (
                           <TableRow>
-                        <TableCell scope="row">
-                          <Typography>{ICDCode?.code ?? DASHES}</Typography>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Typography>{ICDCode?.code ?? DASHES}</Typography>
+                            </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography>{ICDCode?.description ?? DASHES}</Typography>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Typography>{ICDCode?.description ?? DASHES}</Typography>
+                            </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography>{problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY'): ''}</Typography>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Typography>{problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY') : ''}</Typography>
+                            </TableCell>
 
-                        <TableCell scope="row">
-                          <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
-                            {problemType}
-                          </Box>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                                {problemType}
+                              </Box>
+                            </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography className={classes.textOverflow}>{note}</Typography>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Typography className={classes.textOverflow}>{note}</Typography>
+                            </TableCell>
 
-                        <TableCell scope="row">
-                          <Box className={classes.activeBox} bgcolor={GREEN}>
-                            {problemSeverity}
-                          </Box>
-                        </TableCell>
+                            <TableCell scope="row">
+                              <Box className={classes.activeBox} bgcolor={GREEN}>
+                                {problemSeverity}
+                              </Box>
+                            </TableCell>
                             <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
                                 <IconButton onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
@@ -228,6 +240,18 @@ const ProblemTab = () => {
       </Grid>
       {isOpen &&
         <AddProblem isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
+      
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   )
 }

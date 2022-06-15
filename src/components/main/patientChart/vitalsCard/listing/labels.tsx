@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core"
+import { Table, TableBody, TableHead, TableRow } from "@material-ui/core"
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { VITALS_TEXT, VITAL_LABELS } from "../../../../../constants"
 import { VitalsLabelsProps } from "../../../../../interfacesTypes"
