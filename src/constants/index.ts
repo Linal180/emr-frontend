@@ -1730,8 +1730,8 @@ export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
     name: formatValue(AppointmentStatus.Discharged),
   },
   {
-    id: AppointmentStatus.Initiated,
-    name: formatValue(AppointmentStatus.Initiated),
+    id: AppointmentStatus.Scheduled,
+    name: formatValue(AppointmentStatus.Scheduled),
   },
 ];
 
