@@ -1,5 +1,5 @@
 import { makeStyles, } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLACK_TWO, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -134,7 +134,72 @@ export const useChartingStyles = makeStyles({
       "& .MuiAutocomplete-inputRoot": {
         paddingTop: 0,
         paddingBottom: 0,
-      }
+      },
+    },
+
+    "& .MuiBox-root": {
+      border: 'none',
+      padding: 0,
+      backgroundColor: 'transparent',
+      borderRadius: 0,
+    },
+  },
+
+  toggleProblem: {
+    marginTop: 10,
+
+    "& .MuiBox-root": {
+    border: `1px solid ${GRAY_SIX}`, 
+    borderRadius: 6,
+    display: 'flex',
+    alignItems: 'center',
+    width: 'fit-content',
+    padding: '5px 10px',
+
+    "& .selectedBox": {
+      backgroundColor: BLUE,
+      border: 'none',
+    },
+
+    "& .selectBox": {
+      border: 'none',
+    },
+    },
+  },
+
+  searchBox: {
+    backgroundColor: GREY,
+    
+    "& .MuiBox-root": {
+      backgroundColor: GREY,
+      borderRadius: 4,
+      border: `1px solid ${GREY_FOUR}`,
+    },
+
+    "& .MuiIconButton-root": {
+      backgroundColor: GREY,
+      borderTopLeftRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+
+    "& .MuiInputBase-root": {
+      width: '100%',
+      backgroundColor: GREY,
+      borderTopRightRadius: 4,
+      borderBottomRightRadius: 4,
+      border: `1px solid ${GREY_FOUR}`,
+      paddingLeft: 10,
+    },
+  },
+
+  problemGrid: {
+    border: 'none !important',
+    padding: '20px 0 !important',
+    backgroundColor: `${WHITE} !important`,
+    borderRadius: 0,
+    "& .MuiDialogContent-root": {
     },
   },
 

@@ -1,17 +1,17 @@
 //packages import
-import { FC, MouseEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
 import { Add as AddIcon } from '@material-ui/icons';
-//components
-import AllergyModal from "./AllergyModal";
+import { FC, MouseEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 //constants, utils, interfaces
-import { ClearIcon, NoDataIcon, SmallSearchIcon } from "../../../../../assets/svgs";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE } from "../../../../../constants";
 import { Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery } from "../../../../../generated/graphql";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GRAY_SIX, GREY_ELEVEN, GREY_SEVEN } from "../../../../../theme";
+import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+//components
+import AllergyModal from "./AllergyModal";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const tabs = Object.keys(AllergyType)
@@ -154,21 +154,18 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
       <DialogTitle>
         <Typography variant="h4">{ADD_ALLERGY}</Typography>
       </DialogTitle>
-      <DialogContent className={chartingClasses.chartModalBox}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant='h4'>{TYPE}</Typography>
 
-          <IconButton onClick={handleModalClose}>
-            <ClearIcon />
-          </IconButton>
+      <DialogContent className={chartingClasses.chartModalBox}>
+          <Typography variant='h6'>{TYPE}</Typography>
+
+          <Box className={chartingClasses.toggleProblem}>
+          {!!tabs && renderTabs()}
         </Box>
 
-        {!!tabs && renderTabs()}
-
-        <Box px={1.5} mt={!!!tabs && 2} display='flex' alignItems='center' bgcolor={GREY_ELEVEN} borderRadius={6}>
-          <SmallSearchIcon />
-
-          <Box p={0.2} />
+        <Box mb={2} className={chartingClasses.searchBox} display="flex">
+          <IconButton aria-label="search">
+            <SearchIcon />
+          </IconButton>
 
           <InputBase
             value={searchQuery}
@@ -177,8 +174,6 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
-
-        <Box my={2} border={`1px solid ${GRAY_SIX}`} />
 
         {renderSearchData()}
       </DialogContent>

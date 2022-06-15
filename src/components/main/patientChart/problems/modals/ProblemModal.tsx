@@ -1,31 +1,34 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router-dom';
-// component block
-import InputController from '../../../../../controller';
-import Alert from '../../../../common/Alert';
-import DatePicker from '../../../../common/DatePicker';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_PROBLEMS, CANCEL, COMMENTS, EMPTY_OPTION, ITEM_MODULE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, SNO_MED_CODE, STATUS, TYPE, UPDATE
+  ADD, ADD_PROBLEM, CANCEL, COMMENTS, EMPTY_OPTION, ITEM_MODULE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, 
+  SNO_MED_CODE, STATUS, TYPE, UPDATE
 } from '../../../../../constants';
+// component block
+import InputController from '../../../../../controller';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
 import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import { ActionType } from '../../../../../reducers/chartReducer';
-import { GRAY_SIX } from '../../../../../theme';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { GRAY_SIX, GREY_THREE } from '../../../../../theme';
 import { formatValue, setRecord } from '../../../../../utils';
 import { patientProblemSchema } from '../../../../../validationSchemas';
+import Alert from '../../../../common/Alert';
+import DatePicker from '../../../../common/DatePicker';
 import ItemSelector from '../../../../common/ItemSelector';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose }): JSX.Element => {
+  const chartingClasses = useChartingStyles()
   const { id: icdCodeId, code, description } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
@@ -177,73 +180,94 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
   return (
-    <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
+      <DialogTitle>
+        <Typography variant="h4">{ADD_PROBLEM}</Typography>
+      </DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle>
-            <Typography variant="h4">{ADD_PROBLEMS}</Typography>
-          </DialogTitle>
-          <DialogContent>
+          <DialogContent className={chartingClasses.chartModalBox}>
             <Box display="flex" alignItems="center">
-              <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
                 <PageBackIcon />
-              </IconButton>
-              <Typography variant='h4'>{description}</Typography>
+              </Box>
+
+              <Box>
+                <Typography variant='h4'>{description}</Typography>
+
+                <Box mt={1} color={GREY_THREE}>
+                  <Typography variant='h6'><strong>ICD-10 Code:</strong> {code}</Typography>
+                </Box>
+              </Box>
             </Box>
-            <Typography variant='h6'>ICD-10 Code: {code}</Typography>
 
-
-            <Box p={2} />
-
+            <Box m={2} />
 
             {getProblemLoading ?
               <ViewDataLoader columns={12} rows={4} />
               : <>
-                <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
+                <Grid container className={chartingClasses.problemGrid}>
+                  <Grid item md={12} sm={12} xs={12}>
+                    <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
+                  </Grid>
+                </Grid>
+
                 <Typography variant='body1'>{STATUS}</Typography>
 
-                <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                  {statuses.map(status =>
-                    <Box onClick={() => handleStatus(status)}
-                      className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
-                      <Typography variant='h6'>{status}</Typography>
-                    </Box>
-                  )}
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {statuses.map(status =>
+                      <Box onClick={() => handleStatus(status)}
+                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
+                        <Typography variant='h6'>{status}</Typography>
+                      </Box>
+                    )}
+                  </Box>
                 </Box>
 
                 <Typography variant='body1'>{TYPE}</Typography>
 
-                <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                  {severities.map(type =>
-                    <Box onClick={() => handleSeverity(type)}
-                      className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
-                      <Typography variant='h6'>{type}</Typography>
-                    </Box>
-                  )}
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {severities.map(type =>
+                      <Box onClick={() => handleSeverity(type)}
+                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
+                        <Typography variant='h6'>{type}</Typography>
+                      </Box>
+                    )}
+                  </Box>
                 </Box>
 
-                <ItemSelector
-                  isEdit
-                  label={SNO_MED_CODE}
-                  name="snowMedCodeId"
-                  value={snoMedCode}
-                  searchQuery={code || ''}
-                  modalName={ITEM_MODULE.snoMedCode}
-                />
+                <Grid container className={chartingClasses.problemGrid}>
+                  <Grid item md={12} sm={12} xs={12}>
+                    <ItemSelector
+                      isEdit
+                      label={SNO_MED_CODE}
+                      name="snowMedCodeId"
+                      value={snoMedCode}
+                      searchQuery={code || ''}
+                      modalName={ITEM_MODULE.snoMedCode}
+                    />
+                  </Grid>
 
-                <InputController
-                  multiline
-                  fieldType="text"
-                  controllerName="note"
-                  controllerLabel={COMMENTS}
-                />
+                  <Box m={2} />
+
+                  <Grid item md={12} sm={12} xs={12}>
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="note"
+                      controllerLabel={COMMENTS}
+                    />
+                  </Grid>
+                </Grid>
               </>}
           </DialogContent>
+
           <DialogActions>
-            <Box display='flex' justifyContent='flex-end'>
-              <Button variant='contained' onClick={closeAddModal}
-                className='btnDanger'
-              >
+            <Box display='flex' justifyContent='flex-end' alignItems='center'>
+              <Button variant='text' onClick={closeAddModal}>
                 {CANCEL}
               </Button>
 

@@ -1,20 +1,25 @@
 //packages
 import { FC, MouseEvent, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
+import {
+  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
+} from "@material-ui/core";
 import { Add as AddIcon } from '@material-ui/icons';
 //components
 import ProblemModal from "./ProblemModal";
 //constants, interfaces, utils 
-import { ClearIcon, NoDataIcon, SmallSearchIcon } from "../../../../../assets/svgs";
-import { ADD_PROBLEMS, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE } from "../../../../../constants";
+import { NoDataIcon, SearchIcon, } from "../../../../../assets/svgs";
+import {
+  ADD_PROBLEM, ADD_PROBLEMS, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
+} from "../../../../../constants";
 import { IcdCodes, IcdCodesPayload, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GRAY_SIX, GREY_ELEVEN, GREY_SEVEN } from "../../../../../theme";
+import { GRAY_SIX, GREY_SEVEN, } from "../../../../../theme";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const chartingClasses = useChartingStyles()
+
   const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
@@ -150,33 +155,28 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_PROBLEMS}</Typography>
+        <Typography variant="h4">{ADD_PROBLEM}</Typography>
       </DialogTitle>
-      <DialogContent className={chartingClasses.chartModalBox}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant='h4'>{TYPE}</Typography>
 
-          <IconButton onClick={handleModalClose}>
-            <ClearIcon />
-          </IconButton>
+      <DialogContent className={chartingClasses.chartModalBox}>
+        <Typography variant='h6'>{TYPE}</Typography>
+
+        <Box className={chartingClasses.toggleProblem}>
+          {!!tabs && renderTabs()}
         </Box>
 
-        {!!tabs && renderTabs()}
-
-        <Box px={1.5} mt={2} display='flex' alignItems='center' bgcolor={GREY_ELEVEN} borderRadius={6}>
-          <SmallSearchIcon />
-
-          <Box p={0.2} />
+        <Box mb={2} className={chartingClasses.searchBox} display="flex">
+          <IconButton aria-label="search">
+            <SearchIcon />
+          </IconButton>
 
           <InputBase
             value={searchQuery}
             inputProps={{ 'aria-label': 'search' }}
-            placeholder={SEARCH_FOR_ALLERGIES}
+            placeholder={SEARCH_FOR_PROBLEMS}
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
-
-        <Box my={2} border={`1px solid ${GRAY_SIX}`} />
 
         {renderSearchData()}
       </DialogContent>

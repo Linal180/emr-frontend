@@ -20,6 +20,7 @@ import {
 } from '../../../../../generated/graphql';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { GRAY_SIX } from '../../../../../theme';
 import { formatValue, getTimestamps } from '../../../../../utils';
 import { createPatientAllergySchema } from '../../../../../validationSchemas';
@@ -27,6 +28,7 @@ import { createPatientAllergySchema } from '../../../../../validationSchemas';
 const AllergyModal: FC<AddModalProps> = ({
   item, dispatcher, isEdit, recordId, fetch, newAllergy, allergyType, isOpen = false, handleClose
 }): JSX.Element => {
+  const chartingClasses = useChartingStyles()
   const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
@@ -189,17 +191,18 @@ const AllergyModal: FC<AddModalProps> = ({
 
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
+      <DialogTitle>
+        <Typography variant="h4">{ADD_ALLERGY}</Typography>
+      </DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle>
-            <Typography variant="h4">{ADD_ALLERGY}</Typography>
-          </DialogTitle>
-          <DialogContent>
-
-            <Box mb={2} display="flex"  alignItems="center">
-              <IconButton onClick={()=> dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+          <DialogContent className={chartingClasses.chartModalBox}>
+            <Box mb={2} display="flex" alignItems="center">
+              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
                 <PageBackIcon />
-              </IconButton>
+              </Box>
+
               <Typography variant='h4'>{name ?? newAllergy}</Typography>
             </Box>
 
