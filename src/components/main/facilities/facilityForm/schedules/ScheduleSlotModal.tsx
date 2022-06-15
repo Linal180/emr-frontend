@@ -27,7 +27,7 @@ import {
 import {
   CANCEL, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
-  FACILITY_SCHEDULE, RECURRING_DATE, CREATE_SCHEDULE, YES, NO, DAY, SELECT_DAY_MESSAGE,
+  FACILITY_SCHEDULE, CREATE_SCHEDULE, YES, NO, DAY, SELECT_DAY_MESSAGE, END_DATE, WANT_RECURRING,
 } from "../../../../../constants";
 
 const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
@@ -41,7 +41,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
   });
   const { reset, handleSubmit, setValue, control } = methods;
 
-  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(false)
+  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
 
   const [getSchedule, { loading: getScheduleLoading }] = useGetScheduleLazyQuery({
     fetchPolicy: "network-only",
@@ -64,7 +64,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
           endAt && setValue('endAt', getTimeString(endAt))
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
-          recurringEndDate && setShouldHaveRecursion(true)
+          setShouldHaveRecursion(!!!recurringEndDate)
           setIds([...ids, getDayFromTimestamps(startAt)])
         }
       }
@@ -137,7 +137,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
       return {
         facilityId, servicesIds: [], day: dayValue,
         startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
-        recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+        recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
       }
     })
 
@@ -234,7 +234,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
                           control={control}
                           render={() => (
                             <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                              <InputLabel shrink>Should Have Recurring Date</InputLabel>
+                              <InputLabel shrink>{WANT_RECURRING}</InputLabel>
 
                               <label className="toggle-main">
                                 <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
@@ -246,10 +246,10 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
                         />
                       </Grid>
 
-                      {shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                      {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
                         <DatePicker
                           name="recurringEndDate"
-                          label={RECURRING_DATE}
+                          label={END_DATE}
                           disableFuture={false}
                         />
                       </Grid>}
