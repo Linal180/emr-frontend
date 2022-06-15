@@ -183,7 +183,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
-            <Box className="dialogBg pt-0">
+            <Box className="dialogBg">
               {getScheduleLoading ?
                 <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                   <Grid container spacing={3}>
@@ -260,7 +260,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
           </DialogContent>
 
           <DialogActions>
-            <Box pr={2} display="flex">
+            <Box display="flex" alignItems="center">
               <Button onClick={handleClose} color="default">{CANCEL}</Button>
 
               <Box p={1} />
