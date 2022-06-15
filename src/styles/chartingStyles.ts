@@ -1,5 +1,5 @@
-import { createStyles, makeStyles, Switch, withStyles } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GREEN, GREEN_TWO, GREY_TWO, WHITE, WHITE_FOUR } from "../theme";
+import { makeStyles, } from "@material-ui/core";
+import { BLACK_ONE, BLACK_THREE, BLACK_TWO, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, WHITE, WHITE_FOUR } from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -124,8 +124,17 @@ export const useChartingStyles = makeStyles({
     paddingBottom: 15,
 
     "& .MuiFormControl-marginNormal": {
-      marginTop: 10,
+      marginTop: 8,
       paddingBottom: 0,
+
+      "& .MuiOutlinedInput-input": {
+        height: 40,
+      },
+
+      "& .MuiAutocomplete-inputRoot": {
+        paddingTop: 0,
+        paddingBottom: 0,
+      }
     },
   },
 
@@ -147,69 +156,14 @@ export const useChartingStyles = makeStyles({
     textOverflow: 'ellipsis',
   },
 
-  toggleMain: {
-    // border: '1px solid red',
+  toggleBox: {
+    border: `1px solid ${GRAY_SIX}`, 
+    borderRadius: 6,
+    display: 'flex',
+    alignItems: 'center',
+    width: 'fit-content',
     marginLeft: 15,
-
-    // "&.WithStyles\(ForwardRef\(Switch\)\)-thumb-271": {
-    "& .MuiSwitch-thumb": {
-      backgroundColor: BLUE,
-    }
+    padding: '3px 6px',
+    marginTop: 1,
   },
-
 });
-
-
-export const AntSwitch = withStyles(() =>
-  createStyles({
-    root: {
-      width: "100%",
-      height: "100%",
-      padding: 5,
-      display: "flex",
-      position: "absolute",
-      left: 0,
-      top: 0,
-    },
-
-    thumb: {
-      width: 70,
-      height: 34,
-      opacity: 0.8,
-      borderRadius: 6,
-      backgroundColor: GREY_TWO,
-      boxShadow: "none",
-      transform: "translateX(93%)",
-      transition: "all .3s ease-in",
-    },
-
-    switchBase: {
-      padding: 4,
-      transform: "none !important",
-
-      "&$checked": {
-        "& + $track": {
-          opacity: 0.8,
-          backgroundColor: "transparent",
-          borderColor: "none",
-        },
-
-        "& .MuiSwitch-thumb": {
-          backgroundColor: BLUE,
-          transform: "translateX(0)",
-        },
-      },
-
-      "&:hover": {
-        backgroundColor: 'transparent'
-      }
-    },
-
-    track: {
-      border: `none`,
-      backgroundColor: WHITE,
-    },
-
-    checked: {},
-  })
-)(Switch);

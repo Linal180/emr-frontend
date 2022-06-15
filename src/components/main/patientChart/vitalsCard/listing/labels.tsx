@@ -1,4 +1,4 @@
-import { Table, TableBody, TableHead, TableRow } from "@material-ui/core"
+import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core"
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { VITALS_TEXT, VITAL_LABELS } from "../../../../../constants"
 import { VitalsLabelsProps } from "../../../../../interfacesTypes"
@@ -40,7 +40,9 @@ export const VitalsLabels = ({ patientStates }: VitalsLabelsProps) => {
         {Object.values(VITAL_LABELS).map(label => {
           const unit = getVitalLabel(label)
 
-          return label && <TableRow>{renderTh(`${label} ${unit}`,'left',false,'',true)}</TableRow>
+          return label && <TableRow className="vitals-column">
+          {renderTh(`${label} ${unit}`,'left',false,'',true)}
+        </TableRow>
         })}
       </TableBody>
     </Table>

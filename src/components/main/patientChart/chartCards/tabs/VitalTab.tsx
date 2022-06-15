@@ -136,7 +136,9 @@ const VitalTab = () => {
                 <Box className={classes.tableBox}>
                   <Grid container>
                     <Grid item xs={2}>
-                      <VitalsLabels patientStates={patientStates} />
+                      <Box>
+                        <VitalsLabels patientStates={patientStates} />
+                      </Box>
                     </Grid>
                     <Grid item xs={10}>
                       <Box className={vitalClasses.listingTable}>
