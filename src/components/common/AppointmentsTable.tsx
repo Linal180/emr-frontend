@@ -27,7 +27,7 @@ import {
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
   ARRIVAL_STATUS, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TIME, TYPE, VIEW_ENCOUNTER,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_PAST_MESSAGE,
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -288,6 +288,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
+  const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
+    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+        : onDeleteClick(id || '')
+  }
+
   return (
     <>
       <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
@@ -406,10 +414,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => {
-                            moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                              Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
-                          }}>
+                          <Box className={classes.iconsBackground} onClick={() => scheduleStartDateTime && id && deleteAppointmentHandler(scheduleStartDateTime, id)}>
                             <TrashNewIcon />
                           </Box>
                         </Box>

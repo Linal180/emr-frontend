@@ -46,7 +46,8 @@ const SnnController: FC<CustomInputControlProps> = ({
             autoFocus={autoFocus}
             placeholder={placeholder ? placeholder : ""}
             type={fieldType}
-            onFocus={handleClickShowSSN}
+            onFocus={() => setPasswordType(TEXT)}
+            onBlur={() => setPasswordType(SSN_INPUT)}
             helperText={!isHelperText ? error ? error : message : ""}
             value={passwordType === TEXT ?
               getValues(controllerName) || SSN_FORMAT
@@ -67,4 +68,4 @@ const SnnController: FC<CustomInputControlProps> = ({
   );
 };
 
-export default SnnController;
+export default (SnnController);
