@@ -28,6 +28,7 @@ query GetSchedule($getSchedule: GetSchedule!){
     
     schedule {
       id
+      recurringEndDate
       startAt
       endAt
       createdAt
@@ -44,6 +45,7 @@ query GetSchedule($getSchedule: GetSchedule!){
         service {
           id
           name
+          duration
         }
       }
     }

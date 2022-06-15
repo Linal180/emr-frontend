@@ -184,6 +184,10 @@ query GetPatient($getPatient: GetPatient!) {
         mobile
         industry
         usualOccupation
+        city
+        state
+        zipCode
+        address
         createdAt
         updatedAt
       }
@@ -215,6 +219,10 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!) {
       error
       status
       message
+    }
+
+    patient {
+      id
     }
   }
 }

@@ -1,23 +1,23 @@
 //packages import
-import { Grid } from "@material-ui/core"
 import { FC } from "react"
-import { EMERGENCY_CONTACT, HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP } from "../../../../constants"
+import { Grid } from "@material-ui/core"
 //components import
-import InputController from "../../../../controller"
-//interfaces , constants import
-import { PatientCardsProps } from "../../../../interfacesTypes"
 import CardComponent from "../../../common/CardComponent"
 import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
 import ViewDataLoader from "../../../common/ViewDataLoader"
+//interfaces , constants import
+import InputController from "../../../../controller"
+import { PatientCardsProps } from "../../../../interfacesTypes"
+import { EMERGENCY_CONTACT, HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP } from "../../../../constants"
 
-const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
+const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, dispatch, disableSubmit, isEdit }) => {
   return (
-    <CardComponent cardTitle={EMERGENCY_CONTACT}>
+    <CardComponent cardTitle={EMERGENCY_CONTACT} saveBtn state={state} disableSubmit={disableSubmit} isEdit={isEdit}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
                 fieldType="text"
@@ -26,7 +26,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 addEmpty
                 disabled={shouldDisableEdit}
@@ -35,14 +35,12 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
                 options={MAPPED_RELATIONSHIP_TYPE}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="emergencyPhone" label={HOME_PHONE} disabled={shouldDisableEdit} />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <PhoneField name="emergencyMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
             </Grid>
           </Grid>

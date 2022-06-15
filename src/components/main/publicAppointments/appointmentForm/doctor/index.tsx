@@ -119,7 +119,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     } else {
       if (doctor) {
         const { facilityId, practiceId } = doctor
-        const { id: selectedService } = serviceId || {};
+        const { value: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
         await createExternalAppointment({
@@ -170,7 +170,6 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
                         label={APPOINTMENT_TYPE}
                         name="serviceId"
                         facilityId={facilityId}
-                        addEmpty
                       />
                     </Grid>
                   </CardComponent>
