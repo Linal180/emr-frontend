@@ -1,15 +1,53 @@
-query FindAllDashboardPatient($patientInput: PatientInput!) {
-  findAllPatient(patientInput: $patientInput) {
+query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
+  findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
     pagination {
       totalPages
     }
+
+    doctorPatients{
+
+      patient {
+        id
+        lastName
+        firstName
+        dob
+        profileAttachment
+      }
+    }
+  }
+}
+
+
+query FindAllDoctorUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
+  findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
+    response {
+      status
+    }
     
-    patients {
+		 appointments {
       id
-      lastName
-      firstName
-      dob
-      profileAttachment
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+        profileAttachment
+      }
     }
   }
 }

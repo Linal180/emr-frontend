@@ -1790,7 +1790,6 @@ export interface DocumentsTableProps {
   patient: PatientPayload['patient']
 }
 
-
 export interface TabPropertiesTypes {
   name: string;
 }
@@ -1805,4 +1804,9 @@ export interface StepContextProps {
   state: ExternalFormBuilderState;
   dispatch: Dispatch<PublicFormBuilderAction>
   sections: SectionsInputs[]
+}
+
+export interface DoctorPatientsProps {
+  providerId?: string;
+  facilityId?: string;
 }

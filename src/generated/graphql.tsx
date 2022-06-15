@@ -1122,6 +1122,7 @@ export type DoctorPatient = {
   doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   otherRelation?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   relation?: Maybe<DoctorPatientRelationType>;
   updatedAt: Scalars['String'];
@@ -1136,6 +1137,18 @@ export enum DoctorPatientRelationType {
   PrimaryProvider = 'PRIMARY_PROVIDER',
   ReferringProvider = 'REFERRING_PROVIDER'
 }
+
+export type DoctorPatientsInput = {
+  doctorId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type DoctorPatientsPayload = {
+  __typename?: 'DoctorPatientsPayload';
+  doctorPatients?: Maybe<Array<Maybe<DoctorPatient>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
 
 export type DoctorPayload = {
   __typename?: 'DoctorPayload';
@@ -3285,6 +3298,7 @@ export type Query = {
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllDoctor: AllDoctorPayload;
+  findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
@@ -3449,6 +3463,11 @@ export type QueryFindAllContactsArgs = {
 
 export type QueryFindAllDoctorArgs = {
   doctorInput: DoctorInput;
+};
+
+
+export type QueryFindAllDoctorPatientsArgs = {
+  doctorPatientsInput: DoctorPatientsInput;
 };
 
 
@@ -5147,7 +5166,7 @@ export type UpdateAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, billingStatus: BillingStatus } | null | undefined } };
+export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus } | null | undefined } };
 
 export type CreateExternalAppointmentMutationVariables = Exact<{
   createExternalAppointmentInput: CreateExternalAppointmentInput;
@@ -5502,12 +5521,19 @@ export type FindAllServiceListQueryVariables = Exact<{
 
 export type FindAllServiceListQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, services?: Array<{ __typename?: 'Service', id: string, name: string, duration: string } | null | undefined> | null | undefined } };
 
-export type FindAllDashboardPatientQueryVariables = Exact<{
-  patientInput: PatientInput;
+export type FindAllDoctorPatientQueryVariables = Exact<{
+  doctorPatientsInput: DoctorPatientsInput;
 }>;
 
 
-export type FindAllDashboardPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllDoctorPatientQuery = { __typename?: 'Query', findAllDoctorPatients: { __typename?: 'DoctorPatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', patient?: { __typename?: 'Patient', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined, dob?: string | null | undefined, profileAttachment?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
+export type FindAllDoctorUpcomingAppointmentsQueryVariables = Exact<{
+  upComingAppointmentsInput: UpComingAppointmentsInput;
+}>;
+
+
+export type FindAllDoctorUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null | undefined, scheduleEndDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileAttachment?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPracticeUsersWithRolesQueryVariables = Exact<{
   practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
@@ -6441,7 +6467,6 @@ export const UpdateAppointmentDocument = gql`
     appointment {
       id
       status
-      billingStatus
     }
   }
 }
@@ -8833,48 +8858,113 @@ export function useFindAllServiceListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FindAllServiceListQueryHookResult = ReturnType<typeof useFindAllServiceListQuery>;
 export type FindAllServiceListLazyQueryHookResult = ReturnType<typeof useFindAllServiceListLazyQuery>;
 export type FindAllServiceListQueryResult = Apollo.QueryResult<FindAllServiceListQuery, FindAllServiceListQueryVariables>;
-export const FindAllDashboardPatientDocument = gql`
-    query FindAllDashboardPatient($patientInput: PatientInput!) {
-  findAllPatient(patientInput: $patientInput) {
+export const FindAllDoctorPatientDocument = gql`
+    query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
+  findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
     pagination {
       totalPages
     }
-    patients {
-      id
-      lastName
-      firstName
+    doctorPatients {
+      patient {
+        id
+        lastName
+        firstName
+        dob
+        profileAttachment
+      }
     }
   }
 }
     `;
 
 /**
- * __useFindAllDashboardPatientQuery__
+ * __useFindAllDoctorPatientQuery__
  *
- * To run a query within a React component, call `useFindAllDashboardPatientQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindAllDashboardPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFindAllDoctorPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllDoctorPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFindAllDashboardPatientQuery({
+ * const { data, loading, error } = useFindAllDoctorPatientQuery({
  *   variables: {
- *      patientInput: // value for 'patientInput'
+ *      doctorPatientsInput: // value for 'doctorPatientsInput'
  *   },
  * });
  */
-export function useFindAllDashboardPatientQuery(baseOptions: Apollo.QueryHookOptions<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>) {
+export function useFindAllDoctorPatientQuery(baseOptions: Apollo.QueryHookOptions<FindAllDoctorPatientQuery, FindAllDoctorPatientQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>(FindAllDashboardPatientDocument, options);
+        return Apollo.useQuery<FindAllDoctorPatientQuery, FindAllDoctorPatientQueryVariables>(FindAllDoctorPatientDocument, options);
       }
-export function useFindAllDashboardPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>) {
+export function useFindAllDoctorPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllDoctorPatientQuery, FindAllDoctorPatientQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>(FindAllDashboardPatientDocument, options);
+          return Apollo.useLazyQuery<FindAllDoctorPatientQuery, FindAllDoctorPatientQueryVariables>(FindAllDoctorPatientDocument, options);
         }
-export type FindAllDashboardPatientQueryHookResult = ReturnType<typeof useFindAllDashboardPatientQuery>;
-export type FindAllDashboardPatientLazyQueryHookResult = ReturnType<typeof useFindAllDashboardPatientLazyQuery>;
-export type FindAllDashboardPatientQueryResult = Apollo.QueryResult<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>;
+export type FindAllDoctorPatientQueryHookResult = ReturnType<typeof useFindAllDoctorPatientQuery>;
+export type FindAllDoctorPatientLazyQueryHookResult = ReturnType<typeof useFindAllDoctorPatientLazyQuery>;
+export type FindAllDoctorPatientQueryResult = Apollo.QueryResult<FindAllDoctorPatientQuery, FindAllDoctorPatientQueryVariables>;
+export const FindAllDoctorUpcomingAppointmentsDocument = gql`
+    query FindAllDoctorUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!) {
+  findAllUpcomingAppointments(
+    upComingAppointmentsInput: $upComingAppointmentsInput
+  ) {
+    response {
+      status
+    }
+    appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      appointmentType {
+        id
+        name
+        duration
+      }
+      provider {
+        id
+        firstName
+        lastName
+      }
+      patient {
+        id
+        firstName
+        lastName
+        profileAttachment
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllDoctorUpcomingAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useFindAllDoctorUpcomingAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllDoctorUpcomingAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllDoctorUpcomingAppointmentsQuery({
+ *   variables: {
+ *      upComingAppointmentsInput: // value for 'upComingAppointmentsInput'
+ *   },
+ * });
+ */
+export function useFindAllDoctorUpcomingAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>(FindAllDoctorUpcomingAppointmentsDocument, options);
+      }
+export function useFindAllDoctorUpcomingAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>(FindAllDoctorUpcomingAppointmentsDocument, options);
+        }
+export type FindAllDoctorUpcomingAppointmentsQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsQuery>;
+export type FindAllDoctorUpcomingAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsLazyQuery>;
+export type FindAllDoctorUpcomingAppointmentsQueryResult = Apollo.QueryResult<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>;
 export const GetPracticeUsersWithRolesDocument = gql`
     query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!) {
   getPracticeFacilitiesUsersWithRoles(
