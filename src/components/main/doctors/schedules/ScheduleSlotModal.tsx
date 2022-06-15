@@ -32,9 +32,9 @@ import {
 } from "@material-ui/core";
 import {
   APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
-  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, RECURRING_DATE, WEEK_DAYS, YES,
+  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, SELECT_DAY_MESSAGE,
-  START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS,
+  START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING,
 } from "../../../../constants";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
@@ -50,7 +50,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   });
   const { reset, handleSubmit, setValue, control } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
-  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(false)
+  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
 
   const handleClose = useCallback(() => {
     reset();
@@ -95,7 +95,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           endAt && setValue('endAt', getTimeString(endAt))
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
-          recurringEndDate && setShouldHaveRecursion(true)
+          setShouldHaveRecursion(!!!recurringEndDate)
           setValue('serviceId', transformedScheduleServices)
           setServiceIds(transformedScheduleServices)
           setIds([...ids, getDayFromTimestamps(startAt)])
@@ -168,7 +168,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       return {
         doctorId, servicesIds: selectedServices, day: dayValue,
         startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
-        recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
+        recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
       }
     })
 
@@ -266,11 +266,13 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                               control={control}
                               render={() => (
                                 <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                  <InputLabel shrink>Should Have Recurring Date</InputLabel>
+                                  <InputLabel shrink>{WANT_RECURRING}</InputLabel>
 
                                   <label className="toggle-main">
                                     <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                    <AntSwitch checked={shouldHaveRecursion} onChange={({ target: { checked } }) => setShouldHaveRecursion(checked)} name='shouldHaveRecursion' />
+                                    <AntSwitch checked={shouldHaveRecursion}
+                                      onChange={({ target: { checked } }) => setShouldHaveRecursion(checked)} name='shouldHaveRecursion'
+                                    />
                                     <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
                                   </label>
                                 </FormControl>
@@ -278,10 +280,10 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                             />
                           </Grid>
 
-                          {shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                          {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
                             <DatePicker
                               name="recurringEndDate"
-                              label={RECURRING_DATE}
+                              label={END_DATE}
                               disableFuture={false}
                             />
                           </Grid>}
