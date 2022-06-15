@@ -2,17 +2,18 @@
 import { Box, Card, Grid, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ChangeEvent, FC, ReactElement, Reducer, useReducer } from 'react';
-// components block
-import AllergyTab from './tabs/AllergyTab';
-import ProblemTab from './tabs/ProblemTab';
-import VitalTab from './tabs/VitalTab';
 // interfaces, graphql, constants block /styles
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
+// components block
+import AllergyTab from './tabs/AllergyTab';
+import ProblemTab from './tabs/ProblemTab';
+import VitalTab from './tabs/VitalTab';
 
 const ChartCards: FC = (): JSX.Element => {
   const classes = useChartingStyles()
+
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 

@@ -1,37 +1,40 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Grid, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Grid, Typography } from '@material-ui/core';
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
-// component block
-import InputController from '../../../../../controller';
-import Alert from '../../../../common/Alert';
-import DatePicker from '../../../../common/DatePicker';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
   ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, PATIENT_ALLERGY_UPDATED, REACTION, UPDATE
 } from '../../../../../constants';
 import { ChartContext } from '../../../../../context';
+// component block
+import InputController from '../../../../../controller';
 import {
   Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery, useUpdatePatientAllergyMutation
 } from '../../../../../generated/graphql';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
-import { GRAY_SIX } from '../../../../../theme';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { GRAY_SIX, GREY_THREE } from '../../../../../theme';
 import { formatValue, getTimestamps } from '../../../../../utils';
 import { createPatientAllergySchema } from '../../../../../validationSchemas';
+import Alert from '../../../../common/Alert';
+import DatePicker from '../../../../common/DatePicker';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 
 const AllergyModal: FC<AddModalProps> = ({
   item, dispatcher, isEdit, recordId, fetch, newAllergy, allergyType, isOpen = false, handleClose
 }): JSX.Element => {
+  const chartingClasses = useChartingStyles()
   const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
-  const [onset, setOnset] = useState<string>('')
-  const [severityId, setSeverityId] = useState<string>('')
+  const allergySeverity= MAPPED_ALLERGY_SEVERITY.map((severity)=>severity.id)
+  const [onset, setOnset] = useState<string>(onsets[0])
+  const [severityId, setSeverityId] = useState<string>(allergySeverity[0])
   const [ids, setIds] = useState<string[]>([])
   const { reactionList } = useContext(ChartContext)
   const methods = useForm<CreatePatientAllergyProps>({
@@ -193,17 +196,18 @@ const AllergyModal: FC<AddModalProps> = ({
 
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle>
-            <Typography variant="h4">{ADD_ALLERGY}</Typography>
-          </DialogTitle>
-          <DialogContent>
+      <DialogTitle>
+        <Typography variant="h4">{ADD_ALLERGY}</Typography>
+      </DialogTitle>
 
+      <FormProvider {...methods}>
+        <DialogContent className={chartingClasses.chartModalBox}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box mb={2} display="flex" alignItems="center">
-              <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
                 <PageBackIcon />
-              </IconButton>
+              </Box>
+
               <Typography variant='h4'>{name ?? newAllergy}</Typography>
             </Box>
 
@@ -211,9 +215,15 @@ const AllergyModal: FC<AddModalProps> = ({
               <ViewDataLoader columns={12} rows={4} />
               :
               <>
-                <Typography variant="h6">{REACTION}</Typography>
-                {!ids.length ? 'Please select at least one reaction' : ''}
-                <Grid container spacing={0}>
+                <Box display="flex" alignItems="center">
+                  <Typography variant="h6">{REACTION}</Typography>
+
+                  <Box color={GREY_THREE} ml={1}>
+                    <Typography variant='h6'>{!ids.length ? '(Please select at least one reaction)' : ''} </Typography>
+                  </Box>
+                </Box>
+
+                <Grid container spacing={0} className={chartingClasses.problemGrid}>
                   {reactionList?.map(reaction => {
                     const { id, name } = reaction || {}
 
@@ -235,59 +245,69 @@ const AllergyModal: FC<AddModalProps> = ({
                   })}
                 </Grid>
 
-                <Box my={3} p={1} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                  {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
-                    const { id, name } = head || {}
-                    return (<Box key={`${index}-${name}-${id}`}
-                      className={id === severityId ? 'selectedBox selectBox' : 'selectBox'}
-                      onClick={() => setSeverityId(id)}
-                    >
-                      <Typography variant='h6'>{name}</Typography>
-                    </Box>
-                    )
-                  })}
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box p={1} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
+                      const { id, name } = head || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === severityId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => setSeverityId(id)}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
                 </Box>
 
-                <Box my={3} p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                  {onsets.map(onSet =>
-                    <Box onClick={() => handleOnset(onSet)}
-                      className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
-                      <Typography variant='h6'>{onSet}</Typography>
-                    </Box>
-                  )}
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box my={3} p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {onsets.map(onSet =>
+                      <Box onClick={() => handleOnset(onSet)}
+                        className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                        <Typography variant='h6'>{onSet}</Typography>
+                      </Box>
+                    )}
+                  </Box>
                 </Box>
 
-                <DatePicker name="allergyStartDate" label={ONSET_DATE} />
+                <Grid container className={chartingClasses.problemGrid}>
+                  <Grid item md={12} sm={12} xs={12}>
+                    <DatePicker name="allergyStartDate" label={ONSET_DATE} />
+                  </Grid>
 
-                <Box>
-                  <InputController
-                    multiline
-                    fieldType="text"
-                    controllerName="comments"
-                    controllerLabel={NOTE}
-                  />
-                </Box>
+                  <Box m={2} />
+
+                  <Grid item md={12} sm={12} xs={12}>
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="comments"
+                      controllerLabel={NOTE}
+                    />
+                  </Grid>
+                </Grid>
               </>
             }
-          </DialogContent>
-          <DialogActions>
-            <Box display='flex' justifyContent='flex-end'>
-              <Button onClick={closeAddModal} variant='contained'
-                className='btnDanger'
-              >
-                {CANCEL}
-              </Button>
+          </form>
+        </DialogContent>
 
-              <Box p={1} />
+        <DialogActions>
+          <Box display='flex' justifyContent='flex-end'>
+            <Button onClick={closeAddModal} variant='text'
+            >
+              {CANCEL}
+            </Button>
 
-              <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
-                {isEdit ? UPDATE : ADD}
+            <Box p={1} />
 
-                {isDisable && <CircularProgress size={20} color="inherit" />}
-              </Button>
-            </Box>
-          </DialogActions>
-        </form>
+            <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
+              {isEdit ? UPDATE : ADD}
+
+              {isDisable && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </DialogActions>
       </FormProvider>
     </Dialog>
   )

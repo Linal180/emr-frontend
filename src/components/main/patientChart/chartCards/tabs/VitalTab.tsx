@@ -151,7 +151,9 @@ const VitalTab = () => {
                   <Box className={classes.tableBox}>
                     <Grid container>
                       <Grid item xs={2}>
-                        <VitalsLabels patientStates={patientStates} />
+                        <Box>
+                          <VitalsLabels patientStates={patientStates} />
+                        </Box>
                       </Grid>
                       <Grid item xs={10}>
                         <Box className={vitalClasses.listingTable}>
@@ -182,7 +184,7 @@ const VitalTab = () => {
         </Grid>
       </Grid>
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" p={3}>
+        <Box display="flex" justifyContent="flex-end" mt={1}>
           <Pagination
             count={totalPages}
             shape="rounded"
