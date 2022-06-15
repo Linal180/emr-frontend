@@ -25,9 +25,9 @@ import {
   ROUTING_NUMBER, BANK_ACCOUNT, COMPANY_NAME, STREET_ADDRESS, AUTHORITY, SNO_MED_CODE, SEVERITY, SPECIALTY,
   NO_WHITE_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, MEMBER_ID_CERTIFICATE_NUMBER, INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, COPAY_TYPE, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER,
-  OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, SSN,
+  OTHER_RELATION, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER,
   LEGAL_SEX, AMOUNT, NO_WHITE_SPACE_ALLOWED_FOR_INPUT, BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE,
-  DOCUMENT_NAME, FORM_TYPE, PRIMARY_PROVIDER
+  DOCUMENT_NAME, FORM_TYPE, PRIMARY_PROVIDER, NUMBER
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -112,7 +112,7 @@ const mammographySchema = {
 
 const dobSchema = {
   dob: yup.string().test('', DOB_VALIDATION_MESSAGE,
-    value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
+    value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 123)
 }
 
 // const doctorDobSchema = (label: string) => {
@@ -385,6 +385,7 @@ export const facilityServicesSchema = {
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
+    .matches(NUMBER_REGEX, ValidMessage(NUMBER))
     .test('', invalidMessage(DURATION), value => !(parseInt(value || '') < 0))
     .test('', tooShort(DURATION), value => !(parseInt(value || '') < 5))
     .test('', tooLong(DURATION), value => !(parseInt(value || '') >= 300))
@@ -904,6 +905,14 @@ export const createLabOrdersSchema = yup.object({
   )
 })
 
+const issueAndExpireSchema = {
+  issueDate: yup.string().test('', invalidMessage(ISSUE_DATE), value =>
+    !value ? !value : new Date(value || '') <= new Date()),
+
+    expirationDate: yup.string().test('', invalidMessage(EXPIRATION_DATE), (value, { parent: { issueDate } }) =>
+    !value ? !value : dateValidation(value, issueDate))
+}
+
 export const createInsuranceSchema = yup.object({
   insuranceId: yup.object().shape({
     name: yup.string().required(),
@@ -919,8 +928,6 @@ export const createInsuranceSchema = yup.object({
   }).test('', requiredMessage(PATIENT_RELATIONSHIP_TO_POLICY_HOLDER), ({ id }) => !!id),
   certificationNumber: yup.string().required(requiredMessage(MEMBER_ID_CERTIFICATE_NUMBER)),
   policyNumber: yup.string().required(requiredMessage(POLICY_GROUP_NUMBER)),
-  issueDate: yup.string().required(requiredMessage(ISSUE_DATE)),
-  expirationDate: yup.string().required(requiredMessage(EXPIRATION_DATE)),
   copayFields: yup.array().of(
     yup.object().shape({
       copayType: yup.object().shape({
@@ -950,7 +957,6 @@ export const createInsuranceSchema = yup.object({
   firstName: yup.string().required(requiredMessage(FIRST_NAME)),
   middleName: yup.string(),
   lastName: yup.string().required(requiredMessage(LAST_NAME)),
-  zipCode: yup.string().required(requiredMessage(ZIP_CODE)),
   address: yup.string().required(requiredMessage(ADDRESS)),
   addressCTD: yup.string(),
   city: yup.string().required(requiredMessage(CITY)),
@@ -958,12 +964,14 @@ export const createInsuranceSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(STATE), ({ id }) => !!id),
-  ssn: yup.string().required(requiredMessage(SSN)),
   sex: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(LEGAL_SEX), ({ id }) => !!id),
-  ...dobSchema
+  zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  ...dobSchema,
+  ...issueAndExpireSchema,
+  ...ssnSchema,
 })
 
 const achPaymentSchema = {
@@ -1065,3 +1073,4 @@ export const addLabProviderDetailsSchema = yup.object({
   primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
   referringProviderId: selectorSchema(REFERRING_PROVIDER),
 })
+

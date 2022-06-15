@@ -197,7 +197,7 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')} onMouseLeave={() => appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: false })}>
                               <LinkIcon />
                             </Box>
                           </DetailTooltip>

@@ -24,7 +24,7 @@ const AppointmentSlots: FC<AppointmentSlotsProps> = ({ facilityId, providerId, d
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const { watch, setValue } = useFormContext()
   const { serviceId } = watch()
-  const { id: selectedService } = serviceId || {}
+  const { value: selectedService } = serviceId || {}
 
   const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     fetchPolicy: "network-only",

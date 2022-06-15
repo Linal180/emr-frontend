@@ -46,6 +46,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = fals
               autoOk
               disableFuture={disableFuture}
               maxDate="2100-01-31"
+              minDate="1900-01-01"
               keyboardIcon={<CalendarIcon />}
               InputProps={clearable ? {
                 startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>

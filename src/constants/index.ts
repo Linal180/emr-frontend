@@ -778,6 +778,7 @@ export const RECENTLY_ADDED_PATIENTS = "Recently Added Patients";
 export const OTP_CODE = "OTP Code";
 export const LOCATION = "Location";
 export const DURATION = "Duration";
+export const NUMBER = "Number";
 export const RECURRING = "Recurring";
 export const SUPER_BILL = "Super Bill";
 export const SETTINGS_TEXT = "Settings";
@@ -1495,6 +1496,7 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
+export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed away";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
@@ -1769,10 +1771,6 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   },
   { id: ServiceCode.Tribal_07, name: formatServiceCode(ServiceCode.Tribal_07) },
   { id: ServiceCode.Prison_09, name: formatServiceCode(ServiceCode.Prison_09) },
-  {
-    id: ServiceCode.Telehealth_10,
-    name: formatServiceCode(ServiceCode.Telehealth_10),
-  },
   { id: ServiceCode.Prison_10, name: formatServiceCode(ServiceCode.Prison_10) },
   { id: ServiceCode.Office_11, name: formatServiceCode(ServiceCode.Office_11) },
   { id: ServiceCode.Home_12, name: formatServiceCode(ServiceCode.Home_12) },
@@ -1937,6 +1935,10 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   {
     id: ServiceCode.IndependentLaboratory_81,
     name: formatServiceCode(ServiceCode.IndependentLaboratory_81),
+  },
+  {
+    id: ServiceCode.Telehealth_10,
+    name: formatServiceCode('TELEHEALTH_82'),
   },
   {
     id: ServiceCode.WalkInRetailHealthClinic,
@@ -2631,7 +2633,7 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   },
 ];
 
-export const StepperIcons: { [index: string]: number } = { };
+export const StepperIcons: { [index: string]: number } = {};
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
