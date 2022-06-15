@@ -26,6 +26,11 @@ query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!){
         name
       }
     }
+
+    pagination{
+      totalPages
+      page
+    }
   }
 }
 

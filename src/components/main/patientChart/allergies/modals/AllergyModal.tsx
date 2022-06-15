@@ -143,13 +143,17 @@ const AllergyModal: FC<AddModalProps> = ({
     if (ids.length) {
       const selectedReactions = ids
       const allergyInput = !!item ? { allergyId: id }
-        : { allergyName: newAllergy, allergyType: allergyType?.toUpperCase() as AllergyType }
+        : {
+          allergyName: newAllergy,
+          ...(allergyType && { allergyType: allergyType?.toUpperCase() as AllergyType })
+        }
       const commonInputs = {
         patientId, reactionsIds: selectedReactions, ...allergyInput
       }
 
       const inputs = {
-        comments, isActive: true, allergySeverity: severityId as AllergySeverity,
+        comments, isActive: true,
+        ...(severityId && { allergySeverity: severityId as AllergySeverity, }),
         allergyStartDate: ''
       }
 
@@ -196,8 +200,8 @@ const AllergyModal: FC<AddModalProps> = ({
           </DialogTitle>
           <DialogContent>
 
-            <Box mb={2} display="flex"  alignItems="center">
-              <IconButton onClick={()=> dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+            <Box mb={2} display="flex" alignItems="center">
+              <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
                 <PageBackIcon />
               </IconButton>
               <Typography variant='h4'>{name ?? newAllergy}</Typography>

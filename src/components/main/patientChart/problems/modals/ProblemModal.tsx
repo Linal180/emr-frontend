@@ -153,8 +153,10 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     const { id: selectedSnoMedCode } = snowMedCodeId || {};
 
     const commonInput = {
-      note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType
+      note, 
+      ...(severity && {problemSeverity: severity.toUpperCase() as ProblemSeverity,} ),
+      problemStartDate,
+      ...(typeStatus && {problemType: typeStatus.toUpperCase() as ProblemType})
     }
 
     const extendedInput = selectedAppointment ?
