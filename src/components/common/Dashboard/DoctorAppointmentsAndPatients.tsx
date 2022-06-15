@@ -4,7 +4,7 @@ import { Box, Typography } from "@material-ui/core";
 import { BLUE, GRAY_SEVEN, GREY_SEVEN, WHITE } from "../../../theme";
 // history, constant and styles block
 import { NO_RECORDS, PAGE_LIMIT, UPCOMING_APPOINTMENT_LIST } from "../../../constants";
-import { AppointmentsPayload, PatientsPayload, useFetchAllPatientLazyQuery, useFindAllUpcomingAppointmentsLazyQuery } from "../../../generated/graphql";
+import { AppointmentsPayload, PatientsPayload, useFetchAllPatientLazyQuery, useFindAllDashboardPatientLazyQuery, useFindAllUpcomingAppointmentsLazyQuery } from "../../../generated/graphql";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
 import {
   Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
@@ -54,7 +54,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     }
   });
 
-  const [fetchAllPatientsQuery, { loading: patientLoading }] = useFetchAllPatientLazyQuery({
+  const [fetchAllPatientsQuery, { loading: patientLoading }] = useFindAllDashboardPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -63,10 +63,10 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     },
 
     onCompleted(data) {
-      const { fetchAllPatients } = data || {};
+      const { findAllPatient } = data || {};
 
-      if (fetchAllPatients) {
-        const { patients } = fetchAllPatients
+      if (findAllPatient) {
+        const { patients } = findAllPatient
         patients && patientDispatch({
           type: PatientActionType.SET_PATIENTS,
           patients: patients as PatientsPayload['patients']
@@ -116,17 +116,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
               return (
                 <Box mb={3} display='flex' justifyContent='space-between' alignItems='start'>
                   <Box display='flex'>
-                    {/* <Box
-                      bgcolor={!patient && BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2}
-                      display="flex" justifyContent="center" alignItems="center"
-                    >
-                      {
-                        false ? <img src={''} alt={shortName} />
-                          : <Typography variant="h6">{shortName}</Typography>
-                      }
-                    </Box> */}
                     <Avatar id={id || ''} name={`${firstName} ${lastName}`} />
-
                     <Box>
                       <Box>
                         <Typography variant="body1">{firstName} {lastName}</Typography>
@@ -146,7 +136,6 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
             }
             )) : (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
-
               <Typography variant="h6">{NO_RECORDS}</Typography>
             </Box>)
           }

@@ -2633,6 +2633,7 @@ export type Patient = {
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
   privacyNotice: Scalars['Boolean'];
+  profileAttachment?: Maybe<Scalars['String']>;
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
   registrationDate?: Maybe<Scalars['String']>;
@@ -5188,7 +5189,7 @@ export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null | undefined, scheduleEndDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -5500,6 +5501,13 @@ export type FindAllServiceListQueryVariables = Exact<{
 
 
 export type FindAllServiceListQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, services?: Array<{ __typename?: 'Service', id: string, name: string, duration: string } | null | undefined> | null | undefined } };
+
+export type FindAllDashboardPatientQueryVariables = Exact<{
+  patientInput: PatientInput;
+}>;
+
+
+export type FindAllDashboardPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPracticeUsersWithRolesQueryVariables = Exact<{
   practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
@@ -8820,6 +8828,48 @@ export function useFindAllServiceListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FindAllServiceListQueryHookResult = ReturnType<typeof useFindAllServiceListQuery>;
 export type FindAllServiceListLazyQueryHookResult = ReturnType<typeof useFindAllServiceListLazyQuery>;
 export type FindAllServiceListQueryResult = Apollo.QueryResult<FindAllServiceListQuery, FindAllServiceListQueryVariables>;
+export const FindAllDashboardPatientDocument = gql`
+    query FindAllDashboardPatient($patientInput: PatientInput!) {
+  findAllPatient(patientInput: $patientInput) {
+    pagination {
+      totalPages
+    }
+    patients {
+      id
+      lastName
+      firstName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllDashboardPatientQuery__
+ *
+ * To run a query within a React component, call `useFindAllDashboardPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllDashboardPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllDashboardPatientQuery({
+ *   variables: {
+ *      patientInput: // value for 'patientInput'
+ *   },
+ * });
+ */
+export function useFindAllDashboardPatientQuery(baseOptions: Apollo.QueryHookOptions<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>(FindAllDashboardPatientDocument, options);
+      }
+export function useFindAllDashboardPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>(FindAllDashboardPatientDocument, options);
+        }
+export type FindAllDashboardPatientQueryHookResult = ReturnType<typeof useFindAllDashboardPatientQuery>;
+export type FindAllDashboardPatientLazyQueryHookResult = ReturnType<typeof useFindAllDashboardPatientLazyQuery>;
+export type FindAllDashboardPatientQueryResult = Apollo.QueryResult<FindAllDashboardPatientQuery, FindAllDashboardPatientQueryVariables>;
 export const GetPracticeUsersWithRolesDocument = gql`
     query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!) {
   getPracticeFacilitiesUsersWithRoles(

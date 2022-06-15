@@ -8,6 +8,8 @@ query FindAllDashboardPatient($patientInput: PatientInput!) {
       id
       lastName
       firstName
+      dob
+      profileAttachment
     }
   }
 }
