@@ -1,42 +1,52 @@
 // packages block
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, FormControl, Grid, InputLabel } from "@material-ui/core";
 import { FC, useCallback, useContext, useEffect, useState } from "react";
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, RECURRING_DATE, SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WEEK_DAYS, YES } from "../../../../constants";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+// components block
+import Alert from "../../../common/Alert";
+import DatePicker from "../../../common/DatePicker";
+import TimePicker from "../../../common/TimePicker";
+import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from "../../../common/ViewDataLoader";
+import ServiceSelector from "../../../common/Selector/ServiceSelector";
 // interfaces/types block, theme, svgs and constants
 import { AuthContext } from '../../../../context';
+import { GREY_SEVEN, WHITE } from "../../../../theme";
+import { ActionType } from "../../../../reducers/doctorReducer";
+import { doctorScheduleSchema } from "../../../../validationSchemas";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
 } from "../../../../generated/graphql";
-import { DoctorScheduleModalProps, multiOptionType, ParamsType, ScheduleInputProps, SelectorOption } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/doctorReducer";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { GREY_SEVEN, WHITE } from "../../../../theme";
 import {
-  checkPermission, getDayFromTimestamps, getTimeString, setRecord, setTimeDay
+  DoctorScheduleModalProps, multiOptionType, ParamsType, ScheduleInputProps
+} from "../../../../interfacesTypes";
+import {
+  checkPermission, getDayFromTimestamps, getTimeString, renderItem, setTimeDay
 } from "../../../../utils";
-import { doctorEditScheduleSchema, doctorScheduleSchema } from "../../../../validationSchemas";
-// components block
-import Alert from "../../../common/Alert";
-import CardComponent from "../../../common/CardComponent";
-import DatePicker from "../../../common/DatePicker";
-import Selector from '../../../common/Selector';
-import ServiceSelector from "../../../common/Selector/ServiceSelector";
-import TimePicker from "../../../common/TimePicker";
-import ViewDataLoader from "../../../common/ViewDataLoader";
+import {
+  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
+  InputLabel, Typography
+} from "@material-ui/core";
+import {
+  APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
+  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, RECURRING_DATE, WEEK_DAYS, YES,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, SELECT_DAY_MESSAGE,
+  START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS,
+} from "../../../../constants";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: doctorId } = useParams<ParamsType>();
+  const [ids, setIds] = useState<string[]>([])
   const { userPermissions } = useContext(AuthContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? doctorEditScheduleSchema : doctorScheduleSchema)
+    resolver: yupResolver(doctorScheduleSchema)
   });
   const { reset, handleSubmit, setValue, control } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
@@ -44,6 +54,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
   const handleClose = useCallback(() => {
     reset();
+    setIds([])
     doctorDispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
     doctorDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
   }, [doctorDispatcher, reset])
@@ -87,7 +98,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           recurringEndDate && setShouldHaveRecursion(true)
           setValue('serviceId', transformedScheduleServices)
           setServiceIds(transformedScheduleServices)
-          startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
+          setIds([...ids, getDayFromTimestamps(startAt)])
         }
       }
     }
@@ -107,8 +118,8 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
         if (status && status === 200) {
           Alert.success(SCHEDULE_CREATED_SUCCESSFULLY);
-          reload()
           handleClose()
+          reload()
         }
       }
     }
@@ -128,51 +139,45 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
         if (status && status === 200) {
           Alert.success(SCHEDULE_UPDATED_SUCCESSFULLY);
-          reload();
           handleClose()
+          reload();
         }
       }
     }
   });
 
+  const fetchSchedule = useCallback(async () => {
+    try {
+      isEdit && id &&
+        await getSchedule({ variables: { getSchedule: { id } } })
+    } catch (error) { }
+  }, [getSchedule, id, isEdit])
+
   useEffect(() => {
     reset()
+    fetchSchedule()
+  }, [doctorFacilityId, fetchSchedule, getSchedule, id, isEdit, reset])
 
-    if (isEdit && id) {
-      getSchedule({
-        variables: { getSchedule: { id } }
-      })
-    }
-  }, [doctorFacilityId, getSchedule, id, isEdit, reset])
-
-  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day, recurringEndDate }) => {
-    let scheduleInput
-    if (isEdit) {
-      const { id: dayName } = day as SelectorOption
+  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({
+    endAt, serviceId, startAt, recurringEndDate
+  }) => {
+    if (!!!ids.length) return Alert.error(SELECT_DAY_MESSAGE)
+    let scheduleInput = ids.map((dayValue) => {
       const selectedServices = (serviceId as multiOptionType[]).map(service => service.value)
-      scheduleInput = {
-        doctorId, servicesIds: selectedServices || [], day: dayName,
-        startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+
+      return {
+        doctorId, servicesIds: selectedServices, day: dayValue,
+        startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
         recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
       }
-    } else {
-      scheduleInput = (day as SelectorOption[]).map((dayValues) => {
-        const { id: dayName } = dayValues || {}
-        const selectedServices = (serviceId as multiOptionType[]).map(service => service.value)
-        return {
-          doctorId, servicesIds: selectedServices || [], day: dayName,
-          startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
-          recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
-        }
-      })
-    }
+    })
 
     if (doctorId) {
       if (isEdit) {
         id ?
           await updateSchedule({
             variables: {
-              updateScheduleInput: { id, ...scheduleInput }
+              updateScheduleInput: { id, ...scheduleInput[0] }
             }
           }) : Alert.error(SCHEDULE_NOT_FOUND)
       } else {
@@ -183,6 +188,16 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
         })
       }
     } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
+  };
+
+  const handleChangeForCheckBox = (id: string) => {
+    if (id) {
+      if (ids.includes(id)) {
+        setIds(ids.filter(permission => permission !== id))
+      } else {
+        setIds([...ids, id])
+      }
+    }
   };
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
@@ -200,13 +215,31 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                   {getScheduleLoading ?
                     <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                       <>
-                        <Selector
-                          isRequired
-                          label={PICK_DAY_TEXT}
-                          name="day"
-                          options={WEEK_DAYS}
-                          isMultiple={!isEdit}
-                        />
+                        <Grid container spacing={3}>
+                          <Grid item md={12} sm={12} xs={12}>
+                            {isEdit ? (
+                              ids.map(day => renderItem(DAY, day))
+                            ) : (
+                              <>
+                                <Typography>{PICK_DAY_TEXT}</Typography>
+                                <FormGroup>
+                                  <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
+                                    {WEEK_DAYS.map(day => {
+                                      const { id, name } = day
+                                      return <FormControlLabel
+                                        control={
+                                          <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
+                                            onChange={() => handleChangeForCheckBox(id || '')} />
+                                        }
+                                        label={name}
+                                      />
+                                    })}
+                                  </Box>
+                                </FormGroup>
+                              </>
+                            )}
+                          </Grid>
+                        </Grid>
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>

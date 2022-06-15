@@ -2,9 +2,9 @@
 import { FC, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
-import { 
-  Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent, FormControl, InputLabel, 
-  Typography, FormGroup, FormControlLabel, Checkbox 
+import {
+  Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent, FormControl,
+  InputLabel, Typography, FormGroup, FormControlLabel, Checkbox
 } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
@@ -12,18 +12,23 @@ import TimePicker from "../../../../common/TimePicker";
 import DatePicker from "../../../../common/DatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
-import { ActionType } from "../../../../../reducers/facilityReducer";
-import { facilityEditScheduleSchema, facilityScheduleSchema } from "../../../../../validationSchemas";
-import { FacilityScheduleInputProps, FacilityScheduleModalProps, SelectorOption } from "../../../../../interfacesTypes";
-import { getDayFromTimestamps, getTimeString, setRecord, setTimeDay } from "../../../../../utils";
-import { useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation } from "../../../../../generated/graphql";
-import {
-  CANCEL, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE, YES, NO,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND, FACILITY_SCHEDULE, RECURRING_DATE,
-} from "../../../../../constants";
-import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { GREY_SEVEN, WHITE } from "../../../../../theme";
+import { ActionType } from "../../../../../reducers/facilityReducer";
+import { facilityScheduleSchema } from "../../../../../validationSchemas";
+import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { getDayFromTimestamps, getTimeString, renderItem, setTimeDay } from "../../../../../utils";
+import {
+  FacilityScheduleInputProps, FacilityScheduleModalProps
+} from "../../../../../interfacesTypes";
+import {
+  useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
+} from "../../../../../generated/graphql";
+import {
+  CANCEL, PICK_DAY_TEXT, WEEK_DAYS, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
+  FACILITY_SCHEDULE, RECURRING_DATE, CREATE_SCHEDULE, YES, NO, DAY, SELECT_DAY_MESSAGE,
+} from "../../../../../constants";
 
 const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
   id, isEdit, facilityDispatcher, isOpen, facilityId, reload
@@ -32,7 +37,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
   const [ids, setIds] = useState<string[]>([])
   const methods = useForm<FacilityScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? facilityEditScheduleSchema : facilityScheduleSchema)
+    resolver: yupResolver(facilityScheduleSchema)
   });
   const { reset, handleSubmit, setValue, control } = methods;
 
@@ -60,7 +65,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
           recurringEndDate && setShouldHaveRecursion(true)
-          startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
+          setIds([...ids, getDayFromTimestamps(startAt)])
         }
       }
     }
@@ -110,6 +115,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
 
   const handleClose = () => {
     reset();
+    setIds([])
     facilityDispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
     facilityDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
   }
@@ -124,32 +130,23 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     }
   }, [facilityId, getSchedule, id, isEdit, reset])
 
-  const onSubmit: SubmitHandler<FacilityScheduleInputProps> = async ({ endAt, startAt, day, recurringEndDate }) => {
-    let scheduleInput
-    if (isEdit) {
-      const { id: dayName } = day as SelectorOption
-      scheduleInput = {
-        facilityId, servicesIds: [], day: dayName,
-        startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
+  const onSubmit: SubmitHandler<FacilityScheduleInputProps> = async ({ endAt, startAt, recurringEndDate }) => {
+    if (!!!ids.length) return Alert.error(SELECT_DAY_MESSAGE)
+
+    const scheduleInput = ids.map((dayValue) => {
+      return {
+        facilityId, servicesIds: [], day: dayValue,
+        startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
         recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
       }
-    } else {
-      scheduleInput = (day as SelectorOption[]).map((dayValues) => {
-        const { id: dayName } = dayValues || {}
-        return {
-          facilityId, servicesIds: [], day: dayName,
-          startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
-          recurringEndDate: shouldHaveRecursion ? recurringEndDate : null
-        }
-      })
-    }
+    })
 
     if (facilityId) {
       if (isEdit) {
         id ?
           await updateSchedule({
             variables: {
-              updateScheduleInput: { id, ...scheduleInput }
+              updateScheduleInput: { id, ...scheduleInput[0] }
             }
           }) : Alert.error(SCHEDULE_NOT_FOUND)
       } else {
@@ -191,22 +188,27 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
                 <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                   <Grid container spacing={3}>
                     <Grid item md={12} sm={12} xs={12}>
-                      <Typography>{PICK_DAY_TEXT}</Typography>
-
-                      <FormGroup>
-                        <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
-                          {WEEK_DAYS.map(day => {
-                            const { id, name } = day
-                            return <FormControlLabel
-                              control={
-                                <Checkbox color="primary" checked={ids.includes(id || '')}
-                                  onChange={() => handleChangeForCheckBox(id || '')} />
-                              }
-                              label={name}
-                            />
-                          })}
-                        </Box>
-                      </FormGroup>
+                      {isEdit ? (
+                        ids.map(day => renderItem(DAY, day))
+                      ) : (
+                        <>
+                          <Typography>{PICK_DAY_TEXT}</Typography>
+                          <FormGroup>
+                            <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
+                              {WEEK_DAYS.map(day => {
+                                const { id, name } = day
+                                return <FormControlLabel
+                                  control={
+                                    <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
+                                      onChange={() => handleChangeForCheckBox(id || '')} />
+                                  }
+                                  label={name}
+                                />
+                              })}
+                            </Box>
+                          </FormGroup>
+                        </>
+                      )}
                     </Grid>
 
                     <Grid item md={6} sm={12} xs={12}>
