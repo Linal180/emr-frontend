@@ -1,13 +1,13 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
-import { RouteProps } from "react-router-dom";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import {
   Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
 } from "react-hook-form";
+import { RouteProps } from "react-router-dom";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
@@ -15,8 +15,9 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
-  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient,
+  PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload,
+  PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
   VerifyCodeInput
@@ -233,6 +234,9 @@ export interface CardComponentType extends Children {
   disableEditIcon?: boolean;
   onEditClick?: () => void;
   isFullHeight?: boolean;
+  saveBtn?: boolean;
+  state?: PatientState;
+  disableSubmit?: boolean;
 }
 
 export interface ChartingCardComponentType {
@@ -472,6 +476,9 @@ export interface TooltipData {
   format: string;
 }
 
+export interface StepperData {
+  title: string;
+}
 
 export interface SearchComponentProps {
   search: Function;
@@ -617,6 +624,8 @@ export interface FormVerification {
 
 export interface StepperComponentProps {
   activeStep: number;
+  stepperData?: StepperData[];
+  dispatch?: Dispatch<PatientAction>
 }
 
 interface BasicContactControlInputs {
@@ -685,6 +694,10 @@ interface EmployerControlInputs {
   employerPhone: string;
   employerIndustry: string;
   employerUsualOccupation: string;
+  employerCity: string;
+  employerState: SelectorOption;
+  employerZipCode: string;
+  employerAddress: string;
 }
 
 interface RegisterUserInputs {
@@ -891,7 +904,7 @@ export interface PhoneInputProps {
 
 export interface DropzoneImageType {
   itemId: string;
-  title?: string;
+  title: string;
   isEdit?: boolean;
   filesLimit: number;
   isProfile?: boolean;
@@ -1041,7 +1054,7 @@ export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
   providerName?: string;
   itemId: string;
-  title?: string;
+  title: string;
   isProfile?: boolean;
   description?: string;
   preSignedUrl?: string;
@@ -1057,7 +1070,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  title?: string;
+  title: string;
   button?: boolean;
   imageSide: string;
   buttonText?: string;
@@ -1131,6 +1144,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   state?: PatientState
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  disableSubmit?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
@@ -1272,8 +1286,6 @@ export interface FieldEditModalProps {
 export interface DropContainerPropsTypes {
   formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
-  delFieldHandler: (id: number, index: number) => void;
-  delColHandler: (index: number) => void;
   dispatch: Dispatch<FormBuilderAction>
 }
 
@@ -1292,7 +1304,7 @@ export interface LoaderProps {
 export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
-  data: SectionsInputs[];
+  data: FormTabsInputs[];
   formName: string;
 }
 
@@ -1785,4 +1797,21 @@ export interface CodesTableProps {
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']
+}
+
+
+export interface TabPropertiesTypes {
+  name: string;
+}
+
+export interface TabPropertiesProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+
+export interface StepContextProps {
+  state: ExternalFormBuilderState;
+  dispatch: Dispatch<PublicFormBuilderAction>
+  sections: SectionsInputs[]
 }

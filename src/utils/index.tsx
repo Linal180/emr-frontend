@@ -25,7 +25,7 @@ import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
   FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
   PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ACCEPTABLE_PDF_AND_IMAGES_FILES
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
@@ -1684,3 +1684,37 @@ export const getFilteredSSN = (value: string) => {
 
   return `**-***-${last4}`
 }
+
+export const mediaType = (attachmentTitle: string): string[] => {
+  switch (attachmentTitle) {
+    case ATTACHMENT_TITLES.DrivingLicense1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.DrivingLicense2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.LabOrders:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.PracticeLogo:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProfilePicture:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProviderUploads:
+      return ACCEPTABLE_FILES;
+
+    case ATTACHMENT_TITLES.Signature:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    default:
+      return ACCEPTABLE_FILES
+  }
+};

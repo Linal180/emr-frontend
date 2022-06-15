@@ -699,13 +699,17 @@ export type CreateDoctorItemInput = {
 };
 
 export type CreateEmployerInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type CreateExternalAppointmentInput = {
@@ -1172,9 +1176,10 @@ export type DocumentTypesPayload = {
 
 /** The patient's ethnicity type assigned */
 export enum Ethnicity {
-  CenteralAmerican = 'CENTERAL_AMERICAN',
-  CenteralAmericanIndian = 'CENTERAL_AMERICAN_INDIAN',
-  None = 'NONE'
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
+  HispanicOrLatino = 'HISPANIC_OR_LATINO',
+  None = 'NONE',
+  NotHispanicOrLatino = 'NOT_HISPANIC_OR_LATINO'
 }
 
 export type Element = {
@@ -1227,6 +1232,8 @@ export type EmergencyAccessUserPayload = {
 
 export type Employer = {
   __typename?: 'Employer';
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1236,8 +1243,10 @@ export type Employer = {
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type FacilitiesPayload = {
@@ -1424,6 +1433,19 @@ export type FormPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FormTabs = {
+  __typename?: 'FormTabs';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  sections: Array<SectionsTypes>;
+};
+
+export type FormTabsInputs = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  sections: Array<SectionsInputs>;
+};
+
 /** The form's types */
 export enum FormType {
   Appointment = 'APPOINTMENT',
@@ -1443,10 +1465,10 @@ export type FormsPayload = {
 
 /** The patient's sexual orientation type assigned */
 export enum Genderidentity {
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
   Female = 'FEMALE',
   Male = 'MALE',
   None = 'NONE',
-  NotExclusive = 'NOT_EXCLUSIVE',
   TransgenderFemale = 'TRANSGENDER_FEMALE',
   TransgenderMale = 'TRANSGENDER_MALE'
 }
@@ -1777,12 +1799,12 @@ export type LabTestsPayload = {
 };
 
 export type LayoutJsonInputType = {
-  sections: Array<SectionsInputs>;
+  tabs: Array<FormTabsInputs>;
 };
 
 export type LayoutJsonType = {
   __typename?: 'LayoutJSONType';
-  sections: Array<SectionsTypes>;
+  tabs: Array<FormTabs>;
 };
 
 export type LoginUserInput = {
@@ -4556,6 +4578,8 @@ export type UpdateDoctorItemInput = {
 };
 
 export type UpdateEmployerItemInput = {
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
@@ -4563,7 +4587,9 @@ export type UpdateEmployerItemInput = {
   name?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   usualOccupation?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
 };
 
 export type UpdateFacilityInput = {
@@ -5142,7 +5168,7 @@ export type GetPatientNearestAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null } | null } };
+export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined } | null | undefined, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -5575,7 +5601,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null | undefined, name?: string | null | undefined, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -5589,7 +5615,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, tableContactType?: string | null | undefined, apiCall?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null | undefined, name?: string | null | undefined, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, tableContactType?: string | null | undefined, apiCall?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -5603,7 +5629,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, practiceId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null | undefined, name?: string | null | undefined, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, apiCall?: string | null | undefined, tableContactType?: string | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null | undefined } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -5785,7 +5811,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, facilityId?: string | null | undefined, inviteAccepted?: boolean | null | undefined, patientRecord?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, patientNoteOpen?: boolean | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, otherRelation?: string | null | undefined, relation?: DoctorPatientRelationType | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, facilityId?: string | null | undefined, inviteAccepted?: boolean | null | undefined, patientRecord?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, patientNoteOpen?: boolean | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, otherRelation?: string | null | undefined, relation?: DoctorPatientRelationType | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, address?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -5799,7 +5825,7 @@ export type CreatePatientMutationVariables = Exact<{
 }>;
 
 
-export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string } | null | undefined } };
 
 export type UpdatePatientMutationVariables = Exact<{
   updatePatientInput: UpdatePatientInput;
@@ -9603,30 +9629,34 @@ export const FindAllFormsDocument = gql`
       createdAt
       isActive
       layout {
-        sections {
+        tabs {
           id
-          col
           name
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            apiCall
-            tableContactType
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              apiCall
+              tableContactType
+              options {
+                name
+                value
+              }
             }
           }
         }
@@ -9720,30 +9750,34 @@ export const GetFormDocument = gql`
       practiceId
       isActive
       layout {
-        sections {
+        tabs {
           id
-          col
           name
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            tableContactType
-            apiCall
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              tableContactType
+              apiCall
+              options {
+                name
+                value
+              }
             }
           }
         }
@@ -9834,30 +9868,34 @@ export const GetPublicFormDocument = gql`
       name
       isActive
       layout {
-        sections {
+        tabs {
           id
-          col
           name
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            apiCall
-            tableContactType
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              apiCall
+              tableContactType
+              options {
+                name
+                value
+              }
             }
           }
         }
@@ -11325,6 +11363,10 @@ export const GetPatientDocument = gql`
         mobile
         industry
         usualOccupation
+        city
+        state
+        zipCode
+        address
         createdAt
         updatedAt
       }
@@ -11411,6 +11453,9 @@ export const CreatePatientDocument = gql`
       error
       status
       message
+    }
+    patient {
+      id
     }
   }
 }

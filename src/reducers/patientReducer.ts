@@ -102,7 +102,7 @@ export const initialState: State = {
   attachmentsData: [],
   deletePatientId: '',
   consentAgreed: false,
-  optionalEmail: false,
+  optionalEmail: true,
   isAppointment: false,
   attachmentData: null,
   guardianContactId: '',
