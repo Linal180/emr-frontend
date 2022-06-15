@@ -222,13 +222,11 @@ export const useChartingStyles = makeStyles({
   },
 
   toggleBox: {
-    border: `1px solid ${GRAY_SIX}`, 
-    borderRadius: 6,
     display: 'flex',
     alignItems: 'center',
     width: 'fit-content',
     marginLeft: 15,
-    padding: '3px 6px',
+    padding: '0px 6px',
     marginTop: 1,
   },
 });
