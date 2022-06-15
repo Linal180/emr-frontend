@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { INITIAL_PAGE_LIMIT, ITEM_MODULE, TEMPORARY_CPT_CODES } from '../../constants'
+import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE, TEMPORARY_CPT_CODES } from '../../constants'
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import {
@@ -178,7 +178,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
           <Autocomplete
             options={options.length ? options : []}
             disableClearable
-            value={field.value}
+            value={field.value ?? EMPTY_OPTION}
             disabled={disabled}
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}

@@ -267,6 +267,10 @@ body .MuiTabPanel-root {
   padding: 20px 0 0 0;
 }
 
+.tab-panel {
+  padding-top: 0 !important;
+}
+
 .react-tel-input {
   font-family: "Inter, sans-serif";
   font-size: 14px;
@@ -459,6 +463,11 @@ body .MuiTabPanel-root {
   color: #ffffff;
 }
 
+.selectedBoxBlue {
+  background-color: #204ECF;
+  color: #ffffff;
+}
+
 .dialogBg {
   background-color: #ffffff !important;
   border: none !important;
@@ -503,11 +512,6 @@ body .MuiTabPanel-root {
 
 .diagnosesSelectorClass {
   min-width: 100% !important;
-}
-
-.selectedBox {
-  background-color: #B5B5C3;
-  color: #ffffff;
 }
 
 .hoverClass {
@@ -789,6 +793,19 @@ body .MuiTabPanel-root {
 .card-img> img {
   object-fit: contain;
   height: 100%;
+}
+
+.py-0 {
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ml-5 {
+  margin-left: 5px !important;
+}
+
+.vitals-column .MuiTypography-h5{
+  line-height: 1.43 !important;
 }
 
 /* media queries */

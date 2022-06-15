@@ -1,5 +1,5 @@
 // packages block
-import { memo, ReactNode } from "react";
+import React, { ReactNode, memo } from "react";
 import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
@@ -85,14 +85,22 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string, noWrap?: boolean) => (
+export const renderTh = (
+  text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string,
+  noWrap?: boolean, renderIcon?: Function
+) => (
   <TableCell component="th" align={align} className={classes}>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {isDangerous ?
-        <Box dangerouslySetInnerHTML={{ __html: text }}>
-        </Box> : text
-      }
-    </Typography>
+    <Box display="flex" alignItems="center">
+      <Typography component="h5" variant="h5" noWrap={noWrap}>
+        {isDangerous ?
+          <Box dangerouslySetInnerHTML={{ __html: text }}>
+          </Box> : text
+        }
+
+      </Typography>
+
+      {renderIcon && renderIcon()}
+    </Box>
   </TableCell>
 );
 
@@ -1615,7 +1623,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
 
   switch (checkInActiveStep) {
     case 0:
-      return 'Signed';
+      return 'checked In';
     case 1:
       return 'With Staff';
     case 2:
@@ -1639,34 +1647,46 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
 
-  switch (value) {
-    case AppointmentStatus.Scheduled:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
+  return renderArrayAsSelectorOptions(
+    [
+      AppointmentStatus.Arrived,
+      AppointmentStatus.CheckInOnline,
+      AppointmentStatus.Rescheduled,
+      AppointmentStatus.InLobby,
+      AppointmentStatus.InSession,
+      AppointmentStatus.NoShow,
+      AppointmentStatus.Discharged,
+      AppointmentStatus.Cancelled
+    ], id
+  )
+  // switch (value) {
+  //   case AppointmentStatus.Scheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.Rescheduled:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
+  //   case AppointmentStatus.Rescheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.Arrived:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
-      )
+  //   case AppointmentStatus.Arrived:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.InLobby:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InSession], id
-      )
+  //   case AppointmentStatus.InLobby:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.InSession:
-    case AppointmentStatus.NoShow:
-    case AppointmentStatus.Cancelled:
-    case AppointmentStatus.Discharged:
-    default:
-      return [EMPTY_OPTION]
-  }
+  //   case AppointmentStatus.InSession:
+  //   case AppointmentStatus.NoShow:
+  //   case AppointmentStatus.Cancelled:
+  //   case AppointmentStatus.Discharged:
+  //   default:
+  //     return [EMPTY_OPTION]
+  // }
 };
 
 export const appointmentChargesDescription = (amount: string) =>

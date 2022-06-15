@@ -23,6 +23,7 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
         __typename
         id
         code
+        description
       }
     }
   }
