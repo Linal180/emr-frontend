@@ -25,7 +25,7 @@ import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
   FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
   PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ACCEPTABLE_PDF_AND_IMAGES_FILES
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
@@ -846,9 +846,9 @@ export const appointmentStatus = (status: string) => {
         textColor: RED
       }
 
-    case AppointmentStatus.CheckIn:
+    case AppointmentStatus.Arrived:
       return {
-        text: formatValue(AppointmentStatus.CheckIn),
+        text: formatValue(AppointmentStatus.Arrived),
         bgColor: LIGHT_GREEN_RGBA,
         textColor: LIGHT_GREEN_ONE
       }
@@ -874,9 +874,9 @@ export const appointmentStatus = (status: string) => {
         textColor: ORANGE_SIMPLE
       }
 
-    case AppointmentStatus.Initiated:
+    case AppointmentStatus.Scheduled:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
+        text: formatValue(AppointmentStatus.Scheduled),
         bgColor: GRAY_SIMPLE_RGBA,
         textColor: GRAY_SIMPLE
       }
@@ -888,16 +888,16 @@ export const appointmentStatus = (status: string) => {
         textColor: PURPLE
       }
 
-    case AppointmentStatus.SelfCheckIn:
+    case AppointmentStatus.CheckInOnline:
       return {
-        text: formatValue(AppointmentStatus.SelfCheckIn),
+        text: formatValue(AppointmentStatus.CheckInOnline),
         bgColor: GREEN_RGBA,
         textColor: GREEN
       }
 
     default:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
+        text: formatValue(AppointmentStatus.Scheduled),
         bgColor: GREEN_RGBA,
         textColor: GREEN
       }
@@ -1571,8 +1571,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
 
-    case formatValue(AppointmentStatus.CheckIn):
-      return AppointmentStatus.CheckIn;
+    case formatValue(AppointmentStatus.Arrived):
+      return AppointmentStatus.Arrived;
 
     case formatValue(AppointmentStatus.Discharged):
       return AppointmentStatus.Discharged;
@@ -1583,8 +1583,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.InSession):
       return AppointmentStatus.InSession;
 
-    case formatValue(AppointmentStatus.Initiated):
-      return AppointmentStatus.Initiated;
+    case formatValue(AppointmentStatus.Scheduled):
+      return AppointmentStatus.Scheduled;
 
     case formatValue(AppointmentStatus.NoShow):
       return AppointmentStatus.NoShow;
@@ -1592,64 +1592,65 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Rescheduled):
       return AppointmentStatus.Rescheduled;
 
-    case formatValue(AppointmentStatus.SelfCheckIn):
-      return AppointmentStatus.SelfCheckIn;
+    case formatValue(AppointmentStatus.CheckInOnline):
+      return AppointmentStatus.CheckInOnline;
 
     default:
-      return AppointmentStatus.Initiated;
+      return AppointmentStatus.Scheduled;
   }
 }
 
 export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
-  if(status===AppointmentStatus.Discharged){
+  if (status === AppointmentStatus.Discharged) {
     return 'Completed'
   }
 
-  if(status === AppointmentStatus.Initiated){
-    return 'Pending'
+  if (status === AppointmentStatus.Scheduled) {
+    return 'Logged'
   }
 
-  if(status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled){
+  if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
     return ''
   }
-  
+
   switch (checkInActiveStep) {
     case 0:
-      return 'Initiated';
+      return 'Signed';
     case 1:
       return 'With Staff';
     case 2:
       return 'With Staff';
     case 3:
-      return 'With Provider';
+      return 'Charting';
     case 4:
-      return 'With Provider';
+      return 'Charting';
     case 5:
       return 'With Provider';
     case 6:
-        return 'Billing';
+      return 'With Biller';
     default:
       return ''
   }
 }
 
 export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
-  return status === AppointmentStatus.Initiated
+  return status === AppointmentStatus.Scheduled
 }
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+
   switch (value) {
-    case AppointmentStatus.Initiated:
+    case AppointmentStatus.Scheduled:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.CheckIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
     case AppointmentStatus.Rescheduled:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Initiated, AppointmentStatus.CheckIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
-    case AppointmentStatus.CheckIn:
+    case AppointmentStatus.Arrived:
       return renderArrayAsSelectorOptions(
         [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
       )
@@ -1669,10 +1670,44 @@ export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '')
 };
 
 export const appointmentChargesDescription = (amount: string) =>
-  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
+  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography>
 
 export const getFilteredSSN = (value: string) => {
-  const [,, last4] = value.split('-')
+  const [, , last4] = value.split('-')
 
   return `**-***-${last4}`
 }
+
+export const mediaType = (attachmentTitle: string): string[] => {
+  switch (attachmentTitle) {
+    case ATTACHMENT_TITLES.DrivingLicense1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.DrivingLicense2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.LabOrders:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.PracticeLogo:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProfilePicture:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProviderUploads:
+      return ACCEPTABLE_FILES;
+
+    case ATTACHMENT_TITLES.Signature:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    default:
+      return ACCEPTABLE_FILES
+  }
+};

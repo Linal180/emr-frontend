@@ -10,7 +10,7 @@ import FormPreviewModal from '../previewModal'
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants block
 import { ACTION, CREATED_ON, FORM_BUILDER_COPY_TEMPLATE_ROUTE, NAME, PAGE_LIMIT, TYPE } from '../../../../constants';
-import { FormPayload, FormType, LayoutJsonType, SectionsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
+import { FormPayload, FormType, LayoutJsonType, FormTabsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getFormatDate, renderTh } from '../../../../utils';
 import { CopyIcon, EyeIcon } from '../../../../assets/svgs';
@@ -19,7 +19,7 @@ export const TemplatesTable = () => {
   const classes = useTableStyles()
   //states
   const [templates, setTemplates] = useState<FormPayload['form'][]>([])
-  const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
+  const [formPreviewData, setFormPreviewData] = useState<FormTabsInputs[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery] = useState<string>('');
@@ -64,8 +64,8 @@ export const TemplatesTable = () => {
 
   const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
     if (layout) {
-      const { sections } = layout;
-      sections?.length > 0 && setFormPreviewData(sections)
+      const { tabs } = layout;
+      tabs?.length > 0 && setFormPreviewData(tabs)
       name && setFormName(name)
       setOpenPreview(true)
     }

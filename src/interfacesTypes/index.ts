@@ -15,11 +15,13 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
-  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
+  PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice,
+  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, PracticePayload,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  VerifyCodeInput,
+  SectionsInputs
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
@@ -236,6 +238,7 @@ export interface CardComponentType extends Children {
   saveBtn?: boolean;
   state?: PatientState;
   disableSubmit?: boolean;
+  className?: string;
 }
 
 export interface ChartingCardComponentType {
@@ -903,7 +906,7 @@ export interface PhoneInputProps {
 
 export interface DropzoneImageType {
   itemId: string;
-  title?: string;
+  title: string;
   isEdit?: boolean;
   filesLimit: number;
   isProfile?: boolean;
@@ -1053,7 +1056,7 @@ export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
   providerName?: string;
   itemId: string;
-  title?: string;
+  title: string;
   isProfile?: boolean;
   description?: string;
   preSignedUrl?: string;
@@ -1069,7 +1072,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  title?: string;
+  title: string;
   button?: boolean;
   imageSide: string;
   buttonText?: string;
@@ -1285,8 +1288,6 @@ export interface FieldEditModalProps {
 export interface DropContainerPropsTypes {
   formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
-  delFieldHandler: (id: number, index: number) => void;
-  delColHandler: (index: number) => void;
   dispatch: Dispatch<FormBuilderAction>
 }
 
@@ -1305,7 +1306,7 @@ export interface LoaderProps {
 export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
-  data: SectionsInputs[];
+  data: FormTabsInputs[];
   formName: string;
 }
 
@@ -1787,4 +1788,21 @@ export interface CodesTableProps {
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']
+}
+
+
+export interface TabPropertiesTypes {
+  name: string;
+}
+
+export interface TabPropertiesProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+
+export interface StepContextProps {
+  state: ExternalFormBuilderState;
+  dispatch: Dispatch<PublicFormBuilderAction>
+  sections: SectionsInputs[]
 }

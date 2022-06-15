@@ -27,32 +27,37 @@ query findAllForms($formInput: FormInput!) {
       isActive
 
       layout {
-        sections {
+        tabs {
           id
-          col
           name
 
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            apiCall
-            tableContactType
 
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              apiCall
+              tableContactType
+
+              options {
+                name
+                value
+              }
             }
           }
         }
@@ -93,32 +98,36 @@ query getForm($getForm: GetForm!) {
       isActive
 
       layout {
-        sections {
+        tabs {
           id
-          col
           name
-
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            tableContactType
-            apiCall
 
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              tableContactType
+              apiCall
+
+              options {
+                name
+                value
+              }
             }
           }
         }
@@ -156,32 +165,37 @@ query getPublicForm($getForm: GetForm!) {
       isActive
 
       layout {
-        sections {
+        tabs {
           id
-          col
           name
 
-          fields {
-            label
+          sections {
+            id
+            col
             name
-            type
-            css
-            column
-            placeholder
-            defaultValue
-            required
-            errorMsg
-            tableName
-            columnName
-            fieldId
-            textArea
-            isMultiSelect
-            apiCall
-            tableContactType
 
-            options {
+            fields {
+              label
               name
-              value
+              type
+              css
+              column
+              placeholder
+              defaultValue
+              required
+              errorMsg
+              tableName
+              columnName
+              fieldId
+              textArea
+              isMultiSelect
+              apiCall
+              tableContactType
+
+              options {
+                name
+                value
+              }
             }
           }
         }

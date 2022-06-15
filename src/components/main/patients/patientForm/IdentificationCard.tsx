@@ -79,7 +79,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
-            <DatePicker name="dob" label={DOB} disabled={shouldDisableEdit} />
+            <DatePicker isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
           </Grid>
         </Grid>
       </>

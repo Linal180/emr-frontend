@@ -179,6 +179,8 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const ADD_TAB = 'add_tab'
+export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
 export const PATIENT_VITAL_TEXT = 'Patient Vitals'
 export const RPM_TEXT = 'rpm'
@@ -299,6 +301,8 @@ export const DOCUMENT_VERIFICATION = "Document Verification";
 export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const RECURRING_DATE = "Recurring Date";
+export const END_DATE = "End Date";
+export const WANT_RECURRING = "Recurring?";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
@@ -327,9 +331,9 @@ export const ADD_SPECIMEN = "Add a Specimen";
 export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
-export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
+  export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
-export const ADD_DOCTOR = "Add Doctor";
+  export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
@@ -413,7 +417,9 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png",".pdf",".docx", ".doc",".svg"];
+export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3",".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -431,19 +437,19 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your practice information and settings";
+"Edit your practice information and settings";
 export const PRACTICE_MANAGEMENT_DESCRIPTION =
-  "Add and edit your practice information and settings";
+"Add and edit your practice information and settings";
 export const PROVIDER_DETAILS_DESCRIPTION =
-  "Edit your provider information and settings";
+"Edit your provider information and settings";
 export const FACILITY_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+"Edit your facility information and settings";
 export const PROVIDER_PROFILE_DESCRIPTION =
-  "Edit your provider profile";
+"Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
-  "Add and edit your facility information and settings";
+"Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
-  "Add providers and update their profiles for the EMR";
+"Add providers and update their profiles for the EMR";
 export const STAFF_MANAGEMENT_DESCRIPTION =
   "Add staff and update their profiles for the EMR";
 export const SCHEDULE_DESCRIPTION = "Add or update provider’s schedule";
@@ -453,14 +459,14 @@ export const EMERGENCY_ACCESS_DESCRIPTION =
   "View and manage the users with emergency access";
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
-export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
-export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
+  export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
+  export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
 export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
-export const ICT_TEN = "ICT-10 Codes";
-export const ICD_TEN_CODES = "ICD-10 Codes";
+  export const ICT_TEN = "ICT-10 Codes";
+  export const ICD_TEN_CODES = "ICD-10 Codes";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -480,17 +486,17 @@ export const TESTS_DESCRIPTION =
   "Create and edit lab tests inventory for your practice";
 export const VACCINES_DESCRIPTION =
   "Create and edit vaccine inventory for your practice";
-export const FACILITY_SERVICES_DESCRIPTION =
+  export const FACILITY_SERVICES_DESCRIPTION =
   "Add or update all the services a facility is offering";
-export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
-export const CANCELLED_APPOINTMENT_DESCRIPTION =
+  export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
+  export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const BUSINESS_HOURS = "Business Hours";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION =
-  "Set timings of facility and manage slots";
+"Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_FIELDS = "Form Fields";
@@ -534,6 +540,7 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
+export const SLOTS_TEXT = "Slots";
 export const CITY = "City";
 export const EMAIL = "Email";
 export const RELATION = "Relation";
@@ -840,6 +847,7 @@ export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shif
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
+export const ARRIVAL_STATUS = "Arrival Status";
 export const ACTIVATED = "Acitivated";
 export const TEST_NOTES = "Test Notes";
 export const VIEW_BILLING = "View Billing";
@@ -1363,6 +1371,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const CANT_DELETE_ROLE = "Role can't be deleted.";
+export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
@@ -1724,8 +1733,8 @@ export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
     name: formatValue(AppointmentStatus.Discharged),
   },
   {
-    id: AppointmentStatus.Initiated,
-    name: formatValue(AppointmentStatus.Initiated),
+    id: AppointmentStatus.Scheduled,
+    name: formatValue(AppointmentStatus.Scheduled),
   },
 ];
 
@@ -2429,10 +2438,10 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
@@ -2469,7 +2478,6 @@ export const MAPPED_RACE: SelectorOption[] = [
 ];
 
 export const MAPPED_ETHNICITY: SelectorOption[] = [
-  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
   {
     id: Ethnicity.DeclineToSpecify,
     name: formatValue(Ethnicity.DeclineToSpecify),
@@ -2485,7 +2493,6 @@ export const MAPPED_ETHNICITY: SelectorOption[] = [
 ];
 
 export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
-  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
   {
     id: Sexualorientation.DontKnow,
     name: formatValue(Sexualorientation.DontKnow),
@@ -2511,7 +2518,6 @@ export const MAPPED_GENDER: SelectorOption[] = [
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
-  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   {
@@ -3603,13 +3609,16 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   isPractice: false,
 };
 
-export const getFormInitialValues = () => [
-  {
+export const getFormInitialValues = () => [{
+  id: uuid(),
+  name: "tab_1",
+  sections: [{
     id: uuid(),
     col: 12,
     name: "Section",
     fields: [],
-  },
+  }]
+}
 ];
 
 export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
