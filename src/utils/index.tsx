@@ -1606,7 +1606,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
   }
 
   if (status === AppointmentStatus.Scheduled) {
-    return 'Pending'
+    return 'Logged'
   }
 
   if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
@@ -1615,19 +1615,19 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
 
   switch (checkInActiveStep) {
     case 0:
-      return 'Initiated';
+      return 'Signed';
     case 1:
       return 'With Staff';
     case 2:
       return 'With Staff';
     case 3:
-      return 'With Provider';
+      return 'Charting';
     case 4:
-      return 'With Provider';
+      return 'Charting';
     case 5:
       return 'With Provider';
     case 6:
-      return 'Billing';
+      return 'With Biller';
     default:
       return ''
   }
