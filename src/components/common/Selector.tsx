@@ -68,6 +68,7 @@ const Selector: FC<SelectorProps> = ({
               // return data
             }}
             onBlur={() => onOutsideClick && onOutsideClick()}
+            onClick={() => onOutsideClick && onOutsideClick()}
           />
         );
       }}
