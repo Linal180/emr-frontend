@@ -1623,7 +1623,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
 
   switch (checkInActiveStep) {
     case 0:
-      return 'Signed';
+      return 'checked In';
     case 1:
       return 'With Staff';
     case 2:
@@ -1647,34 +1647,46 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
 
-  switch (value) {
-    case AppointmentStatus.Scheduled:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
+  return renderArrayAsSelectorOptions(
+    [
+      AppointmentStatus.Arrived,
+      AppointmentStatus.CheckInOnline,
+      AppointmentStatus.Rescheduled,
+      AppointmentStatus.InLobby,
+      AppointmentStatus.InSession,
+      AppointmentStatus.NoShow,
+      AppointmentStatus.Discharged,
+      AppointmentStatus.Cancelled
+    ], id
+  )
+  // switch (value) {
+  //   case AppointmentStatus.Scheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.Rescheduled:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
+  //   case AppointmentStatus.Rescheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.Arrived:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
-      )
+  //   case AppointmentStatus.Arrived:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.InLobby:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InSession], id
-      )
+  //   case AppointmentStatus.InLobby:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.InSession:
-    case AppointmentStatus.NoShow:
-    case AppointmentStatus.Cancelled:
-    case AppointmentStatus.Discharged:
-    default:
-      return [EMPTY_OPTION]
-  }
+  //   case AppointmentStatus.InSession:
+  //   case AppointmentStatus.NoShow:
+  //   case AppointmentStatus.Cancelled:
+  //   case AppointmentStatus.Discharged:
+  //   default:
+  //     return [EMPTY_OPTION]
+  // }
 };
 
 export const appointmentChargesDescription = (amount: string) =>
