@@ -194,7 +194,7 @@ export type AppointmentPayload = {
 };
 
 /** The patient appointment status type assigned */
-export enum AppointmentStatus {
+export enum   AppointmentStatus {
   Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
   CheckInOnline = 'CHECK_IN_ONLINE',
