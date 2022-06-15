@@ -11,17 +11,25 @@ query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!){
       allergySeverity
       allergyOnset
       allergyStartDate
+      comments
+      isActive
       
       allergy {
         __typename
         id
         name
+        allergyType
       }
 
       reactions {
         id
         name
       }
+    }
+
+    pagination{
+      totalPages
+      page
     }
   }
 }
@@ -38,6 +46,8 @@ query GetPatientAllergy($getPatientAllergy: GetPatientAllergy!){
       allergySeverity
       allergyOnset
       allergyStartDate
+      comments
+      isActive
       
       allergy {
         id

@@ -1,11 +1,12 @@
 
-import { FormControl, FormHelperText, InputLabel } from '@material-ui/core';
+import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 //interfaces, styles, constants
 import { FieldComponentProps } from '../../interfacesTypes';
 import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
-import { FormBuilderApiSelector } from '../../constants';
+import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
 import ServiceSelector from './formBuilder/ServiceSelector';
@@ -15,6 +16,8 @@ import PaymentSelector from './formBuilder/PaymentSelector'
 import FacilitySelector from './formBuilder/FacilitySelector';
 import ConsentForm from './formBuilder/ConsentForm';
 import TermsConditions from './formBuilder/TermsConditions';
+import ContractForm from "./formBuilder/ContractForm"
+import InsuranceForm from './formBuilder/InsuranceForm'
 //graphql 
 import { ElementType } from '../../generated/graphql';
 //field renderer component
@@ -24,8 +27,20 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const classes = useFormStyles();
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
-  const { facilityFieldId } = state || {}
+  const { facilityFieldId, paymentType } = state || {}
   const { id: facilityField } = facilityFieldId || {}
+
+  const getPaymentComponent = (value: string) => {
+
+    switch (value) {
+      case FormBuilderPaymentTypes.INSURANCE:
+        return <InsuranceForm item={item} />
+      case FormBuilderPaymentTypes.CONTRACT:
+        return <ContractForm />
+      default:
+        return <></>
+    }
+  }
 
   if (type === ElementType.Custom && apiCall) {
     switch (apiCall) {
@@ -62,7 +77,15 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         />
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
-        return <PaymentSelector item={item} dispatcher={dispatcher} />
+        return <>
+          <PaymentSelector item={item} dispatcher={dispatcher} />
+
+          <Box>
+            {getPaymentComponent(paymentType || '')}
+          </Box>
+        </>
+
+
 
       case FormBuilderApiSelector.PATIENT_CONSENT:
         return <ConsentForm />
@@ -89,6 +112,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     }
   }
 
+
+
   return (
     <Controller
       rules={{ required: required }}
@@ -112,4 +137,4 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     />
   )
 }
-export default FieldController
+export default memo(FieldController)

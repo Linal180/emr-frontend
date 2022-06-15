@@ -52,6 +52,7 @@ export const BLUE_TWO = "#1C6DD0";
 
 export const GREEN = "#03CC83";
 export const GREEN_ONE = "#0BB783";
+export const GREEN_TWO = "#F0FDF4";
 
 export const BLACK = "#262D3D";
 export const BLACK_ONE = "#3F4254";

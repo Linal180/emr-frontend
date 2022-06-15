@@ -8,17 +8,21 @@ import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  AppointmentsIcon, BillingIcon, CheckboxIcon,
-  DateIcon, EmailIcon, FacilitiesIcon, FileInputIcon, NumberIcon, RadioGroupIcon, ReportsIcon, SelectIcon,
-  TextAreaIcon, TextIcon, UsersIcon
+  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, 
+  NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, EditOutlinedIcon,
+  TrashOutlinedIcon
 } from "../assets/svgs";
 import {
-  AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType, Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus, Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
+  AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType, 
+  Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus, 
+  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType, 
+  PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns, Race, 
+  RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
 import {
   ColumnTypes, FormBuilderFormInitial,
-  FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption, SpecimenTypeOption, StepLabelType, TestOption
+  FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption, 
+  SpecimenTypeOption, StepLabelType, TestOption
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
@@ -179,6 +183,8 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const ADD_TAB = 'add_tab'
+export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
 export const PATIENT_VITAL_TEXT = 'Patient Vitals'
 export const RPM_TEXT = 'rpm'
@@ -193,6 +199,16 @@ export const OZ_TEXT = "OZ"
 export const CM_TEXT = "CM"
 export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
+export const PULSE_TEXT_AND_UNIT = "Pulse (bpm)";
+export const BLOOD_PRESSURE_TEXT_AND_UNIT = "Blood Pressure (mmHg)";
+export const OXYGEN_SATURATION_TEXT_AND_UNIT = "Oxygen Saturation (%)";
+export const RESPIRATORY_TEXT_AND_UNIT = "Respiratory Rate (rpm)";
+export const FEVER_TEXT_AND_UNIT = "Fever (°C)";
+export const PAIN_TEXT_AND_UNIT = "Pain (1-10)";
+export const HEIGHT_TEXT_AND_UNIT = "Height (in)";
+export const WEIGHT_TEXT_AND_UNIT = "Weight (lbs)";
+export const BMI_TEXT_AND_UNIT = "BMI (kg/m2)";
+export const HEAD_TEXT_AND_UNIT = "Head Circumference (in)";
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
 export const LAST_READING_TEXT = "Last Reading"
@@ -212,6 +228,7 @@ export const PAIN_TEXT = "Pain"
 export const SMOKING_STATUS_TEXT = "Smoking Status"
 export const HEAD_CIRCUMFERENCE = "Head Circumference"
 export const FEVER_TEXT = "Temperature"
+export const FEVER = "Fever"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
@@ -299,6 +316,8 @@ export const DOCUMENT_VERIFICATION = "Document Verification";
 export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const RECURRING_DATE = "Recurring Date";
+export const END_DATE = "End Date";
+export const WANT_RECURRING = "Recurring?";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
@@ -327,9 +346,9 @@ export const ADD_SPECIMEN = "Add a Specimen";
 export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
-export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
+  export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
-export const ADD_DOCTOR = "Add Doctor";
+  export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
@@ -402,7 +421,9 @@ export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
+export const PROBLEM_TEXT = "Problem";
 export const ALLERGIES_TEXT = "Allergies";
+export const ALLERGIE_TEXT = "Allergies";
 export const CARE_PLAN_TEXT = "Care Plan";
 export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
@@ -413,7 +434,9 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png",".pdf",".docx", ".doc",".svg"];
+export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3",".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -431,19 +454,19 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your practice information and settings";
+"Edit your practice information and settings";
 export const PRACTICE_MANAGEMENT_DESCRIPTION =
-  "Add and edit your practice information and settings";
+"Add and edit your practice information and settings";
 export const PROVIDER_DETAILS_DESCRIPTION =
-  "Edit your provider information and settings";
+"Edit your provider information and settings";
 export const FACILITY_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+"Edit your facility information and settings";
 export const PROVIDER_PROFILE_DESCRIPTION =
-  "Edit your provider profile";
+"Edit your provider profile";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
-  "Add and edit your facility information and settings";
+"Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
-  "Add providers and update their profiles for the EMR";
+"Add providers and update their profiles for the EMR";
 export const STAFF_MANAGEMENT_DESCRIPTION =
   "Add staff and update their profiles for the EMR";
 export const SCHEDULE_DESCRIPTION = "Add or update provider’s schedule";
@@ -453,14 +476,17 @@ export const EMERGENCY_ACCESS_DESCRIPTION =
   "View and manage the users with emergency access";
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
-export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
-export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
+  export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
+  export const REVOKE_EMERGENCY_ACCESS_MODE = "Revoke Emergency Access";
 export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
+export const ICD_TEN_CODE = "ICD-10 Code:";
+export const ICD_CODE = "ICD Code";
+export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -480,17 +506,17 @@ export const TESTS_DESCRIPTION =
   "Create and edit lab tests inventory for your practice";
 export const VACCINES_DESCRIPTION =
   "Create and edit vaccine inventory for your practice";
-export const FACILITY_SERVICES_DESCRIPTION =
+  export const FACILITY_SERVICES_DESCRIPTION =
   "Add or update all the services a facility is offering";
-export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
-export const CANCELLED_APPOINTMENT_DESCRIPTION =
+  export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
+  export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const BUSINESS_HOURS = "Business Hours";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION =
-  "Set timings of facility and manage slots";
+"Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_FIELDS = "Form Fields";
@@ -534,6 +560,7 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
+export const SLOTS_TEXT = "Slots";
 export const CITY = "City";
 export const EMAIL = "Email";
 export const RELATION = "Relation";
@@ -702,15 +729,18 @@ export const SERVICES = "Services";
 export const FACILITY = "Facility";
 export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 10;
+export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
 export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
-export const VITAL_LIST_PAGE_LIMIT = 5;
+export const VITAL_LIST_PAGE_LIMIT = 4;
 export const ADD_RECORD = "Add Record";
+export const PRINT_CHART = "Print Chart";
 export const NEW_PATIENT = "New Patient";
 export const ADD_ALLERGY = "Add Allergy";
+export const EDIT_ALLERGY = "Edit Allergy";
 export const NEW_PROVIDER = "New Provider";
 export const REGISTERED_ON = "Registered on";
 export const VIEW_PATIENTS = "View Patients";
@@ -718,6 +748,7 @@ export const CLAIM_RECEIVED = "Claim Received";
 export const VIEW_FACILITIES = "View Facilities";
 export const NEW_APPOINTMENT = "New Appointment";
 export const MEDICAL_BILLING = "Medical Billing";
+export const LAST_FIVE_RESULTS = "Last 5 Results";
 export const RESULT_FILE_NAME = "Result File Name";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const RESULTS_ENTERED = "Results Entered At";
@@ -725,6 +756,7 @@ export const RECENT_ACTIVITIES = "Recent Activities";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const TOTAL_APPOINTMENTS = "Total Appointments";
 export const PATIENT_DISCHARGED = "Patient Discharged";
+export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
 export const AVAILABILITY_SCHEDULE = "Availability Schedule";
 export const PRACTICE_REGISTRATIONS = "Practice Registrations";
@@ -829,7 +861,9 @@ export const APPOINTMENT_TEXT = "Appointment";
 export const LAB_RESULTS_TEXT = "Lab Results";
 export const VISIT_REASON = "Reason for visit";
 export const PAGE_NOT_FOUND = "Page Not Found";
+export const RECENT_READINGS = "Recent Readings";
 export const LAB_ORDER_RESULT = "Lab Order Result";
+export const LAST_READING_DATE = "Last Reading Date: ";
 export const REGISTERED_PATIENTS = "Registered Patients";
 export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
@@ -841,11 +875,15 @@ export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shif
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
+export const ACTIVATED = "Activated";
+export const ADD_VITALS = "Add Vitals";
 export const ARRIVAL_STATUS = "Arrival Status";
-export const ACTIVATED = "Acitivated";
 export const TEST_NOTES = "Test Notes";
+export const ADD_PROBLEM = "Add Problem";
+export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
+export const EDIT_PROBLEMS = "Edit Problems";
 export const QUICK_ACTIONS = "Quick Actions";
 export const SPECIMEN_TYPE = "Specimen Type";
 export const EXCEPTION = "Forbidden exception";
@@ -869,6 +907,7 @@ export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const QUICK_APPOINTMENTS = "Quick Appointments";
 export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
+export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PATIENT_INSURANCE = "Patient Insurance";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
@@ -955,6 +994,7 @@ export const SSN_FORMAT = '000-00-0000';
 export const CONTINUE_TEXT = "Continue";
 export const NAME_FORMAT = 'First Last';
 export const ADD_ROLE_TEXT = "Add Role";
+export const ENTER_PHONE = "Enter Phone";
 export const NEXT_OF_KIN = "Next Of Kin";
 export const AUTO_LOGOUT = "Auto Logout";
 export const LOCK_SCREEN = "Lock Screen";
@@ -998,6 +1038,7 @@ export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
 export const REVOKE_ACCESS = "Revoke Access";
+export const FORMER_SMOKER = "Former Smoker";
 export const PRICE_WITH_DOLLAR = "Price ($)";
 export const POLICY_NAME_TEXT = "POLICY NAME";
 export const DECREASED_DATE = "Deceased Date";
@@ -1077,11 +1118,11 @@ export const USER_STATUS_PLACEHOLDER = "User Status";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
-export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
+export const DOCTOR_PROFILE_TEXT = "Provider Profile";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
@@ -1097,6 +1138,7 @@ export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const POLICY_GROUP_NUMBER = "Policy/group number";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
+export const SEARCH_FOR_PROBLEMS = "Search for Problems";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
@@ -1132,7 +1174,6 @@ export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
-export const ENTER_PHONE = "Enter Phone";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
@@ -1178,6 +1219,8 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
+export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
+export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
@@ -1365,6 +1408,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const CANT_DELETE_ROLE = "Role can't be deleted.";
+export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
@@ -1727,8 +1771,8 @@ export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
     name: formatValue(AppointmentStatus.Discharged),
   },
   {
-    id: AppointmentStatus.Initiated,
-    name: formatValue(AppointmentStatus.Initiated),
+    id: AppointmentStatus.Scheduled,
+    name: formatValue(AppointmentStatus.Scheduled),
   },
 ];
 
@@ -3603,13 +3647,16 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   isPractice: false,
 };
 
-export const getFormInitialValues = () => [
-  {
+export const getFormInitialValues = () => [{
+  id: uuid(),
+  name: "tab_1",
+  sections: [{
     id: uuid(),
     col: 12,
     name: "Section",
     fields: [],
-  },
+  }]
+}
 ];
 
 export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
@@ -4389,6 +4436,102 @@ export const areaChartTwo = {
   }]
 }
 
+export const PATIENT_CHARTING_TABS = [
+    {
+      icon: VitalsIcon,
+      title: "Vitals",
+      value: "1",
+    },
+    {
+      icon: ProblemsIcon,
+      title: "Problems",
+      value: "2",
+    },
+  {
+    icon: AllergiesIcon,
+    title: "Allergies",
+    value: "3",
+  }
+]
+
+export const VITALS_DUMMY_DATA = [
+  {
+    value: "124",
+    name: "Pulse (bpm)",
+  },
+  {
+    value: "120 / 70",
+    name: "Blood Pressure (mmHg)",
+  },
+  {
+    value: "68",
+    name: "Oxygen Saturation (%)",
+  },
+  {
+    value: "40",
+    name: "Respiratory Rate (rpm)",
+  },
+  {
+    value: "98",
+    name: "Fever (°C)",
+  },
+  {
+    value: "9",
+    name: "Pain (1-10)",
+  },
+  {
+    value: "69.60",
+    name: "Height (in)",
+  },
+  {
+    value: "149.91",
+    name: "Weight (lbs)",
+  },
+  {
+    value: "21.76",
+    name: "BMI (kg/m2)",
+  },
+  {
+    value: "25",
+    name: "Head Circumference (in)",
+  },
+]
+
+export const PROBLEMS_DUMMY_DATA = [
+  {
+    name: "Functional Heartburn",
+    value: "Moderate",
+    status: "Active"
+  },
+  {
+    name: "Pain in lower limb (left)",
+    value: "Mild",
+    status: "Active"
+  },
+  {
+    name: "High blood pressure",
+    value: "Acute",
+    status: "Active"
+  },
+  {
+    name: "Abnormal heartbeat",
+    value: "Acute",
+    status: "Historical"
+  },
+]
+
+export const ALLERGIES_DUMMY_DATA = [
+  {
+    name: "peanut",
+    value: "Nausea, Mild",
+    status: "Active"
+  },
+  {
+    name: "Pollen",
+    value: "Breathing Problem, Mild",
+    status: "Active"
+  },
+]
 
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
@@ -4406,3 +4549,97 @@ export enum FormBuilderPaymentTypes {
   CONTRACT = 'contract',
   INTERNATIONAL_TRAVELER = 'international_traveler',
 }
+
+export const VITALS_TABLE_DUMMY_DATA = [
+  {
+    vitals: "Fever (°C)",
+    valueOne: 98,
+    valueTwo: 102,
+    valueThree: 98,
+    valueFour: 98,
+    valueFive: 98,
+  },
+  {
+    vitals: "Pulse (bpm)",
+    valueOne: 80,
+    valueTwo: 90,
+    valueThree: 80,
+    valueFour: 80,
+    valueFive: 80,
+  },
+  {
+    vitals: "Respiratory Rate (rpm)",
+    valueOne: 40,
+    valueTwo: 30,
+    valueThree: 40,
+    valueFour: 40,
+    valueFive: 40,
+  },
+  {
+    vitals: "Blood Pressure (mmHg)",
+    valueOne: 180/100,
+    valueTwo: 120/80,
+    valueThree: 120/80,
+    valueFour: 120/80,
+    valueFive: 120/80,
+  },
+  {
+    vitals: "Oxygen Saturation (%)",
+    valueOne: 98,
+    valueTwo: 85,
+    valueThree: 98,
+    valueFour: 98,
+    valueFive: 98,
+  },
+  {
+    vitals: "Smoking Status",
+    valueOne: "Former Smoker",
+    valueTwo: "Former Smoker",
+    valueThree: "Former Smoker",
+    valueFour: "Former Smoker",
+    valueFive: "Former Smoker",
+  },
+]
+
+export const PROBLEMS_TABLE_DUMMY_DATA = [
+  {
+    code: "C753",
+    problem: "Insect bites",
+    onsetDate: "May 20, 2015",
+    type: "acute",
+    notes: "Amet minim mollit non deserunt ullamco",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "J630",
+    problem: "Chest pain",
+    onsetDate: "May 29, 2017",
+    type: "Moderate",
+    notes: "-",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "L97501",
+    problem: "Fever",
+    onsetDate: "May 12, 2019",
+    type: "Mild",
+    notes: "Amet minim mollit non Amet minim mollit non Amet minim mollit non Amet minim mollit non",
+    status: "Historic",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+  {
+    code: "S32463B",
+    problem: "Injury, multiple",
+    onsetDate: "April 28, 2016",
+    type: "Very Mild",
+    notes: "Amet minim mollit non deserunt ullamco",
+    status: "Active",
+    edit: EditOutlinedIcon,
+    delete: TrashOutlinedIcon,
+  },
+]
