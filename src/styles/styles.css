@@ -471,6 +471,11 @@ body .MuiTabPanel-root {
 .dialogBg {
   background-color: #ffffff !important;
   border: none !important;
+  padding: 0 !important;
+}
+
+.dialogBg .MuiTypography-body1 {
+  font-size: 15px !important;
 }
 
 .schedulerTableCell {

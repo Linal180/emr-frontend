@@ -25,7 +25,8 @@ import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, SAVE_TEXT, SPECIALTY, CANCEL, PROVIDER,
   DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
   ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, 
-  UPDATE_PRIMARY_PROVIDER, 
+  UPDATE_PRIMARY_PROVIDER,
+  EDIT_PROVIDER, 
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({
@@ -268,7 +269,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
             display="flex" justifyContent="space-between" alignItems="center"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
-            <Typography variant='h3'>{ADD_PROVIDER_TEXT}</Typography>
+            <Typography variant='h3'>{isEdit ? EDIT_PROVIDER : ADD_PROVIDER_TEXT}</Typography>
 
             <Box display="flex" alignItems="center">
               <Button onClick={closeSlider} variant="text" color="inherit" className="danger">

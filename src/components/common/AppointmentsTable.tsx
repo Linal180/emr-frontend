@@ -1,32 +1,23 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { Link } from "react-router-dom";
-import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
 // components block
 import Alert from "./Alert";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
-import { useTableStyles } from "../../styles/tableStyles";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
-import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
-  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
-} from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
@@ -34,6 +25,15 @@ import {
   AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
   useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
 } from "../../generated/graphql";
+import history from "../../history";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import { useTableStyles } from "../../styles/tableStyles";
+import {
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
+  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+} from "../../utils";
 
 dotenv.config()
 
@@ -286,6 +286,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
+  const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
+    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+        : onDeleteClick(id || '')
+  }
+
   return (
     <>
       <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
@@ -405,10 +413,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => {
-                            moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                              Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
-                          }}>
+                          <Box className={classes.iconsBackground} onClick={() => scheduleStartDateTime && id && deleteAppointmentHandler(scheduleStartDateTime, id)}>
                             <TrashNewIcon />
                           </Box>
                         </Box>

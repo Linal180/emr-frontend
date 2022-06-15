@@ -135,7 +135,7 @@ const LabOrdersProviderForm: FC<LabOrderProviderProps> = ({ labOrderNumber, hand
             </Grid>
 
             <Box mb={3} display="flex">
-              <Button variant="contained" color="secondary">{PRINT}</Button>
+              <Button  onClick={() => window.print()} variant="contained" color="secondary">{PRINT}</Button>
 
               <Box p={1} />
 
