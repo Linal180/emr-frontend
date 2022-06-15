@@ -1,5 +1,5 @@
 // packages block
-import { FC } from "react";
+import { FC, useRef, useEffect } from "react";
 import { Autocomplete, AutocompleteGetTagProps } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box, Chip } from "@material-ui/core";
@@ -9,11 +9,11 @@ import { EMPTY_OPTION } from "../../constants";
 import { SelectorOption, SelectorProps } from "../../interfacesTypes";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, onOutsideClick, isMultiple
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, onOutsideClick, isMultiple, isEdit
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
-
+  const eleRef = useRef<any>();
   const selectorMultiProps = isMultiple ? {
     multiple: true,
     renderTags: (value: SelectorOption[], getTagProps: AutocompleteGetTagProps) => {
@@ -24,7 +24,18 @@ const Selector: FC<SelectorProps> = ({
       )
     }
   } : {}
+  useEffect(()=>{
+    const checkIfClickedOutside = (e:MouseEvent) => {      
+      if (isEdit && eleRef && eleRef.current && eleRef.current.contains && !eleRef.current.contains(e.target)) {
+        onOutsideClick && onOutsideClick()
+      }
+    };
 
+    document.addEventListener("mousedown", checkIfClickedOutside);
+    return () => {
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };  
+  })
   return (
     <Controller
       rules={{ required: true }}
@@ -34,6 +45,7 @@ const Selector: FC<SelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
+            ref={eleRef}
             options={options?.length ? updatedOptions : []}
             disableClearable
             {...(!isMultiple && { value: field.value })}
@@ -67,8 +79,7 @@ const Selector: FC<SelectorProps> = ({
               onSelect && onSelect(data)
               // return data
             }}
-            onBlur={() => onOutsideClick && onOutsideClick()}
-            onClick={() => onOutsideClick && onOutsideClick()}
+            onBlur={() => onOutsideClick && onOutsideClick()}       
           />
         );
       }}

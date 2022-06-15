@@ -364,6 +364,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Initiated, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
+                                isEdit={isEdit}
                               />
                             </FormProvider>
                             : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
