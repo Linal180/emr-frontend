@@ -8,12 +8,12 @@ import { SAVE_TEXT } from "../../constants";
 
 const CardComponent: FC<CardComponentType> = ({
   children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, isFullHeight, 
-  saveBtn, state, disableSubmit, className
+  saveBtn, state, disableSubmit,
 }): JSX.Element => {
   const { activeStep } = state || {}
 
   return (
-    <Card className={isFullHeight ? `fullMinHeight card-box-shadow ${className}` : `${className} card-box-shadow`}>
+    <Card className={`overflow-visible ${isFullHeight && true ? 'fullMinHeight card-box-shadow' : 'card-box-shadow'}`}>
       <CardHeader
         action={
           hasEdit ? (

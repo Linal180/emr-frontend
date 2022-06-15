@@ -832,6 +832,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       billingStatus,
       appointmentName,
       appointmentStatus,
+      scheduleStartDateTime,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
@@ -1695,7 +1696,7 @@ export const appointmentChargesDescription = (amount: string) =>
 export const getFilteredSSN = (value: string) => {
   const [, , last4] = value.split('-')
 
-  return `**-***-${last4}`
+  return `**-***-${last4 || '0000'}`
 }
 
 export const mediaType = (attachmentTitle: string): string[] => {

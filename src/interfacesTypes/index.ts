@@ -237,7 +237,6 @@ export interface CardComponentType extends Children {
   saveBtn?: boolean;
   state?: PatientState;
   disableSubmit?: boolean;
-  className?: string;
 }
 
 export interface ChartingCardComponentType {

@@ -84,6 +84,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       <Grid container spacing={3}>
         <Grid item md={4} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             controllerName="policyHolderId"
             controllerLabel={POLICY_HOLDER_ID_CERTIFICATION_NUMBER}
@@ -92,6 +93,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={4} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             controllerName="employer"
             controllerLabel={EMPLOYER}
@@ -102,6 +104,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       <Grid container spacing={3}>
         <Grid item md={3} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             controllerName="suffix"
             controllerLabel={SUFFIX}

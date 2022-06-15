@@ -1,18 +1,22 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
+import { FC, useRef } from "react";
 import { Autocomplete } from "@material-ui/lab";
-import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 // utils and interfaces/types block
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 import { requiredLabel } from "../../utils";
+import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@material-ui/core";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, onOutsideClick
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, 
+  onOutsideClick, isEdit
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
+  const eleRef = useRef<any>();
+
+ 
   return (
     <Controller
       rules={{ required: true }}
@@ -22,6 +26,7 @@ const Selector: FC<SelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
+             ref={eleRef}
             options={!!updatedOptions?.length ? updatedOptions : []}
             disableClearable
             value= {field.value}
@@ -43,6 +48,7 @@ const Selector: FC<SelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  autoFocus
                   onBlur={() => onBlur && onBlur()}
                 />
 
@@ -54,7 +60,7 @@ const Selector: FC<SelectorProps> = ({
               onSelect && onSelect(data)
               return data
             }}
-            onBlur={() => onOutsideClick && onOutsideClick()}
+            onBlur={() => onOutsideClick && onOutsideClick()}       
           />
         );
       }}
