@@ -195,15 +195,15 @@ export type AppointmentPayload = {
 
 /** The patient appointment status type assigned */
 export enum AppointmentStatus {
+  Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
-  CheckIn = 'CHECK_IN',
+  CheckInOnline = 'CHECK_IN_ONLINE',
   Discharged = 'DISCHARGED',
-  Initiated = 'INITIATED',
   InLobby = 'IN_LOBBY',
   InSession = 'IN_SESSION',
   NoShow = 'NO_SHOW',
   Rescheduled = 'RESCHEDULED',
-  SelfCheckIn = 'SELF_CHECK_IN'
+  Scheduled = 'SCHEDULED'
 }
 
 export type AppointmentsPayload = {
@@ -5133,7 +5133,7 @@ export type UpdateAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, billingStatus: BillingStatus } | null | undefined } };
 
 export type CreateExternalAppointmentMutationVariables = Exact<{
   createExternalAppointmentInput: CreateExternalAppointmentInput;
@@ -6409,6 +6409,11 @@ export const UpdateAppointmentDocument = gql`
       error
       status
       message
+    }
+    appointment {
+      id
+      status
+      billingStatus
     }
   }
 }

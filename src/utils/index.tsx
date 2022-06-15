@@ -846,9 +846,9 @@ export const appointmentStatus = (status: string) => {
         textColor: RED
       }
 
-    case AppointmentStatus.CheckIn:
+    case AppointmentStatus.Arrived:
       return {
-        text: formatValue(AppointmentStatus.CheckIn),
+        text: formatValue(AppointmentStatus.Arrived),
         bgColor: LIGHT_GREEN_RGBA,
         textColor: LIGHT_GREEN_ONE
       }
@@ -874,9 +874,9 @@ export const appointmentStatus = (status: string) => {
         textColor: ORANGE_SIMPLE
       }
 
-    case AppointmentStatus.Initiated:
+    case AppointmentStatus.Scheduled:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
+        text: formatValue(AppointmentStatus.Scheduled),
         bgColor: GRAY_SIMPLE_RGBA,
         textColor: GRAY_SIMPLE
       }
@@ -888,16 +888,16 @@ export const appointmentStatus = (status: string) => {
         textColor: PURPLE
       }
 
-    case AppointmentStatus.SelfCheckIn:
+    case AppointmentStatus.CheckInOnline:
       return {
-        text: formatValue(AppointmentStatus.SelfCheckIn),
+        text: formatValue(AppointmentStatus.CheckInOnline),
         bgColor: GREEN_RGBA,
         textColor: GREEN
       }
 
     default:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
+        text: formatValue(AppointmentStatus.Scheduled),
         bgColor: GREEN_RGBA,
         textColor: GREEN
       }
@@ -1571,8 +1571,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
 
-    case formatValue(AppointmentStatus.CheckIn):
-      return AppointmentStatus.CheckIn;
+    case formatValue(AppointmentStatus.Arrived):
+      return AppointmentStatus.Arrived;
 
     case formatValue(AppointmentStatus.Discharged):
       return AppointmentStatus.Discharged;
@@ -1583,8 +1583,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.InSession):
       return AppointmentStatus.InSession;
 
-    case formatValue(AppointmentStatus.Initiated):
-      return AppointmentStatus.Initiated;
+    case formatValue(AppointmentStatus.Scheduled):
+      return AppointmentStatus.Scheduled;
 
     case formatValue(AppointmentStatus.NoShow):
       return AppointmentStatus.NoShow;
@@ -1592,11 +1592,11 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Rescheduled):
       return AppointmentStatus.Rescheduled;
 
-    case formatValue(AppointmentStatus.SelfCheckIn):
-      return AppointmentStatus.SelfCheckIn;
+    case formatValue(AppointmentStatus.CheckInOnline):
+      return AppointmentStatus.CheckInOnline;
 
     default:
-      return AppointmentStatus.Initiated;
+      return AppointmentStatus.Scheduled;
   }
 }
 
@@ -1605,7 +1605,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
     return 'Completed'
   }
 
-  if (status === AppointmentStatus.Initiated) {
+  if (status === AppointmentStatus.Scheduled) {
     return 'Pending'
   }
 
@@ -1634,22 +1634,23 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string) => {
 }
 
 export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
-  return status === AppointmentStatus.Initiated
+  return status === AppointmentStatus.Scheduled
 }
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+
   switch (value) {
-    case AppointmentStatus.Initiated:
+    case AppointmentStatus.Scheduled:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.CheckIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
     case AppointmentStatus.Rescheduled:
       return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Initiated, AppointmentStatus.CheckIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+        [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
       )
 
-    case AppointmentStatus.CheckIn:
+    case AppointmentStatus.Arrived:
       return renderArrayAsSelectorOptions(
         [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
       )
