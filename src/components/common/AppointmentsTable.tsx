@@ -1,39 +1,39 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { Link } from "react-router-dom";
-import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
 // components block
 import Alert from "./Alert";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
-import { useTableStyles } from "../../styles/tableStyles";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
-import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
-  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
-} from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY,
-  ARRIVAL_STATUS, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TIME, TYPE, VIEW_ENCOUNTER,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_PAST_MESSAGE,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, STATUS, TIME, TYPE, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
   AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
   useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
 } from "../../generated/graphql";
+import history from "../../history";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import { useTableStyles } from "../../styles/tableStyles";
+import {
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
+  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+} from "../../utils";
 
 dotenv.config()
 
@@ -50,7 +50,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const methods = useForm<StatusInputProps>({
     mode: "all",
   });
-  const { setValue } = methods
+  const { setValue, watch } = methods
+  const { status } = watch()
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -122,14 +123,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     },
 
     onCompleted(data) {
-      const { updateAppointment: { response, appointment } } = data;
+      const { updateAppointment: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
           Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
-          updateAppointmentData(appointment as AppointmentPayload['appointment'])
+          updateAppointmentData()
           clearEdit()
         }
       }
@@ -192,19 +193,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     type: ActionType.SET_PAGE, page: value
   });
 
-  const updateAppointmentData = (appointment: AppointmentPayload['appointment']) => {
-    if (!!appointment && !!appointments && !!appointments?.length) {
-      const updatedAppointment = appointments?.map((apt) => {
-        if (appointment?.id === apt?.id) {
-          return {
-            ...apt,
-            status: appointment?.status
-          }
-        }
-        return apt
-      })
+  const updateAppointmentData = () => {
+    const { id, name } = status || {}
+    const appointment = appointments?.find(appointment => appointment?.id === id)
+    const updatedAppointment = { ...appointment, status: getAppointmentStatus(name || '') } as AppointmentPayload['appointment']
+    const index = appointments?.findIndex(appointment => appointment?.id === id)
 
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: updatedAppointment })
+    if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
+      appointments.splice(index, 1, updatedAppointment)
+
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments })
     }
   }
 
@@ -312,7 +310,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TYPE)}
                 {renderTh(DATE)}
                 {renderTh(FACILITY)}
-                {renderTh(ARRIVAL_STATUS)}
+                {renderTh(STATUS)}
                 {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
@@ -369,11 +367,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             <FormProvider {...methods}>
                               <Selector
                                 label=""
-                                // value={{ id, name: text }}
+                                value={{ id, name: text }}
                                 name="status"
                                 options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
+                                isEdit={isEdit}
                               />
                             </FormProvider>
                             : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}

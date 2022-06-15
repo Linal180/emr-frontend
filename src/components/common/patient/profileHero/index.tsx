@@ -295,7 +295,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     const { icon, description } = item
 
                     return (
-                      <Box display="flex" flexWrap="wrap" key={`${description}-${index}`}
+                      <Box display="flex" key={`${description}-${index}`}
                         className={classes.profileInfoItem}
                       >
                         <Box>{icon}</Box>
