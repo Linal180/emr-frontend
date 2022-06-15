@@ -1,5 +1,5 @@
 // packages block
-import { createContext, FC, useCallback, useReducer, Reducer } from "react";
+import { createContext, FC, useCallback, useReducer, Reducer, useState, useEffect } from "react";
 import { pluck } from "underscore"
 // graphql, interfaces/types, reducer and constants block
 import { ChartContextInterface } from "../interfacesTypes";
@@ -14,6 +14,7 @@ export const ChartContext = createContext<ChartContextInterface>({
 });
 
 export const ChartContextProvider: FC = ({ children }): JSX.Element => {
+  const [reactionPages, setReactionPages] = useState(1)
   const [{ reactionList }, dispatch] = useReducer<Reducer<LocalState, Action>>(chartReducer, initialState)
 
   const [findAllReactions] = useFindAllReactionsLazyQuery({
@@ -26,10 +27,18 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllReactions: { reactions } } = data
+        const { findAllReactions: { reactions, pagination } } = data
 
         !!reactions &&
           setReactionList(reactions as ReactionsPayload['reactions'])
+
+        if (pagination) {
+          const { totalPages } = pagination
+
+          if (totalPages ? reactionPages !== totalPages : false) {
+            setReactionPages(reactionPages + 1)
+          }
+        }
       }
     }
   })
@@ -62,6 +71,8 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
       });
     }
   }
+
+  useEffect(() => { fetchAllReactionList('',reactionPages) }, [fetchAllReactionList, reactionPages])
 
   return (
     <ChartContext.Provider
