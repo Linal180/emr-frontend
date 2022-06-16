@@ -4,14 +4,13 @@ import { Box, Grid, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
 import Alert from "../../../common/Alert";
-import DoctorScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from "../../../common/ViewDataLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
 import { AddSlotIcon } from '../../../../assets/svgs';
-import {  getDaySchedules } from "../../../../utils";
+import { getDaySchedules } from "../../../../utils";
 import { useDoctorScheduleStyles } from '../../../../styles/doctorSchedule';
 import { DaySchedule, DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -24,6 +23,7 @@ import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
   DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE,
 } from "../../../../constants";
+import ScheduleModal from "../../../common/ScheduleModal";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {
   const classes = useDoctorScheduleStyles();
@@ -108,10 +108,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   }, [getDoctorSchedule, id]);
 
   useEffect(() => {
-    id ?
-      fetchDoctorSchedules()
-      :
-      Alert.error(DOCTOR_NOT_FOUND)
+    id ? fetchDoctorSchedules() : Alert.error(DOCTOR_NOT_FOUND)
   }, [fetchDoctorSchedules, id])
 
   return (
@@ -122,7 +119,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
             <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
                     <AddSlotIcon />
 
                     <Typography>
@@ -152,7 +149,8 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         </CardComponent>
       </Grid>
 
-      <DoctorScheduleModal
+      <ScheduleModal
+        isDoctor
         id={scheduleId}
         isEdit={isEdit}
         isOpen={scheduleOpenModal}
