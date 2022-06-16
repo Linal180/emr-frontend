@@ -1,5 +1,4 @@
 //packages blocks
-import { useParams } from 'react-router';
 import { ChangeEvent, Fragment } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Grid, Tab } from '@material-ui/core';
@@ -13,19 +12,19 @@ import InputController from '../../../controller';
 import CheckboxController from '../../common/CheckboxController';
 //constants, reducers, interfaces, graphql 
 import { ActionType } from '../../../reducers/externalPaymentReducer';
+import { ActionType as FormActionType } from '../../../reducers/externalFormBuilderReducer';
 import {
   ACCOUNT_TYPE, ACH_PAYMENT_AUTHORITY, ACH_PAYMENT_ACCOUNT_TYPE_ENUMS, ACH_PAYMENT_TABS, BANK_ACCOUNT, CANCEL_TEXT,
   COMPANY_NAME, FIRST_NAME, LAST_NAME, LOCALITY, MAPPED_REGIONS, ROUTING_NUMBER, STATE, STREET_ADDRESS, SUBMIT,
   ZIP_CODE
 } from '../../../constants';
-import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps, ParamsType } from '../../../interfacesTypes';
+import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps } from '../../../interfacesTypes';
 import { personalAchSchema, businessAchSchema } from '../../../validationSchemas';
 import { useAchPaymentMutation } from '../../../generated/graphql';
 
-const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPaymentComponentProps) => {
+const ACHPaymentComponent = ({ token, dispatcher, states, moveNext, formDispatch }: ACHPaymentComponentProps) => {
 
   const { ownershipType, loader, facilityId, patientId, price, providerId } = states
-  const { id: appointmentId } = useParams<ParamsType>();
   const methods = useForm<AccountPaymentInputs>({
     mode: "all",
     resolver: yupResolver(ownershipType === 'personal' ? personalAchSchema : businessAchSchema)
@@ -40,6 +39,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
       const { id } = transaction || {}
       if (status === 200 && id) {
         message && Alert.success(message)
+        formDispatch && formDispatch({ type: FormActionType.SET_TRANSACTION_ID, transactionId: id })
         moveNext()
       }
       else {
@@ -56,7 +56,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
       await chargeAccount({
         variables: {
           achPaymentInputs: {
-            token, facilityId, appointmentId, patientId, price, doctorId: providerId, company: businessName,
+            token, facilityId, appointmentId: null, patientId, price, doctorId: providerId, company: businessName,
             lastName, firstName, deviceData
           }
         }
@@ -150,54 +150,54 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
         </TabList>
 
         <FormProvider {...methods}>
-            <Box bgcolor={'white'} p={2} pt={4}>
+          <Box bgcolor={'white'} p={2} pt={4}>
 
-              <InputController controllerName='routingNumber' controllerLabel={ROUTING_NUMBER} fieldType={'number'} notStep />
-              <InputController controllerName='accountNumber' controllerLabel={BANK_ACCOUNT} fieldType={'number'} notStep />
-              <Selector name='accountType' options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={ACCOUNT_TYPE} />
+            <InputController controllerName='routingNumber' controllerLabel={ROUTING_NUMBER} fieldType={'number'} notStep />
+            <InputController controllerName='accountNumber' controllerLabel={BANK_ACCOUNT} fieldType={'number'} notStep />
+            <Selector name='accountType' options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={ACCOUNT_TYPE} />
 
-              <TabPanel value="personal">
-                <Grid container spacing={2}>
-                  <Grid item xs={6}><InputController controllerName='firstName' controllerLabel={FIRST_NAME} /></Grid>
-                  <Grid item xs={6}><InputController controllerName='lastName' controllerLabel={LAST_NAME} /></Grid>
-                </Grid>
-              </TabPanel>
-
-              <TabPanel value="business">
-                <InputController controllerName='businessName' controllerLabel={COMPANY_NAME} />
-              </TabPanel>
-
+            <TabPanel value="personal">
               <Grid container spacing={2}>
+                <Grid item xs={6}><InputController controllerName='firstName' controllerLabel={FIRST_NAME} /></Grid>
+                <Grid item xs={6}><InputController controllerName='lastName' controllerLabel={LAST_NAME} /></Grid>
+              </Grid>
+            </TabPanel>
 
-                <Grid item xs={6}><InputController controllerName='streetAddress' controllerLabel={STREET_ADDRESS} /></Grid>
+            <TabPanel value="business">
+              <InputController controllerName='businessName' controllerLabel={COMPANY_NAME} />
+            </TabPanel>
 
-                <Grid item xs={6}><InputController controllerName='locality' controllerLabel={LOCALITY} /></Grid>
+            <Grid container spacing={2}>
 
-                <Grid item xs={6}>
-                  <InputController controllerName='postalCode' controllerLabel={ZIP_CODE} fieldType={'number'} notStep />
-                </Grid>
+              <Grid item xs={6}><InputController controllerName='streetAddress' controllerLabel={STREET_ADDRESS} /></Grid>
 
-                <Grid item xs={6}><Selector name='region' options={MAPPED_REGIONS} label={STATE} /></Grid>
+              <Grid item xs={6}><InputController controllerName='locality' controllerLabel={LOCALITY} /></Grid>
+
+              <Grid item xs={6}>
+                <InputController controllerName='postalCode' controllerLabel={ZIP_CODE} fieldType={'number'} notStep />
               </Grid>
 
-              <CheckboxController controllerName='authority' controllerLabel={ACH_PAYMENT_AUTHORITY} />
+              <Grid item xs={6}><Selector name='region' options={MAPPED_REGIONS} label={STATE} /></Grid>
+            </Grid>
 
-              <Box display={'flex'} justifyContent={'flex-end'}>
+            <CheckboxController controllerName='authority' controllerLabel={ACH_PAYMENT_AUTHORITY} />
 
-                <Box pr={2}>
-                  <Button
-                    variant='outlined'
-                    onClick={() => dispatcher({ type: ActionType.SET_ACH_PAYMENT, achPayment: false })}
-                    disabled={loader}>
-                    {CANCEL_TEXT}
-                  </Button>
-                </Box>
+            <Box display={'flex'} justifyContent={'flex-end'}>
 
-                <Button variant="contained" color="primary" onSubmit={handleSubmit(onSubmit)} disabled={loader}>
-                {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
+              <Box pr={2}>
+                <Button
+                  variant='outlined'
+                  onClick={() => dispatcher({ type: ActionType.SET_ACH_PAYMENT, achPayment: false })}
+                  disabled={loader}>
+                  {CANCEL_TEXT}
                 </Button>
               </Box>
+
+              <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)} disabled={loader}>
+                {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
+              </Button>
             </Box>
+          </Box>
         </FormProvider>
 
       </TabContext>

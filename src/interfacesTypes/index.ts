@@ -1691,6 +1691,8 @@ export interface ACHPaymentComponentProps {
   dispatcher: Dispatch<ExternalPaymentAction>;
   states: ExternalPaymentState;
   moveNext: Function
+  formState?: ExternalFormBuilderState
+  formDispatch?: Dispatch<PublicFormBuilderAction>
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
@@ -1836,4 +1838,12 @@ export interface StageStatusType {
 
 export interface AgreementGeneralProps {
   setEdit: Function;
+}
+
+export interface ServiceSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  shouldOmitFacilityId?: boolean
+  careProviderData?: DoctorPatient[];
+  defaultValues?: SelectorOption[]
+  dispatcher?: Dispatch<PublicFormBuilderAction>
 }

@@ -64,6 +64,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           facilityId={facilityField || facilityId || ''}
           name={fieldId}
           label={label}
+          dispatcher={dispatcher}
           addEmpty
         />
 

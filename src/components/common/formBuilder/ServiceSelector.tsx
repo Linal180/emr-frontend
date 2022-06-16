@@ -5,14 +5,18 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { renderServices, requiredLabel } from "../../../utils";
+import { ServiceSelectorProps } from "../../../interfacesTypes";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from "../../../reducers/serviceReducer";
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 
-const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
+import {
+  ActionType as FormActionType
+} from "../../../reducers/externalFormBuilderReducer";
+
+const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId, dispatcher }): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services, serviceType } = state;
@@ -96,6 +100,7 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
             onChange={(_, data) => {
               const { id } = data || {}
               field.onChange(id)
+              dispatcher && dispatcher({ type: FormActionType.SET_SERVICE_TYPE_ID, serviceTypeId: id })
               dispatch({ type: ActionType.SET_SERVICE_TYPE, serviceType: data })
             }}
           />

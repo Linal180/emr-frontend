@@ -32,7 +32,7 @@ interface PaymentComponentProps {
 const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProps): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
   const { appointmentPaymentToken, price, showPayBtn, instance, achPayment } = state;
-  const { activeStep, serviceId } = formState || {}
+  const { activeStep, serviceTypeId } = formState || {}
 
   const moveNext = () => {
     dispatcher && activeStep && dispatcher({ type: FormActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
@@ -43,7 +43,9 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
 
       const { transaction, response } = chargePayment
       if (response && transaction) {
-
+        const { id } = transaction
+        dispatcher && dispatcher({ type: FormActionType.SET_TRANSACTION_ID, transactionId: id })
+        moveNext()
       }
     },
 
@@ -100,16 +102,16 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
 
   const fetchService = useCallback(async () => {
     try {
-      serviceId && await getService({ variables: { getService: { id: serviceId } } })
+      serviceTypeId && await getService({ variables: { getService: { id: serviceTypeId } } })
       price && fetchToken()
     } catch (error) {
 
     }
-  }, [getService, serviceId, fetchToken, price])
+  }, [getService, serviceTypeId, fetchToken, price])
 
   useEffect(() => {
-    serviceId && fetchService();
-  }, [fetchService, serviceId]);
+    serviceTypeId && fetchService();
+  }, [fetchService, serviceTypeId]);
 
   const charge = (token: string) => {
     chargePayment({
@@ -171,7 +173,7 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
           </Typography>
 
           <Grid container spacing={3} justifyContent='center' alignItems='center'>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={12} sm={12} xs={12}>
               <Box mt={5} p={5} className="paypal-card-wrap">
 
                 <Box>
@@ -244,7 +246,10 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
                   </Fragment>)}
                   {achPayment && <ACHPaymentComponent
                     token={appointmentPaymentToken}
-                    dispatcher={dispatch} states={state} moveNext={moveNext} />}
+                    dispatcher={dispatch} states={state} moveNext={moveNext}
+                    formDispatch={dispatcher}
+                    formState={formState}
+                    />}
                 </Box>
 
               </Box>
