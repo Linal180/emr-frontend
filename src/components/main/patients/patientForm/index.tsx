@@ -503,8 +503,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
-    setValue('ssn', SSN_FORMAT)
-  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
 
   useImperativeHandle(ref, () => ({
     submit() {

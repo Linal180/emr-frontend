@@ -75,7 +75,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
 
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="phone" label={PHONE} />
+                <PhoneField isRequired name="phone" label={PHONE} />
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>

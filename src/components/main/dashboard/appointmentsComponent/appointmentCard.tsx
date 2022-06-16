@@ -39,7 +39,7 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: AppointmentCardProps): JSX.Element => {
@@ -401,6 +401,14 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
     }
   }
 
+  const deleteAppointmentHandler = (scheduleStartDateTime: any) => {
+    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+        : onDeleteClick()
+  }
+
   return (
     <Dialog
       open={appOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
@@ -415,10 +423,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
               title={APPOINTMENT}
               action={
                 <Box>
-                  {appStatus !== "COMPLETED" && <IconButton onClick={() => {
-                    moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick()
-                  }}>
+                  {appStatus !== "COMPLETED" && <IconButton onClick={() => deleteAppointmentHandler(scheduleStartDateTime)}>
                     <DeleteAppointmentIcon />
                   </IconButton>}
 

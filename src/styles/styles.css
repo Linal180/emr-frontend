@@ -136,6 +136,10 @@ body {
   overflow-x: auto;
 }
 
+.agreement-table .MuiTableHead-root {
+  background-color: #F3F4F6 !important;
+}
+
 .RoleMultiSelectorStyles>div>div {
   border: none !important;
   box-shadow: none !important;
@@ -265,6 +269,10 @@ input[type="email"] {
 
 body .MuiTabPanel-root {
   padding: 20px 0 0 0;
+}
+
+.tab-panel {
+  padding-top: 0 !important;
 }
 
 .react-tel-input {
@@ -459,9 +467,19 @@ body .MuiTabPanel-root {
   color: #ffffff;
 }
 
+.selectedBoxBlue {
+  background-color: #204ECF;
+  color: #ffffff;
+}
+
 .dialogBg {
   background-color: #ffffff !important;
   border: none !important;
+  padding: 0 !important;
+}
+
+.dialogBg .MuiTypography-body1 {
+  font-size: 15px !important;
 }
 
 .schedulerTableCell {
@@ -503,11 +521,6 @@ body .MuiTabPanel-root {
 
 .diagnosesSelectorClass {
   min-width: 100% !important;
-}
-
-.selectedBox {
-  background-color: #B5B5C3;
-  color: #ffffff;
 }
 
 .hoverClass {
@@ -791,6 +804,19 @@ body .MuiTabPanel-root {
   height: 100%;
 }
 
+.py-0 {
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ml-5 {
+  margin-left: 5px !important;
+}
+
+.vitals-column .MuiTypography-h5{
+  line-height: 1.43 !important;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {
@@ -801,5 +827,11 @@ body .MuiTabPanel-root {
     max-width: 100%;
     position: relative;
     top: 0;
+  }
+
+  .patient-add-form .MuiInputLabel-formControl{
+    position: relative;
+    top:0;
+    margin-bottom: 0.875rem;
   }
 }

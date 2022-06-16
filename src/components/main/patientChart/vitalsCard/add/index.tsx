@@ -1,32 +1,41 @@
 // packages block
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Box } from '@material-ui/core';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
+} from '@material-ui/core';
 //component block
+import Alert from '../../../../common/Alert';
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
+import DatePicker from '../../../../common/DatePicker';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
 import {
-  HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation, WeightType
+  ADD_VITALS, BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, CANCEL_TEXT, DATE, FEVER, FEVER_UNITS,
+  HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT, MAPPED_SMOKING_STATUS,
+  MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, PULSE_TEXT,
+  RESPIRATORY_RATE_TEXT, RPM_TEXT, SAVE_TEXT, SMOKING_STATUS_TEXT, VITAL_ERROR_MSG, WEIGHT_TEXT
+} from '../../../../../constants';
+import {
+  HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation,
+  useUpdatePatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
-import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
-import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import {
-  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI, getCurrentDate,
-  getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
-  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh, roundOffUpto2Decimal,
-} from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
-import Alert from '../../../../common/Alert';
-import { SlashIcon } from '../../../../../assets/svgs'
 import { ActionType } from '../../../../../reducers/patientReducer';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
+import { GRAY_SIX, GREY_TWO } from '../../../../../theme';
+import {
+  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI,
+  getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
+  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, roundOffUpto2Decimal
+} from '../../../../../utils';
 
-export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatcher }: AddPatientVitalsProps) => {
-
-  const classes = usePatientVitalFormStyles()
+export const AddVitals = memo(({
+  fetchPatientAllVitals, patientStates, dispatcher, isOpen = false, handleClose, vitalToEdit }: AddPatientVitalsProps) => {
+  const chartingClasses = useChartingStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
   const { handleSubmit, reset, watch, setValue } = methods;
@@ -34,8 +43,17 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
   const {
     prevHeightUnit, heightUnit, isHeightEdit, isWeightEdit, prevWeightUnit, weightUnit, isHeadEdit, prevHeadUnit,
     headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit } = patientStates || {}
+  const { id: feverUnitId } = feverUnit
+  const { id: heightUnitId } = heightUnit
+  const { id: weightUnitId } = weightUnit
+  const { id: headCircumferenceUnitId } = headCircumferenceUnit
 
   const [loading, setLoading] = useState<boolean>(false)
+
+  const handleModalClose = () => {
+    reset()
+    handleClose && handleClose()
+  }
 
   const [addPatientVital] = useAddPatientVitalMutation({
     onCompleted: (data) => {
@@ -47,6 +65,26 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
           message && Alert.success(message)
           reset()
           fetchPatientAllVitals()
+          handleModalClose()
+        }
+      }
+    },
+    onError: () => {
+      Alert.error(VITAL_ERROR_MSG)
+    }
+  })
+
+  const [updatePatientVital] = useUpdatePatientVitalMutation({
+    onCompleted: (data) => {
+      const { updatePatientVital: { patientVital, response } } = data || {}
+      const { id } = patientVital || {}
+      if (response) {
+        const { status, message } = response || {}
+        if (status === 200 && id) {
+          message && Alert.success(message)
+          reset()
+          fetchPatientAllVitals()
+          handleModalClose()
         }
       }
     },
@@ -56,12 +94,12 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
   })
 
   const onSubmit: SubmitHandler<VitalFormInput> = async (data) => {
-
     const {
       smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientBMI,
       PainRange, pulseRate, PatientHeight: height, PatientWeight: weight, patientHeadCircumference: head,
-      patientTemperature: temp
+      patientTemperature: temp, vitalsDate
     } = data || {}
+
     const { id: smokingStatusLabel } = smokingStatus || {}
     const { id: heightUnitType } = heightUnit || {}
     const { id: weightUnitType } = weightUnit || {}
@@ -75,6 +113,21 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
 
     try {
       setLoading(true)
+      if (vitalToEdit) {
+        await updatePatientVital({
+          variables: {
+            updateVitalInput: {
+              id: vitalToEdit.id, weightUnit: WeightType.Kg, unitType: UnitType.Inch, temperatureUnitType: TempUnitType.DegF,
+              headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
+              systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
+              patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature,
+              vitalCreationDate: vitalsDate ?? new Date().toUTCString()
+            }
+          }
+        })
+        setLoading(false)
+        return
+      }
       await addPatientVital({
         variables: {
           createVitalInput: {
@@ -82,7 +135,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
             headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
             systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
             patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature,
-            vitalCreationDate: new Date().toUTCString()
+            vitalCreationDate: vitalsDate ?? new Date().toUTCString()
           }
         }
       })
@@ -92,7 +145,26 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
     }
   }
 
-
+  useEffect(() => {
+    if (vitalToEdit) {
+      const { smokingStatus, PainRange, PatientBMI, PatientHeight,
+        PatientWeight, diastolicBloodPressure, oxygenSaturation, patientHeadCircumference, systolicBloodPressure,
+        patientTemperature, pulseRate, vitalCreationDate, respiratoryRate } = vitalToEdit ?? {}
+      setValue('pulseRate', pulseRate || '')
+      setValue('PainRange', PainRange || '')
+      setValue('respiratoryRate', respiratoryRate || '')
+      setValue('patientTemperature', patientTemperature || '')
+      setValue('oxygenSaturation', oxygenSaturation || '')
+      setValue('patientHeadCircumference', patientHeadCircumference || '')
+      setValue('PatientHeight', PatientHeight || '')
+      setValue('PatientWeight', PatientWeight || '')
+      setValue('smokingStatus', { id: smokingStatus as SmokingStatus, name: smokingStatus })
+      setValue('systolicBloodPressure', systolicBloodPressure || '')
+      setValue('diastolicBloodPressure', diastolicBloodPressure || '')
+      setValue('PatientBMI', PatientBMI || '')
+      setValue('vitalsDate', vitalCreationDate || '')
+    }
+  }, [setValue, vitalToEdit])
 
   const setPatientBMI = useCallback(() => {
 
@@ -241,175 +313,332 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
   }, [isTempEdit, tempUnitConvertHandler])
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {renderTh(getCurrentDate(`${new Date()}`),'left',false,'',true)}
-            </TableRow>
-          </TableHead>
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
+      <DialogTitle>
+        <Typography variant="h4">{ADD_VITALS}</Typography>
+      </DialogTitle>
 
-          <TableBody>
-            <TableRow>
-              <TableCell className={classes.input}>
+      <FormProvider {...methods}>
+        <DialogContent className={chartingClasses.chartModalBox}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{DATE}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <DatePicker name='vitalsDate' label={''} />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}></Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{FEVER}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="number"
+                  controllerName="patientTemperature"
+                  controllerLabel={''}
+                  isHelperText
+                  notStep
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {FEVER_UNITS?.map((temp, index) => {
+                      const { id, name } = temp || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{PULSE_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="pulseRate"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box ml={2} color={GREY_TWO}>
+                  <strong>{BPM_TEXT}</strong>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{RESPIRATORY_RATE_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="respiratoryRate"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
+              </Grid>
 
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
-                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                  <InputController
-                    fieldType="number"
-                    controllerName="systolicBloodPressure"
-                    controllerLabel={''}
-                    placeholder={'e.g 120'}
-                    margin={'none'}
-                    isHelperText
-                    notStep
-                  />
-                  <Box mx={1} height={'100%'}>
-                    <SlashIcon />
-                  </Box>
-                  <InputController
-                    fieldType="number"
-                    controllerName="diastolicBloodPressure"
-                    controllerLabel={''}
-                    placeholder={'e.g 80'}
-                    margin={'none'}
-                    isHelperText
-                    notStep
-                  />
+              <Grid item md={3} sm={12} xs={12}>
+                <Box ml={2} color={GREY_TWO}>
+                  <strong>{RPM_TEXT}</strong>
                 </Box>
+              </Grid>
+            </Grid>
 
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{BLOOD_PRESSURE_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <Grid container>
+                  <Grid item md={5}>
+                    <InputController
+                      fieldType="number"
+                      controllerName="systolicBloodPressure"
+                      controllerLabel={''}
+                      placeholder={'e.g 120'}
+                      isHelperText
+                      notStep
+                    />
+                  </Grid>
+
+                  <Grid item md={2}></Grid>
+
+                  <Grid item md={5}>
+                    <InputController
+                      fieldType="number"
+                      controllerName="diastolicBloodPressure"
+                      controllerLabel={''}
+                      placeholder={'e.g 80'}
+                      isHelperText
+                      notStep
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box ml={2} color={GREY_TWO}>
+                  <strong>{MMHG_TEXT}</strong>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{OXYGEN_SATURATION_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="oxygenSaturation"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box ml={2} color={GREY_TWO}>
+                  <strong>%</strong>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{HEIGHT_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {PATIENT_HEIGHT_UNITS?.map((height, index) => {
+                      const { id, name } = height || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === heightUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_HEIGHT_UNIT, heightUnit: height })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{WEIGHT_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {PATIENT_WEIGHT_UNITS?.map((weight, index) => {
+                      const { id, name } = weight || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === weightUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: weight })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{BMI_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="PatientBMI"
                   controllerLabel={''}
                   disabled
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box ml={2} color={GREY_TWO}>
+                  <strong>{KG_PER_METER_SQUARE_TEXT}</strong>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{PAIN_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="PainRange"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{SMOKING_STATUS_TEXT}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <Selector
                   name="smokingStatus"
                   label={''}
                   options={MAPPED_SMOKING_STATUS}
-                  margin={'none'}
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
+              </Grid>
+            </Grid>
+
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{HEAD_CIRCUMFERENCE}</Typography>
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
-                  margin={'none'}
                   isHelperText
                   notStep
                 />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
-                <InputController
-                  fieldType="number"
-                  controllerName="patientTemperature"
-                  controllerLabel={''}
-                  margin={'none'}
-                  isHelperText
-                  notStep
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.input}>
-                <Button type='submit' variant='contained' color='primary' disabled={loading} fullWidth>
-                  {SAVE_TEXT}
-                  {loading && <CircularProgress size={20} color="inherit" />}
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </form>
-    </FormProvider>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {HEAD_CIRCUMFERENCE_UNITS?.map((head, index) => {
+                      const { id, name } = head || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === headCircumferenceUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: head })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+
+        <DialogActions>
+          <Box display='flex' justifyContent='flex-end' alignItems='center'>
+            <Button variant='text' color='default' onClick={handleModalClose}>{CANCEL_TEXT}</Button>
+
+            <Box p={1} />
+
+            <Button type='submit' variant='contained' color='primary' disabled={loading} fullWidth onClick={handleSubmit(onSubmit)}>
+              {SAVE_TEXT}
+              {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </DialogActions>
+      </FormProvider>
+    </Dialog>
   )
 })

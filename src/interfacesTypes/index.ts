@@ -1,40 +1,41 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
-import { RouteProps } from "react-router-dom";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import {
   Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
 } from "react-hook-form";
+import { RouteProps } from "react-router-dom";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+// constants, reducers, graphql block
+import { Action } from "../reducers/mediaReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
+import { Action as ChartAction } from "../reducers/chartReducer";
+import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
+import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
+import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
+import {
+  Action as PublicFormBuilderAction, State as ExternalFormBuilderState
+} from "../reducers/externalFormBuilderReducer";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
-  Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput,
+  Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput,
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload,
-  PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice,
-  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, PracticePayload,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient,
+  PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals,
+  PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput,
-  SectionsInputs
+  CreateContactInput, VerifyCodeInput, RolesPayload, Schedule, SectionsInputs, PatientVitalsPayload,
 } from "../generated/graphql";
-import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import { Action as ChartAction } from "../reducers/chartReducer";
-import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PublicFormBuilderAction, State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
-import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
-import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
-import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
-// constants, reducers, graphql block
-import { Action } from "../reducers/mediaReducer";
-import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
-import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -823,6 +824,12 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface AddAllergyModalProps extends GeneralFormProps {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void
+}
+
 export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
@@ -1430,10 +1437,10 @@ export interface AddModalProps {
   item?: Allergies | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
+  handleClose?: () => void
 }
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
-  & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
 
 export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
   & { appointmentId: SelectorOption } & { snowMedCodeId: SelectorOption }
@@ -1453,7 +1460,7 @@ export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
   setCurrentDate: Function,
-  reload:  Function
+  reload: Function
 }
 
 export interface ProfileEditFormType {
@@ -1576,6 +1583,8 @@ export interface VitalListingTableProps {
   patientStates: PatientState;
   setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
   shouldDisableEdit?: boolean
+  setVitalToEdit?: Function
+  setOpen?: Function
 }
 
 export interface VitalFormInput {
@@ -1591,12 +1600,16 @@ export interface VitalFormInput {
   pulseRate: string
   patientHeadCircumference: string
   patientTemperature: string
+  vitalsDate: string
 }
 
-export interface AddPatientVitalsProps {
+export interface AddPatientVitalsProps extends GeneralFormProps {
   fetchPatientAllVitals: Function;
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
+  isOpen?: boolean
+  handleClose?: () => void
+  vitalToEdit?: PatientVitalPayload['patientVital']
 }
 
 export interface PatientVitalsListingProps {
@@ -1705,6 +1718,11 @@ export interface dashboardInputsProps {
   year: SelectorOption
 }
 
+export interface TabTypes {
+  title: string;
+  value: string;
+  Icon: ElementType;
+}
 export interface UpdatePatientProviderInputsProps {
   providerId: SelectorOption;
   speciality: SelectorOption;
@@ -1800,7 +1818,6 @@ export interface TabPropertiesProps {
   dispatch: Dispatch<FormBuilderAction>
 }
 
-
 export interface StepContextProps {
   state: ExternalFormBuilderState;
   dispatch: Dispatch<PublicFormBuilderAction>
@@ -1810,4 +1827,13 @@ export interface StepContextProps {
 export interface DoctorPatientsProps {
   providerId?: string;
   facilityId?: string;
+}
+
+export interface StageStatusType {
+  stage: string;
+  stageColor: string;
+}
+
+export interface AgreementGeneralProps {
+  setEdit: Function;
 }
