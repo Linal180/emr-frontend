@@ -1,5 +1,6 @@
 // packages block
 import { ChangeEvent, useState, useEffect, useCallback, useContext } from "react";
+import { pluck } from "underscore";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
@@ -9,14 +10,16 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
+import { AuthContext } from "../../../../context";
 import { TrashNewIcon } from "../../../../assets/svgs";
 import { formatRoleName, renderTh } from "../../../../utils";
+import { RolesTableProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
-import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION, SYSTEM_ROLES } from "../../../../constants";
-import { RolesTableProps } from "../../../../interfacesTypes";
-import { AuthContext } from "../../../../context";
-import { pluck } from "underscore";
+import {
+  NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION,
+  SYSTEM_ROLES, PAGE_LIMIT
+} from "../../../../constants";
 
 const RolesTable = ({ customRole = false }: RolesTableProps) => {
   const { user } = useContext(AuthContext)
@@ -32,7 +35,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
-      roleInput: { paginationOptions: { page, limit: 10 }, customRole }
+      roleInput: { paginationOptions: { page, limit: PAGE_LIMIT }, customRole }
     },
 
     notifyOnNetworkStatusChange: true,
