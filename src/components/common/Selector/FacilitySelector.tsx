@@ -68,7 +68,6 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
       fetchAllFacilities()
     }
   }, [page, searchQuery, fetchAllFacilities]);
-console.log("facilities", facilities);
 
   return (
     <Controller
