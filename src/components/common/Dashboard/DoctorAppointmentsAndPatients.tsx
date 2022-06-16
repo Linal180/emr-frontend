@@ -9,7 +9,7 @@ import { NO_RECORDS } from "../../../constants";
 import { getStandardTime } from "../../../utils";
 import { NoDataIcon } from "../../../assets/svgs";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
-import { AppointmentsPayload, useFindAllDoctorUpcomingAppointmentsLazyQuery } from "../../../generated/graphql";
+import { AppointmentsPayload, AppointmentStatus, useFindAllDoctorUpcomingAppointmentsLazyQuery } from "../../../generated/graphql";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
 
 interface DoctorAppointmentsAndPatientsProps {
@@ -39,7 +39,8 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
 
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
+          appointments: appointments?.filter(appointment =>
+            appointment?.status !== AppointmentStatus.Cancelled) as AppointmentsPayload['appointments']
         });
       } else {
         dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });

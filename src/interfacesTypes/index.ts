@@ -1452,7 +1452,8 @@ export interface CreateTemplateTypes extends DialogTypes {
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
-  setCurrentDate: Function
+  setCurrentDate: Function,
+  reload:  Function
 }
 
 export interface ProfileEditFormType {

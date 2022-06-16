@@ -42,7 +42,7 @@ import {
   TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
 } from '../../../../constants';
 
-const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
@@ -240,6 +240,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
 
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          reload()
         }
       }
     }
