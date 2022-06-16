@@ -9,23 +9,14 @@ import ViewDataLoader from "../../../common/ViewDataLoader"
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import SnnController from "../../../../controller/SnnController"
-import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME } from "../../../../constants"
+import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT } from "../../../../constants"
 
 const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit }) =>
   <CardComponent cardTitle={IDENTIFICATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="suffix"
-              controllerLabel={SUFFIX}
-            />
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               isRequired
@@ -34,10 +25,8 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
               controllerLabel={FIRST_NAME}
             />
           </Grid>
-        </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -46,7 +35,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
             />
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               isRequired
@@ -58,10 +47,18 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="suffix"
+              controllerLabel={SUFFIX}
+            />
+          </Grid>
+
+          <Grid item md={4} sm={12} xs={12}>
             {isEdit ?
               <SnnController
-                isRequired
                 fieldType="text"
                 controllerName="ssn"
                 controllerLabel={SSN}
@@ -69,7 +66,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
               />
               :
               <InputController
-                isRequired
+                defaultValue={SSN_FORMAT}
                 fieldType="text"
                 controllerName="ssn"
                 controllerLabel={SSN}
@@ -78,7 +75,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
             }
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={4} sm={12} xs={12}>
             <DatePicker isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
           </Grid>
         </Grid>

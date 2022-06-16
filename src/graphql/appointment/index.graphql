@@ -266,3 +266,36 @@ query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppoi
     }
   }
 }
+
+query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
+  findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
+    response {
+      status
+    }
+    
+		 appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}

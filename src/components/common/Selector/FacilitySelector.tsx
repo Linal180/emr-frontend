@@ -82,7 +82,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
             value={field.value}
             disabled={disabled}
             disableClearable
-            getOptionLabel={(option) => option.name || ""}
+            getOptionLabel={(option) => option.name}
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>

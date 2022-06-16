@@ -32,9 +32,11 @@ const RolesComponent = (): JSX.Element => {
             <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
           ))}
         </TabList>
+
         <TabPanel value="1">
           <RolesTable />
         </TabPanel>
+        
         <TabPanel value="2">
           <RolesTable 
             customRole

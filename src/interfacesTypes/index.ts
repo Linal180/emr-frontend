@@ -8,28 +8,27 @@ import {
 } from "react-hook-form";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+// constants, reducers, graphql block
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
-  Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput,
-  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
+  Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput, CreateContactInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, LoginUserInput, Maybe, Patient,
   PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload,
-  PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
-  ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
-  UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
-  VerifyCodeInput
+  PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
+  UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PublicFormBuilderAction, State as ExternalFormBuilderState } from "../reducers/externalFormBuilderReducer";
+import {
+  Action as PublicFormBuilderAction, State as ExternalFormBuilderState
+} from "../reducers/externalFormBuilderReducer";
 import { Action as ExternalPaymentAction, State as ExternalPaymentState } from "../reducers/externalPaymentReducer";
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
-// constants, reducers, graphql block
 import { Action } from "../reducers/mediaReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
@@ -237,6 +236,7 @@ export interface CardComponentType extends Children {
   saveBtn?: boolean;
   state?: PatientState;
   disableSubmit?: boolean;
+  className?: string
 }
 
 export interface ChartingCardComponentType {
@@ -469,6 +469,7 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
+  defaultValue?: string;
 }
 
 export interface TooltipData {
@@ -1433,7 +1434,7 @@ export interface AddModalProps {
   isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
-  item?: Allergies | IcdCodes;
+  item?: Allergies | IcdCodesWithSnowMedCode | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
   handleClose?: () => void
@@ -1458,7 +1459,8 @@ export interface CreateTemplateTypes extends DialogTypes {
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
-  setCurrentDate: Function
+  setCurrentDate: Function,
+  reload: Function
 }
 
 export interface ProfileEditFormType {
@@ -1807,7 +1809,6 @@ export interface DocumentsTableProps {
   patient: PatientPayload['patient']
 }
 
-
 export interface TabPropertiesTypes {
   name: string;
 }
@@ -1821,6 +1822,11 @@ export interface StepContextProps {
   state: ExternalFormBuilderState;
   dispatch: Dispatch<PublicFormBuilderAction>
   sections: SectionsInputs[]
+}
+
+export interface DoctorPatientsProps {
+  providerId?: string;
+  facilityId?: string;
 }
 
 export interface StageStatusType {

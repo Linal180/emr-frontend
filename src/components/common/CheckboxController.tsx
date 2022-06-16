@@ -20,7 +20,7 @@ const CheckboxController: FC<CheckboxControllerProps> = ({
         <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
           {title && <FormLabel component="legend">{title}</FormLabel>}
           <FormControlLabel
-            control={<Checkbox name={controllerName} id={controllerName} />}
+            control={<Checkbox name={controllerName} id={controllerName} checked={value} onChange={onChange}/>}
             label={controllerLabel || ''}
             value={value}
             onChange={onChange}

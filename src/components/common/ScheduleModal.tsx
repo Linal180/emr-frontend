@@ -240,9 +240,9 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                               ids.map(day => renderItem(DAY, day))
                             ) : (
                               <>
-                                <Typography>{PICK_DAY_TEXT}</Typography>
+                                <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
                                 <FormGroup>
-                                  <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
+                                  <Box mt={1} mb={2} className={classesToggle.daysBox} display="flex" alignItems="center" flexWrap="wrap">
                                     {WEEK_DAYS.map(day => {
                                       const { id, name } = day
                                       return <FormControlLabel

@@ -6,6 +6,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
@@ -114,9 +115,15 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
       })
   };
 
+  const search = (query: string) => {}
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
+        <Box mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
+
         <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>
@@ -185,7 +192,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
       />
 
       {pages > 1 &&
-        <Box display="flex" justifyContent="flex-end" p={3}>
+        <Box display="flex" justifyContent="flex-end" pt={1.5}>
           <Pagination
             count={pages}
             shape="rounded"

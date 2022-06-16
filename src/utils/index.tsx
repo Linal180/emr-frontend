@@ -20,7 +20,7 @@ import {
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, BLUE, GREY, PURPLE_ONE
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, BLUE, GREY, PURPLE_ONE, GREY_TWO
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
@@ -33,7 +33,7 @@ import {
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -136,9 +136,7 @@ export const isPracticeAdmin = (currentUserRole: RolesPayload['roles']) => {
 export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
-    || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
+  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isAdmin = (roles: RolesPayload['roles']) => {
@@ -162,6 +160,18 @@ export const isOnlyDoctor = (roles: RolesPayload['roles']) => {
     && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
     && !userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
   )
+}
+
+export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Doctor)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.Staff)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -931,6 +941,27 @@ export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) =>
       return ACUTE;
   }
 };
+
+export const getProblemSeverityColor = (severity: ProblemSeverity) => {
+  switch (severity) {
+    case ProblemSeverity.Chronic:
+      return ACUTE;
+
+    case ProblemSeverity.Acute:
+      return MILD;
+  }
+};
+
+export const getProblemTypeColor = (type: string) => {
+  switch (type) {
+    case ProblemType.Active:
+      return GREEN
+    case ProblemType.Historic:
+      return GREY_TWO
+    default:
+      return '';
+  }
+}
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
   const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
@@ -1707,7 +1738,7 @@ export const appointmentChargesDescription = (amount: string) =>
 export const getFilteredSSN = (value: string) => {
   const [, , last4] = value.split('-')
 
-  return `**-***-${last4 || '0000'}`
+  return `***-**-${last4 || '0000'}`
 }
 
 export const mediaType = (attachmentTitle: string): string[] => {
