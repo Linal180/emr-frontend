@@ -1,29 +1,29 @@
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+// packages
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 // components block
-import TextLoader from "../../../../common/TextLoader";
 import MediaCards from "../../../../common/AddMedia/MediaCards";
+import TextLoader from "../../../../common/TextLoader";
 // interfaces, reducers, constants and styles block
-import history from "../../../../../history";
-import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate } from "../../../../../utils";
-import { ParamsType, DoctorProfileHeroProps } from "../../../../../interfacesTypes";
-import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
-import { ATTACHMENT_TITLES, N_A, EDIT_DOCTOR, DOCTORS_ROUTE } from "../../../../../constants";
-import { doctorReducer, Action, initialState, State, ActionType } from "../../../../../reducers/doctorReducer";
+import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
+import { ATTACHMENT_TITLES, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
 import {
   AttachmentType, Contact, Doctor, useGetAttachmentLazyQuery, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../../assets/svgs";
-import {
-  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
-  ActionType as mediaActionType
+import { DoctorProfileHeroProps, ParamsType } from "../../../../../interfacesTypes";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../../../reducers/doctorReducer";
+import { 
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState 
 } from "../../../../../reducers/mediaReducer";
+import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
+import { formatPhone, getFormattedDate, getTimestamps } from "../../../../../utils";
 
 const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmentsData }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
+  const [open, setOpen] = useState<boolean>(false)
   const [{ doctor }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -163,9 +163,9 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
 
   return (
     <>
-      <Box className={classes.profileCard}>
+      <Box className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
-          <Box pl={1} pr={3.75} position="relative">
+          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
             {getAttachmentLoading ?
               <Avatar variant="square" className={classes.profileImage}>
                 <CircularProgress size={20} color="inherit" />
@@ -206,31 +206,36 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
                     </Box>
                   ))}
                 </Box>
-
-                <Box display="flex" pt={1}>
-                  {ProfileAdditionalDetails.map((item, index) => (
-                    <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                      <Box className={classes.profileInfoHeading}>{item.title}</Box>
-
-                      <Box className={classes.profileInfoItem}>
-                        <Typography variant="body1">{item.description}</Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </Box>
               </Box>
 
-              <Box display='flex' alignItems='baseline' flexWrap='wrap'>
-                <Box pr={1}>
-                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
-                    {EDIT_DOCTOR}
-                  </Button>
-                </Box>
+              <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
+                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
+                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                    : <Typography variant="body2">... {MORE_INFO}</Typography>}
+                </Button>
               </Box>
             </Box>
           </Box>
         }
       </Box>
+
+      <Collapse in={open} mountOnEnter unmountOnExit>
+        <Box className="card-box-shadow" mt={3}>
+          <Card>
+            <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
+              {ProfileAdditionalDetails.map((item, index) => (
+                <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                  <Box className={classes.profileInfoHeading}>{item.title}</Box>
+
+                  <Box className={classes.profileInfoItem}>
+                    <Typography variant="body1">{item.description}</Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Card>
+        </Box>
+      </Collapse>
     </>
   )
 };

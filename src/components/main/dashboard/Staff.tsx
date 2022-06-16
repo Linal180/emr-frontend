@@ -1,7 +1,7 @@
 // packages block
 import { FC } from "react";
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 import { FormProvider, useForm } from "react-hook-form";
+import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
 import Selector from "../../common/Selector";
@@ -10,13 +10,14 @@ import TimePicker from "../../common/TimePicker";
 import InputController from "../../../controller";
 import AppointmentsComponent from "../appointments/appointmentsListing";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
-// constant
+// constant block
 import {
-  APPOINTMENTS_TEXT, APPOINTMENT_TYPE, CREATE_APPOINTMENT, CREATE_PATIENT, DATE, DOB, EMPTY_OPTION, FIRST_NAME, HOME_PHONE,
-  LAST_NAME, LEGAL_SEX, MOBILE_PHONE, PATIENT, QUICK_APPOINTMENTS, QUICK_PATIENT_REGISTRATIONS, REASON, TIME_SLOT, USUAL_PROVIDER,
+  APPOINTMENTS_TEXT, APPOINTMENT_TYPE, CREATE_APPOINTMENT, CREATE_PATIENT, DATE, DOB, EMPTY_OPTION,
+  FIRST_NAME, HOME_PHONE, LAST_NAME, LEGAL_SEX, MOBILE_PHONE, PATIENT, QUICK_APPOINTMENTS,
+  QUICK_PATIENT_REGISTRATIONS, REASON, TIME_SLOT, USUAL_PROVIDER,
 } from "../../../constants";
 
-const StaffAdminDashboardComponent: FC = (): JSX.Element => {
+const StaffDashboardComponent: FC = (): JSX.Element => {
   const methods = useForm<any>({
     mode: "all",
   });
@@ -193,4 +194,4 @@ const StaffAdminDashboardComponent: FC = (): JSX.Element => {
   )
 };
 
-export default StaffAdminDashboardComponent;
+export default StaffDashboardComponent;
