@@ -1,13 +1,16 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core';
+import { 
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography 
+} from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router-dom';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_PROBLEM, CANCEL, COMMENTS, DASHES, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE
+  ACTIVE, ADD, ADD_PROBLEM, CANCEL, CHRONIC, COMMENTS, DASHES, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED, 
+  PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE
 } from '../../../../../constants';
 // component block
 import InputController from '../../../../../controller';
@@ -18,7 +21,7 @@ import {
 import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import { ActionType } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { GRAY_SIX, GREY_THREE } from '../../../../../theme';
+import { ACUTE, GRAY_SIX, GREEN, GREY_THREE, GREY_TWO, MILD, WHITE } from '../../../../../theme';
 import { formatValue, setRecord } from '../../../../../utils';
 import { patientProblemSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
@@ -187,6 +190,28 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
   const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
+  console.log("severities", severities)
+
+  const getProblemSeverityColor = (severity: string) => {
+    switch (severity) {
+      case CHRONIC:
+        return ACUTE;
+
+      case 'Acute':
+        return MILD;
+    }
+  };
+
+  const getProblemTypeColor = (type: string) => {
+    switch (type) {
+      case ACTIVE:
+        return GREEN
+      case 'Historic':
+        return GREY_TWO
+      default:
+        return '';
+    }
+  }
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
@@ -206,7 +231,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                 <Typography variant='h4'>{description}</Typography>
 
                 <Box mt={1} color={GREY_THREE}>
-                  {isEdit ? <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCode?.name && snoMedCode?.name!==DASHES ? `| SnoMedCode: ${snoMedCode?.name}`:''}</Typography> :
+                  {isEdit ? <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCode?.name && snoMedCode?.name !== DASHES ? `| SnoMedCode: ${snoMedCode?.name}` : ''}</Typography> :
                     <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCodeInfo?.referencedComponentId && `| SnoMedCode: ${snoMedCodeInfo?.referencedComponentId}`}</Typography>}
                 </Box>
               </Box>
@@ -229,7 +254,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                   <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {statuses.map(status =>
                       <Box onClick={() => handleStatus(status)}
-                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
+                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: status === typeStatus ? WHITE : getProblemTypeColor(status),
+                          backgroundColor: status === typeStatus ? getProblemTypeColor(status) : WHITE,
+                        }}
+                      >
                         <Typography variant='h6'>{status}</Typography>
                       </Box>
                     )}
@@ -242,7 +272,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                   <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {severities.map(type =>
                       <Box onClick={() => handleSeverity(type)}
-                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
+                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: type === severity ? WHITE : getProblemSeverityColor(type as ProblemSeverity),
+                          backgroundColor: type === severity ? getProblemSeverityColor(type as ProblemSeverity) : WHITE,
+                        }}
+                      >
                         <Typography variant='h6'>{type}</Typography>
                       </Box>
                     )}

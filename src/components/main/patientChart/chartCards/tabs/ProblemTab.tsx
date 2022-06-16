@@ -1,15 +1,21 @@
-import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { 
+  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
+} from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE } from "../../../../../constants";
-import { IcdCodes, PatientProblemsPayload, ProblemType, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from "../../../../../generated/graphql";
+import { 
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, 
+  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE 
+} from "../../../../../constants";
+import { 
+  IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation 
+} from "../../../../../generated/graphql";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN, GREY_TWO } from "../../../../../theme";
-import { getFormatDateString, getProblemSeverityColor, renderTh } from "../../../../../utils";
+import { getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh } from "../../../../../utils";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -125,17 +131,6 @@ const ProblemTab = () => {
     problemDeleteId && await removePatientProblem({
       variables: { removeProblem: { id: problemDeleteId } }
     })
-  }
-
-  const getProblemTypeColor = (type: string) => {
-    switch (type) {
-      case ProblemType.Active:
-        return GREEN
-      case ProblemType.Historic:
-        return GREY_TWO
-      default:
-        return '';
-    }
   }
 
   return (

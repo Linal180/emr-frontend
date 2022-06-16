@@ -111,7 +111,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
   const renderSearchData = useCallback(() => {
     return (
-      <Box maxHeight={280} minHeight={260} className="overflowY-auto" display="flex"
+      <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
       >
         {!!searchIcdCodesLoading ?
@@ -125,9 +125,8 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
               const { referencedComponentId } = snoMedCode || {}
 
               return (
-                <Box key={code} className='pointer-cursor hoverClass' my={0.2} 
+                <Box key={code} className='hoverClass pointer-cursor' my={0.2} 
                   onClick={(event) => item && handleOpenForm(event, item as IcdCodesWithSnowMedCode)}
-
                 >
                   <Box display="flex" flexDirection="column" >
                     <Typography  variant='body1' >{description}</Typography>

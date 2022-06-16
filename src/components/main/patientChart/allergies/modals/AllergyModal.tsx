@@ -1,19 +1,24 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Grid, Typography } from '@material-ui/core';
+import { 
+  Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, 
+  FormGroup, Grid, Typography 
+} from '@material-ui/core';
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, PATIENT_ALLERGY_UPDATED, REACTION, UPDATE
+  ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, 
+  PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
 } from '../../../../../constants';
 import { ChartContext } from '../../../../../context';
 // component block
 import InputController from '../../../../../controller';
 import {
-  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery, useUpdatePatientAllergyMutation
+  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery, 
+  useUpdatePatientAllergyMutation
 } from '../../../../../generated/graphql';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
@@ -245,7 +250,11 @@ const AllergyModal: FC<AddModalProps> = ({
                   })}
                 </Grid>
 
-                <Box mb={4} className={chartingClasses.toggleProblem}>
+                <Box mt={2} mb={2}>
+                  <Typography variant="h6">{SEVERITY}</Typography>
+                </Box>
+
+                <Box mb={4} className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
                   <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
                       const { id, name } = head || {}
@@ -264,25 +273,14 @@ const AllergyModal: FC<AddModalProps> = ({
                   </Box>
                 </Box>
 
-                {/* <Box className={chartingClasses.toggleProblem}>
-                  <Box my={3} p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                    {onsets.map(onSet =>
-                      <Box onClick={() => handleOnset(onSet)}
-                        className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
-                        <Typography variant='h6'>{onSet}</Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Box> */}
-
                 <Grid container spacing={3} className={chartingClasses.problemGrid}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker name="allergyStartDate" label={ONSET_DATE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <Box className={chartingClasses.toggleProblem}>
-                      <Box p={3} height={50} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
+                      <Box p={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                         {onsets.map(onSet =>
                           <Box onClick={() => handleOnset(onSet)}
                             className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
