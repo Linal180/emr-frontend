@@ -15,7 +15,7 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, LoginUserInput, Maybe, Patient,
   PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload,
   PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
@@ -1431,7 +1431,7 @@ export interface AddModalProps {
   isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
-  item?: Allergies | IcdCodes;
+  item?: Allergies | IcdCodesWithSnowMedCode | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
   handleClose?: () => void

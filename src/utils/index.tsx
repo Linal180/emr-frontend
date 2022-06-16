@@ -932,6 +932,16 @@ export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) =>
   }
 };
 
+export const getProblemSeverityColor = (severity: ProblemSeverity) => {
+  switch (severity) {
+    case ProblemSeverity.Chronic:
+      return ACUTE;
+
+    case ProblemSeverity.Acute:
+      return MILD;
+  }
+};
+
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
   const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
   const drivingLicense2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense2)[0] || undefined

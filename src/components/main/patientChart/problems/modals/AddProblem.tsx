@@ -4,9 +4,9 @@ import { FC, MouseEvent, Reducer, useCallback, useEffect, useMemo, useReducer, u
 //constants, interfaces, utils 
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import {
-  ADD_PROBLEM, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
+  ADD_PROBLEM, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
 } from "../../../../../constants";
-import { IcdCodes, IcdCodesPayload, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
+import { IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
@@ -14,14 +14,14 @@ import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
 //components
 import ProblemModal from "./ProblemModal";
 
-const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
+const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const chartingClasses = useChartingStyles()
 
   const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const tabs = useMemo(() => {
-    return ['All', 'Covid Terms']
+    return ['Common Terms', 'Covid Terms']
   }, [])
 
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
@@ -61,7 +61,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         variables: {
           searchIcdCodesInput: {
             searchTerm: queryString,
-            paginationOptions: { page: 1, limit: queryString ? LIST_PAGE_LIMIT : INITIAL_PAGE_LIMIT }
+            paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
@@ -84,7 +84,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     }
   }, [handleICDSearch, tab])
 
-  const handleOpenForm = ({ currentTarget }: MouseEvent<HTMLElement>, item: IcdCodes) => {
+  const handleOpenForm = ({ currentTarget }: MouseEvent<HTMLElement>, item: IcdCodesWithSnowMedCode) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
@@ -121,13 +121,22 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
           :
           (searchedData && searchedData.length > 0 ?
             searchedData?.map(item => {
-              const { code, description } = item as IcdCodes || {}
+              const { code, description, snoMedCode } = item as IcdCodesWithSnowMedCode || {}
+              const { referencedComponentId } = snoMedCode || {}
 
               return (
-                <Box key={code} className='pointer-cursor' my={0.2}
-                  onClick={(event) => item && handleOpenForm(event, item as IcdCodes)}
+                <Box key={code} className='pointer-cursor hoverClass' my={0.2} 
+                  onClick={(event) => item && handleOpenForm(event, item as IcdCodesWithSnowMedCode)}
+
                 >
-                  <Typography variant='body1' className="hoverClass">{code} - {description}</Typography>
+                  <Box display="flex" flexDirection="column" >
+                    <Typography  variant='body1' >{description}</Typography>
+
+                    <Typography variant='caption' >
+                     {referencedComponentId? `snomed: ${referencedComponentId} | icd10: ${code}`: `icd10: ${code}`}
+                    </Typography>
+                  </Box>
+
                 </Box>
               )
             }) :
@@ -184,4 +193,4 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   )
 }
 
-export default AddAllergy
+export default AddProblem

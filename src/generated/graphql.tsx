@@ -194,7 +194,7 @@ export type AppointmentPayload = {
 };
 
 /** The patient appointment status type assigned */
-export enum   AppointmentStatus {
+export enum AppointmentStatus {
   Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
   CheckInOnline = 'CHECK_IN_ONLINE',
@@ -1638,9 +1638,21 @@ export type IcdCodes = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type IcdCodesWithSnowMedCode = {
+  __typename?: 'ICDCodesWithSnowMedCode';
+  code: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTests?: Maybe<LabTests>;
+  snoMedCode?: Maybe<SnoMedCodes>;
+  updatedAt?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
+};
+
 export type IcdCodesPayload = {
   __typename?: 'IcdCodesPayload';
-  icdCodes?: Maybe<Array<Maybe<IcdCodes>>>;
+  icdCodes?: Maybe<Array<Maybe<IcdCodesWithSnowMedCode>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
 };
@@ -5133,7 +5145,7 @@ export type UpdateAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, billingStatus: BillingStatus } | null | undefined } };
+export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus } | null | undefined } };
 
 export type CreateExternalAppointmentMutationVariables = Exact<{
   createExternalAppointmentInput: CreateExternalAppointmentInput;
@@ -5374,7 +5386,7 @@ export type FindAllPatientProblemsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -5956,14 +5968,14 @@ export type SearchIcdCodesQueryVariables = Exact<{
 }>;
 
 
-export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined } };
+export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodesWithSnowMedCode', id: string, code: string, description?: string | null | undefined, snoMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type FetchIcdCodesQueryVariables = Exact<{
   searchIcdCodesInput: SearchIcdCodesInput;
 }>;
 
 
-export type FetchIcdCodesQuery = { __typename?: 'Query', fetchICDCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FetchIcdCodesQuery = { __typename?: 'Query', fetchICDCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodesWithSnowMedCode', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type FindAllReactionsQueryVariables = Exact<{
   reactionInput: ReactionInput;
@@ -6413,7 +6425,6 @@ export const UpdateAppointmentDocument = gql`
     appointment {
       id
       status
-      billingStatus
     }
   }
 }
@@ -8030,6 +8041,10 @@ export const FindAllPatientProblemsDocument = gql`
         id
         code
         description
+      }
+      snowMedCode {
+        id
+        referencedComponentId
       }
     }
   }
@@ -12412,6 +12427,10 @@ export const SearchIcdCodesDocument = gql`
       id
       code
       description
+      snoMedCode {
+        id
+        referencedComponentId
+      }
     }
   }
 }

@@ -18,8 +18,8 @@ import {
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { GRAY_SIX, GREY_THREE } from '../../../../../theme';
-import { formatValue, getTimestamps } from '../../../../../utils';
+import { GRAY_SIX, GREY_THREE, WHITE } from '../../../../../theme';
+import { formatValue, getSeverityColor, getTimestamps } from '../../../../../utils';
 import { createPatientAllergySchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import DatePicker from '../../../../common/DatePicker';
@@ -32,7 +32,7 @@ const AllergyModal: FC<AddModalProps> = ({
   const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
-  const allergySeverity= MAPPED_ALLERGY_SEVERITY.map((severity)=>severity.id)
+  const allergySeverity = MAPPED_ALLERGY_SEVERITY.map((severity) => severity.id)
   const [onset, setOnset] = useState<string>(onsets[0])
   const [severityId, setSeverityId] = useState<string>(allergySeverity[0])
   const [ids, setIds] = useState<string[]>([])
@@ -245,12 +245,16 @@ const AllergyModal: FC<AddModalProps> = ({
                   })}
                 </Grid>
 
-                <Box className={chartingClasses.toggleProblem}>
-                  <Box p={1} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                <Box mb={4} className={chartingClasses.toggleProblem}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
                       const { id, name } = head || {}
                       return (<Box key={`${index}-${name}-${id}`}
                         className={id === severityId ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: id === severityId ? WHITE : getSeverityColor(id as AllergySeverity),
+                          backgroundColor: id === severityId ? getSeverityColor(id as AllergySeverity) : WHITE,
+                        }}
                         onClick={() => setSeverityId(id)}
                       >
                         <Typography variant='h6'>{name}</Typography>
@@ -260,7 +264,7 @@ const AllergyModal: FC<AddModalProps> = ({
                   </Box>
                 </Box>
 
-                <Box className={chartingClasses.toggleProblem}>
+                {/* <Box className={chartingClasses.toggleProblem}>
                   <Box my={3} p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {onsets.map(onSet =>
                       <Box onClick={() => handleOnset(onSet)}
@@ -269,15 +273,28 @@ const AllergyModal: FC<AddModalProps> = ({
                       </Box>
                     )}
                   </Box>
-                </Box>
+                </Box> */}
 
-                <Grid container className={chartingClasses.problemGrid}>
-                  <Grid item md={12} sm={12} xs={12}>
+                <Grid container spacing={3} className={chartingClasses.problemGrid}>
+                  <Grid item md={6} sm={12} xs={12}>
                     <DatePicker name="allergyStartDate" label={ONSET_DATE} />
                   </Grid>
 
-                  <Box m={2} />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Box className={chartingClasses.toggleProblem}>
+                      <Box p={3} height={50} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                        {onsets.map(onSet =>
+                          <Box onClick={() => handleOnset(onSet)}
+                            className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                            <Typography variant='h6'>{onSet}</Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
 
+                <Grid container className={chartingClasses.problemGrid}>
                   <Grid item md={12} sm={12} xs={12}>
                     <InputController
                       multiline

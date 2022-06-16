@@ -4,12 +4,12 @@ import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } fr
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import { ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE } from "../../../../../constants";
-import { IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from "../../../../../generated/graphql";
+import { IcdCodes, PatientProblemsPayload, ProblemType, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from "../../../../../generated/graphql";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN, ORANGE_ONE } from "../../../../../theme";
-import { getFormatDateString, renderTh } from "../../../../../utils";
+import { GREEN, GREY_TWO } from "../../../../../theme";
+import { getFormatDateString, getProblemSeverityColor, renderTh } from "../../../../../utils";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -127,6 +127,17 @@ const ProblemTab = () => {
     })
   }
 
+  const getProblemTypeColor = (type: string) => {
+    switch (type) {
+      case ProblemType.Active:
+        return GREEN
+      case ProblemType.Historic:
+        return GREY_TWO
+      default:
+        return '';
+    }
+  }
+
   return (
     <>
       <Grid container spacing={3}>
@@ -176,7 +187,7 @@ const ProblemTab = () => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                              <Box className={classes.activeBox} bgcolor={getProblemTypeColor(problemType || '')}>
                                 {problemType}
                               </Box>
                             </TableCell>
@@ -186,7 +197,7 @@ const ProblemTab = () => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={GREEN}>
+                              <Box className={classes.activeBox} bgcolor={problemSeverity && getProblemSeverityColor(problemSeverity)}>
                                 {problemSeverity}
                               </Box>
                             </TableCell>
@@ -240,7 +251,7 @@ const ProblemTab = () => {
       </Grid>
       {isOpen &&
         <AddProblem isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
-      
+
       {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
