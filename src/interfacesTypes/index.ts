@@ -1825,3 +1825,7 @@ export interface StageStatusType {
   stage: string;
   stageColor: string;
 }
+
+export interface AgreementGeneralProps {
+  setEdit: Function;
+}

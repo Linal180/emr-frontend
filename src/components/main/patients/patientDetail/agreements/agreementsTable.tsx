@@ -1,20 +1,30 @@
-// packages
-import React from 'react';
-import { Box, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
-//components
-import Search from '../../../../common/Search';
-//constants, types, interfaces, utils
-import { renderTh, } from '../../../../../utils';
-import { NAME, CREATED_ON, AGREEMENTS_TABLE_DUMMY_DATA } from '../../../../../constants'
+// packages block
+import { FC } from 'react';
+import { Add } from '@material-ui/icons';
 import { Pagination } from '@material-ui/lab';
+import { Box, Table, TableHead, TableRow, TableBody, TableCell, Button, Typography } from '@material-ui/core';
+// components block
+import Search from '../../../../common/Search';
+//constants, types, interfaces, utils block
 import { WHITE } from '../../../../../theme';
+import { renderTh, } from '../../../../../utils';
+import { NAME, CREATED_ON, AGREEMENTS_TABLE_DUMMY_DATA, ADD_NEW_TEXT, AGREEMENTS } from '../../../../../constants'
+import { AgreementGeneralProps } from '../../../../../interfacesTypes';
 
-const AgreementsTable = (): JSX.Element => {
+const AgreementsTable: FC<AgreementGeneralProps> = ({ setEdit }): JSX.Element => {
   const search = (query: string) => { };
 
   return (
     <>
-    {/* className={classes.mainTableContainer} */}
+      <Box pb={2} display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4" color='textPrimary'>{AGREEMENTS}</Typography>
+
+        <Button onClick={() => setEdit(true)} variant="contained" color="primary">
+          <Add />
+          {ADD_NEW_TEXT}
+        </Button>
+      </Box>
+
       <Box bgcolor={WHITE}>
         <Box p={2} bgcolor={WHITE}>
           <Box py={2} maxWidth={450}>
