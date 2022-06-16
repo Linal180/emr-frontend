@@ -333,7 +333,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       dispatcher={dispatch}
                     />
                   </Menu>
-
                 </Box>
               </Box>
 
