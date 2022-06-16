@@ -13,7 +13,7 @@ import { getAddressByZipcode } from '../../../common/smartyAddress';
 import history from '../../../../history';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
@@ -29,7 +29,12 @@ import {
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
-  const { user } = useContext(AuthContext)
+  const { user, currentDoctor } = useContext(AuthContext)
+  const { id: selectedDoctorId} = currentDoctor || {}
+  const { roles, facility } = user || {};
+  const { id: selectedFacilityId} = facility || {};
+  const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
+  const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -40,7 +45,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
   const { handleSubmit, setValue, watch } = methods;
   const {
@@ -346,7 +351,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        email: basicEmail || '', facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -360,7 +365,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
-        usualProviderId: selectedUsualProvider
+        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider
       };
 
       const contactInput = {
@@ -435,7 +440,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         })
       } else {
         const optionalInputs = {
-          usualProviderId: selectedUsualProvider || '', adminId: userId || '',
+          usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider || '', adminId: userId || '',
         }
 
         await createPatient({
