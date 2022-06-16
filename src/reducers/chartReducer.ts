@@ -1,7 +1,7 @@
-import { multiOptionType } from "../interfacesTypes";
 import {
-  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, PatientVitalPayload, ReactionsPayload
-} from "../generated/graphql"
+  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, PatientVitalPayload, ReactionsPayload
+} from "../generated/graphql";
+import { multiOptionType } from "../interfacesTypes";
 
 export interface State {
   itemId: string;
@@ -13,7 +13,7 @@ export interface State {
   isSearchOpen: HTMLElement | null;
   selectedReactions: multiOptionType[]
   reactionList: ReactionsPayload['reactions'];
-  selectedItem: Allergies | IcdCodes | undefined;
+  selectedItem: Allergies | IcdCodesWithSnowMedCode | IcdCodes | undefined;
   patientVitals: PatientVitalPayload['patientVital'];
   searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
   isSubModalOpen: boolean;
@@ -67,7 +67,7 @@ export type Action =
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodes | undefined }
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodesWithSnowMedCode | IcdCodes | undefined }
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }

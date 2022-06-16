@@ -1,11 +1,17 @@
 //packages import
-import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
+import { 
+  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography 
+} from "@material-ui/core";
 import { Add as AddIcon } from '@material-ui/icons';
 import { FC, MouseEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 //constants, utils, interfaces
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE } from "../../../../../constants";
-import { Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery } from "../../../../../generated/graphql";
+import { 
+  ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE 
+} from "../../../../../constants";
+import { 
+  Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery 
+} from "../../../../../generated/graphql";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
@@ -107,7 +113,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   );
 
   const renderSearchData = () =>
-    <Box maxHeight={280} minHeight={260} className="overflowY-auto" display="flex"
+    <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
       flexDirection="column" alignItems="flex-start"
     >
       {!!findAllergiesLoading ?

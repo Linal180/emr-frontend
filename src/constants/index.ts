@@ -423,7 +423,7 @@ export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
 export const ALLERGIES_TEXT = "Allergies";
-export const ALLERGIE_TEXT = "Allergies";
+export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
 export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
@@ -3625,9 +3625,6 @@ export const RegisterPatientMenuNav = [
   },
   {
     title: CONTACT_INFORMATION,
-  },
-  {
-    title: PROVIDER_REGISTRATION_DATES,
   },
   {
     title: PRIVACY,

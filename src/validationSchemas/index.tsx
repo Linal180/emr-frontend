@@ -21,7 +21,7 @@ import {
   COPAY_TYPE, AMOUNT, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE, 
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, LEGAL_SEX, BANK_ACCOUNT, US_BANK_ACCOUNT_REGEX, BANK_ACCOUNT_VALIDATION_MESSAGE, 
   ROUTING_NUMBER, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE, ACCOUNT_TYPE, STREET_ADDRESS, AUTHORITY, COMPANY_NAME, 
-  BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER
+  BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, USUAL_PROVIDER_ID
 } from "../constants";
 import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 
@@ -470,10 +470,10 @@ export const extendedPatientSchema = (isOptional: boolean) => yup.object({
   // ...emergencyPatientSchema,
   // ...guarantorPatientSchema,
   // gender: selectorSchema(GENDER),
-  // facilityId: selectorSchema(FACILITY),
-  basicEmail: optionalEmailSchema(isOptional),
   // basicPhone: notRequiredPhone(MOBILE_NUMBER),
-  // usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
+  facilityId: selectorSchema(FACILITY),
+  basicEmail: optionalEmailSchema(isOptional),
+  usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
   ...firstLastNameSchema,
   ...ssnSchema,
   ...dobSchema,

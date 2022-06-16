@@ -209,7 +209,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={DOCTOR_SCHEDULE}>
-            <Box px={1}>
+            <Box px={1} className="py-0">
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
                   {getScheduleLoading ?
@@ -221,9 +221,9 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                               ids.map(day => renderItem(DAY, day))
                             ) : (
                               <>
-                                <Typography>{PICK_DAY_TEXT}</Typography>
+                                <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
                                 <FormGroup>
-                                  <Box my={1.5} display="flex" alignItems="center" flexWrap="wrap">
+                                  <Box mt={1} mb={2} className={classesToggle.daysBox} display="flex" alignItems="center" flexWrap="wrap">
                                     {WEEK_DAYS.map(day => {
                                       const { id, name } = day
                                       return <FormControlLabel
@@ -289,15 +289,19 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           </Grid>}
                         </Grid>
 
-                        <ServiceSelector
-                          isRequired
-                          name="serviceId"
-                          label={APPOINTMENT_TYPE}
-                          facilityId={doctorFacilityId}
-                          isEdit={isEdit}
-                          defaultValues={serviceIds}
-                          isMulti={true}
-                        />
+                        <Grid container spacing={3}>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <ServiceSelector
+                              isRequired
+                              name="serviceId"
+                              label={APPOINTMENT_TYPE}
+                              facilityId={doctorFacilityId}
+                              isEdit={isEdit}
+                              defaultValues={serviceIds}
+                              isMulti={true}
+                            />
+                          </Grid>
+                        </Grid>
                       </>
                     )}
 
