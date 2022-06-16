@@ -179,9 +179,9 @@ const DoctorsTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 doctors?.map((doctor: DoctorPayload['doctor']) => {
-                  const { id, firstName, lastName, speciality, contacts, facility } = doctor || {};
+                  const { id, firstName, lastName, speciality, contacts, facility, email } = doctor || {};
                   const doctorContact = contacts && contacts[0];
-                  const { email, phone } = doctorContact || {};
+                  const { phone } = doctorContact || {};
                   const { name } = facility || {};
 
                   return (

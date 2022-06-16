@@ -17,12 +17,12 @@ import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../..
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FAILED_TO_CREATE_PATIENT,
+  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
 } from "../../../../constants";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
+  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
   Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
 } from "../../../../generated/graphql";
 
@@ -44,8 +44,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   });
   const { handleSubmit, setValue, watch } = methods;
   const {
-    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
+    // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
@@ -85,7 +85,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (doctorPatients) {
-            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient?.currentProvider)
+            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
+
             if (doesPrimaryProviderExist) {
               const { doctor } = doesPrimaryProviderExist ?? {}
               const { firstName, lastName, id } = doctor ?? {}
@@ -267,7 +268,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
           const { id } = patient || {}
           id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
-          activeStep === 5 && history.push(PATIENTS_ROUTE)
+          activeStep === 4 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -289,7 +290,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
         if (status && status === 200) {
           activeStep && Alert.success(CHANGES_SAVED);
-          activeStep === 5 && history.push(PATIENTS_ROUTE)
+          activeStep === 4 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -462,7 +463,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     if (id) {
       getPatient({ variables: { getPatient: { id } } })
     }
-  }, [getPatient, id, isEdit])
+  }, [getPatient, id])
 
   useEffect(() => {
     if (patientId) {
@@ -470,15 +471,15 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     }
   }, [getPatient, patientId])
 
-  const fetchList = useCallback((id: string, name: string) => {
-    setValue('usualProviderId', EMPTY_OPTION)
+  // const fetchList = useCallback((id: string, name: string) => {
+  //   setValue('usualProviderId', EMPTY_OPTION)
 
-    id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, setValue]);
+  //   id && fetchAllDoctorList(id);
+  // }, [fetchAllDoctorList, setValue]);
 
-  useEffect(() => {
-    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
-  }, [fetchList, selectedFacility, selectedFacilityName, watch])
+  // useEffect(() => {
+  //   selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
+  // }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 

@@ -16,7 +16,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
     {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
       <>
         <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -25,13 +25,11 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
             />
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
             <PhoneField name="employerPhone" label={EMPLOYER_PHONE} disabled={shouldDisableEdit} />
           </Grid>
-        </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -41,7 +39,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
             />
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -51,8 +49,8 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
           </Grid>
         </Grid>
 
-        <Grid container spacing={1} alignItems={'center'}>
-          <Grid item md={6} sm={12} xs={12}>
+        <Grid container spacing={3} alignItems={'center'}>
+          <Grid item md={3} sm={12} xs={12}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -62,7 +60,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
 
           </Grid>
 
-          <Grid item md={6} sm={10} xs={10}>
+          <Grid item md={3} sm={10} xs={10}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -70,10 +68,8 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
               controllerLabel={ZIP_CODE}
             />
           </Grid>
-        </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6}>
+          <Grid item md={3}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -82,7 +78,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
             />
           </Grid>
 
-          <Grid item md={6}>
+          <Grid item md={3}>
             <Selector
               disabled={shouldDisableEdit}
               name="employerState"
