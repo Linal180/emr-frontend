@@ -75,11 +75,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
               upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
-              dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber,
+              dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
             } = doctor
 
             const { id: facilityId, name } = facility || {}
-
+            email && setValue('email', email)
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
             ssn && setValue('ssn', ssn)
@@ -120,12 +120,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const primaryContact = contacts.filter(contact => contact.primaryContact)[0]
 
               if (primaryContact) {
-                const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
+                const { id, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
 
                 dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
                 fax && setValue('fax', fax)
                 city && setValue('city', city)
-                email && setValue('email', email)
+                // email && setValue('email', email)
                 phone && setValue('phone', phone)
                 pager && setValue('pager', pager)
                 mobile && setValue('mobile', mobile)

@@ -1,15 +1,21 @@
-import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { 
+  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
+} from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE } from "../../../../../constants";
-import { IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from "../../../../../generated/graphql";
+import { 
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, 
+  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE 
+} from "../../../../../constants";
+import { 
+  IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation 
+} from "../../../../../generated/graphql";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN, ORANGE_ONE } from "../../../../../theme";
-import { getFormatDateString, renderTh } from "../../../../../utils";
+import { getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh } from "../../../../../utils";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -176,7 +182,7 @@ const ProblemTab = () => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                              <Box className={classes.activeBox} bgcolor={getProblemTypeColor(problemType || '')}>
                                 {problemType}
                               </Box>
                             </TableCell>
@@ -186,7 +192,7 @@ const ProblemTab = () => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={GREEN}>
+                              <Box className={classes.activeBox} bgcolor={problemSeverity && getProblemSeverityColor(problemSeverity)}>
                                 {problemSeverity}
                               </Box>
                             </TableCell>
@@ -240,7 +246,7 @@ const ProblemTab = () => {
       </Grid>
       {isOpen &&
         <AddProblem isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
-      
+
       {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination

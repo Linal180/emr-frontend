@@ -34,7 +34,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <InputController
                 disabled={shouldDisableEdit}
                 fieldType="text"
@@ -43,7 +43,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="race"
@@ -52,10 +52,8 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
                 options={MAPPED_RACE}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="ethnicity"
@@ -65,7 +63,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="maritialStatus"
@@ -77,29 +75,29 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
           </Grid>
 
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="sexualOrientation"
                 label={SEXUAL_ORIENTATION}
-                addEmpty
                 options={MAPPED_SEXUAL_ORIENTATION}
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="genderIdentity"
                 label={GENDER_IDENTITY}
-                addEmpty
                 options={MAPPED_GENDER_IDENTITY}
               />
             </Grid>
-          </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Selector
                 disabled={shouldDisableEdit}
                 name="gender"
@@ -108,7 +106,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
               />
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Controller
                 name='homeBound'
                 control={control}
@@ -125,6 +123,10 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
                 )}
               />
             </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+           
           </Grid>
         </>
       )}

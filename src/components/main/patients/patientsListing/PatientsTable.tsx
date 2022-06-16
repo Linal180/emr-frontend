@@ -23,7 +23,7 @@ import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
-  formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -39,18 +39,24 @@ import {
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, currentUser } = useContext(AuthContext)
+  const { id: currentUserId } = currentUser || {}
   const { roles, facility } = user || {};
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles);
+  const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
+  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
   const { watch, setValue } = methods;
-  const { location: { id: selectedLocationId } = {}, dob, dos, provider: { id: selectedProviderId } = {} } = watch()
+  const {
+    location: { id: selectedLocationId } = {},
+    dob, dos, provider: { id: selectedProviderId } = {}
+  } = watch()
 
   const [fetchAllPatientsQuery, { loading, error }] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -82,13 +88,14 @@ const PatientsTable: FC = (): JSX.Element => {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
+
 
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
             ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
-            doctorId: selectedProviderId,
+            doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
             ...(!isFacAdmin ? { facilityId: selectedLocationId } : {}),
           }
@@ -96,8 +103,8 @@ const PatientsTable: FC = (): JSX.Element => {
       })
     } catch (error) { }
   }, [
-    page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery,
-    dob, selectedProviderId, dos, selectedLocationId
+    page, isSuper, isPracticeUser, practiceId, selectedLocationId, isFacAdmin, isRegularUser,
+    facilityId, fetchAllPatientsQuery, searchQuery, dob, isDoctor, doctorId, selectedProviderId, dos
   ])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
@@ -124,6 +131,11 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => { }, [user]);
+  useEffect(() => {
+    isDoctor && currentUserId &&
+      dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
+  }, [currentUserId, doctorId, isDoctor])
+
   useEffect(() => {
     fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);

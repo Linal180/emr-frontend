@@ -1,35 +1,36 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core';
+import { 
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography 
+} from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router-dom';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_PROBLEM, CANCEL, COMMENTS, EMPTY_OPTION, ITEM_MODULE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED,
-  SNO_MED_CODE, STATUS, TYPE, UPDATE
+  ACTIVE, ADD, ADD_PROBLEM, CANCEL, CHRONIC, COMMENTS, DASHES, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED, 
+  PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE
 } from '../../../../../constants';
 // component block
 import InputController from '../../../../../controller';
 import {
-  IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
+  IcdCodes, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
 import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
 import { ActionType } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { GRAY_SIX, GREY_THREE } from '../../../../../theme';
+import { ACUTE, GRAY_SIX, GREEN, GREY_THREE, GREY_TWO, MILD, WHITE } from '../../../../../theme';
 import { formatValue, setRecord } from '../../../../../utils';
 import { patientProblemSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import DatePicker from '../../../../common/DatePicker';
-import ItemSelector from '../../../../common/ItemSelector';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose }): JSX.Element => {
   const chartingClasses = useChartingStyles()
-  const { id: icdCodeId, code, description } = item as IcdCodes || {}
+  const { id: icdCodeId, code, description, } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
@@ -150,10 +151,9 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const handleSeverity = (severity: string) => setSeverity(severity)
 
   const onSubmit: SubmitHandler<PatientProblemInputs> = async ({
-    note, appointmentId, problemStartDate, snowMedCodeId
+    note, appointmentId, problemStartDate
   }) => {
     const { id: selectedAppointment } = appointmentId || {};
-    const { id: selectedSnoMedCode } = snowMedCodeId || {};
 
     const commonInput = {
       note,
@@ -168,14 +168,20 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     if (isEdit) {
       recordId && await updatePatientProblem({
         variables: {
-          updateProblemInput: { id: recordId, ...extendedInput }
+          updateProblemInput: {
+            id: recordId, ...extendedInput,
+          }
         }
       })
     } else {
+      const { snoMedCode } = item as IcdCodesWithSnowMedCode
+      const { id: selectedSnoMedCode } = snoMedCode || {};
+
       await addPatientProblem({
         variables: {
-          createProblemInput: { patientId, icdCodeId, ...extendedInput, 
-            ...(selectedSnoMedCode && {snowMedCodeId: selectedSnoMedCode })
+          createProblemInput: {
+            patientId, icdCodeId, ...extendedInput,
+            ...(selectedSnoMedCode && { snowMedCodeId: selectedSnoMedCode })
           }
         }
       })
@@ -183,6 +189,30 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   }
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
+  const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
+  console.log("severities", severities)
+
+  const getProblemSeverityColor = (severity: string) => {
+    switch (severity) {
+      case CHRONIC:
+        return ACUTE;
+
+      case 'Acute':
+        return MILD;
+    }
+  };
+
+  const getProblemTypeColor = (type: string) => {
+    switch (type) {
+      case ACTIVE:
+        return GREEN
+      case 'Historic':
+        return GREY_TWO
+      default:
+        return '';
+    }
+  }
+
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
       <DialogTitle>
@@ -201,7 +231,8 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                 <Typography variant='h4'>{description}</Typography>
 
                 <Box mt={1} color={GREY_THREE}>
-                  <Typography variant='h6'><strong>ICD-10 Code:</strong> {code}</Typography>
+                  {isEdit ? <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCode?.name && snoMedCode?.name !== DASHES ? `| SnoMedCode: ${snoMedCode?.name}` : ''}</Typography> :
+                    <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCodeInfo?.referencedComponentId && `| SnoMedCode: ${snoMedCodeInfo?.referencedComponentId}`}</Typography>}
                 </Box>
               </Box>
             </Box>
@@ -223,7 +254,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                   <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {statuses.map(status =>
                       <Box onClick={() => handleStatus(status)}
-                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
+                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: status === typeStatus ? WHITE : getProblemTypeColor(status),
+                          backgroundColor: status === typeStatus ? getProblemTypeColor(status) : WHITE,
+                        }}
+                      >
                         <Typography variant='h6'>{status}</Typography>
                       </Box>
                     )}
@@ -236,7 +272,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                   <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                     {severities.map(type =>
                       <Box onClick={() => handleSeverity(type)}
-                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
+                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: type === severity ? WHITE : getProblemSeverityColor(type as ProblemSeverity),
+                          backgroundColor: type === severity ? getProblemSeverityColor(type as ProblemSeverity) : WHITE,
+                        }}
+                      >
                         <Typography variant='h6'>{type}</Typography>
                       </Box>
                     )}
@@ -244,7 +285,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                 </Box>
 
                 <Grid container className={chartingClasses.problemGrid}>
-                  <Grid item md={12} sm={12} xs={12}>
+                  {/* <Grid item md={12} sm={12} xs={12}>
                     <ItemSelector
                       isEdit
                       label={SNO_MED_CODE}
@@ -253,7 +294,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
                       searchQuery={code || ''}
                       modalName={ITEM_MODULE.snoMedCode}
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Box m={2} />
 
