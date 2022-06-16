@@ -1,7 +1,8 @@
 // packages block
 import DropIn from 'braintree-web-drop-in-react';
+import { useFormContext } from 'react-hook-form';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
-import { Dispatch, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Dispatch, Fragment, Reducer, useCallback, useEffect, useReducer, useMemo } from 'react';
 import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload,
 } from 'braintree-web-drop-in';
@@ -32,7 +33,8 @@ interface PaymentComponentProps {
 const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProps): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
   const { appointmentPaymentToken, price, showPayBtn, instance, achPayment } = state;
-  const { activeStep, serviceTypeId } = formState || {}
+  const { activeStep, serviceTypeId, transactionId } = formState || {}
+  const { setValue } = useFormContext()
 
   const moveNext = () => {
     dispatcher && activeStep && dispatcher({ type: FormActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
@@ -91,9 +93,7 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
         }
       }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const fetchToken = useCallback(async () => {
@@ -160,6 +160,10 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
   };
 
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
+
+  useMemo(() => {
+    transactionId && setValue('transactionId', transactionId)
+  }, [transactionId, setValue])
 
   return (
     <Box bgcolor={GREY} padding='30px 30px 30px 60px'>
@@ -249,7 +253,7 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
                     dispatcher={dispatch} states={state} moveNext={moveNext}
                     formDispatch={dispatcher}
                     formState={formState}
-                    />}
+                  />}
                 </Box>
 
               </Box>
