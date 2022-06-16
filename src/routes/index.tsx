@@ -41,13 +41,13 @@ import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { SuperDashboard } from "../pages/main/dashboard/Super";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
 import { AddLabOrders } from "../pages/main/labOrders/addOrder";
-import LabResults from "../pages/main/reports/labResultsListing";
 import { EditLabOrders } from "../pages/main/labOrders/editOrder";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
 import { FacilityDashboard } from "../pages/main/dashboard/Facility";
+import { LabResults } from "../pages/main/reports/labResultsListing";
 import { PracticeDashboard } from "../pages/main/dashboard/Practice";
 import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
@@ -124,8 +124,8 @@ const Routes: FC = (): JSX.Element => {
       {isSuperAdmin(roles) ?
         <PrivateRoute exact path={DASHBOARD_ROUTE} component={SuperDashboard} />
         : isPracticeAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
-        : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
-        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} /> 
+          : isFacilityAdmin(roles) ? <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} />
+            : <PrivateRoute exact path={DASHBOARD_ROUTE} component={FacilityDashboard} />
       }
 
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} permission={USER_PERMISSIONS.createPractice} />
