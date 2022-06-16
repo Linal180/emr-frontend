@@ -144,6 +144,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               value: serviceId,
               label: serviceName
             })
+
             setServiceId([{
               value: serviceId,
               label: serviceName

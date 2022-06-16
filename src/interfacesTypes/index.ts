@@ -551,9 +551,11 @@ export type ExtendedStaffInputProps = Omit<
 } & { providerIds: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
-  & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption } & { shouldHaveRecursion: boolean };
+  & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption }
+  & { shouldHaveRecursion: boolean };
 
-export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption | SelectorOption[] } & { shouldHaveRecursion: boolean };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day">
+  & { day: SelectorOption | SelectorOption[] } & { shouldHaveRecursion: boolean };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -1834,4 +1836,15 @@ export interface StageStatusType {
 
 export interface AgreementGeneralProps {
   setEdit: Function;
+}
+
+export interface ScheduleFormProps {
+  id: string;
+  isOpen: boolean;
+  isEdit?: boolean;
+  isDoctor?: boolean;
+  doctorFacilityId?: string;
+  doctorDispatcher?: Dispatch<DoctorAction>;
+  facilityDispatcher?: Dispatch<FacilityAction>;
+  reload: Function;
 }

@@ -4,7 +4,6 @@ import { Box, Grid, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
 import Alert from "../../../../common/Alert";
-import FacilityScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../../common/CardComponent";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
@@ -17,11 +16,14 @@ import { useDoctorScheduleStyles } from '../../../../../styles/doctorSchedule';
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from '../../../../../reducers/facilityReducer';
-import { SchedulesPayload, useGetFacilityScheduleLazyQuery, useRemoveScheduleMutation } from "../../../../../generated/graphql";
+import {
+  SchedulesPayload, useGetFacilityScheduleLazyQuery, useRemoveScheduleMutation
+} from "../../../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_FACILITY_SCHEDULE_DESCRIPTION,
   DOCTOR_NOT_FOUND, FACILITY_SCHEDULE
 } from "../../../../../constants";
+import ScheduleModal from "../../../../common/ScheduleModal";
 
 const FacilityScheduleForm: FC = () => {
   const classes = useDoctorScheduleStyles();
@@ -119,13 +121,13 @@ const FacilityScheduleForm: FC = () => {
             <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                    <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                      <AddSlotIcon />
+                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                    <AddSlotIcon />
 
-                      <Typography>
-                        {ADD_MORE_RECORDS_TEXT}
-                      </Typography>
-                    </Box>
+                    <Typography>
+                      {ADD_MORE_RECORDS_TEXT}
+                    </Typography>
+                  </Box>
 
                   <Box>
                     {byDaySchedules?.map((schedule: DaySchedule) => {
@@ -149,13 +151,12 @@ const FacilityScheduleForm: FC = () => {
         </CardComponent>
       </Grid>
 
-      <FacilityScheduleModal
+      <ScheduleModal
         id={scheduleId}
         isEdit={isEdit}
         isOpen={scheduleOpenModal}
         facilityDispatcher={dispatch}
         reload={fetchFacilitySchedules}
-        facilityId={id}
       />
 
       <ConfirmationModal
