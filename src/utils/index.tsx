@@ -136,9 +136,7 @@ export const isPracticeAdmin = (currentUserRole: RolesPayload['roles']) => {
 export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
-    || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
+  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isAdmin = (roles: RolesPayload['roles']) => {
