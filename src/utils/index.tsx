@@ -162,6 +162,18 @@ export const isOnlyDoctor = (roles: RolesPayload['roles']) => {
   )
 }
 
+export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Doctor)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.Staff)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
