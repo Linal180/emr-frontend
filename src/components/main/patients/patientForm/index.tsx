@@ -29,8 +29,10 @@ import {
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
-  const { user } = useContext(AuthContext)
-  const { roles } = user || {};
+  const { user, currentDoctor } = useContext(AuthContext)
+  const { id: selectedDoctorId} = currentDoctor || {}
+  const { roles, facility } = user || {};
+  const { id: selectedFacilityId} = facility || {};
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
@@ -349,7 +351,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        email: basicEmail || '', facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -363,7 +365,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
-        usualProviderId: selectedUsualProvider
+        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider
       };
 
       const contactInput = {
@@ -438,7 +440,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         })
       } else {
         const optionalInputs = {
-          usualProviderId: selectedUsualProvider || '', adminId: userId || '',
+          usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider || '', adminId: userId || '',
         }
 
         await createPatient({
