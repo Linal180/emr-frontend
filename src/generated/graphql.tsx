@@ -194,7 +194,7 @@ export type AppointmentPayload = {
 };
 
 /** The patient appointment status type assigned */
-export enum   AppointmentStatus {
+export enum AppointmentStatus {
   Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
   CheckInOnline = 'CHECK_IN_ONLINE',
@@ -2888,13 +2888,13 @@ export type PatientsPayload = {
 };
 
 export type PaymentInput = {
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   clientIntent?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
-  patientId: Scalars['String'];
-  price: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
-  serviceId: Scalars['String'];
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 export type PaymentInputsAfterAppointment = {
@@ -5133,7 +5133,7 @@ export type UpdateAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, billingStatus: BillingStatus } | null | undefined } };
+export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus } | null | undefined } };
 
 export type CreateExternalAppointmentMutationVariables = Exact<{
   createExternalAppointmentInput: CreateExternalAppointmentInput;
@@ -6413,7 +6413,6 @@ export const UpdateAppointmentDocument = gql`
     appointment {
       id
       status
-      billingStatus
     }
   }
 }

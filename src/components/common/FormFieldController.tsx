@@ -18,6 +18,7 @@ import ConsentForm from './formBuilder/ConsentForm';
 import TermsConditions from './formBuilder/TermsConditions';
 import ContractForm from "./formBuilder/ContractForm"
 import InsuranceForm from './formBuilder/InsuranceForm'
+import PaymentForm from './formBuilder/PaymentForm'
 //graphql 
 import { ElementType } from '../../generated/graphql';
 //field renderer component
@@ -37,6 +38,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <InsuranceForm item={item} />
       case FormBuilderPaymentTypes.CONTRACT:
         return <ContractForm />
+      case FormBuilderPaymentTypes.INTERNATIONAL_TRAVELER:
+        return <PaymentForm dispatcher={dispatcher} state={state} />
       default:
         return <></>
     }
