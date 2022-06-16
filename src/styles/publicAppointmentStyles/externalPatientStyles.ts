@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, StepConnector, Switch, withStyles, } from "@material-ui/core";
-import { 
+import {
   theme, WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, GREY_TWO, BLACK_ONE, GRAY_SIX, GREY_SEVEN, BLACK, BLUE,
 } from "../../theme";
 
@@ -83,12 +83,6 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   stepperContainer: {
-    height: "calc(100vh - 130px)",
-
-    "@media (max-width:960px)": {
-      height: "auto",
-    },
-
     "& .MuiStepper-root": {
       marginTop: 40,
       padding: 30,
@@ -311,3 +305,21 @@ export const AntSwitch = withStyles(() =>
     checked: {},
   })
 )(Switch);
+
+export const useQontoStepIconStyles = makeStyles({
+  root: {
+    color: '#eaeaf0',
+    display: 'flex',
+    height: 25,
+    alignItems: 'center',
+    paddingRight: 5
+  },
+  active: {
+    color: '#784af4',
+  },
+  completed: {
+    color: '#784af4',
+    zIndex: 1,
+    fontSize: 20,
+  },
+});

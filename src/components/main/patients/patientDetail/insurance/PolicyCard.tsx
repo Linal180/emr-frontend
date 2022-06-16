@@ -2,7 +2,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Grid, Typography } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 //components import
@@ -16,7 +16,7 @@ import PolicyHolderDetails from "./PolicyHolderDetails";
 //constants, types, utils import
 import { CANCEL, ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
 import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
-import { InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
+import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
 import Alert from "../../../../common/Alert";
@@ -27,6 +27,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
   const [policyId, setPolicyId] = useState<string>('')
   const [policyHolderId, setPolicyHolderId] = useState<string>('')
   const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
+  const policyAttachmentRef = useRef<FormForwardRef | null>(null);
 
   const methods = useForm<InsuranceCreateInput>({
     mode: "all",
@@ -35,7 +36,9 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, watch } = methods;
+
+  const { orderOfBenefit, pricingProductType } = watch()
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
@@ -53,6 +56,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
         if (status && status === 200) {
           setPolicyId(policy.id ?? '')
+          policyAttachmentRef.current?.submit()
           handleReload && handleReload()
         }
       }
@@ -74,6 +78,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
         const { status } = response
 
         if (status && status === 200) {
+          policyAttachmentRef.current?.submit()
           setPolicyId(policy.id ?? '')
           handleReload && handleReload()
         }
@@ -160,7 +165,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
   }, [findPolicy, isEdit]);
 
 
-  const onSubmit: SubmitHandler<InsuranceCreateInput> = (values) => {
+  const onSubmit: SubmitHandler<InsuranceCreateInput> = async(values) => {
     const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields, dob, employer, expirationDate, firstName,
       insuranceId, issueDate, lastName, middleName, notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
       pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode } = values ?? {}
@@ -191,7 +196,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     }
 
     if (isEdit) {
-      updatePolicy({
+      await updatePolicy({
         variables: {
           updatePolicyInput: {
             id: policyId,
@@ -248,6 +253,11 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     setExpanded(isExpanded ? panel : false);
   };
 
+  useEffect(()=>{
+    orderOfBenefit?.id && setExpanded('panel1')
+    pricingProductType?.id && setExpanded('panel2')
+  },[orderOfBenefit?.id, pricingProductType?.id])
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -257,7 +267,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
               <Typography variant='h4'>{INSURANCE_AND_POLICIES}</Typography>
 
               <Box display="flex" alignItems="center">
-                {isEdit && <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>}
+                <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>
                 <Box p={1} />
                 <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
               </Box>
@@ -265,7 +275,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
             <Box pt={3} pb={5}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={5} sm={12} xs={12}>
                   <ItemSelector
                     isRequired
                     isEdit={isEdit}
@@ -344,7 +354,9 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
               <Box mt={4} />
 
-              <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} className='accordionCustomize' disabled={!policyId}>
+              <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} className='accordionCustomize'
+              //  disabled={!policyId}
+               >
                 <AccordionSummary
                   expandIcon={<ExpandMore />}
                   aria-controls="panel4bh-content"
@@ -356,7 +368,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
                 </AccordionSummary>
 
                 <AccordionDetails>
-                  <PolicyAttachments handleReload={() => { }} policyId={policyId} />
+                  <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef}/>
                 </AccordionDetails>
               </Accordion>
             </Box>

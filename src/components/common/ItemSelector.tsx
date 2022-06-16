@@ -4,16 +4,17 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants'
+import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE, TEMPORARY_CPT_CODES } from '../../constants'
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import {
-  DocumentType, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
+  DocumentType, IcdCodes, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
+  useFetchIcdCodesLazyQuery,
   useSearchSnoMedCodesLazyQuery
 } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
@@ -97,13 +98,59 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
+  const [searchIcdCodes] = useFetchIcdCodesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    variables: {
+      searchIcdCodesInput: {
+        searchTerm: query,
+        paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
+      }
+    },
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchICDCodes } = data;
+
+        if (fetchICDCodes) {
+          const { icdCodes } = fetchICDCodes
+
+          setOptions(renderListOptions<IcdCodes>(icdCodes as IcdCodes[], modalName))
+        }
+      } else {
+        setOptions([])
+      }
+    }
+  });
+
+  const getTempCptCode = useCallback(() => {
+    if (query) {
+      const filteredCptCode = TEMPORARY_CPT_CODES.filter(({ cptCode, description }) => {
+        return (cptCode.toLowerCase().includes(query.toLowerCase()) || description.toLowerCase().includes(query.toLowerCase()))
+      })
+
+      const transformedCptCode = filteredCptCode.map((cptCode) => setRecord(cptCode.cptCode, cptCode.description)).slice(0, INITIAL_PAGE_LIMIT)
+      setOptions(renderListOptions<SelectorOption>(transformedCptCode, modalName))
+      return
+    }
+    const transformedCptCode = TEMPORARY_CPT_CODES.map(cptCode => setRecord(cptCode.cptCode, cptCode.description)).slice(0, INITIAL_PAGE_LIMIT)
+    setOptions(renderListOptions<SelectorOption>(transformedCptCode, modalName))
+  }, [modalName, query])
+
   const fetchList = useCallback(async () => {
     try {
       if (modalName === ITEM_MODULE.snoMedCode) await getSnoMedCodes();
       if (modalName === ITEM_MODULE.insurance) await getInsurances();
       if (modalName === ITEM_MODULE.documentTypes) await fetchDocumentTypes();
+      if (modalName === ITEM_MODULE.icdCodes) await searchIcdCodes();
+      if (modalName === ITEM_MODULE.cptCode) await getTempCptCode();
     } catch (error) { }
-  }, [fetchDocumentTypes, getInsurances, getSnoMedCodes, modalName])
+  }, [fetchDocumentTypes, getInsurances, getSnoMedCodes, getTempCptCode, modalName, searchIcdCodes])
 
   useEffect(() => {
     (!query.length || query.length > 2) && fetchList()
@@ -115,7 +162,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         const { id, name } = value
         modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
         modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
-        modalName === ITEM_MODULE.documentTypes && setValue('documentTypeId', value)
+        modalName === ITEM_MODULE.documentTypes && setValue('documentType', value)
       }
     }
   }, [isEdit, modalName, setValue, value])
@@ -131,7 +178,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
           <Autocomplete
             options={options.length ? options : []}
             disableClearable
-            value={field.value}
+            value={field.value ?? EMPTY_OPTION}
             disabled={disabled}
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
@@ -155,7 +202,10 @@ const ItemSelector: FC<ItemSelectorProps> = ({
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
-            onChange={(_, data) => field.onChange(data)}
+            onChange={(_, data) => {
+              field.onChange(data)
+              onSelect && onSelect(data)
+            }}
           />
         );
       }}

@@ -9,12 +9,13 @@ import Selector from "./Selector";
 import CardComponent from "./CardComponent";
 import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
-import { 
-  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE 
-} from "../../constants";
-import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
-import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
 import { createCopaySchema } from "../../validationSchemas";
+import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
+import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
+import {
+  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, 
+  FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE
+} from "../../constants";
 
 const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JSX.Element => {
   const methods = useForm<CopayFields>({
@@ -56,13 +57,16 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
         createCopay({
           variables: {
             createCopayInput: {
-              policyId: insuranceId,
-              amount: inputs.amount,
+              policyId: insuranceId, amount: inputs.amount,
               type: inputs.copayType?.id as CopayType ?? ''
             }
           }
         })
+        return
       }
+
+      setValue('amount', String(Number(amount) + Number(inputs.amount)))
+      setIsOpen(false)
       return
     }
     setValue('amount', String(Number(amount) + Number(inputs.amount)))

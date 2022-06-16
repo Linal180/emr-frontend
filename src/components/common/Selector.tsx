@@ -1,19 +1,22 @@
 // packages block
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
+import { requiredLabel } from "../../utils";
+import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@material-ui/core";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur,onSelect, value
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, 
+  onOutsideClick, isEdit
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
+  const eleRef = useRef<any>();
 
+ 
   return (
     <Controller
       rules={{ required: true }}
@@ -23,11 +26,13 @@ const Selector: FC<SelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={options?.length ? updatedOptions : []}
+             ref={eleRef}
+            options={!!updatedOptions?.length ? updatedOptions : []}
             disableClearable
-            value={field.value}
+            value= {field.value}
             disabled={disabled}
-            getOptionSelected={(option,value)=>option.id===value.id}
+            // filterSelectedOptions
+            getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
@@ -43,6 +48,7 @@ const Selector: FC<SelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  autoFocus
                   onBlur={() => onBlur && onBlur()}
                 />
 
@@ -52,7 +58,9 @@ const Selector: FC<SelectorProps> = ({
             onChange={(_, data) => {
               field.onChange(data)
               onSelect && onSelect(data)
+              return data
             }}
+            onBlur={() => onOutsideClick && onOutsideClick()}       
           />
         );
       }}

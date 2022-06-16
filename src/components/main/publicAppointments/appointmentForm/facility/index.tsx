@@ -108,7 +108,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
     } else {
       if (facility) {
         const { id: facilityId, practiceId } = facility
-        const { id: selectedService } = serviceId || {};
+        const { value: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
         await createExternalAppointment({
@@ -152,14 +152,13 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
             <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
               <Grid container spacing={3}>
                 <Grid lg={9} md={8} sm={6} xs={12} item>
-                  <CardComponent cardTitle={SELECT_SERVICES}>
+                  <CardComponent cardTitle={SELECT_SERVICES} className={`overflow-visible`}>
                     <Grid item md={6} sm={12} xs={12}>
                       <ServiceSelector
                         isRequired
                         label={APPOINTMENT_TYPE}
                         name="serviceId"
                         facilityId={facilityId}
-                        addEmpty
                       />
                     </Grid>
                   </CardComponent>

@@ -17,8 +17,9 @@ import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh 
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
-  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
-  LayoutJsonType
+  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload,
+  LayoutJsonType,
+  FormTabs
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
@@ -46,7 +47,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [openShare, setOpenShare] = useState<boolean>(false);
   const [deleteFormId, setDeleteFormId] = useState<string>("");
   const [forms, setForms] = useState<FormsPayload['forms']>([]);
-  const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
+  const [formPreviewData, setFormPreviewData] = useState<FormTabs[]>([]);
   const [openPreview, setOpenPreview] = useState<boolean>(false)
   const [formName, setFormName] = useState<string>('')
   //mutation & query
@@ -63,6 +64,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
       if (findAllForms) {
         const { forms, pagination } = findAllForms
+        debugger
         forms && setForms(forms as FormsPayload['forms'])
 
         if (pagination) {
@@ -105,7 +107,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? 
+      { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -142,8 +145,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
     if (layout) {
-      const { sections } = layout;
-      sections?.length > 0 && setFormPreviewData(sections)
+      const { tabs } = layout;
+      tabs?.length > 0 && setFormPreviewData(tabs)
       name && setFormName(name)
       setOpenPreview(true)
     }
@@ -212,21 +215,23 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {(isSuper || isPracticeUser) && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
+                    {(isSuper || isPracticeUser) && facilityId ?
+                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> :
+                      <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
                     <TableCell scope="row">
                       {facilityId && <Box className={classes.status}
-                        component='span' color={MODERATE} border={`1px solid ${MODERATE}`}>
+                        component='span' color={MODERATE}>
                         {FACILITY_FORM}
                         {practiceId && !facilityId && PRACTICE_FORM}
                       </Box>}
 
                       {practiceId && !facilityId && <Box className={classes.status}
-                        component='span' color={GREEN} border={`1px solid ${GREEN}`}>
+                        component='span' color={GREEN}>
                         {PRACTICE_FORM}
                       </Box>}
-                        {!practiceId && !facilityId && "--" }
+                      {!practiceId && !facilityId && "--"}
                     </TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

@@ -37,7 +37,6 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
   const { testField } = watch()
 
   useEffect(() => {
-    console.group("use")
     testField.map(async (testFieldValues, index) => {
       const { test, specimenTypeField } = testFieldValues ?? {}
       if (test.name?.toLowerCase().includes('coronavirus')) {

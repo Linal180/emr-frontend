@@ -21,6 +21,7 @@ import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataComponent from '../../../common/NoDataComponent';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
+import history from "../../../../history";
 import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
@@ -43,9 +44,10 @@ import {
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE, VISITS,
+  HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
 import SideDrawer from '../../../common/SideDrawer';
+import AgreementsComponent from './agreements';
 
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -122,7 +124,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            appointmentStatus: AppointmentStatus.Initiated.toLocaleLowerCase(),
+            appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
             paginationOptions: {
               limit: PAGE_LIMIT, page: pageComing
             },
@@ -187,22 +189,14 @@ const PatientDetailsComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <Box display="flex" flexWrap="wrap" maxWidth="100%">
-            <TabList onChange={handleChange}
-              variant="scrollable"
-              aria-label="Profile top tabs">
-              {PROFILE_TOP_TABS.map(item => (
-                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-              ))}
-            </TabList>
-          </Box>
-
-          <Box pr={2}>
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
+        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+          <TabList onChange={handleChange}
+            variant="scrollable"
+            aria-label="Profile top tabs">
+            {PROFILE_TOP_TABS.map(item => (
+              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+            ))}
+          </TabList>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -215,86 +209,87 @@ const PatientDetailsComponent = (): JSX.Element => {
             }
           />
 
-          <Box p={1} />
+          <Box pt={1.5} pb={1.5} />
+
+          <Box display="flex" alignItems="center">
+            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+              {EDIT_PATIENT}
+            </Button>
+
+            <Box p={1} />
+
+            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+            </Link>
+          </Box>
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3} >
-                    <BloodPressureIcon />
-                    <Box>
-                      <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
-                      <Typography component="span" align='right'>
-                        {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
-                      </Typography>
+            <Box mb={2} pb={4} className='masonry-container'>
+              <Box className='masonry-box'>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3} >
+                        <BloodPressureIcon />
+                        <Box>
+                          <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
+                          <Typography component="span" align='right'>
+                            {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box className='bloodPressure-measurement'>
+                        <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
+                          <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
+                        </Typography>
+
+                        <Typography className='measure-frequency primary' component="span">
+                          {BLOOD_PRESSURE_RANGES.Normal}
+                        </Typography>
+                      </Box>
+
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartOne} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
 
-                  <Box className='bloodPressure-measurement'>
-                    <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
-                      <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
-                    </Typography>
+                  <Grid item md={6} xs={12} sm={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3}>
+                        <HeartRateIcon />
 
-                    <Typography className='measure-frequency primary' component="span">
-                      {BLOOD_PRESSURE_RANGES.Normal}
-                    </Typography>
-                  </Box>
+                        <Box>
+                          <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
 
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartOne} />
-                  </Box>
-                </Box>
-              </Grid>
+                          <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                        </Box>
+                      </Box>
 
-              <Grid item md={3} xs={12} sm={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3}>
-                    <HeartRateIcon />
+                      <Box className='heartRate-measurement'>
+                        <Typography variant="h2">{HEART_RATE_VALUE}
+                          <span className='measure-unit'>{HEART_RATE_UNIT}</span>
+                        </Typography>
 
-                    <Box>
-                      <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
+                        <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                      </Box>
 
-                      <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartTwo} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
+                </Grid>
+              </Box>
 
-                  <Box className='heartRate-measurement'>
-                    <Typography variant="h2">{HEART_RATE_VALUE}
-                      <span className='measure-unit'>{HEART_RATE_UNIT}</span>
-                    </Typography>
-
-                    <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
-                  </Box>
-
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartTwo} />
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <Card>
-                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
-                    <Typography variant="h4">{VISITS}</Typography>
-                  </Box>
-
-                  {/* Implement patient visits by year */}
-                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
-                </Card>
-              </Grid>
-            </Grid>
-
-            <Box p={2} />
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-                  <AppointmentList appointments={upComing} type={AppointmentStatus.Initiated} />
+                  <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataComponent/>
+                      <NoDataComponent />
                     </Box>
                   )}
 
@@ -310,30 +305,11 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Grid>
+              </Box>
 
-              <Grid item xs={12} sm={12} md={6}>
-                <EncounterList />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent
-                  onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
-                  toggleSideDrawer={toggleSideDrawer}
-                  patientId={id}
-                  loading={getPatientLoading}
-                  reload={() => fetchAllPatientsProviders()}
-                  patientProvidersData={patientProvidersData}
-                  drawerOpened={drawerOpened}
-                  patientDispatcher={dispatch}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={AppointmentStatus.Completed} />
+                  <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -353,8 +329,23 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Grid>
-            </Grid>
+              </Box>
+
+              <Box className='masonry-box'>
+                <Card>
+                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
+                    <Typography variant="h4">{VISITS}</Typography>
+                  </Box>
+
+                  {/* Implement patient visits by year */}
+                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
+                </Card>
+              </Box>
+
+              <Box className='masonry-box'>
+                <EncounterList />
+              </Box>
+            </Box>
           </TabPanel>
 
           <TabPanel value="2">
@@ -372,14 +363,31 @@ const PatientDetailsComponent = (): JSX.Element => {
           <TabPanel value="10">
             <LabOrdersTable />
           </TabPanel>
+
+          <TabPanel value="11">
+            <CareTeamComponent
+              onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
+              toggleSideDrawer={toggleSideDrawer}
+              patientId={id}
+              loading={getPatientLoading}
+              reload={() => fetchAllPatientsProviders()}
+              patientProvidersData={patientProvidersData}
+              drawerOpened={drawerOpened}
+              patientDispatcher={dispatch}
+            />
+          </TabPanel>
+
+          <TabPanel value="12">
+            <AgreementsComponent />
+          </TabPanel>
         </Box>
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <SideDrawer             
+        <SideDrawer
           drawerOpened={drawerOpened}
           toggleSideDrawer={toggleSideDrawer} >
-          <CareTeamProvider            
+          <CareTeamProvider
             toggleSideDrawer={toggleSideDrawer}
             patientId={id}
             reload={() => fetchAllPatientsProviders()}

@@ -7,24 +7,25 @@ import {
   Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, Button,
 } from "@material-ui/core";
 // components block
-import InputController from '../../../../controller';
-import ViewDataLoader from '../../../common/ViewDataLoader';
+import Alert from '../../../common/Alert';
 import PageHeader from '../../../common/PageHeader';
 import BackButton from '../../../common/BackButton';
+import InputController from '../../../../controller';
+import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants and types block
-import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import { formatPermissionName, isSuperAdmin } from '../../../../utils';
 import { roleSchema } from '../../../../validationSchemas';
 import { GeneralFormProps } from '../../../../interfacesTypes';
+import { formatPermissionName, isSuperAdmin } from '../../../../utils';
 import { AuthContext, ListContext, PermissionContext } from '../../../../context';
 import {
   RoleItemInput, useAssignPermissionToRoleMutation, useCreateRoleMutation, useGetRoleLazyQuery,
   useUpdateRoleMutation
 } from '../../../../generated/graphql';
 import {
-  DESCRIPTION, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET, ROLES_ROUTE, ROLE_ALREADY_EXIST, ROLE_CREATED,
-  ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED, SAVE_TEXT, SET_PERMISSIONS, ROLES_TEXT, ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD,
+  DESCRIPTION, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET, ROLES_ROUTE,
+  ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED, SAVE_TEXT, SET_PERMISSIONS, ROLES_TEXT,
+  ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -202,7 +203,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         <Box display='flex'>
           <BackButton to={`${ROLES_ROUTE}`} />
 
-          <Box ml={2}/>
+          <Box ml={2} />
 
           <PageHeader
             title={ROLES_TEXT}

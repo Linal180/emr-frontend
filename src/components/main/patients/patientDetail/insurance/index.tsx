@@ -1,21 +1,21 @@
 // packages block
+import { Box, Card, Collapse, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
-import { Box, Card, Collapse, colors, IconButton, Typography } from "@material-ui/core";
-// components
-import PolicyCard from "./PolicyCard";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
-// constant, utils, svgs, interfaces, graphql and styles block
-import { ParamsType } from "../../../../../interfacesTypes";
-import { getFormatDateString } from '../../../../../utils';
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
-import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
 import {
   ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_TEXT,
-  ID_TEXT, INSURANCE_POLICY_DETAILS, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
+  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
+import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
+// constant, utils, svgs, interfaces, graphql and styles block
+import { ParamsType } from "../../../../../interfacesTypes";
+import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
+import { getFormatDateString } from '../../../../../utils';
+import ViewDataLoader from "../../../../common/ViewDataLoader";
+// components
+import PolicyCard from "./PolicyCard";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
@@ -102,9 +102,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   return (
     <Card>
       <Box p={3}>
-        <Box pb={2} mb={5} borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant='h4'>{INSURANCE_POLICY_DETAILS}</Typography>
-        </Box>
         {fetchAllPoliciesLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={true} /> :
           <>
             {policies.map((policy) => {
@@ -134,28 +131,28 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                         </IconButton>}
                       </Box>
 
-                      <Box display='flex' alignItems='center'>
-                        <Box minWidth={200} mr={10}>
+                      <Box display='flex' alignItems='center' flexWrap='wrap'>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
                           <Typography variant="body2">{payerId}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{ID_TEXT}</Typography>
                           <Typography variant="body2">{groupNumber}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{COPAY_TEXT}</Typography>
                           <Typography variant="body2">${amount}</Typography>
                         </Box>
 
-                        <Box minWidth={200} mr={10}>
+                        <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
                           <Typography variant="body2">{`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}</Typography>
                         </Box>
 
-                        <Box minWidth={200}>
+                        <Box minWidth={200} my={2}>
                           <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
                           <Typography variant="body2">{CHECK_ELIGIBILITY_TODAY}</Typography>
                         </Box>
@@ -166,7 +163,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               )
             })}
 
-            {filteredOrderOfBenefitOptions.length &&
+            {!!filteredOrderOfBenefitOptions.length &&
               !shouldDisableEdit && <>
                 <Collapse in={!open} mountOnEnter unmountOnExit>
                   <Box onClick={() => {

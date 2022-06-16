@@ -21,7 +21,9 @@ query GetAttachments($getAttachment: GetAttachment!){
         signedAt
         signedBy
         providerName
-        
+        comments
+        documentDate
+
         documentType {
           id
           type

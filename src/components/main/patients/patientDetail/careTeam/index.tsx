@@ -62,7 +62,7 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
                   </Box>
                 </Box>
 
-                {relation && <Box className={classes.status} component='span' color={BLUE_FOUR} border={`1px solid ${BLUE_FOUR}`}>
+                {relation && <Box className={classes.status} component='span' color={BLUE_FOUR}>
                   {formatValue(relation as string)}
                 </Box>}
               </Box>

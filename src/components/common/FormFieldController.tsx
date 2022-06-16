@@ -1,11 +1,12 @@
 
-import { FormControl, FormHelperText, InputLabel } from '@material-ui/core';
+import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 //interfaces, styles, constants
 import { FieldComponentProps } from '../../interfacesTypes';
 import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
-import { FormBuilderApiSelector } from '../../constants';
+import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
 import ServiceSelector from './formBuilder/ServiceSelector';
@@ -13,6 +14,12 @@ import SlotsComponent from './formBuilder/SlotsComponent'
 import ProviderSelector from './formBuilder/DoctorSelector'
 import PaymentSelector from './formBuilder/PaymentSelector'
 import FacilitySelector from './formBuilder/FacilitySelector';
+import ConsentForm from './formBuilder/ConsentForm';
+import TermsConditions from './formBuilder/TermsConditions';
+import ContractForm from "./formBuilder/ContractForm"
+import InsuranceForm from './formBuilder/InsuranceForm'
+//graphql 
+import { ElementType } from '../../generated/graphql';
 //field renderer component
 export const FieldController = ({ item, isCreating, facilityId, state, practiceId, dispatcher }: FieldComponentProps) => {
   //hooks
@@ -20,12 +27,23 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const classes = useFormStyles();
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
-  const { facilityFieldId } = state || {}
+  const { facilityFieldId, paymentType } = state || {}
   const { id: facilityField } = facilityFieldId || {}
 
-  if ((facilityId || practiceId) && apiCall) {
-    switch (apiCall) {
+  const getPaymentComponent = (value: string) => {
 
+    switch (value) {
+      case FormBuilderPaymentTypes.INSURANCE:
+        return <InsuranceForm item={item} />
+      case FormBuilderPaymentTypes.CONTRACT:
+        return <ContractForm />
+      default:
+        return <></>
+    }
+  }
+
+  if (type === ElementType.Custom && apiCall) {
+    switch (apiCall) {
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
           isRequired={required || true}
@@ -59,24 +77,42 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         />
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
-        return <PaymentSelector item={item} dispatcher={dispatcher} />
+        return <>
+          <PaymentSelector item={item} dispatcher={dispatcher} />
+
+          <Box>
+            {getPaymentComponent(paymentType || '')}
+          </Box>
+        </>
+
+
+
+      case FormBuilderApiSelector.PATIENT_CONSENT:
+        return <ConsentForm />
+
+      case FormBuilderApiSelector.TERMS_CONDITIONS:
+        return <TermsConditions item={item} />
 
       default:
         return <Controller
           name={fieldId}
           control={control}
           defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-          render={({ field, fieldState }) => (
-            <FormControl fullWidth margin="normal" >
-              <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
-                {required ? `${label} *` : label}
-              </InputLabel>
-              <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
-            </FormControl>
-          )}
+          render={({ field, fieldState }) => {
+            return (
+              <FormControl fullWidth margin="normal">
+                <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
+                  {required ? `${label} *` : label}
+                </InputLabel>
+                <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
+              </FormControl>
+            )
+          }}
         />
     }
   }
+
+
 
   return (
     <Controller
@@ -101,4 +137,4 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     />
   )
 }
-export default FieldController
+export default memo(FieldController)

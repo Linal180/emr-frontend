@@ -9,6 +9,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
 import Sidebar from './sidebar';
+import TabProperties from './tabProperties';
 import Alert from '../../../common/Alert';
 import DropContainer from './dropContainer';
 import Selector from '../../../common/Selector';
@@ -25,20 +26,19 @@ import { AuthContext } from '../../../../context';
 import { FormAddIcon } from '../../../../assets/svgs';
 import { GREY_EIGHT, WHITE } from '../../../../theme';
 import { isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
-import { ListContext } from '../../../../context/listContext';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
   FormType, useCreateFormMutation, FieldsInputs, ElementType, useGetFormLazyQuery,
-  useUpdateFormMutation, useCreateFormTemplateMutation, SectionsInputs, useGetFacilityLazyQuery, useGetPracticeLazyQuery
+  useUpdateFormMutation, useCreateFormTemplateMutation, useGetFacilityLazyQuery, useGetPracticeLazyQuery
 } from '../../../../generated/graphql';
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
-  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
-  FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
-  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED, ITEMS_ID, PRACTICE,
+  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
+  CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
+  PRE_DEFINED, ITEMS_ID, PRACTICE,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -47,12 +47,12 @@ import PracticeSelector from '../../../common/Selector/PracticeSelector';
 const AddForm = () => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(formBuilderReducer, initialState);
   const {
-    colMenu, formName, openTemplate, isActive, selected, formValues, preDefinedComponent, formFacility, formPractice
+    colMenu, formName, openTemplate, isActive, selected, formValues, preDefinedComponent, formFacility, formPractice,
+    selectedTab
   } = state
 
   const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
-  const { facilityList } = useContext(ListContext)
   const { user } = useContext(AuthContext);
   const { roles, facility, } = user || {};
   const { id: facilityId, practiceId } = facility || {};
@@ -108,10 +108,10 @@ const AddForm = () => {
             practiceId && !facilityId && setValue('isPractice', true)
             facilityId && dispatch({ type: ActionType.SET_FACILITY, formFacility: facilityId })
             practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
-            const { sections } = layout
-            sections?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: sections })
-            const facilityName = facilityId && getFacilityNameHandler(facilityId)
-            if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
+            const { tabs } = layout
+            tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
+            // const facilityName = facilityId && getFacilityNameHandler(facilityId)
+            // if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
       }
@@ -221,42 +221,55 @@ const AddForm = () => {
     if (!destination) return;
 
     if (destination.droppableId === source.droppableId) {
-      formValues?.map((item) => {
-        if (destination.droppableId === item.id) {
-          const { fields } = item
-          const [removed] = fields?.splice(source.index, 1);
-          fields?.splice(destination.index, 0, removed);
-        }
+      formValues?.map((tab) => {
+        const { sections } = tab || {}
+        sections?.map((item) => {
+          const { id, fields } = item || {}
+          if (destination.droppableId === id) {
+            const [removed] = fields?.splice(source.index, 1);
+            fields?.splice(destination.index, 0, removed);
+          }
 
-        return item;
+          return item;
+        })
+        return tab
       });
     } else if (source.droppableId === ITEMS_ID) {
-      formValues?.map((item) => {
-        if (destination.droppableId === item.id) {
-          const itemField = ITEMS?.find(
-            (item) => item?.fieldId === draggableId
-          );
-          const newField: FieldsInputs = {
-            label: itemField?.label ?? '',
-            type: itemField?.type as ElementType ?? ElementType.Text,
-            css: itemField?.css ?? '',
-            column: itemField?.column ?? 12,
-            placeholder: itemField?.placeholder ?? '',
-            required: itemField?.required ?? false,
-            fieldId: uuid(),
-            name: uuid(),
-            errorMsg: itemField?.defaultValue ?? '',
-            defaultValue: itemField?.defaultValue ?? '',
-            options: itemField?.options ?? [],
-            textArea: itemField?.textArea ?? false,
-            isMultiSelect: itemField?.isMultiSelect ?? false,
-            apiCall: itemField?.apiCall ?? ''
-          };
+      formValues?.map((tab) => {
 
-          item?.fields?.splice(destination.index, 0, newField);
-        }
+        const { sections } = tab || {}
 
-        return item;
+        sections?.map((item) => {
+
+          const { id, fields } = item || {}
+
+          if (destination.droppableId === id) {
+            const itemField = ITEMS?.find(
+              (item) => item?.fieldId === draggableId
+            );
+            const newField: FieldsInputs = {
+              label: itemField?.label ?? '',
+              type: itemField?.type as ElementType ?? ElementType.Text,
+              css: itemField?.css ?? '',
+              column: itemField?.column ?? 12,
+              placeholder: itemField?.placeholder ?? '',
+              required: itemField?.required ?? false,
+              fieldId: uuid(),
+              name: uuid(),
+              errorMsg: itemField?.defaultValue ?? '',
+              defaultValue: itemField?.defaultValue ?? '',
+              options: itemField?.options ?? [],
+              textArea: itemField?.textArea ?? false,
+              isMultiSelect: itemField?.isMultiSelect ?? false,
+              apiCall: itemField?.apiCall ?? ''
+            };
+
+            fields?.splice(destination.index, 0, newField);
+          }
+
+          return item;
+        })
+        return sections
       });
 
     }
@@ -266,11 +279,33 @@ const AddForm = () => {
         return id === draggableId
       })
       const { layout } = preDefined || {}
-      const { sections } = layout || {}
-      const section = sections?.map(({ fields, name, col }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: col || 12 }))
-      const sect = section && section?.length > 0 && section[0]
-      const isEmpty = formValues[0]?.fields?.length === 0
-      sect && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: isEmpty ? [{ ...sect as SectionsInputs }] : [...formValues, { ...sect as SectionsInputs }] })
+      const { tabs } = layout || {}
+      const tab = tabs && (tabs[0] || {})
+      const { sections } = tab || {}
+      const newSections = sections?.map((section) => {
+        const { fields, name, col } = section;
+        const newFields = fields?.map((field) => ({ ...field, fieldId: uuid() }))
+
+        return ({
+          fields: newFields,
+          name,
+          id: uuid(),
+          col: col || 12
+        })
+      })
+      const newFormValues = formValues?.map((tab) => {
+        const { sections } = tab || {}
+        const isFound = sections?.some(({ id }) => id === destination.droppableId)
+        if (isFound && newSections) {
+          return {
+            ...tab,
+            sections: [...sections, ...newSections]
+          }
+        }
+        return tab
+      })
+      sections && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newFormValues })
+
     }
     else if (destination.droppableId !== source.droppableId) {
       return
@@ -278,78 +313,114 @@ const AddForm = () => {
   };
 
   const addList = (type: string) => {
+    const parseTabValue = parseInt(selectedTab)
     switch (type) {
       case COL_TYPES.COL_1:
-        dispatch({
-          type: ActionType.SET_FORM_VALUES, formValues: [
-            ...formValues,
-            {
+        const arr1 = formValues?.map((tab, index) => {
+          if (parseTabValue === index) {
+            const { sections } = tab;
+            sections?.push({
               id: uuid(),
               col: 12,
               name: 'Section_1',
               fields: [],
-            },
-          ]
+            })
+            return {
+              ...tab,
+              sections
+            }
+          }
+          return tab
+        })
+        dispatch({
+          type: ActionType.SET_FORM_VALUES, formValues: arr1
         })
         handleMenuClose()
         break;
       case COL_TYPES.COL_2:
-        dispatch({
-          type: ActionType.SET_FORM_VALUES, formValues: [
-            ...formValues,
-            {
+        const arr2 = formValues?.map((tab, index) => {
+          if (parseTabValue === index) {
+            const { sections } = tab;
+            sections?.push({
               id: uuid(),
               col: 6,
               name: 'Section_1',
               fields: [],
             },
-            {
-              id: uuid(),
-              col: 6,
-              name: 'Section_2',
-              fields: [],
-            },
-          ]
+              {
+                id: uuid(),
+                col: 6,
+                name: 'Section_2',
+                fields: [],
+              },
+            )
+            return {
+              ...tab,
+              sections
+            }
+          }
+          return tab
+        })
+        dispatch({
+          type: ActionType.SET_FORM_VALUES, formValues: arr2
         })
         handleMenuClose()
         break;
       case COL_TYPES.COL_3:
+        const arr3 = formValues?.map((tab, index) => {
+          if (parseTabValue === index) {
+            const { sections } = tab;
+            sections?.push(
+              {
+                id: uuid(),
+                col: 4,
+                name: 'Section_1',
+                fields: [],
+              },
+              {
+                id: uuid(),
+                col: 4,
+                name: 'Section_2',
+                fields: [],
+              },
+              {
+                id: uuid(),
+                col: 4,
+                name: 'Section_3',
+                fields: [],
+              },
+            )
+            return {
+              ...tab,
+              sections
+            }
+          }
+          return tab
+        })
         dispatch({
-          type: ActionType.SET_FORM_VALUES, formValues: [
-            ...formValues,
-            {
-              id: uuid(),
-              col: 4,
-              name: 'Section_1',
-              fields: [],
-            },
-            {
-              id: uuid(),
-              col: 4,
-              name: 'Section_2',
-              fields: [],
-            },
-            {
-              id: uuid(),
-              col: 4,
-              name: 'Section_3',
-              fields: [],
-            },
-          ]
+          type: ActionType.SET_FORM_VALUES, formValues: arr3
         })
         handleMenuClose()
         break;
       default:
-        dispatch({
-          type: ActionType.SET_FORM_VALUES, formValues: [
-            ...formValues,
-            {
+        const arr = formValues?.map((tab, index) => {
+          if (parseTabValue === index) {
+            const { sections } = tab;
+            sections?.push({
               id: uuid(),
               col: 12,
               name: 'Section_1',
               fields: [],
-            },
-          ]
+            })
+            return {
+              ...tab,
+              sections
+            }
+          }
+          return tab
+        })
+        dispatch({
+          type: ActionType.SET_FORM_VALUES, formValues: arr
         })
         handleMenuClose()
         break;
@@ -357,7 +428,11 @@ const AddForm = () => {
   };
 
   const saveHandler: SubmitHandler<FormBuilderFormInitial> = (values) => {
-    const isFieldFound = formValues?.some((item) => item.fields.length > 0);
+    const isFieldFound = formValues?.every((tab) => {
+      const { sections } = tab || {}
+      return sections?.some((item) => item?.fields?.length > 0);
+    })
+
     if (isFieldFound) {
       const { name, type, facilityId: selectedFacility, isPractice, practiceId: { id } } = values || {};
       const { id: typeId } = type;
@@ -384,7 +459,7 @@ const AddForm = () => {
       }
       const data = {
         name, type: typeId as FormType, facilityId: selectedFacilityId,
-        layout: { sections: formValues }, isActive, practiceId: selectedPracticeId
+        layout: { tabs: formValues }, isActive, practiceId: selectedPracticeId
       }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
@@ -404,59 +479,41 @@ const AddForm = () => {
   };
   //edit field form submit handler
   const setFieldValuesHandler: SubmitHandler<FormInitialType> = (values) => {
-    const arr1 = formValues?.map((item) => {
-      if (values?.list === item.id) {
-        const fields = item?.fields?.map((field) =>
-          field.fieldId === values?.fieldId
-            ? {
-              ...field,
-              label: values?.label,
-              name: values?.name,
-              css: values?.css,
-              column: values?.column,
-              placeholder: values?.placeholder,
-              required: values?.required,
-              options: values?.options
-            }
-            : field
-        );
-        return { ...item, fields };
-      } else {
-        return item;
+    const arr1 = formValues?.map((tab) => {
+      const { sections } = tab || {}
+      const section = sections?.map((item) => {
+        if (values?.list === item?.id) {
+          const fields = item?.fields?.map((field) =>
+            field?.fieldId === values?.fieldId
+              ? {
+                ...field,
+                label: values?.label,
+                name: values?.name,
+                css: values?.css,
+                column: values?.column,
+                placeholder: values?.placeholder,
+                required: values?.required,
+                options: values?.options
+              }
+              : field
+          );
+          return { ...item, fields };
+        } else {
+          return item;
+        }
+      })
+      return {
+        ...tab,
+        sections: section
       }
     });
 
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr1 })
   }
 
-  const delFieldHandler = (index: number, sectionIndex: number) => {
-    const arr = formValues?.map((item, i) => {
-      if (i === sectionIndex) {
-        const arr = item?.fields?.filter((field, fieldIndex) => index !== fieldIndex);
-        return { ...item, fields: arr }
-      }
-
-      return item
-    })
-    dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
-  }
-
   const clearHandler = () => dispatch({ type: ActionType.SET_FORM_VALUES, formValues: getFormInitialValues() })
-  const handleMenuOpen = (event: MouseEvent<HTMLElement>) =>
-    dispatch({ type: ActionType.SET_COL_MENU, colMenu: event.currentTarget })
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_COL_MENU, colMenu: event.currentTarget })
   const handleMenuClose = () => dispatch({ type: ActionType.SET_COL_MENU, colMenu: null })
-
-  const delColHandler = (index: number) => {
-    const arr = formValues?.filter((item, i) => i !== index)
-    dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
-  }
-
-  const getFacilityNameHandler = (facilityId: string) => {
-    const facility = facilityList?.find((item) => item?.id === facilityId)
-    const { name } = facility || {}
-
-    return name;
-  }
 
   const handleCreateTemplate = async () => {
     try {
@@ -464,7 +521,7 @@ const AddForm = () => {
         variables: {
           createFormInput: {
             layout: {
-              sections: formValues
+              tabs: formValues
             },
 
             name: formName,
@@ -477,7 +534,10 @@ const AddForm = () => {
   }
 
   const templateCreateClick = () => {
-    const isFieldFound = formValues?.some((item) => item.fields.length > 0);
+    const isFieldFound = formValues?.every((tab) => {
+      const { sections } = tab || {}
+      return sections?.some((item) => item?.fields?.length > 0);
+    })
     if (isFieldFound) {
       dispatch({ type: ActionType.SET_OPEN_TEMPLATE, openTemplate: true })
     } else Alert.error(DROP_FIELD)
@@ -590,8 +650,6 @@ const AddForm = () => {
                         dispatch={dispatch}
                         formState={state}
                         changeValues={changeValues}
-                        delFieldHandler={delFieldHandler}
-                        delColHandler={delColHandler}
                       />
                     }
                     <Grid container justifyContent='center' alignItems='center'>
@@ -634,6 +692,7 @@ const AddForm = () => {
                 </Grid>
 
                 <Grid item md={3} sm={4} xs={12}>
+                  <TabProperties formState={state} dispatch={dispatch} />
                   <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
                 </Grid>
               </Grid>

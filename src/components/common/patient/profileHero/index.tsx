@@ -6,17 +6,17 @@ import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
-import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, NOTES, MORE_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
-  getFormatDateString
+  getFormatDateString, getDateWithDay
 } from "../../../../utils";
 import {
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
+  AppointmentPayload,
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery
 } from "../../../../generated/graphql";
 import {
   ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon
@@ -26,13 +26,13 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart, isCheckIn }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { patientData, isNoteOpen, patientNoteOpen } = patientState
+  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -109,11 +109,43 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     },
   });
 
+  const [getNearestAppointments] = useGetPatientNearestAppointmentsLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {},
+
+    onCompleted(data) {
+      const { getPatientPastUpcomingAppointment: { response, appointments } } = data;
+      if (response) {
+        const { status } = response
+
+        if (appointments && status && status === 200) {
+          const { pastAppointment, upcomingAppointment } = appointments
+
+          pastAppointment &&
+            dispatch({
+              type: ActionType.SET_LAST_APPOINTMENT,
+              lastAppointment: pastAppointment as AppointmentPayload['appointment']
+            })
+
+          upcomingAppointment &&
+            dispatch({
+              type: ActionType.SET_NEXT_APPOINTMENT,
+              nextAppointment: upcomingAppointment as AppointmentPayload['appointment']
+            })
+        }
+      }
+    }
+  });
+
   const fetchPatient = useCallback(async () => {
     try {
       await getPatient({ variables: { getPatient: { id } } })
+      await getNearestAppointments({ variables: { getPatientAppointmentInput: { patientId: id } } })
     } catch (error) { }
-  }, [getPatient, id]);
+  }, [getNearestAppointments, getPatient, id]);
 
   useEffect(() => {
     id && fetchPatient()
@@ -177,23 +209,36 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     }
   }
 
+  let nextAppointmentDate = ''
+  let lastAppointmentDate = ''
+
+  if (nextAppointment) {
+    const { scheduleStartDateTime } = nextAppointment
+    nextAppointmentDate = getDateWithDay(scheduleStartDateTime || '')
+  }
+
+  if (lastAppointment) {
+    const { scheduleStartDateTime } = lastAppointment
+    lastAppointmentDate = getDateWithDay(scheduleStartDateTime || '')
+  }
+
   const ProfileAdditionalDetails = [
     {
       title: "Primary Provider",
-      description: providerName
+      description: providerName || '--'
     },
     {
       title: "Date Added",
       description: providerDateAdded
     },
-    // {
-    //   title: "Last Scheduled Appointment",
-    //   description: "Wed Jul 25, 2018"
-    // },
-    // {
-    //   title: "Next Scheduled Appointment",
-    //   description: "Thu Nov 18, 2021"
-    // },
+    {
+      title: "Last Scheduled Appointment",
+      description: lastAppointmentDate || '--'
+    },
+    {
+      title: "Next Scheduled Appointment",
+      description: nextAppointmentDate || '--'
+    },
   ]
 
   useEffect(() => {
@@ -250,7 +295,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     const { icon, description } = item
 
                     return (
-                      <Box display="flex" flexWrap="wrap" key={`${description}-${index}`}
+                      <Box display="flex" key={`${description}-${index}`}
                         className={classes.profileInfoItem}
                       >
                         <Box>{icon}</Box>
@@ -288,13 +333,13 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       dispatcher={dispatch}
                     />
                   </Menu>
-
                 </Box>
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
                 <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  <Typography variant="body2">... {MORE_INFO}</Typography>
+                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                    : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
 
                 {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
@@ -324,14 +369,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Card>
         </Box>
       </Collapse>
-
-      <Box my={4}>
-        {!isChart && !isCheckIn && <Box pr={1}>
-          <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-            {EDIT_PATIENT}
-          </Button>
-        </Box>}
-      </Box>
     </>
   )
 };

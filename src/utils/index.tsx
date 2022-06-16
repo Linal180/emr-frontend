@@ -1,24 +1,40 @@
 // packages block
-import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography, withStyles } from "@material-ui/core";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import React, { ReactNode, memo } from "react";
 import axios from "axios";
 import moment from "moment";
-import { memo, ReactNode } from "react";
 import { pluck } from "underscore";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import {
+  Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
+  withStyles
+} from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
-import { ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType, ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType, PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,
-  UnitType, UserForms, WeightType
-} from "../generated/graphql";
 import history from "../history";
-import { RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GREEN_ONE, BLUE } from "../theme";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
-  SelectorOption, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
+  StageStatusType,
+  TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
+import {
+  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
+  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, BLUE, GREY, PURPLE_ONE
+} from "../theme";
+import {
+  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
+  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
+  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ACCEPTABLE_PDF_AND_IMAGES_FILES
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
+  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
+  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -70,14 +86,22 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string, noWrap?: boolean) => (
+export const renderTh = (
+  text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string,
+  noWrap?: boolean, renderIcon?: Function
+) => (
   <TableCell component="th" align={align} className={classes}>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {isDangerous ?
-        <Box dangerouslySetInnerHTML={{ __html: text }}>
-        </Box> : text
-      }
-    </Typography>
+    <Box display="flex" alignItems="center" justifyContent={align}>
+      <Typography component="h5" variant="h5" noWrap={noWrap}>
+        {isDangerous ?
+          <Box dangerouslySetInnerHTML={{ __html: text }}>
+          </Box> : text
+        }
+
+      </Typography>
+
+      {renderIcon && renderIcon()}
+    </Box>
   </TableCell>
 );
 
@@ -112,9 +136,7 @@ export const isPracticeAdmin = (currentUserRole: RolesPayload['roles']) => {
 export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
-    || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
+  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isAdmin = (roles: RolesPayload['roles']) => {
@@ -406,6 +428,22 @@ export const renderFacilities = (facilities: FacilitiesPayload['facilities']) =>
   return data;
 }
 
+export const renderMultiServices = (services: ServicesPayload['services']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, duration, name } = service;
+
+        service && data.push({ value: id, label: `${name} (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderServices = (services: ServicesPayload['services']) => {
   const data: SelectorOption[] = [];
 
@@ -642,6 +680,15 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
+export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {
+  if (!strtimestamp && !endtimestamp) return "";
+
+  var startTime = moment(new Date(parseInt(strtimestamp)));
+  var endTime = moment(new Date(parseInt(endtimestamp)));
+
+  return endTime.diff(startTime, 'minutes');
+};
+
 export const getDayFromTimestamps = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -784,6 +831,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       billingStatus,
       appointmentName,
       appointmentStatus,
+      scheduleStartDateTime,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
@@ -795,70 +843,70 @@ export const appointmentStatus = (status: string) => {
     case AppointmentStatus.NoShow:
       return {
         text: formatValue(AppointmentStatus.NoShow),
-        bgColor: RED_THREE,
-        textColor: WHITE
+        bgColor: RED_THREE_RGBA,
+        textColor: RED_THREE,
       }
 
     case AppointmentStatus.Cancelled:
       return {
         text: formatValue(AppointmentStatus.Cancelled),
-        bgColor: RED,
+        bgColor: RED_RGBA,
         textColor: RED
       }
 
-    case AppointmentStatus.CheckedIn:
+    case AppointmentStatus.Arrived:
       return {
-        text: formatValue(AppointmentStatus.CheckedIn),
-        bgColor: GREEN_ONE,
-        textColor: GREEN
+        text: formatValue(AppointmentStatus.Arrived),
+        bgColor: LIGHT_GREEN_RGBA,
+        textColor: LIGHT_GREEN_ONE
       }
 
-    case AppointmentStatus.Completed:
+    case AppointmentStatus.Discharged:
       return {
-        text: formatValue(AppointmentStatus.Completed),
-        bgColor: GREEN,
-        textColor: GREEN_ONE
+        text: formatValue(AppointmentStatus.Discharged),
+        bgColor: DARK_GREEN_RGBA,
+        textColor: DARK_GREEN
       }
 
     case AppointmentStatus.InLobby:
       return {
         text: formatValue(AppointmentStatus.InLobby),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: BLUE_SEVEN_RGBA,
+        textColor: BLUE_SEVEN
       }
 
     case AppointmentStatus.InSession:
       return {
         text: formatValue(AppointmentStatus.InSession),
-        bgColor: GREEN,
-        textColor: GREEN
+        bgColor: ORANGE_SIMPLE_RGBA,
+        textColor: ORANGE_SIMPLE
       }
 
-    case AppointmentStatus.Initiated:
+    case AppointmentStatus.Scheduled:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
-        textColor: GREEN
+        text: formatValue(AppointmentStatus.Scheduled),
+        bgColor: GRAY_SIMPLE_RGBA,
+        textColor: GRAY_SIMPLE
       }
 
     case AppointmentStatus.Rescheduled:
       return {
         text: formatValue(AppointmentStatus.Rescheduled),
-        bgColor: BLUE,
-        textColor: BLUE
+        bgColor: PURPLE_RGBA,
+        textColor: PURPLE
       }
 
-    case AppointmentStatus.SelfCheckedIn:
+    case AppointmentStatus.CheckInOnline:
       return {
-        text: formatValue(AppointmentStatus.SelfCheckedIn),
-        bgColor: GREEN,
+        text: formatValue(AppointmentStatus.CheckInOnline),
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
 
     default:
       return {
-        text: formatValue(AppointmentStatus.Initiated),
-        bgColor: GREEN,
+        text: formatValue(AppointmentStatus.Scheduled),
+        bgColor: GREEN_RGBA,
         textColor: GREEN
       }
   }
@@ -1031,6 +1079,9 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
           arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
         }
       }
+    }
+    else if (typeof values[property] === 'boolean') {
+      arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }
     else {
       arr.push({ FormsElementsId: property, value: values[property] || '', arrayOfStrings: [], arrayOfObjects: [] })
@@ -1250,11 +1301,11 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 
-export const generateString = () => {
+export const generateString = (numberOfRounds = 2) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   const charactersLength = characters.length - 2;
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < numberOfRounds; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result + Math.floor(100000 + Math.random() * 9000);
@@ -1285,6 +1336,16 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
           let { id: snoMedCodeId, referencedComponentId } = (item as unknown as SnoMedCodes) || {};
 
           data.push({ id: snoMedCodeId, name: referencedComponentId })
+          break;
+        case ITEM_MODULE.icdCodes:
+          let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
+
+          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          break;
+        case ITEM_MODULE.cptCode:
+          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
+
+          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
@@ -1518,11 +1579,11 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Cancelled):
       return AppointmentStatus.Cancelled;
 
-    case formatValue(AppointmentStatus.CheckedIn):
-      return AppointmentStatus.CheckedIn;
+    case formatValue(AppointmentStatus.Arrived):
+      return AppointmentStatus.Arrived;
 
-    case formatValue(AppointmentStatus.Completed):
-      return AppointmentStatus.Completed;
+    case formatValue(AppointmentStatus.Discharged):
+      return AppointmentStatus.Discharged;
 
     case formatValue(AppointmentStatus.InLobby):
       return AppointmentStatus.InLobby;
@@ -1530,8 +1591,8 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.InSession):
       return AppointmentStatus.InSession;
 
-    case formatValue(AppointmentStatus.Initiated):
-      return AppointmentStatus.Initiated;
+    case formatValue(AppointmentStatus.Scheduled):
+      return AppointmentStatus.Scheduled;
 
     case formatValue(AppointmentStatus.NoShow):
       return AppointmentStatus.NoShow;
@@ -1539,52 +1600,144 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Rescheduled):
       return AppointmentStatus.Rescheduled;
 
-    case formatValue(AppointmentStatus.SelfCheckedIn):
-      return AppointmentStatus.SelfCheckedIn;
+    case formatValue(AppointmentStatus.CheckInOnline):
+      return AppointmentStatus.CheckInOnline;
 
     default:
-      return AppointmentStatus.Initiated;
+      return AppointmentStatus.Scheduled;
+  }
+}
+
+export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
+  if (status === AppointmentStatus.Discharged) {
+    return {
+      stage: 'Completed',
+      stageColor: GREEN
+    }
+  }
+
+  if (status === AppointmentStatus.Scheduled) {
+    return {
+      stage: 'Logged',
+      stageColor: ORANGE
+    }
+  }
+
+  if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
+    return {
+      stage: '',
+      stageColor: ''
+    }
+  }
+
+  switch (checkInActiveStep) {
+    case 0:
+      return { stage: 'Checked In', stageColor: GREEN_ONE };
+    case 1:
+    case 2:
+      return { stage: 'With Staff', stageColor: BLUE };
+    case 3:
+    case 4:
+      return { stage: 'Charting', stageColor: GREY };
+    case 5:
+      return { stage: 'With Provider', stageColor: BLUE_SEVEN };
+    case 6:
+      return { stage: 'With Biller', stageColor: PURPLE_ONE };
+    default:
+      return {
+        stage: '',
+        stageColor: ''
+      }
   }
 }
 
 export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
-  return status === AppointmentStatus.Initiated
+  return status === AppointmentStatus.Scheduled
 }
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
-  switch (value) {
-    case AppointmentStatus.Initiated:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.CheckedIn, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
 
-    case AppointmentStatus.Rescheduled:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Initiated, AppointmentStatus.CheckedIn, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
-      )
+  return renderArrayAsSelectorOptions(
+    [
+      AppointmentStatus.Arrived,
+      AppointmentStatus.CheckInOnline,
+      AppointmentStatus.Rescheduled,
+      AppointmentStatus.InLobby,
+      AppointmentStatus.InSession,
+      AppointmentStatus.NoShow,
+      AppointmentStatus.Discharged,
+      AppointmentStatus.Cancelled
+    ], id
+  )
+  // switch (value) {
+  //   case AppointmentStatus.Scheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Arrived, AppointmentStatus.Rescheduled, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.CheckedIn:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InLobby, AppointmentStatus.InSession, AppointmentStatus.Completed], id
-      )
+  //   case AppointmentStatus.Rescheduled:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.Scheduled, AppointmentStatus.Arrived, AppointmentStatus.NoShow, AppointmentStatus.Cancelled], id
+  //     )
 
-    case AppointmentStatus.InLobby:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.InSession, AppointmentStatus.Completed], id
-      )
+  //   case AppointmentStatus.Arrived:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InLobby, AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.InSession:
-      return renderArrayAsSelectorOptions(
-        [AppointmentStatus.Completed], id
-      )
+  //   case AppointmentStatus.InLobby:
+  //     return renderArrayAsSelectorOptions(
+  //       [AppointmentStatus.InSession], id
+  //     )
 
-    case AppointmentStatus.NoShow:
-    case AppointmentStatus.Cancelled:
-    case AppointmentStatus.Completed:
-    default:
-      return [EMPTY_OPTION]
-  }
+  //   case AppointmentStatus.InSession:
+  //   case AppointmentStatus.NoShow:
+  //   case AppointmentStatus.Cancelled:
+  //   case AppointmentStatus.Discharged:
+  //   default:
+  //     return [EMPTY_OPTION]
+  // }
 };
 
 export const appointmentChargesDescription = (amount: string) =>
-<Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography> 
+  <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography>
+
+export const getFilteredSSN = (value: string) => {
+  const [, , last4] = value.split('-')
+
+  return `**-***-${last4 || '0000'}`
+}
+
+export const mediaType = (attachmentTitle: string): string[] => {
+  switch (attachmentTitle) {
+    case ATTACHMENT_TITLES.DrivingLicense1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.DrivingLicense2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard1:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.InsuranceCard2:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.LabOrders:
+      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.PracticeLogo:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProfilePicture:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.ProviderUploads:
+      return ACCEPTABLE_FILES;
+
+    case ATTACHMENT_TITLES.Signature:
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    default:
+      return ACCEPTABLE_FILES
+  }
+};

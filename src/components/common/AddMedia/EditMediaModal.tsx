@@ -11,6 +11,7 @@ import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 import { TrashNewIcon } from "../../../assets/svgs";
 import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
+import { mediaType } from "../../../utils";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
@@ -83,6 +84,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
+              acceptableFilesType={mediaType(title)}
             />
           }
         </DialogContent>
