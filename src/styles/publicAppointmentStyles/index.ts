@@ -115,6 +115,17 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         fontWeight: 600,
         fontSize: 16,
       }
-    }
+    },
+
+    daysBox: {
+      "& .MuiTypography-body1": {
+        fontSize: 14,
+      },
+
+      "& .MuiCheckbox-root .MuiIconButton-label:before": {
+        width: 16,
+        height: 16,
+      }
+    },
   })
 );
