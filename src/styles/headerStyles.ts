@@ -98,8 +98,9 @@ export const useHeaderStyles = makeStyles((theme) => ({
     },
   },
 
-  toggleContainer: {
+  toggleContainer: {    
     "& .toggle-main": {
+      cursor: 'pointer',
       display: 'flex',
       position: 'relative',
       border: `1px solid ${GRAY_SIX}`,

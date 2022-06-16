@@ -48,8 +48,8 @@ export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponen
   }, [getAllPreDefinedComponent])
 
   useEffect(() => {
-    preDefinedComponent?.length <= 0 && fetchAllForms()
-  }, [preDefinedComponent, fetchAllForms]);
+    fetchAllForms()
+  }, [fetchAllForms]);
 
   return (
     <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">

@@ -1,30 +1,22 @@
 // packages block
-import { FC } from "react";
-import { Autocomplete, AutocompleteGetTagProps } from "@material-ui/lab";
+import { FC, useRef } from "react";
+import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box, Chip } from "@material-ui/core";
 // utils and interfaces/types block
-import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
-import { SelectorOption, SelectorProps } from "../../interfacesTypes";
+import { SelectorProps } from "../../interfacesTypes";
+import { requiredLabel } from "../../utils";
+import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@material-ui/core";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, onOutsideClick, isMultiple
+  name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, 
+  onOutsideClick, isEdit
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
+  const eleRef = useRef<any>();
 
-  const selectorMultiProps = isMultiple ? {
-    multiple: true,
-    renderTags: (value: SelectorOption[], getTagProps: AutocompleteGetTagProps) => {
-      return (
-        value.map((option: SelectorOption, index: number) => (
-          <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
-        ))
-      )
-    }
-  } : {}
-
+ 
   return (
     <Controller
       rules={{ required: true }}
@@ -34,15 +26,15 @@ const Selector: FC<SelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={options?.length ? updatedOptions : []}
+             ref={eleRef}
+            options={!!updatedOptions?.length ? updatedOptions : []}
             disableClearable
-            {...(!isMultiple && { value: field.value })}
+            value= {field.value}
             disabled={disabled}
-            filterSelectedOptions
+            // filterSelectedOptions
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
-            {...selectorMultiProps}
             renderInput={(params) => (
               <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
                 <Box position="relative">
@@ -56,6 +48,7 @@ const Selector: FC<SelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  autoFocus
                   onBlur={() => onBlur && onBlur()}
                 />
 
@@ -65,9 +58,9 @@ const Selector: FC<SelectorProps> = ({
             onChange={(_, data) => {
               field.onChange(data)
               onSelect && onSelect(data)
-              // return data
+              return data
             }}
-            onBlur={() => onOutsideClick && onOutsideClick()}
+            onBlur={() => onOutsideClick && onOutsideClick()}       
           />
         );
       }}

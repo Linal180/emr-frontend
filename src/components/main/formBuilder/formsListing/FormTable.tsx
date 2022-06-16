@@ -17,8 +17,9 @@ import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh 
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
-  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
-  LayoutJsonType
+  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload,
+  LayoutJsonType,
+  FormTabs
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
@@ -46,7 +47,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [openShare, setOpenShare] = useState<boolean>(false);
   const [deleteFormId, setDeleteFormId] = useState<string>("");
   const [forms, setForms] = useState<FormsPayload['forms']>([]);
-  const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
+  const [formPreviewData, setFormPreviewData] = useState<FormTabs[]>([]);
   const [openPreview, setOpenPreview] = useState<boolean>(false)
   const [formName, setFormName] = useState<string>('')
   //mutation & query
@@ -63,6 +64,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
       if (findAllForms) {
         const { forms, pagination } = findAllForms
+        debugger
         forms && setForms(forms as FormsPayload['forms'])
 
         if (pagination) {
@@ -105,7 +107,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? 
+      { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -142,8 +145,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
     if (layout) {
-      const { sections } = layout;
-      sections?.length > 0 && setFormPreviewData(sections)
+      const { tabs } = layout;
+      tabs?.length > 0 && setFormPreviewData(tabs)
       name && setFormName(name)
       setOpenPreview(true)
     }

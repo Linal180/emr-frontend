@@ -1,13 +1,13 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
-import { RouteProps } from "react-router-dom";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import {
   Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
 } from "react-hook-form";
+import { RouteProps } from "react-router-dom";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
@@ -15,8 +15,9 @@ import {
   CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreatePatientAllergyInput,
   CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput,
   CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient, FacilitiesPayload, FieldsInputs,
-  FormElement, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload, Practice, PracticePayload,
-  PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
+  FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload, LoginUserInput, Maybe, Patient,
+  PatientPayload, PatientProviderPayload, PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload,
+  PermissionsPayload, Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs,
   ServicesPayload, SnoMedCodesPayload, Staff, TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput,
   UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements,
   VerifyCodeInput
@@ -820,6 +821,12 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface AddAllergyModalProps extends GeneralFormProps {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void
+}
+
 export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
@@ -1285,8 +1292,6 @@ export interface FieldEditModalProps {
 export interface DropContainerPropsTypes {
   formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
-  delFieldHandler: (id: number, index: number) => void;
-  delColHandler: (index: number) => void;
   dispatch: Dispatch<FormBuilderAction>
 }
 
@@ -1305,7 +1310,7 @@ export interface LoaderProps {
 export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
-  data: SectionsInputs[];
+  data: FormTabsInputs[];
   formName: string;
 }
 
@@ -1429,10 +1434,10 @@ export interface AddModalProps {
   item?: Allergies | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
+  handleClose?: () => void
 }
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
-  & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
 
 export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
   & { appointmentId: SelectorOption } & { snowMedCodeId: SelectorOption }
@@ -1574,6 +1579,8 @@ export interface VitalListingTableProps {
   patientStates: PatientState;
   setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
   shouldDisableEdit?: boolean
+  setVitalToEdit?: Function
+  setOpen?: Function
 }
 
 export interface VitalFormInput {
@@ -1589,12 +1596,16 @@ export interface VitalFormInput {
   pulseRate: string
   patientHeadCircumference: string
   patientTemperature: string
+  vitalsDate: string
 }
 
-export interface AddPatientVitalsProps {
+export interface AddPatientVitalsProps extends GeneralFormProps {
   fetchPatientAllVitals: Function;
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
+  isOpen?: boolean
+  handleClose?: () => void
+  vitalToEdit?: PatientVitalPayload['patientVital']
 }
 
 export interface PatientVitalsListingProps {
@@ -1703,6 +1714,11 @@ export interface dashboardInputsProps {
   year: SelectorOption
 }
 
+export interface TabTypes {
+  title: string;
+  value: string;
+  Icon: ElementType;
+}
 export interface UpdatePatientProviderInputsProps {
   providerId: SelectorOption;
   speciality: SelectorOption;
@@ -1787,4 +1803,25 @@ export interface CodesTableProps {
 
 export interface DocumentsTableProps {
   patient: PatientPayload['patient']
+}
+
+
+export interface TabPropertiesTypes {
+  name: string;
+}
+
+export interface TabPropertiesProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+export interface StepContextProps {
+  state: ExternalFormBuilderState;
+  dispatch: Dispatch<PublicFormBuilderAction>
+  sections: SectionsInputs[]
+}
+
+export interface StageStatusType {
+  stage: string;
+  stageColor: string;
 }

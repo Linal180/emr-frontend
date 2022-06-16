@@ -4,7 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, makeStyles } from "@material-ui/core";
 // interfaces block
 import { SwitchControllerProps } from "../interfacesTypes";
-import { GRAY_SIX, GREY_SEVEN, GREY_TWO, WHITE } from "../theme";
+import { GRAY_SIX, GREY_SEVEN, WHITE } from "../theme";
 import { AntSwitch } from "../styles/publicAppointmentStyles/externalPatientStyles";
 import { NO_TEXT, YES_TEXT } from "../constants";
 
@@ -40,7 +40,7 @@ export const styles = makeStyles(() => (
 
       "& .MuiToggleButton-root.Mui-selected": {
         color: WHITE,
-        backgroundColor: GREY_TWO,
+        backgroundColor: 'yellow',
         padding: "12px 20px",
         borderRadius: 6,
       },

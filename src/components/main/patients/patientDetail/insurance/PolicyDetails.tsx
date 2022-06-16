@@ -6,7 +6,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   ADD_ANOTHER_COPAY_AMOUNT, AMOUNT_WITH_DOLLAR, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, REFERRING_PROVIDER,
   EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
-  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES, 
+  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER,
 } from "../../../../../constants";
 import InputController from "../../../../../controller";
@@ -39,6 +39,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={4} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
             controllerName="certificationNumber"
@@ -48,6 +49,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={4} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             controllerName="policyNumber"
             controllerLabel={POLICY_GROUP_NUMBER}
@@ -92,6 +94,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
                 <Grid item md={6} sm={12} xs={12}>
                   <Selector
+                    isRequired
                     addEmpty
                     name={`copayFields.${index}.copayType`}
                     label={COPAY_TYPE}
@@ -102,6 +105,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
+                    isRequired
                     info={COPAY_AMOUNTS_TOOLTIP}
                     fieldType="number"
                     controllerName={`copayFields.${index}.amount`}
@@ -129,14 +133,16 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={2} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="number"
             controllerName="coInsurancePercentage"
-            controllerLabel={COINSURANCE_PERCENTAGE} 
+            controllerLabel={COINSURANCE_PERCENTAGE}
           />
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
           <DoctorSelector
+            isRequired
             label={REFERRING_PROVIDER}
             name="referringProvider"
             shouldOmitFacilityId
@@ -145,6 +151,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={4} sm={12} xs={12}>
           <DoctorSelector
+            isRequired
             label={PRIMARY_CARE_PROVIDER}
             name="primaryCareProvider"
             shouldOmitFacilityId
@@ -153,6 +160,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={2} sm={12} xs={12}>
           <Selector
+            isRequired
             addEmpty
             name="pricingProductType"
             label={PRICING_PRODUCT_TYPE}
