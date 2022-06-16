@@ -1,18 +1,20 @@
 // packages block
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
-import AppointmentListComponent from "../../common/Dashboard/appointmentList";
+import DoctorPatients from "../../common/Dashboard/DoctorPatients";
 import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
-// svgs block, styles, history
+import DoctorAppointmentsAndPatients from "../../common/Dashboard/DoctorAppointmentsAndPatients";
+// svgs and constant block
 import { RedirectIcon, } from "../../../assets/svgs";
-// constant
 import { TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, } from "../../../constants";
+import { AuthContext } from "../../../context";
 
-const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
-
+const DoctorDashboardComponent: FC = (): JSX.Element => {
+  const {currentUser} = useContext(AuthContext)
+  const { id } = currentUser || {}
   return (
     <>
       <PatientSearchComponent />
@@ -39,7 +41,7 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
                 </IconButton>
               </Box>
 
-              <AppointmentListComponent />
+              <DoctorAppointmentsAndPatients providerId={id || ''} />
             </Box>
           </Card>
 
@@ -55,7 +57,7 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
                 </IconButton>
               </Box>
 
-              <AppointmentListComponent />
+              <DoctorPatients providerId={id || ''} />
             </Box>
           </Card>
 
@@ -72,4 +74,4 @@ const DoctorAdminDashboardComponent: FC = (): JSX.Element => {
   )
 };
 
-export default DoctorAdminDashboardComponent;
+export default DoctorDashboardComponent;

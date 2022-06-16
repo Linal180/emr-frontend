@@ -168,7 +168,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     addFacilityList(newRecord)
   }
 
-
   return (
     <ListContext.Provider
       value={{

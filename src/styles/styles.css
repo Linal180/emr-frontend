@@ -136,6 +136,10 @@ body {
   overflow-x: auto;
 }
 
+.agreement-table .MuiTableHead-root {
+  background-color: #F3F4F6 !important;
+}
+
 .RoleMultiSelectorStyles>div>div {
   border: none !important;
   box-shadow: none !important;
@@ -520,12 +524,12 @@ body .MuiTabPanel-root {
 }
 
 .hoverClass {
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 5px 10px !important;
+  border-radius: 4px !important;
 }
 
 .hoverClass:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
 .advancedSearch {

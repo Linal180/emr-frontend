@@ -167,6 +167,14 @@ export const useChartingStyles = makeStyles({
     },
   },
 
+  toggleAllergy: {
+    marginTop: 0,
+
+    "& .MuiBox-root": {
+      padding: '7px 20px',
+    },
+  },
+
   searchBox: {
     backgroundColor: GREY,
     

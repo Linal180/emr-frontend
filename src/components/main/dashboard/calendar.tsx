@@ -18,7 +18,7 @@ import { AppointmentContent } from "./appointmentsComponent/appointmentContent";
 import { AppointmentContainer } from "./appointmentsComponent/appointmentContainer";
 // context, constants block
 import { AuthContext } from "../../../context";
-import { isSuperAdmin, isUserAdmin, mapAppointmentData } from "../../../utils"
+import { isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor } from "../../../utils"
 import { useCalendarStyles } from "../../../styles/calendarStyles";
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -32,17 +32,19 @@ import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 //Interfaces
 import { CalenderProps } from "../../../interfacesTypes";
 
-const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
+const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState<string>('Month')
   const [data, setData] = useState<any[]>([])
   const { user } = useContext(AuthContext)
-  const { facility, roles } = user || {}
+  const { facility, roles, userId } = user || {}
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
-  const isAdmin = isUserAdmin(roles);
+  const isPractice = isPracticeAdmin(roles);
+  const isFacility = isFacilityAdmin(roles);
+  const isDoctor = isOnlyDoctor(roles);
   const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const indicatorRef = useRef<Element>(null);
 
@@ -118,8 +120,23 @@ const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
   const fetchAppointments = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: 25 } }
-      const inputs = isSuper ? { ...pageInputs } :
-        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+      let inputs = null
+
+      if (isSuper) {
+        inputs = { ...pageInputs }
+      }
+      else if (isPractice) {
+        inputs = { practiceId, ...pageInputs }
+      }
+      else if (isFacility) {
+        inputs = { facilityId, ...pageInputs }
+      }
+      else if (isDoctor) {
+        inputs = { providerId: userId, ...pageInputs }
+      }
+      else {
+        inputs = { practiceId, ...pageInputs }
+      }
 
       await findAllAppointments({
         variables: {
@@ -127,7 +144,7 @@ const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
         },
       })
     } catch (error) { }
-  }, [page, isSuper, isAdmin, facilityId, practiceId, findAllAppointments])
+  }, [page, isSuper, facilityId, practiceId, findAllAppointments, userId, isDoctor, isFacility, isPractice])
 
   const currentViewNameChange = (currentViewName: string) => {
     setCurrentView(currentViewName);
@@ -147,9 +164,9 @@ const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
       {
         showHeader &&
         <PageHeader
-        title={CALENDAR_VIEW_TEXT}
-        path={[DASHBOARD_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
-      />
+          title={CALENDAR_VIEW_TEXT}
+          path={[DASHBOARD_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
+        />
       }
 
       <Card>
@@ -182,7 +199,9 @@ const CalendarComponent :FC<CalenderProps> = ({showHeader}): JSX.Element => {
                 showCloseButton
                 layoutComponent={(props) => <AppointmentCard tooltip={props}
                   setCurrentView={setCurrentView}
-                  setCurrentDate={setCurrentDate} />} />
+                  setCurrentDate={setCurrentDate} 
+                  reload={fetchAppointments}
+                  />} />
               <CurrentTimeIndicator
                 shadePreviousCells={true}
                 shadePreviousAppointments={true}
