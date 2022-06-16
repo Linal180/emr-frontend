@@ -1707,7 +1707,7 @@ export const appointmentChargesDescription = (amount: string) =>
 export const getFilteredSSN = (value: string) => {
   const [, , last4] = value.split('-')
 
-  return `**-***-${last4 || '0000'}`
+  return `***-**-${last4 || '0000'}`
 }
 
 export const mediaType = (attachmentTitle: string): string[] => {

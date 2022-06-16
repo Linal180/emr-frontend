@@ -3746,9 +3746,6 @@ export const RegisterPatientMenuNav = [
     title: CONTACT_INFORMATION,
   },
   {
-    title: PROVIDER_REGISTRATION_DATES,
-  },
-  {
     title: PRIVACY,
   },
   {

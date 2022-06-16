@@ -469,6 +469,7 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
+  defaultValue?: string;
 }
 
 export interface TooltipData {

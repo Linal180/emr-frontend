@@ -68,6 +68,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
       fetchAllFacilities()
     }
   }, [page, searchQuery, fetchAllFacilities]);
+console.log("facilities", facilities);
 
   return (
     <Controller
@@ -82,7 +83,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
             value={field.value}
             disabled={disabled}
             disableClearable
-            getOptionLabel={(option) => option.name || ""}
+            getOptionLabel={(option) => option.name}
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
