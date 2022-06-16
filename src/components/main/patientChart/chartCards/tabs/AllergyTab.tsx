@@ -3,13 +3,13 @@ import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ADD_NEW_TEXT, ALLERGIES_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, PROBLEM_TEXT, STATUS, TYPE } from "../../../../../constants";
+import { ACTIONS, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, SEVERITY, STATUS } from "../../../../../constants";
 import { Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation } from "../../../../../generated/graphql";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN, ORANGE_ONE } from "../../../../../theme";
-import { formatValue, getFormatDateString, renderTh } from "../../../../../utils";
+import { GREEN } from "../../../../../theme";
+import { formatValue, getFormatDateString, getSeverityColor, renderTh } from "../../../../../utils";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -147,10 +147,9 @@ const AllergyTab = () => {
                   <Table aria-label="customized table">
                     <TableHead>
                       <TableRow>
-                        {renderTh(ALLERGIES_TEXT)}
-                        {renderTh(PROBLEM_TEXT)}
+                        {renderTh(ALLERGY_TEXT)}
                         {renderTh(ONSET_DATE)}
-                        {renderTh(TYPE)}
+                        {renderTh(SEVERITY)}
                         {renderTh(NOTES)}
                         {renderTh(STATUS)}
                         {renderTh(ACTIONS)}
@@ -163,10 +162,6 @@ const AllergyTab = () => {
                         return (
                           <TableRow>
                             <TableCell scope="row">
-                              <Typography>{allergy?.id}</Typography>
-                            </TableCell>
-
-                            <TableCell scope="row">
                               <Typography>{allergy?.name}</Typography>
                             </TableCell>
 
@@ -175,7 +170,7 @@ const AllergyTab = () => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={ORANGE_ONE}>
+                              <Box className={classes.activeBox} bgcolor={allergySeverity && getSeverityColor(allergySeverity)}>
                                 {allergySeverity ? formatValue(allergySeverity) : DASHES}
                               </Box>
                             </TableCell>

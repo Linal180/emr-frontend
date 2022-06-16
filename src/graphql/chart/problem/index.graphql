@@ -25,6 +25,11 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
         code
         description
       }
+
+      snowMedCode{
+        id
+        referencedComponentId
+      }
     }
   }
 }
