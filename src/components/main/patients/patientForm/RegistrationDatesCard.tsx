@@ -11,13 +11,20 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector"
 //constants, interfaces and utils block
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
 import {
-  DECREASED_DATE, EMPTY_OPTION, FACILITY, REGISTRATION_DATE,
+  DECREASED_DATE, DOCTOR, EMPTY_OPTION, FACILITY, REGISTRATION_DATE,
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
-import { setRecord } from "../../../../utils"
-import { FacilityContext } from "../../../../context"
+import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem, setRecord } from "../../../../utils"
+import { AuthContext, FacilityContext } from "../../../../context"
 
 const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
+  const { user, currentDoctor } = useContext(AuthContext)
+  const { roles, facility } = user || {};
+  const { name: facilityName } = facility || {};
+  const { firstName, lastName } = currentDoctor || {}
+  const doctorName = `${firstName} ${lastName}`
+  const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
+  const isDoctorRole = isOnlyDoctor(roles)
   const methods = useFormContext<PatientInputProps>()
   const { watch, setValue } = methods;
   const { fetchAllDoctorList } = useContext(FacilityContext)
@@ -40,29 +47,33 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
     selectedFacility && selectedFacilityName && setValue("facilityId", setRecord(selectedFacility, selectedFacilityName))
   }, [selectedFacility, selectedFacilityName, setValue, watch])
 
-
   return (
     <CardComponent cardTitle={REGISTRATION_DATES}>
       {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
         <>
           <Grid container spacing={3}>
             <Grid item md={4} sm={12} xs={12}>
-              <FacilitySelector
-                addEmpty
-                isRequired
-                label={FACILITY}
-                name="facilityId"
-              />
+              {!isSuperAdminOrPracticeAdmin
+                ? renderItem(FACILITY, facilityName)
+                : <FacilitySelector
+                  addEmpty
+                  isRequired
+                  label={FACILITY}
+                  name="facilityId"
+                />
+              }
             </Grid>
 
             <Grid item md={4} sm={12} xs={12}>
-              <DoctorSelector
-                isRequired
-                label={USUAL_PROVIDER_ID}
-                name="usualProviderId"
-                facilityId={selectedFacility}
-                addEmpty
-              />
+              {isDoctorRole
+                ? renderItem(DOCTOR, doctorName)
+                : <DoctorSelector
+                  isRequired
+                  label={USUAL_PROVIDER_ID}
+                  name="usualProviderId"
+                  facilityId={selectedFacility}
+                  addEmpty
+                />}
             </Grid>
 
             <Grid item md={2} sm={12} xs={12}>

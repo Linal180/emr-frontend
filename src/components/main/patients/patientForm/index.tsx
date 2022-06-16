@@ -13,7 +13,7 @@ import { getAddressByZipcode } from '../../../common/smartyAddress';
 import history from '../../../../history';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
@@ -30,6 +30,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
   const { user } = useContext(AuthContext)
+  const { roles } = user || {};
+  const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
+  const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -40,9 +43,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, formState: {errors} } = methods;
   const {
     // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
@@ -514,6 +517,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   return (
     <FormProvider {...methods}>
+      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         {shouldShowBread &&
           <Box display="flex">
