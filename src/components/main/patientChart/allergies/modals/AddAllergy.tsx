@@ -107,7 +107,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   );
 
   const renderSearchData = () =>
-    <Box maxHeight={200} className="overflowY-auto" display="flex"
+    <Box maxHeight={280} minHeight={260} className="overflowY-auto" display="flex"
       flexDirection="column" alignItems="flex-start"
     >
       {!!findAllergiesLoading ?

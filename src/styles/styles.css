@@ -136,6 +136,10 @@ body {
   overflow-x: auto;
 }
 
+.agreement-table .MuiTableHead-root {
+  background-color: #F3F4F6 !important;
+}
+
 .RoleMultiSelectorStyles>div>div {
   border: none !important;
   box-shadow: none !important;

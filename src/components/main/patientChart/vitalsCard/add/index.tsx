@@ -26,7 +26,7 @@ import { patientVitalSchema } from '../../../../../validationSchemas';
 import { ActionType } from '../../../../../reducers/patientReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
-import { GREY_TWO } from '../../../../../theme';
+import { GRAY_SIX, GREY_TWO } from '../../../../../theme';
 import {
   celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI,
   getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
@@ -349,17 +349,19 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
-                <Box className={chartingClasses.toggleBox}>
-                  {FEVER_UNITS?.map((temp, index) => {
-                    const { id, name } = temp || {}
-                    return (<Box key={`${index}-${name}-${id}`}
-                      className={id === feverUnitId ? 'selectedBoxBlue selectBox' : 'selectBox'}
-                      onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
-                    >
-                      <Typography variant='h6'>{name}</Typography>
-                    </Box>
-                    )
-                  })}
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {FEVER_UNITS?.map((temp, index) => {
+                      const { id, name } = temp || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
@@ -486,17 +488,19 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
-                <Box className={chartingClasses.toggleBox}>
-                  {PATIENT_HEIGHT_UNITS?.map((height, index) => {
-                    const { id, name } = height || {}
-                    return (<Box key={`${index}-${name}-${id}`}
-                      className={id === heightUnitId ? 'selectedBoxBlue selectBox' : 'selectBox'}
-                      onClick={() => dispatcher({ type: ActionType.SET_HEIGHT_UNIT, heightUnit: height })}
-                    >
-                      <Typography variant='h6'>{name}</Typography>
-                    </Box>
-                    )
-                  })}
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {PATIENT_HEIGHT_UNITS?.map((height, index) => {
+                      const { id, name } = height || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === heightUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_HEIGHT_UNIT, heightUnit: height })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
@@ -517,17 +521,19 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
-                <Box className={chartingClasses.toggleBox}>
-                  {PATIENT_WEIGHT_UNITS?.map((weight, index) => {
-                    const { id, name } = weight || {}
-                    return (<Box key={`${index}-${name}-${id}`}
-                      className={id === weightUnitId ? 'selectedBoxBlue selectBox' : 'selectBox'}
-                      onClick={() => dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: weight })}
-                    >
-                      <Typography variant='h6'>{name}</Typography>
-                    </Box>
-                    )
-                  })}
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {PATIENT_WEIGHT_UNITS?.map((weight, index) => {
+                      const { id, name } = weight || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === weightUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: weight })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
@@ -601,17 +607,19 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
-                <Box className={chartingClasses.toggleBox}>
-                  {HEAD_CIRCUMFERENCE_UNITS?.map((head, index) => {
-                    const { id, name } = head || {}
-                    return (<Box key={`${index}-${name}-${id}`}
-                      className={id === headCircumferenceUnitId ? 'selectedBoxBlue selectBox' : 'selectBox'}
-                      onClick={() => dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: head })}
-                    >
-                      <Typography variant='h6'>{name}</Typography>
-                    </Box>
-                    )
-                  })}
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {HEAD_CIRCUMFERENCE_UNITS?.map((head, index) => {
+                      const { id, name } = head || {}
+                      return (<Box key={`${index}-${name}-${id}`}
+                        className={id === headCircumferenceUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                        onClick={() => dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: head })}
+                      >
+                        <Typography variant='h6'>{name}</Typography>
+                      </Box>
+                      )
+                    })}
+                  </Box>
                 </Box>
               </Grid>
             </Grid>

@@ -1,12 +1,14 @@
 // packages block
-import { createContext, FC, useCallback, useReducer, Reducer, useState, useEffect } from "react";
+import { createContext, FC, useCallback, useReducer, Reducer, useState, useEffect, useContext } from "react";
 import { pluck } from "underscore"
 // graphql, interfaces/types, reducer and constants block
+import { TOKEN } from "../constants";
 import { ChartContextInterface } from "../interfacesTypes";
+import { ReactionsPayload, useFindAllReactionsLazyQuery } from "../generated/graphql";
 import {
   Action, ActionType, initialState, chartReducer, State as LocalState
 } from '../reducers/chartReducer';
-import { ReactionsPayload, useFindAllReactionsLazyQuery } from "../generated/graphql";
+import { AuthContext } from "./authContext";
 
 export const ChartContext = createContext<ChartContextInterface>({
   reactionList: [],
@@ -14,9 +16,11 @@ export const ChartContext = createContext<ChartContextInterface>({
 });
 
 export const ChartContextProvider: FC = ({ children }): JSX.Element => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const hasToken = localStorage.getItem(TOKEN);
   const [reactionPages, setReactionPages] = useState(1)
   const [{ reactionList }, dispatch] = useReducer<Reducer<LocalState, Action>>(chartReducer, initialState)
-
+  
   const [findAllReactions] = useFindAllReactionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -72,7 +76,8 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
     }
   }
 
-  useEffect(() => { fetchAllReactionList('',reactionPages) }, [fetchAllReactionList, reactionPages])
+  useEffect(() => { 
+    hasToken && isLoggedIn && fetchAllReactionList('', reactionPages) }, [fetchAllReactionList, hasToken, isLoggedIn, reactionPages])
 
   return (
     <ChartContext.Provider
