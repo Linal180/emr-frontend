@@ -45,7 +45,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     mode: "all",
     resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
-  const { handleSubmit, setValue, watch, formState: {errors} } = methods;
+  const { handleSubmit, setValue, watch } = methods;
   const {
     // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
@@ -517,7 +517,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   return (
     <FormProvider {...methods}>
-      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         {shouldShowBread &&
           <Box display="flex">
