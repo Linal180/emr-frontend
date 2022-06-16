@@ -13,10 +13,11 @@ import { TrashNewIcon } from "../../../../assets/svgs";
 import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
-import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION, SYSTEM_ROLES } from "../../../../constants";
+import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION, SYSTEM_ROLES, PAGE_LIMIT } from "../../../../constants";
 import { RolesTableProps } from "../../../../interfacesTypes";
 import { AuthContext } from "../../../../context";
 import { pluck } from "underscore";
+import Search from "../../../common/Search";
 
 const RolesTable = ({ customRole = false }: RolesTableProps) => {
   const { user } = useContext(AuthContext)
@@ -32,7 +33,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
-      roleInput: { paginationOptions: { page, limit: 10 }, customRole }
+      roleInput: { paginationOptions: { page, limit: PAGE_LIMIT }, customRole }
     },
 
     notifyOnNetworkStatusChange: true,
@@ -111,9 +112,15 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
       })
   };
 
+  const search = (query: string) => {}
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
+        <Box mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
+
         <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>
@@ -182,7 +189,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
       />
 
       {pages > 1 &&
-        <Box display="flex" justifyContent="flex-end" p={3}>
+        <Box display="flex" justifyContent="flex-end" pt={1.5}>
           <Pagination
             count={pages}
             shape="rounded"
