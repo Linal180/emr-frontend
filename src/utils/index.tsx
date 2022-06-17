@@ -1642,7 +1642,14 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
+export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return {
+      stage:'',
+      stageColor:''
+    }
+  }
+
   if (status === AppointmentStatus.Discharged) {
     return {
       stage: 'Completed',

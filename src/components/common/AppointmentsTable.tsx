@@ -334,7 +334,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
