@@ -1024,19 +1024,11 @@ export const basicPatientDoctorSchema = {
 
 export const updatePatientProviderSchema = (isOtherRelation: boolean) => yup.object({
   providerId: selectorSchema(PROVIDER),
-  phone: notRequiredPhone(PHONE),
-  speciality: selectorSchema(SPECIALTY),
   otherRelation: otherRelationSchema(isOtherRelation),
-  ...firstLastNameSchema,
-  ...emailSchema,
 })
 
 export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) => yup.object({
-  phone: notRequiredPhone(PHONE),
-  speciality: selectorSchema(SPECIALTY),
   otherRelation: otherRelationSchema(isOtherRelation),
-  ...firstLastNameSchema,
-  ...emailSchema,
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),

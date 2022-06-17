@@ -80,7 +80,7 @@ export const renderItem = (
     <Typography variant="body2">{name}</Typography>
     <Box pb={2} pt={0.5}>
 
-      <Typography component="h5" variant="h5" noWrap={noWrap}>
+      <Typography component="h5" variant="h5" noWrap={noWrap}  className="word-break">
         {value ? value : N_A}
       </Typography>
     </Box>
@@ -341,12 +341,20 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const cancelRecordTitle = (recordType: string) => {
+  return `Cancel ${recordType} Record`;
+}
+
 export const UpdateRecordTitle = (recordType: string) => {
   return `Update ${recordType}`;
 }
 
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToCancel = (recordType: string) => {
+  return `You are about to cancel ${recordType.toLowerCase()} record`;
 }
 
 export const aboutToSign = (recordType: string) => {

@@ -40,7 +40,7 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE, START_TELEHEALTH, TELEHEALTH_URL,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE , CANCEL_RECORD, START_TELEHEALTH, TELEHEALTH_URL,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
@@ -529,6 +529,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
               )}
 
               <ConfirmationModal
+                isCalendar={true}
+                actionText={CANCEL_RECORD}
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
                 isLoading={cancelAppointmentLoading}

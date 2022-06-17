@@ -5386,7 +5386,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -7841,6 +7841,7 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       autoAccident
       otherAccident
       otherDate
+      amount
       codes {
         id
         code
