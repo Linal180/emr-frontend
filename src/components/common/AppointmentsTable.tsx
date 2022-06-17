@@ -4,6 +4,7 @@ import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
 import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { VideocamOutlined } from "@material-ui/icons";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 // components block
@@ -19,10 +20,11 @@ import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, TELEHEALTH_URL,
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
+  AppointmentCreateType,
   AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
   useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
 } from "../../generated/graphql";
@@ -326,13 +328,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep, appointmentCreateType
                   } = appointment || {};
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '')
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
@@ -371,7 +373,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 label=""
                                 value={{ id, name: text }}
                                 name="status"
-                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id)}
+                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id, appointmentCreateType)}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
                                 isEdit={isEdit}
@@ -403,13 +405,19 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {status && <Box className={classes.iconsBackground}
-                            onClick={() => canUpdateAppointmentStatus(status) ?
-                              id && patientId && handleCheckIn(id, patientId)
-                              : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
-                            }>
-                            <CheckInTickIcon />
-                          </Box>}
+                          {
+                            appointmentCreateType === AppointmentCreateType.Telehealth ?
+                              <Box className={classes.iconsBackground} onClick={()=>window.open(TELEHEALTH_URL)}>
+                                <VideocamOutlined />
+                              </Box> :
+                              status && <Box className={classes.iconsBackground}
+                                onClick={() => canUpdateAppointmentStatus(status) ?
+                                  id && patientId && handleCheckIn(id, patientId)
+                                  : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                                }>
+                                <CheckInTickIcon />
+                              </Box>
+                          }
 
                           <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>

@@ -34,7 +34,7 @@ import {
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -1642,7 +1642,14 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
+export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return {
+      stage:'',
+      stageColor:''
+    }
+  }
+
   if (status === AppointmentStatus.Discharged) {
     return {
       stage: 'Completed',
@@ -1689,7 +1696,19 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
-export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return renderArrayAsSelectorOptions(
+      [
+        AppointmentStatus.Arrived,
+        AppointmentStatus.InLobby,
+        AppointmentStatus.InSession,
+        AppointmentStatus.NoShow,
+        AppointmentStatus.Discharged,
+        AppointmentStatus.Cancelled
+      ], id
+    )
+  }
 
   return renderArrayAsSelectorOptions(
     [
