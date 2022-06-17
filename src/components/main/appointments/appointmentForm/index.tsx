@@ -19,9 +19,22 @@ import ServiceSelector from '../../../common/Selector/ServiceSelector';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 import AddPatientModal from './AddPatientModal';
 // interfaces, graphql, constants block
-import { ADD_PATIENT_MODAL, APPOINTMENT, APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, APPOINTMENT_NOT_FOUND, APPOINTMENT_SLOT_ERROR_MESSAGE, APPOINTMENT_TYPE, APPOINTMENT_UPDATED_SUCCESSFULLY, AUTO_ACCIDENT, CANCELLED_APPOINTMENT_EDIT_MESSAGE, CANT_BOOK_APPOINTMENT, CANT_UPDATE_APPOINTMENT, CONFLICT_EXCEPTION, CREATE_APPOINTMENT, DASHBOARD_BREAD, DAYS, EDIT_APPOINTMENT, EMPLOYMENT, EMPTY_OPTION, FACILITY, INFORMATION, NOTES, NO_SLOT_AVAILABLE, OTHER_ACCIDENT, PATIENT, PATIENT_CONDITION, PRIMARY_INSURANCE, PROVIDER, REASON, SECONDARY_INSURANCE, SLOT_ALREADY_BOOKED, TYPE, UPDATE_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_ROUTE } from "../../../../constants";
+import {
+  ADD_PATIENT_MODAL, APPOINTMENT, APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_EDIT_BREAD,
+  APPOINTMENT_NEW_BREAD, APPOINTMENT_NOT_FOUND, APPOINTMENT_SLOT_ERROR_MESSAGE, APPOINTMENT_TYPE,
+  APPOINTMENT_UPDATED_SUCCESSFULLY, AUTO_ACCIDENT, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  CANT_BOOK_APPOINTMENT, CANT_UPDATE_APPOINTMENT, CONFLICT_EXCEPTION, CREATE_APPOINTMENT,
+  DASHBOARD_BREAD, DAYS, EDIT_APPOINTMENT, EMPLOYMENT, EMPTY_OPTION, FACILITY, INFORMATION,
+  NOTES, NO_SLOT_AVAILABLE, OTHER_ACCIDENT, PATIENT, PATIENT_CONDITION, PRIMARY_INSURANCE,
+  PROVIDER, REASON, SECONDARY_INSURANCE, SLOT_ALREADY_BOOKED, TYPE, UPDATE_APPOINTMENT,
+  VIEW_APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_ROUTE
+} from "../../../../constants";
 import { FacilityContext, ListContext } from '../../../../context';
-import { AppointmentCreateType, AppointmentStatus, BillingStatus, PaymentType, Slots, SlotsPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation } from "../../../../generated/graphql";
+import {
+  AppointmentCreateType, AppointmentStatus, BillingStatus,
+  PaymentType, Slots, SlotsPayload, useCreateAppointmentMutation,
+  useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
+} from "../../../../generated/graphql";
 import history from "../../../../history";
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
