@@ -4,6 +4,7 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ChangeEvent, FC, ReactElement, Reducer, useReducer } from 'react';
 // interfaces, graphql, constants block /styles
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
+import { ChartComponentProps } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
 // components block
@@ -11,7 +12,7 @@ import AllergyTab from './tabs/AllergyTab';
 import ProblemTab from './tabs/ProblemTab';
 import VitalTab from './tabs/VitalTab';
 
-const ChartCards: FC = (): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
 
   const [{ tabValue }, dispatch] =
@@ -41,15 +42,15 @@ const ChartCards: FC = (): JSX.Element => {
 
             <Grid item md={10} sm={8} xs={12}>
               <TabPanel value="1" className='tab-panel'>
-                <VitalTab />
+                <VitalTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="2" className='tab-panel'>
-                <ProblemTab />
+                <ProblemTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="3" className='tab-panel'>
-                <AllergyTab />
+                <AllergyTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
             </Grid>
           </Grid>
