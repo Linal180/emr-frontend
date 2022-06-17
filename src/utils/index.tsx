@@ -166,12 +166,12 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
   return userRoles.includes(SYSTEM_ROLES.Doctor)
-    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
-    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
-    || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
-    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
     || userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
