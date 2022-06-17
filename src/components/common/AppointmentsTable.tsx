@@ -407,10 +407,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           {
                             appointmentCreateType === AppointmentCreateType.Telehealth ?
-                              <Box className={classes.iconsBackground} onClick={()=>window.open(TELEHEALTH_URL)}>
+                              <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
                                 <VideocamOutlined />
                               </Box> :
-                              (status && !(status === AppointmentStatus.Cancelled)) &&<Box className={classes.iconsBackground}
+                              (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
                                 onClick={() => canUpdateAppointmentStatus(status) ?
                                   id && patientId && handleCheckIn(id, patientId)
                                   : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
@@ -420,7 +420,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           }
 
                           {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
-                            <IconButton  onMouseEnter={() => {
+                            <IconButton onMouseEnter={() => {
                               Alert.info(APPOINTMENT_CANCELLED_TEXT)
                             }}>
                               <CheckInTickIcon />
