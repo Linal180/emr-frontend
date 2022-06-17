@@ -173,6 +173,7 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
   learnMoreText?: string
   aboutToText?: string
+  isCalendar?: boolean;
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {

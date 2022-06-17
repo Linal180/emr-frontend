@@ -1,5 +1,5 @@
 // packages block
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
@@ -19,7 +19,7 @@ import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, APPOINTMENT_CANCELLED_TEXT,
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -403,12 +403,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {status && <Box className={classes.iconsBackground}
+                          {(status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
                             onClick={() => canUpdateAppointmentStatus(status) ?
                               id && patientId && handleCheckIn(id, patientId)
                               : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
                             }>
                             <CheckInTickIcon />
+                          </Box>}
+
+                          {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
+                            <IconButton  onMouseEnter={() => {
+                              Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                            }}>
+                              <CheckInTickIcon />
+                            </IconButton>
                           </Box>}
 
                           <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>

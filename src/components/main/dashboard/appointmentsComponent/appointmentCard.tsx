@@ -21,14 +21,14 @@ import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import {
-   convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
-  } from '../../../../utils';
+  convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
+} from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../../assets/svgs';
 import {
   AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, 
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus,
   useUpdateAppointmentMutation
 } from '../../../../generated/graphql';
 import {
@@ -39,10 +39,10 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE , CANCEL_RECORD,
 } from '../../../../constants';
 
-const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: AppointmentCardProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
@@ -452,7 +452,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
 
-                      <Button variant="contained" color="primary" onClick={()=>handlePatientCheckIn(id)}>{CHECK_IN}</Button>
+                    <Button variant="contained" color="primary" onClick={() => handlePatientCheckIn(id)}>{CHECK_IN}</Button>
                   </Box>
                 </form>
               </FormProvider>
@@ -524,6 +524,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
               )}
 
               <ConfirmationModal
+                isCalendar={true}
+                actionText={CANCEL_RECORD}
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
                 isLoading={cancelAppointmentLoading}
