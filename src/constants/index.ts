@@ -253,6 +253,7 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
 export const GO_TO_PROFILE = "Go To Profile";
@@ -3857,6 +3858,8 @@ export const PRACTICE_SETTINGS_ITEMS = [
     permission: USER_PERMISSIONS.emergencyAccess,
   },
 ];
+
+export const TELEHEALTH_URL='https://doxy.me'
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
