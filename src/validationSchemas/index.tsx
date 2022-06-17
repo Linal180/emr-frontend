@@ -3,13 +3,13 @@ import moment from "moment";
 import * as yup from "yup";
 // utils and constants block
 import {
-  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX, 
+  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
   OTHER_RELATION, EIN_VALIDATION_MESSAGE, EIN_REGEX, UPIN_VALIDATION_MESSAGE, UPIN_REGEX,
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
   DOB_VALIDATION_MESSAGE, STATE, COUNTRY, PASSWORD, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE,
   CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE, EXPIRATION_DATE,
-  FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER, 
+  FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER,
   SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_TYPE, PRACTICE_NAME, NAME,
   NO_WHITE_SPACE_REGEX, PRACTICE, SPECIALTY, SUFFIX, MIDDLE_NAME, LANGUAGE_SPOKEN, SERVICE_NAME_TEXT,
   SEX_AT_BIRTH, PREFERRED_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, INDUSTRY,
@@ -125,8 +125,8 @@ const dobSchema = {
 // }
 
 const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
-  name: yup.string().required(),
-  id: yup.string().required()
+  name: yup.string(),
+  id: yup.string()
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
@@ -479,7 +479,7 @@ export const extendedPatientSchema = (isOptional: boolean, isDoctor: boolean, is
   // basicPhone: notRequiredPhone(MOBILE_NUMBER),
   facilityId: isSuperAdminOrPracticeAdmin ? selectorSchema(FACILITY) : yup.string().notRequired(),
   basicEmail: optionalEmailSchema(isOptional),
-  usualProviderId:isDoctor ? yup.string().notRequired() : selectorSchema(USUAL_PROVIDER_ID),
+  usualProviderId: isDoctor ? yup.string().notRequired() : selectorSchema(USUAL_PROVIDER_ID),
   ...firstLastNameSchema,
   ...ssnSchema,
   ...dobSchema,
@@ -514,7 +514,8 @@ export const settingSchema = yup.object({
   timeZone: selectorSchema(TIME_ZONE_TEXT)
 })
 
-export const appointmentSchema = yup.object({
+export const appointmentSchema = (adminUser: boolean) => yup.object({
+  facilityId: selectorSchema(FACILITY, adminUser),
   serviceId: multiOptionSchema(APPOINTMENT),
   notes: yup.string(),
   patientId: selectorSchema(PATIENT),

@@ -5,7 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
+import {
+  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
@@ -22,7 +24,7 @@ import FacilitySelector from '../../../common/Selector/FacilitySelector';
 import history from "../../../../history";
 import { GREY_TWO, WHITE } from '../../../../theme';
 import { appointmentSchema } from '../../../../validationSchemas';
-import { FacilityContext, ListContext } from '../../../../context';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
@@ -30,7 +32,8 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps, filterSlots
+  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps, filterSlots,
+  isUserAdmin, isOnlyDoctor,
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
@@ -47,18 +50,29 @@ import {
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
-  const classes = usePublicAppointmentStyles();
+  const { user, currentUser } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
+  const classes = usePublicAppointmentStyles();
   const params = new URLSearchParams(window.location.search);
+
+  const { roles, facility, } = user || {}
+  const { id: currentDoctor } = currentUser || {}
+  const { id: userFacilityId, practiceId: userPracticeId } = facility || {}
+
+  const isHigherAdmin = isUserAdmin(roles)
+  const onlyDoctor = isOnlyDoctor(roles)
   const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
+
   const [appEndDate] = useState<string>(params.get('endDate') || '')
   const [pId] = useState<string>(params.get('patientId') || '')
   const [pName] = useState<string>(params.get('patientName') || '')
   const [serviceIds, setServiceId] = useState<multiOptionType[]>([])
+
   const {
     fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     facilityName, cancelAppStatus, patientName, openPatientModal
@@ -66,7 +80,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
-    resolver: yupResolver(appointmentSchema)
+    resolver: yupResolver(appointmentSchema(isUserAdmin(roles)))
   });
   const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
@@ -278,13 +292,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       getSlots({
         variables: {
-          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
+          getSlots: selectedProvider || onlyDoctor ?
+            { providerId: onlyDoctor ? currentDoctor : selectedProvider, ...slotsInput }
+            : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
   }, [
     currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch,
-    getSlots, appStartDate, setValue, appEndDate
+    getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor
   ])
 
   const fetchList = useCallback((id: string, name: string) => {
@@ -315,12 +331,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
-      const { value: selectedService } = serviceId || {};
       const { id: selectedPatient } = patientId || {};
       const { id: selectedProvider } = providerId || {};
       const { id: selectedFacility } = facilityId || {};
+      const { value: selectedService } = serviceId || {};
 
-      let practiceId = '';
+      let practiceId = userPracticeId || '';
       if (selectedFacility) {
         const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
         const { practiceId: pId } = facility || {};
@@ -334,11 +350,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime,
           appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
-        notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
-        employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
+        notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
+        appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
+        billingStatus: BillingStatus.Due
       };
 
-      const payload = selectedProvider ?
+      const payload = onlyDoctor ? { ...appointmentInput, providerId: currentDoctor } : selectedProvider ?
         { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
 
       if (isEdit) {
@@ -352,7 +369,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...payload, isExternal: true } }
+          variables: { createAppointmentInput: { ...payload, isExternal: false } }
         })
       }
     }
@@ -421,36 +438,39 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             <Grid container spacing={3}>
               <Grid md={8} item>
                 <Card className='overflowVisible'>
-                  {/* <CardComponent cardTitle={APPOINTMENT}> */}
                   <Box p={3}>
-                  <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant='h4'>{APPOINTMENT}</Typography>
-                  </Box>
-                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(FACILITY, facilityName) :
-                          <FacilitySelector
-                            isRequired
-                            label={FACILITY}
-                            name="facilityId"
-                          />
-                        }
-                      </Grid>
+                    <Box py={2} mb={4} display='flex' justifyContent='space-between'
+                      alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                    >
+                      <Typography variant='h4'>{APPOINTMENT}</Typography>
+                    </Box>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <ServiceSelector
-                          isRequired
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          facilityId={selectedFacility}
-                          isEdit={isEdit}
-                          defaultValues={serviceIds}
-                        />
+                    {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                      <Grid container spacing={3}>
+                        {isHigherAdmin &&
+                          <Grid item md={6} sm={12} xs={12}>
+                            {isEdit ? renderItem(FACILITY, facilityName) :
+                              <FacilitySelector
+                                isRequired
+                                label={FACILITY}
+                                name="facilityId"
+                              />
+                            }
+                          </Grid>
+                        }
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <ServiceSelector
+                            isRequired
+                            isEdit={isEdit}
+                            name="serviceId"
+                            label={APPOINTMENT_TYPE}
+                            defaultValues={serviceIds}
+                            facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          />
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  )}
-                  {/* </CardComponent> */}
+                    )}
                   </Box>
                 </Card>
                 <Box pb={3} />
@@ -459,25 +479,26 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <DoctorSelector
-                            label={PROVIDER}
-                            name="providerId"
-                            facilityId={selectedFacility}
-                            addEmpty
-                          />
-                        </Grid>
+                        {!onlyDoctor &&
+                          <Grid item md={6} sm={12} xs={12}>
+                            <DoctorSelector
+                              label={PROVIDER}
+                              name="providerId"
+                              facilityId={selectedFacility}
+                              addEmpty
+                            />
+                          </Grid>}
 
                         <Grid item md={6} sm={12} xs={12}>
                           {isEdit ? renderItem(PATIENT, patientName) :
                             <PatientSelector
-                              handlePatientModal={handlePatientModal}
                               isModal
                               isRequired
                               label={PATIENT}
                               name="patientId"
                               setValue={setValue}
                               isOpen={openPatientModal}
+                              handlePatientModal={handlePatientModal}
                             />}
                         </Grid>
                       </Grid>
@@ -488,18 +509,23 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         controllerLabel={REASON}
                       />
 
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="primaryInsurance"
+                            controllerLabel={PRIMARY_INSURANCE}
+                          />
+                        </Grid>
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="primaryInsurance"
-                        controllerLabel={PRIMARY_INSURANCE}
-                      />
-
-                      <InputController
-                        fieldType="text"
-                        controllerName="secondaryInsurance"
-                        controllerLabel={SECONDARY_INSURANCE}
-                      />
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="secondaryInsurance"
+                            controllerLabel={SECONDARY_INSURANCE}
+                          />
+                        </Grid>
+                      </Grid>
 
                       <InputController
                         multiline
@@ -609,7 +635,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                                 <label className="toggle-main">
                                   <Box color={isOtherAccident ? WHITE : GREY_TWO}>Yes</Box>
-                                  <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
+                                  <AntSwitch checked={isOtherAccident}
+                                    onChange={(event) => { handleChange(event) }} name='otherAccident'
+                                  />
+
                                   <Box color={isOtherAccident ? GREY_TWO : WHITE}>No</Box>
                                 </label>
                               </FormControl>
@@ -629,7 +658,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       <AddPatientModal
         facilityId={selectedFacility}
         isOpen={openPatientModal}
-        setIsOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
+        setIsOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
       />
     </>
   );
