@@ -32,6 +32,7 @@ import { Action as FormBuilderAction, State as FormBuilderState } from "../reduc
 import { Action } from "../reducers/mediaReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as ScheduleAction } from "../reducers/scheduleReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -73,10 +74,6 @@ export interface AuthContextProps {
   fetchUser: () => void
   fetchAttachment: () => void,
   profileAttachment: null | Attachment
-}
-
-export interface DoctorScheduleSlotProps {
-  doctorFacilityId?: string;
 }
 
 export interface AppContextProps {
@@ -1204,16 +1201,6 @@ export interface DaySchedule {
   slots: Schedule[];
 }
 
-export interface DoctorScheduleProps {
-  schedule: Schedule;
-  dispatcher: Dispatch<DoctorAction>;
-}
-
-export interface FacilityScheduleProps {
-  schedule: Schedule;
-  dispatcher: Dispatch<FacilityAction>;
-}
-
 export interface AppointmentsTableProps {
   doctorId?: string;
 }
@@ -1844,7 +1831,18 @@ export interface ScheduleFormProps {
   isEdit?: boolean;
   isDoctor?: boolean;
   doctorFacilityId?: string;
-  doctorDispatcher?: Dispatch<DoctorAction>;
-  facilityDispatcher?: Dispatch<FacilityAction>;
+  scheduleDispatch?: Dispatch<ScheduleAction>;
   reload: Function;
+}
+
+export interface ScheduleListingProps {
+  isDoctor?: boolean;
+  typeId?: string;
+  doctorFacilityId?: string;
+}
+
+export interface ScheduleBoxProps {
+  isDoctor?: boolean;
+  schedule: Schedule;
+  dispatcher: Dispatch<ScheduleAction>;
 }
