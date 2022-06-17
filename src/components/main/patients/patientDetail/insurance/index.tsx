@@ -113,7 +113,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                 <>
                   {id === policyToEdit ?
                     <PolicyCard isEdit id={id} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} /> :
-                    <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4} >
+                    <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
                       <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                         <Box display='flex' alignItems='center'>
                           <Typography variant="h4">{payerName}</Typography>
@@ -149,7 +149,9 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                         <Box minWidth={200} mr={10} my={2}>
                           <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
-                          <Typography variant="body2">{`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}</Typography>
+                          <Typography variant="body2">
+                            {`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}
+                          </Typography>
                         </Box>
 
                         <Box minWidth={200} my={2}>

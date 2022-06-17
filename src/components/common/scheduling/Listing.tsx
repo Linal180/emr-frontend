@@ -10,8 +10,8 @@ import ViewDataLoader from "../ViewDataLoader";
 import ScheduleModal from "../scheduling/FormModal";
 import ConfirmationModal from "../ConfirmationModal";
 // interfaces, graphql, constants block
-import { AddSlotIcon } from '../../../assets/svgs';
 import { getDaySchedules } from "../../../utils";
+import { AddSlotIcon } from '../../../assets/svgs';
 import { useDoctorScheduleStyles } from '../../../styles/doctorSchedule';
 import { DaySchedule, ScheduleListingProps, ParamsType } from "../../../interfacesTypes";
 import {
@@ -22,8 +22,7 @@ import {
 } from "../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DELETE_FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
+  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
 } from "../../../constants";
 
 const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId }) => {
