@@ -13,7 +13,7 @@ import {
   renderTh, roundOffUpto2Decimal
 } from '../../../../../utils';
 
-export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit, setOpen }: VitalListingTableProps) => {
+export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit, setOpen, shouldDisableEdit }: VitalListingTableProps) => {
   const { heightUnit: { id: heightId }, weightUnit: { id: weightId }, headCircumferenceUnit: {
     id: headCircumferenceId }, feverUnit: { id: feverId } } = patientStates;
 
@@ -105,7 +105,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit
           <TableRow>
             {patientVitals?.map((vital) => {
               const { createdAt } = vital || {}
-              return renderTh(`${convertDateFromUnix(createdAt || '', 'ddd')} ${convertDateFromUnix(createdAt || '', 'MM/DD/YYYY')}`, 'left', false, '', true, () => renderIcon(vital))
+              return renderTh(`${convertDateFromUnix(createdAt || '', 'ddd')} ${convertDateFromUnix(createdAt || '', 'MM/DD/YYYY')}`, 'left', false, '', true, !shouldDisableEdit ? () => renderIcon(vital) : () => { })
             })}
           </TableRow>
         </TableHead>

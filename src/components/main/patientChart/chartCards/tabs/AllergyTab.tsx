@@ -1,11 +1,11 @@
 import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import { ACTIONS, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, SEVERITY, STATUS } from "../../../../../constants";
 import { Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation } from "../../../../../generated/graphql";
-import { ParamsType } from "../../../../../interfacesTypes";
+import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GREEN } from "../../../../../theme";
@@ -17,7 +17,7 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import AddAllergy from "../../allergies/modals/AddAllergy";
 import AllergyModal from "../../allergies/modals/AllergyModal";
 
-const AllergyTab = () => {
+const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
@@ -135,11 +135,13 @@ const AllergyTab = () => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
-                  <AddWhiteIcon />
-                  <Box p={0.5} />
-                  {ADD_NEW_TEXT}
-                </Button>
+                {
+                  !shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                    <AddWhiteIcon />
+                    <Box p={0.5} />
+                    {ADD_NEW_TEXT}
+                  </Button>
+                }
               </Box>
 
               {loading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
@@ -152,7 +154,7 @@ const AllergyTab = () => {
                         {renderTh(SEVERITY)}
                         {renderTh(NOTES)}
                         {renderTh(STATUS)}
-                        {renderTh(ACTIONS)}
+                        {!shouldDisableEdit && renderTh(ACTIONS)}
                       </TableRow>
                     </TableHead>
 
@@ -185,7 +187,8 @@ const AllergyTab = () => {
                               </Box>
                             </TableCell>
 
-                            <TableCell scope="row">
+                            {
+                              !shouldDisableEdit && <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
                                 <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
                                   <EditOutlinedIcon />
@@ -196,6 +199,7 @@ const AllergyTab = () => {
                                 </IconButton>
                               </Box>
                             </TableCell>
+                            }
                           </TableRow>
                         )
                       })}
