@@ -21,24 +21,9 @@ const ChartCards: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   return (
-
     <>
-      {/* <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
-          <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
-        </Grid>
-
-        <Grid item md={4} sm={12} xs={12}>
-          <AllergyList />
-        </Grid> 
-
-        <Grid item md={4} sm={12} xs={12}>
-          <ProblemList />
-        </Grid> 
-      </Grid> */}
-
       <Box mt={3}>
-        <TabContext value={tabValue} >
+        <TabContext value={tabValue}>
           <Grid container spacing={3}>
             <Grid item md={2} sm={4} xs={12}>
               <Card>
@@ -71,6 +56,7 @@ const ChartCards: FC = (): JSX.Element => {
         </TabContext>
       </Box>
     </>
-  );
+  )
 };
+
 export default ChartCards;

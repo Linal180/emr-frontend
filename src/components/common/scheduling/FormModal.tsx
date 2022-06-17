@@ -4,29 +4,28 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
-import Alert from "./Alert";
-import DatePicker from "./DatePicker";
-import TimePicker from "./TimePicker";
-import CardComponent from "./CardComponent";
-import ViewDataLoader from "./ViewDataLoader";
-import ServiceSelector from "./Selector/ServiceSelector";
+import Alert from "../Alert";
+import DatePicker from "../DatePicker";
+import TimePicker from "../TimePicker";
+import CardComponent from "../CardComponent";
+import ViewDataLoader from "../ViewDataLoader";
+import ServiceSelector from "../Selector/ServiceSelector";
 // interfaces/types block, theme, svgs and constants
-import { AuthContext } from './../../context';
-import { GREY_SEVEN, WHITE } from "./../../theme";
-import { ActionType } from "./../../reducers/doctorReducer";
-import { ActionType as FacilityActionType } from "./../../reducers/facilityReducer";
-import { scheduleSchema } from "./../../validationSchemas";
-import { usePublicAppointmentStyles } from "./../../styles/publicAppointmentStyles";
-import { AntSwitch } from "./../../styles/publicAppointmentStyles/externalPatientStyles";
+import { AuthContext } from '../../../context';
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { scheduleSchema } from "../../../validationSchemas";
+import { ActionType } from "../../../reducers/scheduleReducer";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
-} from "./../../generated/graphql";
+} from "../../../generated/graphql";
 import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
-} from "./../../interfacesTypes";
+} from "../../../interfacesTypes";
 import {
   checkPermission, getDayFromTimestamps, getTimeString, renderItem, setTimeDay
-} from "./../../utils";
+} from "../../../utils";
 import {
   Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
   InputLabel, Typography
@@ -34,13 +33,13 @@ import {
 import {
   APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
   DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, SELECT_DAY_MESSAGE,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, 
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
-} from "./../../constants";
+  SELECT_DAY_MESSAGE,
+} from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
-  isDoctor, id, doctorDispatcher, doctorFacilityId, isOpen, reload, isEdit,
-  facilityDispatcher
+  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
@@ -58,18 +57,11 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     reset();
     setIds([])
 
-    if (isDoctor) {
-      if (doctorDispatcher) {
-        doctorDispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
-        doctorDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
-      }
-    } else {
-      if (facilityDispatcher) {
-        facilityDispatcher({ type: FacilityActionType.SET_SCHEDULE_ID, scheduleId: '' })
-        facilityDispatcher({ type: FacilityActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
-      }
+    if (scheduleDispatch) {
+      scheduleDispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
+      scheduleDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: false })
     }
-  }, [doctorDispatcher, facilityDispatcher, isDoctor, reset])
+  }, [scheduleDispatch, reset])
 
   useEffect(() => {
     if (!checkPermission(userPermissions, USER_PERMISSIONS.createSchedule)) {
@@ -242,17 +234,18 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                               <>
                                 <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
                                 <FormGroup>
-                                  <Box mt={1} mb={2} className={classesToggle.daysBox} display="flex" alignItems="center" flexWrap="wrap">
-                                    {WEEK_DAYS.map(day => {
-                                      const { id, name } = day
-                                      return <FormControlLabel
-                                        control={
-                                          <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
-                                            onChange={() => handleChangeForCheckBox(id || '')} />
-                                        }
-                                        label={name}
-                                      />
-                                    })}
+                                  <Box mt={1} mb={2} className={classesToggle.daysBox}
+                                    display="flex" alignItems="center" flexWrap="wrap"
+                                  >
+                                    {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
+                                      control={
+                                        <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
+                                          onChange={() => handleChangeForCheckBox(id || '')}
+                                        />
+                                      }
+                                      label={name}
+                                    />
+                                    )}
                                   </Box>
                                 </FormGroup>
                               </>
