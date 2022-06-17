@@ -14,26 +14,27 @@ import client from "../apollo";
 import history from "../history";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType,
-  TableAlignType, TableCodesProps, UserFormType
+  StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, BLUE, GREY, PURPLE_ONE, GREY_TWO
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, 
+  BLUE, GREY, PURPLE_ONE, GREY_TWO
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
   FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
   PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ACCEPTABLE_PDF_AND_IMAGES_FILES
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, 
+  ACCEPTABLE_PDF_AND_IMAGES_FILES
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -166,12 +167,12 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
   return userRoles.includes(SYSTEM_ROLES.Doctor)
-    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
-    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
-    || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
-    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
     || userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -1649,7 +1650,14 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
+export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return {
+      stage:'',
+      stageColor:''
+    }
+  }
+
   if (status === AppointmentStatus.Discharged) {
     return {
       stage: 'Completed',
@@ -1696,7 +1704,19 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
-export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return renderArrayAsSelectorOptions(
+      [
+        AppointmentStatus.Arrived,
+        AppointmentStatus.InLobby,
+        AppointmentStatus.InSession,
+        AppointmentStatus.NoShow,
+        AppointmentStatus.Discharged,
+        AppointmentStatus.Cancelled
+      ], id
+    )
+  }
 
   return renderArrayAsSelectorOptions(
     [

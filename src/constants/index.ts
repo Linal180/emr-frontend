@@ -253,6 +253,7 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
 export const GO_TO_PROFILE = "Go To Profile";
@@ -1445,6 +1446,7 @@ export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const PROFILE_UPDATE = "Profile is updated successfully";
 export const CHANGES_SAVED = "Changes saved successfully!";
+export const CANT_DELETE_SCHEDULE = "Schedule can't be deleted.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -1489,7 +1491,6 @@ export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
-export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
@@ -3860,6 +3861,8 @@ export const PRACTICE_SETTINGS_ITEMS = [
     permission: USER_PERMISSIONS.emergencyAccess,
   },
 ];
+
+export const TELEHEALTH_URL='https://doxy.me'
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

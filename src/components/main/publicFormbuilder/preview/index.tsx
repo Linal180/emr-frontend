@@ -201,7 +201,7 @@ const PublicFormPreview = () => {
                   {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"> */}
                     <Grid container spacing={3}>
                       <Grid item xs={2}>
-                        <Stepper activeStep={activeStep} orientation="vertical" >
+                        <Stepper activeStep={activeStep} orientation="vertical">
                           {formValues?.map((tab, index) => {
                             const { name, id } = tab || {}
                             return <Step key={`${id}-${index}`}>
