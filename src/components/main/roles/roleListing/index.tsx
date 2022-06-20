@@ -3,7 +3,7 @@ import RolesTable from './RolesTable';
 import PageHeader from '../../../common/PageHeader';
 // constants, history, styling block
 import {
-  ADD_NEW_TEXT, ADD_ROLES_ROUTE, ROLES_BREAD, ROLES_TABS, ROLES_TEXT, SETTINGS_ROUTE,
+  ADD_NEW_TEXT, ADD_ROLES_ROUTE, DASHBOARD_BREAD, ROLES_BREAD, ROLES_TABS, ROLES_TEXT, SETTINGS_ROUTE,
 } from '../../../../constants';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { Box, Button, Tab } from '@material-ui/core';
@@ -28,7 +28,7 @@ const RolesComponent = (): JSX.Element => {
           <Box ml={2}>
             <PageHeader
               title={ROLES_TEXT}
-              path={[ROLES_BREAD]}
+              path={[DASHBOARD_BREAD, ROLES_BREAD]}
             />
           </Box>
         </Box>
