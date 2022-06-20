@@ -387,14 +387,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       </Box>
 
       <Box ml={2}>
-        <Typography variant="h4" color="textPrimary">Brad Dennis</Typography>
+        <Typography variant="h4" color="textPrimary">{`${firstName} ${lastName}`}</Typography>
 
         <Box display='flex' alignItems='center'>
           <Box display='flex' alignItems='center'>
             <ProfileUserIcon />
 
             <Box ml={1} color={BLACK_THREE}>
-              <Typography variant="body2" color="inherit">24 Yrs Old </Typography>
+              <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
             </Box>
           </Box>
 
@@ -413,7 +413,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
               <Box ml={1} color={BLACK_THREE} display="flex" alignItems="center">
                 <Typography variant="body1" color="inherit">{NOTES}</Typography>
 
-              <Box className="mt-10px">
+                <Box className="mt-10px">
                   <RedCircleIcon />
                 </Box>
               </Box>
@@ -438,7 +438,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Menu>
         </Box>
       </Box>
-    </Box>
+    </Box >
 
   return isCheckIn ? checkInComponent() : regularComponent()
 };
