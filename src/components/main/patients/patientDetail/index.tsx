@@ -104,7 +104,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
               new Date()) as AppointmentsPayload['appointments']
           });
 

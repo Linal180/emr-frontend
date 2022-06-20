@@ -132,6 +132,7 @@ export enum AllergyType {
 export type Appointment = {
   __typename?: 'Appointment';
   appointmentCancelReason?: Maybe<Scalars['String']>;
+  appointmentCreateType?: Maybe<AppointmentCreateType>;
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentType?: Maybe<Service>;
   appointmentTypeId?: Maybe<Scalars['String']>;
@@ -175,6 +176,12 @@ export type Appointment = {
   token?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
+
+/** The appointment create type assigned */
+export enum AppointmentCreateType {
+  Appointment = 'APPOINTMENT',
+  Telehealth = 'TELEHEALTH'
+}
 
 export type AppointmentInput = {
   appointmentNumber?: Maybe<Scalars['String']>;
@@ -552,6 +559,7 @@ export enum CopayType {
 }
 
 export type CreateAppointmentInput = {
+  appointmentCreateType?: Maybe<AppointmentCreateType>;
   appointmentTypeId: Scalars['String'];
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus: BillingStatus;
@@ -1099,6 +1107,7 @@ export type Doctor = {
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
+  telehealthLink?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
   transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
@@ -4451,6 +4460,7 @@ export type UpdateAppointmentBillingStatusInput = {
 };
 
 export type UpdateAppointmentInput = {
+  appointmentCreateType?: Maybe<AppointmentCreateType>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus?: Maybe<BillingStatus>;
@@ -5149,14 +5159,14 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null } | null } | null> | null } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null } | null } | null> | null } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode: ServiceCode } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode: ServiceCode } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -5376,7 +5386,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -5517,6 +5527,13 @@ export type FindAllDoctorListQueryVariables = Exact<{
 
 
 export type FindAllDoctorListQuery = { __typename?: 'Query', findAllDoctor: { __typename?: 'AllDoctorPayload', doctors?: Array<{ __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null } };
+
+export type FetchAllPatientListQueryVariables = Exact<{
+  patientInput: PatientInput;
+}>;
+
+
+export type FetchAllPatientListQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, patients?: Array<{ __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null } | null> | null } };
 
 export type FindAllPatientListQueryVariables = Exact<{
   patientInput: PatientInput;
@@ -6254,6 +6271,7 @@ export const FindAllAppointmentsDocument = gql`
       primaryInsurance
       billingStatus
       checkInActiveStep
+      appointmentCreateType
       provider {
         id
         firstName
@@ -6335,6 +6353,7 @@ export const GetAppointmentDocument = gql`
       checkedInAt
       selfCheckIn
       checkInActiveStep
+      appointmentCreateType
       appointmentType {
         id
         name
@@ -7829,6 +7848,7 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       autoAccident
       otherAccident
       otherDate
+      amount
       codes {
         id
         code
@@ -8799,6 +8819,48 @@ export function useFindAllDoctorListLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindAllDoctorListQueryHookResult = ReturnType<typeof useFindAllDoctorListQuery>;
 export type FindAllDoctorListLazyQueryHookResult = ReturnType<typeof useFindAllDoctorListLazyQuery>;
 export type FindAllDoctorListQueryResult = Apollo.QueryResult<FindAllDoctorListQuery, FindAllDoctorListQueryVariables>;
+export const FetchAllPatientListDocument = gql`
+    query FetchAllPatientList($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      totalPages
+    }
+    patients {
+      id
+      lastName
+      firstName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllPatientListQuery__
+ *
+ * To run a query within a React component, call `useFetchAllPatientListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllPatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllPatientListQuery({
+ *   variables: {
+ *      patientInput: // value for 'patientInput'
+ *   },
+ * });
+ */
+export function useFetchAllPatientListQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
+      }
+export function useFetchAllPatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
+        }
+export type FetchAllPatientListQueryHookResult = ReturnType<typeof useFetchAllPatientListQuery>;
+export type FetchAllPatientListLazyQueryHookResult = ReturnType<typeof useFetchAllPatientListLazyQuery>;
+export type FetchAllPatientListQueryResult = Apollo.QueryResult<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>;
 export const FindAllPatientListDocument = gql`
     query FindAllPatientList($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {

@@ -128,10 +128,10 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
                 <Box key={code} className='hoverClass pointer-cursor' my={0.2} 
                   onClick={(event) => item && handleOpenForm(event, item as IcdCodesWithSnowMedCode)}
                 >
-                  <Box display="flex" flexDirection="column" >
-                    <Typography  variant='body1' >{description}</Typography>
+                  <Box display="flex" flexDirection="column">
+                    <Typography  variant='body1'>{description}</Typography>
 
-                    <Typography variant='caption' >
+                    <Typography variant='caption'>
                      {referencedComponentId? `snomed: ${referencedComponentId} | icd10: ${code}`: `icd10: ${code}`}
                     </Typography>
                   </Box>

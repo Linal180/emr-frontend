@@ -5,7 +5,7 @@ import { Box, Button, Grid, Tab, } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
 import DoctorProfileHero from "./profileHero";
-import DoctorScheduleForm from "../schedules";
+import ScheduleListing from "../../../common/scheduling/Listing";
 import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants, history, styling block
 import history from "../../../../history";
@@ -63,7 +63,8 @@ const DoctorDetailComponent = (): JSX.Element => {
           
           <TabPanel value="2">
             <Grid spacing={3}>
-              <DoctorScheduleForm doctorFacilityId={doctorFacilityId || ''} />
+              {/* <DoctorScheduleForm doctorFacilityId={doctorFacilityId || ''} /> */}
+              <ScheduleListing isDoctor doctorFacilityId={doctorFacilityId || ''} />
             </Grid>
           </TabPanel>
 

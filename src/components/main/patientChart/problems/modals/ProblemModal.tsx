@@ -190,7 +190,6 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
   const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
-  console.log("severities", severities)
 
   const getProblemSeverityColor = (severity: string) => {
     switch (severity) {

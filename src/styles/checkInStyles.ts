@@ -1,4 +1,5 @@
 import { makeStyles, StepConnector, withStyles, } from "@material-ui/core";
+import { BLUE, WHITE } from "../theme";
 
 export const CheckInConnector = withStyles({
   alternativeLabel: {
@@ -55,5 +56,60 @@ export const useCheckInStepIconStyles = makeStyles({
     zIndex: 1,
     border: '1px solid #3F95FF',
     borderRadius: 100,
+  },
+});
+
+export const useCheckInProfileStyles = makeStyles({
+  checkInProfileBox: {
+    boxShadow: `0px 4px 30px rgba(56, 71, 109, 0.09)`,
+    borderRadius: 8,
+    backgroundColor: WHITE,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10,
+    minHeight: 110,
+    display: 'flex',
+    alignItems: 'center',
+
+    "& .MuiStepper-root": {
+      padding: 0,
+    },
+
+    "& .MuiStep-alternativeLabel": {
+      position: 'inherit',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      flex: 'auto',
+      marginBottom: 10,
+    },
+
+    "& .MuiStep-horizontal": {
+      paddingLeft: 0,
+    },
+
+    "& .MuiStepper-alternativeLabel": {
+      flexWrap: 'wrap',
+    },
+    
+    "& .MuiStepLabel-root.MuiStepLabel-alternativeLabel": {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    
+    "& .MuiStepLabel-label.MuiStepLabel-alternativeLabel": {
+      marginTop: 0,
+      fontWeight: 500,
+      fontSize: 16,
+      margin: '0 5px',
+    },
+
+    "& .MuiStepLabel-iconContainer.MuiStepLabel-alternativeLabel": {
+      display: 'none',
+    },
+
+    "& .MuiStepLabel-label.MuiStepLabel-active": {
+      color: BLUE,
+    }
   },
 });
