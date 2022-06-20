@@ -53,6 +53,20 @@ query FindAllDoctorList($doctorInput: DoctorInput!) {
   }
 }
 
+query FetchAllPatientList($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      totalPages
+    }
+    
+    patients {
+      id
+      lastName
+      firstName
+    }
+  }
+}
+
 query FindAllPatientList($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
     pagination {

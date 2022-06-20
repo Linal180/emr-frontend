@@ -42,14 +42,17 @@ const PatientsTable: FC = (): JSX.Element => {
   const { user, currentUser } = useContext(AuthContext)
   const { id: currentUserId } = currentUser || {}
   const { roles, facility } = user || {};
+
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const isRegularUser = isUser(roles);
+
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
   const { watch, setValue } = methods;
@@ -71,7 +74,10 @@ const PatientsTable: FC = (): JSX.Element => {
 
       if (fetchAllPatients) {
         const { pagination, patients } = fetchAllPatients
-        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
+        patients && dispatch({
+          type: ActionType.SET_PATIENTS,
+          patients: patients as PatientsPayload['patients']
+        })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -89,7 +95,6 @@ const PatientsTable: FC = (): JSX.Element => {
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
           isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
-
 
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
@@ -237,6 +242,7 @@ const PatientsTable: FC = (): JSX.Element => {
                     addEmpty
                   />
                 </Grid>
+
                 <Grid item md={(isSuper || isPracticeUser) ? 12 : 3} sm={12} xs={12}>
                   <Box display='flex' justifyContent='flex-end' alignItems='center'
                     style={{ marginTop: (isSuper || isPracticeUser) ? 0 : 20 }}
@@ -306,6 +312,7 @@ const PatientsTable: FC = (): JSX.Element => {
               )}
             </TableBody>
           </Table>
+
           {((!(loading) && !patients?.length) || (error)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />

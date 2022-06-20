@@ -253,6 +253,7 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
 export const GO_TO_PROFILE = "Go To Profile";
@@ -945,6 +946,7 @@ export const HOME_TEXT = "Home";
 export const DETAILS = "Details";
 export const PENDING = "Pending";
 export const MISSING = "Missing";
+export const CANCEL_RECORD = "Cancel record";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -1191,6 +1193,7 @@ export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
+export const APPOINTMENT_CANCELLED_TEXT = "Appointment cancelled";
 export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
@@ -1260,6 +1263,7 @@ export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
 export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
 export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
@@ -1442,6 +1446,7 @@ export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const PROFILE_UPDATE = "Profile is updated successfully";
 export const CHANGES_SAVED = "Changes saved successfully!";
+export const CANT_DELETE_SCHEDULE = "Schedule can't be deleted.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -1486,7 +1491,6 @@ export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
-export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
@@ -3857,6 +3861,8 @@ export const PRACTICE_SETTINGS_ITEMS = [
     permission: USER_PERMISSIONS.emergencyAccess,
   },
 ];
+
+export const TELEHEALTH_URL='https://doxy.me'
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

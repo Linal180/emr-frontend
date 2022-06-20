@@ -1,7 +1,7 @@
 // packages block
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
-import { Close } from '@material-ui/icons';
+import { Close, VideocamOutlined } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
@@ -21,15 +21,16 @@ import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import {
-   convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
-  } from '../../../../utils';
+  convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
+} from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../../assets/svgs';
 import {
   AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, 
-  useUpdateAppointmentMutation
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus,
+  useUpdateAppointmentMutation,
+  AppointmentCreateType
 } from '../../../../generated/graphql';
 import {
   DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
@@ -39,10 +40,10 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
-  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE , CANCEL_RECORD, START_TELEHEALTH, TELEHEALTH_URL,
 } from '../../../../constants';
 
-const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: AppointmentCardProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
@@ -50,7 +51,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus,
+    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus, appointmentCreateType
   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
@@ -160,7 +161,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
       if (response) {
         const { status } = response;
         if (appointment && status && status === 200) {
-          const { invoice, status, billingStatus } = appointment;
+          const { invoice, status, billingStatus, appointmentCreateType } = appointment;
           const { invoiceNo } = invoice || {}
 
           if (invoiceNo) {
@@ -172,6 +173,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
           }
 
           status && setValue('appointmentStatus', setRecord(status, status))
+          appointmentCreateType && dispatch({ type: ActionType.SET_APPOINTMENT_CREATE_TYPE, appointmentCreateType: appointmentCreateType })
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
           dispatch({ type: ActionType.SET_APP_BILLING_STATUS, appBillingStatus: billingStatus as BillingStatus })
         }
@@ -451,8 +453,11 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
                       <Typography variant="body1">{appDate}</Typography>
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
-
-                      <Button variant="contained" color="primary" onClick={()=>handlePatientCheckIn(id)}>{CHECK_IN}</Button>
+                    {
+                      appointmentCreateType === AppointmentCreateType.Telehealth ?
+                        <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}><VideocamOutlined />&nbsp;{START_TELEHEALTH}</Button> :
+                        <Button variant="contained" color="primary" onClick={() => handlePatientCheckIn(id)}>{CHECK_IN}</Button>
+                    }
                   </Box>
                 </form>
               </FormProvider>
@@ -524,6 +529,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate,reload }: App
               )}
 
               <ConfirmationModal
+                isCalendar={true}
+                actionText={CANCEL_RECORD}
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
                 isLoading={cancelAppointmentLoading}

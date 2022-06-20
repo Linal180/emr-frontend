@@ -8,12 +8,12 @@ import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
 import { AddPatientIcon } from "../../../assets/svgs";
 import { PatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
+import { PatientsPayload, useFetchAllPatientListLazyQuery } from "../../../generated/graphql";
 import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -23,18 +23,21 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   name, label, disabled, isRequired, isOpen, setValue
 }): JSX.Element => {
   const { control } = useFormContext()
-  const { user } = useContext(AuthContext)
+  const { user, currentUser } = useContext(AuthContext)
+
   const { roles, facility } = user || {};
+  const { id: currentDoctor } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracAdmin = isPracticeAdmin(roles);
-  const isFacAdmin = isFacilityAdmin(roles);
+
+  const onlyDoctor = isOnlyDoctor(roles)
   const { id: facilityId, practiceId } = facility || {}
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { page, searchQuery, patients } = state;
+  const [{ page, searchQuery, patients }, dispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
 
-  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
+  const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -43,10 +46,10 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     },
 
     onCompleted(data) {
-      const { findAllPatient } = data || {};
+      const { fetchAllPatients } = data || {};
 
-      if (findAllPatient) {
-        const { pagination, patients } = findAllPatient
+      if (fetchAllPatients) {
+        const { pagination, patients } = fetchAllPatients
         patients && dispatch({
           type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
         })
@@ -64,14 +67,19 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPracAdmin ? { practiceId, ...pageInputs }
+          : { facilityId, ...pageInputs }
 
       patientsInputs && await findAllPatient({
-        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
+        variables: {
+          patientInput: {
+            ...patientsInputs, searchString: searchQuery,
+            ...(onlyDoctor ? { doctorId: currentDoctor } : {})
+          }
+        }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
+  }, [page, isSuper, isPracAdmin, practiceId, facilityId, findAllPatient, searchQuery, onlyDoctor, currentDoctor])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()

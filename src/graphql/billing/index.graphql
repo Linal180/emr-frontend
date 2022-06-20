@@ -29,6 +29,7 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       autoAccident
       otherAccident
       otherDate
+      amount
       codes {
         id
         code

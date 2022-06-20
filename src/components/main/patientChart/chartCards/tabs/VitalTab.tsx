@@ -1,25 +1,26 @@
 import {
-  Box, Button, Card, Grid
+  Box, Button, Card, Grid, Typography
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 //constants, interfaces, utils
 import { AddWhiteIcon } from "../../../../../assets/svgs";
-import { ADD_NEW_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
+import { ADD_NEW_TEXT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
 import { PatientVitalPayload, PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
-import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
+import { ChartComponentProps, ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
 import { Action, initialState, patientReducer, State } from "../../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { usePatientVitalListingStyles } from "../../../../../styles/patientVitalsStyles";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 //components
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 import { AddVitals } from "../../vitalsCard/add";
 import { VitalsLabels } from "../../vitalsCard/listing/labels";
 import { VitalListingTable } from "../../vitalsCard/listing/lists";
 
-const VitalTab = () => {
+const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const vitalClasses = usePatientVitalListingStyles()
   const [open, setOpen] = useState<boolean>(false);
@@ -107,8 +108,17 @@ const VitalTab = () => {
                 <Box className={classes.cardBox}>
                   <FormProvider {...methods}>
                     <form>
-                      <Box px={2} pt={2} pb={2} display="flex" justifyContent="flex-end" alignItems="center">
-                        {/* <Box display="flex" alignItems="center">
+                      <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+                        <Typography variant='h3'>{VITALS_TEXT}</Typography>
+
+                        {!shouldDisableEdit && <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
+                            <AddWhiteIcon />
+                            <Box p={0.5} />
+                            {ADD_NEW_TEXT}
+                          </Button>}
+                      </Box>
+                      {/* <Box px={2} pt={2} pb={2} display="flex" justifyContent="flex-end" alignItems="center">
+                       <Box display="flex" alignItems="center">
                           <Box className={classes.tableHeaderDropdown}>
                             <Selector
                               name="units"
@@ -126,24 +136,24 @@ const VitalTab = () => {
                               value={EMPTY_OPTION}
                             />
                           </Box>
-                        </Box> */}
+                        </Box> 
 
                         <Box display="flex" alignItems="center">
-                          {/* <Button variant='contained' color='secondary'>
+                           <Button variant='contained' color='secondary'>
                             <PrinterWhiteIcon />
                             <Box p={0.5} />
                             {PRINT_CHART}
-                          </Button> */}
+                          </Button> 
 
                           <Box p={1} />
 
-                          <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
+                          {!shouldDisableEdit && <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
                             <AddWhiteIcon />
                             <Box p={0.5} />
                             {ADD_NEW_TEXT}
-                          </Button>
+                          </Button>}
                         </Box>
-                      </Box>
+                      </Box> */}
                     </form>
                   </FormProvider>
 
@@ -156,13 +166,16 @@ const VitalTab = () => {
                       </Grid>
                       <Grid item xs={10}>
                         <Box className={vitalClasses.listingTable}>
-                          <VitalListingTable
-                            patientVitals={patientVitals}
-                            patientStates={patientStates}
-                            setPatientVitals={setPatientVitals}
-                            setVitalToEdit={setVitalToEdit}
-                            setOpen={setOpen}
-                          />
+                          {!patientVitals?.length ?
+                            <NoDataFoundComponent /> :
+                            <VitalListingTable
+                              patientVitals={patientVitals}
+                              patientStates={patientStates}
+                              setPatientVitals={setPatientVitals}
+                              setVitalToEdit={setVitalToEdit}
+                              setOpen={setOpen}
+                              shouldDisableEdit={shouldDisableEdit}
+                            />}
                         </Box>
                       </Grid>
                     </Grid>
