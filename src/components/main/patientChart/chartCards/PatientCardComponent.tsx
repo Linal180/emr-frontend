@@ -19,7 +19,7 @@ import {
 } from "../../../../reducers/chartReducer";
 import { useFindAllPatientVitalsLazyQuery } from "../../../../generated/graphql";
 import {
-  BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, DASHES, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT,
+  BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, DASHES, TEMPERATURE_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT,
   KG_PER_METER_SQUARE_TEXT, LATEST_RECORDED_DATE, LBS_TEXT, MMHG_TEXT, NO_RECORDS, ONE_TO_TEN_TEXT,
   OXYGEN_SATURATION_TEXT, PAIN_TEXT, PERCENTAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, RPM_TEXT,
   SMOKING_STATUS_TEXT, VITAL_LIST_PAGE_LIMIT, WEIGHT_TEXT
@@ -226,7 +226,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${FEVER_TEXT} (${(temperatureUnitType && formatValue(temperatureUnitType))})`}
+                      title={`${TEMPERATURE_TEXT} (${(temperatureUnitType && formatValue(temperatureUnitType))})`}
                       description={roundOffUpto2Decimal(patientTemperature) || DASHES}
                       isError={!!patientTemperature ?
                         (parseFloat(patientTemperature) < 97 || parseFloat(patientTemperature) > 99)

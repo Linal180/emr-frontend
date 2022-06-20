@@ -6,7 +6,7 @@ import {
 } from '@material-ui/lab';
 // component block
 import FacilityInfoCard from './FacilityInfoCard';
-import BusinessHoursCard from './BusinuessHoursCard';
+import BusinessHoursCard from './BusinessHoursCard';
 import BillingProfileCard from './BillingProfileCard';
 import FacilityLocationCard from './FacilityLocationCard';
 // utils. interfaces, constants

@@ -23,7 +23,8 @@ import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
-  formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
+  isUser, renderTh
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -91,6 +92,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const fetchAllPatients = useCallback(async () => {
     try {
+      console.log(isRegularUser, "isRegularUser", facilityId, searchQuery, isSuper, isPracticeUser, isFacAdmin || isRegularUser)
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
@@ -102,7 +104,7 @@ const PatientsTable: FC = (): JSX.Element => {
             ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
             doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
-            ...(!isFacAdmin ? { facilityId: selectedLocationId } : {}),
+            ...(isSuper || isPracticeUser ? { facilityId: selectedLocationId } : {}),
           }
         }
       })
