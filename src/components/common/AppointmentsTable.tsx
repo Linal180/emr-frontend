@@ -1,60 +1,65 @@
 // packages block
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Link } from "react-router-dom";
+import { Pagination } from "@material-ui/lab";
 import { VideocamOutlined } from "@material-ui/icons";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import history from "../../history";
+import { AuthContext } from "../../context";
+import { useTableStyles } from "../../styles/tableStyles";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import {
+  AppointmentCreateType, AppointmentPayload, AppointmentsPayload, AppointmentStatus,
+  useFindAllAppointmentsLazyQuery, useGetAppointmentsLazyQuery, useRemoveAppointmentMutation,
+  useUpdateAppointmentMutation
+} from "../../generated/graphql";
+import {
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
+  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+} from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
+  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL,
 } from "../../constants";
-import { AuthContext } from "../../context";
-import {
-  AppointmentCreateType,
-  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
-  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
-} from "../../generated/graphql";
-import history from "../../history";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
-import { useTableStyles } from "../../styles/tableStyles";
-import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
-  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
-} from "../../utils";
 
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, currentUser } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const { id: facilityId, practiceId } = facility || {}
+  const { id: providerId } = currentUser || {}
+
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
-  const isFacAdmin = isFacilityAdmin(roles);
+  const { id: facilityId, practiceId } = facility || {}
+
+  const isDoctor = isOnlyDoctor(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments } = state;
-  const methods = useForm<StatusInputProps>({
-    mode: "all",
-  });
+  const methods = useForm<StatusInputProps>({ mode: "all" });
+
   const { setValue, watch } = methods
   const { status } = watch()
+  const {
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments
+  } = state;
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -165,16 +170,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (doctorId) {
+      if (doctorId || isDoctor) {
         await getAppointments({
-          variables: { getAppointments: { doctorId } }
+          variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
         })
       }
       else {
         const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
-          isPracticeUser ? { practiceId, ...pageInputs } :
-            isFacAdmin ? { facilityId, ...pageInputs } : undefined
+          isPracticeUser ? { practiceId, ...pageInputs }
+            : { facilityId, ...pageInputs }
 
         inputs && await findAllAppointments({
           variables: {
@@ -184,8 +189,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       }
     } catch (error) { }
   }, [
-    doctorId, getAppointments, page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId,
-    findAllAppointments, searchQuery
+    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId,
+    facilityId, findAllAppointments, searchQuery
   ])
 
   useEffect(() => {
@@ -328,13 +333,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime, checkInActiveStep, appointmentCreateType
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime,
+                    checkInActiveStep, appointmentCreateType
                   } = appointment || {};
+
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
+
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '',
+                    (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
@@ -373,13 +382,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 label=""
                                 value={{ id, name: text }}
                                 name="status"
-                                options={AppointmentStatusStateMachine(status || AppointmentStatus.Scheduled, id, appointmentCreateType)}
+                                options={AppointmentStatusStateMachine(
+                                  status || AppointmentStatus.Scheduled, id, appointmentCreateType
+                                )}
                                 onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
                                 onOutsideClick={clearEdit}
                                 isEdit={isEdit}
                               />
                             </FormProvider>
-                            : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
+                            : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
+                              handleStatusUpdate(id, text)}
                               className={`${classes.status} pointer-cursor`}
                               component='span' color={textColor}
                               display="flex"

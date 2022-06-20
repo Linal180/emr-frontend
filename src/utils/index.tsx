@@ -989,10 +989,10 @@ export const formatPermissionName = (name: string) => {
   return updateName.replaceAll(',', ' ');
 }
 
-export const formatRoleName = (name: string) => {
+export const formatRoleName = (name: string): string => {
   const text = name.split(/[-_\s]+/)
 
-  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)
+  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)[0].trim()
 };
 
 export const parseColumnGrid = (col: number): GridSize => {
@@ -1209,7 +1209,7 @@ export const getReactionData = (data: ReactionsPayload['reactions']) => {
   return result;
 };
 
-export const getHigherRole = (roles: string[]) => {
+export const getHigherRole = (roles: string[]): string => {
   if (roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
   if (roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
   if (roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
