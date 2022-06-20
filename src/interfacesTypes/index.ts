@@ -519,9 +519,10 @@ export interface PickerProps {
   label: string;
   error?: string;
   isRequired?: boolean;
-  clearable?: boolean
-  disableFuture?: boolean
-  disabled?: boolean
+  clearable?: boolean;
+  disableFuture?: boolean;
+  disabled?: boolean;
+  disablePast?: boolean;
 }
 
 export interface TimePickerProps {
