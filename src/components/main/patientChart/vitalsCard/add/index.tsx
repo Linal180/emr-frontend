@@ -343,7 +343,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -376,7 +375,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="pulseRate"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -398,7 +396,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="respiratoryRate"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -423,7 +420,6 @@ export const AddVitals = memo(({
                       controllerName="systolicBloodPressure"
                       controllerLabel={''}
                       placeholder={'e.g 120'}
-                      isHelperText
                       notStep
                     />
                   </Grid>
@@ -436,7 +432,6 @@ export const AddVitals = memo(({
                       controllerName="diastolicBloodPressure"
                       controllerLabel={''}
                       placeholder={'e.g 80'}
-                      isHelperText
                       notStep
                     />
                   </Grid>
@@ -460,7 +455,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="oxygenSaturation"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -482,7 +476,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -515,7 +508,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="PatientWeight"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -549,7 +541,6 @@ export const AddVitals = memo(({
                   controllerName="PatientBMI"
                   controllerLabel={''}
                   disabled
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -571,7 +562,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="PainRange"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
@@ -601,7 +591,6 @@ export const AddVitals = memo(({
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
-                  isHelperText
                   notStep
                 />
               </Grid>
