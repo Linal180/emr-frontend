@@ -6,13 +6,13 @@ import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
+import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
-  getFormatDateString, getDateWithDay
+  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue, getFormatDateString, getDateWithDay
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
@@ -25,7 +25,6 @@ import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
-import { BLACK_THREE } from "../../../../theme";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   setPatient, setAttachmentsData, isCheckIn, isChart
@@ -279,12 +278,16 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       </Box>
 
       <Box display="flex" flexWrap="wrap" alignItems="center">
-        <Typography variant="body2">
-          {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
-        </Typography>
+        {!isCheckIn &&
+          <Typography variant="body2">
+            {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+          </Typography>
+        }
       </Box>
     </Box>
+  </>
 
+  const renderAge = () =>
     <Box display='flex' alignItems='center'>
       <ProfileUserIcon />
 
@@ -292,7 +295,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
       </Box>
     </Box>
-  </>
 
   const renderNotes = () => <>
     <div ref={noteRef}
@@ -301,10 +303,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
       })}
     >
-      <Box><NotesOutlinedCardIcon /></Box>
+      <NotesOutlinedCardIcon />
+
       <Box display="flex" alignItems="center">
         <Typography variant="body1">{NOTES}</Typography>
-        <RedCircleIcon />
+
+        <Box className="mt-10px">
+          <RedCircleIcon />
+        </Box>
       </Box>
     </div>
 
@@ -338,6 +344,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
             <Box display='flex'>
               <Box flex={1} flexWrap="wrap">
                 {renderName()}
+
+                {renderAge()}
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => {
@@ -396,12 +404,16 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
     <Box display='flex' alignItems='center'>
       {patientAvatar()}
 
-      <Box ml={2}>
+      <Box>
         {renderName()}
 
-        <Box p={2} />
+        <Box display="flex" alignItems="baseline">
+          {renderAge()}
 
-        {renderNotes()}
+          <Box p={1} />
+
+          {renderNotes()}
+        </Box>
       </Box>
     </Box>
 
