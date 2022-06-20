@@ -530,6 +530,15 @@ export const scheduleSchema = (isDoctor: boolean) => yup.object({
   ).test('', requiredMessage(APPOINTMENT), (value: any) => isDoctor ? !!value && value.length > 0 : true)
 })
 
+export const providerAppointmentSchema = yup.object({
+  serviceId: multiOptionSchema(APPOINTMENT),
+  notes: yup.string(),
+  patientId: selectorSchema(PATIENT),
+  primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
+  secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
+  providerId: selectorSchema(PROVIDER).required()
+})
+
 export const facilityScheduleSchema = yup.object({
   ...scheduleTimeSchema,
 })
@@ -1018,19 +1027,11 @@ export const basicPatientDoctorSchema = {
 
 export const updatePatientProviderSchema = (isOtherRelation: boolean) => yup.object({
   providerId: selectorSchema(PROVIDER),
-  phone: notRequiredPhone(PHONE),
-  speciality: selectorSchema(SPECIALTY),
   otherRelation: otherRelationSchema(isOtherRelation),
-  ...firstLastNameSchema,
-  ...emailSchema,
 })
 
 export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) => yup.object({
-  phone: notRequiredPhone(PHONE),
-  speciality: selectorSchema(SPECIALTY),
   otherRelation: otherRelationSchema(isOtherRelation),
-  ...firstLastNameSchema,
-  ...emailSchema,
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),

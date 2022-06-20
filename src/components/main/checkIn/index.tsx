@@ -1,35 +1,36 @@
 // packages block
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
-import clsx from 'clsx';
 import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useParams } from "react-router";
 // component block
-import CheckIn from "./CheckIn";
-import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
 import BackButton from "../../common/BackButton";
 import PageHeader from "../../common/PageHeader";
-import PatientForm from "../patients/patientForm";
-import BillingComponent from "./BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
 import InsuranceComponent from "../patients/patientDetail/insurance";
-import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
+import PatientForm from "../patients/patientForm";
+import BillingComponent from "./BillingComponent";
+import CheckIn from "./CheckIn";
+import LabOrders from "./LabOrders";
+import ChartCards from "../patientChart/chartCards";
+import VitalTab from "../patientChart/chartCards/tabs/VitalTab";
 // constants, interfaces, utils block
-import { 
-  CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VIEW_APPOINTMENTS_ROUTE, VITALS_TEXT 
+import {
+  CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VIEW_APPOINTMENTS_ROUTE, VITALS_TEXT
 } from "../../../constants";
-import { 
-  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery, 
-  useGetAppointmentLazyQuery, useUpdateAppointmentMutation 
+import {
+  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery,
+  useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../generated/graphql";
 import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
-import { 
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState 
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState
 } from "../../../reducers/mediaReducer";
-import { 
-  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState 
+import {
+  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate } from "../../../utils";
@@ -264,7 +265,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        {/* <ChartCards shouldDisableEdit={shouldDisableEdit} /> */}
+        <ChartCards shouldDisableEdit={shouldDisableEdit} />
       </Card>
     </>
 
@@ -281,8 +282,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        {/* <ChartCards  /> */}
-        <VitalsChartingTable isCalendar={false} shouldDisableEdit={shouldDisableEdit} />
+        <VitalTab shouldDisableEdit={shouldDisableEdit}/>
       </Card>
     </>
 

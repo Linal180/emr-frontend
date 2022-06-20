@@ -34,7 +34,7 @@ import {
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -80,7 +80,7 @@ export const renderItem = (
     <Typography variant="body2">{name}</Typography>
     <Box pb={2} pt={0.5}>
 
-      <Typography component="h5" variant="h5" noWrap={noWrap}>
+      <Typography component="h5" variant="h5" noWrap={noWrap}  className="word-break">
         {value ? value : N_A}
       </Typography>
     </Box>
@@ -341,12 +341,20 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const cancelRecordTitle = (recordType: string) => {
+  return `Cancel ${recordType} Record`;
+}
+
 export const UpdateRecordTitle = (recordType: string) => {
   return `Update ${recordType}`;
 }
 
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToCancel = (recordType: string) => {
+  return `You are about to cancel ${recordType.toLowerCase()} record`;
 }
 
 export const aboutToSign = (recordType: string) => {
@@ -1642,7 +1650,14 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string): StageStatusType => {
+export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return {
+      stage:'',
+      stageColor:''
+    }
+  }
+
   if (status === AppointmentStatus.Discharged) {
     return {
       stage: 'Completed',
@@ -1689,7 +1704,19 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
-export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '') => {
+export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
+  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+    return renderArrayAsSelectorOptions(
+      [
+        AppointmentStatus.Arrived,
+        AppointmentStatus.InLobby,
+        AppointmentStatus.InSession,
+        AppointmentStatus.NoShow,
+        AppointmentStatus.Discharged,
+        AppointmentStatus.Cancelled
+      ], id
+    )
+  }
 
   return renderArrayAsSelectorOptions(
     [

@@ -81,7 +81,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { fetchBillingDetailsByAppointmentId } = data ?? {}
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
         const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
-          autoAccident, codes, employment, onsetDate, otherDate, otherAccident } = billing ?? {}
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount } = billing ?? {}
 
         const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
           const codeType = codeValues.codeType
@@ -112,6 +112,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
         setValue('otherDate', otherDate ?? '')
         setValue('onsetDate', onsetDate ?? '')
+        setValue('amount', amount ?? '')
       }
     }
   })
@@ -204,13 +205,14 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
-          const { copays, id } = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
-          const totalAmount = copays?.reduce((acc, copay) => {
-            return acc += copay.amount ? +copay.amount : 0
-          }, 0)
-
-          setValue('amount', String(totalAmount ?? ''))
-          setInsuranceId(id ?? "")
+          if (!shouldDisableEdit) {
+            const { copays, id } = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary) ?? {}
+            const totalAmount = copays?.reduce((acc, copay) => {
+              return acc += copay.amount ? +copay.amount : 0
+            }, 0)
+            setValue('amount', String(totalAmount ?? ''))
+            setInsuranceId(id ?? "")
+          }
         }
       }
     }

@@ -1,18 +1,18 @@
-import { 
-  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
+import {
+  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { 
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT, 
-  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE 
+import {
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT,
+  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE
 } from "../../../../../constants";
-import { 
-  IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation 
+import {
+  IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
 } from "../../../../../generated/graphql";
-import { ParamsType } from "../../../../../interfacesTypes";
+import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh } from "../../../../../utils";
@@ -23,7 +23,7 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import AddProblem from "../../problems/modals/AddProblem";
 import ProblemModal from "../../problems/modals/ProblemModal";
 
-const ProblemTab = () => {
+const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
@@ -142,11 +142,13 @@ const ProblemTab = () => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
-                <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
-                  <AddWhiteIcon />
-                  <Box p={0.5} />
-                  {ADD_NEW_TEXT}
-                </Button>
+                {
+                  !shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                    <AddWhiteIcon />
+                    <Box p={0.5} />
+                    {ADD_NEW_TEXT}
+                  </Button>
+                }
               </Box>
 
               {loading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
@@ -160,7 +162,7 @@ const ProblemTab = () => {
                         {renderTh(TYPE)}
                         {renderTh(NOTES)}
                         {renderTh(SEVERITY)}
-                        {renderTh(ACTIONS)}
+                        {!shouldDisableEdit && renderTh(ACTIONS)}
                       </TableRow>
                     </TableHead>
 
@@ -196,17 +198,19 @@ const ProblemTab = () => {
                                 {problemSeverity}
                               </Box>
                             </TableCell>
-                            <TableCell scope="row">
-                              <Box display='flex' alignItems='center'>
-                                <IconButton onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
-                                  <EditOutlinedIcon />
-                                </IconButton>
+                            {
+                              !shouldDisableEdit && <TableCell scope="row">
+                                <Box display='flex' alignItems='center'>
+                                  <IconButton onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
+                                    <EditOutlinedIcon />
+                                  </IconButton>
 
-                                <IconButton onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
+                                  <IconButton onClick={() => id && onDeleteClick(id)}>
+                                    <TrashOutlinedSmallIcon />
+                                  </IconButton>
+                                </Box>
+                              </TableCell>
+                            }
                           </TableRow>
                         )
                       })}
