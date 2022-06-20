@@ -130,6 +130,7 @@ export const initialState: State = {
   appointmentCreateType: ''
 }
 
+
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_DATE = 'setDate',
