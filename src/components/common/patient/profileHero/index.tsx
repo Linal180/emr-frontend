@@ -1,6 +1,6 @@
 import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
@@ -10,21 +10,10 @@ import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
-import {
-  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
-  getFormatDateString, getDateWithDay
-} from "../../../../utils";
-import {
-  AppointmentPayload,
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery
-} from "../../../../generated/graphql";
-import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, NotesOutlinedCardIcon
-} from "../../../../assets/svgs";
-import {
-  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
-  ActionType as mediaActionType
-} from "../../../../reducers/mediaReducer";
+import { formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference } from "../../../../utils";
+import { AppointmentPayload, AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery } from "../../../../generated/graphql";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, NotesOutlinedCardIcon } from "../../../../assets/svgs";
+import { mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState, ActionType as mediaActionType } from "../../../../reducers/mediaReducer";
 import { BLACK_THREE } from "../../../../theme";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isCheckIn, isChart }) => {
@@ -164,33 +153,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
+  let phoneNumerWithOutFormat = ""
 
   if (selfContact && selfContact[0]) {
     const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || ""
+    phoneNumerWithOutFormat = phone || ""
+
     selfEmail = patientEmail ? patientEmail : email || ""
     const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
     selfCurrentLocation = selfAddress.trim() ? selfAddress : ''
   }
-
-  const ProfileDetails = [
-    {
-      icon: ProfileUserIcon(),
-      description: calculateAge(dob || '')
-    },
-    {
-      icon: HashIcon(),
-      description: selfPhoneNumber
-    },
-    {
-      icon: AtIcon(),
-      description: selfEmail
-    },
-    {
-      icon: LocationIcon(),
-      description: selfCurrentLocation
-    },
-  ]
 
   let providerName = ""
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
@@ -292,18 +265,32 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => {
-                    const { icon, description } = item
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><ProfileUserIcon /></Box>
+                    <Typography variant="body1">{dob ? dateDifference(dob || '') : renderMissing()}</Typography>
+                  </Box>
 
-                    return (
-                      <Box display="flex" key={`${description}-${index}`}
-                        className={classes.profileInfoItem}
-                      >
-                        <Box>{icon}</Box>
-                        <Typography variant="body1">{description ? description : renderMissing()}</Typography>
-                      </Box>
-                    )
-                  })}
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><HashIcon /></Box>
+                    <Typography variant="body1">
+                      <Link href={`tell:${phoneNumerWithOutFormat}`}>{selfPhoneNumber ? selfPhoneNumber : renderMissing()}
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><AtIcon /></Box>
+                    <Typography variant="body1">
+                      <Link href={`mailto:${selfEmail}`}>
+                        {selfEmail ? selfEmail : renderMissing()}
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><LocationIcon /></Box>
+                    <Typography variant="body1">{selfCurrentLocation ? selfCurrentLocation : renderMissing()}</Typography>
+                  </Box>
 
                   <div ref={noteRef}
                     className={`${classes.profileNoteInfoItem} pointer-cursor`}
@@ -413,7 +400,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
               <Box ml={1} color={BLACK_THREE} display="flex" alignItems="center">
                 <Typography variant="body1" color="inherit">{NOTES}</Typography>
 
-              <Box className="mt-10px">
+                <Box className="mt-10px">
                   <RedCircleIcon />
                 </Box>
               </Box>
