@@ -381,7 +381,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
             <ProfileUserIcon />
 
             <Box ml={1} color={BLACK_THREE}>
-              <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
+              <Typography variant="body1">{dob ? dateDifference(dob || '') : renderMissing()}</Typography>
             </Box>
           </Box>
 
