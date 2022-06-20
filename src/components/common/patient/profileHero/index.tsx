@@ -15,8 +15,8 @@ import {
   getFormatDateString, getDateWithDay
 } from "../../../../utils";
 import {
-  AppointmentPayload,
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
+  useGetPatientNearestAppointmentsLazyQuery
 } from "../../../../generated/graphql";
 import {
   ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, NotesOutlinedCardIcon
@@ -27,7 +27,9 @@ import {
 } from "../../../../reducers/mediaReducer";
 import { BLACK_THREE } from "../../../../theme";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isCheckIn, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({
+  setPatient, setAttachmentsData, isCheckIn, isChart
+}) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -61,9 +63,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   const fetchAttachment = useCallback(async () => {
     try {
       await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
+        variables: { getMedia: { id: attachmentId } }
       })
     } catch (error) { }
   }, [attachmentId, getAttachment])
@@ -157,7 +157,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, sexAtBirth, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, sexAtBirth, dob, contacts, doctorPatients, createdAt
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -174,10 +174,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }
 
   const ProfileDetails = [
-    {
-      icon: ProfileUserIcon(),
-      description: calculateAge(dob || '')
-    },
+    // {
+    //   icon: ProfileUserIcon(),
+    //   description: calculateAge(dob || '')
+    // },
     {
       icon: HashIcon(),
       description: selfPhoneNumber
@@ -248,30 +248,88 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
+  const patientAvatar = () => <Box key={attachmentId} display="flex" alignItems="center">
+    <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
+      {getAttachmentLoading ?
+        <Avatar variant="square" className={classes.profileImage}>
+          <CircularProgress size={20} color="inherit" />
+        </Avatar>
+        :
+        <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+      }
+
+      {!isCheckIn &&
+        <MediaCards
+          title={ATTACHMENT_TITLES.ProfilePicture}
+          reload={() => fetchPatient()}
+          notDescription={true}
+          moduleType={AttachmentType.Patient}
+          itemId={id}
+          imageSide={attachmentUrl}
+          attachmentData={attachmentData || undefined}
+        />
+      }
+    </Box>
+  </Box>
+
+  const renderName = () => <>
+    <Box display="flex" alignItems="center">
+      <Box className={classes.userName} mr={1}>
+        {`${firstName} ${lastName}`}
+      </Box>
+
+      <Box display="flex" flexWrap="wrap" alignItems="center">
+        <Typography variant="body2">
+          {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+        </Typography>
+      </Box>
+    </Box>
+
+    <Box display='flex' alignItems='center'>
+      <ProfileUserIcon />
+
+      <Box ml={1} color={BLACK_THREE}>
+        <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
+      </Box>
+    </Box>
+  </>
+
+  const renderNotes = () => <>
+    <div ref={noteRef}
+      className={`${classes.profileNoteInfoItem} pointer-cursor`}
+      onClick={(event) => dispatch({
+        type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
+      })}
+    >
+      <Box><NotesOutlinedCardIcon /></Box>
+      <Box display="flex" alignItems="center">
+        <Typography variant="body1">{NOTES}</Typography>
+        <RedCircleIcon />
+      </Box>
+    </div>
+
+    <Menu
+      getContentAnchorEl={null}
+      anchorEl={isNoteOpen}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      id={'patient-notes'}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      open={!!isNoteOpen}
+      onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+      className={classes.noteDropdown}
+    >
+      <PatientNoteModal
+        patientStates={patientState}
+        dispatcher={dispatch}
+      />
+    </Menu>
+  </>
+
   const regularComponent = () =>
     <>
       <Box className={` ${classes.profileCard} card-box-shadow`}>
-        <Box key={attachmentId} display="flex" alignItems="center">
-          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
-            {getAttachmentLoading ?
-              <Avatar variant="square" className={classes.profileImage}>
-                <CircularProgress size={20} color="inherit" />
-              </Avatar>
-              :
-              <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-            }
-
-            <MediaCards
-              title={ATTACHMENT_TITLES.ProfilePicture}
-              reload={() => fetchPatient()}
-              notDescription={true}
-              moduleType={AttachmentType.Patient}
-              itemId={id}
-              imageSide={attachmentUrl}
-              attachmentData={attachmentData || undefined}
-            />
-          </Box>
-        </Box>
+        {patientAvatar()}
 
         {isLoading ?
           <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
@@ -279,17 +337,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           <Box flex={1}>
             <Box display='flex'>
               <Box flex={1} flexWrap="wrap">
-                <Box display="flex" alignItems="center">
-                  <Box className={classes.userName} mr={1}>
-                    {`${firstName} ${lastName}`}
-                  </Box>
-
-                  <Box display="flex" flexWrap="wrap" alignItems="center">
-                    <Typography variant="body2">
-                      {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
-                    </Typography>
-                  </Box>
-                </Box>
+                {renderName()}
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => {
@@ -305,35 +353,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                     )
                   })}
 
-                  <div ref={noteRef}
-                    className={`${classes.profileNoteInfoItem} pointer-cursor`}
-                    onClick={(event) => dispatch({
-                      type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
-                    })}
-                  >
-                    <Box><NotesCardIcon /></Box>
-                    <Box display="flex" alignItems="center">
-                      <Typography variant="body1">{NOTES}</Typography>
-                      <RedCircleIcon />
-                    </Box>
-                  </div>
-
-                  <Menu
-                    getContentAnchorEl={null}
-                    anchorEl={isNoteOpen}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                    id={'patient-notes'}
-                    keepMounted
-                    transformOrigin={{ vertical: "top", horizontal: "left" }}
-                    open={!!isNoteOpen}
-                    onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
-                    className={classes.noteDropdown}
-                  >
-                    <PatientNoteModal
-                      patientStates={patientState}
-                      dispatcher={dispatch}
-                    />
-                  </Menu>
+                  {renderNotes()}
                 </Box>
               </Box>
 
@@ -374,71 +394,16 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const checkInComponent = () =>
     <Box display='flex' alignItems='center'>
-      <Box key={attachmentId} display="flex" alignItems="center">
-        <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
-          {getAttachmentLoading ?
-            <Avatar variant="square" className={classes.profileImage}>
-              <CircularProgress size={20} color="inherit" />
-            </Avatar>
-            :
-            <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-          }
-        </Box>
-      </Box>
+      {patientAvatar()}
 
       <Box ml={2}>
-        <Typography variant="h4" color="textPrimary">{`${firstName} ${lastName}`}</Typography>
+        {renderName()}
 
-        <Box display='flex' alignItems='center'>
-          <Box display='flex' alignItems='center'>
-            <ProfileUserIcon />
+        <Box p={2} />
 
-            <Box ml={1} color={BLACK_THREE}>
-              <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
-            </Box>
-          </Box>
-
-          <Box p={2} />
-
-          <div
-            ref={noteRef}
-            className={`${classes.profileNoteInfoItem} pointer-cursor`}
-            onClick={(event) => dispatch({
-              type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
-            })}
-          >
-            <Box display='flex' alignItems='center'>
-              <NotesOutlinedCardIcon />
-
-              <Box ml={1} color={BLACK_THREE} display="flex" alignItems="center">
-                <Typography variant="body1" color="inherit">{NOTES}</Typography>
-
-                <Box className="mt-10px">
-                  <RedCircleIcon />
-                </Box>
-              </Box>
-            </Box>
-          </div>
-
-          <Menu
-            getContentAnchorEl={null}
-            anchorEl={isNoteOpen}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            id={'patient-notes'}
-            keepMounted
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            open={!!isNoteOpen}
-            onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
-            className={classes.noteDropdown}
-          >
-            <PatientNoteModal
-              patientStates={patientState}
-              dispatcher={dispatch}
-            />
-          </Menu>
-        </Box>
+        {renderNotes()}
       </Box>
-    </Box >
+    </Box>
 
   return isCheckIn ? checkInComponent() : regularComponent()
 };
