@@ -19,14 +19,15 @@ import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, NotesOutlinedCardIcon
 } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
+import { BLACK_THREE } from "../../../../theme";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isCheckIn, isChart }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
@@ -114,7 +115,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    onError() {},
+    onError() { },
 
     onCompleted(data) {
       const { getPatientPastUpcomingAppointment: { response, appointments } } = data;
@@ -247,7 +248,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  return (
+  const regularComponent = () =>
     <>
       <Box className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
@@ -370,7 +371,76 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         </Box>
       </Collapse>
     </>
-  )
+
+  const checkInComponent = () =>
+    <Box display='flex' alignItems='center'>
+      <Box key={attachmentId} display="flex" alignItems="center">
+        <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
+          {getAttachmentLoading ?
+            <Avatar variant="square" className={classes.profileImage}>
+              <CircularProgress size={20} color="inherit" />
+            </Avatar>
+            :
+            <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+          }
+        </Box>
+      </Box>
+
+      <Box ml={2}>
+        <Typography variant="h4" color="textPrimary">Brad Dennis</Typography>
+
+        <Box display='flex' alignItems='center'>
+          <Box display='flex' alignItems='center'>
+            <ProfileUserIcon />
+
+            <Box ml={1} color={BLACK_THREE}>
+              <Typography variant="body2" color="inherit">24 Yrs Old </Typography>
+            </Box>
+          </Box>
+
+          <Box p={2} />
+
+          <div
+            ref={noteRef}
+            className={`${classes.profileNoteInfoItem} pointer-cursor`}
+            onClick={(event) => dispatch({
+              type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
+            })}
+          >
+            <Box display='flex' alignItems='center'>
+              <NotesOutlinedCardIcon />
+
+              <Box ml={1} color={BLACK_THREE} display="flex" alignItems="center">
+                <Typography variant="body1" color="inherit">{NOTES}</Typography>
+
+              <Box className="mt-10px">
+                  <RedCircleIcon />
+                </Box>
+              </Box>
+            </Box>
+          </div>
+
+          <Menu
+            getContentAnchorEl={null}
+            anchorEl={isNoteOpen}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            id={'patient-notes'}
+            keepMounted
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+            open={!!isNoteOpen}
+            onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+            className={classes.noteDropdown}
+          >
+            <PatientNoteModal
+              patientStates={patientState}
+              dispatcher={dispatch}
+            />
+          </Menu>
+        </Box>
+      </Box>
+    </Box>
+
+  return isCheckIn ? checkInComponent() : regularComponent()
 };
 
 export default PatientProfileHero;

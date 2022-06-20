@@ -736,6 +736,10 @@ body .MuiTabPanel-root {
   word-break: break-all;
 }
 
+.mt-10px {
+  margin-top: -10px;
+}
+
 /* masonry-css */
 .masonry-container {
   -webkit-column-count: 2;
