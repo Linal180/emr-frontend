@@ -1,17 +1,18 @@
 // packages block
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
-import clsx from 'clsx';
 import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useParams } from "react-router";
 // component block
-import CheckIn from "./CheckIn";
-import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
 import PatientForm from "../patients/patientForm";
 import BillingComponent from "./BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
 import InsuranceComponent from "../patients/patientDetail/insurance";
+// constants, interfaces, utils block
+import CheckIn from "./CheckIn";
+import LabOrders from "./LabOrders";
 // constants, interfaces, utils block
 import {
   CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
@@ -262,8 +263,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <ChartCards />
-        {/* <ChartCards shouldDisableEdit={shouldDisableEdit} /> */}
+        <ChartCards shouldDisableEdit={shouldDisableEdit} />
       </Card>
     </>
 

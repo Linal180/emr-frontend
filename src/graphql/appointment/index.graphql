@@ -21,6 +21,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       primaryInsurance
       billingStatus
       checkInActiveStep
+      appointmentCreateType
       
       provider {
         id
@@ -78,6 +79,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       checkedInAt
       selfCheckIn
       checkInActiveStep
+      appointmentCreateType
       
       appointmentType {
         id

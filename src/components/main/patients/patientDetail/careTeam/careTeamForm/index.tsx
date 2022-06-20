@@ -332,7 +332,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
 
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="speciality"
                   label={SPECIALTY}
                   value={EMPTY_OPTION}

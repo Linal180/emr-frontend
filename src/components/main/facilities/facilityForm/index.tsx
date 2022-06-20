@@ -1,25 +1,28 @@
 // packages block
 import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Tab } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import DoctorScheduleForm from './schedules';
 import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
+import ScheduleListing from '../../../common/scheduling/Listing';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
-import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
-import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
+import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
+import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import {
-  FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
+  facilityReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/facilityReducer";
+import {
+  FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery,
+  useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
@@ -301,7 +304,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       </TabPanel>
 
       <TabPanel value='2'>
-        <DoctorScheduleForm />
+        <ScheduleListing />
       </TabPanel>
     </TabContext>
   );
