@@ -13,7 +13,7 @@ import Selector from "../../Selector";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import history from "../../../../history";
-import { FilledAddIcon } from "../../../../assets/svgs";
+import { EyeIcon, OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { LabOrderInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
@@ -220,7 +220,15 @@ const LabOrdersTable = (): JSX.Element => {
                         </TableCell>
                         <TableCell scope="row">
                           <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                            <FilledAddIcon />
+                            <OutlinedAddIcon />
+                          </IconButton>
+
+                          <IconButton>
+                            <EyeIcon />
+                          </IconButton>
+
+                          <IconButton onClick={() => window.print()}>
+                            <PrinterIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
