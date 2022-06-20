@@ -821,6 +821,11 @@ body .MuiTabPanel-root {
   line-height: 1.43 !important;
 }
 
+.disable-icon {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {
@@ -839,3 +844,4 @@ body .MuiTabPanel-root {
     margin-bottom: 0.875rem;
   }
 }
+

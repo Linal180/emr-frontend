@@ -19,7 +19,7 @@ import {
   useGetPatientNearestAppointmentsLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, NotesOutlinedCardIcon
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon
 } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,

@@ -2,7 +2,7 @@
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -14,7 +14,8 @@ import { AuthContext } from "../../../../context";
 import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
-  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  checkPermission,
+  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -29,17 +30,24 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
   CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED,
-  PUBLIC_LINK
+  PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE
 } from "../../../../constants";
+import history from "../../../../history";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, userPermissions } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
+
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles)
+
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeDoctor)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateDoctor)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -76,14 +84,17 @@ const DoctorsTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPracticeUser ? { practiceId, ...pageInputs } :
+          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
       doctorInputs && await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [facilityId, findAllDoctor, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
+  }, [
+    facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page,
+    practiceId, searchQuery
+  ])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -106,6 +117,13 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllDoctor)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions])
+
+  useEffect(() => {
     fetchAllDoctors()
   }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
 
@@ -123,15 +141,10 @@ const DoctorsTable: FC = (): JSX.Element => {
   };
 
   const handleDeleteDoctor = async () => {
-    if (deleteDoctorId) {
+    deleteDoctorId &&
       await removeDoctor({
-        variables: {
-          removeDoctor: {
-            id: deleteDoctorId
-          }
-        }
+        variables: { removeDoctor: { id: deleteDoctorId } }
       })
-    }
   };
 
   const handleClipboard = (id: string) => {
@@ -204,14 +217,16 @@ const DoctorsTable: FC = (): JSX.Element => {
                             </Box>
                           </DetailTooltip>
 
-                          <Link to={`${DOCTORS_ROUTE}/${id}`}>
+                          <Link to={`${DOCTORS_ROUTE}/${id}`} className={!canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashNewIcon />
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`} >
+                            <Button onClick={() => onDeleteClick(id || '')} disabled={!canDelete}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>

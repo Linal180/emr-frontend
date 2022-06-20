@@ -23,6 +23,7 @@ import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
+  checkPermission,
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
   isUser, renderTh
 } from "../../../../utils";
@@ -35,12 +36,13 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
-  US_DATE_FORMAT, RESET
+  US_DATE_FORMAT, RESET, USER_PERMISSIONS, ROOT_ROUTE, PERMISSION_DENIED
 } from "../../../../constants";
+import history from "../../../../history";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user, currentUser } = useContext(AuthContext)
+  const { user, currentUser, userPermissions } = useContext(AuthContext)
   const { id: currentUserId } = currentUser || {}
   const { roles, facility } = user || {};
 
@@ -54,8 +56,10 @@ const PatientsTable: FC = (): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
+
   const { watch, setValue } = methods;
   const {
     location: { id: selectedLocationId } = {},
@@ -92,7 +96,6 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const fetchAllPatients = useCallback(async () => {
     try {
-      console.log(isRegularUser, "isRegularUser", facilityId, searchQuery, isSuper, isPracticeUser, isFacAdmin || isRegularUser)
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
@@ -137,7 +140,14 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
-  useEffect(() => { }, [user]);
+  useEffect(() => {
+    console.log(checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients), "PPPPPPPPP")
+    if(!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)){
+      history.push(ROOT_ROUTE)
+      Alert.error(PERMISSION_DENIED)
+    }
+  }, [user, userPermissions]);
+
   useEffect(() => {
     isDoctor && currentUserId &&
       dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
@@ -303,8 +313,10 @@ const PatientsTable: FC = (): JSX.Element => {
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashNewIcon />
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
+                            <Button onClick={() => onDeleteClick(id || '')} disabled={!canDelete}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>
