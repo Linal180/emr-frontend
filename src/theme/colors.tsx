@@ -30,6 +30,7 @@ export const BLUE_SIX = "#009EF7";
 export const BLUE_SEVEN = "#3699FF";
 export const BLUE_NINE = "#3f51b5";
 export const BLUE_TEN = "#21E1D8";
+export const BLUE_ELEVEN = "#3F95FF";
 
 export const LIGHT_GREEN = "lightgreen";
 export const LIGHT_GREEN_ONE = "#56c356"

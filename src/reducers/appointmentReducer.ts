@@ -128,6 +128,7 @@ export const initialState: State = {
   primaryInsurance: ''
 }
 
+
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_DATE = 'setDate',
@@ -180,7 +181,8 @@ export enum ActionType {
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
-  SET_PRIMARY_INSURANCE = 'setPrimaryInsurance'
+  SET_PRIMARY_INSURANCE = 'setPrimaryInsurance',
+  SET_NOTE_OPEN = "SET_NOTE_OPEN"
 }
 
 export type Action =
