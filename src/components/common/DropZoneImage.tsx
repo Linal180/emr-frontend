@@ -176,7 +176,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }).then(data => {
 
       }).catch(error => {
-        const { response: { data: { error: errorMessage } } } = error || {}
+        const { response } = error || {}
+        const { data } = response || {}
+        const { error: errorMessage } = data || {}
         Alert.error(errorMessage);
       });
     })
