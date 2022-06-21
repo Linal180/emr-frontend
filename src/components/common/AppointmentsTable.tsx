@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { VideocamOutlined } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
@@ -17,7 +17,10 @@ import TableLoader from "./TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TELEHEALTH_URL, TIME, TYPE, USER_PERMISSIONS, VIEW_ENCOUNTER
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT, 
+  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, CANCEL_TIME_EXPIRED_MESSAGE, 
+  CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, 
+  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TELEHEALTH_URL, TIME, TYPE, USER_PERMISSIONS, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -301,24 +304,37 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
-        <Box py={2} mb={2} maxWidth={950} display="flex">
-          <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
-          <FormProvider {...methods}>
-            <FacilitySelector
-              addEmpty
-              label={FACILITY}
-              name="facilityId"
-              onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
-            />
-            <ServicesSelector
-              name="serviceId"
-              label={APPOINTMENT_TYPE}
-              isMulti={false}
-            />
-          </FormProvider>
+      <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Box mt={2}>
+              <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
+            </Box>
+          </Grid>
 
-        </Box>
+          <Grid item md={6} sm={12} xs={12}>
+            <FormProvider {...methods}>
+              <Grid container spacing={3}>
+                <Grid item md={4} sm={12} xs={12}>
+                  <FacilitySelector
+                    addEmpty
+                    label={FACILITY}
+                    name="facilityId"
+                    onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                  />
+                </Grid>
+
+                <Grid item md={5} sm={12} xs={12}>
+                  <ServicesSelector
+                    name="serviceId"
+                    label={APPOINTMENT_TYPE}
+                    isMulti={false}
+                  />
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Grid>
+        </Grid>
 
         <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
