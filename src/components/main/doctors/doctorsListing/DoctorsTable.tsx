@@ -217,7 +217,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                             </Box>
                           </DetailTooltip>
 
-                          <Link to={`${DOCTORS_ROUTE}/${id}`} className={!canUpdate ? '' : 'disable-icon'}>
+                          <Link to={`${DOCTORS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>

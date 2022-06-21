@@ -57,6 +57,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
 
@@ -141,7 +142,6 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    console.log(checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients), "PPPPPPPPP")
     if(!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)){
       history.push(ROOT_ROUTE)
       Alert.error(PERMISSION_DENIED)
@@ -307,7 +307,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{dob}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                          <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>

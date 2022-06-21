@@ -338,9 +338,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><HashIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link href={`tell:${phoneNumberWithOutFormat}`}>
-                        {selfPhoneNumber ? selfPhoneNumber : renderMissing()}
-                      </Link>
+                      {selfPhoneNumber ?
+                        <Link href={`tell:${phoneNumberWithOutFormat}`}>{selfPhoneNumber}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 
@@ -348,9 +349,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><AtIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link href={`mailto:${selfEmail}`}>
-                        {selfEmail ? selfEmail : renderMissing()}
-                      </Link>
+                      {selfEmail ?
+                        <Link href={`mailto:${selfEmail}`}>{selfEmail}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 

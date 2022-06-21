@@ -1,9 +1,11 @@
 // packages block
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
@@ -45,11 +47,11 @@ import {
   CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT,
   APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD,
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES,
   APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT,
-  TYPE, FACILITY, APPOINTMENT_TYPE, INFORMATION, PROVIDER, PATIENT, REASON, PRIMARY_INSURANCE,
-  SECONDARY_INSURANCE, NOTES, NO_SLOT_AVAILABLE, PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE, VIEW_APPOINTMENTS_BREAD,
+  TYPE, FACILITY, APPOINTMENT_TYPE, INFORMATION, PROVIDER, PATIENT, REASON,
+  NO_SLOT_AVAILABLE, PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
+  VIEW_APPOINTMENTS_BREAD, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -85,11 +87,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     facilityName, cancelAppStatus, patientName, openPatientModal
   } = state
+
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentType === AppointmentCreateType.Telehealth ?
       providerAppointmentSchema : appointmentSchema(isUserAdmin(roles)))
   });
+
   const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
     serviceId: selectedServiceId,
@@ -153,7 +157,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
-
 
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
@@ -449,13 +452,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Grid md={8} item>
                 <Card className='overflowVisible'>
                   <Box p={3}>
-                    <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                    <Box py={2} mb={4} display='flex' justifyContent='space-between' 
+                    alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                    >
                       <Typography variant='h4'>{APPOINTMENT}</Typography>
                     </Box>
                     {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
                           <Typography variant='body1'>{TYPE}</Typography>
+                          
                           <Box className={chartingClasses.toggleProblem}>
                             <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                               {appointmentTypes.map(type =>
@@ -529,7 +535,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         controllerLabel={REASON}
                       />
 
-                      <Grid container spacing={3}>
+                      {/* <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             fieldType="text"
@@ -545,7 +551,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             controllerLabel={SECONDARY_INSURANCE}
                           />
                         </Grid>
-                      </Grid>
+                      </Grid> */}
 
                       <InputController
                         multiline

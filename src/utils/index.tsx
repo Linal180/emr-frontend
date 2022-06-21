@@ -254,25 +254,25 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const dateDifference = (startingDate: string) => {
-
-  var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
-  var now = new Date();
+  let startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  let now = new Date();
   if (startDate > now) {
-    var swap = startDate;
+    let swap = startDate;
     startDate = now;
     now = swap;
   }
-  var startYear = startDate.getFullYear();
-  var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
-  var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  var yearDiff = now.getFullYear() - startYear;
-  var monthDiff = now.getMonth() - startDate.getMonth();
+  let startYear = startDate.getFullYear();
+  let february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+  let daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  let yearDiff = now.getFullYear() - startYear;
+  let monthDiff = now.getMonth() - startDate.getMonth();
   if (monthDiff < 0) {
     yearDiff--;
     monthDiff += 12;
   }
-  var dayDiff = now.getDate() - startDate.getDate();
+  let dayDiff = now.getDate() - startDate.getDate();
   if (dayDiff < 0) {
     if (monthDiff > 0) {
       monthDiff--;
@@ -282,10 +282,12 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
-  var newYears = yearDiff;
-  var newMonths = monthDiff;
-  var newDays = dayDiff;
-  return newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
+  let newYears = yearDiff;
+  let newMonths = monthDiff;
+  let newDays = dayDiff;
+  let ageString = newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
+
+  return `${ageString} old`
 }
 
 
