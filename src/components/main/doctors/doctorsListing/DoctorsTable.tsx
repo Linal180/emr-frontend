@@ -223,7 +223,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                             </Box>
                           </Link>
 
-                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`} >
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
                             <Button onClick={() => onDeleteClick(id || '')} disabled={!canDelete}>
                               <TrashNewIcon />
                             </Button>

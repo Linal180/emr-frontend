@@ -23,9 +23,8 @@ import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
-  checkPermission,
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  isUser, renderTh
+  checkPermission, isUser, renderTh
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType

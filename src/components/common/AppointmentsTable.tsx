@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { VideocamOutlined } from "@material-ui/icons";
 import { FormProvider, useForm } from "react-hook-form";
 import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
@@ -18,7 +17,7 @@ import NoDataFoundComponent from "./NoDataFoundComponent";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
 import {
@@ -418,7 +417,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           {
                             appointmentCreateType === AppointmentCreateType.Telehealth ?
                               <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                                <VideocamOutlined />
+                                <VideoIcon />
                               </Box> :
                               (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
                                 onClick={() => canUpdateAppointmentStatus(status) ?

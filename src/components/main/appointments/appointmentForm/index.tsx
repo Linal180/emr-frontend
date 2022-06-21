@@ -498,7 +498,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>
                     )}
                   </Box>
-                </Card >
+                </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>
@@ -562,7 +562,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     </>
                   )}
                 </CardComponent>
-              </Grid >
+              </Grid>
 
               <Grid md={4} item>
                 <Grid item md={12} sm={12} className="custom-calendar">
@@ -676,10 +676,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   )}
                 </CardComponent>
               </Grid>
-            </Grid >
-          </Box >
-        </form >
-      </FormProvider >
+            </Grid>
+          </Box>
+        </form>
+      </FormProvider>
 
       <AddPatientModal
         facilityId={selectedFacility}
