@@ -26,16 +26,16 @@ import {
   useUpdateAppointmentMutation
 } from "../../generated/graphql";
 import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix,
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, 
   getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord, convertDateFromUnix,
 } from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
-  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, SIX_PAGE_LIMIT,
+  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS, 
 } from "../../constants";
 
 dotenv.config()
@@ -176,7 +176,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: SIX_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }

@@ -48,6 +48,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
     onError() {
       dispatch({ type: ActionType.SET_ROLES, roles: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {

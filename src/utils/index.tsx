@@ -19,8 +19,8 @@ import {
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE,
-  BLUE, GREY, PURPLE_ONE, GREY_TWO
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, GREEN_ONE,
+  BLUE, PURPLE_ONE, GREY_TWO, ORANGE_ONE
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
@@ -34,7 +34,8 @@ import {
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+  ProblemType, AppointmentCreateType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -1688,7 +1689,9 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+export const getCheckInStatus = (
+  checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType
+): StageStatusType => {
   if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return {
       stage: '',
@@ -1706,7 +1709,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
   if (status === AppointmentStatus.Scheduled) {
     return {
       stage: 'Logged',
-      stageColor: ORANGE
+      stageColor: ORANGE_ONE
     }
   }
 
@@ -1725,7 +1728,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
       return { stage: 'With Staff', stageColor: BLUE };
     case 3:
     case 4:
-      return { stage: 'Charting', stageColor: GREY };
+      return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
     case 5:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
     case 6:
