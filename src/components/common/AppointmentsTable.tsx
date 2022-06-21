@@ -1,49 +1,53 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { VideocamOutlined } from "@material-ui/icons";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { 
+  Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
+ } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
 import {
-  AppointmentCreateType, AppointmentPayload, AppointmentsPayload, AppointmentStatus,
-  useFindAllAppointmentsLazyQuery, useGetAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useUpdateAppointmentMutation
+  AppointmentCreateType,
+  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
+  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
 } from "../../generated/graphql";
 import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix,
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, 
   getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord, convertDateFromUnix,
 } from "../../utils";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
-  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS,
+  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, SIX_PAGE_LIMIT,
+  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS, APPOINTMENT_TYPE, 
 } from "../../constants";
+import FacilitySelector from "./Selector/FacilitySelector";
+import ServicesSelector from "./Selector/ServiceSelector";
 
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user, currentUser, userPermissions } = useContext(AuthContext)
+  const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
   const { id: providerId } = currentUser || {}
 
@@ -57,10 +61,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const methods = useForm<StatusInputProps>({ mode: "all" });
 
   const { setValue, watch } = methods
-  const { status } = watch()
   const {
     page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments
   } = state;
+  const { status, serviceId } = watch()
+  const { value: appointmentTypeId } = serviceId ?? {}
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -177,26 +182,23 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: SIX_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }
 
         inputs && await findAllAppointments({
           variables: {
-            appointmentInput: { ...inputs, searchString: searchQuery }
+            appointmentInput: { ...inputs, searchString: searchQuery, facilityId: filterFacilityId, appointmentTypeId: appointmentTypeId }
           },
         })
       }
     } catch (error) { }
-  }, [
-    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId,
-    facilityId, findAllAppointments, searchQuery
-  ])
+  }, [doctorId, isDoctor, filterFacilityId, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, appointmentTypeId])
 
   useEffect(() => {
     fetchAppointments();
-  }, [page, searchQuery, fetchAppointments]);
+  }, [page, searchQuery, fetchAppointments, filterFacilityId]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -304,10 +306,37 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
-        <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
-        </Box>
+      <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Box mt={2}>
+              <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
+            </Box>
+          </Grid>
+
+          <Grid item md={6} sm={12} xs={12}>
+            <FormProvider {...methods}>
+              <Grid container spacing={3}>
+                <Grid item md={4} sm={12} xs={12}>
+                  <FacilitySelector
+                    addEmpty
+                    label={FACILITY}
+                    name="facilityId"
+                    onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                  />
+                </Grid>
+
+                <Grid item md={5} sm={12} xs={12}>
+                  <ServicesSelector
+                    name="serviceId"
+                    label={APPOINTMENT_TYPE}
+                    isMulti={false}
+                  />
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Grid>
+        </Grid>
 
         <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
@@ -418,7 +447,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           {
                             appointmentCreateType === AppointmentCreateType.Telehealth ?
                               <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                                <VideocamOutlined />
+                                <VideoIcon />
                               </Box> :
                               (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
                                 onClick={() => canUpdateAppointmentStatus(status) ?

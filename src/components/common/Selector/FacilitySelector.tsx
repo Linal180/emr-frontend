@@ -13,7 +13,7 @@ import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 
-const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, }): JSX.Element => {
+const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, onSelect }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
@@ -55,7 +55,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
         isSuper ? { ...pageInputs }
           :
           isPracAdmin ? { practiceId, ...pageInputs } :
-            isFacAdmin ? { singleFacilityId:facilityId, ...pageInputs } : undefined
+            isFacAdmin ? { singleFacilityId: facilityId, ...pageInputs } : undefined
 
       facilitiesInputs && await findAllFacility({
         variables: { facilityInput: { ...facilitiesInputs, facilityName: searchQuery } }
@@ -84,6 +84,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
             disableClearable
             getOptionLabel={(option) => option.name}
             renderOption={(option) => option.name}
+            getOptionSelected={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 <Box position="relative">
@@ -101,7 +102,11 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
-            onChange={(_, data) => field.onChange(data)}
+            onChange={(_, data) => {
+              field.onChange(data)
+              onSelect && onSelect(data)
+              return data
+            }}
           />
         );
       }}

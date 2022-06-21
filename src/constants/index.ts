@@ -648,6 +648,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
+export const SIX_PAGE_LIMIT = 6;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -1551,7 +1552,7 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
-export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed away";
+export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
@@ -2779,26 +2780,26 @@ export const PROFILE_TOP_TABS = [
     title: "Insurance",
     value: "2",
   },
-  {
-    title: "Registration",
-    value: "3",
-  },
-  {
-    title: "Messaging",
-    value: "4",
-  },
-  {
-    title: "Billing",
-    value: "5",
-  },
-  {
-    title: "Clinical",
-    value: "6",
-  },
-  {
-    title: "Communicator",
-    value: "7",
-  },
+  // {
+  //   title: "Registration",
+  //   value: "3",
+  // },
+  // {
+  //   title: "Messaging",
+  //   value: "4",
+  // },
+  // {
+  //   title: "Billing",
+  //   value: "5",
+  // },
+  // {
+  //   title: "Clinical",
+  //   value: "6",
+  // },
+  // {
+  //   title: "Communicator",
+  //   value: "7",
+  // },
   {
     title: "Documents",
     value: "8",

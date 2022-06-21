@@ -338,9 +338,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><HashIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link href={selfPhoneNumber &&`tel:${selfPhoneNumber}`}>
-                        {selfPhoneNumber ? selfPhoneNumber : renderMissing()}
-                      </Link>
+                      {selfPhoneNumber ?
+                        <Link href={`tell:${selfPhoneNumber}`}>{selfPhoneNumber}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 
@@ -348,9 +349,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><AtIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link onClick={() => window.open(`mailto:${selfEmail}`, '_blank')} className="pointer-cursor">
-                        {selfEmail ? selfEmail : renderMissing()}
-                      </Link>
+                      {selfEmail ?
+                        <Link href={`mailto:${selfEmail}`}>{selfEmail}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 
