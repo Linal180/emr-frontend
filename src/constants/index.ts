@@ -1207,6 +1207,7 @@ export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
+export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
@@ -2507,10 +2508,6 @@ export const MAPPED_RACE: SelectorOption[] = [
   { id: Race.Other, name: formatValue(Race.Other) },
   { id: Race.Asian, name: formatValue(Race.Asian) },
   { id: Race.White, name: formatValue(Race.White) },
-  {
-    id: Race.BlackAfricanAmerican,
-    name: formatValue(Race.BlackAfricanAmerican),
-  },
   {
     id: Race.BlackAfricanAmerican,
     name: formatValue(Race.BlackAfricanAmerican),
