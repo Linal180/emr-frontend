@@ -17,16 +17,16 @@ const BusinessHoursCard: FC<FacilityCardsProps> = ({ getFacilityLoading }) =>
         <Grid item md={6} sm={12} xs={12}>
           <TimePicker
             isRequired
-            label={FACILITY_HOURS_START}
             name="startTime"
+            label={FACILITY_HOURS_START}
           />
         </Grid>
 
         <Grid item md={6} sm={12} xs={12}>
           <TimePicker
             isRequired
-            label={FACILITY_HOURS_END}
             name="endTime"
+            label={FACILITY_HOURS_END}
           />
         </Grid>
       </Grid>

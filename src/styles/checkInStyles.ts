@@ -67,7 +67,7 @@ export const useCheckInProfileStyles = makeStyles({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 10,
-    minHeight: 110,
+    minHeight: 100,
     display: 'flex',
     alignItems: 'center',
 

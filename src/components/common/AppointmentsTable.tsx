@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { VideocamOutlined } from "@material-ui/icons";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
@@ -27,7 +27,7 @@ import {
   useUpdateAppointmentMutation
 } from "../../generated/graphql";
 import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, convertDateFromUnix,
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix,
   getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
   isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
 } from "../../utils";
@@ -36,20 +36,21 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
   CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
   DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
-  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL,
+  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS,
 } from "../../constants";
 
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
-  const { user, currentUser } = useContext(AuthContext)
+  const { user, currentUser, userPermissions } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { id: providerId } = currentUser || {}
 
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const { id: facilityId, practiceId } = facility || {}
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
 
   const isDoctor = isOnlyDoctor(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
@@ -262,8 +263,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           await updateAppointment({
             variables: {
               updateAppointmentInput: {
-                id,
-                status: getAppointmentStatus(name) as AppointmentStatus,
+                id, status: getAppointmentStatus(name) as AppointmentStatus,
                 ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
               }
             }
@@ -380,6 +380,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             <FormProvider {...methods}>
                               <Selector
                                 label=""
+                                focus
                                 value={{ id, name: text }}
                                 name="status"
                                 options={AppointmentStatusStateMachine(
@@ -403,11 +404,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
                       <TableCell scope="row">
                         {id && <Box className={classes.selectorBox}>
-                          <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && handleStatusUpdate(id, text)}
-                            className={classes.status}
-                            component='span' color={textColor}
-                            display="flex"
-                            flexDirection="column"
+                          <Box p={0} className={classes.status} component='span' color={textColor}
+                            display="flex" flexDirection="column"
                           >
                             <Box display="flex" color={stageColor}>
                               {stage}
@@ -445,10 +443,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground}
-                            onClick={() => scheduleStartDateTime && id && deleteAppointmentHandler(scheduleStartDateTime, id)}
-                          >
-                            <TrashNewIcon />
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
+                            <Button onClick={() => scheduleStartDateTime && id
+                              && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
+                            >
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>

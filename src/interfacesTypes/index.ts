@@ -368,6 +368,7 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  focus?: boolean
   isEdit?: boolean
   disabled?: boolean
   addEmpty?: boolean
