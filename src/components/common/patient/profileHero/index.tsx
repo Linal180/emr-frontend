@@ -1,6 +1,6 @@
 import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
@@ -12,7 +12,7 @@ import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes
 import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue, getFormatDateString, getDateWithDay
+  formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
@@ -163,33 +163,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
+  let phoneNumberWithOutFormat = ""
 
   if (selfContact && selfContact[0]) {
     const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || ""
+    phoneNumberWithOutFormat = phone || ""
+
     selfEmail = patientEmail ? patientEmail : email || ""
     const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
     selfCurrentLocation = selfAddress.trim() ? selfAddress : ''
   }
-
-  const ProfileDetails = [
-    // {
-    //   icon: ProfileUserIcon(),
-    //   description: calculateAge(dob || '')
-    // },
-    {
-      icon: HashIcon(),
-      description: selfPhoneNumber
-    },
-    {
-      icon: AtIcon(),
-      description: selfEmail
-    },
-    {
-      icon: LocationIcon(),
-      description: selfCurrentLocation
-    },
-  ]
 
   let providerName = ""
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
@@ -288,11 +272,13 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   </>
 
   const renderAge = () =>
-    <Box display='flex' alignItems='center'>
-      <ProfileUserIcon />
+    <Box display="flex" className={classes.profileInfoItem}>
+      <Box display='flex' alignItems='center'>
+        <ProfileUserIcon />
 
-      <Box ml={1} color={BLACK_THREE}>
-        <Typography variant="body1">{dob ? calculateAge(dob || '') : renderMissing()}</Typography>
+        <Box color={BLACK_THREE}>
+          <Typography variant="body1">{dob ? dateDifference(dob || '') : renderMissing()}</Typography>
+        </Box>
       </Box>
     </Box>
 
@@ -345,21 +331,33 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
               <Box flex={1} flexWrap="wrap">
                 {renderName()}
 
-                {renderAge()}
+                <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
+                  {renderAge()}
 
-                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => {
-                    const { icon, description } = item
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><HashIcon /></Box>
 
-                    return (
-                      <Box display="flex" key={`${description}-${index}`}
-                        className={classes.profileInfoItem}
-                      >
-                        <Box>{icon}</Box>
-                        <Typography variant="body1">{description ? description : renderMissing()}</Typography>
-                      </Box>
-                    )
-                  })}
+                    <Typography variant="body1">
+                      <Link href={`tell:${phoneNumberWithOutFormat}`}>
+                        {selfPhoneNumber ? selfPhoneNumber : renderMissing()}
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><AtIcon /></Box>
+
+                    <Typography variant="body1">
+                      <Link href={`mailto:${selfEmail}`}>
+                        {selfEmail ? selfEmail : renderMissing()}
+                      </Link>
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><LocationIcon /></Box>
+                    <Typography variant="body1">{selfCurrentLocation ? selfCurrentLocation : renderMissing()}</Typography>
+                  </Box>
 
                   {renderNotes()}
                 </Box>

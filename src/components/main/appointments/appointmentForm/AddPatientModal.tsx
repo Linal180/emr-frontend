@@ -105,8 +105,8 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         facilityId: facilityId || '', callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, practiceId,
         medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No, 
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
-        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.None, 
-        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, genderIdentity: Genderidentity.None,
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male, 
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male, genderIdentity: Genderidentity.Male,
         maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, 
         statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '', holdStatement: Holdstatement.None,
       };

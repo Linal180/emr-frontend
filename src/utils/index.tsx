@@ -19,14 +19,14 @@ import {
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE, 
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE,
   BLUE, GREY, PURPLE_ONE, GREY_TWO
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
   FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
   PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, 
+  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
   ACCEPTABLE_PDF_AND_IMAGES_FILES
 } from "../constants";
 import {
@@ -80,7 +80,7 @@ export const renderItem = (
     <Typography variant="body2">{name}</Typography>
     <Box pb={2} pt={0.5}>
 
-      <Typography component="h5" variant="h5" noWrap={noWrap}  className="word-break">
+      <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
         {value ? value : N_A}
       </Typography>
     </Box>
@@ -253,85 +253,121 @@ export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
-export const calculateAge = (dateString: string) => {
-  let now = new Date();
+export const dateDifference = (startingDate: string) => {
 
-  let yearNow = now.getFullYear();
-  let monthNow = now.getMonth();
-  let dateNow = now.getDate();
-
-  let dob = new Date(parseInt(dateString.substring(6, 10)),
-    parseInt(dateString.substring(0, 2)) - 1,
-    parseInt(dateString.substring(3, 5))
-  );
-
-  let yearDob = dob.getFullYear();
-  let monthDob = dob.getMonth();
-  let dateDob = dob.getDate();
-  let age = {
-    years: 0,
-    months: 0,
-    days: 0
-  };
-  let ageString = "";
-  let yearString = "";
-  let monthString = "";
-  let dayString = "";
-
-
-  let yearAge = yearNow - yearDob;
-  let monthAge = 0
-  let dateAge = 0
-
-  if (monthNow >= monthDob)
-    monthAge = monthNow - monthDob;
-  else {
-    yearAge--;
-    monthAge = 12 + monthNow - monthDob;
+  var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  var now = new Date();
+  if (startDate > now) {
+    var swap = startDate;
+    startDate = now;
+    now = swap;
   }
+  var startYear = startDate.getFullYear();
+  var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+  var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  if (dateNow >= dateDob)
-    dateAge = dateNow - dateDob;
-  else {
-    monthAge--;
-    dateAge = 31 + dateNow - dateDob;
-
-    if (monthAge < 0) {
-      monthAge = 11;
-      yearAge--;
+  var yearDiff = now.getFullYear() - startYear;
+  var monthDiff = now.getMonth() - startDate.getMonth();
+  if (monthDiff < 0) {
+    yearDiff--;
+    monthDiff += 12;
+  }
+  var dayDiff = now.getDate() - startDate.getDate();
+  if (dayDiff < 0) {
+    if (monthDiff > 0) {
+      monthDiff--;
+    } else {
+      yearDiff--;
+      monthDiff = 11;
     }
+    dayDiff += daysInMonth[startDate.getMonth()];
   }
-
-  age = {
-    years: yearAge,
-    months: monthAge,
-    days: dateAge
-  };
-
-  if (age.years > 1) yearString = " years";
-  else yearString = " year";
-  if (age.months > 1) monthString = " months";
-  else monthString = " month";
-  if (age.days > 1) dayString = " days";
-  else dayString = " day";
-
-  if ((age.years > 0) && (age.months > 0) && (age.days > 0))
-    ageString = age.years + yearString + ", " + age.months + monthString + "," + age.days + dayString;
-  else if ((age.years === 0) && (age.months === 0) && (age.days > 0))
-    ageString = age.days + dayString;
-  else if ((age.years > 0) && (age.months === 0) && (age.days === 0))
-    ageString = age.years + yearString;
-  else if ((age.years > 0) && (age.months > 0) && (age.days === 0))
-    ageString = age.years + yearString + ", " + age.months + monthString;
-  else if ((age.years === 0) && (age.months > 0) && (age.days > 0))
-    ageString = age.months + monthString + ", " + age.days + dayString;
-  else if ((age.years > 0) && (age.months === 0) && (age.days > 0))
-    ageString = age.years + yearString + ", " + age.days + dayString;
-  else if ((age.years === 0) && (age.months > 0) && (age.days === 0))
-    ageString = age.months + monthString;
-
-  return `${ageString} old`;
+  var newYears = yearDiff;
+  var newMonths = monthDiff;
+  var newDays = dayDiff;
+  return newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
 }
+
+
+// export const calculateAge = (dateString: string) => {
+//   let now = new Date();
+
+//   let yearNow = now.getFullYear();
+//   let monthNow = now.getMonth();
+//   let dateNow = now.getDate();
+
+//   let dob = new Date(parseInt(dateString.substring(6, 10)),
+//     parseInt(dateString.substring(0, 2)) - 1,
+//     parseInt(dateString.substring(3, 5))
+//   );
+
+//   let yearDob = dob.getFullYear();
+//   let monthDob = dob.getMonth();
+//   let dateDob = dob.getDate();
+//   let age = {
+//     years: 0,
+//     months: 0,
+//     days: 0
+//   };
+//   let ageString = "";
+//   let yearString = "";
+//   let monthString = "";
+//   let dayString = "";
+
+
+//   let yearAge = yearNow - yearDob;
+//   let monthAge = 0
+//   let dateAge = 0
+
+//   if (monthNow >= monthDob)
+//     monthAge = monthNow - monthDob;
+//   else {
+//     yearAge--;
+//     monthAge = 12 + monthNow - monthDob;
+//   }
+
+//   if (dateNow >= dateDob)
+//     dateAge = dateNow - dateDob;
+//   else {
+//     monthAge--;
+//     dateAge = 31 + dateNow - dateDob;
+
+//     if (monthAge < 0) {
+//       monthAge = 11;
+//       yearAge--;
+//     }
+//   }
+
+//   age = {
+//     years: yearAge,
+//     months: monthAge,
+//     days: dateAge
+//   };
+
+//   if (age.years > 1) yearString = " years";
+//   else yearString = " year";
+//   if (age.months > 1) monthString = " months";
+//   else monthString = " month";
+//   if (age.days > 1) dayString = " days";
+//   else dayString = " day";
+
+//   if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+//     ageString = age.years + yearString + ", " + age.months + monthString + "," + age.days + dayString;
+//   else if ((age.years === 0) && (age.months === 0) && (age.days > 0))
+//     ageString = age.days + dayString;
+//   else if ((age.years > 0) && (age.months === 0) && (age.days === 0))
+//     ageString = age.years + yearString;
+//   else if ((age.years > 0) && (age.months > 0) && (age.days === 0))
+//     ageString = age.years + yearString + ", " + age.months + monthString;
+//   else if ((age.years === 0) && (age.months > 0) && (age.days > 0))
+//     ageString = age.months + monthString + ", " + age.days + dayString;
+//   else if ((age.years > 0) && (age.months === 0) && (age.days > 0))
+//     ageString = age.years + yearString + ", " + age.days + dayString;
+//   else if ((age.years === 0) && (age.months > 0) && (age.days === 0))
+//     ageString = age.months + monthString;
+
+//   return `${ageString} old`;
+// }
 
 export const getDateWithDay = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -1651,10 +1687,10 @@ export const getAppointmentStatus = (status: string) => {
 }
 
 export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
-  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+  if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return {
-      stage:'',
-      stageColor:''
+      stage: '',
+      stageColor: ''
     }
   }
 
@@ -1705,7 +1741,7 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
 }
 
 export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
-  if(appointmentCreateType===AppointmentCreateType.Telehealth){
+  if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return renderArrayAsSelectorOptions(
       [
         AppointmentStatus.Arrived,

@@ -263,8 +263,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           await updateAppointment({
             variables: {
               updateAppointmentInput: {
-                id,
-                status: getAppointmentStatus(name) as AppointmentStatus,
+                id, status: getAppointmentStatus(name) as AppointmentStatus,
                 ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
               }
             }
@@ -381,6 +380,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             <FormProvider {...methods}>
                               <Selector
                                 label=""
+                                focus
                                 value={{ id, name: text }}
                                 name="status"
                                 options={AppointmentStatusStateMachine(
