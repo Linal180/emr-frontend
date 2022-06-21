@@ -1,49 +1,48 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { VideocamOutlined } from "@material-ui/icons";
+import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
-import { Link } from "react-router-dom";
-import { Pagination } from "@material-ui/lab";
-import { VideocamOutlined } from "@material-ui/icons";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
 // components block
 import Alert from "./Alert";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
-import { AuthContext } from "../../context";
-import { useTableStyles } from "../../styles/tableStyles";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import {
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TELEHEALTH_URL, TIME, TYPE, USER_PERMISSIONS, VIEW_ENCOUNTER
+} from "../../constants";
+import { AuthContext } from "../../context";
+import {
+  AppointmentCreateType,
+  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
+  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
+} from "../../generated/graphql";
+import history from "../../history";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
-import {
-  AppointmentCreateType, AppointmentPayload, AppointmentsPayload, AppointmentStatus,
-  useFindAllAppointmentsLazyQuery, useGetAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useUpdateAppointmentMutation
-} from "../../generated/graphql";
+import { useTableStyles } from "../../styles/tableStyles";
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix,
   getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
   isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
 } from "../../utils";
-import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
-  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT,
-  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS,
-} from "../../constants";
+import FacilitySelector from "./Selector/FacilitySelector";
+import ServicesSelector from "./Selector/ServiceSelector";
 
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user, currentUser, userPermissions } = useContext(AuthContext)
+  const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
   const { id: providerId } = currentUser || {}
 
@@ -57,10 +56,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const methods = useForm<StatusInputProps>({ mode: "all" });
 
   const { setValue, watch } = methods
-  const { status } = watch()
   const {
     page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments
   } = state;
+  const { status, serviceId } = watch()
+  const { value: appointmentTypeId } = serviceId ?? {}
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -184,19 +184,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
         inputs && await findAllAppointments({
           variables: {
-            appointmentInput: { ...inputs, searchString: searchQuery }
+            appointmentInput: { ...inputs, searchString: searchQuery, facilityId: filterFacilityId, appointmentTypeId: appointmentTypeId }
           },
         })
       }
     } catch (error) { }
-  }, [
-    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId,
-    facilityId, findAllAppointments, searchQuery
-  ])
+  }, [doctorId, isDoctor, filterFacilityId, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, appointmentTypeId])
 
   useEffect(() => {
     fetchAppointments();
-  }, [page, searchQuery, fetchAppointments]);
+  }, [page, searchQuery, fetchAppointments, filterFacilityId]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -305,8 +302,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   return (
     <>
       <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box py={2} mb={2} maxWidth={950} display="flex">
           <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
+          <FormProvider {...methods}>
+            <FacilitySelector
+              addEmpty
+              label={FACILITY}
+              name="facilityId"
+              onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+            />
+            <ServicesSelector
+              name="serviceId"
+              label={APPOINTMENT_TYPE}
+              isMulti={false}
+            />
+          </FormProvider>
+
         </Box>
 
         <Box className="table-overflow appointment-view-list">
