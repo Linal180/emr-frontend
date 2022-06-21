@@ -14,8 +14,8 @@ import { getAddressByZipcode } from '../../../common/smartyAddress';
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
+import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -39,7 +39,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { addFacilityList, updateFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
-    resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchedulerSchema)
+    resolver: yupResolver(facilitySchema(isSuper))
   });
   const { reset, handleSubmit, setValue, watch } = methods;
   const { zipCode } = watch()

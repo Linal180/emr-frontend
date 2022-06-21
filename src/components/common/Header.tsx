@@ -66,7 +66,7 @@ const HeaderNew: FC = (): JSX.Element => {
             />
           }
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllPatient) &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
             <Typography
               component={Link}
               to={PATIENTS_ROUTE}

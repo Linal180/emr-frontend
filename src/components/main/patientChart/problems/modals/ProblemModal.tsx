@@ -1,7 +1,7 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { 
-  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography 
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
 } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ACTIVE, ADD, ADD_PROBLEM, CANCEL, CHRONIC, COMMENTS, DASHES, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED, 
+  ACTIVE, ADD, ADD_PROBLEM, CANCEL, CHRONIC, COMMENTS, DASHES, UPDATE_PROBLEM, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED,
   PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE
 } from '../../../../../constants';
 // component block
@@ -215,7 +215,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_PROBLEM}</Typography>
+        <Typography variant="h4">{isEdit ? UPDATE_PROBLEM : ADD_PROBLEM}</Typography>
       </DialogTitle>
 
       <FormProvider {...methods}>

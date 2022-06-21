@@ -17,14 +17,14 @@ export type Scalars = {
 };
 
 export type AchPaymentInputs = {
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   company?: Maybe<Scalars['String']>;
   deviceData?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
-  patientId: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
   price: Scalars['String'];
   token: Scalars['String'];
 };
@@ -174,6 +174,7 @@ export type Appointment = {
   selfCheckIn?: Maybe<Scalars['Boolean']>;
   status: AppointmentStatus;
   token?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -1109,7 +1110,7 @@ export type Doctor = {
   taxonomyCode?: Maybe<Scalars['String']>;
   telehealthLink?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt: Scalars['String'];
   upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
@@ -1319,7 +1320,7 @@ export type Facility = {
   startTime?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -1731,7 +1732,7 @@ export type Invoice = {
   paymentMethod?: Maybe<Scalars['String']>;
   paymentTransactionId?: Maybe<Scalars['String']>;
   status: Status;
-  transction?: Maybe<Transactions>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -2681,7 +2682,7 @@ export type Patient = {
   statementNoteDateFrom?: Maybe<Scalars['String']>;
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
 };
@@ -2923,13 +2924,13 @@ export type PatientsPayload = {
 };
 
 export type PaymentInput = {
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   clientIntent?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
-  patientId: Scalars['String'];
-  price: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
-  serviceId: Scalars['String'];
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 export type PaymentInputsAfterAppointment = {
@@ -3378,6 +3379,7 @@ export type Query = {
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
   getToken: BraintreePayload;
+  getTransaction: TransactionPayload;
   getUser: UserPayload;
   getUsersWithRoles: PracticeUserRolesPayload;
   me: UserPayload;
@@ -3759,6 +3761,11 @@ export type QueryGetSpecimenTypeByNameArgs = {
 
 export type QueryGetStaffArgs = {
   getStaff: GetStaff;
+};
+
+
+export type QueryGetTransactionArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -4403,16 +4410,16 @@ export type TransactionPayload = {
 export type Transactions = {
   __typename?: 'Transactions';
   appointment?: Maybe<Appointment>;
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
-  doctor?: Maybe<Array<Doctor>>;
+  doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
-  facility?: Maybe<Array<Facility>>;
+  facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   invoice?: Maybe<Array<Invoice>>;
-  patient?: Maybe<Array<Patient>>;
-  patientId: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
   status: Transactionstatus;
   transactionId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;

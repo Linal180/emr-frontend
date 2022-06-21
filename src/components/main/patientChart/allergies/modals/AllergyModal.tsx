@@ -11,7 +11,7 @@ import { useParams } from 'react-router';
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
   ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, 
-  PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
+  PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE, UPDATE_ALLERGY
 } from '../../../../../constants';
 import { ChartContext } from '../../../../../context';
 // component block
@@ -202,7 +202,7 @@ const AllergyModal: FC<AddModalProps> = ({
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_ALLERGY}</Typography>
+        <Typography variant="h4">{isEdit ? UPDATE_ALLERGY : ADD_ALLERGY}</Typography>
       </DialogTitle>
 
       <FormProvider {...methods}>
