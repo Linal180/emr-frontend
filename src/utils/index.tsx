@@ -19,8 +19,8 @@ import {
 import {
   RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
   PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE,
-  BLUE, GREY, PURPLE_ONE, GREY_TWO
+  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, GREEN_ONE,
+  BLUE, PURPLE_ONE, GREY_TWO, ORANGE_ONE
 } from "../theme";
 import {
   ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
@@ -34,7 +34,8 @@ import {
   ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
+  ProblemType, AppointmentCreateType,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -254,25 +255,25 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const dateDifference = (startingDate: string) => {
-
-  var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
-  var now = new Date();
+  let startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  let now = new Date();
   if (startDate > now) {
-    var swap = startDate;
+    let swap = startDate;
     startDate = now;
     now = swap;
   }
-  var startYear = startDate.getFullYear();
-  var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
-  var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  var yearDiff = now.getFullYear() - startYear;
-  var monthDiff = now.getMonth() - startDate.getMonth();
+  let startYear = startDate.getFullYear();
+  let february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+  let daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  let yearDiff = now.getFullYear() - startYear;
+  let monthDiff = now.getMonth() - startDate.getMonth();
   if (monthDiff < 0) {
     yearDiff--;
     monthDiff += 12;
   }
-  var dayDiff = now.getDate() - startDate.getDate();
+  let dayDiff = now.getDate() - startDate.getDate();
   if (dayDiff < 0) {
     if (monthDiff > 0) {
       monthDiff--;
@@ -282,10 +283,12 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
-  var newYears = yearDiff;
-  var newMonths = monthDiff;
-  var newDays = dayDiff;
-  return newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
+  let newYears = yearDiff;
+  let newMonths = monthDiff;
+  let newDays = dayDiff;
+  let ageString = newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
+
+  return `${ageString} old`
 }
 
 
@@ -1686,7 +1689,9 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+export const getCheckInStatus = (
+  checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType
+): StageStatusType => {
   if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return {
       stage: '',
@@ -1704,7 +1709,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
   if (status === AppointmentStatus.Scheduled) {
     return {
       stage: 'Logged',
-      stageColor: ORANGE
+      stageColor: ORANGE_ONE
     }
   }
 
@@ -1723,7 +1728,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
       return { stage: 'With Staff', stageColor: BLUE };
     case 3:
     case 4:
-      return { stage: 'Charting', stageColor: GREY };
+      return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
     case 5:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
     case 6:
