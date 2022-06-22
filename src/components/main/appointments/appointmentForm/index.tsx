@@ -51,6 +51,7 @@ import {
   NO_SLOT_AVAILABLE, PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
   VIEW_APPOINTMENTS_BREAD, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
 } from '../../../../constants';
+import NoSlotsComponent from '../../../common/NoSlotsComponent';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user, currentUser } = useContext(AuthContext)
@@ -600,7 +601,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             </li>
                           )
                         }) : (
-                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                          <NoSlotsComponent />
                         )}
                       </ul>
                     )}
