@@ -331,14 +331,14 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
       case 1:
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
-        return <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} />
+        return <Box p={3}><PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} /></Box>
       default:
         return 'Unknown step';
     }
   }
 
   return (
-    <Box maxWidth={600} minWidth={600}>
+    <Box maxWidth={480}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
@@ -388,8 +388,10 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
                 </Stepper>
               </Box>
 
-              <Box mt={2}>
-                <Typography>{getStepContent(activeStep)}</Typography>
+              <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto scrollbar-hover">
+                 <Box px={1}>
+                   <Typography>{getStepContent(activeStep)}</Typography>
+                 </Box>
               </Box>
 
             </Box>}

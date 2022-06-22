@@ -1,8 +1,8 @@
 //packages import
-import { Box, Button, FormControl, Grid, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
-import { ChangeEvent, FC, useState } from "react";
-import { Controller, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 //constants, types, interfaces, utils import
 import {
   ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, REFERRING_PROVIDER,
@@ -13,9 +13,6 @@ import {
 import InputController from "../../../../../controller";
 import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
-import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { GREY_SEVEN, WHITE } from "../../../../../theme";
 import { formatValue, setRecord } from "../../../../../utils";
 //components import
 import DatePicker from "../../../../common/DatePicker";
@@ -25,17 +22,12 @@ import DoctorSelector from "../../../../common/Selector/DoctorSelector";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
-  const classes = usePublicAppointmentStyles();
-  const methods = useForm<any>({ mode: "all", });
-  const { setValue } = methods;
-  const [isChecked, setIsChecked] = useState(false);
+  
+   
+  
   const { control } = useFormContext<InsuranceCreateInput>()
 
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    setIsChecked(checked);
-    setValue('homeBound', checked)
-  };
+  
 
   const { fields: copayFields, remove: removecopayField, append: appendcopayField } = useFieldArray({ control: control, name: "copayFields" });
 
@@ -121,7 +113,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                   />
                 </Grid>
 
-                <Grid item md={3} sm={12} xs={12}>
+                <Grid item md={6} sm={12} xs={12}>
                   <Box className="copay-type-value">
                     <Box >
                       <InputController
@@ -132,24 +124,11 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                         controllerLabel={VALUE}
                       />
                     </Box>
-                    <Typography variant="h3" color="textPrimary">{isChecked ? '$' : '%'}</Typography>
+                    <Typography variant="h3" color="textPrimary">$</Typography>
                   </Box>
                 </Grid>
 
-                <Grid item md={3} sm={12} xs={12}>
-                  <Controller
-                    name='homeBound'
-                    control={control}
-                    render={() => (
-                      <FormControl fullWidth margin="normal" className={classes.toggleSmContainer}>
-                        <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GREY_SEVEN}>$</Box>
-                          <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                          <Box color={isChecked ? GREY_SEVEN : WHITE}>%</Box>
-                        </label>
-                      </FormControl>
-                    )} />
-                </Grid>
+               
 
               </Grid>
             )

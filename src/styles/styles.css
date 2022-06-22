@@ -846,10 +846,12 @@ input[type=number] {
   top: 29px;
   right: 12px;
 }
+
 .disable-icon {
   opacity: 0.3;
   pointer-events: none;
 }
+
 
 /* media queries */
 @media(max-width : 768px) {
