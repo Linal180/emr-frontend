@@ -203,7 +203,7 @@ export const PULSE_TEXT_AND_UNIT = "Pulse (bpm)";
 export const BLOOD_PRESSURE_TEXT_AND_UNIT = "Blood Pressure (mmHg)";
 export const OXYGEN_SATURATION_TEXT_AND_UNIT = "Oxygen Saturation (%)";
 export const RESPIRATORY_TEXT_AND_UNIT = "Respiratory Rate (rpm)";
-export const FEVER_TEXT_AND_UNIT = "Fever (°C)";
+export const TEMPERATURE_TEXT_AND_UNIT = "Fever (°C)";
 export const PAIN_TEXT_AND_UNIT = "Pain (1-10)";
 export const HEIGHT_TEXT_AND_UNIT = "Height (in)";
 export const WEIGHT_TEXT_AND_UNIT = "Weight (lbs)";
@@ -227,7 +227,7 @@ export const BMI_TEXT = "BMI"
 export const PAIN_TEXT = "Pain"
 export const SMOKING_STATUS_TEXT = "Smoking Status"
 export const HEAD_CIRCUMFERENCE = "Head Circumference"
-export const FEVER_TEXT = "Temperature"
+export const TEMPERATURE_TEXT = "Temperature"
 export const FEVER = "Fever"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
@@ -648,6 +648,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
+export const SIX_PAGE_LIMIT = 6;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -745,7 +746,7 @@ export const LOCATION_ID = "Location ID";
 export const VENDOR_NAME = "Vendor Name";
 export const IN_PROGRESS = "In Progress";
 export const ADD_ALLERGY = "Add Allergy";
-export const EDIT_ALLERGY = "Edit Allergy";
+export const UPDATE_ALLERGY = "Update Allergy";
 export const NEW_PROVIDER = "New Provider";
 export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
@@ -854,6 +855,7 @@ export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const EDIT_PROBLEMS = "Edit Problems";
+export const UPDATE_PROBLEM = "Update Problem";
 export const EXCEPTION = "Forbidden exception";
 export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
@@ -1206,13 +1208,14 @@ export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
+export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
-export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose your Payment Method";
+export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
@@ -1549,7 +1552,7 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
-export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed away";
+export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
@@ -2511,10 +2514,6 @@ export const MAPPED_RACE: SelectorOption[] = [
     name: formatValue(Race.BlackAfricanAmerican),
   },
   {
-    id: Race.BlackAfricanAmerican,
-    name: formatValue(Race.BlackAfricanAmerican),
-  },
-  {
     id: Race.AmericanIndianAlaskaNative,
     name: formatValue(Race.AmericanIndianAlaskaNative),
   },
@@ -2781,26 +2780,26 @@ export const PROFILE_TOP_TABS = [
     title: "Insurance",
     value: "2",
   },
-  {
-    title: "Registration",
-    value: "3",
-  },
-  {
-    title: "Messaging",
-    value: "4",
-  },
-  {
-    title: "Billing",
-    value: "5",
-  },
-  {
-    title: "Clinical",
-    value: "6",
-  },
-  {
-    title: "Communicator",
-    value: "7",
-  },
+  // {
+  //   title: "Registration",
+  //   value: "3",
+  // },
+  // {
+  //   title: "Messaging",
+  //   value: "4",
+  // },
+  // {
+  //   title: "Billing",
+  //   value: "5",
+  // },
+  // {
+  //   title: "Clinical",
+  //   value: "6",
+  // },
+  // {
+  //   title: "Communicator",
+  //   value: "7",
+  // },
   {
     title: "Documents",
     value: "8",

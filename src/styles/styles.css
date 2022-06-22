@@ -846,6 +846,10 @@ input[type=number] {
   top: 29px;
   right: 12px;
 }
+.disable-icon {
+  opacity: 0.3;
+  pointer-events: none;
+}
 
 /* media queries */
 @media(max-width : 768px) {
@@ -865,3 +869,4 @@ input[type=number] {
     margin-bottom: 0.875rem;
   }
 }
+

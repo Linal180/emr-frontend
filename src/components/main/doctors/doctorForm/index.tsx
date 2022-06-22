@@ -79,12 +79,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             } = doctor
 
             const { id: facilityId, name } = facility || {}
-            email && setValue('email', email)
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
             ssn && setValue('ssn', ssn)
             upin && setValue('upin', upin)
             taxId && setValue('taxId', taxId)
+            email && setValue('email', email)
             prefix && setValue('prefix', prefix)
             suffix && setValue('suffix', suffix)
             lastName && setValue('lastName', lastName)
@@ -125,7 +125,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
                 fax && setValue('fax', fax)
                 city && setValue('city', city)
-                // email && setValue('email', email)
                 phone && setValue('phone', phone)
                 pager && setValue('pager', pager)
                 mobile && setValue('mobile', mobile)
@@ -245,7 +244,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       }
 
       const doctorItemInput = {
-        firstName, middleName, lastName, prefix, suffix, email, facilityId: selectedFacility,
+        firstName, middleName, lastName, prefix, suffix, facilityId: selectedFacility,
         degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
         npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,

@@ -8,9 +8,9 @@ import {
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
   DOB_VALIDATION_MESSAGE, STATE, COUNTRY, PASSWORD, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE,
-  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE, EXPIRATION_DATE,
+  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE, 
   FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER,
-  SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_TYPE, PRACTICE_NAME, NAME,
+  SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_NAME, NAME, EXPIRATION_DATE,
   NO_WHITE_SPACE_REGEX, PRACTICE, SPECIALTY, SUFFIX, MIDDLE_NAME, LANGUAGE_SPOKEN, SERVICE_NAME_TEXT,
   SEX_AT_BIRTH, PREFERRED_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, INDUSTRY,
   APPOINTMENT, PATIENT, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PROVIDER, PREFERRED_LANGUAGE,
@@ -25,7 +25,7 @@ import {
   INVALID_EMAIL, EMAIL, NPI_VALIDATION_MESSAGE, NPI_REGEX, CLIA_VALIDATION_MESSAGE, CLIA_REGEX,
   LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
   PRICE, DURATION, NUMBER, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
-  SPECIMEN_FIELD_VALIDATION_MESSAGE, FEVER_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
+  SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT,
 } from "../constants";
@@ -180,7 +180,6 @@ const scheduleTimeSchema = {
 
 const facilityTimeSchema = {
   startTime: yup.string().test('', invalidMessage(START_TIME), value => !!value),
-
   endTime: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startTime } }) =>
     !value ? !!value : timeValidation(value, startTime))
 }
@@ -278,36 +277,17 @@ const staffBasicSchema = {
   gender: selectorSchema(GENDER),
   mobile: notRequiredPhone(PHONE),
   phone: notRequiredPhone(MOBILE),
-  facilityId: selectorSchema(FACILITY),
   dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const createStaffSchema = yup.object({
+export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  roleType: selectorSchema(ROLE, true)
+  facilityId: selectorSchema(FACILITY, isUserAdmin),
+  roleType: selectorSchema(ROLE, !isEdit)
 })
 
-export const updateStaffSchema = yup.object({
-  ...emailSchema,
-  ...staffBasicSchema,
-})
-
-const facilityBasicSchema = {
-  ...npiSchema,
-  ...contactSchema,
-  ...mammographySchema,
-  ...cliaIdNumberSchema,
-  ...federalTaxIdSchema,
-  ...tamxonomyCodeSchema,
-  ...billingAddressSchema,
-  timeZone: selectorSchema(TIME_ZONE_TEXT),
-  serviceCode: selectorSchema(SERVICE_CODE),
-  practiceType: selectorSchema(PRACTICE_TYPE),
-  name: yup.string().required(requiredMessage(PRACTICE_NAME))
-}
-
-const facilitySchedulerBasicSchema = {
+export const facilitySchema = (practiceRequired: boolean) => yup.object({
   ...npiSchema,
   ...contactSchema,
   ...mammographySchema,
@@ -316,28 +296,12 @@ const facilitySchedulerBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  serviceCode: selectorSchema(SERVICE_CODE),
   timeZone: selectorSchema(TIME_ZONE_TEXT),
+  serviceCode: selectorSchema(SERVICE_CODE),
+  practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()
     .required(requiredMessage(NAME))
     .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
-}
-
-export const facilitySchedulerSchema = yup.object({
-  ...facilitySchedulerBasicSchema
-})
-
-export const facilityTimeSchedulerSchema = yup.object({
-  ...scheduleTimeSchema
-})
-
-export const facilitySchema = yup.object({
-  ...facilityBasicSchema
-})
-
-export const facilitySchemaWithPractice = yup.object({
-  ...facilitySchedulerBasicSchema,
-  practice: selectorSchema(PRACTICE),
 })
 
 export const basicDoctorSchema = {
@@ -537,10 +501,6 @@ export const providerAppointmentSchema = yup.object({
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
   providerId: selectorSchema(PROVIDER).required()
-})
-
-export const facilityScheduleSchema = yup.object({
-  ...scheduleTimeSchema,
 })
 
 export const doctorScheduleSchema = yup.object({
@@ -749,7 +709,7 @@ export const patientVitalSchema = yup.object({
     }
   }),
 
-  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+  patientTemperature: yup.string().test('', invalidMessage(TEMPERATURE_TEXT), val => {
     if (!val) return true
     else {
       const value = parseFloat(val)
@@ -851,7 +811,7 @@ export const patientVitalUpdateSchema = yup.object({
     }
   }),
 
-  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+  patientTemperature: yup.string().test('', invalidMessage(TEMPERATURE_TEXT), val => {
     if (!val) return true
     else {
       const value = parseFloat(val)

@@ -520,9 +520,10 @@ export interface PickerProps {
   label: string;
   error?: string;
   isRequired?: boolean;
-  clearable?: boolean
-  disableFuture?: boolean
-  disabled?: boolean
+  clearable?: boolean;
+  disableFuture?: boolean;
+  disabled?: boolean;
+  disablePast?: boolean;
 }
 
 export interface TimePickerProps {
@@ -1499,6 +1500,7 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
+  shouldEmitFacilityId?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -1688,6 +1690,8 @@ export interface ACHPaymentComponentProps {
   dispatcher: Dispatch<ExternalPaymentAction>;
   states: ExternalPaymentState;
   moveNext: Function
+  formState?: ExternalFormBuilderState
+  formDispatch?: Dispatch<PublicFormBuilderAction>
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
@@ -1761,7 +1765,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { status: SelectorOption }
+export type StatusInputProps = { 
+  status: SelectorOption
+  facilityId?: string
+  serviceId?: multiOptionType
+ }
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
@@ -1835,6 +1843,13 @@ export interface AgreementGeneralProps {
   setEdit: Function;
 }
 
+export interface ServiceSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  shouldOmitFacilityId?: boolean
+  careProviderData?: DoctorPatient[];
+  defaultValues?: SelectorOption[]
+  dispatcher?: Dispatch<PublicFormBuilderAction>
+}
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;

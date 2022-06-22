@@ -17,14 +17,14 @@ export type Scalars = {
 };
 
 export type AchPaymentInputs = {
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   company?: Maybe<Scalars['String']>;
   deviceData?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
-  patientId: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
   price: Scalars['String'];
   token: Scalars['String'];
 };
@@ -67,6 +67,43 @@ export type ActiveInactivePracticesPayload = {
   activePractices?: Maybe<Scalars['Int']>;
   inactivePractices?: Maybe<Scalars['Int']>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type Agreement = {
+  __typename?: 'Agreement';
+  body?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementPaginationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type AgreementPayload = {
+  __typename?: 'AgreementPayload';
+  agreement: Agreement;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type AgreementsPayload = {
+  __typename?: 'AgreementsPayload';
+  agreements: Array<Agreement>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type AllDoctorPayload = {
@@ -174,6 +211,7 @@ export type Appointment = {
   selfCheckIn?: Maybe<Scalars['Boolean']>;
   status: AppointmentStatus;
   token?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -186,6 +224,7 @@ export enum AppointmentCreateType {
 export type AppointmentInput = {
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentStatus?: Maybe<Scalars['String']>;
+  appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -193,6 +232,7 @@ export type AppointmentInput = {
   providerId?: Maybe<Scalars['String']>;
   relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -255,6 +295,7 @@ export type AttachmentMediaPayload = {
 
 export type AttachmentMetadata = {
   __typename?: 'AttachmentMetadata';
+  agreementId?: Maybe<Scalars['String']>;
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
@@ -585,6 +626,7 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1109,7 +1151,7 @@ export type Doctor = {
   taxonomyCode?: Maybe<Scalars['String']>;
   telehealthLink?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt: Scalars['String'];
   upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
@@ -1319,7 +1361,7 @@ export type Facility = {
   startTime?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -1731,7 +1773,7 @@ export type Invoice = {
   paymentMethod?: Maybe<Scalars['String']>;
   paymentTransactionId?: Maybe<Scalars['String']>;
   status: Status;
-  transction?: Maybe<Transactions>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -1938,6 +1980,7 @@ export type Mutation = {
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: TransactionPayload;
+  createAgreement: AgreementPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
@@ -1972,6 +2015,7 @@ export type Mutation = {
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
+  removeAgreement: AgreementPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
@@ -1998,6 +2042,7 @@ export type Mutation = {
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
   update2FactorAuth: UserPayload;
+  updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
   updateAppointmentBillingStatus: AppointmentPayload;
   updateAppointmentStatus: AppointmentPayload;
@@ -2078,6 +2123,11 @@ export type MutationChargeAfterAppointmentArgs = {
 
 export type MutationChargePaymentArgs = {
   paymentInput: PaymentInput;
+};
+
+
+export type MutationCreateAgreementArgs = {
+  createAgreementInput: AgreementInput;
 };
 
 
@@ -2251,6 +2301,11 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRemoveAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
 export type MutationRemoveAppointmentArgs = {
   removeAppointment: RemoveAppointment;
 };
@@ -2373,6 +2428,11 @@ export type MutationSendInviteToPatientArgs = {
 
 export type MutationUpdate2FactorAuthArgs = {
   twoFactorInput: TwoFactorInput;
+};
+
+
+export type MutationUpdateAgreementArgs = {
+  updateAgreementInput: UpdateAgreementInput;
 };
 
 
@@ -2681,7 +2741,7 @@ export type Patient = {
   statementNoteDateFrom?: Maybe<Scalars['String']>;
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
-  transaction?: Maybe<Transactions>;
+  transaction?: Maybe<Array<Transactions>>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
 };
@@ -2923,13 +2983,13 @@ export type PatientsPayload = {
 };
 
 export type PaymentInput = {
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   clientIntent?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
-  patientId: Scalars['String'];
-  price: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
-  serviceId: Scalars['String'];
+  serviceId?: Maybe<Scalars['String']>;
 };
 
 export type PaymentInputsAfterAppointment = {
@@ -3298,6 +3358,8 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAgreement: AgreementPayload;
+  fetchAllAgreements: AgreementsPayload;
   fetchAllInsurances: InsurancesPayload;
   fetchAllPatients: PatientsPayload;
   fetchAllPolicies: PoliciesPayload;
@@ -3378,6 +3440,7 @@ export type Query = {
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
   getToken: BraintreePayload;
+  getTransaction: TransactionPayload;
   getUser: UserPayload;
   getUsersWithRoles: PracticeUserRolesPayload;
   me: UserPayload;
@@ -3389,6 +3452,16 @@ export type Query = {
 
 export type QueryGetPermissionArgs = {
   getPermission: GetPermission;
+};
+
+
+export type QueryFetchAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
+export type QueryFetchAllAgreementsArgs = {
+  agreementPaginationInput: AgreementPaginationInput;
 };
 
 
@@ -3759,6 +3832,11 @@ export type QueryGetSpecimenTypeByNameArgs = {
 
 export type QueryGetStaffArgs = {
   getStaff: GetStaff;
+};
+
+
+export type QueryGetTransactionArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -4214,6 +4292,7 @@ export type ServiceInput = {
   facilityId?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
   serviceName?: Maybe<Scalars['String']>;
 };
 
@@ -4403,16 +4482,16 @@ export type TransactionPayload = {
 export type Transactions = {
   __typename?: 'Transactions';
   appointment?: Maybe<Appointment>;
-  appointmentId: Scalars['String'];
+  appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
-  doctor?: Maybe<Array<Doctor>>;
+  doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
-  facility?: Maybe<Array<Facility>>;
+  facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   invoice?: Maybe<Array<Invoice>>;
-  patient?: Maybe<Array<Patient>>;
-  patientId: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
   status: Transactionstatus;
   transactionId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -4442,6 +4521,14 @@ export type UpComingAppointmentsInput = {
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
+};
+
+export type UpdateAgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateAllergyInput = {
@@ -4498,6 +4585,7 @@ export type UpdateAppointmentStatusInput = {
 };
 
 export type UpdateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
