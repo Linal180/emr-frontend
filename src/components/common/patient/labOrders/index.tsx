@@ -25,12 +25,15 @@ import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ORDER_NUM, EMPTY_OPTION, LAB_TEST_STATUSES,
   NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE, RESULTS_ENTERED
 } from "../../../../constants";
+import SideDrawer from "../../SideDrawer";
+import { AddLabOrders } from "../../../../pages/main/labOrders/addOrder";
 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();
   const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>([])
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [orderNum, setOrderNum] = useState<string>('')
+  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const [labTestIds, setLabTestIds] = useState<string[]>([])
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
@@ -146,7 +149,7 @@ const LabOrdersTable = (): JSX.Element => {
     setOrderNum('')
     setLabTestIds([])
   }
-
+   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -155,10 +158,22 @@ const LabOrdersTable = (): JSX.Element => {
             <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
               <Search search={search} />
 
-              <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={`${CREATE_LAB_ORDERS_ROUTE}/${id}`}>
+              {/* <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={`${CREATE_LAB_ORDERS_ROUTE}/${id}`}>
+                {MANUAL_ENTRY}
+              </Button> */}
+
+              <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
                 {MANUAL_ENTRY}
               </Button>
             </Box>
+
+
+            <SideDrawer
+                  drawerOpened={drawerOpened}
+                  toggleSideDrawer={toggleSideDrawer} >
+                  <AddLabOrders />
+            </SideDrawer>
+
 
             <Box className="table-overflow">
               <Table aria-label="customized table">
@@ -208,7 +223,7 @@ const LabOrdersTable = (): JSX.Element => {
                             />
                           </>
                             :
-                            <Box className={classes.status} component='span' color={textColor}                              
+                            <Box className={classes.status} component='span' color={textColor}
                               onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
                             >
                               {formatValue(labTestStatus ?? '')}

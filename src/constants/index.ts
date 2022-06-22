@@ -958,6 +958,7 @@ export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
 export const COPAY_TEXT = "COPAY";
+export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -1034,6 +1035,7 @@ export const DOCUMENT_TYPE = "Document Type";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const NEW_LAB_ORDER = "New Lab Order";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const DOCUMENT_NAME = "Document Name";
@@ -3598,6 +3600,10 @@ export const CHECK_IN_STEPS = [
 
 export const LAB_ORDER_STEPS = [
   LAB_ORDER, PROVIDER_DETAILS, PAYMENT
+];
+
+export const LAB_ORDER_SIDEDRAWER_STEPS = [
+  LAB_ORDER, TESTS, PAYMENTS
 ];
 
 export const FacilityMenuNav = [
