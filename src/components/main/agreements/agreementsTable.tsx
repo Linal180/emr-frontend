@@ -11,7 +11,7 @@ import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
-import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, INITIAL_PAGE_LIMIT, NAME } from '../../../constants';
+import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT } from '../../../constants';
 import { AgreementsPayload, useFetchAllAgreementsLazyQuery, useRemoveAgreementMutation } from '../../../generated/graphql';
 import { GeneralFormProps } from '../../../interfacesTypes';
 import { useTableStyles } from '../../../styles/tableStyles';
@@ -69,7 +69,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           agreementPaginationInput: {
             paginationOptions: {
               page,
-              limit: INITIAL_PAGE_LIMIT
+              limit: PAGE_LIMIT
             },
             searchString: searchQuery
           }
@@ -130,21 +130,21 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           </Box>
         </Box>
 
-        <Box bgcolor={WHITE} className="table-overflow agreement-table">
+        <Box bgcolor={WHITE} className="table-overflow table-header">
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(CREATED_ON)}
-                {renderTh(ACTIONS)}
+                {renderTh(ACTIONS, 'center')}
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {(loading) ? (
+              {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={8} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={3} />
                   </TableCell>
                 </TableRow>
               ) : (
