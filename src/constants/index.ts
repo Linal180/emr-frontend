@@ -926,6 +926,7 @@ export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const ACTIVE_STAFF_IN_CURRENT_SHIFT = "Active Staff in Current Shift";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
+export const REACTION_SELECTION_REQUIRED = "Please select at least one reaction";
 export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shift";
 export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
 export const USD = "USD";
