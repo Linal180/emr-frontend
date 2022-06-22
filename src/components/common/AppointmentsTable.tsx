@@ -350,6 +350,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   <ServicesSelector
                     name="serviceId"
                     label={APPOINTMENT_TYPE}
+                    shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
               </Grid>
