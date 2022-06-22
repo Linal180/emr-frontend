@@ -1,6 +1,6 @@
 // packages
 import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography } from '@material-ui/core';
-import { CKEditor } from 'ckeditor4-react';
+import { CKEditor, CKEditorEventPayload } from 'ckeditor4-react';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components
@@ -112,11 +112,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
   const findAgreement = useCallback(async () => {
     try {
-      await fetchAgreement({
-        variables: {
-          agreementId: id
-        }
-      })
+      await fetchAgreement({ variables: { agreementId: id } })
     } catch (error) { }
   }, [fetchAgreement, id])
 
@@ -150,10 +146,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
     });
   };
 
-  const onEditorChange = ({ editor }: any) => {
-    setAgreementBody(editor.getData());
-  }
-
+  const onEditorChange = ({ editor }: CKEditorEventPayload<"change">) => setAgreementBody(editor.getData());
+  
   return (
     <>
       <FormProvider {...methods}>
