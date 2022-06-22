@@ -39,7 +39,7 @@ const PublicFormPreview = () => {
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
   });
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue } = methods;
   const isSubmit = formValues?.length - 1 === activeStep
 
   //mutation
@@ -81,6 +81,34 @@ const PublicFormPreview = () => {
     }
   })
 
+  const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
+    onCompleted: (data) => {
+      const { saveUserFormValues } = data;
+      const { userForm, appointment, response } = saveUserFormValues;
+      const { status } = response || {}
+      const { id } = userForm || {}
+      const { id: appointmentId } = appointment || {}
+      if (status === 200 && id && appointmentId) {
+        if (isSubmit) {
+          Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
+          history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
+        } else {
+          setValue('appointmentId', appointmentId)
+          setValue('userFormId', id)
+          nextStepHandler()
+        }
+
+      }
+      else {
+        Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
+      }
+
+    },
+    onError: ({ message }) => {
+      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
+    }
+  })
+
   useMemo(() => {
     if (formValues && formValues?.length > 0) {
       formValues?.map((tab) => {
@@ -96,28 +124,8 @@ const PublicFormPreview = () => {
     }
   }, [formValues])
 
-  const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
-    onCompleted: (data) => {
-      const { saveUserFormValues } = data;
-      const { userForm, response } = saveUserFormValues;
-      const { status } = response || {}
-      const { id } = userForm || {}
-      if (status === 200 && id) {
-        Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
-        history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
-      }
-      else {
-        Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
-      }
-
-    },
-    onError: ({ message }) => {
-      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
-    }
-  })
-
   const submitHandler = async (values: any) => {
-    if (id && isSubmit) {
+    if (id) {
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
       const formValues = await getUserFormFormattedValues(values, id);
       const data = {
@@ -133,6 +141,7 @@ const PublicFormPreview = () => {
         const { scheduleEndDateTime, scheduleStartDateTime } = values;
         if (scheduleStartDateTime && scheduleEndDateTime) {
           await createUserForm({ variables: { createUserFormInput: data } })
+
         }
         else {
           Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
@@ -199,30 +208,30 @@ const PublicFormPreview = () => {
                     </Box>
                   </Box>
                   {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"> */}
-                    <Grid container spacing={3}>
-                      <Grid item xs={2}>
-                        <Stepper activeStep={activeStep} orientation="vertical">
-                          {formValues?.map((tab, index) => {
-                            const { name, id } = tab || {}
-                            return <Step key={`${id}-${index}`}>
-                              <StepLabel>{name}</StepLabel>
-                            </Step>
-                          }
-                          )}
-                        </Stepper>
-                      </Grid>
-                      <Grid item xs={10}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={2}>
+                      <Stepper activeStep={activeStep} orientation="vertical">
                         {formValues?.map((tab, index) => {
-                          const { sections, name, id } = tab || {}
-                          return <Fragment key={`${id}-${name}`}>
-                            {activeStep === index &&
-                              <StepContext sections={sections} state={state} dispatch={dispatch} />
-                            }
-                          </Fragment>
+                          const { name, id } = tab || {}
+                          return <Step key={`${id}-${index}`}>
+                            <StepLabel>{name}</StepLabel>
+                          </Step>
                         }
                         )}
-                      </Grid>
+                      </Stepper>
                     </Grid>
+                    <Grid item xs={10}>
+                      {formValues?.map((tab, index) => {
+                        const { sections, name, id } = tab || {}
+                        return <Fragment key={`${id}-${name}`}>
+                          {activeStep === index &&
+                            <StepContext sections={sections} state={state} dispatch={dispatch} />
+                          }
+                        </Fragment>
+                      }
+                      )}
+                    </Grid>
+                  </Grid>
                   {/* </Box> */}
                 </form>
               </FormProvider>

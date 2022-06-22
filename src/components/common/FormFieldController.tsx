@@ -77,6 +77,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           isRequired={required || true}
           name={fieldId}
           label={label}
+          formDispatch={dispatcher}
+          formState={state}
           addEmpty
         />
 
