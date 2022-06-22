@@ -215,11 +215,18 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                     {descriptionType === descriptionTypes[0] && <Grid item md={12} sm={12} xs={12}>
                       <Typography>{AGREEMENT_BODY}</Typography>
                       <Box p={0.5} />
-                      <CKEditor
-                        name="agreementBody"
-                        initData={agreementBody}
-                        onChange={onEditorChange}
-                      />
+                      {
+                        id ? agreementBody && <CKEditor
+                          name="agreementBody"
+                          initData={agreementBody}
+                          onChange={onEditorChange}
+                        /> :
+                          <CKEditor
+                            name="agreementBody"
+                            initData={agreementBody}
+                            onChange={onEditorChange}
+                          />
+                      }
                       {!agreementBody.length ? <Typography className='danger' variant="caption">Agreement Body is a required Field</Typography> : ''}
                     </Grid>}
 
