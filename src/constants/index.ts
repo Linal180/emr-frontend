@@ -852,6 +852,7 @@ export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
 export const TOTAL_NUMBER_OF_USERS = "Total Number of Users";
 export const ADD_VITALS = "Add Vitals";
+export const UPDATE_VITALS = "Update Vitals";
 export const ADD_PROBLEM = "Add Problem";
 export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
