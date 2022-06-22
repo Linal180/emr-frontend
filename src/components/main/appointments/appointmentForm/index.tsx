@@ -389,7 +389,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-      console.log(startTime, endTime, ">>>>>>>>>...")
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
