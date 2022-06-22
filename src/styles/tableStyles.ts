@@ -65,10 +65,10 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   selectorBox: {
-    maxWidth: 120,
-
+    // maxWidth: 120,
+    
     "& .MuiFormControl-fullWidth": {
-      width: 120,
+      // width: 120,
       borderRadius: 8,
     },
 
@@ -77,6 +77,10 @@ export const useTableStyles = makeStyles(() => ({
       borderRadius: 8,
       padding: '0 5px',
       minHeight: 34,
+    },
+    "& .MuiAutocomplete-option": {
+      backgroundColor: WHITE,
+      border: '1px solid red',
     },
   },
 
@@ -103,7 +107,15 @@ export const useTableStyles = makeStyles(() => ({
 
     "& svg": {
       maxWidth: 16
-    }
+    },
+
+    "& .MuiButton-root": {
+      minWidth: 'auto',
+    },
+
+    "& .MuiButton-root:hover": {
+      backgroundColor: 'transparent',
+    },
   },
 
   iconsBackgroundDisabled: {
