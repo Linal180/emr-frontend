@@ -485,14 +485,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </IconButton>
                           </Box>}
 
-                          <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                            <Box className={classes.iconsBackground}>
+                          <Box className={classes.iconsBackground}>
+                            <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
                               <EditNewIcon />
-                            </Box>
-                          </Link>
+                            </Button>
+                          </Box>
 
                           <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
-                            <Button onClick={() => scheduleStartDateTime && id
+                            <Button disableElevation onClick={() => scheduleStartDateTime && id
                               && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
                             >
                               <TrashNewIcon />
