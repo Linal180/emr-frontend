@@ -1017,3 +1017,7 @@ export const addLabProviderDetailsSchema = yup.object({
   primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
   referringProviderId: selectorSchema(REFERRING_PROVIDER),
 })
+
+export const createAgreementSchema = yup.object({
+  title: yup.string().required(),
+})

@@ -921,7 +921,7 @@ export interface DropzoneImageType {
   itemId: string;
   title: string;
   isEdit?: boolean;
-  filesLimit: number;
+  filesLimit?: number;
   isProfile?: boolean;
   ref: FormForwardRef;
   providerName: string;
@@ -1837,7 +1837,7 @@ export interface StageStatusType {
   stageColor: string;
 }
 
-export interface AgreementGeneralProps {
+export interface AgreementGeneralProps extends GeneralFormProps {
   setEdit: Function;
 }
 
@@ -1848,6 +1848,11 @@ export interface ServiceSelectorProps extends FacilitySelectorProps {
   defaultValues?: SelectorOption[]
   dispatcher?: Dispatch<PublicFormBuilderAction>
 }
+export interface CreateAgreementFormProps {
+  title?: string
+  agreementBody?: string
+}
+
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;
