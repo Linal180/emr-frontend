@@ -253,7 +253,7 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -281,6 +281,7 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
+
   let newYears = yearDiff;
   let newMonths = monthDiff;
   let newDays = dayDiff;
@@ -288,7 +289,6 @@ export const dateDifference = (startingDate: string) => {
 
   return `${ageString} old`
 }
-
 
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
