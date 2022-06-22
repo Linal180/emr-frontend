@@ -1745,7 +1745,9 @@ export interface CareTeamsProps {
   onEdit?: Function;
   reload?: Function;
   toggleSideDrawer?: Function;
-  patientDispatcher?: Dispatch<PatientAction>
+  patientDispatcher?: Dispatch<PatientAction>;
+  providerBtn? :boolean;
+  isEditable? : boolean
 }
 
 export interface SideDrawerProps {
