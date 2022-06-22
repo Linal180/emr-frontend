@@ -7,7 +7,6 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
-import CareTeamComponent from './careTeam';
 import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
@@ -19,6 +18,7 @@ import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataComponent from '../../../common/NoDataComponent';
+import CareTeamComponent from './careTeam/index'
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import history from "../../../../history";
@@ -344,7 +344,11 @@ const PatientDetailsComponent = (): JSX.Element => {
                   <PracticesByYear year={{ id: '2022', name: '2022' }} />
                 </Card>
               </Box>
-
+              <Box className='masonry-box'>
+                <CareTeamComponent                
+                  patientProvidersData={patientProvidersData}              
+                />
+              </Box>
               <Box className='masonry-box'>
                 <EncounterList />
               </Box>
@@ -377,6 +381,8 @@ const PatientDetailsComponent = (): JSX.Element => {
               patientProvidersData={patientProvidersData}
               drawerOpened={drawerOpened}
               patientDispatcher={dispatch}
+              providerBtn={true}
+              isEditable={true}
             />
           </TabPanel>
         </Box>

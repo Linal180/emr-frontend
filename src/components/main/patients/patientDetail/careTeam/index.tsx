@@ -12,7 +12,8 @@ import { AddSlotIcon, EditNewIcon } from "../../../../../assets/svgs";
 import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 import { ActionType } from "../../../../../reducers/patientReducer";
 
-const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, onEdit, patientDispatcher }: CareTeamsProps): JSX.Element => {
+const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, onEdit,
+  patientDispatcher, providerBtn, isEditable }: CareTeamsProps): JSX.Element => {
   const classes = useDoctorScheduleStyles();
 
   const handleSlider = () => toggleSideDrawer && toggleSideDrawer()
@@ -56,10 +57,11 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
 
                     <Typography variant="body1">{email}</Typography>
                   </Box>
-
-                  <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
-                    <EditNewIcon />
-                  </Box>
+                  {
+                    !!isEditable && <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
+                      <EditNewIcon />
+                    </Box>
+                  }
                 </Box>
 
                 {relation && <Box className={classes.status} component='span' color={BLUE_FOUR}>
@@ -70,21 +72,25 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
             </>
           )
         }))}
-        <Box onClick={() => handleAdd()} className={classes.addProvider} display='flex'>
-          <Box mr={2}>
-            <AddSlotIcon />
-          </Box>
 
-          <Box>
-            <Typography variant="h6">
-              {ADD_PROVIDER_TEXT}
-            </Typography>
+        {
+          !!providerBtn && <Box onClick={() => handleAdd()} className={classes.addProvider} display='flex'>
+            <Box mr={2}>
+              <AddSlotIcon />
+            </Box>
 
-            <Typography variant="body2">
-              {ADD_PROVIDER_INFORMATION}
-            </Typography>
+            <Box>
+              <Typography variant="h6">
+                {ADD_PROVIDER_TEXT}
+              </Typography>
+
+              <Typography variant="body2">
+                {ADD_PROVIDER_INFORMATION}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        }
+
       </Box>
     </Card>
   )
