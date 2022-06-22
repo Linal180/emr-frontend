@@ -5242,6 +5242,41 @@ export type SnoMedCodesPayload = {
   snoMedCodes?: Maybe<Array<Maybe<SnoMedCodes>>>;
 };
 
+export type FetchAllAgreementsQueryVariables = Exact<{
+  agreementPaginationInput: AgreementPaginationInput;
+}>;
+
+
+export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null }> } };
+
+export type FetchAgreementQueryVariables = Exact<{
+  agreementId: Scalars['String'];
+}>;
+
+
+export type FetchAgreementQuery = { __typename?: 'Query', fetchAgreement: { __typename?: 'AgreementPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, agreement: { __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, viewAgreementBeforeAgreeing?: boolean | null, signatureRequired?: boolean | null, createdAt?: string | null } } };
+
+export type CreateAgreementMutationVariables = Exact<{
+  createAgreementInput: AgreementInput;
+}>;
+
+
+export type CreateAgreementMutation = { __typename?: 'Mutation', createAgreement: { __typename?: 'AgreementPayload', agreement: { __typename?: 'Agreement', id: string }, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateAgreementMutationVariables = Exact<{
+  updateAgreementInput: UpdateAgreementInput;
+}>;
+
+
+export type UpdateAgreementMutation = { __typename?: 'Mutation', updateAgreement: { __typename?: 'AgreementPayload', agreement: { __typename?: 'Agreement', id: string }, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type RemoveAgreementMutationVariables = Exact<{
+  agreementId: Scalars['String'];
+}>;
+
+
+export type RemoveAgreementMutation = { __typename?: 'Mutation', removeAgreement: { __typename?: 'AgreementPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type FindAllAppointmentsQueryVariables = Exact<{
   appointmentInput: AppointmentInput;
 }>;
@@ -6337,6 +6372,219 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetCurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, userId: string, userType: string, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
 
+export const FetchAllAgreementsDocument = gql`
+    query FetchAllAgreements($agreementPaginationInput: AgreementPaginationInput!) {
+  fetchAllAgreements(agreementPaginationInput: $agreementPaginationInput) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    agreements {
+      id
+      title
+      body
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllAgreementsQuery__
+ *
+ * To run a query within a React component, call `useFetchAllAgreementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllAgreementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllAgreementsQuery({
+ *   variables: {
+ *      agreementPaginationInput: // value for 'agreementPaginationInput'
+ *   },
+ * });
+ */
+export function useFetchAllAgreementsQuery(baseOptions: Apollo.QueryHookOptions<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>(FetchAllAgreementsDocument, options);
+      }
+export function useFetchAllAgreementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>(FetchAllAgreementsDocument, options);
+        }
+export type FetchAllAgreementsQueryHookResult = ReturnType<typeof useFetchAllAgreementsQuery>;
+export type FetchAllAgreementsLazyQueryHookResult = ReturnType<typeof useFetchAllAgreementsLazyQuery>;
+export type FetchAllAgreementsQueryResult = Apollo.QueryResult<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>;
+export const FetchAgreementDocument = gql`
+    query FetchAgreement($agreementId: String!) {
+  fetchAgreement(agreementId: $agreementId) {
+    response {
+      error
+      status
+      message
+    }
+    agreement {
+      id
+      title
+      body
+      viewAgreementBeforeAgreeing
+      signatureRequired
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAgreementQuery__
+ *
+ * To run a query within a React component, call `useFetchAgreementQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAgreementQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAgreementQuery({
+ *   variables: {
+ *      agreementId: // value for 'agreementId'
+ *   },
+ * });
+ */
+export function useFetchAgreementQuery(baseOptions: Apollo.QueryHookOptions<FetchAgreementQuery, FetchAgreementQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAgreementQuery, FetchAgreementQueryVariables>(FetchAgreementDocument, options);
+      }
+export function useFetchAgreementLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAgreementQuery, FetchAgreementQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAgreementQuery, FetchAgreementQueryVariables>(FetchAgreementDocument, options);
+        }
+export type FetchAgreementQueryHookResult = ReturnType<typeof useFetchAgreementQuery>;
+export type FetchAgreementLazyQueryHookResult = ReturnType<typeof useFetchAgreementLazyQuery>;
+export type FetchAgreementQueryResult = Apollo.QueryResult<FetchAgreementQuery, FetchAgreementQueryVariables>;
+export const CreateAgreementDocument = gql`
+    mutation CreateAgreement($createAgreementInput: AgreementInput!) {
+  createAgreement(createAgreementInput: $createAgreementInput) {
+    agreement {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateAgreementMutationFn = Apollo.MutationFunction<CreateAgreementMutation, CreateAgreementMutationVariables>;
+
+/**
+ * __useCreateAgreementMutation__
+ *
+ * To run a mutation, you first call `useCreateAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAgreementMutation, { data, loading, error }] = useCreateAgreementMutation({
+ *   variables: {
+ *      createAgreementInput: // value for 'createAgreementInput'
+ *   },
+ * });
+ */
+export function useCreateAgreementMutation(baseOptions?: Apollo.MutationHookOptions<CreateAgreementMutation, CreateAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAgreementMutation, CreateAgreementMutationVariables>(CreateAgreementDocument, options);
+      }
+export type CreateAgreementMutationHookResult = ReturnType<typeof useCreateAgreementMutation>;
+export type CreateAgreementMutationResult = Apollo.MutationResult<CreateAgreementMutation>;
+export type CreateAgreementMutationOptions = Apollo.BaseMutationOptions<CreateAgreementMutation, CreateAgreementMutationVariables>;
+export const UpdateAgreementDocument = gql`
+    mutation UpdateAgreement($updateAgreementInput: UpdateAgreementInput!) {
+  updateAgreement(updateAgreementInput: $updateAgreementInput) {
+    agreement {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateAgreementMutationFn = Apollo.MutationFunction<UpdateAgreementMutation, UpdateAgreementMutationVariables>;
+
+/**
+ * __useUpdateAgreementMutation__
+ *
+ * To run a mutation, you first call `useUpdateAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAgreementMutation, { data, loading, error }] = useUpdateAgreementMutation({
+ *   variables: {
+ *      updateAgreementInput: // value for 'updateAgreementInput'
+ *   },
+ * });
+ */
+export function useUpdateAgreementMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAgreementMutation, UpdateAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAgreementMutation, UpdateAgreementMutationVariables>(UpdateAgreementDocument, options);
+      }
+export type UpdateAgreementMutationHookResult = ReturnType<typeof useUpdateAgreementMutation>;
+export type UpdateAgreementMutationResult = Apollo.MutationResult<UpdateAgreementMutation>;
+export type UpdateAgreementMutationOptions = Apollo.BaseMutationOptions<UpdateAgreementMutation, UpdateAgreementMutationVariables>;
+export const RemoveAgreementDocument = gql`
+    mutation RemoveAgreement($agreementId: String!) {
+  removeAgreement(agreementId: $agreementId) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveAgreementMutationFn = Apollo.MutationFunction<RemoveAgreementMutation, RemoveAgreementMutationVariables>;
+
+/**
+ * __useRemoveAgreementMutation__
+ *
+ * To run a mutation, you first call `useRemoveAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAgreementMutation, { data, loading, error }] = useRemoveAgreementMutation({
+ *   variables: {
+ *      agreementId: // value for 'agreementId'
+ *   },
+ * });
+ */
+export function useRemoveAgreementMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAgreementMutation, RemoveAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveAgreementMutation, RemoveAgreementMutationVariables>(RemoveAgreementDocument, options);
+      }
+export type RemoveAgreementMutationHookResult = ReturnType<typeof useRemoveAgreementMutation>;
+export type RemoveAgreementMutationResult = Apollo.MutationResult<RemoveAgreementMutation>;
+export type RemoveAgreementMutationOptions = Apollo.BaseMutationOptions<RemoveAgreementMutation, RemoveAgreementMutationVariables>;
 export const FindAllAppointmentsDocument = gql`
     query FindAllAppointments($appointmentInput: AppointmentInput!) {
   findAllAppointments(appointmentInput: $appointmentInput) {
