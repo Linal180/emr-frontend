@@ -5,6 +5,11 @@ import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components
 import InputController from '../../../controller';
+import Alert from '../../common/Alert';
+import BackButton from '../../common/BackButton';
+import DropzoneImage from '../../common/DropZoneImage';
+import PageHeader from '../../common/PageHeader';
+import ViewDataLoader from '../../common/ViewDataLoader';
 //constants, types, interfaces, utils
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
@@ -20,11 +25,6 @@ import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType 
 import { GRAY_SIX } from '../../../theme';
 import { mediaType } from '../../../utils';
 import { createAgreementSchema } from '../../../validationSchemas';
-import Alert from '../../common/Alert';
-import BackButton from '../../common/BackButton';
-import DropzoneImage from '../../common/DropZoneImage';
-import PageHeader from '../../common/PageHeader';
-import ViewDataLoader from '../../common/ViewDataLoader';
 
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const [signatureRequired, setSignatureRequired] = useState<boolean>(false)

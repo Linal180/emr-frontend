@@ -1,8 +1,8 @@
-// packages block
 // components block
-import { ADD_AGREEMENT, AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_ROUTE, DASHBOARD_BREAD } from '../../../constants';
 import PageHeader from '../../common/PageHeader';
 import AgreementsTable from './agreementsTable';
+//constants bock
+import { ADD_AGREEMENT, AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_ROUTE, DASHBOARD_BREAD } from '../../../constants';
 
 const AgreementsComponent = (): JSX.Element => {
 

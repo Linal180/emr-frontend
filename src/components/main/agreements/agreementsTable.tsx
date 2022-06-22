@@ -1,9 +1,14 @@
 // packages block
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 // components block
 import Search from '../../common/Search';
+import Alert from '../../common/Alert';
+import ConfirmationModal from '../../common/ConfirmationModal';
+import NoDataFoundComponent from '../../common/NoDataFoundComponent';
+import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
 import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, INITIAL_PAGE_LIMIT, NAME } from '../../../constants';
@@ -12,11 +17,6 @@ import { GeneralFormProps } from '../../../interfacesTypes';
 import { useTableStyles } from '../../../styles/tableStyles';
 import { WHITE } from '../../../theme';
 import { convertDateFromUnix, renderTh } from '../../../utils';
-import Alert from '../../common/Alert';
-import ConfirmationModal from '../../common/ConfirmationModal';
-import NoDataFoundComponent from '../../common/NoDataFoundComponent';
-import TableLoader from '../../common/TableLoader';
-import { Link } from 'react-router-dom';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
