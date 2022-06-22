@@ -2,8 +2,8 @@
 import { FC } from "react";
 import { Typography, Box } from "@material-ui/core";
 // constants block
-import { NO_SLOT_AVAILABLE } from "../../constants";
 import { NoDataIcon } from "../../assets/svgs";
+import { NO_SLOT_AVAILABLE } from "../../constants";
 
 const NoSlotsComponent: FC = (): JSX.Element => {
   return (

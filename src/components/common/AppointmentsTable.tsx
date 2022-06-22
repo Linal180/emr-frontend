@@ -38,8 +38,8 @@ import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
-  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, SIX_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER
+  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, TEN_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
 } from "../../constants";
 
 dotenv.config()
@@ -183,7 +183,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: SIX_PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: TEN_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }
@@ -311,17 +311,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         : onDeleteClick(id || '')
   }
 
-  const renderIcon = () => {
-    return (
-      <IconButton className='py-0 ml-5' onClick={() => {
-        sortBy === ASC ?
-          dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
-          : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-      }}>
-        <Sort />
-      </IconButton>
-    )
-  }
+  const renderIcon = () => <IconButton className='py-0 ml-5'
+    onClick={() => {
+      sortBy === ASC ?
+        dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
+        : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
+    }}>
+    <Sort />
+  </IconButton>;
 
   return (
     <>
@@ -376,7 +373,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={8} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
                   </TableCell>
                 </TableRow>
               ) : (
