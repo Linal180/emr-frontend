@@ -232,6 +232,7 @@ export type AppointmentInput = {
   providerId?: Maybe<Scalars['String']>;
   relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -294,6 +295,7 @@ export type AttachmentMediaPayload = {
 
 export type AttachmentMetadata = {
   __typename?: 'AttachmentMetadata';
+  agreementId?: Maybe<Scalars['String']>;
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
@@ -624,6 +626,7 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -4582,6 +4585,7 @@ export type UpdateAppointmentStatusInput = {
 };
 
 export type UpdateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;

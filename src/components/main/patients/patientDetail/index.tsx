@@ -53,13 +53,17 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName }, dispatch] =
-    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{
+    openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
+  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
   const [state, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
   const {
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
   } = state
+
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -67,7 +71,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
-
   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
@@ -103,7 +106,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -159,7 +162,10 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatientProviders) {
 
           const { providers } = getPatientProviders;
-          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
+          dispatch({
+            type: ActionType.SET_PATIENT_PROVIDERS_DATA,
+            patientProvidersData: providers as PatientProviderPayload['providers']
+          })
         }
       }
     },
@@ -180,9 +186,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
-    if (id) {
-      fetchComing();
-    }
+    id && fetchComing();
   }, [fetchComing, id]);
 
   return (

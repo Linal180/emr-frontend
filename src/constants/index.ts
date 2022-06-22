@@ -650,6 +650,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
+export const SIX_PAGE_LIMIT = 6;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -1212,6 +1213,7 @@ export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
+export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
@@ -1557,7 +1559,7 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
   "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
-export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed away";
+export const CANCEL_TIME_PAST_MESSAGE = "Appointment time has passed";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
@@ -2523,10 +2525,6 @@ export const MAPPED_RACE: SelectorOption[] = [
     name: formatValue(Race.BlackAfricanAmerican),
   },
   {
-    id: Race.BlackAfricanAmerican,
-    name: formatValue(Race.BlackAfricanAmerican),
-  },
-  {
     id: Race.AmericanIndianAlaskaNative,
     name: formatValue(Race.AmericanIndianAlaskaNative),
   },
@@ -2796,26 +2794,26 @@ export const PROFILE_TOP_TABS = [
     title: "Insurance",
     value: "2",
   },
-  {
-    title: "Registration",
-    value: "3",
-  },
-  {
-    title: "Messaging",
-    value: "4",
-  },
-  {
-    title: "Billing",
-    value: "5",
-  },
-  {
-    title: "Clinical",
-    value: "6",
-  },
-  {
-    title: "Communicator",
-    value: "7",
-  },
+  // {
+  //   title: "Registration",
+  //   value: "3",
+  // },
+  // {
+  //   title: "Messaging",
+  //   value: "4",
+  // },
+  // {
+  //   title: "Billing",
+  //   value: "5",
+  // },
+  // {
+  //   title: "Clinical",
+  //   value: "6",
+  // },
+  // {
+  //   title: "Communicator",
+  //   value: "7",
+  // },
   {
     title: "Documents",
     value: "8",

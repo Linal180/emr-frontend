@@ -1498,6 +1498,7 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
+  shouldEmitFacilityId?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -1762,7 +1763,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { status: SelectorOption }
+export type StatusInputProps = { 
+  status: SelectorOption
+  facilityId?: string
+  serviceId?: multiOptionType
+ }
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];

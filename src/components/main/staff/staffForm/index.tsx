@@ -18,10 +18,12 @@ import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { getTimestamps, setRecord } from "../../../../utils";
+import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import {
+  getTimestamps, setRecord, renderItem, formatValue, isUserAdmin
+} from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -37,11 +39,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
+
+  const { roles, facility } = user || {}
+  const { id: currentFacility, name: currentFacilityName, practiceId: currentPractice } = facility || {}
+  const isAdminUser = isUserAdmin(roles)
+
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser))
   });
+
   const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
@@ -170,8 +178,10 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, practiceId, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, facilityId: selectedFacility, username: '',
+      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId, facilityId: selectedFacility }
+        : { practiceId: currentPractice, facilityId: currentFacility }
+      )
     };
 
     if (isEdit) {
@@ -215,7 +225,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         setIsFacilityAdmin(false)
       }
     }
-
   }, [watch, roleType, setValue])
 
   return (
@@ -249,25 +258,28 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6}>
-                        <FacilitySelector
-                          addEmpty
-                          isRequired
-                          label={FACILITY}
-                          name="facilityId"
-                        />
+                      <Grid item md={6}>
+                        {isAdminUser ?
+                          <FacilitySelector
+                            addEmpty
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
+                          : renderItem(FACILITY, currentFacilityName)
+                        }
                       </Grid>
 
-                      {!isEdit &&
-                        <Grid item md={6}>
+                      <Grid item md={6}>
+                        {isEdit && roleType ? renderItem(ROLE, formatValue(roleType.name || '')) :
                           <RoleSelector
                             addEmpty
                             isRequired
                             label={ROLE}
                             name="roleType"
                           />
-                        </Grid>
-                      }
+                        }
+                      </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
