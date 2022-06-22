@@ -921,7 +921,7 @@ export interface DropzoneImageType {
   itemId: string;
   title: string;
   isEdit?: boolean;
-  filesLimit: number;
+  filesLimit?: number;
   isProfile?: boolean;
   ref: FormForwardRef;
   providerName: string;
@@ -1498,6 +1498,7 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
+  shouldEmitFacilityId?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -1762,7 +1763,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { status: SelectorOption }
+export type StatusInputProps = { 
+  status: SelectorOption
+  facilityId?: string
+  serviceId?: multiOptionType
+ }
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
@@ -1832,7 +1837,7 @@ export interface StageStatusType {
   stageColor: string;
 }
 
-export interface AgreementGeneralProps {
+export interface AgreementGeneralProps extends GeneralFormProps {
   setEdit: Function;
 }
 
@@ -1843,6 +1848,11 @@ export interface ServiceSelectorProps extends FacilitySelectorProps {
   defaultValues?: SelectorOption[]
   dispatcher?: Dispatch<PublicFormBuilderAction>
 }
+export interface CreateAgreementFormProps {
+  title?: string
+  agreementBody?: string
+}
+
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;

@@ -9,7 +9,7 @@ import MediaCards from "../../AddMedia/MediaCards";
 import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
+import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
@@ -32,6 +32,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
+  const [appointmentId, setAppointmentId] = useState<string>('')
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
@@ -135,6 +136,11 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
               type: ActionType.SET_NEXT_APPOINTMENT,
               nextAppointment: upcomingAppointment as AppointmentPayload['appointment']
             })
+
+          if (upcomingAppointment) {
+            const { id: appointmentId } = upcomingAppointment
+            appointmentId && setAppointmentId(appointmentId)
+          }
         }
       }
     }
@@ -163,12 +169,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
-  let phoneNumberWithOutFormat = ""
 
   if (selfContact && selfContact[0]) {
     const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || ""
-    phoneNumberWithOutFormat = phone || ""
 
     selfEmail = patientEmail ? patientEmail : email || ""
     const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
@@ -218,10 +222,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
     {
       title: "Last Scheduled Appointment",
       description: lastAppointmentDate || '--'
-    },
-    {
-      title: "Next Scheduled Appointment",
-      description: nextAppointmentDate || '--'
     },
   ]
 
@@ -338,9 +338,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><HashIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link href={`tell:${phoneNumberWithOutFormat}`}>
-                        {selfPhoneNumber ? selfPhoneNumber : renderMissing()}
-                      </Link>
+                      {selfPhoneNumber ?
+                        <Link href={`tel:${selfPhoneNumber}`}>{selfPhoneNumber}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 
@@ -348,9 +349,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                     <Box><AtIcon /></Box>
 
                     <Typography variant="body1">
-                      <Link href={`mailto:${selfEmail}`}>
-                        {selfEmail ? selfEmail : renderMissing()}
-                      </Link>
+                      {selfEmail ?
+                        <Link href={`mailto:${selfEmail}`}>{selfEmail}</Link>
+                        : renderMissing()
+                      }
                     </Typography>
                   </Box>
 
@@ -383,15 +385,32 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
-              {ProfileAdditionalDetails.map((item, index) => (
-                <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                  <Box className={classes.profileInfoHeading}>{item.title}</Box>
+              <>
+                {ProfileAdditionalDetails.map((item, index) => (
+                  <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
 
-                  <Box className={classes.profileInfoItem}>
-                    <Typography variant="body1">{item.description}</Typography>
+                    <Box className={classes.profileInfoItem}>
+                      <Typography variant="body1">{item.description}</Typography>
+                    </Box>
                   </Box>
+                ))}
+                <Box className={classes.profileAdditionalInfo}>
+                  <Box className={classes.profileInfoHeading}>{NEXT_SCHEDULED_APPOINTMENT}</Box>
+
+                  {nextAppointmentDate ? <Box className={classes.profileInfoItem}>
+                    <Typography variant="body1">
+                      <Link href={`${process.env.REACT_APP_URL}/appointments/${appointmentId}`}>
+                        {nextAppointmentDate}
+                      </Link>
+                    </Typography>
+                  </Box>
+                    :
+                    <Box className={classes.profileInfoItem}>
+                      <Typography variant="body1">{'--'}</Typography>
+                    </Box>}
                 </Box>
-              ))}
+              </>
             </Box>
           </Card>
         </Box>
