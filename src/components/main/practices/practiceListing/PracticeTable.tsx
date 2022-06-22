@@ -54,7 +54,10 @@ const PracticeTable: FC = (): JSX.Element => {
 
         if (findAllPractices) {
           const { pagination, practices } = findAllPractices
-          practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+          practices && dispatch({
+            type: ActionType.SET_PRACTICES,
+            practices: practices as PracticesPayload['practices']
+          })
 
           if (pagination) {
             const { totalPages } = pagination
@@ -140,7 +143,7 @@ const PracticeTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={4} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={4} />
                   </TableCell>
                 </TableRow>) : (
                 practices?.map(practice => {

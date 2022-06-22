@@ -242,6 +242,8 @@ export const NEXT = "Next";
 export const VIEW = "View";
 export const YES = "Yes";
 export const NO = "No";
+export const ASC = "ASC";
+export const DESC = "DESC";
 export const IS_ADMIN = "Is Admin?";
 export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
@@ -649,8 +651,8 @@ export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
-export const PAGE_LIMIT = 8;
-export const SIX_PAGE_LIMIT = 6;
+export const PAGE_LIMIT = 13;
+export const TEN_PAGE_LIMIT = 10;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -2831,10 +2833,6 @@ export const PROFILE_TOP_TABS = [
   {
     title: "Care Team",
     value: "11",
-  },
-  {
-    title: "Agreements",
-    value: "12",
   },
 ];
 

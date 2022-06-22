@@ -19,10 +19,11 @@ import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import NoSlotsComponent from '../../../common/NoSlotsComponent';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
-import FacilitySelector from '../../../common/Selector/FacilitySelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
@@ -42,16 +43,14 @@ import {
   useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
-  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT,
+  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
   APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES,
-  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT,
-  TYPE, FACILITY, APPOINTMENT_TYPE, INFORMATION, PROVIDER, PATIENT, REASON,
-  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
-  VIEW_APPOINTMENTS_BREAD, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER, 
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE, 
+  FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, 
 } from '../../../../constants';
-import NoSlotsComponent from '../../../common/NoSlotsComponent';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user, currentUser } = useContext(AuthContext)
@@ -390,7 +389,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-      console.log(startTime, endTime, ">>>>>>>>>...")
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }

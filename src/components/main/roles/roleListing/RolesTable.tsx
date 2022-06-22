@@ -144,7 +144,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={2} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={customRole ? 3 : 2} />
                   </TableCell>
                 </TableRow>
               ) : (

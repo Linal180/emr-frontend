@@ -11,9 +11,9 @@ import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../../utils";
+import { BLUE_FOUR, RED, } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import { BLUE_FOUR, RED, } from "../../../../../theme";
 import { EditNewIcon, TrashNewIcon } from "../../../../../assets/svgs";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
@@ -108,15 +108,11 @@ const ServicesTable: FC = (): JSX.Element => {
   };
 
   const handleDeleteService = async () => {
-    if (deleteServiceId) {
-      await removeService({
-        variables: {
-          removeService: {
-            id: deleteServiceId
-          }
-        }
-      })
-    }
+    deleteServiceId && await removeService({
+      variables: {
+        removeService: { id: deleteServiceId }
+      }
+    })
   };
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
@@ -151,7 +147,7 @@ const ServicesTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
               ) : (

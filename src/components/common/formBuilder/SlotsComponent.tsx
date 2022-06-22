@@ -115,6 +115,7 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
               <FormControl component="fieldset" margin="normal" error={Boolean(!scheduleStartDateTime)}>
                 <FormHelperText>{!scheduleStartDateTime && requiredMessage(SLOTS_TEXT) }</FormHelperText>
               </FormControl>
+
               <Typography>{NO_SLOT_AVAILABLE}</Typography>
             </Fragment>
           )}
