@@ -1,5 +1,5 @@
 // packages block
-import { Box, Card, Collapse, IconButton, Typography } from "@material-ui/core";
+import { Box, Card, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
@@ -13,15 +13,19 @@ import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } fro
 import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { getFormatDateString } from '../../../../../utils';
+import SideDrawer from "../../../../common/SideDrawer";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // components
 import PolicyCard from "./PolicyCard";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
+  console.log(shouldDisableEdit);
+
   const { id: patientId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
-  const [open, setOpen] = useState<boolean>(false)
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
+  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
+  const [editDrawerOpened, setEditDrawerOpened] = useState<boolean>(false);
 
   const [fetchAllPolicies, { loading: fetchAllPoliciesLoading }] = useFetchAllPoliciesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -56,6 +60,8 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     findAllPolicies()
   }, [findAllPolicies]);
 
+  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+
   const alreadyAddedPolicies = useMemo(() => {
     if (!policies.length) {
       return []
@@ -82,7 +88,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   })
 
   const handleReload = () => {
-    setOpen(false)
     findAllPolicies()
   }
 
@@ -112,7 +117,12 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               return (
                 <>
                   {id === policyToEdit ?
-                    <PolicyCard isEdit id={id} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} /> :
+                    <SideDrawer
+                      drawerOpened={editDrawerOpened}
+                      toggleSideDrawer={()=>setEditDrawerOpened(!editDrawerOpened)} >
+                      <PolicyCard isEdit id={id} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} />
+                    </SideDrawer>
+                    :
                     <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
                       <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                         <Box display='flex' alignItems='center'>
@@ -125,7 +135,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                         {!shouldDisableEdit && <IconButton onClick={() => {
                           setPolicyToEdit(id)
-                          setOpen(false)
+                          setEditDrawerOpened(!editDrawerOpened)
                         }}>
                           <EditNewIcon />
                         </IconButton>}
@@ -167,33 +177,37 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
             {!!filteredOrderOfBenefitOptions.length &&
               !shouldDisableEdit && <>
-                <Collapse in={!open} mountOnEnter unmountOnExit>
-                  <Box onClick={() => {
-                    setOpen(!open)
-                    setPolicyToEdit('')
-                  }}>
-                    <Box
-                      className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
-                      borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
-                    >
-                      <AddInsuranceIcon />
 
-                      <Box pl={2}>
-                        <Typography component="h4" variant="h5">{ADD_INSURANCE}</Typography>
-                        <Typography component="h5" variant="body2">{ADD_INSURANCE_INFORMATION}</Typography>
-                      </Box>
+                <Box onClick={() => {
+                  toggleSideDrawer()
+                  setPolicyToEdit('')
+                }}>
+                  <Box
+                    className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
+                    borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
+                  >
+                    <AddInsuranceIcon />
+
+                    <Box pl={2}>
+                      <Typography component="h4" variant="h5">{ADD_INSURANCE}</Typography>
+                      <Typography component="h5" variant="body2">{ADD_INSURANCE_INFORMATION}</Typography>
                     </Box>
                   </Box>
-                </Collapse>
+                </Box>
 
-                <Collapse in={open} mountOnEnter unmountOnExit>
+
+                <SideDrawer
+                  drawerOpened={drawerOpened}
+                  toggleSideDrawer={toggleSideDrawer} >
                   <PolicyCard handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} />
-                </Collapse>
+                </SideDrawer>
               </>
             }
           </>
         }
+
       </Box>
+
     </Card>
   );
 };

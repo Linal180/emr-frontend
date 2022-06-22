@@ -10,7 +10,7 @@ import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@materi
 
 const Selector: FC<SelectorProps> = ({
   name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value, 
-  onOutsideClick, isEdit
+  onOutsideClick, isEdit, focus
 }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
@@ -48,7 +48,7 @@ const Selector: FC<SelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
-                  autoFocus
+                  autoFocus={focus}
                   onBlur={() => onBlur && onBlur()}
                 />
 

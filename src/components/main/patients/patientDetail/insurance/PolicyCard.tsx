@@ -1,7 +1,8 @@
 //packages import
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Grid, Typography } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { Check } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Box, Button, Grid, Typography, Stepper, Step, StepLabel, StepIconProps, colors } from "@material-ui/core";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
@@ -9,25 +10,47 @@ import { useParams } from "react-router";
 import ItemSelector from "../../../../common/ItemSelector";
 import Selector from "../../../../common/Selector";
 import TextLoader from "../../../../common/TextLoader";
-import EligibilityDetails from "./EligibilityDetails";
 import PolicyAttachments from "./PolicyAttachments";
 import PolicyDetails from "./PolicyDetails";
 import PolicyHolderDetails from "./PolicyHolderDetails";
 //constants, types, utils import
-import { CANCEL, ELIGIBILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
+import { ADD_INSURANCE, ADD_INSURANCE_STEPS, CANCEL, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
 import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
 import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
 import Alert from "../../../../common/Alert";
+import { GREY_SIXTEEN } from "../../../../../theme";
+import { CheckInConnector, useCheckInStepIconStyles, useInusranceStyles } from '../../../../../styles/checkInStyles';
+import { ChevronRightIcon } from "../../../../../assets/svgs";
+
+
+const CheckInStepIcon = (props: StepIconProps) => {
+  const classes = useCheckInStepIconStyles();
+  const { active, completed } = props;
+
+  return (
+    <div
+      className={clsx(classes.root, {
+        [classes.active]: active,
+      })}
+    >
+      {completed ? <Check className={classes.completed} /> : <div className={classes.circle} />}
+    </div>
+  );
+}
 
 const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit }) => {
+  const addInsuranceClasses = useInusranceStyles();
   const { id: patientId } = useParams<ParamsType>()
-  const [expanded, setExpanded] = useState<string | false>(false);
   const [policyId, setPolicyId] = useState<string>('')
   const [policyHolderId, setPolicyHolderId] = useState<string>('')
   const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = ['Shipping address', 'Payment details', 'Review your order'];
+  const isLastStep = activeStep === steps.length - 1;
+
 
   const methods = useForm<InsuranceCreateInput>({
     mode: "all",
@@ -36,9 +59,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue, watch } = methods;
-
-  const { orderOfBenefit, pricingProductType } = watch()
+  const { handleSubmit, setValue } = methods;
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
@@ -150,6 +171,10 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     }
   });
 
+  useEffect(() => {
+    setActiveStep(activeStep)
+  }, [activeStep])
+
   const findPolicy = useCallback(async () => {
     try {
       await fetchPolicy({
@@ -165,7 +190,22 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
   }, [findPolicy, isEdit]);
 
 
-  const onSubmit: SubmitHandler<InsuranceCreateInput> = async(values) => {
+
+  const handleStep = (step: number) => {
+    setActiveStep(step);
+  };
+
+  const handleBack = () => {
+    setActiveStep(activeStep - 1);
+  };
+
+  const handleForward = () => {
+    setActiveStep(activeStep + 1);
+  };
+
+
+
+  const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
     const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields, dob, employer, expirationDate, firstName,
       insuranceId, issueDate, lastName, middleName, notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
       pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode } = values ?? {}
@@ -249,132 +289,113 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     }
   }
 
-  const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  // useEffect(() => {
+  //   // orderOfBenefit?.id && setActiveStep(0)
+  //   console.log("pricingProductType?.id", pricingProductType?.id)
+  //   pricingProductType?.id && setActiveStep(1)
+  // }, [orderOfBenefit?.id, pricingProductType?.id, setActiveStep])
 
-  useEffect(()=>{
-    orderOfBenefit?.id && setExpanded('panel1')
-    pricingProductType?.id && setExpanded('panel2')
-  },[orderOfBenefit?.id, pricingProductType?.id])
-
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {isEdit && fetchPolicyLoading ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
+  const getStepContent = (step: number) => {
+    switch (step) {
+      case 0:
+        return (
           <>
-            <Box pb={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-              <Typography variant='h4'>{INSURANCE_AND_POLICIES}</Typography>
-
-              <Box display="flex" alignItems="center">
-                <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>
-                <Box p={1} />
-                <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
-              </Box>
-            </Box>
-
-            <Box pt={3} pb={5}>
-              <Grid container spacing={3} alignItems="center">
-                <Grid item md={5} sm={12} xs={12}>
-                  <ItemSelector
-                    isRequired
-                    isEdit={isEdit}
-                    addEmpty
-                    label={INSURANCE_PAYER_NAME}
-                    name="insuranceId"
-                    modalName={ITEM_MODULE.insurance}
-                    value={insuranceId}
-                  />
-                </Grid>
-
-                <Grid item md={3} sm={12} xs={12}>
-                  <Selector
-                    isRequired
-                    name="orderOfBenefit"
-                    label={ORDER_OF_BENEFIT}
-                    value={EMPTY_OPTION}
-                    options={filteredOrderOfBenefitOptions ?? []}
-                  />
-                </Grid>
+            <Grid container spacing={3} alignItems="center">
+              <Grid item md={12} sm={12} xs={12}>
+                <ItemSelector
+                  isRequired
+                  isEdit={isEdit}
+                  addEmpty
+                  label={INSURANCE_PAYER_NAME}
+                  name="insuranceId"
+                  modalName={ITEM_MODULE.insurance}
+                  value={insuranceId}
+                />
               </Grid>
 
-              <Box mt={4} />
+              <Grid item md={12} sm={12} xs={12}>
+                <Selector
+                  isRequired
+                  name="orderOfBenefit"
+                  label={ORDER_OF_BENEFIT}
+                  value={EMPTY_OPTION}
+                  options={filteredOrderOfBenefitOptions ?? []}
+                />
+              </Grid>
+            </Grid>
 
-              <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} className='accordionCustomize'>
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel1bh-content"
-                  id="panel1bh-header"
-                >
-                  <Box pb={2} minWidth="100%" margin="auto" borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant='h4'>{POLICY_INFORMATION}</Typography>
-                  </Box>
-                </AccordionSummary>
+            <PolicyDetails isEdit={isEdit} />
 
-                <AccordionDetails>
-                  <PolicyDetails isEdit={isEdit} />
-                </AccordionDetails>
-              </Accordion>
+          </>
+        )
+      case 1:
+        return <PolicyHolderDetails isEdit={isEdit} />
+      case 2:
+        return <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} />
+      default:
+        return 'Unknown step';
+    }
+  }
 
-              <Box mt={4} />
+  return (
+    <Box maxWidth={600} minWidth={600}>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            display="flex" justifyContent="space-between" alignItems="center"
+            borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
+          >
+            <Typography variant='h3'>{ADD_INSURANCE}</Typography>
 
-              <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} className='accordionCustomize'>
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel2bh-content"
-                  id="panel2bh-header"
-                >
-                  <Box pb={2} minWidth="100%" margin="auto" borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant='h4'>{POLICY_HOLDER_DETAILS}</Typography>
-                  </Box>
-                </AccordionSummary>
+            <Box display="flex" alignItems="center">
 
-                <AccordionDetails>
-                  <PolicyHolderDetails isEdit={isEdit} />
-                </AccordionDetails>
-              </Accordion>
+              <Button type={isLastStep ? 'submit' : 'button'} onClick={isLastStep ? () => { } : handleForward} variant="contained" color="primary"> {isLastStep ? 'Place order' : NEXT}</Button>
 
-              <Box mt={4} />
+              {activeStep !== 0 && (<>
+                <Box mr={1} />
+                <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
+              </>
+              )}
 
-              <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} className='accordionCustomize'>
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel3bh-content"
-                  id="panel3bh-header"
-                >
-                  <Box pb={2} minWidth="100%" margin="auto" borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant='h4'>{ELIGIBILITY}</Typography>
-                  </Box>
-                </AccordionSummary>
-
-                <AccordionDetails>
-                  <EligibilityDetails />
-                </AccordionDetails>
-              </Accordion>
-
-              <Box mt={4} />
-
-              <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} className='accordionCustomize'
-              //  disabled={!policyId}
-               >
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel4bh-content"
-                  id="panel4bh-header"
-                >
-                  <Box pb={2} minWidth="100%" margin="auto" borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant='h4'>{INSURANCE_CARD}</Typography>
-                  </Box>
-                </AccordionSummary>
-
-                <AccordionDetails>
-                  <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef}/>
-                </AccordionDetails>
-              </Accordion>
             </Box>
-          </>}
-      </form>
-    </FormProvider>
+          </Box>
+          {isEdit && fetchPolicyLoading ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
+            <Box p={2}>
+              {/* <Box pb={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+                <Typography variant='h4'>{INSURANCE_AND_POLICIES}</Typography>
+
+                <Box display="flex" alignItems="center">
+                  <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>
+                  <Box p={1} />
+                  <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
+                </Box>
+              </Box> */}
+
+              <Box className={addInsuranceClasses.checkInProfileBox}>
+                <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
+                  {ADD_INSURANCE_STEPS.map((label, index) => (
+                    <Step key={label}>
+                      <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                        <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
+                          {label}
+                          <Box p={0.5} />
+
+                          {!(ADD_INSURANCE_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
+                        </Box>
+                      </StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+              </Box>
+
+              <Box mt={2}>
+                <Typography>{getStepContent(activeStep)}</Typography>
+              </Box>
+
+            </Box>}
+        </form>
+      </FormProvider>
+    </Box>
   )
 }
 

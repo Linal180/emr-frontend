@@ -368,6 +368,7 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  focus?: boolean
   isEdit?: boolean
   disabled?: boolean
   addEmpty?: boolean
@@ -1060,7 +1061,9 @@ export interface InsuranceCreateInput {
   state?: SelectorOption
   ssn?: string
   sex?: SelectorOption
-  dob?: string
+  dob?: string,
+  homeBound : string
+
 };
 
 export interface MediaModalTypes extends DialogTypes {

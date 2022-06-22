@@ -380,6 +380,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             <FormProvider {...methods}>
                               <Selector
                                 label=""
+                                focus
                                 value={{ id, name: text }}
                                 name="status"
                                 options={AppointmentStatusStateMachine(

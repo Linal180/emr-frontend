@@ -82,7 +82,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   return (
     <Box minWidth="100%" pt={3}>
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             isRequired
             fieldType="text"
@@ -91,7 +91,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             isRequired
             fieldType="text"
@@ -102,7 +102,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             isRequired
             fieldType="text"
@@ -111,7 +111,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="firstName"
@@ -119,7 +119,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="middleName"
@@ -127,7 +127,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="lastName"
@@ -137,7 +137,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="zipCode"
@@ -145,7 +145,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="address"
@@ -153,7 +153,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="addressCTD"
@@ -163,7 +163,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="city"
@@ -171,7 +171,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <Selector
             addEmpty
             name="state"
@@ -183,7 +183,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerName="ssn"
@@ -191,7 +191,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <Selector
             addEmpty
             name="sex"
@@ -201,7 +201,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           />
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={6} sm={12} xs={12}>
           <DatePicker name="dob" label={DOB} />
         </Grid>
       </Grid>
