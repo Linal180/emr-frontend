@@ -418,7 +418,8 @@ export const theme = createTheme({
     MuiTableCell: {
       root: {
         borderBottom: `1px solid ${WHITE_THREE}`,
-        padding: "14px 11px",
+        // padding: "14px 11px",
+        padding: "2px 10px",
       },
 
       head: {
