@@ -2834,10 +2834,6 @@ export const PROFILE_TOP_TABS = [
     title: "Care Team",
     value: "11",
   },
-  {
-    title: "Agreements",
-    value: "12",
-  },
 ];
 
 export const DOCTOR_TOP_TABS = [

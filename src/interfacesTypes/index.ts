@@ -938,6 +938,7 @@ export interface DropzoneImageType {
   setActiveStep?: Function;
   setAttachments: Function;
   acceptableFilesType?: string[]
+  setFiles?: Function
 }
 
 interface Message {

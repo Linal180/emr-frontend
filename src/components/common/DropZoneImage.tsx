@@ -1,25 +1,25 @@
 // packages block
-import { useImperativeHandle, useState, forwardRef, useContext } from "react";
-import axios from "axios";
-import { Edit } from "@material-ui/icons";
-import { DropzoneArea } from "material-ui-dropzone";
 import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
+import axios from "axios";
+import { DropzoneArea } from "material-ui-dropzone";
+import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
-import { AuthContext } from "../../context";
-import { getToken, handleLogout } from "../../utils";
-import { AttachmentType } from "../../generated/graphql";
-import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
+import { AuthContext } from "../../context";
+import { AttachmentType } from "../../generated/graphql";
 import {
   DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
   MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
+import { useDropzoneStyles } from "../../styles/dropzoneStyles";
+import { getToken, handleLogout } from "../../utils";
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType, setFiles: setAttachmentFiles
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -176,10 +176,10 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }).then(data => {
 
       }).catch(error => {
-        const { response } = error || {}
-        const { data } = response || {}
-        const { error: errorMessage } = data || {}
-        Alert.error(errorMessage);
+        // const { response } = error || {}
+        // const { data } = response || {}
+        // const { error: errorMessage } = data || {}
+        // // Alert.error(errorMessage);
       });
     })
   }
@@ -234,7 +234,10 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
               acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
-              onChange={(files) => setFiles(files)}
+              onChange={(files) => {
+                setFiles(files)
+                setAttachmentFiles &&  setAttachmentFiles(files)
+              }}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
               dropzoneText={imageEdit ?
                 PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
