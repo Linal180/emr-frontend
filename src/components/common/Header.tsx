@@ -14,7 +14,7 @@ import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin 
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -99,6 +99,14 @@ const HeaderNew: FC = (): JSX.Element => {
             className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
           >
             {REPORTS}
+          </Typography>
+
+          <Typography
+            component={Link}
+            to={AGREEMENTS_ROUTE}
+            className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+          >
+            {AGREEMENTS}
           </Typography>
         </Box>
 

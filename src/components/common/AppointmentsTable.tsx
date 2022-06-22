@@ -1,6 +1,6 @@
 // packages block
 import { Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { VideocamOutlined } from "@material-ui/icons";
+import { Sort } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import dotenv from 'dotenv';
 import moment from "moment";
@@ -15,12 +15,12 @@ import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon } from "../../assets/svgs";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT, 
-  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, CANCEL_TIME_EXPIRED_MESSAGE, 
-  CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION, 
-  EMPTY_OPTION, FACILITY, MINUTES, PAGE_LIMIT, PATIENT, STAGE, TELEHEALTH_URL, TIME, TYPE, USER_PERMISSIONS, VIEW_ENCOUNTER
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
+  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, CANCEL_TIME_EXPIRED_MESSAGE,
+  CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  EMPTY_OPTION, FACILITY, MINUTES, PATIENT, SIX_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE, USER_PERMISSIONS, VIEW_ENCOUNTER
 } from "../../constants";
 import { AuthContext } from "../../context";
 import {
@@ -33,8 +33,7 @@ import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
 import { useTableStyles } from "../../styles/tableStyles";
 import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix,
-  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
   isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord
 } from "../../utils";
 import FacilitySelector from "./Selector/FacilitySelector";
@@ -60,7 +59,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const { setValue, watch } = methods
   const {
-    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments, sortBy
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
@@ -180,19 +179,26 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: SIX_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }
 
         inputs && await findAllAppointments({
           variables: {
-            appointmentInput: { ...inputs, searchString: searchQuery, facilityId: filterFacilityId, appointmentTypeId: appointmentTypeId }
+            appointmentInput:
+            {
+              ...inputs,
+              searchString: searchQuery,
+              facilityId: filterFacilityId,
+              appointmentTypeId: appointmentTypeId,
+              sortBy: sortBy
+            }
           },
         })
       }
     } catch (error) { }
-  }, [doctorId, isDoctor, filterFacilityId, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, appointmentTypeId])
+  }, [doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy])
 
   useEffect(() => {
     fetchAppointments();
@@ -302,6 +308,18 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         : onDeleteClick(id || '')
   }
 
+  const renderIcon = () => {
+    return (
+      <IconButton className='py-0 ml-5' onClick={() => {
+        sortBy === 'ASC' ? dispatch({ type: ActionType.SET_SORT_BY, sortBy: 'DESC' }) : dispatch({ type: ActionType.SET_SORT_BY, sortBy: 'ASC' })
+      }}>
+        <Sort />
+      </IconButton>
+    )
+  }
+
+  console.log('sortBy', sortBy)
+
   return (
     <>
       <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
@@ -343,7 +361,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TIME)}
                 {renderTh(PATIENT)}
                 {renderTh(TYPE)}
-                {renderTh(DATE)}
+                {renderTh(DATE, undefined, undefined, undefined, undefined, renderIcon)}
                 {renderTh(FACILITY)}
                 {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
@@ -445,7 +463,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           {
                             appointmentCreateType === AppointmentCreateType.Telehealth ?
                               <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                                <VideocamOutlined />
+                                <VideoIcon />
                               </Box> :
                               (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
                                 onClick={() => canUpdateAppointmentStatus(status) ?

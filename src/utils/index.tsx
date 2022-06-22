@@ -1,41 +1,40 @@
 // packages block
-import React, { ReactNode, memo } from "react";
-import axios from "axios";
-import moment from "moment";
-import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
   Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
   withStyles
 } from "@material-ui/core";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import axios from "axios";
+import moment from "moment";
+import { memo, ReactNode } from "react";
+import { pluck } from "underscore";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
+import {
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES,
+  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
+  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UnitType, UserForms, WeightType
+} from "../generated/graphql";
 import history from "../history";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
   StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
-  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
-  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, ORANGE, GREEN_ONE,
-  BLUE, GREY, PURPLE_ONE, GREY_TWO
+  ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
+  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE, ORANGE_SIMPLE,
+  ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE, RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
-import {
-  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
-  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
-  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
-  ACCEPTABLE_PDF_AND_IMAGES_FILES
-} from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
-  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms, ProblemType, AppointmentCreateType,
-} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -254,25 +253,25 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const dateDifference = (startingDate: string) => {
-
-  var startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
-  var now = new Date();
+  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let now = new Date();
   if (startDate > now) {
-    var swap = startDate;
+    let swap = startDate;
     startDate = now;
     now = swap;
   }
-  var startYear = startDate.getFullYear();
-  var february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
-  var daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  var yearDiff = now.getFullYear() - startYear;
-  var monthDiff = now.getMonth() - startDate.getMonth();
+  let startYear = startDate.getFullYear();
+  let february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
+  let daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  let yearDiff = now.getFullYear() - startYear;
+  let monthDiff = now.getMonth() - startDate.getMonth();
   if (monthDiff < 0) {
     yearDiff--;
     monthDiff += 12;
   }
-  var dayDiff = now.getDate() - startDate.getDate();
+  let dayDiff = now.getDate() - startDate.getDate();
   if (dayDiff < 0) {
     if (monthDiff > 0) {
       monthDiff--;
@@ -282,12 +281,14 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
-  var newYears = yearDiff;
-  var newMonths = monthDiff;
-  var newDays = dayDiff;
-  return newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
-}
 
+  let newYears = yearDiff;
+  let newMonths = monthDiff;
+  let newDays = dayDiff;
+  let ageString = newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
+
+  return `${ageString} old`
+}
 
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
@@ -827,6 +828,9 @@ export const activeClass = (pathname: string): string => {
 
     case LAB_RESULTS_ROUTE:
       return "inReport"
+
+    case AGREEMENTS_ROUTE:
+      return "isAgreement"
 
     case INVOICES_ROUTE:
     case CLAIMS_ROUTE:
@@ -1686,7 +1690,9 @@ export const getAppointmentStatus = (status: string) => {
   }
 }
 
-export const getCheckInStatus = (checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType): StageStatusType => {
+export const getCheckInStatus = (
+  checkInActiveStep: number, status: string, appointmentCreateType: AppointmentCreateType
+): StageStatusType => {
   if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return {
       stage: '',
@@ -1704,7 +1710,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
   if (status === AppointmentStatus.Scheduled) {
     return {
       stage: 'Logged',
-      stageColor: ORANGE
+      stageColor: ORANGE_ONE
     }
   }
 
@@ -1723,7 +1729,7 @@ export const getCheckInStatus = (checkInActiveStep: number, status: string, appo
       return { stage: 'With Staff', stageColor: BLUE };
     case 3:
     case 4:
-      return { stage: 'Charting', stageColor: GREY };
+      return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
     case 5:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
     case 6:
@@ -1833,6 +1839,9 @@ export const mediaType = (attachmentTitle: string): string[] => {
 
     case ATTACHMENT_TITLES.Signature:
       return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.Agreement:
+      return ACCEPTABLE_PDF_FILES;
 
     default:
       return ACCEPTABLE_FILES

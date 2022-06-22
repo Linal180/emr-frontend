@@ -277,19 +277,14 @@ const staffBasicSchema = {
   gender: selectorSchema(GENDER),
   mobile: notRequiredPhone(PHONE),
   phone: notRequiredPhone(MOBILE),
-  facilityId: selectorSchema(FACILITY),
   dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const createStaffSchema = yup.object({
+export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  roleType: selectorSchema(ROLE, true)
-})
-
-export const updateStaffSchema = yup.object({
-  ...emailSchema,
-  ...staffBasicSchema,
+  facilityId: selectorSchema(FACILITY, isUserAdmin),
+  roleType: selectorSchema(ROLE, !isEdit)
 })
 
 export const facilitySchema = (practiceRequired: boolean) => yup.object({
@@ -1023,4 +1018,8 @@ export const addLabProviderDetailsSchema = yup.object({
   comments: yup.string(),
   primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
   referringProviderId: selectorSchema(REFERRING_PROVIDER),
+})
+
+export const createAgreementSchema = yup.object({
+  title: yup.string().required(),
 })
