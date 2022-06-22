@@ -76,11 +76,11 @@ const HeaderNew: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <DropdownMenu
+          {/* <DropdownMenu
             itemName={BILLING_TEXT}
             menuItem={BILLING_MENU_ITEMS}
             current={currentRoute === 'inBilling'}
-          />
+          /> */}
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
             && showFacility &&
@@ -93,13 +93,13 @@ const HeaderNew: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <Typography
+          {/* <Typography
             component={Link}
             to={LAB_RESULTS_ROUTE}
             className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
           >
             {REPORTS}
-          </Typography>
+          </Typography> */}
 
           <Typography
             component={Link}
