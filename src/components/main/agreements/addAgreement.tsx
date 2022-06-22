@@ -10,7 +10,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
 import {
   ADD_AGREEMENT,
-  AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY, ATTACHMENT_TITLES, CREATE_AGREEMENT_MESSAGE, DASHBOARD_BREAD, DELETE, DETAILS, EDIT_AGREEMENT, REQUIRE_AGREEMENT_BEFORE_AGREEING, REQUIRE_SIGNATURE,
+  AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY, ATTACHMENT_TITLES,
+  CREATE_AGREEMENT_MESSAGE, DASHBOARD_BREAD, DELETE, DETAILS, EDIT_AGREEMENT, REQUIRE_AGREEMENT_BEFORE_AGREEING, REQUIRE_SIGNATURE,
   SAVE_TEXT, TITLE, UPDATE_AGREEMENT_MESSAGE
 } from '../../../constants';
 import { AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation } from '../../../generated/graphql';
@@ -209,11 +210,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                           initData={agreementBody}
                           onChange={onEditorChange}
                         /> :
-                         <CKEditor
-                        name="agreementBody"
-                        initData={agreementBody}
-                        onChange={onEditorChange}
-                      />
+                        <CKEditor
+                          name="agreementBody"
+                          initData={agreementBody}
+                          onChange={onEditorChange}
+                        />
                       }
                       {!agreementBody.length ? 'Agreement Body is a required Field' : ''}
                     </Grid>
