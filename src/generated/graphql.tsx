@@ -69,6 +69,43 @@ export type ActiveInactivePracticesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type Agreement = {
+  __typename?: 'Agreement';
+  body?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementPaginationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type AgreementPayload = {
+  __typename?: 'AgreementPayload';
+  agreement: Agreement;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type AgreementsPayload = {
+  __typename?: 'AgreementsPayload';
+  agreements: Array<Agreement>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -195,6 +232,7 @@ export type AppointmentInput = {
   providerId?: Maybe<Scalars['String']>;
   relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -257,6 +295,7 @@ export type AttachmentMediaPayload = {
 
 export type AttachmentMetadata = {
   __typename?: 'AttachmentMetadata';
+  agreementId?: Maybe<Scalars['String']>;
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
@@ -587,6 +626,7 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1940,6 +1980,7 @@ export type Mutation = {
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: TransactionPayload;
+  createAgreement: AgreementPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
@@ -1974,6 +2015,7 @@ export type Mutation = {
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
+  removeAgreement: AgreementPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
@@ -2000,6 +2042,7 @@ export type Mutation = {
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
   update2FactorAuth: UserPayload;
+  updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
   updateAppointmentBillingStatus: AppointmentPayload;
   updateAppointmentStatus: AppointmentPayload;
@@ -2080,6 +2123,11 @@ export type MutationChargeAfterAppointmentArgs = {
 
 export type MutationChargePaymentArgs = {
   paymentInput: PaymentInput;
+};
+
+
+export type MutationCreateAgreementArgs = {
+  createAgreementInput: AgreementInput;
 };
 
 
@@ -2253,6 +2301,11 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRemoveAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
 export type MutationRemoveAppointmentArgs = {
   removeAppointment: RemoveAppointment;
 };
@@ -2375,6 +2428,11 @@ export type MutationSendInviteToPatientArgs = {
 
 export type MutationUpdate2FactorAuthArgs = {
   twoFactorInput: TwoFactorInput;
+};
+
+
+export type MutationUpdateAgreementArgs = {
+  updateAgreementInput: UpdateAgreementInput;
 };
 
 
@@ -3300,6 +3358,8 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAgreement: AgreementPayload;
+  fetchAllAgreements: AgreementsPayload;
   fetchAllInsurances: InsurancesPayload;
   fetchAllPatients: PatientsPayload;
   fetchAllPolicies: PoliciesPayload;
@@ -3392,6 +3452,16 @@ export type Query = {
 
 export type QueryGetPermissionArgs = {
   getPermission: GetPermission;
+};
+
+
+export type QueryFetchAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
+export type QueryFetchAllAgreementsArgs = {
+  agreementPaginationInput: AgreementPaginationInput;
 };
 
 
@@ -4453,6 +4523,14 @@ export type UpComingAppointmentsInput = {
   providerId?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
 export type UpdateAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
@@ -4507,6 +4585,7 @@ export type UpdateAppointmentStatusInput = {
 };
 
 export type UpdateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
