@@ -136,7 +136,7 @@ body {
   overflow-x: auto;
 }
 
-.agreement-table .MuiTableHead-root {
+.table-header .MuiTableHead-root {
   background-color: #F3F4F6 !important;
 }
 
@@ -824,6 +824,10 @@ body .MuiTabPanel-root {
 .disable-icon {
   opacity: 0.3;
   pointer-events: none;
+}
+
+.MuiSkeleton-text {
+  height: 30px !important;
 }
 
 /* media queries */
