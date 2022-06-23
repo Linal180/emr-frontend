@@ -26,7 +26,7 @@ import ServiceSelector from '../../../common/Selector/ServiceSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
@@ -35,7 +35,7 @@ import { appointmentSchema, providerAppointmentSchema } from '../../../../valida
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  filterSlots, getStandardTime, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
+  filterSlots, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -46,10 +46,10 @@ import {
   CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
   APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER, 
-  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE, 
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
   FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
-  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, 
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -97,7 +97,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceId: selectedServiceId,
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    patientId: selectedPatient
+    patientId: selectedPatient, scheduleStartDateTime
   } = watch();
   const { value: selectedService } = selectedServiceId ?? {}
 
@@ -152,10 +152,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
 
-
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
-
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
             dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
@@ -191,6 +187,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
+          scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
+          scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
@@ -586,16 +584,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <ul className={classes.timeSlots}>
                         {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                           const { startTime, endTime } = slot || {}
-
                           return (
-                            <li onClick={() => handleSlot(slot)} key={index}>
-                              <div>
-                                <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
-                                <label htmlFor={`timeSlot-${index}`}>
-                                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                  {getStandardTime(new Date(endTime || '').getTime().toString())}
-                                </label>
-                              </div>
+                            <li  key={index}>
+                              <Box p={2} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={4}
+                                bgcolor={startTime === scheduleStartDateTime ? GREY_TWO : WHITE}
+                                color={startTime === scheduleStartDateTime ? WHITE : BLACK_FOUR} 
+                                className={classes.timeSlot}
+                                onClick={() => handleSlot(slot)}>
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
+                              </Box>
                             </li>
                           )
                         }) : (
