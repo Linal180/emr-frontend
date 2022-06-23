@@ -3439,7 +3439,7 @@ export type Query = {
   getAttachments: AttachmentsPayload;
   getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
-  getAttachmentsByPolicyId: AttachmentsPayload;
+  getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
@@ -5443,7 +5443,7 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null }> | null } };
 
 export type GetAttachmentsByAgreementIdQueryVariables = Exact<{
   getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
@@ -7533,7 +7533,7 @@ export type GetAttachmentsByLabOrderQueryResult = Apollo.QueryResult<GetAttachme
 export const GetAttachmentsByPolicyIdDocument = gql`
     query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-    attachments {
+    attachmentsWithPreSignedUrl {
       id
       title
       attachmentName
