@@ -27,7 +27,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
+  const { required, label, fieldId, type, isMultiSelect, apiCall, defaultValue } = item;
   const { facilityFieldId, paymentType } = state || {}
   const { id: facilityField } = facilityFieldId || {}
 
@@ -103,7 +103,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <Controller
           name={fieldId}
           control={control}
-          defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
+          defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
           render={({ field, fieldState }) => {
             return (
               <FormControl fullWidth margin="normal">
