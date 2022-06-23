@@ -708,6 +708,12 @@ export const getISOTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getScheduleStartTime = (time: string) => {
+  if (!time) return "";
+  
+  return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
+}
+
 export const getAppointmentDateTime = (date: string) => {
   const timeDate = moment(date, "x")
 
