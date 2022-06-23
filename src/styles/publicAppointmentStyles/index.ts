@@ -13,6 +13,10 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       top: 100,
       zIndex: 1,
     },
+
+    timeSlot: {
+      cursor: "pointer"
+    },
     
     timeSlots: {
       padding: 0,

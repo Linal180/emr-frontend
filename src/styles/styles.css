@@ -859,6 +859,16 @@ input[type=number] {
   height: 30px !important;
 }
 
+.skelton-label-margin {
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.skelton-input {
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {

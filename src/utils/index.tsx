@@ -6,26 +6,26 @@ import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip, Typography,
   withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, 
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE,
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, 
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
   TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
 } from "../constants";
 import {
-  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus, AttachmentsPayload,
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
   DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,  UserForms, WeightType,
-  AttachmentType,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
+  AttachmentType, AttachmentsPayload,
 } from "../generated/graphql";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
@@ -33,9 +33,11 @@ import {
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
-  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE, ORANGE_SIMPLE,
-  ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE, RED_THREE_RGBA, VERY_MILD, WHITE
+  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE,
+  ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
+  RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
+import { Skeleton } from "@material-ui/lab";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -70,15 +72,33 @@ export const formatServiceCode = (value: string) => {
   return formatted.trim();
 };
 
+export const renderLoading = (label: string | JSX.Element) => (
+  <>
+    <Box position="relative">
+      <InputLabel shrink className="skelton-label-margin">
+        {label}
+      </InputLabel>
+    </Box>
+
+    <Box display="flex" justifyContent="space-between" alignItems="center" borderRadius={4} className="skelton-input">
+      <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
+    </Box>
+  </>
+);
+
 export const renderItem = (
-  name: string,
+  label: string,
   value: Maybe<string> | number | ReactNode | undefined,
   noWrap?: boolean,
 ) => (
   <>
-    <Typography variant="body2">{name}</Typography>
-    <Box pb={2} pt={0.5}>
+    <Box position="relative">
+      <InputLabel shrink className="skelton-label-margin">
+        {label}
+      </InputLabel>
+    </Box>
 
+    <Box pb={2} pt={0.5}>
       <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
         {value ? value : N_A}
       </Typography>
@@ -628,10 +648,10 @@ export const renderSpecimenTypes = (specimenTypes: TestSpecimenTypesPayload['spe
 }
 
 
-export const setRecord = (id: string, name: string): SelectorOption => {
+export const setRecord = (id: string, name: string, format = true): SelectorOption => {
   let value = ''
   if (name) {
-    value = formatValue(name)
+    value = format ? formatValue(name) : name
   }
 
   return { id, name: value };
@@ -667,6 +687,15 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getStandardTimeByMoment = (timestamp: string) => {
+  if (!timestamp) return "";
+  const date = new Date(parseInt(timestamp)).setDate((new Date().getDate()) - 1)
+  const parsedDate = new Date(date).toISOString()
+  const newDate = moment(parsedDate).local().toString()
+  const d = moment(newDate).format()
+  return d
+};
+
 export const getTimeString = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -678,6 +707,12 @@ export const getISOTime = (timestamp: string) => {
 
   return new Date(parseInt(timestamp)).toISOString()
 };
+
+export const getScheduleStartTime = (time: string) => {
+  if (!time) return "";
+  
+  return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
+}
 
 export const getAppointmentDateTime = (date: string) => {
   const timeDate = moment(date, "x")
