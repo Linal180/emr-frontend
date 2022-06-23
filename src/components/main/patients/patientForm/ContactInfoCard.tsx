@@ -17,8 +17,7 @@ import CardComponent from "../../../common/CardComponent"
 import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
 import { verifyAddress } from "../../../common/smartyAddress"
-import SmartyModal from "../../../common/SmartyModal"
-import ViewDataLoader from "../../../common/ViewDataLoader"
+import SmartyModal from "../../../common/SmartyModal";
 
 const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit }) => {
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
@@ -69,8 +68,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
   return (
     <>
       <CardComponent cardTitle={CONTACT_INFORMATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
-        {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-          <>
+      <>
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
                 <InputController
@@ -78,6 +76,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                   fieldType="text"
                   controllerName="basicAddress"
                   controllerLabel={ADDRESS}
+                  loading={getPatientLoading}
                 />
               </Grid>
 
@@ -87,12 +86,11 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                   fieldType="text"
                   controllerName="basicAddress2"
                   controllerLabel={ADDRESS_2}
+                  loading={getPatientLoading}
                 />
               </Grid>
             </Grid>
-
-
-
+            
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
                 <Grid container spacing={1} alignItems={'center'}>
@@ -102,6 +100,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                       fieldType="text"
                       controllerName="basicZipCode"
                       controllerLabel={ZIP_CODE}
+                      loading={getPatientLoading}
                     />
                   </Grid>
 
@@ -130,6 +129,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                   fieldType="text"
                   controllerName="basicCity"
                   controllerLabel={CITY}
+                  loading={getPatientLoading}
                 />
               </Grid>
 
@@ -140,6 +140,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                   label={STATE}
                   addEmpty
                   options={MAPPED_STATES}
+                  loading={getPatientLoading}
                 />
               </Grid>
 
@@ -149,6 +150,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                   name="basicCountry"
                   label={COUNTRY}
                   options={MAPPED_COUNTRIES}
+                  loading={getPatientLoading}
                 />
               </Grid>
             </Grid>
@@ -181,14 +183,25 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
                       fieldType="text"
                       controllerName="basicEmail"
                       controllerLabel={EMAIL}
+                      loading={getPatientLoading}
                     />
                   </Grid>
                   <Grid item md={3} sm={12} xs={12}>
-                    <PhoneField name="basicPhone" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
+                    <PhoneField
+                      name="basicPhone"
+                      label={MOBILE_PHONE}
+                      disabled={shouldDisableEdit}
+                      loading={getPatientLoading}
+                    />
                   </Grid>
 
                   <Grid item md={3} sm={12} xs={12}>
-                    <PhoneField name="basicMobile" label={HOME_PHONE} disabled={shouldDisableEdit} />
+                    <PhoneField
+                      name="basicMobile"
+                      label={HOME_PHONE}
+                      disabled={shouldDisableEdit}
+                      loading={getPatientLoading}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -200,7 +213,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
 
             </Grid>
           </>
-        )}
       </CardComponent>
 
       <SmartyModal
