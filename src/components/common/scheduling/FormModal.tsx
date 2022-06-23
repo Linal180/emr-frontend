@@ -298,6 +298,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                               name="recurringEndDate"
                               label={END_DATE}
                               disableFuture={false}
+                              disablePast={true}
                             />
                           </Grid>}
                         </Grid>

@@ -11,26 +11,32 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
+import { checkPermission, formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh } from "../../../../utils";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF,
-  STAFF_TEXT, CANT_DELETE_SELF_STAFF
+  STAFF_TEXT, CANT_DELETE_SELF_STAFF, USER_PERMISSIONS
 } from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext);
+  const { user, userPermissions } = useContext(AuthContext);
   const { facility, roles } = user || {};
+
   const { id: facilityId, practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
+
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles);
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeStaff)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateStaff)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(staffReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteStaffId, allStaff } = state;
 
@@ -66,7 +72,7 @@ const StaffTable: FC = (): JSX.Element => {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const staffInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
       staffInputs && await findAllStaff({
         variables: {
@@ -74,7 +80,7 @@ const StaffTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, findAllStaff, searchQuery]);
+  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, findAllStaff, isRegularUser, searchQuery]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {
@@ -151,7 +157,7 @@ const StaffTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={4} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -165,13 +171,14 @@ const StaffTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${STAFF_ROUTE}/${id}`}>
+                          <Link to={`${STAFF_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}
+                            onClick={() => onDeleteClick(id || '')}>
                             <TrashNewIcon />
                           </Box>
                         </Box>

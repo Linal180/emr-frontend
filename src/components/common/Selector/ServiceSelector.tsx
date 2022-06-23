@@ -1,24 +1,29 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import Select, { GroupBase, OptionsOrGroups } from 'react-select';
-import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // utils and interfaces/types block
 import { AuthContext } from "../../../context";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
 import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
-import { renderMultiServices, requiredLabel } from "../../../utils";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderMultiServices, requiredLabel } from "../../../utils";
 
-const ServicesSelector: FC<ServiceSelectorInterface> = ({ 
-  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti
- }): JSX.Element => {
+const ServicesSelector: FC<ServiceSelectorInterface> = ({
+  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId
+}): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
   const [values, setValues] = useState<multiOptionType[] | multiOptionType>([])
+
   const { user } = useContext(AuthContext);
-  const { facility } = user || {}
-  const { id: userFacilityId } = facility || {}
+  const { facility, roles } = user || {}
+  const { id: userFacilityId, practiceId } = facility || {}
+
+  const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
 
   const [findAllService,] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -34,7 +39,6 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
       if (findAllServices) {
         const { services } = findAllServices
         services && setOptions(renderMultiServices(services as ServicesPayload['services']))
-
       }
     }
   });
@@ -42,25 +46,35 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const fetchAllServices = useCallback(async (query: string) => {
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
-      facilityId && await findAllService({
-        variables: {
-          serviceInput: {
-            ...pageInputs, isActive: true, serviceName: query,
-            facilityId: facilityId ?? userFacilityId
+      const servicesInputs = isSuper ? { ...pageInputs } :
+        isPracticeUser ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { userFacilityId, ...pageInputs } : undefined
+
+      if (!!shouldEmitFacilityId) {
+        await findAllService({
+          variables: {
+            serviceInput: {
+              ...pageInputs, isActive: true, serviceName: query,
+              ...servicesInputs
+            }
           }
-        }
-      })
+        })
+      } else {
+        await findAllService({
+          variables: {
+            serviceInput: {
+              ...pageInputs, isActive: true, serviceName: query,
+              facilityId: !!facilityId ? facilityId : userFacilityId
+            }
+          }
+        })
+      }
+
     } catch (error) { }
-  }, [findAllService, facilityId, userFacilityId])
+  }, [isSuper, isPracticeUser, practiceId, isFacAdmin, userFacilityId, shouldEmitFacilityId, findAllService, facilityId])
 
-  useEffect(() => {
-    fetchAllServices('')
-  }, [fetchAllServices]);
-
-  useEffect(() => {
-    setOptions([])
-  }, [facilityId])
-
+  useEffect(() => { fetchAllServices('') }, [fetchAllServices]);
+  useEffect(() => { setOptions([]) }, [facilityId])
 
   useEffect(() => {
     if (isEdit) {
@@ -80,7 +94,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const multiSelectProps = isMulti ? {
     isMulti: isMulti,
     options: options as (multiOptionType | GroupBase<multiOptionType>)[]
-  }: {
+  } : {
     options: options as OptionsOrGroups<multiOptionType, GroupBase<multiOptionType>> | undefined
   }
 

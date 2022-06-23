@@ -13,7 +13,7 @@ import {
   patientReducer, State, initialState, Action, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  FEVER_TEXT, FEVER_UNITS, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
+  TEMPERATURE_TEXT, FEVER_UNITS, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
   PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, PDF_TEXT, UNITS, WEIGHT_TEXT
 } from "../../../../constants";
 import {
@@ -117,7 +117,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar, shouldDisableEdit 
               <Box display={'flex'} justifyContent="space-between" alignItems="center">
 
                 <Box>
-                  <Typography variant="h5">{FEVER_TEXT}</Typography>
+                  <Typography variant="h5">{TEMPERATURE_TEXT}</Typography>
                 </Box>
 
                 <Box p={1} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>

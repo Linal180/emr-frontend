@@ -11,7 +11,7 @@ import { useParams } from 'react-router';
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
   ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, 
-  PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
+  PATIENT_ALLERGY_UPDATED, REACTION, REACTION_SELECTION_REQUIRED, SEVERITY, UPDATE, UPDATE_ALLERGY
 } from '../../../../../constants';
 import { ChartContext } from '../../../../../context';
 // component block
@@ -184,6 +184,10 @@ const AllergyModal: FC<AddModalProps> = ({
         })
       }
     }
+
+    else {
+      Alert.info(REACTION_SELECTION_REQUIRED)
+    }
   }
 
   const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
@@ -202,7 +206,7 @@ const AllergyModal: FC<AddModalProps> = ({
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_ALLERGY}</Typography>
+        <Typography variant="h4">{isEdit ? UPDATE_ALLERGY : ADD_ALLERGY}</Typography>
       </DialogTitle>
 
       <FormProvider {...methods}>
@@ -224,7 +228,7 @@ const AllergyModal: FC<AddModalProps> = ({
                   <Typography variant="h6">{REACTION}</Typography>
 
                   <Box color={GREY_THREE} ml={1}>
-                    <Typography variant='h6'>{!ids.length ? '(Please select at least one reaction)' : ''} </Typography>
+                    <Typography variant='h6'>{!ids.length ? REACTION_SELECTION_REQUIRED : ''} </Typography>
                   </Box>
                 </Box>
 

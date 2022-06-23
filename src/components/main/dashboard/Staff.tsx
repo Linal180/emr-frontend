@@ -24,9 +24,12 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
 
   return (
     <>
-      <PatientSearchComponent />
 
       <Grid container spacing={3}>
+        <Grid item md={12} sm={12} xs={12}>
+          <PatientSearchComponent />
+        </Grid>
+
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box p={3} pb={2}>

@@ -23,7 +23,8 @@ import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
-  formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
+  checkPermission, isUser, renderTh, getTimestampsForDob
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -34,12 +35,13 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
-  US_DATE_FORMAT, RESET
+  US_DATE_FORMAT, RESET, USER_PERMISSIONS, ROOT_ROUTE, PERMISSION_DENIED
 } from "../../../../constants";
+import history from "../../../../history";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user, currentUser } = useContext(AuthContext)
+  const { user, currentUser, userPermissions } = useContext(AuthContext)
   const { id: currentUserId } = currentUser || {}
   const { roles, facility } = user || {};
 
@@ -53,8 +55,11 @@ const PatientsTable: FC = (): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
+
   const { watch, setValue } = methods;
   const {
     location: { id: selectedLocationId } = {},
@@ -102,7 +107,7 @@ const PatientsTable: FC = (): JSX.Element => {
             ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
             doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
-            ...(!isFacAdmin ? { facilityId: selectedLocationId } : {}),
+            ...(isSuper || isPracticeUser ? { facilityId: selectedLocationId } : {}),
           }
         }
       })
@@ -135,7 +140,13 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
-  useEffect(() => { }, [user]);
+  useEffect(() => {
+    if(!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)){
+      history.push(ROOT_ROUTE)
+      Alert.error(PERMISSION_DENIED)
+    }
+  }, [user, userPermissions]);
+
   useEffect(() => {
     isDoctor && currentUserId &&
       dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
@@ -272,7 +283,7 @@ const PatientsTable: FC = (): JSX.Element => {
               {(loading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -292,17 +303,19 @@ const PatientsTable: FC = (): JSX.Element => {
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{dob}</TableCell>
+                      <TableCell scope="row">{dob && getTimestampsForDob(dob)}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                          <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashNewIcon />
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
+                            <Button onClick={() => onDeleteClick(id || '')} disabled={!canDelete}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>

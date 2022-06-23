@@ -38,7 +38,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <InsuranceForm item={item} />
       case FormBuilderPaymentTypes.CONTRACT:
         return <ContractForm />
-      case FormBuilderPaymentTypes.INTERNATIONAL_TRAVELER:
+      case FormBuilderPaymentTypes.NO_INSURANCE:
         return <PaymentForm dispatcher={dispatcher} state={state} />
       default:
         return <></>

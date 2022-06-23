@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
+import { Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
 import clsx from 'clsx';
 import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -18,16 +18,18 @@ import {
   CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
 } from "../../../constants";
 import {
-  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery,
-  useGetAppointmentLazyQuery, useUpdateAppointmentMutation
+  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
+  useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../generated/graphql";
 import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
 import {
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
+  State as mediaState
 } from "../../../reducers/mediaReducer";
 import {
-  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState
+  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
+  patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate } from "../../../utils";
@@ -54,6 +56,7 @@ const CheckInComponent = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
     useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
+
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const { appointment } = state
@@ -63,6 +66,7 @@ const CheckInComponent = (): JSX.Element => {
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
   const [activeStep, setActiveStep] = useState<number>(0);
+
   const appointmentInfo = {
     name: `${appointmentType?.name ?? ''}  ${appointmentTime}`,
     id: appointmentId ?? ''
@@ -181,6 +185,7 @@ const CheckInComponent = (): JSX.Element => {
         }
       }
     })
+
     setActiveStep(step);
   };
 
@@ -199,7 +204,7 @@ const CheckInComponent = (): JSX.Element => {
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
-        return 'Unknown step';
+        return <CircularProgress />;
     }
   }
 

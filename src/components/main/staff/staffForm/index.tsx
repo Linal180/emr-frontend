@@ -12,16 +12,17 @@ import PageHeader from '../../../common/PageHeader';
 import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
 import RoleSelector from '../../../common/Selector/RoleSelector';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { getTimestamps, setRecord } from "../../../../utils";
+import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import {
+  getTimestamps, setRecord, renderItem, formatValue, isUserAdmin, renderLoading
+} from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -37,11 +38,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
+
+  const { roles, facility } = user || {}
+  const { id: currentFacility, name: currentFacilityName, practiceId: currentPractice } = facility || {}
+  const isAdminUser = isUserAdmin(roles)
+
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser))
   });
+
   const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
@@ -170,8 +177,10 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, practiceId, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, facilityId: selectedFacility, username: '',
+      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId, facilityId: selectedFacility }
+        : { practiceId: currentPractice, facilityId: currentFacility }
+      )
     };
 
     if (isEdit) {
@@ -215,7 +224,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         setIsFacilityAdmin(false)
       }
     }
-
   }, [watch, roleType, setValue])
 
   return (
@@ -246,108 +254,110 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
-                {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6}>
-                        <FacilitySelector
-                          addEmpty
-                          isRequired
-                          label={FACILITY}
-                          name="facilityId"
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    {isAdminUser ?
+                      <FacilitySelector
+                        loading={getStaffLoading}
+                        addEmpty
+                        isRequired
+                        label={FACILITY}
+                        name="facilityId"
+                      />
+                      : renderItem(FACILITY, currentFacilityName)
+                    }
+                  </Grid>
 
-                      {!isEdit &&
-                        <Grid item md={6}>
-                          <RoleSelector
-                            addEmpty
-                            isRequired
-                            label={ROLE}
-                            name="roleType"
-                          />
-                        </Grid>
-                      }
-                    </Grid>
+                  <Grid item md={6}>
+                    {isEdit && roleType ?
+                      getStaffLoading ? renderLoading(ROLE) : renderItem(ROLE, formatValue(roleType.name || ''))
+                      : <RoleSelector
+                        loading={getStaffLoading}
+                        addEmpty
+                        isRequired
+                        label={ROLE}
+                        name="roleType"
+                      />
+                    }
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="firstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      loading={getStaffLoading}
+                      isRequired
+                      fieldType="text"
+                      controllerName="firstName"
+                      controllerLabel={FIRST_NAME}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="lastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      loading={getStaffLoading}
+                      isRequired
+                      fieldType="text"
+                      controllerName="lastName"
+                      controllerLabel={LAST_NAME}
+                    />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          name="gender"
-                          label={GENDER}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_GENDER}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      isRequired
+                      name="gender"
+                      label={GENDER}
+                      value={EMPTY_OPTION}
+                      options={MAPPED_GENDER}
+                      loading={getStaffLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker isRequired name="dob" label={DOB} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker loading={getStaffLoading} isRequired name="dob" label={DOB} />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" label={MOBILE} />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField loading={getStaffLoading} name="phone" label={MOBILE} />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" label={PHONE} />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField loading={getStaffLoading} name="mobile" label={PHONE} />
+                  </Grid>
+                </Grid>
               </CardComponent>
             </Grid>
 
             <Grid md={6} item>
               <CardComponent cardTitle={ACCOUNT_INFO}>
-                {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 8} sm={6} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="email"
-                          controllerName="email"
-                          controllerLabel={EMAIL}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={isEdit ? 12 : 8} sm={6} xs={12}>
+                    <InputController
+                      loading={getStaffLoading}
+                      isRequired
+                      fieldType="email"
+                      controllerName="email"
+                      controllerLabel={EMAIL}
+                    />
+                  </Grid>
 
-                      {!isEdit &&
-                        <Grid item md={4} sm={12} xs={12}>
-                          <DoctorSelector
-                            addEmpty
-                            facilityId={selectedFacility}
-                            label={PROVIDER}
-                            name="providerIds"
-                            disabled={isFacilityAdmin && true}
-                          />
-                        </Grid>
-                      }
+                  {!isEdit &&
+                    <Grid item md={4} sm={12} xs={12}>
+                      <DoctorSelector
+                        addEmpty
+                        facilityId={selectedFacility}
+                        label={PROVIDER}
+                        name="providerIds"
+                        disabled={isFacilityAdmin && true}
+                      />
                     </Grid>
-                  </>
-                )}
+                  }
+                </Grid>
               </CardComponent>
             </Grid>
           </Grid>

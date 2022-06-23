@@ -62,7 +62,6 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
       if (findAllForms) {
         const { forms, pagination } = findAllForms
-        debugger
         forms && setForms(forms as FormsPayload['forms'])
 
         if (pagination) {

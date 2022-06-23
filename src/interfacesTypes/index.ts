@@ -368,7 +368,9 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  focus?: boolean
   isEdit?: boolean
+  loading?: boolean
   disabled?: boolean
   addEmpty?: boolean
   isRequired?: boolean
@@ -431,6 +433,7 @@ export type updatePasswordInputs = ResetPasswordInputs & {
 interface IControlLabel {
   info?: string;
   error?: string;
+  loading?: boolean;
   fieldType?: string;
   disabled?: boolean;
   className?: string;
@@ -459,6 +462,15 @@ export type SubMenuTypes = {
   name: string;
   link: string | null;
 };
+
+export interface PhoneInputProps {
+  label: string;
+  error?: string;
+  loading?: boolean;
+  isRequired?: boolean;
+  name: PhoneInputTypes;
+  disabled?: boolean;
+}
 
 export interface CustomInputControlProps extends IControlLabel {
   info?: string;
@@ -518,10 +530,12 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
+  loading?: boolean;
+  disabled?: boolean;
+  clearable?: boolean;
   isRequired?: boolean;
-  clearable?: boolean
-  disableFuture?: boolean
-  disabled?: boolean
+  disablePast?: boolean;
+  disableFuture?: boolean;
 }
 
 export interface TimePickerProps {
@@ -828,6 +842,13 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface DocViewerProps {
+  title?: string
+  isOpen: boolean
+  handleClose: () => void
+  url: string
+}
+
 export interface AddAllergyModalProps extends GeneralFormProps {
   isOpen?: boolean
   handleModalClose: () => void
@@ -907,19 +928,11 @@ type PhoneInputTypes =
   | "pager"
   | "userPhone";
 
-export interface PhoneInputProps {
-  label: string;
-  error?: string;
-  isRequired?: boolean;
-  name: PhoneInputTypes;
-  disabled?: boolean;
-}
-
 export interface DropzoneImageType {
   itemId: string;
   title: string;
   isEdit?: boolean;
-  filesLimit: number;
+  filesLimit?: number;
   isProfile?: boolean;
   ref: FormForwardRef;
   providerName: string;
@@ -936,6 +949,7 @@ export interface DropzoneImageType {
   setActiveStep?: Function;
   setAttachments: Function;
   acceptableFilesType?: string[]
+  setFiles?: Function
 }
 
 interface Message {
@@ -1496,6 +1510,7 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
+  shouldEmitFacilityId?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -1743,7 +1758,9 @@ export interface CareTeamsProps {
   onEdit?: Function;
   reload?: Function;
   toggleSideDrawer?: Function;
-  patientDispatcher?: Dispatch<PatientAction>
+  patientDispatcher?: Dispatch<PatientAction>;
+  providerBtn? :boolean;
+  isEditable? : boolean
 }
 
 export interface SideDrawerProps {
@@ -1761,7 +1778,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { status: SelectorOption }
+export type StatusInputProps = { 
+  status: SelectorOption
+  facilityId?: string
+  serviceId?: multiOptionType
+ }
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
@@ -1831,7 +1852,7 @@ export interface StageStatusType {
   stageColor: string;
 }
 
-export interface AgreementGeneralProps {
+export interface AgreementGeneralProps extends GeneralFormProps {
   setEdit: Function;
 }
 
@@ -1842,6 +1863,11 @@ export interface ServiceSelectorProps extends FacilitySelectorProps {
   defaultValues?: SelectorOption[]
   dispatcher?: Dispatch<PublicFormBuilderAction>
 }
+export interface CreateAgreementFormProps {
+  title?: string
+  agreementBody?: string
+}
+
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;

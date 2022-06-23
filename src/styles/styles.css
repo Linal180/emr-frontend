@@ -136,7 +136,7 @@ body {
   overflow-x: auto;
 }
 
-.agreement-table .MuiTableHead-root {
+.table-header .MuiTableHead-root {
   background-color: #F3F4F6 !important;
 }
 
@@ -742,6 +742,9 @@ body .MuiTabPanel-root {
 
 /* masonry-css */
 .masonry-container {
+  -moz-column-count: 2;
+  -moz-column-gap: 1.5%;
+  -moz-column-width: 48%;
   -webkit-column-count: 2;
   -webkit-column-gap: 1.5%;
   -webkit-column-width: 48%;
@@ -755,14 +758,15 @@ body .MuiTabPanel-root {
   break-inside: avoid;
 }
 
-.appointment-view-list .MuiTable-root tbody tr td:first-child{
+.appointment-view-list .MuiTable-root tbody tr td:first-child {
   max-width: 200px;
 }
 
-.appointment-view-list .MuiTable-root tbody tr .custom-cell{
+.appointment-view-list .MuiTable-root tbody tr .custom-cell {
   padding: 0 0 5px 0;
 }
-.appointment-view-list .MuiTable-root tbody tr .custom-cell{
+
+.appointment-view-list .MuiTable-root tbody tr .custom-cell {
   padding: 14px 11px 14px 30px;
 }
 
@@ -774,21 +778,20 @@ body .MuiTabPanel-root {
 
 .card-overlay {
   position: absolute;
-  left:0;  
+  left: 0;
   top: 100%;
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  transition:all 350ms cubic-bezier(0, 0, 0.2, 1);
-  display:flex;
-  align-items:center;
+  transition: all 350ms cubic-bezier(0, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
   justify-content: center;
-  background:rgba(62, 62, 62, 0.7);
+  background: rgba(62, 62, 62, 0.7);
 }
 
 .card-overlay .del-icon,
-.card-overlay .del-icon:hover
-{
+.card-overlay .del-icon:hover {
   background-color: white;
 }
 
@@ -803,7 +806,7 @@ body .MuiTabPanel-root {
   overflow: hidden;
 }
 
-.card-img> img {
+.card-img>img {
   object-fit: contain;
   height: 100%;
 }
@@ -817,8 +820,27 @@ body .MuiTabPanel-root {
   margin-left: 5px !important;
 }
 
-.vitals-column .MuiTypography-h5{
+.vitals-column .MuiTypography-h5 {
   line-height: 1.43 !important;
+}
+
+.disable-icon {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.MuiSkeleton-text {
+  height: 30px !important;
+}
+
+.skelton-label-margin {
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.skelton-input {
+  margin-bottom: 8px;
+  padding-bottom: 16px;
 }
 
 /* media queries */
@@ -833,9 +855,9 @@ body .MuiTabPanel-root {
     top: 0;
   }
 
-  .patient-add-form .MuiInputLabel-formControl{
+  .patient-add-form .MuiInputLabel-formControl {
     position: relative;
-    top:0;
+    top: 0;
     margin-bottom: 0.875rem;
   }
 }

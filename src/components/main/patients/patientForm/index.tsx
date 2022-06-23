@@ -22,34 +22,38 @@ import {
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
 } from "../../../../constants";
 import {
-  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
-  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
+  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
+  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
+  useUpdatePatientMutation
 } from "../../../../generated/graphql";
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
   const { user, currentDoctor } = useContext(AuthContext)
-  const { id: selectedDoctorId} = currentDoctor || {}
+  const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
-  const { id: selectedFacilityId} = facility || {};
+  const { id: selectedFacilityId } = facility || {};
+
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
     activeStep, patientId, optionalEmail
   } = state
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
+
   const { handleSubmit, setValue, watch } = methods;
   const {
-    // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
 
@@ -84,17 +88,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
             if (facilityId) {
               fetchAllDoctorList(facilityId)
-              name && setValue("facilityId", setRecord(facilityId, name))
+              name && setValue("facilityId", setRecord(facilityId, name, false))
               dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
           if (doctorPatients) {
-            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
+            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) =>
+              doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
 
             if (doesPrimaryProviderExist) {
               const { doctor } = doesPrimaryProviderExist ?? {}
               const { firstName, lastName, id } = doctor ?? {}
+
               setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             } else {
@@ -102,6 +108,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               if (currentDoctorPatients) {
                 const { doctor } = currentDoctorPatients || {};
                 const { firstName, lastName, id } = doctor ?? {}
+                
                 setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
                 dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
               }
@@ -355,9 +362,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
-        gender: selectedGender as Genderidentity || Genderidentity.None,
-        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
-        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
+        gender: selectedGender as Genderidentity || Genderidentity.Male,
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
+        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.Male,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
         statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',

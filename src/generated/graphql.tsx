@@ -69,6 +69,43 @@ export type ActiveInactivePracticesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type Agreement = {
+  __typename?: 'Agreement';
+  body?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
+export type AgreementPaginationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type AgreementPayload = {
+  __typename?: 'AgreementPayload';
+  agreement: Agreement;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type AgreementsPayload = {
+  __typename?: 'AgreementsPayload';
+  agreements: Array<Agreement>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -187,6 +224,7 @@ export enum AppointmentCreateType {
 export type AppointmentInput = {
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentStatus?: Maybe<Scalars['String']>;
+  appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -194,6 +232,7 @@ export type AppointmentInput = {
   providerId?: Maybe<Scalars['String']>;
   relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -256,6 +295,7 @@ export type AttachmentMediaPayload = {
 
 export type AttachmentMetadata = {
   __typename?: 'AttachmentMetadata';
+  agreementId?: Maybe<Scalars['String']>;
   assignedTo?: Maybe<Scalars['String']>;
   attachment?: Maybe<Attachment>;
   attachmentId?: Maybe<Scalars['String']>;
@@ -289,6 +329,29 @@ export enum AttachmentType {
   SuperAdmin = 'SUPER_ADMIN',
   Lab = 'lab'
 }
+
+export type AttachmentWithPreSignedUrl = {
+  __typename?: 'AttachmentWithPreSignedUrl';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
+  attachmentName?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  preSignedUrl?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  type: AttachmentType;
+  typeId: Scalars['String'];
+  updatedAt: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+};
+
+export type AttachmentWithPreSignedUrlPayload = {
+  __typename?: 'AttachmentWithPreSignedUrlPayload';
+  attachmentsWithPreSignedUrl?: Maybe<Array<AttachmentWithPreSignedUrl>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
 
 export type AttachmentsPayload = {
   __typename?: 'AttachmentsPayload';
@@ -586,6 +649,7 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1521,6 +1585,11 @@ export type GetAttachment = {
   typeId: Scalars['String'];
 };
 
+export type GetAttachmentsByAgreementId = {
+  agreementId: Scalars['String'];
+  typeId: Scalars['String'];
+};
+
 export type GetAttachmentsByLabOrder = {
   orderNum: Scalars['String'];
   typeId: Scalars['String'];
@@ -1939,6 +2008,7 @@ export type Mutation = {
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: TransactionPayload;
+  createAgreement: AgreementPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
@@ -1973,6 +2043,7 @@ export type Mutation = {
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
+  removeAgreement: AgreementPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
@@ -1999,6 +2070,7 @@ export type Mutation = {
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
   update2FactorAuth: UserPayload;
+  updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
   updateAppointmentBillingStatus: AppointmentPayload;
   updateAppointmentStatus: AppointmentPayload;
@@ -2079,6 +2151,11 @@ export type MutationChargeAfterAppointmentArgs = {
 
 export type MutationChargePaymentArgs = {
   paymentInput: PaymentInput;
+};
+
+
+export type MutationCreateAgreementArgs = {
+  createAgreementInput: AgreementInput;
 };
 
 
@@ -2252,6 +2329,11 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRemoveAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
 export type MutationRemoveAppointmentArgs = {
   removeAppointment: RemoveAppointment;
 };
@@ -2374,6 +2456,11 @@ export type MutationSendInviteToPatientArgs = {
 
 export type MutationUpdate2FactorAuthArgs = {
   twoFactorInput: TwoFactorInput;
+};
+
+
+export type MutationUpdateAgreementArgs = {
+  updateAgreementInput: UpdateAgreementInput;
 };
 
 
@@ -3299,6 +3386,8 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAgreement: AgreementPayload;
+  fetchAllAgreements: AgreementsPayload;
   fetchAllInsurances: InsurancesPayload;
   fetchAllPatients: PatientsPayload;
   fetchAllPolicies: PoliciesPayload;
@@ -3348,6 +3437,7 @@ export type Query = {
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentsPayload;
   getContact: ContactPayload;
@@ -3391,6 +3481,16 @@ export type Query = {
 
 export type QueryGetPermissionArgs = {
   getPermission: GetPermission;
+};
+
+
+export type QueryFetchAgreementArgs = {
+  agreementId: Scalars['String'];
+};
+
+
+export type QueryFetchAllAgreementsArgs = {
+  agreementPaginationInput: AgreementPaginationInput;
 };
 
 
@@ -3621,6 +3721,11 @@ export type QueryGetAttachmentArgs = {
 
 export type QueryGetAttachmentsArgs = {
   getAttachment: GetAttachment;
+};
+
+
+export type QueryGetAttachmentsByAgreementIdArgs = {
+  getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
 };
 
 
@@ -4221,6 +4326,7 @@ export type ServiceInput = {
   facilityId?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
   serviceName?: Maybe<Scalars['String']>;
 };
 
@@ -4451,6 +4557,14 @@ export type UpComingAppointmentsInput = {
   providerId?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAgreementInput = {
+  body?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  signatureRequired?: Maybe<Scalars['Boolean']>;
+  title?: Maybe<Scalars['String']>;
+  viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
+};
+
 export type UpdateAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
@@ -4505,6 +4619,7 @@ export type UpdateAppointmentStatusInput = {
 };
 
 export type UpdateAttachmentInput = {
+  agreementId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -5162,6 +5277,41 @@ export type SnoMedCodesPayload = {
   snoMedCodes?: Maybe<Array<Maybe<SnoMedCodes>>>;
 };
 
+export type FetchAllAgreementsQueryVariables = Exact<{
+  agreementPaginationInput: AgreementPaginationInput;
+}>;
+
+
+export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null }> } };
+
+export type FetchAgreementQueryVariables = Exact<{
+  agreementId: Scalars['String'];
+}>;
+
+
+export type FetchAgreementQuery = { __typename?: 'Query', fetchAgreement: { __typename?: 'AgreementPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, agreement: { __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, viewAgreementBeforeAgreeing?: boolean | null, signatureRequired?: boolean | null, createdAt?: string | null } } };
+
+export type CreateAgreementMutationVariables = Exact<{
+  createAgreementInput: AgreementInput;
+}>;
+
+
+export type CreateAgreementMutation = { __typename?: 'Mutation', createAgreement: { __typename?: 'AgreementPayload', agreement: { __typename?: 'Agreement', id: string }, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateAgreementMutationVariables = Exact<{
+  updateAgreementInput: UpdateAgreementInput;
+}>;
+
+
+export type UpdateAgreementMutation = { __typename?: 'Mutation', updateAgreement: { __typename?: 'AgreementPayload', agreement: { __typename?: 'Agreement', id: string }, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type RemoveAgreementMutationVariables = Exact<{
+  agreementId: Scalars['String'];
+}>;
+
+
+export type RemoveAgreementMutation = { __typename?: 'Mutation', removeAgreement: { __typename?: 'AgreementPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type FindAllAppointmentsQueryVariables = Exact<{
   appointmentInput: AppointmentInput;
 }>;
@@ -5294,6 +5444,13 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 
 
 export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
+
+export type GetAttachmentsByAgreementIdQueryVariables = Exact<{
+  getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
+}>;
+
+
+export type GetAttachmentsByAgreementIdQuery = { __typename?: 'Query', getAttachmentsByAgreementId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, preSignedUrl?: string | null, type: AttachmentType, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, agreementId?: string | null } | null }> | null } };
 
 export type FetchDocumentTypeByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -6257,6 +6414,219 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetCurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, userId: string, userType: string, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
 
+export const FetchAllAgreementsDocument = gql`
+    query FetchAllAgreements($agreementPaginationInput: AgreementPaginationInput!) {
+  fetchAllAgreements(agreementPaginationInput: $agreementPaginationInput) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    agreements {
+      id
+      title
+      body
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllAgreementsQuery__
+ *
+ * To run a query within a React component, call `useFetchAllAgreementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllAgreementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllAgreementsQuery({
+ *   variables: {
+ *      agreementPaginationInput: // value for 'agreementPaginationInput'
+ *   },
+ * });
+ */
+export function useFetchAllAgreementsQuery(baseOptions: Apollo.QueryHookOptions<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>(FetchAllAgreementsDocument, options);
+      }
+export function useFetchAllAgreementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>(FetchAllAgreementsDocument, options);
+        }
+export type FetchAllAgreementsQueryHookResult = ReturnType<typeof useFetchAllAgreementsQuery>;
+export type FetchAllAgreementsLazyQueryHookResult = ReturnType<typeof useFetchAllAgreementsLazyQuery>;
+export type FetchAllAgreementsQueryResult = Apollo.QueryResult<FetchAllAgreementsQuery, FetchAllAgreementsQueryVariables>;
+export const FetchAgreementDocument = gql`
+    query FetchAgreement($agreementId: String!) {
+  fetchAgreement(agreementId: $agreementId) {
+    response {
+      error
+      status
+      message
+    }
+    agreement {
+      id
+      title
+      body
+      viewAgreementBeforeAgreeing
+      signatureRequired
+      createdAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAgreementQuery__
+ *
+ * To run a query within a React component, call `useFetchAgreementQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAgreementQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAgreementQuery({
+ *   variables: {
+ *      agreementId: // value for 'agreementId'
+ *   },
+ * });
+ */
+export function useFetchAgreementQuery(baseOptions: Apollo.QueryHookOptions<FetchAgreementQuery, FetchAgreementQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAgreementQuery, FetchAgreementQueryVariables>(FetchAgreementDocument, options);
+      }
+export function useFetchAgreementLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAgreementQuery, FetchAgreementQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAgreementQuery, FetchAgreementQueryVariables>(FetchAgreementDocument, options);
+        }
+export type FetchAgreementQueryHookResult = ReturnType<typeof useFetchAgreementQuery>;
+export type FetchAgreementLazyQueryHookResult = ReturnType<typeof useFetchAgreementLazyQuery>;
+export type FetchAgreementQueryResult = Apollo.QueryResult<FetchAgreementQuery, FetchAgreementQueryVariables>;
+export const CreateAgreementDocument = gql`
+    mutation CreateAgreement($createAgreementInput: AgreementInput!) {
+  createAgreement(createAgreementInput: $createAgreementInput) {
+    agreement {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateAgreementMutationFn = Apollo.MutationFunction<CreateAgreementMutation, CreateAgreementMutationVariables>;
+
+/**
+ * __useCreateAgreementMutation__
+ *
+ * To run a mutation, you first call `useCreateAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAgreementMutation, { data, loading, error }] = useCreateAgreementMutation({
+ *   variables: {
+ *      createAgreementInput: // value for 'createAgreementInput'
+ *   },
+ * });
+ */
+export function useCreateAgreementMutation(baseOptions?: Apollo.MutationHookOptions<CreateAgreementMutation, CreateAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAgreementMutation, CreateAgreementMutationVariables>(CreateAgreementDocument, options);
+      }
+export type CreateAgreementMutationHookResult = ReturnType<typeof useCreateAgreementMutation>;
+export type CreateAgreementMutationResult = Apollo.MutationResult<CreateAgreementMutation>;
+export type CreateAgreementMutationOptions = Apollo.BaseMutationOptions<CreateAgreementMutation, CreateAgreementMutationVariables>;
+export const UpdateAgreementDocument = gql`
+    mutation UpdateAgreement($updateAgreementInput: UpdateAgreementInput!) {
+  updateAgreement(updateAgreementInput: $updateAgreementInput) {
+    agreement {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateAgreementMutationFn = Apollo.MutationFunction<UpdateAgreementMutation, UpdateAgreementMutationVariables>;
+
+/**
+ * __useUpdateAgreementMutation__
+ *
+ * To run a mutation, you first call `useUpdateAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAgreementMutation, { data, loading, error }] = useUpdateAgreementMutation({
+ *   variables: {
+ *      updateAgreementInput: // value for 'updateAgreementInput'
+ *   },
+ * });
+ */
+export function useUpdateAgreementMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAgreementMutation, UpdateAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAgreementMutation, UpdateAgreementMutationVariables>(UpdateAgreementDocument, options);
+      }
+export type UpdateAgreementMutationHookResult = ReturnType<typeof useUpdateAgreementMutation>;
+export type UpdateAgreementMutationResult = Apollo.MutationResult<UpdateAgreementMutation>;
+export type UpdateAgreementMutationOptions = Apollo.BaseMutationOptions<UpdateAgreementMutation, UpdateAgreementMutationVariables>;
+export const RemoveAgreementDocument = gql`
+    mutation RemoveAgreement($agreementId: String!) {
+  removeAgreement(agreementId: $agreementId) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveAgreementMutationFn = Apollo.MutationFunction<RemoveAgreementMutation, RemoveAgreementMutationVariables>;
+
+/**
+ * __useRemoveAgreementMutation__
+ *
+ * To run a mutation, you first call `useRemoveAgreementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAgreementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAgreementMutation, { data, loading, error }] = useRemoveAgreementMutation({
+ *   variables: {
+ *      agreementId: // value for 'agreementId'
+ *   },
+ * });
+ */
+export function useRemoveAgreementMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAgreementMutation, RemoveAgreementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveAgreementMutation, RemoveAgreementMutationVariables>(RemoveAgreementDocument, options);
+      }
+export type RemoveAgreementMutationHookResult = ReturnType<typeof useRemoveAgreementMutation>;
+export type RemoveAgreementMutationResult = Apollo.MutationResult<RemoveAgreementMutation>;
+export type RemoveAgreementMutationOptions = Apollo.BaseMutationOptions<RemoveAgreementMutation, RemoveAgreementMutationVariables>;
 export const FindAllAppointmentsDocument = gql`
     query FindAllAppointments($appointmentInput: AppointmentInput!) {
   findAllAppointments(appointmentInput: $appointmentInput) {
@@ -7206,6 +7576,54 @@ export function useGetAttachmentsByPolicyIdLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetAttachmentsByPolicyIdQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdQuery>;
 export type GetAttachmentsByPolicyIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdLazyQuery>;
 export type GetAttachmentsByPolicyIdQueryResult = Apollo.QueryResult<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>;
+export const GetAttachmentsByAgreementIdDocument = gql`
+    query GetAttachmentsByAgreementId($getAttachmentsByAgreementId: GetAttachmentsByAgreementId!) {
+  getAttachmentsByAgreementId(
+    getAttachmentsByAgreementId: $getAttachmentsByAgreementId
+  ) {
+    attachmentsWithPreSignedUrl {
+      id
+      title
+      attachmentName
+      url
+      preSignedUrl
+      type
+      attachmentMetadata {
+        comments
+        agreementId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttachmentsByAgreementIdQuery__
+ *
+ * To run a query within a React component, call `useGetAttachmentsByAgreementIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttachmentsByAgreementIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttachmentsByAgreementIdQuery({
+ *   variables: {
+ *      getAttachmentsByAgreementId: // value for 'getAttachmentsByAgreementId'
+ *   },
+ * });
+ */
+export function useGetAttachmentsByAgreementIdQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>(GetAttachmentsByAgreementIdDocument, options);
+      }
+export function useGetAttachmentsByAgreementIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>(GetAttachmentsByAgreementIdDocument, options);
+        }
+export type GetAttachmentsByAgreementIdQueryHookResult = ReturnType<typeof useGetAttachmentsByAgreementIdQuery>;
+export type GetAttachmentsByAgreementIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByAgreementIdLazyQuery>;
+export type GetAttachmentsByAgreementIdQueryResult = Apollo.QueryResult<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>;
 export const FetchDocumentTypeByNameDocument = gql`
     query FetchDocumentTypeByName($name: String!) {
   fetchDocumentTypeByName(name: $name) {

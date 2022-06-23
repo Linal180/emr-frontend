@@ -7,7 +7,6 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
-import CareTeamComponent from './careTeam';
 import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
@@ -19,6 +18,7 @@ import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataComponent from '../../../common/NoDataComponent';
+import CareTeamComponent from './careTeam/index'
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import history from "../../../../history";
@@ -47,20 +47,23 @@ import {
   HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
 import SideDrawer from '../../../common/SideDrawer';
-import AgreementsComponent from './agreements';
 
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName }, dispatch] =
-    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{
+    openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
+  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
   const [state, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
   const {
     pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
   } = state
+
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -68,7 +71,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
-
   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
@@ -160,7 +162,10 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatientProviders) {
 
           const { providers } = getPatientProviders;
-          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
+          dispatch({
+            type: ActionType.SET_PATIENT_PROVIDERS_DATA,
+            patientProvidersData: providers as PatientProviderPayload['providers']
+          })
         }
       }
     },
@@ -181,9 +186,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
-    if (id) {
-      fetchComing();
-    }
+    id && fetchComing();
   }, [fetchComing, id]);
 
   return (
@@ -341,7 +344,11 @@ const PatientDetailsComponent = (): JSX.Element => {
                   <PracticesByYear year={{ id: '2022', name: '2022' }} />
                 </Card>
               </Box>
-
+              <Box className='masonry-box'>
+                <CareTeamComponent                
+                  patientProvidersData={patientProvidersData}              
+                />
+              </Box>
               <Box className='masonry-box'>
                 <EncounterList />
               </Box>
@@ -374,11 +381,9 @@ const PatientDetailsComponent = (): JSX.Element => {
               patientProvidersData={patientProvidersData}
               drawerOpened={drawerOpened}
               patientDispatcher={dispatch}
+              providerBtn={true}
+              isEditable={true}
             />
-          </TabPanel>
-
-          <TabPanel value="12">
-            <AgreementsComponent />
           </TabPanel>
         </Box>
       </TabContext>

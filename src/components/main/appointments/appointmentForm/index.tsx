@@ -1,9 +1,12 @@
 // packages block
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from 'react';
+import moment from 'moment';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
@@ -11,30 +14,28 @@ import {
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
-import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import NoSlotsComponent from '../../../common/NoSlotsComponent';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
+import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  appointmentReducer, Action, initialState, State, ActionType
-} from '../../../../reducers/appointmentReducer';
-import {
-  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps, filterSlots,
-  isUserAdmin, isOnlyDoctor,
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -42,14 +43,13 @@ import {
   useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
-  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT,
+  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
   APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD,
-  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT,
-  TYPE, FACILITY, APPOINTMENT_TYPE, INFORMATION, PROVIDER, PATIENT, REASON, PRIMARY_INSURANCE,
-  SECONDARY_INSURANCE, NOTES, NO_SLOT_AVAILABLE, PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE, VIEW_APPOINTMENTS_BREAD,
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
+  FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -85,19 +85,23 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     facilityName, cancelAppStatus, patientName, openPatientModal
   } = state
+
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentType === AppointmentCreateType.Telehealth ?
       providerAppointmentSchema : appointmentSchema(isUserAdmin(roles)))
   });
+
   const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
     serviceId: selectedServiceId,
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    patientId: selectedPatient
+    patientId: selectedPatient, scheduleStartDateTime
   } = watch();
   const { value: selectedService } = selectedServiceId ?? {}
+  const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -150,11 +154,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
 
-
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
-
-
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
             dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
@@ -190,6 +189,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
+          scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
+          scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
@@ -336,6 +337,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
 
+    const durationOfDays = moment(date).date() - moment(scheduleStartDateTime).date()
+    const scStartTimeStamps = moment(scheduleStartDateTime).add(durationOfDays, 'day').format().toString()
+    const scEndTimeStamps = moment(scheduleEndDateTime).add(durationOfDays, 'day').format().toString()
+
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
@@ -353,10 +358,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,
-          appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime,
-          appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: scStartTimeStamps, practiceId,
+        scheduleEndDateTime: scEndTimeStamps, autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
         appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
@@ -386,7 +389,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -449,13 +451,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Grid md={8} item>
                 <Card className='overflowVisible'>
                   <Box p={3}>
-                    <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                    <Box py={2} mb={4} display='flex' justifyContent='space-between'
+                      alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                    >
                       <Typography variant='h4'>{APPOINTMENT}</Typography>
                     </Box>
                     {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
                           <Typography variant='body1'>{TYPE}</Typography>
+
                           <Box className={chartingClasses.toggleProblem}>
                             <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                               {appointmentTypes.map(type =>
@@ -492,7 +497,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>
                     )}
                   </Box>
-                </Card >
+                </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>
@@ -529,7 +534,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         controllerLabel={REASON}
                       />
 
-                      <Grid container spacing={3}>
+                      {/* <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             fieldType="text"
@@ -545,7 +550,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             controllerLabel={SECONDARY_INSURANCE}
                           />
                         </Grid>
-                      </Grid>
+                      </Grid> */}
 
                       <InputController
                         multiline
@@ -556,7 +561,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     </>
                   )}
                 </CardComponent>
-              </Grid >
+              </Grid>
 
               <Grid md={4} item>
                 <Grid item md={12} sm={12} className="custom-calendar">
@@ -581,20 +586,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <ul className={classes.timeSlots}>
                         {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                           const { startTime, endTime } = slot || {}
+                          const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
 
                           return (
-                            <li onClick={() => handleSlot(slot)} key={index}>
-                              <div>
-                                <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
-                                <label htmlFor={`timeSlot-${index}`}>
-                                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                  {getStandardTime(new Date(endTime || '').getTime().toString())}
-                                </label>
-                              </div>
+                            <li key={index}>
+                              <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
+                                bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
+                                color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
+                                className={classes.timeSlot}
+                                onClick={() => handleSlot(slot)}>
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
+                              </Box>
                             </li>
                           )
                         }) : (
-                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                          <NoSlotsComponent />
                         )}
                       </ul>
                     )}
@@ -607,7 +614,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item lg={6} md={12} sm={12} xs={12}>
                           <Controller
                             name='employment'
                             control={control}
@@ -670,10 +677,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   )}
                 </CardComponent>
               </Grid>
-            </Grid >
-          </Box >
-        </form >
-      </FormProvider >
+            </Grid>
+          </Box>
+        </form>
+      </FormProvider>
 
       <AddPatientModal
         facilityId={selectedFacility}
