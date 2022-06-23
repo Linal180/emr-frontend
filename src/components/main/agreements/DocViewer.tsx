@@ -6,7 +6,6 @@ import { DocViewerProps } from "../../../interfacesTypes";
 const DocViewer: FC<DocViewerProps> = ({ title, isOpen, handleClose, url }) => {
   var encodedUrl = encodeURIComponent(url || '')
   return (
-    <>
       <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
         <DialogTitle>
           <Typography variant="h4">{title}</Typography>
@@ -23,7 +22,6 @@ const DocViewer: FC<DocViewerProps> = ({ title, isOpen, handleClose, url }) => {
           </Box>
         </DialogActions>
       </Dialog>
-    </>
   )
 }
 

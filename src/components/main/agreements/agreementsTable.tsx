@@ -1,13 +1,15 @@
 // packages block
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Pagination } from '@material-ui/lab';
 // components block
 import history from '../../../history';
 import Alert from '../../common/Alert';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 import Search from '../../common/Search';
+import DocViewer from './DocViewer';
 import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
@@ -18,8 +20,6 @@ import { Action, ActionType, agreementReducer, initialState, State } from '../..
 import { useTableStyles } from '../../../styles/tableStyles';
 import { WHITE } from '../../../theme';
 import { convertDateFromUnix, renderTh } from '../../../utils';
-import DocViewer from './DocViewer';
-import { Link } from 'react-router-dom';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
@@ -141,7 +141,6 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
             dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: true })
           }
         }
-
       }
     },
   })
