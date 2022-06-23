@@ -842,6 +842,13 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface DocViewerProps {
+  title?: string
+  isOpen: boolean
+  handleClose: () => void
+  url: string
+}
+
 export interface AddAllergyModalProps extends GeneralFormProps {
   isOpen?: boolean
   handleModalClose: () => void
