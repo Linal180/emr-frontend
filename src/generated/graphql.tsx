@@ -330,6 +330,29 @@ export enum AttachmentType {
   Lab = 'lab'
 }
 
+export type AttachmentWithPreSignedUrl = {
+  __typename?: 'AttachmentWithPreSignedUrl';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
+  attachmentName?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  preSignedUrl?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  type: AttachmentType;
+  typeId: Scalars['String'];
+  updatedAt: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+};
+
+export type AttachmentWithPreSignedUrlPayload = {
+  __typename?: 'AttachmentWithPreSignedUrlPayload';
+  attachmentsWithPreSignedUrl?: Maybe<Array<AttachmentWithPreSignedUrl>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type AttachmentsPayload = {
   __typename?: 'AttachmentsPayload';
   attachments?: Maybe<Array<Maybe<Attachment>>>;
@@ -1559,6 +1582,11 @@ export type GetAppointments = {
 };
 
 export type GetAttachment = {
+  typeId: Scalars['String'];
+};
+
+export type GetAttachmentsByAgreementId = {
+  agreementId: Scalars['String'];
   typeId: Scalars['String'];
 };
 
@@ -3409,8 +3437,9 @@ export type Query = {
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
-  getAttachmentsByPolicyId: AttachmentsPayload;
+  getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
@@ -3692,6 +3721,11 @@ export type QueryGetAttachmentArgs = {
 
 export type QueryGetAttachmentsArgs = {
   getAttachment: GetAttachment;
+};
+
+
+export type QueryGetAttachmentsByAgreementIdArgs = {
+  getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
 };
 
 
@@ -5408,7 +5442,7 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, preSignedUrl?: string | null, url?: string | null, type: AttachmentType, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null }> | null } };
 
 export type FetchDocumentTypeByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -7491,17 +7525,17 @@ export type GetAttachmentsByLabOrderQueryResult = Apollo.QueryResult<GetAttachme
 export const GetAttachmentsByPolicyIdDocument = gql`
     query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-    attachments {
+    attachmentsWithPreSignedUrl {
       id
       title
       attachmentName
+      preSignedUrl
       url
       type
       attachmentMetadata {
         comments
         policyId
       }
-      attachmentMetadataId
     }
   }
 }

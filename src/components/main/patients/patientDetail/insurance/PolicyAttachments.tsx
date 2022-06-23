@@ -1,6 +1,6 @@
 //packages Import
 import { Box, Grid, IconButton, Typography } from "@material-ui/core";
-import { forwardRef, Reducer, useCallback, useEffect, useImperativeHandle, useReducer, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { TrashOutlinedIcon } from "../../../../../assets/svgs";
 //constants, types, interfaces imports 
@@ -9,26 +9,24 @@ import {
   NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
 import {
-  Attachment, AttachmentType, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentLazyQuery, useGetAttachmentsByPolicyIdLazyQuery,
+  AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentsByPolicyIdLazyQuery,
   useRemoveAttachmentMediaMutation
 } from "../../../../../generated/graphql";
-import { FormForwardRef, ParamsType, PolicyAttachmentProps, PreSignedUrlInterface } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
+import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
 import { mediaType } from "../../../../../utils";
 //components Import
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import DropzoneImage from "../../../../common/DropZoneImage";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 
 const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, handleReload }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
   const [documentTypeId, setDocumentTypeId] = useState<string>('')
-  const [preSignedUrl, setPreSignedUrl] = useState<PreSignedUrlInterface[]>([])
+  const [attachments, setAttachments] = useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
   const [openDelete, setOpenDelete] = useState<boolean>(false)
   const dropZoneRef = useRef<FormForwardRef>(null);
-  const [, dispatch] =
-    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -51,17 +49,11 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
     fetchDocumentType()
   }, [fetchDocumentType])
 
-  const [getAttachment] = useGetAttachmentLazyQuery({
+  const [getAttachments, { loading }] = useGetAttachmentsByPolicyIdLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    onError() {
-      return null
-    },
-  });
-
-  const [getAttachments] = useGetAttachmentsByPolicyIdLazyQuery({
     variables: {
       getAttachmentsByPolicyId: {
         policyId: policyId ?? '',
@@ -78,27 +70,9 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
         const { getAttachmentsByPolicyId } = data
 
         if (getAttachmentsByPolicyId) {
-          const { attachments } = getAttachmentsByPolicyId
-          const preSignedUrls = await Promise.all(attachments?.map(async (attachmentInfo) => {
-            const getAttachmentResp = await getAttachment({
-              variables: {
-                getMedia: {
-                  id: attachmentInfo?.id
-                }
-              }
-            })
-            const { data } = getAttachmentResp ?? {}
-            const { getAttachment: getAttachmentResponse } = data ?? {}
-            const { preSignedUrl } = getAttachmentResponse ?? {}
-            return {
-              attachmentId: attachmentInfo?.id || '',
-              preSignedUrl: preSignedUrl || ''
-            }
-          }) ?? [])
+          const { attachmentsWithPreSignedUrl } = getAttachmentsByPolicyId
 
-          setPreSignedUrl(preSignedUrls)
-
-          attachments && dispatch({ type: ActionType.SET_ATTACHMENTS, attachments: attachments as Attachment[] })
+          attachmentsWithPreSignedUrl && setAttachments(attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'])
         }
 
       }
@@ -153,22 +127,23 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
   }));
 
   return (
+    loading ? <ViewDataLoader columns={3} rows={4}/>: 
     <Box minWidth="100%" pt={3}>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
           <Box my={3}>
             <Grid container spacing={3}>
-              {preSignedUrl.map((attachment) => {
+              {attachments?.map((attachment) => {
                 return (
                   <Grid item md={3} sm={12} xs={12}>
                     <Box className="card-box">
                       <Box className="card-img">
-                        <img src={attachment?.preSignedUrl} alt={attachment?.preSignedUrl} />
+                        <img src={attachment?.preSignedUrl || ''} alt={attachment?.preSignedUrl || ''} />
                       </Box>
 
                       <Box className="card-overlay">
-                        <IconButton className="del-icon" onClick={() => onDeleteClick(attachment?.attachmentId || '')}>
+                        <IconButton className="del-icon" onClick={() => onDeleteClick(attachment?.id || '')}>
                           <TrashOutlinedIcon />
                         </IconButton>
                       </Box>

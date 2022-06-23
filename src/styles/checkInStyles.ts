@@ -114,7 +114,7 @@ export const useCheckInProfileStyles = makeStyles({
   },
 });
 
-export const useInusranceStyles = makeStyles({
+export const useInsurancesStyles = makeStyles({
   checkInProfileBox: {
 
     display: 'flex',

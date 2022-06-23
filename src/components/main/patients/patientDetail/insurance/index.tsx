@@ -13,9 +13,9 @@ import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } fro
 import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { getFormatDateString } from '../../../../../utils';
+// components
 import SideDrawer from "../../../../common/SideDrawer";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
-// components
 import PolicyCard from "./PolicyCard";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
@@ -25,7 +25,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
-  const [editDrawerOpened, setEditDrawerOpened] = useState<boolean>(false);
 
   const [fetchAllPolicies, { loading: fetchAllPoliciesLoading }] = useFetchAllPoliciesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -88,6 +87,8 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   })
 
   const handleReload = () => {
+    setPolicyToEdit('')
+    toggleSideDrawer()
     findAllPolicies()
   }
 
@@ -104,6 +105,8 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     }
   }
 
+  console.log("drawerOpened", drawerOpened)
+
   return (
     <Card>
       <Box p={3}>
@@ -115,69 +118,58 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               const { amount } = copays?.[0] ?? {}
 
               return (
-                <>
-                  {id === policyToEdit ?
-                    <SideDrawer
-                      drawerOpened={editDrawerOpened}
-                      toggleSideDrawer={()=>setEditDrawerOpened(!editDrawerOpened)} >
-                      <PolicyCard isEdit id={id} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} />
-                    </SideDrawer>
-                    :
-                    <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
-                      <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
-                        <Box display='flex' alignItems='center'>
-                          <Typography variant="h4">{payerName}</Typography>
+                <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
+                  <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+                    <Box display='flex' alignItems='center'>
+                      <Typography variant="h4">{payerName}</Typography>
 
-                          <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
-                            <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
-                          </Box>
-                        </Box>
-
-                        {!shouldDisableEdit && <IconButton onClick={() => {
-                          setPolicyToEdit(id)
-                          setEditDrawerOpened(!editDrawerOpened)
-                        }}>
-                          <EditNewIcon />
-                        </IconButton>}
-                      </Box>
-
-                      <Box display='flex' alignItems='center' flexWrap='wrap'>
-                        <Box minWidth={200} mr={10} my={2}>
-                          <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
-                          <Typography variant="body2">{payerId}</Typography>
-                        </Box>
-
-                        <Box minWidth={200} mr={10} my={2}>
-                          <Typography variant="h6">{ID_TEXT}</Typography>
-                          <Typography variant="body2">{groupNumber}</Typography>
-                        </Box>
-
-                        <Box minWidth={200} mr={10} my={2}>
-                          <Typography variant="h6">{COPAY_TEXT}</Typography>
-                          <Typography variant="body2">${amount}</Typography>
-                        </Box>
-
-                        <Box minWidth={200} mr={10} my={2}>
-                          <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
-                          <Typography variant="body2">
-                            {`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}
-                          </Typography>
-                        </Box>
-
-                        <Box minWidth={200} my={2}>
-                          <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
-                          <Typography variant="body2">{CHECK_ELIGIBILITY_TODAY}</Typography>
-                        </Box>
+                      <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
+                        <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
                       </Box>
                     </Box>
-                  }
-                </>
+
+                    {!shouldDisableEdit && <IconButton onClick={() => {
+                      setPolicyToEdit(id)
+                      toggleSideDrawer()
+                    }}>
+                      <EditNewIcon />
+                    </IconButton>}
+                  </Box>
+
+                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
+                      <Typography variant="body2">{payerId}</Typography>
+                    </Box>
+
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{ID_TEXT}</Typography>
+                      <Typography variant="body2">{groupNumber}</Typography>
+                    </Box>
+
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{COPAY_TEXT}</Typography>
+                      <Typography variant="body2">${amount}</Typography>
+                    </Box>
+
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
+                      <Typography variant="body2">
+                        {`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}
+                      </Typography>
+                    </Box>
+
+                    <Box minWidth={200} my={2}>
+                      <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
+                      <Typography variant="body2">{CHECK_ELIGIBILITY_TODAY}</Typography>
+                    </Box>
+                  </Box>
+                </Box>
               )
             })}
 
             {!!filteredOrderOfBenefitOptions.length &&
               !shouldDisableEdit && <>
-
                 <Box onClick={() => {
                   toggleSideDrawer()
                   setPolicyToEdit('')
@@ -194,15 +186,13 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                     </Box>
                   </Box>
                 </Box>
-
-
-                <SideDrawer
-                  drawerOpened={drawerOpened}
-                  toggleSideDrawer={toggleSideDrawer} >
-                  <PolicyCard handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} />
-                </SideDrawer>
               </>
             }
+            <SideDrawer
+              drawerOpened={drawerOpened}
+              toggleSideDrawer={toggleSideDrawer} >
+              <PolicyCard isEdit={!!policyToEdit} id={policyToEdit} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} />
+            </SideDrawer>
           </>
         }
 

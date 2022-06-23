@@ -5,10 +5,9 @@ import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 //constants, types, interfaces, utils import
 import {
-  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, REFERRING_PROVIDER,
-  EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
+  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
   MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
-  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, VALUE,
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER, VALUE
 } from "../../../../../constants";
 import InputController from "../../../../../controller";
 import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
@@ -21,17 +20,9 @@ import DoctorSelector from "../../../../common/Selector/DoctorSelector";
 
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
-
-  
-   
-  
   const { control } = useFormContext<InsuranceCreateInput>()
 
-  
-
-  const { fields: copayFields, remove: removecopayField, append: appendcopayField } = useFieldArray({ control: control, name: "copayFields" });
-
- 
+  const { fields: copayFields, remove: removeCopayField, append: appendCopayField } = useFieldArray({ control: control, name: "copayFields" });
 
   return (
     <Box minWidth="100%" pt={3}>
@@ -91,7 +82,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 {!!(copayFields.length > 1 && index !== 0) && <Grid item md={12} sm={12} xs={12}>
                   <Box display="flex" justifyContent="flex-end">
                     <Button
-                      onClick={() => removecopayField(index)}                      
+                      onClick={() => removeCopayField(index)}                      
                       color="inherit"
                       className="danger"
                     >
@@ -108,7 +99,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                     addEmpty
                     name={`copayFields.${index}.copayType`}
                     label={COPAY_TYPE}
-                    value={EMPTY_OPTION}
+                    // value={EMPTY_OPTION}
                     options={MAPPED_COPAY_TYPE}
                   />
                 </Grid>
@@ -138,7 +129,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             <Grid item md={12} sm={12} xs={12}>
 
               <Box pb={1}
-                onClick={() => appendcopayField(INITIAL_COPAY_VALUE)}
+                onClick={() => appendCopayField(INITIAL_COPAY_VALUE)}
                 className="billing-box" display="flex" alignItems="center" justifyContent="flex-end"
               >
                 <AddCircleOutline color='inherit' />
@@ -182,7 +173,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             addEmpty
             name="pricingProductType"
             label={PRICING_PRODUCT_TYPE}
-            value={EMPTY_OPTION}
             options={MAPPED_PRICING_PRODUCT_TYPE}
           />
         </Grid>

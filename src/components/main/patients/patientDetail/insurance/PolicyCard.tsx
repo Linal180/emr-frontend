@@ -1,8 +1,8 @@
 //packages import
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { Check } from '@material-ui/icons';
 import clsx from 'clsx';
-import { Box, Button, Grid, Typography, Stepper, Step, StepLabel, StepIconProps, colors } from "@material-ui/core";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
@@ -13,17 +13,23 @@ import TextLoader from "../../../../common/TextLoader";
 import PolicyAttachments from "./PolicyAttachments";
 import PolicyDetails from "./PolicyDetails";
 import PolicyHolderDetails from "./PolicyHolderDetails";
+import Alert from "../../../../common/Alert";
 //constants, types, utils import
-import { ADD_INSURANCE, ADD_INSURANCE_STEPS, CANCEL, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_AND_POLICIES, INSURANCE_CARD, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, POLICY_HOLDER_DETAILS, POLICY_INFORMATION, SAVE_TEXT } from "../../../../../constants";
-import { CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType, useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation } from "../../../../../generated/graphql";
+import { ChevronRightIcon } from "../../../../../assets/svgs";
+import {
+  ADD_INSURANCE, ADD_INSURANCE_STEPS, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
+  INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT,
+  ORDER_OF_BENEFIT, SAVE_TEXT
+} from "../../../../../constants";
+import {
+  CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
+  useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation
+} from "../../../../../generated/graphql";
 import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
+import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
+import { GREY_SIXTEEN } from "../../../../../theme";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
-import Alert from "../../../../common/Alert";
-import { GREY_SIXTEEN } from "../../../../../theme";
-import { CheckInConnector, useCheckInStepIconStyles, useInusranceStyles } from '../../../../../styles/checkInStyles';
-import { ChevronRightIcon } from "../../../../../assets/svgs";
-
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -41,16 +47,15 @@ const CheckInStepIcon = (props: StepIconProps) => {
 }
 
 const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit }) => {
-  const addInsuranceClasses = useInusranceStyles();
+  const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
   const [policyId, setPolicyId] = useState<string>('')
   const [policyHolderId, setPolicyHolderId] = useState<string>('')
   const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
   const [activeStep, setActiveStep] = useState(0);
-  const steps = ['Shipping address', 'Payment details', 'Review your order'];
-  const isLastStep = activeStep === steps.length - 1;
-
+  const [isFormLoaded, setIsFormLoaded] = useState<boolean>(true)
+  const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
     mode: "all",
@@ -59,7 +64,9 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, trigger, formState, watch } = methods;
+
+  console.log("watch", watch())
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
@@ -107,11 +114,11 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     }
   });
 
-  const [fetchPolicy, { loading: fetchPolicyLoading }] = useFetchPolicyLazyQuery({
+  const [fetchPolicy] = useFetchPolicyLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onCompleted(data) {
+    async onCompleted(data) {
       const { fetchPolicy } = data || {};
 
       if (fetchPolicy) {
@@ -131,6 +138,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
           }
         })
 
+        transformedCopayFields && setValue('copayFields', transformedCopayFields)
         coinsurancePercentage && setValue('coInsurancePercentage', coinsurancePercentage)
         expirationDate && setValue('expirationDate', expirationDate)
         groupNumber && setValue('policyNumber', groupNumber)
@@ -146,7 +154,6 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
           setValue('insuranceId', insuranceInfo)
         }
 
-        copays && setValue('copayFields', transformedCopayFields)
         primaryCareProvider && setValue('primaryCareProvider', setRecord(primaryCareProvider.id, `${primaryCareProvider.firstName} ${primaryCareProvider.lastName}`))
         referringProvider && setValue('referringProvider', setRecord(referringProvider.id, `${referringProvider.firstName} ${referringProvider.lastName}`))
         pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
@@ -167,21 +174,15 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
         setPolicyId(id ?? '')
         setPolicyHolderId(policyHolderIdToUpdate ?? '')
+        trigger()
+        setIsFormLoaded(false)
       }
     }
   });
 
-  useEffect(() => {
-    setActiveStep(activeStep)
-  }, [activeStep])
-
   const findPolicy = useCallback(async () => {
     try {
-      await fetchPolicy({
-        variables: {
-          id: id ?? ''
-        }
-      })
+      await fetchPolicy({ variables: { id: id ?? '' } })
     } catch (error) { }
   }, [fetchPolicy, id])
 
@@ -189,21 +190,33 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     isEdit && findPolicy()
   }, [findPolicy, isEdit]);
 
+  useEffect(() => {
+    if (activeStep === 0) {
+      trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber", "policyNumber", "issueDate", "expirationDate", "copayFields",
+        "coInsurancePercentage", "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
+    } else if (activeStep === 1) {
+      trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+    }
+  }, [activeStep, trigger])
 
+  const handleStepsValidation = useCallback(() => {
+    return !Object.keys(formState.errors).length
+  }, [formState.errors])
 
   const handleStep = (step: number) => {
-    setActiveStep(step);
+    const shouldProceed = handleStepsValidation()
+    shouldProceed && setActiveStep(step);
   };
 
   const handleBack = () => {
-    setActiveStep(activeStep - 1);
+    const shouldProceed = handleStepsValidation()
+    shouldProceed && setActiveStep(activeStep - 1);;
   };
 
   const handleForward = () => {
-    setActiveStep(activeStep + 1);
+    const shouldProceed = handleStepsValidation()
+    shouldProceed && setActiveStep(activeStep + 1);
   };
-
-
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
     const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields, dob, employer, expirationDate, firstName,
@@ -289,12 +302,6 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     }
   }
 
-  // useEffect(() => {
-  //   // orderOfBenefit?.id && setActiveStep(0)
-  //   console.log("pricingProductType?.id", pricingProductType?.id)
-  //   pricingProductType?.id && setActiveStep(1)
-  // }, [orderOfBenefit?.id, pricingProductType?.id, setActiveStep])
-
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -325,7 +332,6 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
             </Grid>
 
             <PolicyDetails isEdit={isEdit} />
-
           </>
         )
       case 1:
@@ -349,28 +355,23 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
             <Box display="flex" alignItems="center">
 
-              <Button type={isLastStep ? 'submit' : 'button'} onClick={isLastStep ? () => { } : handleForward} variant="contained" color="primary"> {isLastStep ? 'Place order' : NEXT}</Button>
+              <Button
+                type={'button'}
+                onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
+                variant="contained" color="primary"
+                disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
+                {isLastStep ? SAVE_TEXT : NEXT}
+              </Button>
 
               {activeStep !== 0 && (<>
                 <Box mr={1} />
                 <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
               </>
               )}
-
             </Box>
           </Box>
-          {isEdit && fetchPolicyLoading ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
+          {isEdit && isFormLoaded ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
             <Box p={2}>
-              {/* <Box pb={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-                <Typography variant='h4'>{INSURANCE_AND_POLICIES}</Typography>
-
-                <Box display="flex" alignItems="center">
-                  <Button variant="outlined" color="inherit" className="danger" onClick={() => setPolicyToEdit && setPolicyToEdit('')}>{CANCEL}</Button>
-                  <Box p={1} />
-                  <Button type='submit' variant='contained' color='primary' disabled={createPolicyLoading || updatePolicyLoading}>{SAVE_TEXT}</Button>
-                </Box>
-              </Box> */}
-
               <Box className={addInsuranceClasses.checkInProfileBox}>
                 <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
                   {ADD_INSURANCE_STEPS.map((label, index) => (
@@ -393,7 +394,6 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
                    <Typography>{getStepContent(activeStep)}</Typography>
                  </Box>
               </Box>
-
             </Box>}
         </form>
       </FormProvider>

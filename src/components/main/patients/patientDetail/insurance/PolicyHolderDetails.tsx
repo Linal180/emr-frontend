@@ -20,7 +20,7 @@ import { setRecord } from "../../../../../utils";
 
 const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { id: patientId } = useParams<ParamsType>()
-  const { watch, setValue } = useFormContext<InsuranceCreateInput>()
+  const { watch, setValue, trigger } = useFormContext<InsuranceCreateInput>()
   const { patientRelationship } = watch()
   const { id: patientRelationshipValue } = patientRelationship ?? {}
 
@@ -56,24 +56,9 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       state && setValue('state', setRecord(state, state))
       gender && setValue('sex', setRecord(gender, gender))
       ssn && setValue('ssn', ssn)
-    } else {
-      if (!isEdit) {
-        setValue('employer', '')
-        setValue('suffix', '')
-        setValue('firstName', '')
-        setValue('middleName', '')
-        setValue('lastName', '')
-        setValue('zipCode', '')
-        setValue('city', '')
-        setValue('address', '')
-        setValue('addressCTD', '')
-        setValue('dob', undefined)
-        setValue('state', setRecord('', ''))
-        setValue('sex', setRecord('', ''))
-        setValue('ssn', '')
-      }
+      trigger()
     }
-  }, [getPatient, isEdit, patientRelationshipValue, setValue])
+  }, [getPatient, patientRelationshipValue, setValue, trigger])
 
   useEffect(() => {
     handlePolicyHolderSelfRelation()
