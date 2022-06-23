@@ -826,6 +826,18 @@ body .MuiTabPanel-root {
   pointer-events: none;
 }
 
+.toggle-main .MuiSwitch-thumb
+ {
+  background-color: #204ECF !important;
+}
+
+.dialog-box {
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {

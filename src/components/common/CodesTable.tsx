@@ -18,6 +18,7 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">{title}</Typography>
         </Box>
+        
         <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>

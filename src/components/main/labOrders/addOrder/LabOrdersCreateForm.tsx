@@ -16,9 +16,9 @@ import InputController from '../../../../controller';
 // interfaces, graphql, constants block
 import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, CREATE_LAB_ORDER,
-  DIAGNOSES, EMPTY_MULTISELECT_OPTION, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, STATUS,
-  TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
+  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, CREATE_LAB_ORDER, DIAGNOSES, EMPTY_MULTISELECT_OPTION, EMPTY_OPTION, 
+  LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, 
+  TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
@@ -131,156 +131,6 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card className='overflowVisible'>
             <Box p={2}>
-              <Grid container spacing={3}>
-                <Grid item md={12} sm={12} xs={12}>
-                  {appointmentInfo ? renderItem(APPOINTMENT_TEXT, appointmentInfo.name) :
-                    <AppointmentSelector
-                      label={APPOINTMENT_TEXT}
-                      name="appointment"
-                      addEmpty
-                      patientId={patientId}
-                    />}
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="labTestStatus"
-                    label={STATUS}
-                    value={EMPTY_OPTION}
-                    options={LAB_TEST_STATUSES}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  {testFields.map((_, index) => {
-                    return (
-                      <Box mb={4}>
-                        <Card>
-                          <Box p={2}>
-                            <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
-                              <Typography variant='h4'>{TEST}</Typography>
-
-                              {!!(testFields.length > 1 && index !== 0) && <Button onClick={() => removeTestField(index)} type="submit" variant="outlined" color="inherit" className='danger'>
-                                {REMOVE_TEST}
-                              </Button>}
-                            </Box>
-
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                <TestsSelector
-                                  label={TEST}
-                                  name={`testField.${index}.test`}
-                                  addEmpty
-                                />
-                              </Grid>
-
-                              <Grid item md={3} sm={12} xs={12}>
-                                <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
-                              </Grid>
-
-                              <Grid item md={3} sm={12} xs={12}>
-                                <TimePicker
-                                  isRequired
-                                  label={TEST_TIME}
-                                  name={`testField.${index}.testTime`}
-                                />
-                              </Grid>
-
-                              <Grid item md={12} sm={12} xs={12}>
-                                <InputController
-                                  multiline
-                                  fieldType="text"
-                                  controllerName={`testField.${index}.testNotes`}
-                                  controllerLabel={TEST_NOTES}
-                                />
-                              </Grid>
-
-                              <Grid item md={12} sm={12} xs={12}>
-                                <LabOrdersSpecimenTypeForm index={index} />
-                              </Grid>
-                            </Grid>
-                          </Box>
-                        </Card>
-                      </Box>
-                    )
-                  })}
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-
-          <Box p={2} />
-
-          {testFields.map((_, index) => {
-            return (
-              <Box mb={4}>
-                <Card>
-                  <Box p={2}>
-                    <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
-                      <Typography variant='h4'>{TEST}</Typography>
-
-                      {!!(testFields.length > 1 && index !== 0) && <Button onClick={() => removeTestField(index)} type="submit" variant="outlined" color="inherit" className='danger'>
-                        {REMOVE_TEST}
-                      </Button>}
-                    </Box>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <TestsSelector
-                          label={TEST}
-                          name={`testField.${index}.test`}
-                          addEmpty
-                        />
-                      </Grid>
-
-                      <Grid item md={3} sm={12} xs={12}>
-                        <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
-                      </Grid>
-
-                      <Grid item md={3} sm={12} xs={12}>
-                        <TimePicker
-                          isRequired
-                          label={TEST_TIME}
-                          name={`testField.${index}.testTime`}
-                        />
-                      </Grid>
-
-                      <Grid item md={12} sm={12} xs={12}>
-                        <InputController
-                          multiline
-                          fieldType="text"
-                          controllerName={`testField.${index}.testNotes`}
-                          controllerLabel={TEST_NOTES}
-                        />
-                      </Grid>
-
-                      <Grid item md={12} sm={12} xs={12}>
-                        <LabOrdersSpecimenTypeForm index={index} />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Card>
-              </Box>
-            )
-          })}
-
-          <Box display='flex' justifyContent='flex-end'>
-            <Button onClick={() => appendTestField(TEST_FIELD_INITIAL_VALUES)} type="submit" variant="outlined" color="secondary">
-              {ADD_ANOTHER_TEST}
-            </Button>
-          </Box>
-
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </form>
-      </FormProvider>
-
-
-      {/* <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className='overflowVisible'>
-            <Box p={2}>
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
               </Box>
@@ -382,7 +232,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
             {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </form>
-      </FormProvider> */}
+      </FormProvider>
     </>
   );
 };

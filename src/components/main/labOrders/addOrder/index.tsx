@@ -2,14 +2,14 @@
 import clsx from 'clsx';
 import { Box, Button, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { FC, useState } from 'react';
-import { LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT, SUBMIT } from '../../../../constants';
+import { BACK_TEXT, LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT, } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
-import LabOrdersCreateForm from './LabOrdersCreateForm';
-import LabOrdersProviderForm from './LabOrdersProviderForm';
 import { Check, ChevronRight } from '@material-ui/icons';
-import BillingComponent from '../../checkIn/BillingComponent';
 import { useLabOrderStyles } from '../../../../styles/labOrderStyles';
 import { GREY_SIXTEEN } from '../../../../theme';
+import TestsComponent from './Tests';
+import LabOrderComponent from './LabOrder';
+import PaymentsComponent from './Payments';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -38,37 +38,41 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CreateOrderForm />
+        return <LabOrderComponent />
       case 1:
-        return <ProviderOrderForm />
+        return <TestsComponent />
       case 2:
-        return <BillingComponent submitButtonText={SUBMIT} labOrderNumber={labOrderNumber} />
+        return <PaymentsComponent />
       default:
         return 'Unknown step';
     }
   }
 
-  const handleBack = () => {
-    setActiveStep(activeStep - 1);
-  };
-  const handleForward = () => {
-    setActiveStep(activeStep + 1);
-  };
+  // const handleBack = () => {
+  //   setActiveStep(activeStep - 1);
+  // };
+  // const handleForward = () => {
+  //   setActiveStep(activeStep + 1);
+  // };
 
-  const CreateOrderForm = () => <LabOrdersCreateForm handleStep={handleStep} />
+  // const CreateOrderForm = () => <LabOrdersCreateForm handleStep={handleStep} />
 
-  const ProviderOrderForm = () => <LabOrdersProviderForm labOrderNumber={labOrderNumber} handleStep={handleStep} />
+  // const ProviderOrderForm = () => <LabOrdersProviderForm labOrderNumber={labOrderNumber} handleStep={handleStep} />
 
   return (
 
-    <Box maxWidth={500} style={{ border: '1px solid red' }}>
+    <Box maxWidth={560}>
       <Box
         display="flex" justifyContent="space-between" alignItems="center"
         borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
       >
         <Typography variant='h3'>{NEW_LAB_ORDER}</Typography>
 
-        <Button type="submit" variant="contained" color="primary">{NEXT}</Button>
+        <Box display='flex' alignItems='center'>
+          <Button variant="outlined" color="secondary">{BACK_TEXT}</Button>
+          <Box p={1} />
+          <Button type="submit" variant="contained" color="primary">{NEXT}</Button>
+        </Box>
       </Box>
 
       <Box className={labOrderClasses.labOrderBox}>
@@ -89,7 +93,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
 
       <Box p={2} />
 
-      <Box>
+      <Box maxHeight="calc(100vh - 170px)" className="overflowY-auto">
         <Typography>{getStepContent(activeStep)}</Typography>
       </Box>
     </Box>
