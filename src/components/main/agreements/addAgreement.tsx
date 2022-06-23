@@ -106,7 +106,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
       if (fetchAgreementResults) {
         const { agreement } = fetchAgreementResults
         const { body, signatureRequired, title, viewAgreementBeforeAgreeing } = agreement ?? {}
-        console.log('agreement', agreement)
+
         body && setAgreementBody(body)
         title && setValue('title', title)
         setSignatureRequired(signatureRequired ?? false)
