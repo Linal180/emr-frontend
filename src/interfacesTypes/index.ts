@@ -370,6 +370,7 @@ export interface SelectorProps {
   error?: string
   focus?: boolean
   isEdit?: boolean
+  loading?: boolean
   disabled?: boolean
   addEmpty?: boolean
   isRequired?: boolean
@@ -432,6 +433,7 @@ export type updatePasswordInputs = ResetPasswordInputs & {
 interface IControlLabel {
   info?: string;
   error?: string;
+  loading?: boolean;
   fieldType?: string;
   disabled?: boolean;
   className?: string;
@@ -460,6 +462,15 @@ export type SubMenuTypes = {
   name: string;
   link: string | null;
 };
+
+export interface PhoneInputProps {
+  label: string;
+  error?: string;
+  loading?: boolean;
+  isRequired?: boolean;
+  name: PhoneInputTypes;
+  disabled?: boolean;
+}
 
 export interface CustomInputControlProps extends IControlLabel {
   info?: string;
@@ -519,11 +530,12 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
-  isRequired?: boolean;
-  clearable?: boolean;
-  disableFuture?: boolean;
+  loading?: boolean;
   disabled?: boolean;
+  clearable?: boolean;
+  isRequired?: boolean;
   disablePast?: boolean;
+  disableFuture?: boolean;
 }
 
 export interface TimePickerProps {
@@ -908,14 +920,6 @@ type PhoneInputTypes =
   | "guarantorPhone"
   | "pager"
   | "userPhone";
-
-export interface PhoneInputProps {
-  label: string;
-  error?: string;
-  isRequired?: boolean;
-  name: PhoneInputTypes;
-  disabled?: boolean;
-}
 
 export interface DropzoneImageType {
   itemId: string;

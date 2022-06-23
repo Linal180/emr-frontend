@@ -34,23 +34,26 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
   const { id: selectedFacilityId } = facility || {};
+
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
     activeStep, patientId, optionalEmail
   } = state
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
+
   const { handleSubmit, setValue, watch } = methods;
   const {
-    // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
 
@@ -85,17 +88,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
             if (facilityId) {
               fetchAllDoctorList(facilityId)
-              name && setValue("facilityId", setRecord(facilityId, name))
+              name && setValue("facilityId", setRecord(facilityId, name, false))
               dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
           if (doctorPatients) {
-            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
+            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) =>
+              doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
 
             if (doesPrimaryProviderExist) {
               const { doctor } = doesPrimaryProviderExist ?? {}
               const { firstName, lastName, id } = doctor ?? {}
+
               setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             } else {
@@ -103,6 +108,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               if (currentDoctorPatients) {
                 const { doctor } = currentDoctorPatients || {};
                 const { firstName, lastName, id } = doctor ?? {}
+                
                 setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
                 dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
               }
