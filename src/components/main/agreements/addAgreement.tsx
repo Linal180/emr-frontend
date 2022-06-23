@@ -29,14 +29,15 @@ import { useChartingStyles } from '../../../styles/chartingStyles';
 
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const chartingClasses = useChartingStyles()
+  const descriptionTypes = ['Text Editor', 'File Upload']
   const [files, setFiles] = useState<File[]>();
   const [signatureRequired, setSignatureRequired] = useState<boolean>(false)
   const [viewAgreementBeforeAgreeing, setViewAgreementBeforeAgreeing] = useState<boolean>(false)
   const [agreementBody, setAgreementBody] = useState<string>('')
   const [agreementId, setAgreementId] = useState<string>('')
-  const descriptionTypes = ['Text Editor', 'File Upload']
   const [descriptionType, setDescriptionType] = useState<string>(descriptionTypes[0])
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
+  const [withFile, setWithFile] = useState<boolean>(false)
   const { id } = useParams<ParamsType>()
 
   const dropZoneRef = useRef<FormForwardRef>(null)
@@ -106,7 +107,9 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
       if (fetchAgreementResults) {
         const { agreement } = fetchAgreementResults
         const { body, signatureRequired, title, viewAgreementBeforeAgreeing } = agreement ?? {}
-        console.log('agreement', agreement)
+        if (!body) {
+          setWithFile(true)
+        }
         body && setAgreementBody(body)
         title && setValue('title', title)
         setSignatureRequired(signatureRequired ?? false)
@@ -127,23 +130,39 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   }, [findAgreement, id])
 
   const onSubmit: SubmitHandler<CreateAgreementFormProps> = async ({ title }) => {
+    if (id) {
+      if (withFile) {
+        return await updateAgreement({
+          variables: {
+            updateAgreementInput: {
+              id,
+              title: title,
+              signatureRequired,
+              viewAgreementBeforeAgreeing
+            }
+          },
+        });
+      }
+
+      if (agreementBody.length) {
+        return await updateAgreement({
+          variables: {
+            updateAgreementInput: {
+              id,
+              title: title,
+              body: agreementBody,
+              signatureRequired,
+              viewAgreementBeforeAgreeing
+            }
+          },
+        });
+      }
+    }
+
     if ((descriptionType === descriptionTypes[0] && !agreementBody.length) || (descriptionType === descriptionTypes[1] && !files?.length)) {
       return
     }
 
-    if (id) {
-      return await updateAgreement({
-        variables: {
-          updateAgreementInput: {
-            id,
-            body: agreementBody,
-            title: title,
-            signatureRequired,
-            viewAgreementBeforeAgreeing
-          }
-        },
-      });
-    }
     await createAgreement({
       variables: {
         createAgreementInput: {
@@ -196,7 +215,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         controllerLabel={TITLE}
                       />
                     </Grid>
-                    <Grid item md={12} sm={12} xs={12}>
+                    {!id ? <Grid item md={12} sm={12} xs={12}>
                       <Typography variant='body1'>Description Type</Typography>
 
                       <Box className={chartingClasses.toggleProblem}>
@@ -210,17 +229,18 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                           )}
                         </Box>
                       </Box>
-                    </Grid>
+                    </Grid> : null}
 
-                    {descriptionType === descriptionTypes[0] && <Grid item md={12} sm={12} xs={12}>
+                    {descriptionType === descriptionTypes[0] && !withFile && <Grid item md={12} sm={12} xs={12}>
                       <Typography>{AGREEMENT_BODY}</Typography>
                       <Box p={0.5} />
                       {
-                        id ? agreementBody && <CKEditor
-                          name="agreementBody"
-                          initData={agreementBody}
-                          onChange={onEditorChange}
-                        /> :
+                        id ? !isLoaded &&
+                          <CKEditor
+                            name="agreementBody"
+                            initData={agreementBody}
+                            onChange={onEditorChange}
+                          /> :
                           <CKEditor
                             name="agreementBody"
                             initData={agreementBody}
@@ -232,7 +252,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
                     <Box p={2} />
 
-                    {descriptionType === descriptionTypes[1] && <Grid item md={12} sm={12} xs={12}>
+                    {!id ? descriptionType === descriptionTypes[1] && <Grid item md={12} sm={12} xs={12}>
                       <DropzoneImage
                         isEdit={false}
                         ref={dropZoneRef}
@@ -250,7 +270,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
                       />
                       {!files?.length ? <Typography className='danger' variant="caption">Please select atleast one file</Typography> : ''}
-                    </Grid>}
+                    </Grid> : null}
                     <Grid item md={12} sm={12} xs={12}>
                       <FormGroup>
                         <FormControlLabel

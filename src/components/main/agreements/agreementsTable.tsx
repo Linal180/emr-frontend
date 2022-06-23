@@ -1,38 +1,37 @@
 // packages block
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 // components block
-import Search from '../../common/Search';
+import history from '../../../history';
 import Alert from '../../common/Alert';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
+import Search from '../../common/Search';
 import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
 import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT } from '../../../constants';
-import { AgreementsPayload, useFetchAllAgreementsLazyQuery, useRemoveAgreementMutation } from '../../../generated/graphql';
+import { useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation } from '../../../generated/graphql';
 import { GeneralFormProps } from '../../../interfacesTypes';
+import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { useTableStyles } from '../../../styles/tableStyles';
 import { WHITE } from '../../../theme';
 import { convertDateFromUnix, renderTh } from '../../../utils';
+import DocViewer from './DocViewer';
+import { Link } from 'react-router-dom';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
-  const [agreements, setAgreements] = useState<AgreementsPayload['agreements']>([])
-  const [pages, setPages] = useState<number>(0)
-  const [page, setPage] = useState<number>(1)
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [agreementToRemove, setAgreementToRemove] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
+  const { agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery } = state
 
-  const search = (query: string) => { 
-    setSearchQuery(query)
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
   };
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) => {
-    setPage(page)
+    dispatch({ type: ActionType.SET_PAGE, page: page })
   }
 
   const [fetchAllAgreements, { loading, error }] = useFetchAllAgreementsLazyQuery({
@@ -41,7 +40,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError() {
-      setAgreements([])
+      dispatch({ type: ActionType.SET_AGREEMENTS, agreements: [] })
     },
 
     onCompleted(data) {
@@ -53,10 +52,10 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         if (pagination) {
           const { totalPages } = pagination
 
-          typeof totalPages === 'number' && setPages(totalPages)
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_PAGES, pages: totalPages })
         }
 
-        agreements && setAgreements(agreements)
+        agreements && dispatch({ type: ActionType.SET_AGREEMENTS, agreements: agreements })
 
       }
     }
@@ -92,7 +91,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
           message && Alert.success(message);
           try {
-            setOpenDelete(false)
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await fetchAgreements()
           } catch (error) { }
         }
@@ -106,8 +105,8 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setAgreementToRemove(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -120,6 +119,53 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
       })
     }
   };
+
+  const [getAttachments] = useGetAttachmentsByAgreementIdLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null;
+    },
+
+    async onCompleted(data) {
+      if (data) {
+        const { getAttachmentsByAgreementId } = data
+
+        if (getAttachmentsByAgreementId) {
+          const { attachmentsWithPreSignedUrl } = getAttachmentsByAgreementId
+          const { preSignedUrl } = attachmentsWithPreSignedUrl?.[0] ?? {}
+          if (preSignedUrl) {
+            dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: preSignedUrl })
+            dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: true })
+          }
+        }
+
+      }
+    },
+  })
+
+  const handleTitleClick = async (id: string, body?: string | null) => {
+    if (body?.length) {
+      history.push(`${AGREEMENTS_ROUTE}/${id}`)
+      return
+    }
+
+    await getAttachments({
+      variables: {
+        getAttachmentsByAgreementId: {
+          agreementId: id,
+          typeId: id
+        }
+      },
+    })
+  }
+
+  const handleModalClose = () => {
+    dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: false })
+    dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: '' })
+  }
 
   return (
     <>
@@ -149,10 +195,14 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                 </TableRow>
               ) : (
                 agreements?.map((agreement) => {
-                  const { title, createdAt, id } = agreement ?? {}
+                  const { title, createdAt, id, body } = agreement ?? {}
                   return (
                     <TableRow>
-                      <TableCell scope="row">{title}</TableCell>
+                      <TableCell scope="row" >
+                        <Button onClick={() => id && handleTitleClick(id, body)} variant="text">
+                          {title}
+                        </Button>
+                      </TableCell>
                       <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -161,7 +211,6 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                               <EditNewIcon />
                             </Box>
                           </Link>
-
                           <Box className={classes.iconsBackground}
                             onClick={() => id && onDeleteClick(id)}
                           >
@@ -190,7 +239,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         isLoading={deleteAgreementLoading}
         description={DELETE_AGREEMENT_DESCRIPTION}
         handleDelete={handleAgreementDelete}
-        setOpen={(open: boolean) => setOpenDelete(open)}
+        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
       {pages > 1 && (
@@ -204,6 +253,15 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           />
         </Box>
       )}
+
+      {
+        isFileModalOpen && <DocViewer
+          handleClose={handleModalClose}
+          isOpen={isFileModalOpen}
+          url={agreementUrl}
+          title="Agreement"
+        />
+      }
     </>
   )
 }

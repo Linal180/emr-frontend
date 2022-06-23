@@ -330,6 +330,29 @@ export enum AttachmentType {
   Lab = 'lab'
 }
 
+export type AttachmentWithPreSignedUrl = {
+  __typename?: 'AttachmentWithPreSignedUrl';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
+  attachmentName?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  preSignedUrl?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  type: AttachmentType;
+  typeId: Scalars['String'];
+  updatedAt: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+};
+
+export type AttachmentWithPreSignedUrlPayload = {
+  __typename?: 'AttachmentWithPreSignedUrlPayload';
+  attachmentsWithPreSignedUrl?: Maybe<Array<AttachmentWithPreSignedUrl>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type AttachmentsPayload = {
   __typename?: 'AttachmentsPayload';
   attachments?: Maybe<Array<Maybe<Attachment>>>;
@@ -1559,6 +1582,11 @@ export type GetAppointments = {
 };
 
 export type GetAttachment = {
+  typeId: Scalars['String'];
+};
+
+export type GetAttachmentsByAgreementId = {
+  agreementId: Scalars['String'];
   typeId: Scalars['String'];
 };
 
@@ -3409,6 +3437,7 @@ export type Query = {
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentsPayload;
   getContact: ContactPayload;
@@ -3692,6 +3721,11 @@ export type QueryGetAttachmentArgs = {
 
 export type QueryGetAttachmentsArgs = {
   getAttachment: GetAttachment;
+};
+
+
+export type QueryGetAttachmentsByAgreementIdArgs = {
+  getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
 };
 
 
@@ -5409,6 +5443,13 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 
 
 export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
+
+export type GetAttachmentsByAgreementIdQueryVariables = Exact<{
+  getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
+}>;
+
+
+export type GetAttachmentsByAgreementIdQuery = { __typename?: 'Query', getAttachmentsByAgreementId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, preSignedUrl?: string | null, type: AttachmentType, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, agreementId?: string | null } | null }> | null } };
 
 export type FetchDocumentTypeByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -7534,6 +7575,54 @@ export function useGetAttachmentsByPolicyIdLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetAttachmentsByPolicyIdQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdQuery>;
 export type GetAttachmentsByPolicyIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByPolicyIdLazyQuery>;
 export type GetAttachmentsByPolicyIdQueryResult = Apollo.QueryResult<GetAttachmentsByPolicyIdQuery, GetAttachmentsByPolicyIdQueryVariables>;
+export const GetAttachmentsByAgreementIdDocument = gql`
+    query GetAttachmentsByAgreementId($getAttachmentsByAgreementId: GetAttachmentsByAgreementId!) {
+  getAttachmentsByAgreementId(
+    getAttachmentsByAgreementId: $getAttachmentsByAgreementId
+  ) {
+    attachmentsWithPreSignedUrl {
+      id
+      title
+      attachmentName
+      url
+      preSignedUrl
+      type
+      attachmentMetadata {
+        comments
+        agreementId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttachmentsByAgreementIdQuery__
+ *
+ * To run a query within a React component, call `useGetAttachmentsByAgreementIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttachmentsByAgreementIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttachmentsByAgreementIdQuery({
+ *   variables: {
+ *      getAttachmentsByAgreementId: // value for 'getAttachmentsByAgreementId'
+ *   },
+ * });
+ */
+export function useGetAttachmentsByAgreementIdQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>(GetAttachmentsByAgreementIdDocument, options);
+      }
+export function useGetAttachmentsByAgreementIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>(GetAttachmentsByAgreementIdDocument, options);
+        }
+export type GetAttachmentsByAgreementIdQueryHookResult = ReturnType<typeof useGetAttachmentsByAgreementIdQuery>;
+export type GetAttachmentsByAgreementIdLazyQueryHookResult = ReturnType<typeof useGetAttachmentsByAgreementIdLazyQuery>;
+export type GetAttachmentsByAgreementIdQueryResult = Apollo.QueryResult<GetAttachmentsByAgreementIdQuery, GetAttachmentsByAgreementIdQueryVariables>;
 export const FetchDocumentTypeByNameDocument = gql`
     query FetchDocumentTypeByName($name: String!) {
   fetchDocumentTypeByName(name: $name) {

@@ -143,6 +143,24 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
   }
 }
 
+query GetAttachmentsByAgreementId($getAttachmentsByAgreementId: GetAttachmentsByAgreementId!) {
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: $getAttachmentsByAgreementId) {
+     attachmentsWithPreSignedUrl{
+      id
+      title
+      attachmentName
+      url
+      preSignedUrl
+      type
+
+      attachmentMetadata{
+        comments
+        agreementId
+      }
+    }
+  }
+}
+
 query FetchDocumentTypeByName($name: String!) {
   fetchDocumentTypeByName(name: $name) {
     documentType{
