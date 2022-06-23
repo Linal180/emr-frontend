@@ -89,7 +89,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             if (facilityId) {
               fetchAllDoctorList(facilityId)
               name && setValue("facilityId", setRecord(facilityId, name, false))
-              console.log("<<<<<<<<<<<<<<", setRecord(facilityId, name, false))
               dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
