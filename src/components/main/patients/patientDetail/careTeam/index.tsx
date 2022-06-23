@@ -1,5 +1,7 @@
 // packages block
 import { Box, Card, Typography } from "@material-ui/core";
+//components block
+import NoDataComponent from "../../../../common/NoDataComponent";
 // common block
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // constants block
@@ -11,7 +13,6 @@ import { CareTeamsProps } from "../../../../../interfacesTypes";
 import { AddSlotIcon, EditNewIcon } from "../../../../../assets/svgs";
 import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 import { ActionType } from "../../../../../reducers/patientReducer";
-import NoDataComponent from "../../../../common/NoDataComponent";
 
 const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, onEdit,
   patientDispatcher, providerBtn, isEditable }: CareTeamsProps): JSX.Element => {
@@ -33,10 +34,10 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
   return (
     <Card className="card-box-shadow">
       <Box p={4}>
-
         <Box mb={2}>
           <Typography variant="h3" >{CARE_TEAM}</Typography>
         </Box>
+
         {(loading) ? (
           <ViewDataLoader columns={12} rows={2} />
         ) : (patientProvidersData?.map((item) => {
@@ -59,22 +60,19 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
                     <Typography variant="body1">{email}</Typography>
                   </Box>
                   {
-                    !!isEditable&& 
+                    !!isEditable &&
                     <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
                       <EditNewIcon />
                     </Box>
                   }
                 </Box>
-
                 {relation && <Box className={classes.status} component='span' color={BLUE_FOUR}>
                   {formatValue(relation as string)}
                 </Box>}
               </Box>
-
               {
-                !providerBtn&&!patientProvidersData?.length&&<NoDataComponent />
+                !providerBtn && !patientProvidersData?.length && <NoDataComponent />
               }
-
             </>
           )
         }))}
@@ -84,7 +82,6 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
             <Box mr={2}>
               <AddSlotIcon />
             </Box>
-
             <Box>
               <Typography variant="h6">
                 {ADD_PROVIDER_TEXT}
@@ -96,7 +93,6 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
             </Box>
           </Box>
         }
-
       </Box>
     </Card>
   )
