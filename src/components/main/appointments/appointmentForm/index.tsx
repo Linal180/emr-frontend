@@ -35,7 +35,7 @@ import { appointmentSchema, providerAppointmentSchema } from '../../../../valida
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  filterSlots, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -100,6 +100,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     patientId: selectedPatient, scheduleStartDateTime
   } = watch();
   const { value: selectedService } = selectedServiceId ?? {}
+  const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -584,11 +586,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <ul className={classes.timeSlots}>
                         {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                           const { startTime, endTime } = slot || {}
+                          const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
+
                           return (
-                            <li  key={index}>
+                            <li key={index}>
                               <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
-                                bgcolor={startTime === scheduleStartDateTime ? GREY_TWO : WHITE}
-                                color={startTime === scheduleStartDateTime ? WHITE : BLACK_FOUR} 
+                                bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
+                                color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
                                 {getStandardTime(new Date(startTime || '').getTime().toString())} -
