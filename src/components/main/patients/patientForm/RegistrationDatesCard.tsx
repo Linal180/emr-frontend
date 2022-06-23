@@ -44,7 +44,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
   }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   useEffect(() => {
-    selectedFacility && selectedFacilityName && setValue("facilityId", setRecord(selectedFacility, selectedFacilityName))
+    selectedFacility && selectedFacilityName && setValue("facilityId", setRecord(selectedFacility, selectedFacilityName, false))
   }, [selectedFacility, selectedFacilityName, setValue, watch])
 
   return (
