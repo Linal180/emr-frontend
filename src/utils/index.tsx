@@ -687,6 +687,15 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getStandardTimeByMoment = (timestamp: string) => {
+  if (!timestamp) return "";
+  const date = new Date(parseInt(timestamp)).setDate((new Date().getDate()) - 1)
+  const parsedDate = new Date(date).toISOString()
+  const newDate = moment(parsedDate).local().toString()
+  const d = moment(newDate).format()
+  return d
+};
+
 export const getTimeString = (timestamp: string) => {
   if (!timestamp) return "";
 
