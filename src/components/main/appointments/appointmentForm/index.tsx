@@ -586,7 +586,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           const { startTime, endTime } = slot || {}
                           return (
                             <li  key={index}>
-                              <Box p={2} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={4}
+                              <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
                                 bgcolor={startTime === scheduleStartDateTime ? GREY_TWO : WHITE}
                                 color={startTime === scheduleStartDateTime ? WHITE : BLACK_FOUR} 
                                 className={classes.timeSlot}
