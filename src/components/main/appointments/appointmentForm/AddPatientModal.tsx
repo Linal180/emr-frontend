@@ -41,7 +41,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
     resolver: yupResolver((isSuper || isPracAdmin) ?
       extendedPatientAppointmentWithNonAdminSchema : extendedPatientAppointmentSchema)
   });
-  
+
   const { reset, handleSubmit } = methods;
 
   const handleClose = useCallback(() => {
@@ -103,39 +103,39 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         deceasedDate: '', registrationDate: '', statementNoteDateTo: '', statementNoteDateFrom: '',
         suffix: '', firstName, middleName: '', lastName, firstNameUsed: '', prefferedName: '', previousFirstName: '',
         facilityId: facilityId || '', callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, practiceId,
-        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No, 
+        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
-        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male, 
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male, genderIdentity: Genderidentity.Male,
-        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, 
+        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None,
         statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '', holdStatement: Holdstatement.None,
       };
 
       const contactInput = {
-        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone, 
-        mobile: basicMobile, address2: '', address: '', contactType: ContactType.Self, 
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone,
+        mobile: basicMobile, address2: '', address: '', contactType: ContactType.Self,
         country: '', primaryContact: true,
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: '', phone: '', mobile: '', primaryContact: false, 
+        contactType: ContactType.Emergency, name: '', phone: '', mobile: '', primaryContact: false,
         relationship: RelationshipType.Other,
       };
 
       const guarantorContactInput = {
         firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
         relationship: RelationshipType.Other, employerName: '', address2: '', zipCode: '', city: '',
-         state: '', phone: '', suffix: '', country: '', userId: userId, ssn: SSN_FORMAT, address: '',
-         primaryContact: false, 
+        state: '', phone: '', suffix: '', country: '', userId: userId, ssn: SSN_FORMAT, address: '',
+        primaryContact: false,
       };
 
       const guardianContactInput = {
-        firstName: '', middleName: '', userId: userId, primaryContact: false, lastName: '', 
+        firstName: '', middleName: '', userId: userId, primaryContact: false, lastName: '',
         contactType: ContactType.Guardian, suffix: '',
       };
 
       const nextOfKinContactInput = {
-        contactType: ContactType.NextOfKin, name: '', phone: '', relationship: RelationshipType.Other, 
+        contactType: ContactType.NextOfKin, name: '', phone: '', relationship: RelationshipType.Other,
         mobile: '', primaryContact: false,
       };
 
@@ -214,6 +214,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
               <Grid item md={6} sm={12} xs={12}>
                 <Selector
+                  isRequired
                   name="sexAtBirth"
                   label={SEX}
                   value={EMPTY_OPTION}
