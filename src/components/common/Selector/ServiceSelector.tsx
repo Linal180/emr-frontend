@@ -1,13 +1,13 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import Select, { GroupBase, OptionsOrGroups } from 'react-select';
-import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // utils and interfaces/types block
 import { AuthContext } from "../../../context";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
 import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderMultiServices, requiredLabel } from "../../../utils";
 
 const ServicesSelector: FC<ServiceSelectorInterface> = ({
@@ -16,11 +16,13 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
   const [values, setValues] = useState<multiOptionType[] | multiOptionType>([])
+
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {}
   const { id: userFacilityId, practiceId } = facility || {}
+
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
 
   const [findAllService,] = useFindAllServiceListLazyQuery({
@@ -37,7 +39,6 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
       if (findAllServices) {
         const { services } = findAllServices
         services && setOptions(renderMultiServices(services as ServicesPayload['services']))
-
       }
     }
   });
@@ -46,10 +47,10 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       const servicesInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
+        isPracticeUser ? { practiceId, ...pageInputs } :
           isFacAdmin ? { userFacilityId, ...pageInputs } : undefined
 
-      if (shouldEmitFacilityId) {
+      if (!!shouldEmitFacilityId) {
         await findAllService({
           variables: {
             serviceInput: {
@@ -63,23 +64,17 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
           variables: {
             serviceInput: {
               ...pageInputs, isActive: true, serviceName: query,
-              facilityId: facilityId
+              facilityId: !!facilityId ? facilityId : userFacilityId
             }
           }
         })
       }
 
     } catch (error) { }
-  }, [isSuper, isPracAdmin, practiceId, isFacAdmin, userFacilityId, shouldEmitFacilityId, findAllService, facilityId])
+  }, [isSuper, isPracticeUser, practiceId, isFacAdmin, userFacilityId, shouldEmitFacilityId, findAllService, facilityId])
 
-  useEffect(() => {
-    fetchAllServices('')
-  }, [fetchAllServices]);
-
-  useEffect(() => {
-    setOptions([])
-  }, [facilityId])
-
+  useEffect(() => { fetchAllServices('') }, [fetchAllServices]);
+  useEffect(() => { setOptions([]) }, [facilityId])
 
   useEffect(() => {
     if (isEdit) {

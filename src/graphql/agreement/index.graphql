@@ -1,0 +1,78 @@
+query FetchAllAgreements($agreementPaginationInput: AgreementPaginationInput!){
+  fetchAllAgreements(agreementPaginationInput: $agreementPaginationInput){
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    agreements {
+      id
+      title
+      body
+      createdAt
+    }
+  }
+}
+
+query FetchAgreement($agreementId: String!){
+  fetchAgreement(agreementId: $agreementId){
+    response {
+      error
+      status
+      message
+    }
+
+    agreement {
+      id
+      title
+      body
+      viewAgreementBeforeAgreeing
+      signatureRequired
+      createdAt
+    }
+  }
+}
+
+mutation CreateAgreement($createAgreementInput: AgreementInput!){
+  createAgreement(createAgreementInput: $createAgreementInput){
+    agreement {
+      id
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateAgreement($updateAgreementInput: UpdateAgreementInput!){
+  updateAgreement(updateAgreementInput: $updateAgreementInput){
+    agreement {
+      id
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveAgreement($agreementId: String!){
+  removeAgreement(agreementId: $agreementId){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

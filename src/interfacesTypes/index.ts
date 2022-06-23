@@ -921,7 +921,7 @@ export interface DropzoneImageType {
   itemId: string;
   title: string;
   isEdit?: boolean;
-  filesLimit: number;
+  filesLimit?: number;
   isProfile?: boolean;
   ref: FormForwardRef;
   providerName: string;
@@ -938,6 +938,7 @@ export interface DropzoneImageType {
   setActiveStep?: Function;
   setAttachments: Function;
   acceptableFilesType?: string[]
+  setFiles?: Function
 }
 
 interface Message {
@@ -1747,7 +1748,9 @@ export interface CareTeamsProps {
   onEdit?: Function;
   reload?: Function;
   toggleSideDrawer?: Function;
-  patientDispatcher?: Dispatch<PatientAction>
+  patientDispatcher?: Dispatch<PatientAction>;
+  providerBtn? :boolean;
+  isEditable? : boolean
 }
 
 export interface SideDrawerProps {
@@ -1839,7 +1842,7 @@ export interface StageStatusType {
   stageColor: string;
 }
 
-export interface AgreementGeneralProps {
+export interface AgreementGeneralProps extends GeneralFormProps {
   setEdit: Function;
 }
 
@@ -1850,6 +1853,11 @@ export interface ServiceSelectorProps extends FacilitySelectorProps {
   defaultValues?: SelectorOption[]
   dispatcher?: Dispatch<PublicFormBuilderAction>
 }
+export interface CreateAgreementFormProps {
+  title?: string
+  agreementBody?: string
+}
+
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;

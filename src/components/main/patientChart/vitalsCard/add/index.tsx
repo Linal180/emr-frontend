@@ -21,7 +21,7 @@ import {
   HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT, 
   MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, 
   RESPIRATORY_RATE_TEXT, RPM_TEXT, SAVE_TEXT, SMOKING_STATUS_TEXT, VITAL_ERROR_MSG, WEIGHT_TEXT,
-  MAPPED_SMOKING_STATUS, PULSE_TEXT, TEMPERATURE_TEXT
+  MAPPED_SMOKING_STATUS, PULSE_TEXT, TEMPERATURE_TEXT, UPDATE_VITALS
 } from '../../../../../constants';
 
 import { patientVitalSchema } from '../../../../../validationSchemas';
@@ -317,7 +317,7 @@ export const AddVitals = memo(({
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_VITALS}</Typography>
+        <Typography variant="h4">{vitalToEdit ? UPDATE_VITALS : ADD_VITALS}</Typography>
       </DialogTitle>
 
       <FormProvider {...methods}>

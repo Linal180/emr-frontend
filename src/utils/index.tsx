@@ -1,5 +1,5 @@
 // packages block
-import React, { ReactNode, memo } from "react";
+import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
@@ -13,30 +13,29 @@ import {
 import client from "../apollo";
 import history from "../history";
 import {
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE, 
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, 
+  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus, AttachmentsPayload,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload,  UserForms, WeightType,
+  AttachmentType,
+} from "../generated/graphql";
+import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
   StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
-  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
-  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, GREEN_ONE,
-  BLUE, PURPLE_ONE, GREY_TWO, ORANGE_ONE
+  ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
+  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE, ORANGE_SIMPLE,
+  ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE, RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
-import {
-  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
-  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
-  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
-  ACCEPTABLE_PDF_AND_IMAGES_FILES
-} from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
-  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
-  ProblemType, AppointmentCreateType,
-} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -46,15 +45,14 @@ export const handleLogout = () => {
   client.clearStore();
 };
 
-export const upperToNormal = (value: string) => {
-  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
+export const upperToNormal = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 
 export const formatValue = (value: string) => {
   let formatted = ''
 
   value.split("_").map(term =>
-    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
   return formatted.trim();
 };
@@ -65,11 +63,11 @@ export const formatServiceCode = (value: string) => {
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
-      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()} `
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
     }
   }
 
-  return formatted;
+  return formatted.trim();
 };
 
 export const renderItem = (
@@ -99,7 +97,6 @@ export const renderTh = (
           <Box dangerouslySetInnerHTML={{ __html: text }}>
           </Box> : text
         }
-
       </Typography>
 
       {renderIcon && renderIcon()}
@@ -107,21 +104,16 @@ export const renderTh = (
   </TableCell>
 );
 
-export const renderMissing = () => (
-  <Typography variant='h6' className="danger">{MISSING}</Typography>
-);
+export const renderMissing = () =>
+  <Typography variant='h6' className="danger">{MISSING}</Typography>;
 
-export const requiredLabel = (label: string) => {
-  return (
-    <Box>
-      {label}
-      <Box component="span" color="black">
-        {' '}
-        *
-      </Box>
-    </Box>
-  )
-}
+export const requiredLabel = (label: string) => <Box>
+  {label}
+  <Box component="span" color="black">
+    {' '}
+    *
+  </Box>
+</Box>;
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
@@ -188,18 +180,12 @@ export const getUserRole = (roles: RolesPayload['roles']) => {
   return 'staff'
 }
 
-export const recordNotFound = (record: string = "Record"): string => {
-  return `${record} not found.`
-};
-
-export const getToken = () => {
-  return localStorage.getItem(TOKEN);
-};
-
-export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
-export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
-export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const getToken = () => localStorage.getItem(TOKEN);
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
+export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
+export const recordNotFound = (record: string = "Record"): string => `${record} not found.`
+export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
 
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {
@@ -214,9 +200,8 @@ export const getPracticeType = (type: PracticeType): string => {
   }
 };
 
-export const getTimestamps = (date: string): string => {
-  return date ? moment(date).format().toString() : moment().format().toString()
-};
+export const getTimestamps = (date: string): string =>
+  date ? moment(date).format().toString() : moment().format().toString();
 
 export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
   const currentDate = moment(newDate).format(`MM-DD-YYYY`)
@@ -243,19 +228,15 @@ export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefine
 };
 
 export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
-
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
-
+export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
-export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
-
-export const getFormattedDate = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
-};
+export const getFormattedDate = (date: string) =>
+  moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -283,6 +264,7 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
+
   let newYears = yearDiff;
   let newMonths = monthDiff;
   let newDays = dayDiff;
@@ -290,7 +272,6 @@ export const dateDifference = (startingDate: string) => {
 
   return `${ageString} old`
 }
-
 
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
@@ -372,37 +353,24 @@ export const dateDifference = (startingDate: string) => {
 //   return `${ageString} old`;
 // }
 
-export const getDateWithDay = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY")
-};
+export const getDateWithDay = (date: string) =>
+  moment(date, "x").format("ddd MMM. DD, YYYY");
 
-export const deleteRecordTitle = (recordType: string) => {
-  return `Delete ${recordType} Record`;
-}
+export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
+export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
+export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;
+export const aboutToDelete = (recordType: string) =>
+  `You are about to delete ${recordType.toLowerCase()} record`;
 
-export const cancelRecordTitle = (recordType: string) => {
-  return `Cancel ${recordType} Record`;
-}
+export const aboutToCancel = (recordType: string) =>
+  `You are about to cancel ${recordType.toLowerCase()} record`;
 
-export const UpdateRecordTitle = (recordType: string) => {
-  return `Update ${recordType}`;
-}
 
-export const aboutToDelete = (recordType: string) => {
-  return `You are about to delete ${recordType.toLowerCase()} record`;
-}
+export const aboutToSign = (recordType: string) =>
+  `You are about to sign a patient ${recordType.toLowerCase()}`;
 
-export const aboutToCancel = (recordType: string) => {
-  return `You are about to cancel ${recordType.toLowerCase()} record`;
-}
-
-export const aboutToSign = (recordType: string) => {
-  return `You are about to sign a patient ${recordType.toLowerCase()}`;
-}
-
-export const aboutToUpdate = (recordType: string) => {
-  return `You are about to update ${recordType.toLowerCase()}`;
-}
+export const aboutToUpdate = (recordType: string) =>
+  `You are about to update ${recordType.toLowerCase()}`;
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
   const data: SelectorOption[] = [];
@@ -513,22 +481,6 @@ export const renderServices = (services: ServicesPayload['services']) => {
         const { id, name, duration } = service;
 
         data.push({ id, name: `${name} (duration: ${duration} minutes)` })
-      }
-    }
-  }
-
-  return data;
-}
-
-export const renderLocations = (locations: ContactsPayload['contacts']) => {
-  const data: SelectorOption[] = [];
-
-  if (!!locations) {
-    for (let location of locations) {
-      if (location) {
-        const { id, name } = location;
-
-        data.push({ id, name })
       }
     }
   }
@@ -685,9 +637,8 @@ export const setRecord = (id: string, name: string): SelectorOption => {
   return { id, name: value };
 };
 
-export const formatPhone = (phone: string): string => {
-  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
-};
+export const formatPhone = (phone: string): string =>
+  phone && phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : '';
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
@@ -740,11 +691,11 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
-export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {
-  if (!strtimestamp && !endtimestamp) return "";
+export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string) => {
+  if (!starTimestamp && !endTimestamp) return "";
 
-  var startTime = moment(new Date(parseInt(strtimestamp)));
-  var endTime = moment(new Date(parseInt(endtimestamp)));
+  var startTime = moment(new Date(parseInt(starTimestamp)));
+  var endTime = moment(new Date(parseInt(endTimestamp)));
 
   return endTime.diff(startTime, 'minutes');
 };
@@ -830,6 +781,9 @@ export const activeClass = (pathname: string): string => {
 
     case LAB_RESULTS_ROUTE:
       return "inReport"
+
+    case AGREEMENTS_ROUTE:
+      return "isAgreement"
 
     case INVOICES_ROUTE:
     case CLAIMS_ROUTE:
@@ -1280,29 +1234,17 @@ export const getProfileImageType = (userType: string) => {
 }
 
 export const fahrenheitToCelsius = (f: number) => ((5 / 9) * (f - 32))
-
 export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
-
 export const inchesToCentimeter = (i: number) => (i * 2.54)
-
 export const inchesToMeter = (i: number) => (i / 39.37)
-
 export const centimeterToMeter = (c: number) => (c / 100)
-
 export const centimeterToInches = (c: number) => (c / 2.54)
-
 export const kilogramToPounds = (kg: number) => (kg * 2.2046)
-
 export const kilogramToOunce = (kg: number) => (kg * 35.274)
-
 export const poundsToKilogram = (po: number) => (po / 2.2046)
-
 export const poundsToOunce = (po: number) => (po * 16)
-
 export const ounceToKilogram = (o: number) => (o / 35.274)
-
 export const ounceToPounds = (o: number) => (o / 16)
-
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
@@ -1318,7 +1260,6 @@ export const dataURLtoFile = (url: any, filename: string) => {
 
   return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
 }
-
 
 export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
   const patientHeight = parseFloat(PatientHeight)
@@ -1348,7 +1289,6 @@ export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircu
     default:
       return patientHeadCircumference
   }
-
 }
 
 export const getDefaultTemp = (tempType: TempUnitType, patientTemperature: string) => {
@@ -1713,10 +1653,12 @@ export const getCheckInStatus = (
     }
   }
 
-  if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
+  if (
+    status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow
+    || status === AppointmentStatus.Rescheduled
+  ) {
     return {
-      stage: '',
-      stageColor: ''
+      stage: '', stageColor: ''
     }
   }
 
@@ -1726,18 +1668,19 @@ export const getCheckInStatus = (
     case 1:
     case 2:
       return { stage: 'With Staff', stageColor: BLUE };
+
     case 3:
     case 4:
       return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
+
     case 5:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
+
     case 6:
       return { stage: 'With Biller', stageColor: PURPLE_ONE };
+
     default:
-      return {
-        stage: '',
-        stageColor: ''
-      }
+      return { stage: '', stageColor: '' }
   }
 }
 
@@ -1745,7 +1688,9 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
-export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
+export const AppointmentStatusStateMachine = (
+  value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null
+) => {
   if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return renderArrayAsSelectorOptions(
       [
@@ -1838,6 +1783,9 @@ export const mediaType = (attachmentTitle: string): string[] => {
 
     case ATTACHMENT_TITLES.Signature:
       return ACCEPTABLE_ONLY_IMAGES_FILES;
+
+    case ATTACHMENT_TITLES.Agreement:
+      return ACCEPTABLE_PDF_FILES;
 
     default:
       return ACCEPTABLE_FILES

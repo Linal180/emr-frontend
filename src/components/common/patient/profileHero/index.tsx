@@ -339,7 +339,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
                     <Typography variant="body1">
                       {selfPhoneNumber ?
-                        <Link href={`tell:${selfPhoneNumber}`}>{selfPhoneNumber}</Link>
+                        <Link href={`tel:${selfPhoneNumber}`} target="_blank">{selfPhoneNumber}</Link>
                         : renderMissing()
                       }
                     </Typography>
@@ -350,7 +350,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
                     <Typography variant="body1">
                       {selfEmail ?
-                        <Link href={`mailto:${selfEmail}`}>{selfEmail}</Link>
+                        <Link href={`mailto:${selfEmail}`} target="_blank">{selfEmail}</Link>
                         : renderMissing()
                       }
                     </Typography>

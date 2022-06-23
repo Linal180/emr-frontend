@@ -443,6 +443,8 @@ export const extendedPatientSchema = (isOptional: boolean, isDoctor: boolean, is
   // basicPhone: notRequiredPhone(MOBILE_NUMBER),
   facilityId: isSuperAdminOrPracticeAdmin ? selectorSchema(FACILITY) : yup.string().notRequired(),
   basicEmail: optionalEmailSchema(isOptional),
+  basicMobile: notRequiredPhone(PHONE_NUMBER),
+  basicPhone: notRequiredPhone(MOBILE_NUMBER),
   usualProviderId: isDoctor ? yup.string().notRequired() : selectorSchema(USUAL_PROVIDER_ID),
   ...firstLastNameSchema,
   ...ssnSchema,
@@ -1016,4 +1018,8 @@ export const addLabProviderDetailsSchema = yup.object({
   comments: yup.string(),
   primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
   referringProviderId: selectorSchema(REFERRING_PROVIDER),
+})
+
+export const createAgreementSchema = yup.object({
+  title: yup.string().required(),
 })
