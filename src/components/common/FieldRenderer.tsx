@@ -175,7 +175,7 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
 //date component
 export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
-  const [date, setDate] = useState<Date | null>(new Date())
+  const [date, setDate] = useState<Date | null>(null)
   const { name, value, onChange } = field || {}
 
   return (
@@ -194,7 +194,7 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
         onClick={() => setOpenPicker(!openPicker)}
         onClose={() => setOpenPicker(!openPicker)}
         onChange={(date) => {
-          isCreating ? setDate(date) : onChange && onChange(getTimestamps(date?.toString() || new Date().toString()))
+          isCreating ? setDate(date) : onChange && date && onChange(getTimestamps(date?.toString()))
         }}
         onKeyDown={(e) => e.preventDefault()}
         autoOk

@@ -107,8 +107,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? 
-      { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ?
+        { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -216,11 +216,10 @@ const FormBuilderTable: FC = (): JSX.Element => {
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
                     {(isSuper || isPracticeUser) && facilityId ?
-                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> :
-                      <TableCell scope="row">---</TableCell>}
+                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : null}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
-                    <TableCell scope="row">
+                    {(isSuper || isPracticeUser) && <TableCell scope="row">
                       {facilityId && <Box className={classes.status}
                         component='span' color={MODERATE}>
                         {FACILITY_FORM}
@@ -232,7 +231,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         {PRACTICE_FORM}
                       </Box>}
                       {!practiceId && !facilityId && "--"}
-                    </TableCell>
+                    </TableCell>}
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
