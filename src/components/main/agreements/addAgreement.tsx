@@ -110,6 +110,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
         if (!body) {
           setWithFile(true)
         }
+
         body && setAgreementBody(body)
         title && setValue('title', title)
         setSignatureRequired(signatureRequired ?? false)
