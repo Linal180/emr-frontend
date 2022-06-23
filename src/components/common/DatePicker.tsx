@@ -5,61 +5,67 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, IconButton, InputLabel } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 // interfaces constants and utils block
-import { requiredLabel } from '../../utils';
 import { US_DATE_FORMAT } from '../../constants';
 import { PickerProps } from "../../interfacesTypes";
+import { renderLoading, requiredLabel } from '../../utils';
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
-const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = false, disableFuture = true, disabled , disablePast}): JSX.Element => {
-  const [openPicker, setOpenPicker] = useState<boolean>(false)
+const DatePicker: FC<PickerProps> = ({
+  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading
+}): JSX.Element => {
   const { control, setValue } = useFormContext()
+  const [openPicker, setOpenPicker] = useState<boolean>(false)
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=''
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal" error={invalid}>
-          <InputLabel shrink htmlFor={`${name}-dialog`}>
-            {isRequired ? requiredLabel(label) : label}
-          </InputLabel>
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          name={name}
+          control={control}
+          defaultValue=''
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
+            <FormControl fullWidth margin="normal" error={invalid}>
+              <InputLabel shrink htmlFor={`${name}-dialog`}>
+                {isRequired ? requiredLabel(label) : label}
+              </InputLabel>
 
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              {...field}
-              id={`${name}-dialog`}
-              variant="inline"
-              format="MM/dd/yyyy"
-              inputVariant="outlined"
-              KeyboardButtonProps={{ 'aria-label': 'change date', }}
-              open={openPicker}
-              placeholder={US_DATE_FORMAT}
-              disabled={disabled}
-              value={field.value}
-              onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
-              onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
-              onChange={field.onChange}
-              onKeyDown={(e) => e.preventDefault()}
-              error={invalid}
-              helperText={invalid && message}
-              autoOk
-              disablePast={disablePast ? disablePast : false}
-              disableFuture={disableFuture}
-              maxDate="2100-01-31"
-              minDate="1900-01-01"
-              keyboardIcon={<CalendarIcon />}
-              InputProps={clearable ? {
-                startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>
-                  <ClearIcon />
-                </IconButton>
-              } : undefined
-              }
-            />
-          </MuiPickersUtilsProvider>
-        </FormControl>
-      )}
-    />
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  {...field}
+                  id={`${name}-dialog`}
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  inputVariant="outlined"
+                  KeyboardButtonProps={{ 'aria-label': 'change date', }}
+                  open={openPicker}
+                  placeholder={US_DATE_FORMAT}
+                  disabled={disabled}
+                  value={field.value}
+                  onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
+                  onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
+                  onChange={field.onChange}
+                  onKeyDown={(e) => e.preventDefault()}
+                  error={invalid}
+                  helperText={invalid && message}
+                  autoOk
+                  disablePast={disablePast ? disablePast : false}
+                  disableFuture={disableFuture}
+                  maxDate="2100-01-31"
+                  minDate="1900-01-01"
+                  keyboardIcon={<CalendarIcon />}
+                  InputProps={clearable ? {
+                    startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>
+                      <ClearIcon />
+                    </IconButton>
+                  } : undefined
+                  }
+                />
+              </MuiPickersUtilsProvider>
+            </FormControl>
+          )}
+        />}
+    </>
   );
 }
 
