@@ -11,6 +11,7 @@ import { CareTeamsProps } from "../../../../../interfacesTypes";
 import { AddSlotIcon, EditNewIcon } from "../../../../../assets/svgs";
 import { useDoctorScheduleStyles } from "../../../../../styles/doctorSchedule";
 import { ActionType } from "../../../../../reducers/patientReducer";
+import NoDataComponent from "../../../../common/NoDataComponent";
 
 const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, onEdit,
   patientDispatcher, providerBtn, isEditable }: CareTeamsProps): JSX.Element => {
@@ -58,7 +59,8 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
                     <Typography variant="body1">{email}</Typography>
                   </Box>
                   {
-                    !!isEditable && <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
+                    !!isEditable&& 
+                    <Box className="pointer-cursor" onClick={() => handleEdit(id, providerId as string, doctorName)}>
                       <EditNewIcon />
                     </Box>
                   }
@@ -68,6 +70,10 @@ const CareTeamComponent = ({ toggleSideDrawer, loading, patientProvidersData, on
                   {formatValue(relation as string)}
                 </Box>}
               </Box>
+
+              {
+                !providerBtn&&!patientProvidersData?.length&&<NoDataComponent />
+              }
 
             </>
           )
