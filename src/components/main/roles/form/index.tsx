@@ -274,7 +274,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <FormGroup>
                         <FormControlLabel
                           control={
-                            <Box className='permissionDenied'>
+                            <Box>
                               <Checkbox disabled={!(custom || isSuper)} color="primary" checked={modules.includes(module)}
                                 onChange={() => handleAllIds(module, allIds)} />
                             </Box>
@@ -304,7 +304,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Box className='permissionDenied'>
+                                  <Box>
                                     <Checkbox disabled={!(custom || isSuper)} color="primary" checked={ids.includes(id || '')}
                                       onChange={() => handleChangeForCheckBox(id || '')} />
                                   </Box>
