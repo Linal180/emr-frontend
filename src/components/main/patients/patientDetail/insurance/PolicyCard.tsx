@@ -64,7 +64,7 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
     },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue, trigger, formState, watch } = methods;
+  const { handleSubmit, setValue, trigger, formState } = methods;
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {

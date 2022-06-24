@@ -255,6 +255,9 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
+  export const getDocumentDate = (date: string) =>
+  moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+
 export const dateDifference = (startingDate: string) => {
   let startDate = new Date(parseInt(startingDate.substring(6, 10)))
   let now = new Date();
