@@ -20,7 +20,7 @@ import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
 import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
 import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
-import { getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
+import { getDocumentDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
   AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
@@ -53,7 +53,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
-  
+
   const handleUpload = () => {
     dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })
     dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: undefined })
@@ -326,10 +326,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                   </TableRow>
                 ) : (
                   attachmentsData?.map((attachment) => {
-                    const {
-                      id, createdAt, attachmentName, attachmentMetadata
-                    } = attachment || {};
-                    const { signedAt, signedBy, documentType } = attachmentMetadata || {}
+                    const { id, attachmentName, attachmentMetadata } = attachment || {};
+                    const { signedAt, signedBy, documentType, documentDate } = attachmentMetadata || {}
                     const { type } = documentType || {}
 
                     const filteredFileName = attachmentName && attachmentName?.length > 40
@@ -353,7 +351,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                               <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
                           </>
                         }
-                        <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
+                        <TableCell scope="row">{getDocumentDate(documentDate || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                             {!documentTab &&

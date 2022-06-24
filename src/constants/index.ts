@@ -4014,7 +4014,7 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "4", name: '12 Hours', time: 43200 * 1000 },
   { id: "5", name: '24 Hours', time: 86400 * 1000 },
   { id: "6", name: '2 Days', time: 172800 * 1000 },
-  { id: "7", name: '7 Days', time: 604800 * 1000 },
+  { id: "7", name: 'Remove Lock Time', time: 604800 * 1000 },
 ]
 
 export const EMERGENCY_LOG_LIST = [
