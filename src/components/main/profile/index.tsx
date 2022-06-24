@@ -1,7 +1,7 @@
 // packages block
 import { Reducer, useReducer, useState, useContext, Fragment, useEffect, useCallback } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Edit } from '@material-ui/icons';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, CircularProgress, Collapse, Grid, } from "@material-ui/core";
 //components block
 import Alert from '../../common/Alert';
@@ -14,21 +14,21 @@ import MediaCards from '../../common/AddMedia/MediaCards';
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 // constants, history, styling block
 import { AuthContext } from '../../../context';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { profileSchema } from '../../../validationSchemas';
 import { ProfileEditFormType } from '../../../interfacesTypes';
 import { useProfileStyles } from "../../../styles/profileStyles";
-import { formatPhone, getProfileImageType, renderItem, setRecord } from '../../../utils';
-import {
-  ADDRESS_NUMBER, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME,
-  LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT, STATE, SYSTEM_ROLES,
-  UPLOAD_PICTURE, ZIP_CODE
-} from "../../../constants";
+import { formatPhone, getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
 import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import {
+  ADDRESS_NUMBER, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
+  FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
+  STATE, SUPER, SYSTEM_ROLES, UPLOAD_PICTURE, ZIP_CODE
+} from "../../../constants";
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as MediaState
 } from '../../../reducers/mediaReducer';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { profileSchema } from '../../../validationSchemas';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
@@ -36,12 +36,13 @@ const ProfileComponent = (): JSX.Element => {
     user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment
   } = useContext(AuthContext);
 
-  const { email, userType, userId, phone: userPhone } = user || {}
+  const { email, userType, userId, phone: userPhone, roles } = user || {}
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
 
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+  const isSuper = isSuperAdmin(roles)
 
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
   const { attachmentUrl, attachmentId, attachmentData } = mediaState
@@ -241,11 +242,17 @@ const ProfileComponent = (): JSX.Element => {
                         <Box py={2}>
                           <Grid container spacing={5}>
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
+                              {isSuper ?
+                                renderItem(FIRST_NAME, SUPER) :
+                                renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')
+                              }
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
+                              {isSuper ?
+                                renderItem(LAST_NAME, ADMIN) :
+                                renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')
+                              }
                             </Grid>
                           </Grid>
 

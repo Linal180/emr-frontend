@@ -11,7 +11,7 @@ import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/sv
 
 import {
   EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
-  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER_ADMIN,
+  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER, ADMIN,
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
@@ -88,7 +88,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
 
               <Box ml={2}>
                 {isSuper ?
-                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6">{SUPER} {ADMIN}</Typography>
                   :
                   <Typography variant="h6">{firstName} {lastName}</Typography>
                 }

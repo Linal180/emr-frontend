@@ -465,6 +465,11 @@ body .MuiTabPanel-root {
   color: #ffffff;
 }
 
+.multiline-input {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 .selectedBoxBlue {
   background-color: #204ECF;
   color: #ffffff;
