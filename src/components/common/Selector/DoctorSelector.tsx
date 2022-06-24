@@ -7,8 +7,8 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading } from "../../../utils";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
+import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
@@ -20,9 +20,11 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {}
+
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
   const isPracAdmin = isPracticeAdmin(roles);
+  
   const isFacAdmin = isFacilityAdmin(roles);
   const isSuperAndPracAdmin = isSuper || isPracAdmin
   const inputLabel = isRequired ? requiredLabel(label) : label
@@ -31,7 +33,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const { page, searchQuery, doctors, allDoctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
-
+  
   const [findAllDoctor,] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
