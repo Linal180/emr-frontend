@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
 import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography } from '@material-ui/core';
 import { CKEditor, CKEditorEventPayload } from 'ckeditor4-react';
-import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from 'react';
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components
 import InputController from '../../../controller';
@@ -25,8 +25,9 @@ import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType 
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { useChartingStyles } from '../../../styles/chartingStyles';
 import { GRAY_SIX } from '../../../theme';
-import { mediaType } from '../../../utils';
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
 import { createAgreementSchema } from '../../../validationSchemas';
+import { AuthContext } from '../../../context';
 
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const chartingClasses = useChartingStyles()
@@ -34,6 +35,15 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing, descriptionType, isLoaded, withFile, files } = state
   const { id } = useParams<ParamsType>()
+
+  const { user } = useContext(AuthContext)
+  const { roles, facility } = user || {};
+  const { id: facilityId, practice } = facility || {};
+  const { id: practiceId } = practice || {}
+
+  const isSuper = isSuperAdmin(roles)
+  const isPrac = isPracticeAdmin(roles)
+  const isFac= isFacilityAdmin(roles)
 
   const dropZoneRef = useRef<FormForwardRef>(null)
 
@@ -123,6 +133,9 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   }, [findAgreement, id])
 
   const onSubmit: SubmitHandler<CreateAgreementFormProps> = async ({ title }) => {
+    const agreementInputs = isSuper ? { practiceId: '', facilityId: '' } : 
+                            isPrac ? { practiceId,  facilityId: '' } :
+                            isFac ?  { practiceId, facilityId } : undefined
     if (id) {
       if (withFile) {
         return await updateAgreement({
@@ -131,7 +144,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               id,
               title: title,
               signatureRequired,
-              viewAgreementBeforeAgreeing
+              viewAgreementBeforeAgreeing,
+              ...(agreementInputs ? agreementInputs: {})
             }
           },
         });
@@ -145,7 +159,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               title: title,
               body: agreementBody,
               signatureRequired,
-              viewAgreementBeforeAgreeing
+              viewAgreementBeforeAgreeing,
+              ...(agreementInputs ? agreementInputs: {})
             }
           },
         });
@@ -162,7 +177,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
           body: agreementBody,
           title: title,
           signatureRequired,
-          viewAgreementBeforeAgreeing
+          viewAgreementBeforeAgreeing,
+          ...(agreementInputs ? agreementInputs: {})
         }
       },
     });

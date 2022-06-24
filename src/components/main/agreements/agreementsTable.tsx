@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
@@ -19,12 +19,21 @@ import { GeneralFormProps } from '../../../interfacesTypes';
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { useTableStyles } from '../../../styles/tableStyles';
 import { WHITE } from '../../../theme';
-import { convertDateFromUnix, renderTh } from '../../../utils';
+import { convertDateFromUnix, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from '../../../utils';
+import { AuthContext } from '../../../context';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery } = state
+  const { user } = useContext(AuthContext)
+  const { roles, facility } = user || {};
+  const { id: facilityId, practice } = facility || {};
+  const { id: practiceId } = practice || {}
+
+  const isSuper = isSuperAdmin(roles)
+  const isPrac = isPracticeAdmin(roles)
+  const isFac = isFacilityAdmin(roles)
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -63,19 +72,24 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
   const fetchAgreements = useCallback(async () => {
     try {
+      const agreementInputs = isSuper ? {} :
+        isPrac ? { agreementPracticeId: practiceId } :
+        isFac ? { agreementPracticeId: practiceId, agreementFacilityId: facilityId } : undefined
+
       await fetchAllAgreements({
-        variables: {
-          agreementPaginationInput: {
-            paginationOptions: {
-              page,
-              limit: PAGE_LIMIT
-            },
-            searchString: searchQuery
+          variables: {
+            agreementPaginationInput: {
+              paginationOptions: {
+                page,
+                limit: PAGE_LIMIT
+              },
+              searchString: searchQuery,
+              ...(agreementInputs ? agreementInputs : {})
+            }
           }
-        }
-      })
+        })
     } catch (error) { }
-  }, [fetchAllAgreements, page, searchQuery])
+  }, [facilityId, fetchAllAgreements, isFac, isPrac, isSuper, page, practiceId, searchQuery])
 
   const [removeAgreement, { loading: deleteAgreementLoading }] = useRemoveAgreementMutation({
     onError() {

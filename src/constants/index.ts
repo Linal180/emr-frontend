@@ -940,7 +940,7 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
-export const AGREEMENT_BODY= 'Agreement Body'
+export const AGREEMENT_BODY = 'Agreement Body'
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -3120,16 +3120,16 @@ export enum CARD_LAYOUT_MODAL {
 }
 
 export enum ATTACHMENT_TITLES {
+  Signature = "Signature",
+  Agreement = "Agreement",
+  LabOrders = "Lab Orders",
+  PracticeLogo = "Practice Logo",
   ProfilePicture = "Profile Picture",
-  DrivingLicense1 = "Driving License 1",
-  DrivingLicense2 = "Driving License 2",
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
-  Signature = "Signature",
-  LabOrders = "Lab Orders",
-  PracticeLogo = "Logo",
-  Agreement = "Agreement",
+  DrivingLicense1 = "Driving License 1",
+  DrivingLicense2 = "Driving License 2",
 }
 
 export enum MODULE_TYPES {
@@ -3149,18 +3149,18 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
-  "Emergency Access",
-  "User",
-  "Staff",
-  "Patient",
-  "Service",
   "Practice",
   "Facility",
+  "Emergency Access",
   "Provider",
-  "Schedule",
+  "Staff",
+  "Patient",
   "Appointment",
+  "Service",
+  "Schedule",
   "Lab Orders",
-  "Patient Charting"
+  "Patient Charting",
+  "User",
 ];
 
 export const MAPPED_STATUS = [
