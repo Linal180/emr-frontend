@@ -1172,6 +1172,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
+  loading?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {

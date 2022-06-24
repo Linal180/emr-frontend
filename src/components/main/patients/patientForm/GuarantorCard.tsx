@@ -6,7 +6,6 @@ import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Gri
 import Selector from "../../../common/Selector";
 import PhoneField from "../../../common/PhoneInput";
 import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces, utils block
 import { setRecord } from "../../../../utils";
 import InputController from "../../../../controller";
@@ -55,184 +54,198 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
 
   return (
     <CardComponent cardTitle={GUARANTOR}>
-      {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-        <>
-          <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorFirstName"
-                controllerLabel={FIRST_NAME}
-              />
-            </Grid>
+      <Grid container spacing={3}>
+        <Grid item md={4} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorFirstName"
+            controllerLabel={FIRST_NAME}
+            loading={getPatientLoading}
+          />
+        </Grid>
 
-            <Grid item md={4} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorMiddleName"
-                controllerLabel={MIDDLE_NAME}
-              />
-            </Grid>
+        <Grid item md={4} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorMiddleName"
+            controllerLabel={MIDDLE_NAME}
+            loading={getPatientLoading}
+          />
+        </Grid>
 
-            <Grid item md={4} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorLastName"
-                controllerLabel={LAST_NAME}
-              />
-            </Grid>
+        <Grid item md={4} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorLastName"
+            controllerLabel={LAST_NAME}
+            loading={getPatientLoading}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid item md={12} sm={12} xs={12}>
+        <Box pb={2}>
+          <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
+        </Box>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="guarantorSuffix"
+              controllerLabel={SUFFIX}
+              loading={getPatientLoading}
+            />
           </Grid>
 
-          <Grid item md={12} sm={12} xs={12}>
-            <Box pb={2}>
-              <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
-            </Box>
-            <Grid container spacing={3}>
-              <Grid item md={4} sm={12} xs={12}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="guarantorSuffix"
-                  controllerLabel={SUFFIX}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  addEmpty
-                  disabled={shouldDisableEdit}
-                  name="guarantorRelationship"
-                  label={GUARANTOR_RELATION}
-                  options={MAPPED_RELATIONSHIP_TYPE}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="guarantorEmployerName"
-                  controllerLabel={EMPLOYER}
-                />
-              </Grid>
-            </Grid>
+          <Grid item md={4} sm={12} xs={12}>
+            <Selector
+              addEmpty
+              disabled={shouldDisableEdit}
+              name="guarantorRelationship"
+              label={GUARANTOR_RELATION}
+              options={MAPPED_RELATIONSHIP_TYPE}
+              loading={getPatientLoading}
+            />
           </Grid>
 
-          <FormControl component="fieldset" disabled={shouldDisableEdit}>
-            <FormGroup>
-              <Box mr={3} mb={2} mt={2}>
-                <FormControlLabel
-                  label={SAME_AS_PATIENT}
-                  control={
-                    <Checkbox color="primary" checked={sameAddress}
-                      onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                    />
-                  }
-                />
-              </Box>
-            </FormGroup>
-          </FormControl>
-
-
-          <Grid container spacing={3}>
-            <Grid item md={6} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorAddress"
-                controllerLabel={ADDRESS}
-              />
-            </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorAddress2"
-                controllerLabel={ADDRESS_2}
-              />
-            </Grid>
+          <Grid item md={4} sm={12} xs={12}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="guarantorEmployerName"
+              controllerLabel={EMPLOYER}
+              loading={getPatientLoading}
+            />
           </Grid>
+        </Grid>
+      </Grid>
 
-          <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorZipCode"
-                controllerLabel={ZIP_CODE}
-              />
-            </Grid>
-
-            <Grid item md={4} sm={12} xs={12}>
-              {isEdit ?
-                <SnnController
-                  fieldType="text"
-                  controllerName="guarantorSsn"
-                  controllerLabel={SSN}
-                  disabled={shouldDisableEdit}
-                />
-                :
-                <InputController
-                  fieldType="text"
-                  controllerName="guarantorSsn"
-                  controllerLabel={SSN}
-                  disabled={shouldDisableEdit}
+      <FormControl component="fieldset" disabled={shouldDisableEdit}>
+        loading={getPatientLoading}
+        <FormGroup>
+          <Box mr={3} mb={2} mt={2}>
+            <FormControlLabel
+              label={SAME_AS_PATIENT}
+              control={
+                <Checkbox color="primary" checked={sameAddress}
+                  onChange={({ target: { checked } }) => handleSameAddress(checked)}
                 />
               }
-            </Grid>
-
-            <Grid item md={4} sm={12} xs={12}>
-              <PhoneField name="guarantorPhone" label={PHONE} disabled={shouldDisableEdit} />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3}>
-            <Grid item md={2}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="guarantorCity"
-                controllerLabel={CITY}
-              />
-            </Grid>
-
-            <Grid item md={2}>
-              <Selector
-                addEmpty
-                disabled={shouldDisableEdit}
-                name="guarantorState"
-                label={STATE}
-                options={MAPPED_STATES}
-              />
-            </Grid>
-
-            <Grid item md={2}>
-              <Selector
-                addEmpty
-                disabled={shouldDisableEdit}
-                name="guarantorCountry"
-                label={COUNTRY}
-                options={MAPPED_COUNTRIES}
-              />
-            </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="email"
-                controllerName="guarantorEmail"
-                controllerLabel={EMAIL}
-              />
-            </Grid>
-          </Grid>
+            />
+          </Box>
+        </FormGroup>
+      </FormControl>
 
 
-        </>
-      )}
+      <Grid container spacing={3}>
+        <Grid item md={6} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorAddress"
+            controllerLabel={ADDRESS}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorAddress2"
+            controllerLabel={ADDRESS_2}
+            loading={getPatientLoading}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3}>
+        <Grid item md={4} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorZipCode"
+            controllerLabel={ZIP_CODE}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={4} sm={12} xs={12}>
+          {isEdit ?
+            <SnnController
+              fieldType="text"
+              controllerName="guarantorSsn"
+              controllerLabel={SSN}
+              disabled={shouldDisableEdit}
+              loading={getPatientLoading}
+            />
+            :
+            <InputController
+              fieldType="text"
+              controllerName="guarantorSsn"
+              controllerLabel={SSN}
+              disabled={shouldDisableEdit}
+            />
+          }
+        </Grid>
+
+        <Grid item md={4} sm={12} xs={12}>
+          <PhoneField
+            name="guarantorPhone"
+            label={PHONE}
+            disabled={shouldDisableEdit}
+            loading={getPatientLoading}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3}>
+        <Grid item md={2}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="guarantorCity"
+            controllerLabel={CITY}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={2}>
+          <Selector
+            addEmpty
+            disabled={shouldDisableEdit}
+            name="guarantorState"
+            label={STATE}
+            options={MAPPED_STATES}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={2}>
+          <Selector
+            addEmpty
+            disabled={shouldDisableEdit}
+            name="guarantorCountry"
+            label={COUNTRY}
+            options={MAPPED_COUNTRIES}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="email"
+            controllerName="guarantorEmail"
+            controllerLabel={EMAIL}
+            loading={getPatientLoading}
+          />
+        </Grid>
+      </Grid>
     </CardComponent>
   )
 }
