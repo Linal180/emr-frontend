@@ -469,27 +469,24 @@ body .MuiTabPanel-root {
 }
 
 /* custom-scrollbar */
-::-webkit-scrollbar
-{
-	width: 8px;
+::-webkit-scrollbar {
+  width: 8px;
   height: 8px;
-	background-color: #F5F5F5;
+  background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
   margin-top: 2px;
   margin-bottom: 2px;
-	background-color: #F5F5F5;
+  background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #E0E0E0;
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #E0E0E0;
 }
 
 .selectedBoxBlue {
@@ -856,11 +853,11 @@ body .MuiTabPanel-root {
   line-height: 1.43 !important;
 }
 
-.copay-type-value{
+.copay-type-value {
   position: relative;
 }
 
-.copay-type-value .MuiInputBase-input{
+.copay-type-value .MuiInputBase-input {
   appearance: none;
   padding-right: 25px;
 }
@@ -876,7 +873,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-.copay-type-value .MuiTypography-h3{
+.copay-type-value .MuiTypography-h3 {
   position: absolute;
   top: 29px;
   right: 12px;
