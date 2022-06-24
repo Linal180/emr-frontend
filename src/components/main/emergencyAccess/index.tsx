@@ -379,9 +379,6 @@ const EmergencyAccessComponent = (): JSX.Element => {
         )}
       </Card>}
 
-
-
-
       <UpdateConfirmationModal title={emergencyAccessText} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={updateConfirmationModalDescription} handleDelete={handleEmergencyAccessRevoke}
         setOpen={(open: boolean) => setOpenDelete(open)} actionText={emrgencyAccessModalButton} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText} />

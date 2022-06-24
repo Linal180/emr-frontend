@@ -1,35 +1,36 @@
 //packages import
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { Check } from '@material-ui/icons';
-import clsx from 'clsx';
 import { FC, useCallback, useEffect, useRef, useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import clsx from 'clsx';
 import { useParams } from "react-router";
+import { Check } from '@material-ui/icons';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 //components import
-import ItemSelector from "../../../../common/ItemSelector";
-import Selector from "../../../../common/Selector";
-import TextLoader from "../../../../common/TextLoader";
-import PolicyAttachments from "./PolicyAttachments";
 import PolicyDetails from "./PolicyDetails";
-import PolicyHolderDetails from "./PolicyHolderDetails";
 import Alert from "../../../../common/Alert";
+import Selector from "../../../../common/Selector";
+import PolicyAttachments from "./PolicyAttachments";
+import TextLoader from "../../../../common/TextLoader";
+import PolicyHolderDetails from "./PolicyHolderDetails";
+import ItemSelector from "../../../../common/ItemSelector";
 //constants, types, utils import
 import { ChevronRightIcon } from "../../../../../assets/svgs";
+import { GREY_SIXTEEN } from "../../../../../theme";
+import { formatValue, setRecord } from "../../../../../utils";
+import { createInsuranceSchema } from "../../../../../validationSchemas";
+import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
+import {
+  FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption
+} from "../../../../../interfacesTypes";
 import {
   ADD_INSURANCE, ADD_INSURANCE_STEPS, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
-  INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT,
-  ORDER_OF_BENEFIT, SAVE_TEXT
+  INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
   CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
   useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation
 } from "../../../../../generated/graphql";
-import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption } from "../../../../../interfacesTypes";
-import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
-import { GREY_SIXTEEN } from "../../../../../theme";
-import { formatValue, setRecord } from "../../../../../utils";
-import { createInsuranceSchema } from "../../../../../validationSchemas";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -46,13 +47,17 @@ const CheckInStepIcon = (props: StepIconProps) => {
   );
 }
 
-const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit }) => {
+const PolicyCard: FC<PolicyCardProps> = ({
+  id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit
+}) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
   const [policyId, setPolicyId] = useState<string>('')
+
   const [policyHolderId, setPolicyHolderId] = useState<string>('')
   const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
+
   const [activeStep, setActiveStep] = useState(0);
   const [isFormLoaded, setIsFormLoaded] = useState<boolean>(true)
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
@@ -123,10 +128,13 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
         const { policy } = fetchPolicy
 
         const { coinsurancePercentage, copays, expirationDate, groupNumber, insurance, issueDate,
-          memberId, notes, orderOfBenefit, policyHolder, primaryCareProvider, referringProvider, pricingProductType, policyHolderRelationship } = policy ?? {}
+          memberId, notes, orderOfBenefit, policyHolder, primaryCareProvider, referringProvider,
+          pricingProductType, policyHolderRelationship
+        } = policy ?? {}
 
         const { address, addressCTD, certificationNumber, city, dob, employer,
-          firstName, lastName, middleName, sex, ssn, state, suffix, zipCode, id: policyHolderIdToUpdate } = policyHolder ?? {}
+          firstName, lastName, middleName, sex, ssn, state, suffix, zipCode, id: policyHolderIdToUpdate
+        } = policyHolder ?? {}
 
         const transformedCopayFields = copays?.map((copay) => {
           return {
@@ -144,7 +152,8 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
         memberId && setValue('certificationNumber', memberId)
         notes && setValue('notes', notes)
         orderOfBenefit && setValue('orderOfBenefit', setRecord(orderOfBenefit, orderOfBenefit))
-        policyHolderRelationship && setValue('patientRelationship', setRecord(policyHolderRelationship, policyHolderRelationship))
+        policyHolderRelationship &&
+          setValue('patientRelationship', setRecord(policyHolderRelationship, policyHolderRelationship))
 
         if (insurance) {
           const insuranceInfo = { id: insurance.id, name: `${insurance.payerId} | ${insurance.payerName}` }
@@ -152,8 +161,14 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
           setValue('insuranceId', insuranceInfo)
         }
 
-        primaryCareProvider && setValue('primaryCareProvider', setRecord(primaryCareProvider.id, `${primaryCareProvider.firstName} ${primaryCareProvider.lastName}`))
-        referringProvider && setValue('referringProvider', setRecord(referringProvider.id, `${referringProvider.firstName} ${referringProvider.lastName}`))
+        primaryCareProvider &&
+          setValue('primaryCareProvider',
+            setRecord(primaryCareProvider.id, `${primaryCareProvider.firstName} ${primaryCareProvider.lastName}`))
+
+        referringProvider &&
+          setValue('referringProvider', setRecord(referringProvider.id,
+            `${referringProvider.firstName} ${referringProvider.lastName}`))
+
         pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
         employer && setValue('employer', employer)
         suffix && setValue('suffix', suffix)
@@ -190,10 +205,12 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
 
   useEffect(() => {
     if (activeStep === 0) {
-      trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber", "policyNumber", "issueDate", "expirationDate", "copayFields",
-        "coInsurancePercentage", "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
+      trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
+        "policyNumber", "issueDate", "expirationDate", "copayFields", "coInsurancePercentage",
+        "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
     } else if (activeStep === 1) {
-      trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+      trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode',
+        'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
     }
   }, [activeStep, trigger])
 
@@ -217,9 +234,11 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
   };
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
-    const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields, dob, employer, expirationDate, firstName,
-      insuranceId, issueDate, lastName, middleName, notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
-      pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode } = values ?? {}
+    const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
+      dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
+      notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
+      pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode
+    } = values ?? {}
 
     const transformedCopays = copayFields?.map((copayField) => {
       return {
@@ -388,9 +407,9 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
               </Box>
 
               <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto scrollbar-hover">
-                 <Box px={1}>
-                   <Typography>{getStepContent(activeStep)}</Typography>
-                 </Box>
+                <Box px={1}>
+                  <Typography>{getStepContent(activeStep)}</Typography>
+                </Box>
               </Box>
             </Box>}
         </form>

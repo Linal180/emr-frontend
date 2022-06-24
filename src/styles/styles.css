@@ -346,9 +346,7 @@ body .MuiTabPanel-root {
   border-radius: 8px;
   width: 160px;
   height: 160px;
-  object-fit: contain;
   overflow: hidden;
-  padding: 10px;
 }
 
 .button-link {
@@ -488,8 +486,15 @@ body .MuiTabPanel-root {
   height: 200px !important;
 }
 
+.selectorClass .MuiSvgIcon-root path {
+  display: none !important;
+}
+
 .selectorClass .MuiSvgIcon-root {
-  color: #202020 !important;
+  background-image: url(../assets/images/chevron-down.svg) !important;
+  background-size: auto !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
 
 .selectorClassTwo {

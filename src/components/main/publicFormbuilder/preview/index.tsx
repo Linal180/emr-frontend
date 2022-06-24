@@ -11,7 +11,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 //interfaces, reducers, utils, constants
 import { GREY } from '../../../../theme';
 import history from '../../../../history';
-import { EMRLogo } from '../../../../assets/svgs';
+import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
 import { getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
@@ -174,7 +174,7 @@ const PublicFormPreview = () => {
   //render
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
-      <EMRLogo />
+      <AIMEDLOGO />
       {!loader ?
         <Fragment>
           <Box mb={3} />
