@@ -303,9 +303,7 @@ const CheckInComponent = (): JSX.Element => {
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />
-                    
                     {!(CHECK_IN_STEPS.length - 1 === index) ?  <ChevronRightIcon /> : '' }
-                   
                   </Box>
                 </StepLabel>
               </Step>

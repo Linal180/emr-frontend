@@ -5166,6 +5166,7 @@ export type UserFormInput = {
 
 export type UserFormPayload = {
   __typename?: 'UserFormPayload';
+  appointment?: Maybe<Appointment>;
   response?: Maybe<ResponsePayloadResponse>;
   userForm?: Maybe<UserForms>;
 };
@@ -5889,7 +5890,7 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null } };
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string } | null } };
 
 export type GetFormPublicMediaUrlMutationVariables = Exact<{
   getPublicMediaInput: GetPublicMediaInput;
@@ -10753,6 +10754,9 @@ export const SaveUserFormValuesDocument = gql`
       error
     }
     userForm {
+      id
+    }
+    appointment {
       id
     }
   }

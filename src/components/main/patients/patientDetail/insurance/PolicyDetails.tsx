@@ -3,21 +3,21 @@ import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
 import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-//constants, types, interfaces, utils import
-import {
-  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION, EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
-  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
-  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER, VALUE
-} from "../../../../../constants";
-import InputController from "../../../../../controller";
-import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
-import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
-import { formatValue, setRecord } from "../../../../../utils";
 //components import
 import DatePicker from "../../../../common/DatePicker";
 import Selector from "../../../../common/Selector";
 import DoctorSelector from "../../../../common/Selector/DoctorSelector";
-
+import InputController from "../../../../../controller";
+//constants, types, interfaces, utils import
+import {
+  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION, EXPIRATION_DATE,
+  INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
+  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER, VALUE
+} from "../../../../../constants";
+import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
+import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
+import { formatValue, setRecord } from "../../../../../utils";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { control } = useFormContext<InsuranceCreateInput>()
@@ -82,7 +82,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 {!!(copayFields.length > 1 && index !== 0) && <Grid item md={12} sm={12} xs={12}>
                   <Box display="flex" justifyContent="flex-end">
                     <Button
-                      onClick={() => removeCopayField(index)}                      
+                      onClick={() => removeCopayField(index)}
                       color="inherit"
                       className="danger"
                     >
@@ -118,9 +118,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                     <Typography variant="h3" color="textPrimary">$</Typography>
                   </Box>
                 </Grid>
-
-               
-
               </Grid>
             )
           })}

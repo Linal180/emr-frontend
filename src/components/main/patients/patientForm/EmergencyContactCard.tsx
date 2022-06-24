@@ -23,6 +23,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
                 fieldType="text"
                 controllerName="emergencyName"
                 controllerLabel={NAME}
+                loading={getPatientLoading}
               />
             </Grid>
 
@@ -33,15 +34,24 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({ getPatientLoading, should
                 name="emergencyRelationship"
                 label={RELATIONSHIP}
                 options={MAPPED_RELATIONSHIP_TYPE}
+                loading={getPatientLoading}
               />
             </Grid>
 
             <Grid item md={3} sm={12} xs={12}>
-              <PhoneField name="emergencyPhone" label={HOME_PHONE} disabled={shouldDisableEdit} />
+              <PhoneField
+                name="emergencyPhone"
+                label={HOME_PHONE}
+                disabled={shouldDisableEdit}
+                loading={getPatientLoading} />
             </Grid>
 
             <Grid item md={3} sm={12} xs={12}>
-              <PhoneField name="emergencyMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
+              <PhoneField
+                name="emergencyMobile"
+                label={MOBILE_PHONE}
+                disabled={shouldDisableEdit}
+                loading={getPatientLoading} />
             </Grid>
           </Grid>
         </>

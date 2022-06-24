@@ -2,23 +2,23 @@
 import { Box, Grid, IconButton, Typography } from "@material-ui/core";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { TrashOutlinedIcon } from "../../../../../assets/svgs";
+//components Import
+import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import DropzoneImage from "../../../../common/DropZoneImage";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 //constants, types, interfaces imports 
 import {
   ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
   NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
+import { TrashOutlinedIcon } from "../../../../../assets/svgs";
 import {
   AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentsByPolicyIdLazyQuery,
   useRemoveAttachmentMediaMutation
 } from "../../../../../generated/graphql";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
 import { mediaType } from "../../../../../utils";
-//components Import
-import Alert from "../../../../common/Alert";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import DropzoneImage from "../../../../common/DropZoneImage";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
 
 const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, handleReload }, ref) => {
   const { id: patientId } = useParams<ParamsType>()

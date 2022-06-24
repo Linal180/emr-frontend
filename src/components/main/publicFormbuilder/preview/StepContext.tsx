@@ -14,7 +14,7 @@ export const StepContext: FC<StepContextProps> = memo(({ sections, state, dispat
       const { col, fields, id, name } = item
       return (
         <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
-          <CardComponent cardTitle={name}>
+          <CardComponent cardTitle={name} isFullHeight>
             <Grid container spacing={3}>
               {fields?.map((field) => {
                 const { column, fieldId } = field

@@ -66,8 +66,6 @@ const PolicyCard: FC<PolicyCardProps> = ({ id, isEdit, handleReload, filteredOrd
   });
   const { handleSubmit, setValue, trigger, formState, watch } = methods;
 
-  console.log("watch", watch())
-
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {

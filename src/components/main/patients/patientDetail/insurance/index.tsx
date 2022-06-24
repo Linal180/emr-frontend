@@ -3,24 +3,22 @@ import { Box, Card, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
+// components
+import SideDrawer from "../../../../common/SideDrawer";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
+import PolicyCard from "./PolicyCard";
+// constant, utils, svgs, interfaces, graphql and styles block
+import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
 import {
   ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
-import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
-// constant, utils, svgs, interfaces, graphql and styles block
 import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { getFormatDateString } from '../../../../../utils';
-// components
-import SideDrawer from "../../../../common/SideDrawer";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
-import PolicyCard from "./PolicyCard";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
-  console.log(shouldDisableEdit);
-
   const { id: patientId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
@@ -104,8 +102,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         break;
     }
   }
-
-  console.log("drawerOpened", drawerOpened)
 
   return (
     <Card>
@@ -195,9 +191,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
             </SideDrawer>
           </>
         }
-
       </Box>
-
     </Card>
   );
 };
