@@ -78,8 +78,8 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
         const { getAttachmentsByPolicyId } = data
 
         if (getAttachmentsByPolicyId) {
-          const { attachments } = getAttachmentsByPolicyId
-          const preSignedUrls = await Promise.all(attachments?.map(async (attachmentInfo) => {
+          const { attachmentsWithPreSignedUrl } = getAttachmentsByPolicyId
+          const preSignedUrls = await Promise.all(attachmentsWithPreSignedUrl?.map(async (attachmentInfo) => {
             const getAttachmentResp = await getAttachment({
               variables: {
                 getMedia: {
@@ -98,7 +98,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
 
           setPreSignedUrl(preSignedUrls)
 
-          attachments && dispatch({ type: ActionType.SET_ATTACHMENTS, attachments: attachments as Attachment[] })
+          attachmentsWithPreSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENTS, attachments: attachmentsWithPreSignedUrl as Attachment[] })
         }
 
       }
@@ -159,7 +159,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
           <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
           <Box my={3}>
             <Grid container spacing={3}>
-              {preSignedUrl.map((attachment) => {
+              {preSignedUrl?.map((attachment) => {
                 return (
                   <Grid item md={3} sm={12} xs={12}>
                     <Box className="card-box">

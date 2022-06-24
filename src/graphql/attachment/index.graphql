@@ -127,7 +127,7 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
 
 query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-     attachments{
+     attachmentsWithPreSignedUrl{
       id
       title
       attachmentName

@@ -17,6 +17,7 @@ export interface State {
   activeStep: number;
   serviceTypeId: string;
   transactionId: string;
+  provider: SelectorOption
 }
 
 export const initialState: State = {
@@ -33,7 +34,11 @@ export const initialState: State = {
   paymentType: '',
   activeStep: 0,
   serviceTypeId: "",
-  transactionId: ""
+  transactionId: "",
+  provider: {
+    id: "",
+    name: ""
+  }
 }
 
 export enum ActionType {
@@ -50,7 +55,8 @@ export enum ActionType {
   SET_PAYMENT_TYPE = 'setPaymentType',
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_SERVICE_TYPE_ID = 'setServiceTypeId',
-  SET_TRANSACTION_ID = 'setTransactionId'
+  SET_TRANSACTION_ID = 'setTransactionId',
+  SET_PROVIDER = 'setProvider'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -66,8 +72,8 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_PAYMENT_TYPE; paymentType: string } |
 { type: ActionType.SET_ACTIVE_STEP; activeStep: number } |
 { type: ActionType.SET_SERVICE_TYPE_ID; serviceTypeId: string } |
-{ type: ActionType.SET_TRANSACTION_ID; transactionId: string }
-
+{ type: ActionType.SET_TRANSACTION_ID; transactionId: string } |
+{ type: ActionType.SET_PROVIDER, provider: SelectorOption }
 
 export const externalFormBuilderReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -153,6 +159,12 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
       return {
         ...state,
         transactionId: action.transactionId
+      }
+
+    case ActionType.SET_PROVIDER:
+      return {
+        ...state,
+        provider: action.provider
       }
   }
 }

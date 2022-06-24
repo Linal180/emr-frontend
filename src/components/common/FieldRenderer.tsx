@@ -2,19 +2,21 @@
 import 'date-fns';
 import { memo, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
+import PhoneInput from 'react-phone-input-2';
+import { Autocomplete } from '@material-ui/lab';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { TextField, MenuItem, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip } from '@material-ui/core'
 //component
 import RadioButton from '../../components/common/RadioButton'
 //constant, interfaces, svgs, utils
-import { getFieldType, getTimestamps } from '../../utils';
-import { ElementType } from '../../generated/graphql'
-import { FieldComponentProps } from '../../interfacesTypes';
-import { useFormBuilderSidebarStyles } from '../../styles/formbuilder/sidebarStyle';
-import { MENU_PROPS, US_DATE_FORMAT } from '../../constants';
 import { CalendarIcon } from '../../assets/svgs';
-import PhoneInput from 'react-phone-input-2';
+import { ElementType, FieldOptionsInputType } from '../../generated/graphql'
+import { getFieldType, getTimestamps } from '../../utils';
+import { FieldComponentProps } from '../../interfacesTypes';
+import { MENU_PROPS, US_DATE_FORMAT } from '../../constants';
+import { useFormBuilderSidebarStyles } from '../../styles/formbuilder/sidebarStyle';
+
 
 //text field component
 export const TextFieldComponent = ({ item, field }: FieldComponentProps) => {
@@ -175,7 +177,7 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
 //date component
 export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
-  const [date, setDate] = useState<Date | null>(new Date())
+  const [date, setDate] = useState<Date | null>(null)
   const { name, value, onChange } = field || {}
 
   return (
@@ -194,7 +196,7 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
         onClick={() => setOpenPicker(!openPicker)}
         onClose={() => setOpenPicker(!openPicker)}
         onChange={(date) => {
-          isCreating ? setDate(date) : onChange && onChange(getTimestamps(date?.toString() || new Date().toString()))
+          isCreating ? setDate(date) : onChange && date && onChange(getTimestamps(date?.toString()))
         }}
         onKeyDown={(e) => e.preventDefault()}
         autoOk
@@ -205,7 +207,7 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
 }
 
 //tel phone number
-export const PhoneFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
+export const PhoneFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
   const [phoneNo, setPhoneNo] = useState<string>('')
   const { value, onChange } = field || {}
 
@@ -222,22 +224,64 @@ export const PhoneFieldComponent = ({ field, isCreating, item }: FieldComponentP
   )
 }
 
+//search dropdown 
+
+export const SearchFieldComponent = ({ field, item }: FieldComponentProps) => {
+  const [option, setOption] = useState<FieldOptionsInputType>({ name: "", value: "" })
+  const { onChange, ref } = field || {}
+  const { options } = item || {}
+  return (
+    <Autocomplete
+      options={options ?? []}
+      value={option}
+      ref={ref}
+      disableClearable
+      getOptionLabel={(option) => option.name || ""}
+      renderOption={(option) => option.name}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          // error={invalid}
+          className="selectorClass"
+        // onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+        />
+      )}
+      onChange={(_, data) => {
+        const { value } = data || {}
+        setOption(data)
+        onChange && onChange(value)
+      }}
+    />
+  )
+}
+
 //field renderer component
 export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) => {
   const { type, fieldId } = item;
   switch (type) {
+
     case ElementType.Checkbox:
       return <CheckboxGroupComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     case ElementType.Radio:
       return <RadioGroupComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     case ElementType.File:
       return <FileFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     case ElementType.Select:
       return <SelectFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     case ElementType.Date:
       return <DateFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     case ElementType.Tel:
       return <PhoneFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
+    case ElementType.Dropdown:
+      return <SearchFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
+
     default:
       return <TextFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId} />
   }

@@ -1724,6 +1724,7 @@ export interface PatientProviderSelectorProps {
 export interface SlotsComponentProps {
   facilityId: string;
   state?: ExternalFormBuilderState
+  providerId?: string
 }
 export interface dashboardInputsProps {
   year: SelectorOption
@@ -1887,4 +1888,12 @@ export interface ScheduleBoxProps {
   isDoctor?: boolean;
   schedule: Schedule;
   dispatcher: Dispatch<ScheduleAction>;
+}
+
+
+export interface FormDoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  defaultValues?: SelectorOption[]
+  formState?: ExternalFormBuilderState;
+  formDispatch?: Dispatch<PublicFormBuilderAction>
 }
