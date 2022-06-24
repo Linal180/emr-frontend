@@ -177,14 +177,13 @@ const CareTeamForm: FC<CareTeamsProps> = ({
     setRelationInput(relation as DoctorPatientRelationType)
     setOtherRelationInput(otherRelation as string)
     if (isEdit) {
-      const editPrimaryProvidersData = patientProvidersData?.find(item =>
-        item.relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== item.id)
+      const editPrimaryProvidersData = patientProvidersData?.find(({id, relation}) =>
+        relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== id)
 
       const { id } = editPrimaryProvidersData || {}
       if (id && relation === DoctorPatientRelationType.PrimaryProvider) {
         setOpenSave(true)
-      }
-      else {
+      }else {
         await updatePatientProviderRelation({
           variables: {
             updatePatientProviderRelationInputs: {
@@ -199,8 +198,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
       const { id } = newPrimaryProvidersData || {}
       if (relation === DoctorPatientRelationType.PrimaryProvider && id) {
         setOpenSave(true)
-      }
-      else {
+      } else {
         await updatePatientProvider({
           variables: {
             updatePatientProvider: {

@@ -56,6 +56,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
             {!isSuperAdminOrPracticeAdmin
               ? renderItem(FACILITY, facilityName)
               : <FacilitySelector
+                addEmpty
                 isRequired
                 label={FACILITY}
                 name="facilityId"
@@ -68,6 +69,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
             {isDoctorRole
               ? renderItem(DOCTOR, doctorName)
               : <DoctorSelector
+                addEmpty
                 isRequired
                 label={USUAL_PROVIDER_ID}
                 name="usualProviderId"
