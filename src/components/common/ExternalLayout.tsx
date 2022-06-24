@@ -5,12 +5,12 @@ import { Box, Button, Typography } from "@material-ui/core";
 import { Children } from "../../interfacesTypes";
 // constants block
 import { GREY } from "../../theme";
-import { EMRLogo } from "../../assets/svgs";
+import { AIMEDLOGO } from "../../assets/svgs";
 import { BOOK_APPOINTMENT, BOOK_YOUR_APPOINTMENT } from "../../constants";
 
 const ExternalLayout: FC<Children> = ({ children }): JSX.Element =>
   <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
-    <EMRLogo />
+    <AIMEDLOGO />
 
     <Box mb={3} />
 
