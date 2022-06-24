@@ -127,10 +127,11 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
 
 query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-     attachments{
+     attachmentsWithPreSignedUrl{
       id
       title
       attachmentName
+      preSignedUrl
       url
       type
 
@@ -138,7 +139,24 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
         comments
         policyId
       }
-      attachmentMetadataId
+    }
+  }
+}
+
+query GetAttachmentsByAgreementId($getAttachmentsByAgreementId: GetAttachmentsByAgreementId!) {
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: $getAttachmentsByAgreementId) {
+     attachmentsWithPreSignedUrl{
+      id
+      title
+      attachmentName
+      url
+      preSignedUrl
+      type
+
+      attachmentMetadata{
+        comments
+        agreementId
+      }
     }
   }
 }

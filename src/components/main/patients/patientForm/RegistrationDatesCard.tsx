@@ -5,7 +5,6 @@ import { useFormContext } from "react-hook-form"
 //components block
 import DatePicker from "../../../common/DatePicker"
 import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
 import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
 //constants, interfaces and utils block
@@ -49,43 +48,51 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
 
   return (
     <CardComponent cardTitle={REGISTRATION_DATES}>
-      {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-        <>
-          <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
-              {!isSuperAdminOrPracticeAdmin
-                ? renderItem(FACILITY, facilityName)
-                : <FacilitySelector
-                  addEmpty
-                  isRequired
-                  label={FACILITY}
-                  name="facilityId"
-                />
-              }
-            </Grid>
-
-            <Grid item md={4} sm={12} xs={12}>
-              {isDoctorRole
-                ? renderItem(DOCTOR, doctorName)
-                : <DoctorSelector
-                  isRequired
-                  label={USUAL_PROVIDER_ID}
-                  name="usualProviderId"
-                  facilityId={selectedFacility}
-                  addEmpty
-                />}
-            </Grid>
-
-            <Grid item md={2} sm={12} xs={12}>
-              <DatePicker name="registrationDate" label={REGISTRATION_DATE} disabled={shouldDisableEdit} />
-            </Grid>
-
-            <Grid item md={2} sm={12} xs={12}>
-              <DatePicker name="deceasedDate" label={DECREASED_DATE} disabled={shouldDisableEdit} />
-            </Grid>
+      <>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            {!isSuperAdminOrPracticeAdmin
+              ? renderItem(FACILITY, facilityName)
+              : <FacilitySelector
+                addEmpty
+                isRequired
+                label={FACILITY}
+                name="facilityId"
+                loading={getPatientLoading}
+              />
+            }
           </Grid>
-        </>
-      )}
+
+          <Grid item md={4} sm={12} xs={12}>
+            {isDoctorRole
+              ? renderItem(DOCTOR, doctorName)
+              : <DoctorSelector
+                isRequired
+                label={USUAL_PROVIDER_ID}
+                name="usualProviderId"
+                facilityId={selectedFacility}
+                addEmpty
+                loading={getPatientLoading}
+              />}
+          </Grid>
+
+          <Grid item md={2} sm={12} xs={12}>
+            <DatePicker
+              name="registrationDate"
+              label={REGISTRATION_DATE}
+              disabled={shouldDisableEdit}
+            />
+          </Grid>
+
+          <Grid item md={2} sm={12} xs={12}>
+            <DatePicker
+              name="deceasedDate"
+              label={DECREASED_DATE}
+              disabled={shouldDisableEdit}
+            />
+          </Grid>
+        </Grid>
+      </>
     </CardComponent>
   )
 }

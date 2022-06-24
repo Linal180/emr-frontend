@@ -824,6 +824,32 @@ body .MuiTabPanel-root {
   line-height: 1.43 !important;
 }
 
+.copay-type-value{
+  position: relative;
+}
+
+.copay-type-value .MuiInputBase-input{
+  appearance: none;
+  padding-right: 25px;
+}
+
+.copay-type-value .MuiInputBase-input::-webkit-outer-spin-button,
+.copay-type-value .MuiInputBase-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.copay-type-value .MuiTypography-h3{
+  position: absolute;
+  top: 29px;
+  right: 12px;
+}
+
 .disable-icon {
   opacity: 0.3;
   pointer-events: none;
