@@ -399,6 +399,7 @@ export interface DoctorSelectorProps extends FacilitySelectorProps {
   shouldOmitFacilityId?: boolean
   careProviderData?: DoctorPatient[];
   defaultValues?: SelectorOption[]
+  loading? : boolean
 }
 
 export interface CardSelectorProps {
@@ -1513,7 +1514,8 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
-  shouldEmitFacilityId?: boolean
+  shouldEmitFacilityId?: boolean,
+  loading?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {

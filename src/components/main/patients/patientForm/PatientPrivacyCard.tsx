@@ -16,103 +16,97 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, d
 
   return (
     <CardComponent cardTitle={PRIVACY} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
-      <>
-        <Grid item md={12} sm={12} xs={12}>
-          <FormControl component="fieldset">
-            loading={getPatientLoading}
-            <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={privacyNotice}
-                    onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: event.target.checked })}
-                  />
-                }
-                label={PRIVACY_NOTICE}
-              />
+      <Grid item md={12} sm={12} xs={12}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={shouldDisableEdit}
+                  color="primary"
+                  checked={privacyNotice}
+                  onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: event.target.checked })}
+                />
+              }
+              label={PRIVACY_NOTICE}
+            />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={releaseOfInfoBill}
-                    onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: event.target.checked })}
-                  />
-                }
-                label={RELEASE_OF_BILLING_INFO}
-              />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={shouldDisableEdit}
+                  color="primary"
+                  checked={releaseOfInfoBill}
+                  onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: event.target.checked })}
+                />
+              }
+              label={RELEASE_OF_BILLING_INFO}
+            />
+          </FormGroup>
+        </FormControl>
+
+        <Box display="flex" flexDirection="row">
+          <FormControl component="fieldset">
+            <FormGroup>
+              <Box mr={3} mb={2} mt={2}>
+                <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={callToConsent}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: event.target.checked })}
+                    />
+                  }
+                  label={GRANTED_TEXT}
+                />
+              </Box>
             </FormGroup>
           </FormControl>
 
-          <Box display="flex" flexDirection="row">
-            <FormControl component="fieldset">
-              loading={getPatientLoading}
-              <FormGroup>
-                <Box mr={3} mb={2} mt={2}>
-                  <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        disabled={shouldDisableEdit}
-                        color="primary"
-                        checked={callToConsent}
-                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: event.target.checked })}
-                      />
-                    }
-                    label={GRANTED_TEXT}
-                  />
-                </Box>
-              </FormGroup>
-            </FormControl>
+          <FormControl component="fieldset">
+            <FormGroup>
+              <Box ml={3} mt={2} mb={2}>
+                <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={medicationHistoryAuthority}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: event.target.checked })}
+                    />
+                  }
+                  label={GRANTED_TEXT}
+                />
+              </Box>
+            </FormGroup>
+          </FormControl>
+        </Box>
 
-            <FormControl component="fieldset">
-              loading={getPatientLoading}
-              <FormGroup>
-                <Box ml={3} mt={2} mb={2}>
-                  <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        disabled={shouldDisableEdit}
-                        color="primary"
-                        checked={medicationHistoryAuthority}
-                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: event.target.checked })}
-                      />
-                    }
-                    label={GRANTED_TEXT}
-                  />
-                </Box>
-              </FormGroup>
-            </FormControl>
-          </Box>
-
-          <Box>
-            <FormControl component="fieldset">
-              loading={getPatientLoading}
-              <FormGroup>
-                <Box mr={3} mb={2} mt={2}>
-                  <FormLabel component="legend">{CONSENT_TO_MESSAGES}</FormLabel>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        disabled={shouldDisableEdit}
-                        color="primary"
-                        checked={smsPermission}
-                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: event.target.checked })}
-                      />
-                    }
-                    label={CONSENT_TO_MESSAGES_DESCRIPTION}
-                  />
-                </Box>
-              </FormGroup>
-            </FormControl>
-          </Box>
-        </Grid>
-      </>
+        <Box>
+          <FormControl component="fieldset">
+            <FormGroup>
+              <Box mr={3} mb={2} mt={2}>
+                <FormLabel component="legend">{CONSENT_TO_MESSAGES}</FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={smsPermission}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: event.target.checked })}
+                    />
+                  }
+                  label={CONSENT_TO_MESSAGES_DESCRIPTION}
+                />
+              </Box>
+            </FormGroup>
+          </FormControl>
+        </Box>
+      </Grid>
     </CardComponent>
   )
 }

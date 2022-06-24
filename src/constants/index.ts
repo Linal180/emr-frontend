@@ -101,7 +101,7 @@ export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
 export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
-export const ADMIN = "admin";
+export const SUPER_ADMIN_TEXT = "Super Admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
@@ -565,6 +565,8 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
+export const SUPER = "Super";
+export const ADMIN = "Admin";
 export const SLOTS_TEXT = "Slots";
 export const CITY = "City";
 export const EMAIL = "Email";
@@ -4012,7 +4014,7 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "4", name: '12 Hours', time: 43200 * 1000 },
   { id: "5", name: '24 Hours', time: 86400 * 1000 },
   { id: "6", name: '2 Days', time: 172800 * 1000 },
-  { id: "7", name: '7 Days', time: 604800 * 1000 },
+  { id: "7", name: 'Remove Lock Time', time: 604800 * 1000 },
 ]
 
 export const EMERGENCY_LOG_LIST = [
