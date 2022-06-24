@@ -3,14 +3,14 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button, Typography } from "@material-ui/core";
 // svgs block
-import { EMRIcon } from "../../../assets/svgs";
+import { AIMEDLOGO } from "../../../assets/svgs";
 import DASHBOARD_IMAGE from "../../../assets/images/dashboard-image.svg"
 import { CALENDAR, CALENDAR_ROUTE, LOGIN_SUCCESSFULLY, LOREM_TEXT_15 } from "../../../constants";
 
 const DashboardComponent: FC = (): JSX.Element => (
   <Box sx={{ p: 5 }}>
     <Box maxWidth={113} pb={2}>
-      <EMRIcon />
+      <AIMEDLOGO />
     </Box>
 
     <Box pb={1}>
