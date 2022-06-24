@@ -502,6 +502,25 @@ body .MuiTabPanel-root {
   background-repeat: no-repeat !important;
 }
 
+.input-dollar-class .MuiInputBase-input {
+  background-image: url(../assets/images/dollar-sign.svg) !important;
+  background-size: auto !important;
+  background-position: right   center !important;
+  padding-right: 25px;
+  background-repeat: no-repeat !important;
+}
+
+.custom-num-input input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.custom-num-input input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .selectorClassTwo {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;

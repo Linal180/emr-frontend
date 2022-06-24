@@ -105,17 +105,15 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 </Grid>
 
                 <Grid item md={6} sm={12} xs={12}>
-                  <Box className="copay-type-value">
-                    <Box >
-                      <InputController
-                        isRequired
-                        info={COPAY_AMOUNTS_TOOLTIP}
-                        fieldType="number"
-                        controllerName={`copayFields.${index}.amount`}
-                        controllerLabel={VALUE}
-                      />
-                    </Box>
-                    <Typography variant="h3" color="textPrimary">$</Typography>
+                  <Box >
+                    <InputController
+                      isRequired
+                      info={COPAY_AMOUNTS_TOOLTIP}
+                      fieldType="number"
+                      controllerName={`copayFields.${index}.amount`}
+                      controllerLabel={VALUE}
+                      className="input-dollar-class custom-num-input"
+                    />
                   </Box>
                 </Grid>
               </Grid>
@@ -143,6 +141,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             fieldType="number"
             controllerName="coInsurancePercentage"
             controllerLabel={COINSURANCE_PERCENTAGE}
+            className="input-dollar-class custom-num-input"
           />
         </Grid>
 
