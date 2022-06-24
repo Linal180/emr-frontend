@@ -1074,7 +1074,9 @@ export interface InsuranceCreateInput {
   state?: SelectorOption
   ssn?: string
   sex?: SelectorOption
-  dob?: string
+  dob?: string,
+  homeBound : string
+
 };
 
 export interface MediaModalTypes extends DialogTypes {

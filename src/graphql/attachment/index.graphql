@@ -131,6 +131,7 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
       id
       title
       attachmentName
+      preSignedUrl
       url
       type
 
@@ -138,7 +139,6 @@ query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicy
         comments
         policyId
       }
-      attachmentMetadataId
     }
   }
 }

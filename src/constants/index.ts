@@ -1208,7 +1208,7 @@ export const APPOINTMENT_CANCELLED_TEXT = "Appointment cancelled";
 export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
-export const ADD_ANOTHER_COPAY_AMOUNT = "ADD ANOTHER COPAY AMOUNT";
+export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const SIGN_DOCUMENT_DESCRIPTION = "Confirm to sign document";
@@ -3601,7 +3601,6 @@ export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
 
-
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
@@ -3610,6 +3609,12 @@ export const CHECK_IN_STEPS = [
   // VITALS_TEXT,
   LAB_ORDERS,
   BILLING_TEXT,
+];
+
+export const ADD_INSURANCE_STEPS = [
+  INSURANCE,
+  POLICY_HOLDER,
+  INSURANCE_CARD
 ];
 
 export const LAB_ORDER_STEPS = [
