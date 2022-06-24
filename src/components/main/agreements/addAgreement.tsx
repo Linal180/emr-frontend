@@ -215,13 +215,12 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                   <Box pb={2} mb={4} borderBottom={`1px solid ${GRAY_SIX}`}>
                     <Typography variant='h6'>{DETAILS}</Typography>
                   </Box>
-
                   <Grid container spacing={3}>
                     <Grid item md={4} sm={12} xs={12}>
                       <InputController
                         fieldType="text"
                         controllerName="title"
-                        controllerLabel={TITLE}
+                        controllerLabel={TITLE}                         
                       />
                     </Grid>
                     {!id ? <Grid item md={12} sm={12} xs={12}>

@@ -8,10 +8,10 @@ import { AuthContext } from "../../../context";
 import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
 import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderMultiServices, requiredLabel } from "../../../utils";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderLoading, renderMultiServices, requiredLabel } from "../../../utils";
 
 const ServicesSelector: FC<ServiceSelectorInterface> = ({
-  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId
+  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId, loading
 }): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
@@ -24,6 +24,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [findAllService,] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -99,41 +100,46 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   }
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue={options}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <FormControl fullWidth margin={'normal'} error={Boolean(invalid)}>
-            <Box position="relative">
-              <InputLabel id={`${name}-autocomplete`} shrink>
-                {isRequired ? requiredLabel(label) : label}
-              </InputLabel>
-            </Box>
+    <>
+      {
+        loading ? renderLoading(inputLabel || '') :
+          <Controller
+            name={name}
+            control={control}
+            defaultValue={options}
+            render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+              return (
+                <FormControl fullWidth margin={'normal'} error={Boolean(invalid)}>
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>
 
-            <Select
-              {...field}
-              isClearable
-              {...multiSelectProps}
-              name={name}
-              defaultValue={options}
-              value={values}
-              onChange={(newValue) => {
-                field.onChange(newValue)
-                updateValues(newValue as multiOptionType[])
-              }}
-              onInputChange={(query: string) => {
-                (query.length > 2 || query.length === 0) && fetchAllServices(query)
-              }}
-              className={message ? `selectorClassTwoError diagnosesSelectorClass` : `selectorClassTwo diagnosesSelectorClass`}
-            />
+                  <Select
+                    {...field}
+                    isClearable
+                    {...multiSelectProps}
+                    name={name}
+                    defaultValue={options}
+                    value={values}
+                    onChange={(newValue) => {
+                      field.onChange(newValue)
+                      updateValues(newValue as multiOptionType[])
+                    }}
+                    onInputChange={(query: string) => {
+                      (query.length > 2 || query.length === 0) && fetchAllServices(query)
+                    }}
+                    className={message ? `selectorClassTwoError diagnosesSelectorClass` : `selectorClassTwo diagnosesSelectorClass`}
+                  />
 
-            <FormHelperText>{invalid && message}</FormHelperText>
-          </FormControl>
-        )
-      }}
-    />
+                  <FormHelperText>{invalid && message}</FormHelperText>
+                </FormControl>
+              )
+            }}
+          />
+      }
+    </>
   )
 }
 

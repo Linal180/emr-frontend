@@ -7,7 +7,6 @@ import { Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, FormGro
 import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
 import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
 // constants, interface block
 import { setRecord } from "../../../../utils"
 import InputController from "../../../../controller"
@@ -69,167 +68,176 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
 
 
   return (
-
     <CardComponent cardTitle={BILLING_PROFILE}>
-      {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-        <>
-          <Collapse in={!addBilling} mountOnEnter unmountOnExit>
-            <Box pb={3}
-              onClick={() => dispatch && dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
-              className="billing-box" display="flex" alignItems="center"
-            >
-              <AddCircleOutline color='inherit' />
+      <>
+        <Collapse in={!addBilling} mountOnEnter unmountOnExit>
+          <Box pb={3}
+            onClick={() => dispatch && dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
+            className="billing-box" display="flex" alignItems="center"
+          >
+            <AddCircleOutline color='inherit' />
 
-              <Typography>{ADD_FACILITY_BILLING}</Typography>
-            </Box>
-          </Collapse>
+            <Typography>{ADD_FACILITY_BILLING}</Typography>
+          </Box>
+        </Collapse>
 
-          <Collapse in={addBilling} mountOnEnter unmountOnExit>
-            <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
-              <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
-              <Button color='secondary' variant='contained'>{CANCEL}</Button>
-            </Box>
+        <Collapse in={addBilling} mountOnEnter unmountOnExit>
+          <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
+            <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
+            <Button color='secondary' variant='contained'>{CANCEL}</Button>
+          </Box>
 
-            <FormControl component="fieldset">
-              <FormGroup>
-                <Box mr={3} mb={2} mt={2}>
-                  <FormControlLabel
-                    label={SAME_AS_FACILITY_LOCATION}
-                    control={
-                      <Checkbox color="primary" checked={sameAddress}
-                        onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                      />
-                    }
-                  />
-                </Box>
-              </FormGroup>
-            </FormControl>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={8}>
-                <InputController
-                  fieldType="text"
-                  controllerName="billingEmail"
-                  controllerLabel={EMAIL}
+          <FormControl component="fieldset">
+            <FormGroup>
+              <Box mr={3} mb={2} mt={2}>
+                <FormControlLabel
+                  label={SAME_AS_FACILITY_LOCATION}
+                  control={
+                    <Checkbox color="primary" checked={sameAddress}
+                      onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                    />
+                  }
                 />
-              </Grid>
+              </Box>
+            </FormGroup>
+          </FormControl>
 
-              <Grid item xs={12} sm={12} md={4}>
-                <InputController
-                  fieldType="text"
-                  controllerName="billingZipCode"
-                  controllerLabel={ZIP}
-                />
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={8}>
+              <InputController
+                fieldType="text"
+                controllerName="billingEmail"
+                controllerLabel={EMAIL}
+                loading={getFacilityLoading}
+              />
             </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="billingPhone" label={PHONE} />
-              </Grid>
+            <Grid item xs={12} sm={12} md={4}>
+              <InputController
+                fieldType="text"
+                controllerName="billingZipCode"
+                controllerLabel={ZIP}
+                loading={getFacilityLoading}
+              />
+            </Grid>
+          </Grid>
 
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="billingFax" label={FAX} />
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <PhoneField name="billingPhone" label={PHONE}   loading={getFacilityLoading} />
             </Grid>
 
-            <InputController
-              fieldType="text"
-              controllerName="billingAddress"
-              controllerLabel={ADDRESS}
-            />
+            <Grid item md={6} sm={12} xs={12}>
+              <PhoneField name="billingFax" label={FAX}   loading={getFacilityLoading} />
+            </Grid>
+          </Grid>
 
-            <InputController
-              fieldType="text"
-              controllerName="billingAddress2"
-              controllerLabel={ADDRESS_2}
-            />
+          <InputController
+            fieldType="text"
+            controllerName="billingAddress"
+            controllerLabel={ADDRESS}
+            loading={getFacilityLoading}
+          />
 
-            <Grid container spacing={3}>
-              <Grid item md={4}>
-                <InputController
-                  fieldType="text"
-                  controllerName="billingCity"
-                  controllerLabel={CITY}
-                />
-              </Grid>
+          <InputController
+            fieldType="text"
+            controllerName="billingAddress2"
+            controllerLabel={ADDRESS_2}
+            loading={getFacilityLoading}
+          />
 
-              <Grid item md={4}>
-                <Selector
-                  value={EMPTY_OPTION}
-                  label={STATE}
-                  name="billingState"
-                  options={MAPPED_STATES}
-                />
-              </Grid>
-
-              <Grid item md={4}>
-                <Selector
-                  label={COUNTRY}
-                  value={EMPTY_OPTION}
-                  name="billingCountry"
-                  options={MAPPED_COUNTRIES}
-                />
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={4}>
+              <InputController
+                fieldType="text"
+                controllerName="billingCity"
+                controllerLabel={CITY}
+                loading={getFacilityLoading}
+              />
             </Grid>
 
-            <Box py={2}>
-              <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
-            </Box>
-
-            <Grid container spacing={3}>
-              <Grid item md={6}>
-                <InputController
-                  info={CLIA_ID_NUMBER_INFO}
-                  fieldType="text"
-                  controllerName="cliaIdNumber"
-                  controllerLabel={CLIA_ID_NUMBER}
-                />
-              </Grid>
-
-              <Grid item md={6}>
-                <InputController
-                  info={FEDERAL_TAX_ID_INFO}
-                  fieldType="text"
-                  controllerName="federalTaxId"
-                  controllerLabel={FEDERAL_TAX_ID}
-                />
-              </Grid>
+            <Grid item md={4}>
+              <Selector
+                value={EMPTY_OPTION}
+                label={STATE}
+                name="billingState"
+                options={MAPPED_STATES}
+                loading={getFacilityLoading}
+              />
             </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6}>
-                <InputController
-                  info={TAXONOMY_CODE_INFO}
-                  fieldType="text"
-                  controllerName="tamxonomyCode"
-                  controllerLabel={TAXONOMY_CODE}
-                />
-              </Grid>
+            <Grid item md={4}>
+              <Selector
+                label={COUNTRY}
+                value={EMPTY_OPTION}
+                name="billingCountry"
+                options={MAPPED_COUNTRIES}
+                loading={getFacilityLoading}
+              />
+            </Grid>
+          </Grid>
 
-              <Grid item md={6}>
-                <InputController
-                  info={NPI_INFO}
-                  fieldType="text"
-                  controllerName="npi"
-                  controllerLabel={NPI}
-                />
-              </Grid>
+          <Box py={2}>
+            <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
+          </Box>
+
+          <Grid container spacing={3}>
+            <Grid item md={6}>
+              <InputController
+                info={CLIA_ID_NUMBER_INFO}
+                fieldType="text"
+                controllerName="cliaIdNumber"
+                controllerLabel={CLIA_ID_NUMBER}
+                loading={getFacilityLoading}
+              />
             </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6}>
-                <InputController
-                  info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
-                  fieldType="text"
-                  controllerName="mammographyCertificationNumber"
-                  controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                />
-              </Grid>
+            <Grid item md={6}>
+              <InputController
+                info={FEDERAL_TAX_ID_INFO}
+                fieldType="text"
+                controllerName="federalTaxId"
+                controllerLabel={FEDERAL_TAX_ID}
+                loading={getFacilityLoading}
+              />
             </Grid>
-          </Collapse>
-        </>
-      )}
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item md={6}>
+              <InputController
+                info={TAXONOMY_CODE_INFO}
+                fieldType="text"
+                controllerName="tamxonomyCode"
+                controllerLabel={TAXONOMY_CODE}
+                loading={getFacilityLoading}
+              />
+            </Grid>
+
+            <Grid item md={6}>
+              <InputController
+                info={NPI_INFO}
+                fieldType="text"
+                controllerName="npi"
+                controllerLabel={NPI}
+                loading={getFacilityLoading}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={3}>
+            <Grid item md={6}>
+              <InputController
+                info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
+                fieldType="text"
+                controllerName="mammographyCertificationNumber"
+                controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                loading={getFacilityLoading}
+              />
+            </Grid>
+          </Grid>
+        </Collapse>
+      </>
     </CardComponent>
   )
 };
