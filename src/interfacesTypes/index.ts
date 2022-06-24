@@ -1777,6 +1777,7 @@ export type StatusInputProps = {
  }
 
 export interface PracticeDataProps {
+  loading: boolean;
   practiceData: PracticePayload['practice'];
 }
 

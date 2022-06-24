@@ -87,9 +87,8 @@ export const renderLoading = (label: string | JSX.Element) => (
 );
 
 export const renderItem = (
-  label: string,
-  value: Maybe<string> | number | ReactNode | undefined,
-  noWrap?: boolean,
+  label: string, value: Maybe<string> | number | ReactNode | undefined, 
+  noWrap?: boolean, loading?: boolean
 ) => (
   <>
     <Box position="relative">
@@ -98,11 +97,19 @@ export const renderItem = (
       </InputLabel>
     </Box>
 
-    <Box pb={2} pt={0.5}>
-      <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
-        {value ? value : N_A}
-      </Typography>
+    {!!loading ? <Box display="flex"
+      justifyContent="space-between"
+      alignItems="center" borderRadius={4}
+      className="skelton-input"
+    >
+      <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
     </Box>
+      : <Box pb={2} pt={0.5}>
+        <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
+          {value ? value : N_A}
+        </Typography>
+      </Box>
+    }
   </>
 );
 
