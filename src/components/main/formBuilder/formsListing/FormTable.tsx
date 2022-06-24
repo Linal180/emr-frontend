@@ -12,14 +12,13 @@ import ShareModal from "../../../common/ShareModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { GREEN, MODERATE } from "../../../../theme";
 import { AuthContext, ListContext } from "../../../../context";
-import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
+import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import {
-  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload,
-  LayoutJsonType,
-  FormTabs
+  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, LayoutJsonType, FormTabs
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
@@ -27,7 +26,6 @@ import {
   FORM_EMBED_TITLE, CREATED_ON, DRAFT_TEXT, PUBLISHED, FORM_BUILDER_RESPONSES, FACILITY_FORM, PRACTICE_FORM,
   FORM_TYPE
 } from "../../../../constants";
-import { GREEN, MODERATE } from "../../../../theme";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -106,8 +104,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ? 
-      { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : isPracticeUser ?
+        { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -214,12 +212,13 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {(isSuper || isPracticeUser) && facilityId ?
-                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> :
-                      <TableCell scope="row">---</TableCell>}
+                    {(isSuper || isPracticeUser) && (facilityId ?
+                      <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell>
+                        ---
+                      </TableCell>)}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : DRAFT_TEXT}</TableCell>
-                    <TableCell scope="row">
+                    {(isSuper || isPracticeUser) && <TableCell scope="row">
                       {facilityId && <Box className={classes.status}
                         component='span' color={MODERATE}>
                         {FACILITY_FORM}
@@ -231,7 +230,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         {PRACTICE_FORM}
                       </Box>}
                       {!practiceId && !facilityId && "--"}
-                    </TableCell>
+                    </TableCell>}
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>

@@ -9,7 +9,7 @@ import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderFacilities, renderLoading, requiredLabel
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel
 } from "../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -25,6 +25,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles)
 
   const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
@@ -66,13 +67,13 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
       const facilitiesInputs =
         isSuper ? { ...pageInputs }
           : isPracticeUser ? { practiceId, ...pageInputs }
-            : isFacAdmin ? { singleFacilityId: facilityId, ...pageInputs } : undefined
+            : isFacAdmin || isRegularUser ? { singleFacilityId: facilityId, ...pageInputs } : undefined
 
       facilitiesInputs && await findAllFacility({
         variables: { facilityInput: { ...facilitiesInputs, facilityName: searchQuery } }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, findAllFacility, searchQuery])
+  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, findAllFacility, searchQuery, isRegularUser])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {

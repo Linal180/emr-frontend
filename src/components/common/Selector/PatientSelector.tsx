@@ -103,6 +103,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
             options={updatedOptions ?? []}
             value={field.value}
             loading={loading}
+            disableClearable
             disabled={disabled}
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name ?? ""}
@@ -137,6 +138,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
+                
                 <TextField
                   {...params}
                   variant="outlined"

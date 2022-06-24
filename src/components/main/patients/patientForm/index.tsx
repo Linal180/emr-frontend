@@ -108,7 +108,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               if (currentDoctorPatients) {
                 const { doctor } = currentDoctorPatients || {};
                 const { firstName, lastName, id } = doctor ?? {}
-                
+
                 setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
                 dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
               }

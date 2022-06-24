@@ -694,6 +694,15 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getStandardTimeByMoment = (timestamp: string) => {
+  if (!timestamp) return "";
+  const date = new Date(parseInt(timestamp)).setDate((new Date().getDate()) - 1)
+  const parsedDate = new Date(date).toISOString()
+  const newDate = moment(parsedDate).local().toString()
+  const d = moment(newDate).format()
+  return d
+};
+
 export const getTimeString = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -705,6 +714,12 @@ export const getISOTime = (timestamp: string) => {
 
   return new Date(parseInt(timestamp)).toISOString()
 };
+
+export const getScheduleStartTime = (time: string) => {
+  if (!time) return "";
+  
+  return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
+}
 
 export const getAppointmentDateTime = (date: string) => {
   const timeDate = moment(date, "x")
@@ -1166,18 +1181,18 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 }
 
 
-export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null, value?: string | null | undefined) => {
   switch (type) {
     case ElementType.Text:
-      return ''
+      return  value || ''
     case ElementType.Select:
-      return isMultiSelect ? [] : ''
+      return isMultiSelect ? [] :  value || ''
     case ElementType.Radio:
-      return ''
+      return  value || ''
     case ElementType.Checkbox:
-      return []
+      return   []
     case ElementType.Date:
-      return new Date()
+      return value || null
     default:
       return ''
   }

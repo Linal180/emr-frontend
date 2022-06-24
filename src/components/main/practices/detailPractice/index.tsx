@@ -18,9 +18,8 @@ import { useProfileStyles } from '../../../../styles/profileStyles';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
 import {
-  Attachment,
-  AttachmentPayload,
-  AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation
+  Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+   useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,

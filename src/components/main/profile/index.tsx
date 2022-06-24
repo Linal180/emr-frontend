@@ -27,6 +27,8 @@ import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as MediaState
 } from '../../../reducers/mediaReducer';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { profileSchema } from '../../../validationSchemas';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
@@ -58,7 +60,8 @@ const ProfileComponent = (): JSX.Element => {
       country: EMPTY_OPTION,
       zipCode: "",
       contactId: ""
-    }
+    },
+    resolver: yupResolver(profileSchema)
   });
   const { handleSubmit, setValue, reset } = methods;
 
