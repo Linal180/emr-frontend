@@ -30,111 +30,109 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
 
   return (
     <CardComponent cardTitle={DEMOGRAPHICS} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
-      <>
-        <Grid container spacing={3}>
-          <Grid item md={3} sm={12} xs={12}>
-            <InputController
-              disabled={shouldDisableEdit}
-              fieldType="text"
-              controllerName="language"
-              controllerLabel={LANGUAGE_SPOKEN}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="race"
-              label={RACE}
-              addEmpty
-              options={MAPPED_RACE}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="ethnicity"
-              label={ETHNICITY}
-              addEmpty
-              options={MAPPED_ETHNICITY}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="maritialStatus"
-              label={MARITAL_STATUS}
-              addEmpty
-              options={MAPPED_MARITAL_STATUS}
-              loading={getPatientLoading}
-            />
-          </Grid>
+      <Grid container spacing={3}>
+        <Grid item md={3} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="language"
+            controllerLabel={LANGUAGE_SPOKEN}
+            loading={getPatientLoading}
+          />
         </Grid>
 
-        <Grid container spacing={3}>
-
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="race"
+            label={RACE}
+            addEmpty
+            options={MAPPED_RACE}
+            loading={getPatientLoading}
+          />
         </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="sexualOrientation"
-              label={SEXUAL_ORIENTATION}
-              options={MAPPED_SEXUAL_ORIENTATION}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="genderIdentity"
-              label={GENDER_IDENTITY}
-              options={MAPPED_GENDER_IDENTITY}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="gender"
-              label={LEGAL_SEX}
-              options={MAPPED_GENDER_IDENTITY}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            <Controller
-              name='homeBound'
-              control={control}
-              render={() => (
-                <FormControl fullWidth margin="normal"
-                  className={classes.toggleContainer} disabled={shouldDisableEdit}>
-                  <InputLabel shrink>{HOMEBOUND}</InputLabel>
-
-                  <label className="toggle-main">
-                    <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
-                    <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                    <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
-                  </label>
-                </FormControl>
-              )}
-            />
-          </Grid>
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="ethnicity"
+            label={ETHNICITY}
+            addEmpty
+            options={MAPPED_ETHNICITY}
+            loading={getPatientLoading}
+          />
         </Grid>
 
-        <Grid container spacing={3}>
-
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="maritialStatus"
+            label={MARITAL_STATUS}
+            addEmpty
+            options={MAPPED_MARITAL_STATUS}
+            loading={getPatientLoading}
+          />
         </Grid>
-      </>
+      </Grid>
+
+      <Grid container spacing={3}>
+
+      </Grid>
+
+      <Grid container spacing={3}>
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="sexualOrientation"
+            label={SEXUAL_ORIENTATION}
+            options={MAPPED_SEXUAL_ORIENTATION}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="genderIdentity"
+            label={GENDER_IDENTITY}
+            options={MAPPED_GENDER_IDENTITY}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            disabled={shouldDisableEdit}
+            name="gender"
+            label={LEGAL_SEX}
+            options={MAPPED_GENDER_IDENTITY}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={3} sm={12} xs={12}>
+          <Controller
+            name='homeBound'
+            control={control}
+            render={() => (
+              <FormControl fullWidth margin="normal"
+                className={classes.toggleContainer} disabled={shouldDisableEdit}>
+                <InputLabel shrink>{HOMEBOUND}</InputLabel>
+
+                <label className="toggle-main">
+                  <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
+                  <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
+                  <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
+                </label>
+              </FormControl>
+            )}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3}>
+
+      </Grid>
     </CardComponent>
   )
 }

@@ -9,7 +9,6 @@ import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
 import SmartyModal from "../../../common/SmartyModal"
 import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
 import { verifyAddress } from "../../../common/smartyAddress"
 // constants, interface block
 import InputController from "../../../../controller"
@@ -60,102 +59,105 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
   return (
     <>
       <CardComponent cardTitle={FACILITY_LOCATION}>
-        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-          <>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={12}>
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="email"
-                  controllerLabel={EMAIL}
-                />
-              </Grid>
-            </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} md={12}>
+            <InputController
+              isRequired
+              fieldType="text"
+              controllerName="email"
+              controllerLabel={EMAIL}
+              loading={getFacilityLoading}
+            />
+          </Grid>
+        </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField isRequired name="phone" label={PHONE} />
-              </Grid>
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={12} xs={12}>
+            <PhoneField isRequired name="phone" label={PHONE} loading={getFacilityLoading} />
+          </Grid>
 
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="fax" label={FAX} />
-              </Grid>
-            </Grid>
+          <Grid item md={6} sm={12} xs={12}>
+            <PhoneField name="fax" label={FAX} loading={getFacilityLoading} />
+          </Grid>
+        </Grid>
 
+        <InputController
+          fieldType="text"
+          controllerName="address"
+          controllerLabel={ADDRESS}
+          loading={getFacilityLoading}
+        />
+        <Grid container spacing={3}>
+
+          <Grid item xs={12} sm={12} md={6}>
             <InputController
               fieldType="text"
-              controllerName="address"
-              controllerLabel={ADDRESS}
+              controllerName="address2"
+              controllerLabel={ADDRESS_2}
+              loading={getFacilityLoading}
             />
-            <Grid container spacing={3}>
+          </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
+            <Grid container spacing={1} alignItems={'center'}>
+              <Grid item md={10} sm={10} xs={10}>
                 <InputController
                   fieldType="text"
-                  controllerName="address2"
-                  controllerLabel={ADDRESS_2}
+                  controllerName="zipCode"
+                  controllerLabel={ZIP}
+                  loading={getFacilityLoading}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={12} md={6}>
-                <Grid container spacing={1} alignItems={'center'}>
-                  <Grid item md={10} sm={10} xs={10}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="zipCode"
-                      controllerLabel={ZIP}
-                    />
-                  </Grid>
-
-                  <Grid item md={2}>
-                    {!isVerified ? <Box>
-                      <Button onClick={verifyAddressHandler} disabled={!Boolean(city && address)}>
-                        <Typography color={!Boolean(city && address) ? "initial" : 'primary'}>
-                          {VERIFY_ADDRESS}
-                        </Typography>
-                      </Button>
-                    </Box> :
-                      <Box display={'flex'} alignItems={'center'}>
-                        <CheckBoxIcon color='primary' />
-                        <Box ml={0.2}>
-                          <Typography>{VERIFIED}</Typography>
-                        </Box>
-                      </Box>
-                    }
-                  </Grid>
-                </Grid>
+              <Grid item md={2}>
+                {!isVerified ? <Box>
+                  <Button onClick={verifyAddressHandler} disabled={!Boolean(city && address)}>
+                    <Typography color={!Boolean(city && address) ? "initial" : 'primary'}>
+                      {VERIFY_ADDRESS}
+                    </Typography>
+                  </Button>
+                </Box> :
+                  <Box display={'flex'} alignItems={'center'}>
+                    <CheckBoxIcon color='primary' />
+                    <Box ml={0.2}>
+                      <Typography>{VERIFIED}</Typography>
+                    </Box>
+                  </Box>
+                }
               </Grid>
             </Grid>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={4}>
-                <InputController
-                  fieldType="text"
-                  controllerName="city"
-                  controllerLabel={CITY}
-                />
-              </Grid>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} md={4}>
+            <InputController
+              fieldType="text"
+              controllerName="city"
+              controllerLabel={CITY}
+              loading={getFacilityLoading}
+            />
+          </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
-                <Selector
-                  value={EMPTY_OPTION}
-                  label={STATE}
-                  name="state"
-                  options={MAPPED_STATES}
-                />
-              </Grid>
+          <Grid item xs={12} sm={12} md={4}>
+            <Selector
+              value={EMPTY_OPTION}
+              label={STATE}
+              name="state"
+              options={MAPPED_STATES}
+              loading={getFacilityLoading}
+            />
+          </Grid>
 
-              <Grid item xs={12} sm={12} md={4}>
-                <Selector
-                  name="country"
-                  label={COUNTRY}
-                  value={EMPTY_OPTION}
-                  options={MAPPED_COUNTRIES}
-                />
-              </Grid>
-            </Grid>
-          </>
-        )}
+          <Grid item xs={12} sm={12} md={4}>
+            <Selector
+              name="country"
+              label={COUNTRY}
+              value={EMPTY_OPTION}
+              options={MAPPED_COUNTRIES}
+              loading={getFacilityLoading}
+            />
+          </Grid>
+        </Grid>
       </CardComponent>
 
       <SmartyModal

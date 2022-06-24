@@ -7,14 +7,15 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin } from "../../../utils";
+import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading } from "../../../utils";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId = false, careProviderData
+  name, label, disabled, isRequired, addEmpty, loading,
+  facilityId: selectedFacilityId, shouldOmitFacilityId = false, careProviderData
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
@@ -24,6 +25,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const isPracAdmin = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const isSuperAndPracAdmin = isSuper || isPracAdmin
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, searchQuery, doctors, allDoctors } = state;
@@ -135,45 +137,50 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   }, [careProviderData, allDoctors])
 
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={updatedOptions[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={updatedOptions ?? []}
-            value={field.value}
-            disabled={disabled}
-            disableClearable
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+    <>
+      {
+        loading ? renderLoading(inputLabel || '') :
+          <Controller
+            rules={{ required: true }}
+            name={name}
+            control={control}
+            defaultValue={updatedOptions[0]}
+            render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+              return (
+                <Autocomplete
+                  options={updatedOptions ?? []}
+                  value={field.value}
+                  disabled={disabled}
+                  disableClearable
+                  getOptionLabel={(option) => option.name || ""}
+                  renderOption={(option) => option.name}
+                  renderInput={(params) => (
+                    <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
+                      <Box position="relative">
+                        <InputLabel id={`${name}-autocomplete`} shrink>
+                          {isRequired ? requiredLabel(label) : label}
+                        </InputLabel>
+                      </Box>
 
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        error={invalid}
+                        className="selectorClass"
+                        onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                      />
+
+                      <FormHelperText>{message}</FormHelperText>
+                    </FormControl>
+                  )}
+
+                  onChange={(_, data) => field.onChange(data)}
                 />
-
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-
-            onChange={(_, data) => field.onChange(data)}
+              );
+            }}
           />
-        );
-      }}
-    />
+      }
+    </>
   );
 };
 

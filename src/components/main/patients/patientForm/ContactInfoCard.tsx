@@ -68,151 +68,149 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
   return (
     <>
       <CardComponent cardTitle={CONTACT_INFORMATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
-      <>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={12} xs={12}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="basicAddress"
+              controllerLabel={ADDRESS}
+              loading={getPatientLoading}
+            />
+          </Grid>
+
+          <Grid item md={6} sm={12} xs={12}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="basicAddress2"
+              controllerLabel={ADDRESS_2}
+              loading={getPatientLoading}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={12} xs={12}>
+            <Grid container spacing={1} alignItems={'center'}>
+              <Grid item md={10} sm={10} xs={10}>
                 <InputController
                   disabled={shouldDisableEdit}
                   fieldType="text"
-                  controllerName="basicAddress"
-                  controllerLabel={ADDRESS}
-                  loading={getPatientLoading}
-                />
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="basicAddress2"
-                  controllerLabel={ADDRESS_2}
-                  loading={getPatientLoading}
-                />
-              </Grid>
-            </Grid>
-            
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <Grid container spacing={1} alignItems={'center'}>
-                  <Grid item md={10} sm={10} xs={10}>
-                    <InputController
-                      disabled={shouldDisableEdit}
-                      fieldType="text"
-                      controllerName="basicZipCode"
-                      controllerLabel={ZIP_CODE}
-                      loading={getPatientLoading}
-                    />
-                  </Grid>
-
-                  <Grid item md={2}>
-                    {!isVerified ? <Box>
-                      <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
-                        <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
-                          {VERIFY_ADDRESS}
-                        </Typography>
-                      </Button>
-                    </Box> :
-                      <Box display={'flex'} alignItems={'center'}>
-                        <CheckBoxIcon color='primary' />
-                        <Box ml={0.2}>
-                          <Typography>{VERIFIED}</Typography>
-                        </Box>
-                      </Box>
-                    }
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item md={2}>
-                <InputController
-                  disabled={shouldDisableEdit}
-                  fieldType="text"
-                  controllerName="basicCity"
-                  controllerLabel={CITY}
+                  controllerName="basicZipCode"
+                  controllerLabel={ZIP_CODE}
                   loading={getPatientLoading}
                 />
               </Grid>
 
               <Grid item md={2}>
-                <Selector
-                  disabled={shouldDisableEdit}
-                  name="basicState"
-                  label={STATE}
-                  addEmpty
-                  options={MAPPED_STATES}
-                  loading={getPatientLoading}
-                />
-              </Grid>
-
-              <Grid item md={2}>
-                <Selector
-                  disabled={shouldDisableEdit}
-                  name="basicCountry"
-                  label={COUNTRY}
-                  options={MAPPED_COUNTRIES}
-                  loading={getPatientLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                <FormControl component="fieldset">
-                  <FormGroup>
-                    <Box mr={3} mb={2} mt={2}>
-                      <FormControlLabel
-                        label={DONT_WANT_TO_SHARE_EMAIL}
-                        control={
-                          <Checkbox
-                            disabled={shouldDisableEdit}
-                            color="primary"
-                            checked={optionalEmail}
-                            onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
-                          />
-                        }
-                      />
+                {!isVerified ? <Box>
+                  <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
+                    <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
+                      {VERIFY_ADDRESS}
+                    </Typography>
+                  </Button>
+                </Box> :
+                  <Box display={'flex'} alignItems={'center'}>
+                    <CheckBoxIcon color='primary' />
+                    <Box ml={0.2}>
+                      <Typography>{VERIFIED}</Typography>
                     </Box>
-                  </FormGroup>
-                </FormControl>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  </Box>
+                }
+              </Grid>
+            </Grid>
+          </Grid>
 
-                    <InputController
-                      disabled={shouldDisableEdit}
-                      isRequired={!optionalEmail}
-                      fieldType="text"
-                      controllerName="basicEmail"
-                      controllerLabel={EMAIL}
-                      loading={getPatientLoading}
-                    />
-                  </Grid>
-                  <Grid item md={3} sm={12} xs={12}>
-                    <PhoneField
-                      name="basicPhone"
-                      label={MOBILE_PHONE}
-                      disabled={shouldDisableEdit}
-                      loading={getPatientLoading}
-                    />
-                  </Grid>
+          <Grid item md={2}>
+            <InputController
+              disabled={shouldDisableEdit}
+              fieldType="text"
+              controllerName="basicCity"
+              controllerLabel={CITY}
+              loading={getPatientLoading}
+            />
+          </Grid>
 
-                  <Grid item md={3} sm={12} xs={12}>
-                    <PhoneField
-                      name="basicMobile"
-                      label={HOME_PHONE}
-                      disabled={shouldDisableEdit}
-                      loading={getPatientLoading}
-                    />
-                  </Grid>
-                </Grid>
+          <Grid item md={2}>
+            <Selector
+              disabled={shouldDisableEdit}
+              name="basicState"
+              label={STATE}
+              addEmpty
+              options={MAPPED_STATES}
+              loading={getPatientLoading}
+            />
+          </Grid>
+
+          <Grid item md={2}>
+            <Selector
+              disabled={shouldDisableEdit}
+              name="basicCountry"
+              label={COUNTRY}
+              options={MAPPED_COUNTRIES}
+              loading={getPatientLoading}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3}>
+          <Grid item md={12} sm={12} xs={12}>
+            <FormControl component="fieldset">
+              <FormGroup>
+                <Box mr={3} mb={2} mt={2}>
+                  <FormControlLabel
+                    label={DONT_WANT_TO_SHARE_EMAIL}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={optionalEmail}
+                        onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
+                      />
+                    }
+                  />
+                </Box>
+              </FormGroup>
+            </FormControl>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+
+                <InputController
+                  disabled={shouldDisableEdit}
+                  isRequired={!optionalEmail}
+                  fieldType="text"
+                  controllerName="basicEmail"
+                  controllerLabel={EMAIL}
+                  loading={getPatientLoading}
+                />
+              </Grid>
+              <Grid item md={3} sm={12} xs={12}>
+                <PhoneField
+                  name="basicPhone"
+                  label={MOBILE_PHONE}
+                  disabled={shouldDisableEdit}
+                  loading={getPatientLoading}
+                />
               </Grid>
 
-
+              <Grid item md={3} sm={12} xs={12}>
+                <PhoneField
+                  name="basicMobile"
+                  label={HOME_PHONE}
+                  disabled={shouldDisableEdit}
+                  loading={getPatientLoading}
+                />
+              </Grid>
             </Grid>
+          </Grid>
 
-            <Grid container spacing={3}>
 
-            </Grid>
-          </>
+        </Grid>
+
+        <Grid container spacing={3}>
+
+        </Grid>
       </CardComponent>
 
       <SmartyModal
