@@ -73,7 +73,11 @@ export type Agreement = {
   __typename?: 'Agreement';
   body?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  practice?: Maybe<Practice>;
+  practiceId?: Maybe<Scalars['String']>;
   signatureRequired?: Maybe<Scalars['Boolean']>;
   title?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -82,12 +86,16 @@ export type Agreement = {
 
 export type AgreementInput = {
   body?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   signatureRequired?: Maybe<Scalars['Boolean']>;
   title?: Maybe<Scalars['String']>;
   viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
 };
 
 export type AgreementPaginationInput = {
+  agreementFacilityId?: Maybe<Scalars['String']>;
+  agreementPracticeId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
 };
@@ -1359,6 +1367,7 @@ export type FacilitiesUserWithRoles = {
 
 export type Facility = {
   __typename?: 'Facility';
+  agreements?: Maybe<Array<Agreement>>;
   appointments?: Maybe<Array<Appointment>>;
   billingAddress?: Maybe<Array<BillingAddress>>;
   cliaIdNumber?: Maybe<Scalars['String']>;
@@ -3205,6 +3214,7 @@ export type PolicyPayload = {
 export type Practice = {
   __typename?: 'Practice';
   active?: Maybe<Scalars['Boolean']>;
+  agreements?: Maybe<Array<Agreement>>;
   attachments?: Maybe<Array<Attachment>>;
   champus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -4559,7 +4569,9 @@ export type UpComingAppointmentsInput = {
 
 export type UpdateAgreementInput = {
   body?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  practiceId?: Maybe<Scalars['String']>;
   signatureRequired?: Maybe<Scalars['Boolean']>;
   title?: Maybe<Scalars['String']>;
   viewAgreementBeforeAgreeing?: Maybe<Scalars['Boolean']>;
