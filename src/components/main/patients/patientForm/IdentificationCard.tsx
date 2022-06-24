@@ -10,7 +10,9 @@ import { PatientCardsProps } from "../../../../interfacesTypes"
 import SnnController from "../../../../controller/SnnController"
 import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT } from "../../../../constants"
 
-const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit }) =>
+const IdentificationCard: FC<PatientCardsProps> = ({
+  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
+}) =>
   <CardComponent cardTitle={IDENTIFICATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
     <Grid container spacing={3}>
       <Grid item md={4} sm={12} xs={12}>
@@ -78,7 +80,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
       </Grid>
 
       <Grid item md={4} sm={12} xs={12}>
-        <DatePicker isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
+        <DatePicker loading={getPatientLoading} isRequired name="dob" label={DOB} disabled={shouldDisableEdit} />
       </Grid>
     </Grid>
 
