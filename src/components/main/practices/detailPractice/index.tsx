@@ -42,7 +42,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     mode: "all",
     resolver: yupResolver(updatePracticeSchema)
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, reset } = methods;
 
   const [getPractice, { loading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
@@ -138,6 +138,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     setEdit(!edit)
   }
 
+  const handleCancel = useCallback(() => {
+    reset();
+    setEdit(!edit)
+  }, [setEdit, edit, reset])
+
   const [getAttachment] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -206,7 +211,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                           <Box display='flex'>
                             {edit ?
                               <>
-                                <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
+                                <Button onClick={handleCancel} color="secondary">{CANCEL}</Button>
 
                                 <Box display="flex" justifyContent="flex-start" pl={2}>
                                   <Button type="submit" variant="contained" color="primary"

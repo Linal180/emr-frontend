@@ -3439,7 +3439,7 @@ export type Query = {
   getAttachments: AttachmentsPayload;
   getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
-  getAttachmentsByPolicyId: AttachmentsPayload;
+  getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
@@ -5166,6 +5166,7 @@ export type UserFormInput = {
 
 export type UserFormPayload = {
   __typename?: 'UserFormPayload';
+  appointment?: Maybe<Appointment>;
   response?: Maybe<ResponsePayloadResponse>;
   userForm?: Maybe<UserForms>;
 };
@@ -5442,7 +5443,7 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentsPayload', attachments?: Array<{ __typename?: 'Attachment', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null } | null> | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, preSignedUrl?: string | null, url?: string | null, type: AttachmentType, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null }> | null } };
 
 export type GetAttachmentsByAgreementIdQueryVariables = Exact<{
   getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
@@ -5889,7 +5890,7 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null } };
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string } | null } };
 
 export type GetFormPublicMediaUrlMutationVariables = Exact<{
   getPublicMediaInput: GetPublicMediaInput;
@@ -7532,17 +7533,17 @@ export type GetAttachmentsByLabOrderQueryResult = Apollo.QueryResult<GetAttachme
 export const GetAttachmentsByPolicyIdDocument = gql`
     query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-    attachments {
+    attachmentsWithPreSignedUrl {
       id
       title
       attachmentName
+      preSignedUrl
       url
       type
       attachmentMetadata {
         comments
         policyId
       }
-      attachmentMetadataId
     }
   }
 }
@@ -10753,6 +10754,9 @@ export const SaveUserFormValuesDocument = gql`
       error
     }
     userForm {
+      id
+    }
+    appointment {
       id
     }
   }

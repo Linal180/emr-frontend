@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
@@ -21,18 +21,14 @@ const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
-
   const { location: { pathname } } = history;
-  const { roles } = user || {};
-  const [isSuper, setIsSuper] = useState(false);
 
+  const { roles } = user || {};
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
+  
   const showFacility = isUserAdmin(roles)
-
-  useEffect(() => {
-    setIsSuper(isSuperAdmin(roles))
-  }, [isSuper, roles, user]);
+  const isSuper = isSuperAdmin(roles)
 
   return (
     <AppBar className={classes.appBar}>

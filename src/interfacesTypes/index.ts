@@ -1074,7 +1074,9 @@ export interface InsuranceCreateInput {
   state?: SelectorOption
   ssn?: string
   sex?: SelectorOption
-  dob?: string
+  dob?: string,
+  homeBound : string
+
 };
 
 export interface MediaModalTypes extends DialogTypes {
@@ -1172,6 +1174,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
+  loading?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
@@ -1724,6 +1727,7 @@ export interface PatientProviderSelectorProps {
 export interface SlotsComponentProps {
   facilityId: string;
   state?: ExternalFormBuilderState
+  providerId?: string
 }
 export interface dashboardInputsProps {
   year: SelectorOption
@@ -1887,4 +1891,12 @@ export interface ScheduleBoxProps {
   isDoctor?: boolean;
   schedule: Schedule;
   dispatcher: Dispatch<ScheduleAction>;
+}
+
+
+export interface FormDoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  defaultValues?: SelectorOption[]
+  formState?: ExternalFormBuilderState;
+  formDispatch?: Dispatch<PublicFormBuilderAction>
 }

@@ -28,6 +28,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT,
+  CONTACT_NUMBER,
 } from "../constants";
 import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 
@@ -1022,4 +1023,8 @@ export const addLabProviderDetailsSchema = yup.object({
 
 export const createAgreementSchema = yup.object({
   title: yup.string().required(),
+})
+
+export const profileSchema = yup.object({
+  phone: notRequiredPhone(CONTACT_NUMBER),
 })

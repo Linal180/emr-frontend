@@ -1174,18 +1174,18 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 }
 
 
-export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null, value?: string | null | undefined) => {
   switch (type) {
     case ElementType.Text:
-      return ''
+      return  value || ''
     case ElementType.Select:
-      return isMultiSelect ? [] : ''
+      return isMultiSelect ? [] :  value || ''
     case ElementType.Radio:
-      return ''
+      return  value || ''
     case ElementType.Checkbox:
-      return []
+      return   []
     case ElementType.Date:
-      return new Date()
+      return value || null
     default:
       return ''
   }
