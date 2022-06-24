@@ -8,7 +8,7 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { EMRLogo, SettingsIcon } from "../../assets/svgs";
+import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
 import {
@@ -25,7 +25,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const { location: { pathname } } = history;
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState(false);
-  
+
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
   const showFacility = isUserAdmin(roles)
@@ -38,7 +38,7 @@ const HeaderNew: FC = (): JSX.Element => {
     <AppBar className={classes.appBar}>
       <Toolbar className={classes.toolBar}>
         <Link to={ROOT_ROUTE}>
-          <EMRLogo />
+          <AIMEDLOGO />
         </Link>
 
         <Box className={classes.menuBar}>

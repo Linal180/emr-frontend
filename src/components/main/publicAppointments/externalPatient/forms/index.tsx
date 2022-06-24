@@ -20,7 +20,7 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import history from '../../../../../history';
-import { EMRLogo } from '../../../../../assets/svgs';
+import { AIMEDLOGO } from '../../../../../assets/svgs';
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
 import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
@@ -385,7 +385,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   return (
     <Box className='patient-information-form' bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
       <Box pt={3}>
-        <EMRLogo />
+      <AIMEDLOGO />
       </Box>
 
       <FormProvider {...methods}>
