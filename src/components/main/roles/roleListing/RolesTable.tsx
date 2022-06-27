@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
 import { AuthContext } from "../../../../context";
 import { TrashNewIcon } from "../../../../assets/svgs";
-import { formatRoleName, renderTh } from "../../../../utils";
+import { renderTh } from "../../../../utils";
 import { RolesTableProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import {
@@ -155,7 +155,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
                     <TableRow>
                       <TableCell scope="row">
                         <Link to={`${ROLES_ROUTE}/${id}`}>
-                          {formatRoleName(roleName || '')}
+                          {roleName}
                         </Link>
                       </TableCell>
 

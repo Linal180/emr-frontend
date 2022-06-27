@@ -72,7 +72,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
         <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant='h4'>{PROPERTIES_TEXT}</Typography>
 
-          <Button type='button' onClick={handleSubmit(submitHandler)} variant={'contained'} color="primary">
+          <Button type='button' onClick={handleSubmit(submitHandler)} disabled={!selected?.fieldId} variant={'contained'} color="primary">
             {SAVE_TEXT}
           </Button>
 
