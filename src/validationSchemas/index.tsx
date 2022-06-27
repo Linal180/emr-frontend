@@ -8,7 +8,7 @@ import {
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
   DOB_VALIDATION_MESSAGE, STATE, COUNTRY, PASSWORD, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE,
-  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE, 
+  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE,
   FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER,
   SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_NAME, NAME, EXPIRATION_DATE,
   NO_WHITE_SPACE_REGEX, PRACTICE, SPECIALTY, SUFFIX, MIDDLE_NAME, LANGUAGE_SPOKEN, SERVICE_NAME_TEXT,
@@ -349,8 +349,9 @@ export const doctorSchema = yup.object({
 export const facilityServicesSchema = {
   facilityId: selectorSchema(FACILITY),
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
-  price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
-    .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
+  price: yup.string()
+    .test('', requiredMessage(PRICE), value => !!value)
+    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
     .matches(NUMBER_REGEX, ValidMessage(NUMBER))
@@ -436,7 +437,7 @@ export const employerPatientSchema = {
 
 export const extendedPatientSchema = (
   isOptional: boolean, isDoctor: boolean, isSuperAdminOrPracticeAdmin: boolean
-  ) => yup.object({
+) => yup.object({
   // ...PatientSchema,
   // ...kinPatientSchema,
   // ...basicContactSchema,

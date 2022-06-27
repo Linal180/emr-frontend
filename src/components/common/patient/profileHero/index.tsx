@@ -16,7 +16,8 @@ import {
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
-  useGetPatientNearestAppointmentsLazyQuery
+  useGetPatientNearestAppointmentsLazyQuery,
+  DoctorPatientRelationType
 } from "../../../../generated/graphql";
 import {
   ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon
@@ -183,17 +184,23 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
   if (doctorPatients) {
-    const currentDoctor = doctorPatients.map(doctorPatient => {
-      if (doctorPatient.currentProvider) {
-        return doctorPatient.doctor
+    const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+      relation === DoctorPatientRelationType.PrimaryProvider)
+
+    if (doesPrimaryProviderExist) {
+      const { doctor } = doesPrimaryProviderExist ?? {}
+      const { firstName, lastName } = doctor ?? {}
+
+      providerName = `${firstName} ${lastName}`
+    } else {
+      const currentDoctorPatients = doctorPatients[0]
+
+      if (currentDoctorPatients) {
+        const { doctor } = currentDoctorPatients || {};
+        const { firstName, lastName } = doctor ?? {}
+
+        providerName = `${firstName} ${lastName}`
       }
-
-      return null
-    })[0];
-
-    if (currentDoctor) {
-      const { firstName, lastName, } = currentDoctor || {};
-      providerName = `${firstName} ${lastName}` || "--"
     }
   }
 
