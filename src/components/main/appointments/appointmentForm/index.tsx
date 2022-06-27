@@ -19,13 +19,14 @@ import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import NoSlotsComponent from '../../../common/NoSlotsComponent';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
-import FacilitySelector from '../../../common/Selector/FacilitySelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
@@ -34,7 +35,7 @@ import { appointmentSchema, providerAppointmentSchema } from '../../../../valida
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  filterSlots, getStandardTime, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -42,14 +43,13 @@ import {
   useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
-  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT,
+  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
   APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES,
-  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT,
-  TYPE, FACILITY, APPOINTMENT_TYPE, INFORMATION, PROVIDER, PATIENT, REASON,
-  NO_SLOT_AVAILABLE, PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT,
-  VIEW_APPOINTMENTS_BREAD, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
+  FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -97,9 +97,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceId: selectedServiceId,
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    patientId: selectedPatient
+    patientId: selectedPatient, scheduleStartDateTime
   } = watch();
   const { value: selectedService } = selectedServiceId ?? {}
+  const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -152,10 +154,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
 
-
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
-
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
             dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
@@ -191,6 +189,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
+          scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
+          scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
@@ -389,7 +389,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-      console.log(startTime, endTime, ">>>>>>>>>...")
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -457,85 +456,87 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     >
                       <Typography variant='h4'>{APPOINTMENT}</Typography>
                     </Box>
-                    {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                      <Grid container spacing={3}>
-                        <Grid item md={12} sm={12} xs={12}>
-                          <Typography variant='body1'>{TYPE}</Typography>
 
-                          <Box className={chartingClasses.toggleProblem}>
-                            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                              {appointmentTypes.map(type =>
-                                <Box onClick={() => handleAppointmentType(type)}
-                                  className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
-                                >
-                                  <Typography variant='h6'>{type}</Typography>
-                                </Box>
-                              )}
-                            </Box>
+                    <Grid container spacing={3}>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Typography variant='body1'>{TYPE}</Typography>
+
+                        <Box className={chartingClasses.toggleProblem}>
+                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                            {appointmentTypes.map(type =>
+                              <Box onClick={() => handleAppointmentType(type)}
+                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
+                              >
+                                <Typography variant='h6'>{type}</Typography>
+                              </Box>
+                            )}
                           </Box>
-                        </Grid>
-
-                        {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
-                          {isEdit ? renderItem(FACILITY, facilityName) :
-                            <FacilitySelector
-                              isRequired
-                              label={FACILITY}
-                              name="facilityId"
-                            />
-                          }
-                        </Grid>}
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <ServiceSelector
-                            isRequired
-                            label={APPOINTMENT_TYPE}
-                            name="serviceId"
-                            isEdit={isEdit}
-                            defaultValues={serviceIds}
-                            facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
-                          />
-                        </Grid>
+                        </Box>
                       </Grid>
-                    )}
+
+                      {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(FACILITY || '') : renderItem(FACILITY, facilityName)
+                          : <FacilitySelector
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
+                        }
+                      </Grid>}
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        <ServiceSelector
+                          isRequired
+                          label={APPOINTMENT_TYPE}
+                          name="serviceId"
+                          isEdit={isEdit}
+                          defaultValues={serviceIds}
+                          facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          loading={getAppointmentLoading}
+                        />
+                      </Grid>
+                    </Grid>
                   </Box>
                 </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>
-                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                    <>
-                      <Grid container spacing={3}>
-                        {!onlyDoctor &&
-                          <Grid item md={6} sm={12} xs={12}>
-                            <DoctorSelector
-                              label={PROVIDER}
-                              name="providerId"
-                              facilityId={selectedFacility}
-                              addEmpty
-                            />
-                          </Grid>}
-
+                  <>
+                    <Grid container spacing={3}>
+                      {!onlyDoctor &&
                         <Grid item md={6} sm={12} xs={12}>
-                          {isEdit ? renderItem(PATIENT, patientName) :
-                            <PatientSelector
-                              isModal
-                              isRequired
-                              label={PATIENT}
-                              name="patientId"
-                              setValue={setValue}
-                              isOpen={openPatientModal}
-                              handlePatientModal={handlePatientModal}
-                            />}
-                        </Grid>
+                          <DoctorSelector
+                            label={PROVIDER}
+                            name="providerId"
+                            facilityId={selectedFacility}
+                            addEmpty
+                            loading={getAppointmentLoading}
+                          />
+                        </Grid>}
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
+                          : <PatientSelector
+                            isModal
+                            isRequired
+                            label={PATIENT}
+                            name="patientId"
+                            setValue={setValue}
+                            isOpen={openPatientModal}
+                            handlePatientModal={handlePatientModal}
+                          />
+                        }
                       </Grid>
+                    </Grid>
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="reason"
-                        controllerLabel={REASON}
-                      />
+                    <InputController
+                      fieldType="text"
+                      controllerName="reason"
+                      controllerLabel={REASON}
+                      loading={getAppointmentLoading}
+                    />
 
-                      {/* <Grid container spacing={3}>
+                    {/* <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             fieldType="text"
@@ -553,14 +554,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         </Grid>
                       </Grid> */}
 
-                      <InputController
-                        multiline
-                        fieldType="text"
-                        controllerName="notes"
-                        controllerLabel={NOTES}
-                      />
-                    </>
-                  )}
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="notes"
+                      controllerLabel={NOTES}
+                      loading={getAppointmentLoading}
+                    />
+                  </>
                 </CardComponent>
               </Grid>
 
@@ -587,20 +588,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <ul className={classes.timeSlots}>
                         {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                           const { startTime, endTime } = slot || {}
+                          const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
 
                           return (
-                            <li onClick={() => handleSlot(slot)} key={index}>
-                              <div>
-                                <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
-                                <label htmlFor={`timeSlot-${index}`}>
-                                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                  {getStandardTime(new Date(endTime || '').getTime().toString())}
-                                </label>
-                              </div>
+                            <li key={index}>
+                              <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
+                                bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
+                                color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
+                                className={classes.timeSlot}
+                                onClick={() => handleSlot(slot)}>
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
+                              </Box>
                             </li>
                           )
                         }) : (
-                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                          <NoSlotsComponent />
                         )}
                       </ul>
                     )}
@@ -613,7 +616,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item lg={6} md={12} sm={12} xs={12}>
                           <Controller
                             name='employment'
                             control={control}

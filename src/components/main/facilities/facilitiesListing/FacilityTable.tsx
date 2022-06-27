@@ -35,10 +35,12 @@ const FacilityTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
+
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const { practiceId, id: facilityId } = facility || {}
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const [{ copied }, appointmentDispatcher] =
@@ -77,14 +79,14 @@ const FacilityTable: FC = (): JSX.Element => {
     try {
       const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
       const payload =
-        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
+        isSuper ? { ...inputs } : isPracticeUser ? { ...inputs, practiceId } :
           isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
 
       payload && await findAllFacility({
         variables: { facilityInput: { ...payload } }
       })
     } catch (error) { }
-  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
+  }, [facilityId, findAllFacility, isFacAdmin, isPracticeUser, isSuper, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -175,7 +177,7 @@ const FacilityTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
               ) : (

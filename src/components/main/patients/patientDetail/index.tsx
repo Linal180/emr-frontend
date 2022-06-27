@@ -7,7 +7,6 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
-import CareTeamComponent from './careTeam';
 import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
@@ -19,6 +18,7 @@ import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 import NoDataComponent from '../../../common/NoDataComponent';
+import CareTeamComponent from './careTeam/index'
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import history from "../../../../history";
@@ -47,7 +47,6 @@ import {
   HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
 import SideDrawer from '../../../common/SideDrawer';
-import AgreementsComponent from './agreements';
 
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -107,7 +106,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -345,7 +344,11 @@ const PatientDetailsComponent = (): JSX.Element => {
                   <PracticesByYear year={{ id: '2022', name: '2022' }} />
                 </Card>
               </Box>
-
+              <Box className='masonry-box'>
+                <CareTeamComponent                
+                  patientProvidersData={patientProvidersData}              
+                />
+              </Box>
               <Box className='masonry-box'>
                 <EncounterList />
               </Box>
@@ -378,11 +381,9 @@ const PatientDetailsComponent = (): JSX.Element => {
               patientProvidersData={patientProvidersData}
               drawerOpened={drawerOpened}
               patientDispatcher={dispatch}
+              providerBtn={true}
+              isEditable={true}
             />
-          </TabPanel>
-
-          <TabPanel value="12">
-            <AgreementsComponent />
           </TabPanel>
         </Box>
       </TabContext>

@@ -9,44 +9,41 @@ import { HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, 
 import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
 import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
 
 const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
   return (
     <CardComponent cardTitle={NEXT_OF_KIN}>
-      {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-        <>
-          <Grid container spacing={3}>
-            <Grid item md={3} sm={12} xs={12}>
-              <InputController
-                disabled={shouldDisableEdit}
-                fieldType="text"
-                controllerName="kinName"
-                controllerLabel={NAME}
-              />
-            </Grid>
+      <Grid container spacing={3}>
+        <Grid item md={3} sm={12} xs={12}>
+          <InputController
+            disabled={shouldDisableEdit}
+            fieldType="text"
+            controllerName="kinName"
+            controllerLabel={NAME}
+            loading={getPatientLoading}
+          />
+        </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <Selector
-                addEmpty
-                disabled={shouldDisableEdit}
-                name="kinRelationship"
-                label={RELATIONSHIP}
-                // value={EMPTY_OPTION}
-                options={MAPPED_RELATIONSHIP_TYPE}
-              />
-            </Grid>
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            addEmpty
+            disabled={shouldDisableEdit}
+            name="kinRelationship"
+            label={RELATIONSHIP}
+            // value={EMPTY_OPTION}
+            options={MAPPED_RELATIONSHIP_TYPE}
+            loading={getPatientLoading}
+          />
+        </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <PhoneField name="kinPhone" label={HOME_PHONE} disabled={shouldDisableEdit} />
-            </Grid>
+        <Grid item md={3} sm={12} xs={12}>
+          <PhoneField name="kinPhone" label={HOME_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
+        </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <PhoneField name="kinMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} />
-            </Grid>
-          </Grid>
-        </>
-      )}
+        <Grid item md={3} sm={12} xs={12}>
+          <PhoneField name="kinMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
+        </Grid>
+      </Grid>
     </CardComponent>
   )
 }

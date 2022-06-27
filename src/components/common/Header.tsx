@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
@@ -8,13 +8,13 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { EMRLogo, SettingsIcon } from "../../assets/svgs";
+import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
+  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -22,21 +22,19 @@ const HeaderNew: FC = (): JSX.Element => {
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
+
   const { roles } = user || {};
-  const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
+  
   const showFacility = isUserAdmin(roles)
-
-  useEffect(() => {
-    setIsSuper(isSuperAdmin(roles))
-  }, [isSuper, roles, user]);
+  const isSuper = isSuperAdmin(roles)
 
   return (
     <AppBar className={classes.appBar}>
       <Toolbar className={classes.toolBar}>
         <Link to={ROOT_ROUTE}>
-          <EMRLogo />
+          <AIMEDLOGO />
         </Link>
 
         <Box className={classes.menuBar}>
@@ -76,11 +74,11 @@ const HeaderNew: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <DropdownMenu
+          {/* <DropdownMenu
             itemName={BILLING_TEXT}
             menuItem={BILLING_MENU_ITEMS}
             current={currentRoute === 'inBilling'}
-          />
+          /> */}
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
             && showFacility &&
@@ -93,12 +91,20 @@ const HeaderNew: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <Typography
+          {/* <Typography
             component={Link}
             to={LAB_RESULTS_ROUTE}
             className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
           >
             {REPORTS}
+          </Typography> */}
+
+          <Typography
+            component={Link}
+            to={AGREEMENTS_ROUTE}
+            className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+          >
+            {AGREEMENTS}
           </Typography>
         </Box>
 

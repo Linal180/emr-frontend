@@ -8,24 +8,24 @@ import {
   PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS
 } from "../../../../constants";
 
-const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
+const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
   const { name, phone, ein, champus, fax, medicaid, medicare, upin } = practiceData || {};
   
   return (
     <>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12}>
-          {renderItem(PRACTICE_NAME, name)}
+          {renderItem(PRACTICE_NAME, name, undefined, loading)}
         </Grid>
       </Grid>
 
       <Grid container spacing={3}>
         <Grid item md={6} sm={12}>
-          {renderItem(PHONE, phone)}
+          {renderItem(PHONE, phone, undefined, loading)}
         </Grid>
 
         <Grid item md={6} sm={12}>
-          {renderItem(FAX, fax)}
+          {renderItem(FAX, fax, undefined, loading)}
         </Grid>
       </Grid>
 
@@ -39,11 +39,11 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
         <Grid item md={6} sm={12}>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12}>
-              {renderItem(EIN, ein)}
+              {renderItem(EIN, ein, undefined, loading)}
             </Grid>
 
             <Grid item md={6} sm={12}>
-              {renderItem(UPIN, upin)}
+              {renderItem(UPIN, upin, undefined, loading)}
             </Grid>
           </Grid>
         </Grid>
@@ -51,11 +51,11 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
         <Grid item md={6} sm={12}>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12}>
-              {renderItem(MEDICARE, medicare)}
+              {renderItem(MEDICARE, medicare, undefined, loading)}
             </Grid>
 
             <Grid item md={6} sm={12}>
-              {renderItem(MEDICAID, medicaid)}
+              {renderItem(MEDICAID, medicaid, undefined, loading)}
             </Grid>
           </Grid>
         </Grid>
@@ -65,7 +65,7 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
         <Grid item md={6} sm={12}>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12}>
-              {renderItem(CHAMPUS, champus)}
+              {renderItem(CHAMPUS, champus, undefined, loading)}
             </Grid>
           </Grid>
         </Grid>

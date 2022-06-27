@@ -27,7 +27,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
+  const { required, label, fieldId, type, isMultiSelect, apiCall, defaultValue } = item;
   const { facilityFieldId, paymentType } = state || {}
   const { id: facilityField } = facilityFieldId || {}
 
@@ -38,7 +38,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <InsuranceForm item={item} />
       case FormBuilderPaymentTypes.CONTRACT:
         return <ContractForm />
-      case FormBuilderPaymentTypes.INTERNATIONAL_TRAVELER:
+      case FormBuilderPaymentTypes.NO_INSURANCE:
         return <PaymentForm dispatcher={dispatcher} state={state} />
       default:
         return <></>
@@ -77,6 +77,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           isRequired={required || true}
           name={fieldId}
           label={label}
+          formDispatch={dispatcher}
+          formState={state}
           addEmpty
         />
 
@@ -101,7 +103,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <Controller
           name={fieldId}
           control={control}
-          defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
+          defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
           render={({ field, fieldState }) => {
             return (
               <FormControl fullWidth margin="normal">

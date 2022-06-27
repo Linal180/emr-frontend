@@ -14,7 +14,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   appBar: {
-    backgroundColor: WHITE,
+    backgroundColor: '#ffffff !important',
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: "none",
     padding: theme.spacing(0, 4),

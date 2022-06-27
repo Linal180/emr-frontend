@@ -65,6 +65,7 @@ export interface State {
   };
   primaryInsurance: string
   appointmentCreateType: string
+  sortBy: string
 }
 
 export const initialState: State = {
@@ -127,7 +128,8 @@ export const initialState: State = {
     providerId: '',
   },
   primaryInsurance: '',
-  appointmentCreateType: ''
+  appointmentCreateType: '',
+  sortBy: 'ASC'
 }
 
 
@@ -184,7 +186,8 @@ export enum ActionType {
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
   SET_PRIMARY_INSURANCE = 'setPrimaryInsurance',
-  SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType'
+  SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
+  SET_SORT_BY = 'setSortBy'
 }
 
 export type Action =
@@ -240,6 +243,7 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | { type: ActionType.SET_APPOINTMENT_CREATE_TYPE; appointmentCreateType: string }
+  | { type: ActionType.SET_SORT_BY; sortBy: string }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -547,6 +551,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         appointmentCreateType: action.appointmentCreateType
+      }
+    case ActionType.SET_SORT_BY:
+      return {
+        ...state,
+        sortBy: action.sortBy
       }
   }
 };

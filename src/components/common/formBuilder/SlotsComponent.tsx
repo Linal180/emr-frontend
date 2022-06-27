@@ -19,7 +19,8 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const [appointmentTypeId, setAppointmentTypeId] = useState('')
 
-  const { serviceId } = state || {}
+  const { serviceId, provider } = state || {}
+  const { id: providerId } = provider || {}
 
   const classes = usePublicAppointmentStyles()
   const { setValue, getValues, watch } = useFormContext()
@@ -62,17 +63,19 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
       setValue('scheduleStartDateTime', '')
       const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
       const currentDay = new Date(date).getDay()
+      const inputData = {
+        offset: moment.tz().utcOffset(), currentDate: date.toString(), serviceId: appointmentTypeId,
+        day: days[currentDay],
+      }
+      const inputs = providerId ? { ...inputData, providerId } : { ...inputData, facilityId }
 
       await getSlots({
         variables: {
-          getSlots: {
-            offset: moment.tz().utcOffset(), currentDate: date.toString(), serviceId: appointmentTypeId, facilityId,
-            day: days[currentDay]
-          }
+          getSlots: inputs
         }
       })
     }
-  }, [date, getSlots, facilityId, setValue, serviceId, appointmentTypeId])
+  }, [date, getSlots, facilityId, setValue, serviceId, appointmentTypeId, providerId])
 
   useEffect(() => {
     appointmentTypeId && serviceId && date && getSlotsHandler()
@@ -113,8 +116,9 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
           }) : (
             <Fragment>
               <FormControl component="fieldset" margin="normal" error={Boolean(!scheduleStartDateTime)}>
-                <FormHelperText>{!scheduleStartDateTime && requiredMessage(SLOTS_TEXT) }</FormHelperText>
+                <FormHelperText>{!scheduleStartDateTime && requiredMessage(SLOTS_TEXT)}</FormHelperText>
               </FormControl>
+
               <Typography>{NO_SLOT_AVAILABLE}</Typography>
             </Fragment>
           )}

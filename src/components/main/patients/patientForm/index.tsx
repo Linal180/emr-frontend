@@ -13,43 +13,49 @@ import { getAddressByZipcode } from '../../../common/smartyAddress';
 import history from '../../../../history';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord } from '../../../../utils';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
+  getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord
+} from '../../../../utils';
+import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
-  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENT_CREATED,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, 
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
 } from "../../../../constants";
 import {
-  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType,
-  Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, useUpdatePatientMutation
+  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
+  Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
+  useUpdatePatientMutation
 } from "../../../../generated/graphql";
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
   const { user, currentDoctor } = useContext(AuthContext)
-  const { id: selectedDoctorId} = currentDoctor || {}
+  const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
-  const { id: selectedFacilityId} = facility || {};
+  const { id: selectedFacilityId } = facility || {};
+
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
     activeStep, patientId, optionalEmail
   } = state
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
+
   const { handleSubmit, setValue, watch } = methods;
   const {
-    // facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
 
@@ -84,24 +90,28 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
             if (facilityId) {
               fetchAllDoctorList(facilityId)
-              name && setValue("facilityId", setRecord(facilityId, name))
+              name && setValue("facilityId", setRecord(facilityId, name, false))
               dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
           if (doctorPatients) {
-            const doesPrimaryProviderExist = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PrimaryProvider)
+            const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+              relation === DoctorPatientRelationType.PrimaryProvider)
 
             if (doesPrimaryProviderExist) {
               const { doctor } = doesPrimaryProviderExist ?? {}
               const { firstName, lastName, id } = doctor ?? {}
+
               setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             } else {
               const currentDoctorPatients = doctorPatients[0]
+
               if (currentDoctorPatients) {
                 const { doctor } = currentDoctorPatients || {};
                 const { firstName, lastName, id } = doctor ?? {}
+
                 setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
                 dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
               }
@@ -143,9 +153,12 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
           dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: callToConsent || false })
           dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: privacyNotice || false })
-          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
-          dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: medicationHistoryAuthority || false })
           dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: smsPermission || false })
+          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
+          dispatch({
+            type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY,
+            medicationHistoryAuthority: medicationHistoryAuthority || false
+          })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -476,31 +489,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     }
   }, [getPatient, patientId])
 
-  // const fetchList = useCallback((id: string, name: string) => {
-  //   setValue('usualProviderId', EMPTY_OPTION)
-
-  //   id && fetchAllDoctorList(id);
-  // }, [fetchAllDoctorList, setValue]);
-
-  // useEffect(() => {
-  //   selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
-  // }, [fetchList, selectedFacility, selectedFacilityName, watch])
-
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 
   const getAddressHandler = useCallback(async () => {
-
     if (basicZipCode) {
       const data = await getAddressByZipcode(basicZipCode);
       const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
+
       if (status) {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-    } else {
-      Alert.error(ZIP_CODE_ENTER)
-    }
+    } else Alert.error(ZIP_CODE_ENTER)
   }, [basicZipCode, setValue])
 
   useEffect(() => {

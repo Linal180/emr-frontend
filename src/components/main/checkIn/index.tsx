@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
+import { Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
 import clsx from 'clsx';
 import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -204,7 +204,7 @@ const CheckInComponent = (): JSX.Element => {
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
-        return 'Unknown step';
+        return <CircularProgress />;
     }
   }
 
@@ -303,7 +303,7 @@ const CheckInComponent = (): JSX.Element => {
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />
-                    <ChevronRightIcon />
+                    {!(CHECK_IN_STEPS.length - 1 === index) ?  <ChevronRightIcon /> : '' }
                   </Box>
                 </StepLabel>
               </Step>

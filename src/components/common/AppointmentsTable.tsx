@@ -3,44 +3,44 @@ import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReduce
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { Sort } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { 
+import {
   Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
- } from "@material-ui/core";
+} from "@material-ui/core";
 // components block
 import Alert from "./Alert";
-import ConfirmationModal from "./ConfirmationModal";
-import NoDataFoundComponent from "./NoDataFoundComponent";
 import Search from "./Search";
 import Selector from "./Selector";
 import TableLoader from "./TableLoader";
+import ConfirmationModal from "./ConfirmationModal";
+import ServicesSelector from "./Selector/ServiceSelector";
+import NoDataFoundComponent from "./NoDataFoundComponent";
+import FacilitySelector from "./Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
 import { AuthContext } from "../../context";
-import { useTableStyles } from "../../styles/tableStyles";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
+import history from "../../history";
+import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
 import {
-  AppointmentCreateType,
-  AppointmentPayload, AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery,
-  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation
-} from "../../generated/graphql";
-import {
-  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission, 
-  getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime, getStandardTimeDuration,
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderTh, setRecord, convertDateFromUnix,
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
+  convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
+  getStandardTimeDuration, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh, setRecord
 } from "../../utils";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE, DATE,
-  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, ARRIVAL_STATUS, TYPE, VIEW_ENCOUNTER, TIME,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, STAGE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, SIX_PAGE_LIMIT,
-  APPOINTMENT_CANCELLED_TEXT, TELEHEALTH_URL, USER_PERMISSIONS, APPOINTMENT_TYPE, 
+  AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
+  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
+} from "../../generated/graphql";
+import {
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
+  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
+  CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, TEN_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
 } from "../../constants";
-import FacilitySelector from "./Selector/FacilitySelector";
-import ServicesSelector from "./Selector/ServiceSelector";
 
 dotenv.config()
 
@@ -49,20 +49,21 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { user, currentUser, userPermissions } = useContext(AuthContext)
   const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
-  const { id: providerId } = currentUser || {}
+  const isAdminUser = isUserAdmin(roles)
 
+  const { id: providerId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   const { id: facilityId, practiceId } = facility || {}
-  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
 
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
   const isDoctor = isOnlyDoctor(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<StatusInputProps>({ mode: "all" });
 
   const { setValue, watch } = methods
   const {
-    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments, sortBy
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
@@ -182,19 +183,25 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: SIX_PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: TEN_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }
 
         inputs && await findAllAppointments({
           variables: {
-            appointmentInput: { ...inputs, searchString: searchQuery, facilityId: filterFacilityId, appointmentTypeId: appointmentTypeId }
+            appointmentInput: {
+              ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
+              appointmentTypeId: appointmentTypeId, sortBy: sortBy
+            }
           },
         })
       }
     } catch (error) { }
-  }, [doctorId, isDoctor, filterFacilityId, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, appointmentTypeId])
+  }, [
+    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId,
+    facilityId, findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy
+  ])
 
   useEffect(() => {
     fetchAppointments();
@@ -207,12 +214,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const updateAppointmentData = () => {
     const { id, name } = status || {}
     const appointment = appointments?.find(appointment => appointment?.id === id)
-    const updatedAppointment = { ...appointment, status: getAppointmentStatus(name || '') } as AppointmentPayload['appointment']
+    const updatedAppointment = {
+      ...appointment, status: getAppointmentStatus(name || '')
+    } as AppointmentPayload['appointment']
+
     const index = appointments?.findIndex(appointment => appointment?.id === id)
 
     if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
       appointments.splice(index, 1, updatedAppointment)
-
       dispatch({ type: ActionType.SET_APPOINTMENTS, appointments })
     }
   }
@@ -227,9 +236,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const handleCancelAppointment = async () => {
     if (deleteAppointmentId) {
       await removeAppointment({
-        variables: {
-          removeAppointment: { id: deleteAppointmentId }
-        }
+        variables: { removeAppointment: { id: deleteAppointmentId } }
       })
     }
   };
@@ -304,6 +311,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         : onDeleteClick(id || '')
   }
 
+  const renderIcon = () => <IconButton className='py-0 ml-5'
+    onClick={() => {
+      sortBy === ASC ?
+        dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
+        : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
+    }}>
+    <Sort />
+  </IconButton>;
+
   return (
     <>
       <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
@@ -317,20 +333,21 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           <Grid item md={6} sm={12} xs={12}>
             <FormProvider {...methods}>
               <Grid container spacing={3}>
-                <Grid item md={4} sm={12} xs={12}>
-                  <FacilitySelector
-                    addEmpty
-                    label={FACILITY}
-                    name="facilityId"
-                    onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
-                  />
-                </Grid>
+                {isAdminUser &&
+                  <Grid item md={4} sm={12} xs={12}>
+                    <FacilitySelector
+                      addEmpty
+                      label={FACILITY}
+                      name="facilityId"
+                      onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                    />
+                  </Grid>}
 
                 <Grid item md={5} sm={12} xs={12}>
                   <ServicesSelector
                     name="serviceId"
                     label={APPOINTMENT_TYPE}
-                    isMulti={false}
+                    shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
               </Grid>
@@ -345,7 +362,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(TIME)}
                 {renderTh(PATIENT)}
                 {renderTh(TYPE)}
-                {renderTh(DATE)}
+                {renderTh(DATE, undefined, undefined, undefined, undefined, renderIcon)}
                 {renderTh(FACILITY)}
                 {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
@@ -356,7 +373,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={8} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -402,9 +419,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       </TableCell>
 
                       <TableCell scope="row">{name}</TableCell>
-
                       <TableCell scope="row">
-                        {id && <Box className={classes.selectorBox}>
+                        {id && <>
                           {isEdit && appointmentId === id ?
                             <FormProvider {...methods}>
                               <Selector
@@ -429,7 +445,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             >
                               {text}
                             </Box>}
-                        </Box>}
+                        </>}
                       </TableCell>
                       <TableCell scope="row">
                         {id && <Box className={classes.selectorBox}>
@@ -466,14 +482,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </IconButton>
                           </Box>}
 
-                          <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                            <Box className={classes.iconsBackground}>
+                          <Box className={classes.iconsBackground}>
+                            <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
                               <EditNewIcon />
-                            </Box>
-                          </Link>
+                            </Button>
+                          </Box>
 
                           <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
-                            <Button onClick={() => scheduleStartDateTime && id
+                            <Button disableElevation onClick={() => scheduleStartDateTime && id
                               && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
                             >
                               <TrashNewIcon />

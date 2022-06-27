@@ -32,12 +32,13 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { permissions } = useContext(PermissionContext)
   const { addRoleList, updateRoleList } = useContext(ListContext)
   const [ids, setIds] = useState<string[]>([])
+
   const [modules, setModules] = useState<string[]>([])
   const [custom, setCustom] = useState<boolean>(true)
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
-  const isSuper = isSuperAdmin(roles);
 
+  const isSuper = isSuperAdmin(roles);
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
   });
@@ -45,11 +46,9 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
-      if (ids.includes(id)) {
+      ids.includes(id) ?
         setIds(ids.filter(permission => permission !== id))
-      } else {
-        setIds([...ids, id])
-      }
+        : setIds([...ids, id])
     }
   };
 
@@ -252,6 +251,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         {isEdit && MODULES.map((module, index) => {
           if (module !== MODULE_TYPES.Practice) {
             let modulePermissions = [];
+            
             if (module === MODULE_TYPES.Service) {
               modulePermissions = permissions?.filter(permission =>
                 permission?.moduleType === MODULE_TYPES.Service
@@ -274,7 +274,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <FormGroup>
                         <FormControlLabel
                           control={
-                            <Box className='permissionDenied'>
+                            <Box>
                               <Checkbox disabled={!(custom || isSuper)} color="primary" checked={modules.includes(module)}
                                 onChange={() => handleAllIds(module, allIds)} />
                             </Box>
@@ -304,7 +304,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Box className='permissionDenied'>
+                                  <Box>
                                     <Checkbox disabled={!(custom || isSuper)} color="primary" checked={ids.includes(id || '')}
                                       onChange={() => handleChangeForCheckBox(id || '')} />
                                   </Box>

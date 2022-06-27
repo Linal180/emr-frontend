@@ -370,6 +370,7 @@ export interface SelectorProps {
   error?: string
   focus?: boolean
   isEdit?: boolean
+  loading?: boolean
   disabled?: boolean
   addEmpty?: boolean
   isRequired?: boolean
@@ -398,6 +399,7 @@ export interface DoctorSelectorProps extends FacilitySelectorProps {
   shouldOmitFacilityId?: boolean
   careProviderData?: DoctorPatient[];
   defaultValues?: SelectorOption[]
+  loading? : boolean
 }
 
 export interface CardSelectorProps {
@@ -432,6 +434,7 @@ export type updatePasswordInputs = ResetPasswordInputs & {
 interface IControlLabel {
   info?: string;
   error?: string;
+  loading?: boolean;
   fieldType?: string;
   disabled?: boolean;
   className?: string;
@@ -460,6 +463,15 @@ export type SubMenuTypes = {
   name: string;
   link: string | null;
 };
+
+export interface PhoneInputProps {
+  label: string;
+  error?: string;
+  loading?: boolean;
+  isRequired?: boolean;
+  name: PhoneInputTypes;
+  disabled?: boolean;
+}
 
 export interface CustomInputControlProps extends IControlLabel {
   info?: string;
@@ -519,11 +531,12 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
-  isRequired?: boolean;
-  clearable?: boolean;
-  disableFuture?: boolean;
+  loading?: boolean;
   disabled?: boolean;
+  clearable?: boolean;
+  isRequired?: boolean;
   disablePast?: boolean;
+  disableFuture?: boolean;
 }
 
 export interface TimePickerProps {
@@ -830,6 +843,13 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface DocViewerProps {
+  title?: string
+  isOpen: boolean
+  handleClose: () => void
+  url: string
+}
+
 export interface AddAllergyModalProps extends GeneralFormProps {
   isOpen?: boolean
   handleModalClose: () => void
@@ -909,19 +929,11 @@ type PhoneInputTypes =
   | "pager"
   | "userPhone";
 
-export interface PhoneInputProps {
-  label: string;
-  error?: string;
-  isRequired?: boolean;
-  name: PhoneInputTypes;
-  disabled?: boolean;
-}
-
 export interface DropzoneImageType {
   itemId: string;
   title: string;
   isEdit?: boolean;
-  filesLimit: number;
+  filesLimit?: number;
   isProfile?: boolean;
   ref: FormForwardRef;
   providerName: string;
@@ -938,6 +950,7 @@ export interface DropzoneImageType {
   setActiveStep?: Function;
   setAttachments: Function;
   acceptableFilesType?: string[]
+  setFiles?: Function
 }
 
 interface Message {
@@ -1062,7 +1075,9 @@ export interface InsuranceCreateInput {
   state?: SelectorOption
   ssn?: string
   sex?: SelectorOption
-  dob?: string
+  dob?: string,
+  homeBound : string
+
 };
 
 export interface MediaModalTypes extends DialogTypes {
@@ -1160,6 +1175,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
+  loading?: boolean
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
@@ -1498,7 +1514,8 @@ export interface ReactionSelectorInterface {
 export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   facilityId?: string
   isMulti?: boolean
-  shouldEmitFacilityId?: boolean
+  shouldEmitFacilityId?: boolean,
+  loading?: boolean
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -1712,6 +1729,7 @@ export interface PatientProviderSelectorProps {
 export interface SlotsComponentProps {
   facilityId: string;
   state?: ExternalFormBuilderState
+  providerId?: string
 }
 export interface dashboardInputsProps {
   year: SelectorOption
@@ -1745,7 +1763,9 @@ export interface CareTeamsProps {
   onEdit?: Function;
   reload?: Function;
   toggleSideDrawer?: Function;
-  patientDispatcher?: Dispatch<PatientAction>
+  patientDispatcher?: Dispatch<PatientAction>;
+  providerBtn? :boolean;
+  isEditable? : boolean
 }
 
 export interface SideDrawerProps {
@@ -1770,6 +1790,7 @@ export type StatusInputProps = {
  }
 
 export interface PracticeDataProps {
+  loading: boolean;
   practiceData: PracticePayload['practice'];
 }
 
@@ -1837,7 +1858,7 @@ export interface StageStatusType {
   stageColor: string;
 }
 
-export interface AgreementGeneralProps {
+export interface AgreementGeneralProps extends GeneralFormProps {
   setEdit: Function;
 }
 
@@ -1848,6 +1869,11 @@ export interface ServiceSelectorProps extends FacilitySelectorProps {
   defaultValues?: SelectorOption[]
   dispatcher?: Dispatch<PublicFormBuilderAction>
 }
+export interface CreateAgreementFormProps {
+  title?: string
+  agreementBody?: string
+}
+
 export interface ScheduleFormProps {
   id: string;
   isOpen: boolean;
@@ -1868,4 +1894,12 @@ export interface ScheduleBoxProps {
   isDoctor?: boolean;
   schedule: Schedule;
   dispatcher: Dispatch<ScheduleAction>;
+}
+
+
+export interface FormDoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  defaultValues?: SelectorOption[]
+  formState?: ExternalFormBuilderState;
+  formDispatch?: Dispatch<PublicFormBuilderAction>
 }
