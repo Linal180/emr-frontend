@@ -128,7 +128,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
 
   return (
     loading ? <ViewDataLoader columns={3} rows={4}/>: 
-    <Box minWidth="100%" pt={3}>
+    <Box minWidth="100%">
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>

@@ -8,9 +8,7 @@ import {
 } from '../../../../../generated/graphql';
 import { VitalListingTableProps } from '../../../../../interfacesTypes';
 import {
-  convertDateFromUnix,
-  fahrenheitToCelsius, formatValue, inchesToCentimeter, kilogramToOunce, kilogramToPounds,
-  renderTh, roundOffUpto2Decimal
+  fahrenheitToCelsius, formatValue, getFormatDateString, inchesToCentimeter, kilogramToOunce, kilogramToPounds, renderTh, roundOffUpto2Decimal
 } from '../../../../../utils';
 
 export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit, setOpen, shouldDisableEdit }: VitalListingTableProps) => {
@@ -104,8 +102,8 @@ export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit
         <TableHead>
           <TableRow>
             {patientVitals?.map((vital) => {
-              const { createdAt } = vital || {}
-              return renderTh(`${convertDateFromUnix(createdAt || '', 'ddd')} ${convertDateFromUnix(createdAt || '', 'MM/DD/YYYY')}`, 'left', false, '', true, !shouldDisableEdit ? () => renderIcon(vital) : () => { })
+              const { vitalCreationDate } = vital || {}
+              return renderTh(`${getFormatDateString(vitalCreationDate || '', 'MM-DD-YYYY')} `, 'left', false, '', true, !shouldDisableEdit ? () => renderIcon(vital) : () => { })
             })}
           </TableRow>
         </TableHead>
