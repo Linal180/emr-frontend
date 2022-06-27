@@ -23,7 +23,7 @@ const DatePicker: FC<PickerProps> = ({
         <Controller
           name={name}
           control={control}
-          defaultValue=''
+          defaultValue={new Date()}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
             <FormControl fullWidth margin="normal" error={invalid}>
               <InputLabel shrink htmlFor={`${name}-dialog`}>

@@ -10,7 +10,7 @@ import {
 } from "react-hook-form";
 // constants, reducers, graphql block
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
-import { Action } from "../reducers/mediaReducer";
+import { Action, State as MediaState } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
@@ -399,7 +399,7 @@ export interface DoctorSelectorProps extends FacilitySelectorProps {
   shouldOmitFacilityId?: boolean
   careProviderData?: DoctorPatient[];
   defaultValues?: SelectorOption[]
-  loading? : boolean
+  loading?: boolean
 }
 
 export interface CardSelectorProps {
@@ -1076,7 +1076,7 @@ export interface InsuranceCreateInput {
   ssn?: string
   sex?: SelectorOption
   dob?: string,
-  homeBound : string
+  homeBound: string
 
 };
 
@@ -1205,6 +1205,8 @@ export interface AddDocumentModalProps extends GeneralFormProps {
   submitUpdate: Function;
   fetchDocuments: Function;
   toggleSideDrawer: Function;
+  dispatch?: Dispatch<Action>
+  state?: MediaState
 }
 
 export interface CopayModalProps {
@@ -1764,8 +1766,8 @@ export interface CareTeamsProps {
   reload?: Function;
   toggleSideDrawer?: Function;
   patientDispatcher?: Dispatch<PatientAction>;
-  providerBtn? :boolean;
-  isEditable? : boolean
+  providerBtn?: boolean;
+  isEditable?: boolean
 }
 
 export interface SideDrawerProps {
@@ -1783,11 +1785,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { 
+export type StatusInputProps = {
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType
- }
+}
 
 export interface PracticeDataProps {
   loading: boolean;

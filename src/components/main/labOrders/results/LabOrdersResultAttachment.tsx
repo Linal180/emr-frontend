@@ -32,6 +32,8 @@ import {
   AttachmentsPayload, AttachmentType, useFetchDocumentTypeByNameLazyQuery, useGetAttachmentsByLabOrderLazyQuery,
   useRemoveAttachmentMediaMutation, useUpdateAttachmentDataMutation
 } from '../../../../generated/graphql';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { labOrdersResultAttachmentSchema } from '../../../../validationSchemas';
 
 const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
@@ -41,7 +43,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
   const [labOrderAttachments, setLabOrderAttachments] = useState<AttachmentsPayload['attachments']>([])
   const [labResultId, setLabResultId] = useState<string>('')
   const [documentTypeId, setDocumentTypeId] = useState<string>('')
-  const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all" });
+  const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all", resolver: yupResolver(labOrdersResultAttachmentSchema) });
 
   const { handleSubmit, setValue } = methods
   const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] =

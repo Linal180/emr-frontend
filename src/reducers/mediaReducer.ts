@@ -2,6 +2,7 @@ import { Attachment, AttachmentPayload, AttachmentsPayload, CreateAttachmentInpu
 
 export interface State {
   meta: string
+  files: File[]
   action: string
   isOpen: boolean
   isEdit: boolean
@@ -30,6 +31,7 @@ export interface State {
 
 export const initialState: State = {
   meta: "",
+  files: [],
   action: '',
   fileUrl: '',
   isOpen: false,
@@ -58,6 +60,7 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_ACTION = 'setAction',
+  SET_FILES = 'SET_FILES',
   SET_IS_OPEN = 'setIsOpen',
   SET_IS_EDIT = 'setIsEdit',
   SET_FILE_URL = 'setFileUrl',
@@ -85,6 +88,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_ACTION, action: string }
+  | { type: ActionType.SET_FILES, files: File[] }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
@@ -249,10 +253,16 @@ export const mediaReducer = (state: State, action: Action): State => {
         deleteAttachmentId: action.deleteAttachmentId
       }
 
-      case ActionType.SET_IS_SIGNED_TAB:
+    case ActionType.SET_IS_SIGNED_TAB:
       return {
         ...state,
         isSignedTab: action.isSignedTab
+      }
+
+    case ActionType.SET_FILES:
+      return {
+        ...state,
+        files: action.files
       }
   }
 }
