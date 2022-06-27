@@ -329,7 +329,7 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                <DatePicker name='vitalsDate' label={''} />
+                <DatePicker defaultValue={new Date()} name='vitalsDate' label={''} />
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}></Grid>

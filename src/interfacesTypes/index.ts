@@ -537,6 +537,7 @@ export interface PickerProps {
   isRequired?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
+  defaultValue?: Date
 }
 
 export interface TimePickerProps {
