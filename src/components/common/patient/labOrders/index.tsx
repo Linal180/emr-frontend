@@ -36,6 +36,7 @@ const LabOrdersTable = (): JSX.Element => {
   const [pages, setPages] = useState<number>(0);
   const { textColor } = appointmentStatus('' || '')
   const { id } = useParams<ParamsType>()
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   const methods = useForm<LabOrderInput>({ mode: "all" });
 
@@ -66,17 +67,18 @@ const LabOrdersTable = (): JSX.Element => {
 
   const fetchLabTests = useCallback(async () => {
     try {
-      const pageInputs = { page, limit: PAGE_LIMIT }
+      const pageInputs = { page, limit: PAGE_LIMIT, }
       await findAllLabTest({
         variables: {
           labTestInput: {
             paginationOptions: pageInputs,
-            patientId: id
+            patientId: id,
+            orderNumber: searchQuery
           }
         }
       });
     } catch (error) { }
-  }, [findAllLabTest, id, page])
+  }, [findAllLabTest, id, page, searchQuery])
 
   useEffect(() => {
     fetchLabTests()
@@ -113,7 +115,11 @@ const LabOrdersTable = (): JSX.Element => {
     }
   }
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    setSearchQuery(query)
+    setPages(0)
+    setPage(1)
+  }
 
   const [updateLabTest] = useUpdateLabTestMutation({
     onError({ message }) {
@@ -208,7 +214,7 @@ const LabOrdersTable = (): JSX.Element => {
                             />
                           </>
                             :
-                            <Box className={classes.status} component='span' color={textColor}                              
+                            <Box className={classes.status} component='span' color={textColor}
                               onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
                             >
                               {formatValue(labTestStatus ?? '')}

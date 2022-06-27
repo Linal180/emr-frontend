@@ -29,6 +29,8 @@ import {
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT,
   CONTACT_NUMBER,
+  TITLE,
+  ATTACHMENT_NAME,
 } from "../constants";
 import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 
@@ -1024,9 +1026,18 @@ export const addLabProviderDetailsSchema = yup.object({
 })
 
 export const createAgreementSchema = yup.object({
-  title: yup.string().required(),
+  title: yup.string()
+    .required(requiredMessage(TITLE))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const profileSchema = yup.object({
   phone: notRequiredPhone(CONTACT_NUMBER),
+})
+
+
+export const labOrdersResultAttachmentSchema = yup.object({
+  attachmentName: yup.string()
+    .required(requiredMessage(ATTACHMENT_NAME))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })

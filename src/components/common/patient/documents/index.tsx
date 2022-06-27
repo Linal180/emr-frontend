@@ -46,11 +46,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     resolver: yupResolver(attachmentNameUpdateSchema)
   });
   const { handleSubmit } = methods;
-  const [{
+
+  const [state, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
     documentTab, openSign, providerName, attachmentData
-  }, dispatch] =
-    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  } = state
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
 
@@ -280,6 +282,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         >
           <AddDocumentModal
             patientId={id}
+            dispatch={dispatch}
+            state={state}
             attachment={attachmentData}
             attachmentId={attachmentId}
             facilityId={facilityId || ''}
