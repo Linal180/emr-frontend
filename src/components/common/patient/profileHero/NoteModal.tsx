@@ -79,6 +79,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
           <IconButton onClick={() => setIsEdit(true)}><EditOutlinedIcon /></IconButton>
         }
       </Box>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {isEdit ?
