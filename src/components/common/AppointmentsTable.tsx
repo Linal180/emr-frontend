@@ -322,7 +322,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+      <Box pt={2}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
@@ -354,7 +354,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </FormProvider>
           </Grid>
         </Grid>
-
+      </Box>
+      <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
         <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
             <TableHead>

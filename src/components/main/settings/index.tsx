@@ -7,7 +7,7 @@ import PageHeader from "../../common/PageHeader";
 import CardComponent from "../../common/CardComponent";
 // constants block
 import { AuthContext } from "../../../context";
-import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../../../utils";
+import { isFacilityAdmin, isOnlyDoctor, isSuperAdmin } from "../../../utils";
 import {
   PRACTICE_MANAGEMENT_DESCRIPTION, PRACTICE_DETAILS, PROVIDER_DETAILS, PROVIDER_DETAILS_DESCRIPTION,
   CALENDAR_SETTINGS_TEXT, FACILITY_SERVICES_DESCRIPTION, FACILITY_SERVICES_TEXT, PROVIDER_MANAGEMENT,
@@ -25,7 +25,6 @@ export const SettingsComponent = () => {
   const { id: facilityId } = facility || {}
   const isSuper = isSuperAdmin(roles)
 
-  const isPractice = isPracticeAdmin(roles)
   const isFacility = isFacilityAdmin(roles)
   const isDoctor = isOnlyDoctor(roles)
   const { id: doctorId } = currentDoctor || {}
@@ -74,15 +73,14 @@ export const SettingsComponent = () => {
         <CardComponent cardTitle={PRACTICE_SETTINGS}>
           <Box pb={3}>
             {PRACTICE_SETTINGS_ITEMS.map((item) => {
-              const { name, link, desc } = item || {}
+              const { name, link, desc, permission } = item || {}
               const practiceAdminRoute = isSuper && name === PRACTICE_DETAILS;
               const facilityAdminRoute = isFacility && name === FACILITY_MANAGEMENT;
-
               const doctorAdminRoute = isDoctor && name === PROVIDER_MANAGEMENT;
               const facilityDetailRoute = `${FACILITIES_ROUTE}/${facilityId}`
               const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
 
-              return isPractice && (
+              return userPermissions.includes(permission) && (
                 <Box display="flex" alignItems="center" flexWrap="wrap">
                   <Link
                     key={`${link}-${name}`}
