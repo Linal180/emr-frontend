@@ -56,7 +56,6 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
       if (fetchAllAgreementsResults) {
         const { agreements, pagination } = fetchAllAgreementsResults
-        console.log("pagination", pagination)
         if (pagination) {
           const { totalPages } = pagination
 
