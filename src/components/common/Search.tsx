@@ -16,8 +16,10 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
   const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {
-    setQuery('')
-    search('')
+    if (query.length > 2) {
+      setQuery('')
+      search('')
+    } else setQuery('')
   }
 
   return (
@@ -30,21 +32,21 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
         fullWidth
         variant="outlined"
         name="searchQuery"
-        placeholder= {placeHolder ? placeHolder :  "Search here..."}
+        placeholder={placeHolder ? placeHolder : "Search here..."}
         className={classes.searchInput}
         value={query}
         onChange={({ target: { value } }) => {
-          if(value.length>2){
+          if (value.length > 2) {
             search(value)
             setQuery(value)
           }
 
-          if(!value.length){
+          if (!value.length) {
             search('')
           }
 
           setQuery(value)
-        } }
+        }}
       />
 
       {query &&
