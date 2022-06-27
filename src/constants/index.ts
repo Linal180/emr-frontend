@@ -102,7 +102,7 @@ export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
 export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
-export const ADMIN = "admin";
+export const SUPER_ADMIN_TEXT = "Super Admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
@@ -473,9 +473,9 @@ export const PROVIDER_PROFILE_DESCRIPTION =
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
-  "Add providers and update their profiles for the EMR";
+  "Add providers and update their profiles for the AIMED";
 export const STAFF_MANAGEMENT_DESCRIPTION =
-  "Add staff and update their profiles for the EMR";
+  "Add staff and update their profiles for the AIMED";
 export const SCHEDULE_DESCRIPTION = "Add or update provider’s schedule";
 export const ROLES_PERMISSIONS_DESCRIPTION =
   "Add or update staff roles and their permissions";
@@ -567,6 +567,8 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const FAX = "Fax";
+export const SUPER = "Super";
+export const ADMIN = "Admin";
 export const SLOTS_TEXT = "Slots";
 export const CITY = "City";
 export const EMAIL = "Email";
@@ -599,7 +601,6 @@ export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary
 export const NPI = "NPI";
 export const HASH = "#";
 export const N_A = "N/A";
-export const EMR = "EMR";
 export const DAY = "Day";
 export const PRN = "PRN";
 export const UPIN = "UPIN";
@@ -700,7 +701,6 @@ export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
 export const STAGE = "Stage";
-export const EMR_TEXT = "EMR";
 export const CANCEL = "Cancel";
 export const DOCTOR = "Doctor";
 export const BILLED = "Billed";
@@ -942,7 +942,7 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
-export const AGREEMENT_BODY= 'Agreement Body'
+export const AGREEMENT_BODY = 'Agreement Body'
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -1116,7 +1116,6 @@ export const POLICY_HOLDER_ID = "Policy holder ID";
 export const APP_NAME_FORMAT = 'First Middle Last';
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
-export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const SAVE_APPOINTMENT = "Save Appointment";
@@ -1210,7 +1209,7 @@ export const APPOINTMENT_CANCELLED_TEXT = "Appointment cancelled";
 export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
-export const ADD_ANOTHER_COPAY_AMOUNT = "ADD ANOTHER COPAY AMOUNT";
+export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const SIGN_DOCUMENT_DESCRIPTION = "Confirm to sign document";
@@ -1271,7 +1270,7 @@ export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout a
 export const APPOINTMENT_BOOKING_PAYMENT_CHARGED = "You will be charged $34.00 for this appointment booking.";
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records.";
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information.";
-export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
+export const VERIFY_EMAIL_TEXT = "We have sent an email to example@aimed.com please follow a link to verify your email";
 export const INSURANCE_SEARCH_DESCRIPTION = "Add more names for better search results (e.g. company, group, plan, policy, etc.)";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message.";
@@ -1280,7 +1279,7 @@ export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document 
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
 export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
-export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
+export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize AIMED health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const TWO_FA_AUTHENTICATION_DESCRIPTION = "When you login you provide an email address and password. This is one “factor” of authenticating who you are. 2-Factor refers to using a second factor to confirm your identity.";
@@ -1420,7 +1419,7 @@ export const PHASE_CANNOT_CHANGE_NOTE =
 export const ROLE_NOT_FOUND = "Role not found!";
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
-export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const LOGIN_SUCCESSFULLY = "Welcome to AIMED";
 export const INVALID_OTP_CODE = "Invalid otp code";
 export const SCHEDULE_START = "Schedule Start Time";
 export const INVALID_EMAIL = "Invalid email address";
@@ -3122,16 +3121,16 @@ export enum CARD_LAYOUT_MODAL {
 }
 
 export enum ATTACHMENT_TITLES {
+  Signature = "Signature",
+  Agreement = "Agreement",
+  LabOrders = "Lab Orders",
+  PracticeLogo = "Practice Logo",
   ProfilePicture = "Profile Picture",
-  DrivingLicense1 = "Driving License 1",
-  DrivingLicense2 = "Driving License 2",
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
-  Signature = "Signature",
-  LabOrders = "Lab Orders",
-  PracticeLogo = "Logo",
-  Agreement = "Agreement",
+  DrivingLicense1 = "Driving License 1",
+  DrivingLicense2 = "Driving License 2",
 }
 
 export enum MODULE_TYPES {
@@ -3151,18 +3150,18 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
-  "Emergency Access",
-  "User",
-  "Staff",
-  "Patient",
-  "Service",
   "Practice",
   "Facility",
+  "Emergency Access",
   "Provider",
-  "Schedule",
+  "Staff",
+  "Patient",
   "Appointment",
+  "Service",
+  "Schedule",
   "Lab Orders",
-  "Patient Charting"
+  "Patient Charting",
+  "User",
 ];
 
 export const MAPPED_STATUS = [
@@ -3603,7 +3602,6 @@ export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
 
-
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
@@ -3612,6 +3610,12 @@ export const CHECK_IN_STEPS = [
   // VITALS_TEXT,
   LAB_ORDERS,
   BILLING_TEXT,
+];
+
+export const ADD_INSURANCE_STEPS = [
+  INSURANCE,
+  POLICY_HOLDER,
+  INSURANCE_CARD
 ];
 
 export const LAB_ORDER_STEPS = [
@@ -4012,7 +4016,7 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "4", name: '12 Hours', time: 43200 * 1000 },
   { id: "5", name: '24 Hours', time: 86400 * 1000 },
   { id: "6", name: '2 Days', time: 172800 * 1000 },
-  { id: "7", name: '7 Days', time: 604800 * 1000 },
+  { id: "7", name: 'Remove Lock Time', time: 604800 * 1000 },
 ]
 
 export const EMERGENCY_LOG_LIST = [

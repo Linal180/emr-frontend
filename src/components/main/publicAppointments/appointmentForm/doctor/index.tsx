@@ -17,7 +17,7 @@ import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 // constants block
 import history from "../../../../../history";
 import { WHITE, GREY } from "../../../../../theme";
-import { EMRLogo } from "../../../../../assets/svgs";
+import { AIMEDLOGO } from "../../../../../assets/svgs";
 import { FacilityContext } from '../../../../../context';
 import { getCurrentTimestamps, getTimestampsForDob } from "../../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
@@ -248,7 +248,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
-      <EMRLogo />
+      <AIMEDLOGO />
 
       <Box mb={3} />
 

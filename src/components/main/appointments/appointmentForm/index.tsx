@@ -35,7 +35,7 @@ import { appointmentSchema, providerAppointmentSchema } from '../../../../valida
 import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, setRecord
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -456,85 +456,87 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     >
                       <Typography variant='h4'>{APPOINTMENT}</Typography>
                     </Box>
-                    {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                      <Grid container spacing={3}>
-                        <Grid item md={12} sm={12} xs={12}>
-                          <Typography variant='body1'>{TYPE}</Typography>
 
-                          <Box className={chartingClasses.toggleProblem}>
-                            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                              {appointmentTypes.map(type =>
-                                <Box onClick={() => handleAppointmentType(type)}
-                                  className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
-                                >
-                                  <Typography variant='h6'>{type}</Typography>
-                                </Box>
-                              )}
-                            </Box>
+                    <Grid container spacing={3}>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Typography variant='body1'>{TYPE}</Typography>
+
+                        <Box className={chartingClasses.toggleProblem}>
+                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                            {appointmentTypes.map(type =>
+                              <Box onClick={() => handleAppointmentType(type)}
+                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
+                              >
+                                <Typography variant='h6'>{type}</Typography>
+                              </Box>
+                            )}
                           </Box>
-                        </Grid>
-
-                        {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
-                          {isEdit ? renderItem(FACILITY, facilityName) :
-                            <FacilitySelector
-                              isRequired
-                              label={FACILITY}
-                              name="facilityId"
-                            />
-                          }
-                        </Grid>}
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <ServiceSelector
-                            isRequired
-                            label={APPOINTMENT_TYPE}
-                            name="serviceId"
-                            isEdit={isEdit}
-                            defaultValues={serviceIds}
-                            facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
-                          />
-                        </Grid>
+                        </Box>
                       </Grid>
-                    )}
+
+                      {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(FACILITY || '') : renderItem(FACILITY, facilityName)
+                          : <FacilitySelector
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
+                        }
+                      </Grid>}
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        <ServiceSelector
+                          isRequired
+                          label={APPOINTMENT_TYPE}
+                          name="serviceId"
+                          isEdit={isEdit}
+                          defaultValues={serviceIds}
+                          facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          loading={getAppointmentLoading}
+                        />
+                      </Grid>
+                    </Grid>
                   </Box>
                 </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>
-                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                    <>
-                      <Grid container spacing={3}>
-                        {!onlyDoctor &&
-                          <Grid item md={6} sm={12} xs={12}>
-                            <DoctorSelector
-                              label={PROVIDER}
-                              name="providerId"
-                              facilityId={selectedFacility}
-                              addEmpty
-                            />
-                          </Grid>}
-
+                  <>
+                    <Grid container spacing={3}>
+                      {!onlyDoctor &&
                         <Grid item md={6} sm={12} xs={12}>
-                          {isEdit ? renderItem(PATIENT, patientName) :
-                            <PatientSelector
-                              isModal
-                              isRequired
-                              label={PATIENT}
-                              name="patientId"
-                              setValue={setValue}
-                              isOpen={openPatientModal}
-                              handlePatientModal={handlePatientModal}
-                            />}
-                        </Grid>
+                          <DoctorSelector
+                            label={PROVIDER}
+                            name="providerId"
+                            facilityId={selectedFacility}
+                            addEmpty
+                            loading={getAppointmentLoading}
+                          />
+                        </Grid>}
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
+                          : <PatientSelector
+                            isModal
+                            isRequired
+                            label={PATIENT}
+                            name="patientId"
+                            setValue={setValue}
+                            isOpen={openPatientModal}
+                            handlePatientModal={handlePatientModal}
+                          />
+                        }
                       </Grid>
+                    </Grid>
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="reason"
-                        controllerLabel={REASON}
-                      />
+                    <InputController
+                      fieldType="text"
+                      controllerName="reason"
+                      controllerLabel={REASON}
+                      loading={getAppointmentLoading}
+                    />
 
-                      {/* <Grid container spacing={3}>
+                    {/* <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             fieldType="text"
@@ -552,14 +554,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         </Grid>
                       </Grid> */}
 
-                      <InputController
-                        multiline
-                        fieldType="text"
-                        controllerName="notes"
-                        controllerLabel={NOTES}
-                      />
-                    </>
-                  )}
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="notes"
+                      controllerLabel={NOTES}
+                      loading={getAppointmentLoading}
+                    />
+                  </>
                 </CardComponent>
               </Grid>
 

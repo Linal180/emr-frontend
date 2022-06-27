@@ -9,28 +9,29 @@ import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
 //constants, interfaces and utils block
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
+import { AuthContext, FacilityContext } from "../../../../context"
+import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem, setRecord } from "../../../../utils"
 import {
   DECREASED_DATE, DOCTOR, EMPTY_OPTION, FACILITY, REGISTRATION_DATE,
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
-import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem, setRecord } from "../../../../utils"
-import { AuthContext, FacilityContext } from "../../../../context"
 
 const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
   const { user, currentDoctor } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { name: facilityName } = facility || {};
   const { firstName, lastName } = currentDoctor || {}
+
   const doctorName = `${firstName} ${lastName}`
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctorRole = isOnlyDoctor(roles)
   const methods = useFormContext<PatientInputProps>()
+
   const { watch, setValue } = methods;
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
   } = watch();
-
 
   const fetchList = useCallback((id: string, name: string) => {
     setValue('usualProviderId', EMPTY_OPTION)
@@ -43,7 +44,8 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
   }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   useEffect(() => {
-    selectedFacility && selectedFacilityName && setValue("facilityId", setRecord(selectedFacility, selectedFacilityName, false))
+    selectedFacility && selectedFacilityName &&
+      setValue("facilityId", setRecord(selectedFacility, selectedFacilityName, false))
   }, [selectedFacility, selectedFacilityName, setValue, watch])
 
   return (
@@ -67,11 +69,11 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
             {isDoctorRole
               ? renderItem(DOCTOR, doctorName)
               : <DoctorSelector
+                addEmpty
                 isRequired
                 label={USUAL_PROVIDER_ID}
                 name="usualProviderId"
                 facilityId={selectedFacility}
-                addEmpty
                 loading={getPatientLoading}
               />}
           </Grid>
@@ -81,6 +83,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
               name="registrationDate"
               label={REGISTRATION_DATE}
               disabled={shouldDisableEdit}
+              loading={getPatientLoading}
             />
           </Grid>
 
@@ -89,6 +92,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
               name="deceasedDate"
               label={DECREASED_DATE}
               disabled={shouldDisableEdit}
+              loading={getPatientLoading}
             />
           </Grid>
         </Grid>

@@ -12,14 +12,16 @@ import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
 import history from '../../../../history';
 import { GREY } from '../../../../theme';
-import { EMRLogo } from '../../../../assets/svgs';
+import { AIMEDLOGO } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
   PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER, PAY_VIA_ACH,
 } from '../../../../constants';
 import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
-import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
+import { 
+  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, 
+} from '../../../../generated/graphql';
 import ACHPaymentComponent from '../achPayment'
 import { appointmentChargesDescription } from '../../../../utils';
 
@@ -167,7 +169,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
   return (
     <Box bgcolor={GREY} minHeight='100vh' padding='30px 30px 30px 60px'>
-      <EMRLogo />
+      <AIMEDLOGO />
       <Box mt={3} mb={1}>
         <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>

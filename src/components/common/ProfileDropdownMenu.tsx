@@ -3,30 +3,33 @@ import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, Avatar, } from '@material-ui/core';
 // utils and header styles block
-import { AuthContext, ListContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
+import { AuthContext, ListContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { handleLogout, isOnlyDoctor, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 
 import {
   EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
-  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER_ADMIN,
+  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER_ADMIN_TEXT,
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl } = useContext(AuthContext);
+  const {
+    user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl
+  } = useContext(AuthContext);
   const { setFacilityList, setRoleList } = useContext(ListContext)
+
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
   const [isSuper, setIsSuper] = useState<boolean>(false);
+
   const [isDoctor, setIsDoctor] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const FacilityAdmin = isUserAdmin(roles)
-
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -88,7 +91,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
 
               <Box ml={2}>
                 {isSuper ?
-                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6">{SUPER_ADMIN_TEXT}</Typography>
                   :
                   <Typography variant="h6">{firstName} {lastName}</Typography>
                 }
@@ -96,21 +99,23 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Box>
           </Box>
 
-          {practiceName && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
-            <Box pr={1} color={BLACK_TWO}>
-              <Typography variant="body1">{PRACTICE} :</Typography>
-            </Box>
+          {practiceName &&
+            <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+              <Box pr={1} color={BLACK_TWO}>
+                <Typography variant="body1">{PRACTICE} :</Typography>
+              </Box>
 
-            <Typography variant="body1">{practiceName}</Typography>
-          </Box>}
+              <Typography variant="body1">{practiceName}</Typography>
+            </Box>}
 
-          {!FacilityAdmin && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
-            <Box pr={1} color={BLACK_TWO}>
-              <Typography variant="body1">{FACILITY} :</Typography>
-            </Box>
+          {!FacilityAdmin &&
+            <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+              <Box pr={1} color={BLACK_TWO}>
+                <Typography variant="body1">{FACILITY} :</Typography>
+              </Box>
 
-            <Typography variant="body1">{facilityName}</Typography>
-          </Box>}
+              <Typography variant="body1">{facilityName}</Typography>
+            </Box>}
 
           <Grid container spacing={3}>
             <Grid item md={6}>
@@ -125,11 +130,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Box mt={1}>
                 {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) => {
                   if (name === SIGNATURE_TEXT) {
-                    if (isDoctor) {
-                      return <Link key={`${link}-${name}`} to={link}>
-                        <MenuItem onClick={handleClose}>{name}</MenuItem>
-                      </Link>
-                    } else return null
+                    return isDoctor && <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem onClick={handleClose}>{name}</MenuItem>
+                    </Link>
                   } else {
                     return <Link key={`${link}-${name}`} to={link}>
                       <MenuItem onClick={handleClose}>{name}</MenuItem>

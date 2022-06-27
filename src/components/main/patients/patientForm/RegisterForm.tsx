@@ -14,8 +14,8 @@ import PatientDemographicsCard from "./DemographicsCard";
 import EmergencyContactCard from './EmergencyContactCard';
 import RegistrationDatesCard from './RegistrationDatesCard';
 // utils. interfaces, constants
-import { PatientCardsProps } from '../../../../interfacesTypes';
 import { RegisterPatientMenuNav } from '../../../../constants';
+import { PatientCardsProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
@@ -36,7 +36,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         {activeStep === 0 ? (
           <>
             <Box mb={3}>
-
               <IdentificationCard
                 getPatientLoading={getPatientLoading}
                 shouldDisableEdit={shouldDisableEdit}

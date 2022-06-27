@@ -5503,7 +5503,7 @@ export type GetAttachmentsByPolicyIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, url?: string | null, type: AttachmentType, attachmentMetadataId?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null }> | null } };
+export type GetAttachmentsByPolicyIdQuery = { __typename?: 'Query', getAttachmentsByPolicyId: { __typename?: 'AttachmentWithPreSignedUrlPayload', attachmentsWithPreSignedUrl?: Array<{ __typename?: 'AttachmentWithPreSignedUrl', id: string, title?: string | null, attachmentName?: string | null, preSignedUrl?: string | null, url?: string | null, type: AttachmentType, attachmentMetadata?: { __typename?: 'AttachmentMetadata', comments?: string | null, policyId?: string | null } | null }> | null } };
 
 export type GetAttachmentsByAgreementIdQueryVariables = Exact<{
   getAttachmentsByAgreementId: GetAttachmentsByAgreementId;
@@ -7605,13 +7605,13 @@ export const GetAttachmentsByPolicyIdDocument = gql`
       id
       title
       attachmentName
+      preSignedUrl
       url
       type
       attachmentMetadata {
         comments
         policyId
       }
-      attachmentMetadataId
     }
   }
 }
