@@ -371,6 +371,12 @@ const PolicyCard: FC<PolicyCardProps> = ({
             <Typography variant='h3'>{ADD_INSURANCE}</Typography>
 
             <Box display="flex" alignItems="center">
+              {activeStep !== 0 && (<>
+                <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
+              </>
+              )}
+
+              <Box p={1} />
 
               <Button
                 type={'button'}
@@ -379,12 +385,6 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
-
-              {activeStep !== 0 && (<>
-                <Box mr={1} />
-                <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
-              </>
-              )}
             </Box>
           </Box>
           {isEdit && isFormLoaded ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
