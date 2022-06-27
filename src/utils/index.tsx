@@ -87,7 +87,7 @@ export const renderLoading = (label: string | JSX.Element) => (
 );
 
 export const renderItem = (
-  label: string, value: Maybe<string> | number | ReactNode | undefined, 
+  label: string, value: Maybe<string> | number | ReactNode | undefined,
   noWrap?: boolean, loading?: boolean
 ) => (
   <>
@@ -262,7 +262,7 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
-  export const getDocumentDate = (date: string) =>
+export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
@@ -720,7 +720,7 @@ export const getISOTime = (timestamp: string) => {
 
 export const getScheduleStartTime = (time: string) => {
   if (!time) return "";
-  
+
   return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
 }
 
@@ -1160,6 +1160,17 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
+    else if (values[property] instanceof File) {
+      const file = values[property];
+      const title = values[property]?.name;
+      const key = await userFormUploadImage(file, property, title, id);
+      if (key) {
+        arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
+      }
+      else {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
+      }
+    }
     else if (typeof values[property] === 'boolean') {
       arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }
@@ -1187,13 +1198,13 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null, value?: string | null | undefined) => {
   switch (type) {
     case ElementType.Text:
-      return  value || ''
+      return value || ''
     case ElementType.Select:
-      return isMultiSelect ? [] :  value || ''
+      return isMultiSelect ? [] : value || ''
     case ElementType.Radio:
-      return  value || ''
+      return value || ''
     case ElementType.Checkbox:
-      return   []
+      return []
     case ElementType.Date:
       return value || null
     default:

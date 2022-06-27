@@ -1,86 +1,79 @@
 //packages block
-import { createRef, FC, useState } from "react"
-import { Controller, useFormContext } from "react-hook-form";
-import SignatureCanvas from 'react-signature-canvas';
-import { Box, Button, FormControl, FormHelperText, Grid, TextField, Typography } from "@material-ui/core"
+import { useFormContext } from "react-hook-form";
+import { FC, useCallback, useEffect } from "react";
+import { Box, Grid, Typography } from "@material-ui/core"
 //components
+import Signature from '../signature'
 import CheckboxController from "../CheckboxController";
 //interfaces
-import { WHITE_FOUR, GRAY_SEVEN } from "../../../theme";
 import { FieldComponentProps } from "../../../interfacesTypes"
-import { CLEAR_TEXT, DRAW_SIGNATURE } from "../../../constants";
-import { dataURLtoFile } from "../../../utils";
+import { PUBLIC_AGREEMENTS_PAGE_LIMIT } from "../../../constants";
+import { ActionType } from "../../../reducers/externalFormBuilderReducer";
+import { AgreementsPayload, useFetchAllAgreementsLazyQuery } from "../../../generated/graphql";
 
-const TermsConditions: FC<FieldComponentProps> = ({ item }): JSX.Element => {
+const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): JSX.Element => {
   const { label, fieldId } = item
+  const { isSignature = false, agreements = [], facilityId } = state || {}
+  const { setValue } = useFormContext()
 
-  const [error, setError] = useState(false)
+  const [getAllAgreements] = useFetchAllAgreementsLazyQuery({
+    onCompleted: (data) => {
+      if (data) {
+        const { fetchAllAgreements } = data || {}
+        const { agreements, response } = fetchAllAgreements || {}
+        const { status } = response || {}
+        if (status === 200) {
+          if (agreements) {
+            dispatcher && dispatcher({ type: ActionType.SET_AGREEMENTS, agreements: agreements as AgreementsPayload['agreements'] })
+            const signature = agreements?.some(({ signatureRequired }) => signatureRequired)
+            dispatcher && dispatcher({ type: ActionType.SET_SIGNATURE, isSignature: signature })
+          }
 
-  const signCanvas = createRef<any>()
-  const { control, register } = useFormContext();
-
-  const clear = () => signCanvas?.current?.clear()
-
-  const onEnd = () => {
-    if (signCanvas && signCanvas?.current) {
-      const { toDataURL, isEmpty } = signCanvas.current;
-      const empty = isEmpty()
-      if (empty) setError(true)
-      else {
-        setError(false)
-        const data = toDataURL();
-        const file = dataURLtoFile(data, `patient-id-signature`)
-        // handleFileChange(file);
+        }
       }
+    },
+    onError: () => {
+
     }
-  }
+  })
+
+  const fetchAllAgreements = useCallback(async () => {
+    try {
+      await getAllAgreements({
+        variables: {
+          agreementPaginationInput: {
+            agreementFacilityId: facilityId,
+            paginationOptions: { limit: PUBLIC_AGREEMENTS_PAGE_LIMIT, page: 1 }
+          }
+        }
+      })
+    } catch (error) {
+
+    }
+  }, [facilityId, getAllAgreements])
+
+  const onSignatureEnd = (file: File | null) => setValue('signature', file)
+
+  useEffect(() => {
+    facilityId && fetchAllAgreements()
+  }, [facilityId, fetchAllAgreements])
+
 
   return <Box my={3}>
     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
-    </Box>
-    <Box width={'50%'}>
-      <Box mt={1} mb={3} p={3} border={`2px dashed ${WHITE_FOUR}`}>
-        <SignatureCanvas ref={signCanvas} canvasProps={{ className: 'publicSignCanvas' }} clearOnResize
-          backgroundColor={GRAY_SEVEN} onEnd={onEnd} />
-
-        <Controller
-          rules={{ required: true }}
-          name={'signature'}
-          control={control}
-          render={({ field, fieldState }) => {
-            const { error: { message } = {}, invalid } = fieldState
-            return (
-              <FormControl fullWidth margin="normal" error={Boolean(invalid)} id={'signature'}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  SelectProps={{
-                    displayEmpty: true
-                  }}
-                  id={'signature'}
-                  type={'file'}
-                  style={{ display: 'none' }}
-                  {...register('signature')}
-                >
-                </TextField>
-                <FormHelperText>
-                  {message}
-                </FormHelperText>
-              </FormControl>
-            )
-          }}
-        />
-        <Box py={1}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h5">{DRAW_SIGNATURE}</Typography>
-            <Box>
-              <Button variant='outlined' onClick={clear} color='default' size='small'>{CLEAR_TEXT}</Button>
-            </Box>
-          </Box>
+      {agreements?.map((agreement) => {
+        const { body } = agreement || {}
+        return (<Box maxHeight={400} pl={2} mb={3} overflow="auto">
+          {body && <Typography variant="subtitle1" component="p" dangerouslySetInnerHTML={{ __html: body }} ></Typography>}
+        </Box>)
+      })}
+      {isSignature &&
+        <Box width="50%" pb={2}>
+          <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
         </Box>
-      </Box>
+      }
     </Box>
+
     <Grid container>
       <Grid item xs={12}>
         <CheckboxController controllerName={fieldId} controllerLabel={label} />
