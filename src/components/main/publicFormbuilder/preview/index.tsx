@@ -207,7 +207,7 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
                   </Box>
-                  {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"> */}
+                 
                   <Grid container spacing={3}>
                     <Grid item xs={2}>
                       <Stepper activeStep={activeStep} orientation="vertical">
@@ -232,7 +232,7 @@ const PublicFormPreview = () => {
                       )}
                     </Grid>
                   </Grid>
-                  {/* </Box> */}
+                  
                 </form>
               </FormProvider>
             </Box> :

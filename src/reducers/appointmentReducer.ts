@@ -1,7 +1,7 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload
+  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload, AgreementsPayload
 } from "../generated/graphql"
 
 export interface State {
@@ -65,7 +65,9 @@ export interface State {
   };
   primaryInsurance: string
   appointmentCreateType: string
-  sortBy: string
+  sortBy: string;
+  agreements: AgreementsPayload['agreements'];
+  isSignature: boolean
 }
 
 export const initialState: State = {
@@ -129,7 +131,9 @@ export const initialState: State = {
   },
   primaryInsurance: '',
   appointmentCreateType: '',
-  sortBy: 'ASC'
+  sortBy: 'ASC',
+  agreements: [],
+  isSignature: false
 }
 
 
@@ -187,7 +191,9 @@ export enum ActionType {
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
   SET_PRIMARY_INSURANCE = 'setPrimaryInsurance',
   SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
-  SET_SORT_BY = 'setSortBy'
+  SET_SORT_BY = 'setSortBy',
+  SET_AGREEMENTS = 'setAgreements',
+  SET_SIGNATURE = 'setSignature'
 }
 
 export type Action =
@@ -244,6 +250,8 @@ export type Action =
   | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | { type: ActionType.SET_APPOINTMENT_CREATE_TYPE; appointmentCreateType: string }
   | { type: ActionType.SET_SORT_BY; sortBy: string }
+  | { type: ActionType.SET_AGREEMENTS; agreements: AgreementsPayload['agreements'] }
+  | { type: ActionType.SET_SIGNATURE; isSignature: boolean }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -552,10 +560,23 @@ export const appointmentReducer = (state: State, action: Action): State => {
         ...state,
         appointmentCreateType: action.appointmentCreateType
       }
+
     case ActionType.SET_SORT_BY:
       return {
         ...state,
         sortBy: action.sortBy
+      }
+
+    case ActionType.SET_AGREEMENTS:
+      return {
+        ...state,
+        agreements: action.agreements
+      }
+
+    case ActionType.SET_SIGNATURE:
+      return {
+        ...state,
+        isSignature: action.isSignature
       }
   }
 };

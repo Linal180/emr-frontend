@@ -804,7 +804,7 @@ export type ExtendedExternalAppointmentInputProps = Pick<
 > & { serviceId: multiOptionType } & { providerId: SelectorOption } & Pick<
   CreatePatientItemInput,
   "firstName" | "lastName" | "email" | "dob"
-> & { phone: string } & { sexAtBirth: SelectorOption };
+> & { phone: string } & { sexAtBirth: SelectorOption } & { signature: File | null };
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & {
   facilityId: SelectorOption;
@@ -1760,8 +1760,8 @@ export interface CareTeamsProps {
   reload?: Function;
   toggleSideDrawer?: Function;
   patientDispatcher?: Dispatch<PatientAction>;
-  providerBtn? :boolean;
-  isEditable? : boolean
+  providerBtn?: boolean;
+  isEditable?: boolean
 }
 
 export interface SideDrawerProps {
@@ -1779,11 +1779,11 @@ export interface AppointmentSlotsProps {
   dispatcher: Dispatch<AppointmentAction>
 }
 
-export type StatusInputProps = { 
+export type StatusInputProps = {
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType
- }
+}
 
 export interface PracticeDataProps {
   practiceData: PracticePayload['practice'];
@@ -1891,10 +1891,14 @@ export interface ScheduleBoxProps {
   dispatcher: Dispatch<ScheduleAction>;
 }
 
-
 export interface FormDoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
   defaultValues?: SelectorOption[]
   formState?: ExternalFormBuilderState;
   formDispatch?: Dispatch<PublicFormBuilderAction>
+}
+
+export interface SignatureProps {
+  onSignatureEnd: (file: File | null) => void,
+  controllerName: string
 }

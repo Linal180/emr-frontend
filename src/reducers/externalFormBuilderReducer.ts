@@ -32,7 +32,7 @@ export const initialState: State = {
   practiceId: "",
   facilityFieldId: { id: "", name: "" },
   paymentType: '',
-  activeStep: 0,
+  activeStep: 10,
   serviceTypeId: "",
   transactionId: "",
   provider: {
