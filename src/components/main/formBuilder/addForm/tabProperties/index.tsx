@@ -42,6 +42,7 @@ const TabProperties = ({ dispatch, formState }: TabPropertiesProps) => {
       return tab
     })
     name && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+    name && dispatch({ type: ActionType.SET_TAB_OPTIONS, tabOptions: '' })
     reset()
   };
 
@@ -53,7 +54,7 @@ const TabProperties = ({ dispatch, formState }: TabPropertiesProps) => {
           <Typography variant='h4'>{PROPERTIES_TEXT}</Typography>
 
           <Button type='button' onClick={handleSubmit(submitHandler)}
-            variant={'contained'} color="primary">
+            variant={'contained'} color="primary" disabled={!tabOptions}>
             {SAVE_TEXT}
           </Button>
 

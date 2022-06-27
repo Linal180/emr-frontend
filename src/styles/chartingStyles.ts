@@ -97,8 +97,6 @@ export const useChartingStyles = makeStyles({
 
       "& .MuiTableCell-head .MuiTypography-root": {
         color: BLACK_THREE,
-        fontWeight: 600,
-        fontSize: 12,
         textTransform: 'uppercase',
       },
 

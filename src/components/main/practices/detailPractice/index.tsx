@@ -85,7 +85,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
             fax && setValue('fax', fax)
             ein && setValue('ein', ein)
             upin && setValue('upin', upin)
-            name && setValue('name', name)
+            name && setValue('name', name.trim())
             phone && setValue('phone', phone)
             champus && setValue('champus', champus)
             medicare && setValue('medicare', medicare)
