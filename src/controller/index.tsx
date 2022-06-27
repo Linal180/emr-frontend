@@ -30,65 +30,65 @@ const InputController: FC<CustomInputControlProps> = ({
 
   return (
     <>
-    {loading ? renderLoading(label || '') :
-      <Controller
-        name={controllerName}
-        control={control}
-        defaultValue={defaultValue ? defaultValue : ''}
-        render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-          <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
-            <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
-              {label}
+      {loading ? renderLoading(label || '') :
+        <Controller
+          name={controllerName}
+          control={control}
+          defaultValue={defaultValue ? defaultValue : ''}
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
+            <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
+              <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
+                {label}
 
-              {info &&
-                <Box>
-                  <DetailTooltip placement="top-end" arrow title={info}>
-                    <Box width={15} height={15}>
-                      <InfoIcon />
-                    </Box>
-                  </DetailTooltip>
-                </Box>
-              }
-            </InputLabel>
+                {info &&
+                  <Box>
+                    <DetailTooltip placement="top-end" arrow title={info}>
+                      <Box width={15} height={15}>
+                        <InfoIcon />
+                      </Box>
+                    </DetailTooltip>
+                  </Box>
+                }
+              </InputLabel>
 
-            <TextField
-              fullWidth
-              error={invalid}
-              variant="outlined"
-              multiline={multiline}
-              minRows={3}
-              className={`${className} ${!!multiline ? 'multiline-input' : ''}`}
-              required={isHtmlValidate && isRequired}
-              disabled={disabled}
-              id={controllerName}
-              autoFocus={autoFocus}
-              placeholder={placeholder ? placeholder : ""}
-              type={fieldType === "password" ? passwordType : fieldType}
-              helperText={!isHelperText ? error ? error : message : ""}
-              {...field}
-              onBlur={() => onBlur && onBlur()}
-              InputProps={isPassword ? {
-                endAdornment: <ShowPassword
-                  isPassword={isPassword}
-                  passwordType={passwordType}
-                  handleShowPassword={handleClickShowPassword}
-                />,
-              } : clearable ? {
-                endAdornment: <IconButton aria-label="clear" onClick={handleClearField ?
-                  () => handleClearField(controllerName) : () => { }}>
-                  <ClearIcon />
-                </IconButton>
-              } : fieldType === 'number' ?
-                {
-                  inputProps: { step: notStep ? 'any' : '5' },
-                  endAdornment: endAdornment ? endAdornment : <></>
-                } : isSearch ? {
-                  endAdornment: <Search />
-                } : endAdornment ? { endAdornment } : undefined}
-            />
-          </FormControl>
-        )}
-      />}
+              <TextField
+                {...field}
+                fullWidth
+                error={invalid}
+                variant="outlined"
+                multiline={multiline}
+                minRows={3}
+                className={`${className} ${!!multiline ? 'multiline-input' : ''}`}
+                required={isHtmlValidate && isRequired}
+                disabled={disabled}
+                id={controllerName}
+                autoFocus={autoFocus}
+                placeholder={placeholder ? placeholder : ""}
+                type={fieldType === "password" ? passwordType : fieldType}
+                helperText={!isHelperText ? error ? error : message : ""}
+                onBlur={() => onBlur && onBlur()}
+                InputProps={isPassword ? {
+                  endAdornment: <ShowPassword
+                    isPassword={isPassword}
+                    passwordType={passwordType}
+                    handleShowPassword={handleClickShowPassword}
+                  />,
+                } : clearable ? {
+                  endAdornment: <IconButton aria-label="clear" onClick={handleClearField ?
+                    () => handleClearField(controllerName) : () => { }}>
+                    <ClearIcon />
+                  </IconButton>
+                } : fieldType === 'number' ?
+                  {
+                    inputProps: { step: notStep ? 'any' : '5' },
+                    endAdornment: endAdornment ? endAdornment : <></>
+                  } : isSearch ? {
+                    endAdornment: <Search />
+                  } : endAdornment ? { endAdornment } : undefined}
+              />
+            </FormControl>
+          )}
+        />}
     </>
   );
 };

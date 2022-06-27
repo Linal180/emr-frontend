@@ -8,7 +8,10 @@ import CardComponent from "../../../common/CardComponent"
 import PracticeSelector from "../../../common/Selector/PracticeSelector"
 // constants, interface block
 import { FacilityCardsProps } from "../../../../interfacesTypes"
-import { EMPTY_OPTION, FACILITY_INFO, MAPPED_SERVICE_CODES, MAPPED_TIME_ZONES, NAME, PRACTICE, SERVICE_CODE, TIME_ZONE_TEXT } from "../../../../constants"
+import {
+  EMPTY_OPTION, FACILITY_INFO, MAPPED_SERVICE_CODES, MAPPED_TIME_ZONES, NAME, PRACTICE,
+  SERVICE_CODE, TIME_ZONE_TEXT
+} from "../../../../constants"
 
 const FacilityInfoCard: FC<FacilityCardsProps> = ({ getFacilityLoading, isSuper }) =>
   <CardComponent cardTitle={FACILITY_INFO}>
