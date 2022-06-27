@@ -229,20 +229,21 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               </Box>
             )}
 
-            <DropzoneArea
-            showPreviewsInDropzone
-              previewGridClasses={{ item: 'media-inner-image' }}
-              filesLimit={filesLimit ?? 1}
-              maxFileSize={5000000}
-              acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
-              onChange={(files) => {
-                setFiles(files)
-                setAttachmentFiles &&  setAttachmentFiles(files)
-              }}
-              alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={imageEdit ?
-                PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
-            />
+            <Box className="dropzone-area-preview-list">
+              <DropzoneArea
+                previewGridClasses={{ item: 'media-inner-image' }}
+                filesLimit={filesLimit ?? 1}
+                maxFileSize={5000000}
+                acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
+                onChange={(files) => {
+                  setFiles(files)
+                  setAttachmentFiles && setAttachmentFiles(files)
+                }}
+                alertSnackbarProps={{ autoHideDuration: 3000 }}
+                dropzoneText={imageEdit ?
+                  PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
+              />
+            </Box>
           </Box>
         )
       )}
