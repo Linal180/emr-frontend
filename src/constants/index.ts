@@ -1534,7 +1534,7 @@ export const PERMISSION_DENIED =
 export const PAYMENT_CANT_DONE =
   "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
-  "Cancelled appointment cant be edited!";
+  "Cancelled appointment can't be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE =
   "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE =
