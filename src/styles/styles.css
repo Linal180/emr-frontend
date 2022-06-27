@@ -917,6 +917,10 @@ input[type=number] {
   padding-bottom: 16px;
 }
 
+::-ms-reveal {
+  display: none !important;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {
