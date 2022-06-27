@@ -19,14 +19,16 @@ import Selector from "../../../common/Selector"
 import { verifyAddress } from "../../../common/smartyAddress"
 import SmartyModal from "../../../common/SmartyModal";
 
-const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit }) => {
+const ContactInfoCard: FC<PatientCardsProps> = ({
+  getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
+}) => {
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const methods = useFormContext()
   const { watch, setValue } = methods;
+
   const {
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
-
   const { isVerified, addressOpen, data, optionalEmail } = state || {}
 
   const verifyAddressHandler = async () => {
@@ -37,18 +39,9 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
         ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
       const { status, options } = data || {}
 
-      if (status) {
-        dispatch && dispatch({ type: ActionType.SET_DATA, data: options })
-        dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
-      }
-      else {
-        dispatch && dispatch({ type: ActionType.SET_DATA, data: [] })
-        dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_AND_CITY)
-    }
+      dispatch && dispatch({ type: ActionType.SET_DATA, data: status ? options : [] })
+      dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
+    } else Alert.error(ZIP_CODE_AND_CITY)
   }
 
   const verifiedAddressHandler = (
@@ -57,6 +50,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({ getPatientLoading, state, disp
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
+
     setTimeout(() => {
       dispatch && dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
     }, 0);

@@ -11,6 +11,8 @@ import BackButton from '../../../../common/BackButton';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
+import CheckboxController from '../../../../common/CheckboxController';
+import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
 import { setRecord } from '../../../../../utils';
@@ -25,14 +27,14 @@ import {
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
   FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
-  FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD, SERVICES_BREAD,
+  FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD,
+  SERVICES_BREAD,
 } from "../../../../../constants";
-import FacilitySelector from '../../../../common/Selector/FacilitySelector';
-import CheckboxController from '../../../../common/CheckboxController';
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
   const { facilityList } = useContext(ListContext)
+
   const methods = useForm<extendedServiceInput>({
     mode: "all",
     resolver: yupResolver(serviceSchema)
@@ -66,7 +68,6 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             price && setValue('price', price)
             color && setValue('color', color)
             duration && setValue('duration', duration)
-            // isActive && setChecked(isActive as boolean)
             isActive && setValue('isActive', isActive as boolean)
           }
         }
