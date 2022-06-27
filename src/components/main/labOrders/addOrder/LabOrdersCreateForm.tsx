@@ -149,6 +149,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                 <Grid item md={4} sm={12} xs={12}>
                   <Selector
+                    isRequired
                     name="labTestStatus"
                     label={STATUS}
                     value={EMPTY_OPTION}
@@ -158,6 +159,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                 <Grid item md={4} sm={12} xs={12}>
                   <DiagnosesSelector
+                    isRequired
                     isEdit={false}
                     label={DIAGNOSES}
                     name="diagnosesIds"
@@ -186,6 +188,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <TestsSelector
+                          isRequired
                           label={TEST}
                           name={`testField.${index}.test`}
                           addEmpty

@@ -279,7 +279,7 @@ const AllergyModal: FC<AddModalProps> = ({
 
                 <Grid container spacing={3} className={chartingClasses.problemGrid}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="allergyStartDate" label={ONSET_DATE} />
+                    <DatePicker  defaultValue={new Date()} name="allergyStartDate" label={ONSET_DATE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>

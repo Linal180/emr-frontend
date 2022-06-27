@@ -689,10 +689,16 @@ input::-webkit-inner-spin-button {
 
 .media-inner-image {
   padding: 0px !important;
+  height: 150px !important;
 }
 
 .media-inner-image>img {
-  height: 150px !important;
+  object-fit: fill !important;
+}
+
+.dropzone-area-preview-list .MuiGrid-spacing-xs-8 {
+  margin: 0 !important;
+  padding: 0 20px !important;
 }
 
 .whiteColor {
@@ -920,6 +926,10 @@ input[type=number] {
 .skelton-input {
   margin-bottom: 8px;
   padding-bottom: 16px;
+}
+
+::-ms-reveal {
+  display: none !important;
 }
 
 /* media queries */

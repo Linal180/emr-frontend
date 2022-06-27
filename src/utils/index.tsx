@@ -410,7 +410,7 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
       if (practice) {
         const { id, name } = practice;
 
-        data.push({ id, name })
+        data.push({ id, name: name.trim() })
       }
     }
   }
@@ -478,7 +478,7 @@ export const renderFacilities = (facilities: FacilitiesPayload['facilities']) =>
       if (facility) {
         const { id, name } = facility;
 
-        data.push({ id, name })
+        data.push({ id, name: name.trim() })
       }
     }
   }
@@ -494,7 +494,7 @@ export const renderMultiServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, duration, name } = service;
 
-        service && data.push({ value: id, label: `${name} (duration: ${duration} minutes)` })
+        service && data.push({ value: id, label: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -510,7 +510,7 @@ export const renderServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, name, duration } = service;
 
-        data.push({ id, name: `${name} (duration: ${duration} minutes)` })
+        data.push({ id, name: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -569,7 +569,10 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
     for (let appointment of appointments) {
       if (appointment) {
         const { id, appointmentType, scheduleStartDateTime } = appointment;
-        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
+        data.push({
+          id,
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`.trim()
+        })
       }
     }
   }

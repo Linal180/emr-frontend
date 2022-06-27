@@ -1049,6 +1049,7 @@ export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
+export const ATTACHMENT_NAME = "Attachment Name";
 export const USER_SETTINGS = "User Settings";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
@@ -1536,7 +1537,7 @@ export const PERMISSION_DENIED =
 export const PAYMENT_CANT_DONE =
   "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
-  "Cancelled appointment cant be edited!";
+  "Cancelled appointment can't be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE =
   "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE =

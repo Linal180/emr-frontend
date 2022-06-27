@@ -88,6 +88,7 @@ const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName,
                       <TableCell scope="row">
                         {valueToEdit === id ? <TextField
                           id={id}
+                          type="number"
                           variant={'outlined'}
                           onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
                       </TableCell>

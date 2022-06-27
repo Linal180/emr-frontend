@@ -219,6 +219,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                     <Grid item md={4} sm={12} xs={12}>
                       <InputController
                         fieldType="text"
+                        isRequired
                         controllerName="title"
                         controllerLabel={TITLE}                         
                       />

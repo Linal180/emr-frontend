@@ -243,7 +243,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
               : <>
                 <Grid container className={chartingClasses.problemGrid}>
                   <Grid item md={12} sm={12} xs={12}>
-                    <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
+                    <DatePicker defaultValue={new Date()} label={ONSET_DATE} name='problemStartDate' isRequired />
                   </Grid>
                 </Grid>
 

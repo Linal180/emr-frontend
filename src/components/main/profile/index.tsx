@@ -21,7 +21,7 @@ import { useProfileStyles } from "../../../styles/profileStyles";
 import { formatPhone, getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
 import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import {
-  ADDRESS_NUMBER, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
+  ADDRESS, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
   FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
   STATE, SUPER, SYSTEM_ROLES, UPLOAD_PICTURE, ZIP_CODE
 } from "../../../constants";
@@ -183,13 +183,13 @@ const ProfileComponent = (): JSX.Element => {
     <ProfileSettingsLayout>
       <CardComponent cardTitle={PROFILE_TEXT}>
         <Box className={classes.profileContainer}>
-          <Grid container>
+          <Grid container spacing={0}>
             <Grid item md={4} sm={12} xs={12}>
               <Box key={attachmentId} mx={3.5}>
                 <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
               </Box>
 
-              <Box>
+              <Box minWidth={224}>
                 {!email ?
                   <CircularProgress color='inherit' />
                   :
@@ -209,7 +209,7 @@ const ProfileComponent = (): JSX.Element => {
             </Grid>
 
             <Grid item md={8} sm={12} xs={12}>
-              <Box px={2}>
+              <Box mx={5}>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     {userType !== SYSTEM_ROLES.SuperAdmin &&
@@ -274,7 +274,7 @@ const ProfileComponent = (): JSX.Element => {
                             <Fragment>
                               <Grid container spacing={5}>
                                 <Grid item md={12} sm={12} xs={12}>
-                                  {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                  {renderItem(ADDRESS, address || 'N/A')}
                                 </Grid>
                               </Grid>
 
@@ -345,8 +345,8 @@ const ProfileComponent = (): JSX.Element => {
                               <Grid item md={12} sm={12} xs={12}>
                                 <InputController
                                   fieldType="text"
-                                  controllerName="addressNumber"
-                                  controllerLabel={ADDRESS_NUMBER}
+                                  controllerName="address"
+                                  controllerLabel={ADDRESS}
                                 />
                               </Grid>
                             </Grid>
