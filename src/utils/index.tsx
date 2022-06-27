@@ -87,7 +87,7 @@ export const renderLoading = (label: string | JSX.Element) => (
 );
 
 export const renderItem = (
-  label: string, value: Maybe<string> | number | ReactNode | undefined, 
+  label: string, value: Maybe<string> | number | ReactNode | undefined,
   noWrap?: boolean, loading?: boolean
 ) => (
   <>
@@ -262,7 +262,7 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
-  export const getDocumentDate = (date: string) =>
+export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
@@ -410,7 +410,7 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
       if (practice) {
         const { id, name } = practice;
 
-        data.push({ id, name })
+        data.push({ id, name: name.trim() })
       }
     }
   }
@@ -478,7 +478,7 @@ export const renderFacilities = (facilities: FacilitiesPayload['facilities']) =>
       if (facility) {
         const { id, name } = facility;
 
-        data.push({ id, name })
+        data.push({ id, name: name.trim() })
       }
     }
   }
@@ -494,7 +494,7 @@ export const renderMultiServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, duration, name } = service;
 
-        service && data.push({ value: id, label: `${name} (duration: ${duration} minutes)` })
+        service && data.push({ value: id, label: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -510,7 +510,7 @@ export const renderServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, name, duration } = service;
 
-        data.push({ id, name: `${name} (duration: ${duration} minutes)` })
+        data.push({ id, name: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -569,7 +569,10 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
     for (let appointment of appointments) {
       if (appointment) {
         const { id, appointmentType, scheduleStartDateTime } = appointment;
-        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
+        data.push({
+          id,
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`.trim()
+        })
       }
     }
   }
@@ -720,7 +723,7 @@ export const getISOTime = (timestamp: string) => {
 
 export const getScheduleStartTime = (time: string) => {
   if (!time) return "";
-  
+
   return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
 }
 
@@ -1187,13 +1190,13 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null, value?: string | null | undefined) => {
   switch (type) {
     case ElementType.Text:
-      return  value || ''
+      return value || ''
     case ElementType.Select:
-      return isMultiSelect ? [] :  value || ''
+      return isMultiSelect ? [] : value || ''
     case ElementType.Radio:
-      return  value || ''
+      return value || ''
     case ElementType.Checkbox:
-      return   []
+      return []
     case ElementType.Date:
       return value || null
     default:

@@ -432,7 +432,9 @@ export const employerPatientSchema = {
   employerUsualOccupation: notRequiredStringOnly(USUAL_OCCUPATION),
 };
 
-export const extendedPatientSchema = (isOptional: boolean, isDoctor: boolean, isSuperAdminOrPracticeAdmin: boolean) => yup.object({
+export const extendedPatientSchema = (
+  isOptional: boolean, isDoctor: boolean, isSuperAdminOrPracticeAdmin: boolean
+  ) => yup.object({
   // ...PatientSchema,
   // ...kinPatientSchema,
   // ...basicContactSchema,
@@ -556,17 +558,17 @@ const practiceFacilitySchema = {
   fax: notRequiredPhone(FAX),
   country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
+  name: nameSchema(PRACTICE_NAME),
   city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
-  name: yup.string().required(requiredMessage(PRACTICE_NAME)),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
   ...registerUserSchema,
   ...practiceFacilitySchema,
+  facilityName: nameSchema(FACILITY_NAME),
   address: addressValidation(ADDRESS, true),
-  facilityName: yup.string().required(requiredMessage(FACILITY_NAME)),
 })
 
 export const updatePracticeSchema = yup.object({

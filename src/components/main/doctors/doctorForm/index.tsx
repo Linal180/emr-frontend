@@ -16,8 +16,8 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
-import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
@@ -36,20 +36,20 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES, 
+  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES,
   SETTINGS_ROUTE, IS_DOCTOR_BREAD, EDIT_DOCTOR,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext)
-  const { facilityList } = useContext(ListContext)
   const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
+  
   const methods = useForm<DoctorInputProps>({
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
   const { reset, handleSubmit, setValue } = methods;
-  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
 
   const [getDoctor, { loading: GetDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -193,11 +193,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
           reset()
-          if (isDoctor) {
-            history.push(SETTINGS_ROUTE)
-          } else {
-            history.push(DOCTORS_ROUTE)
-          }
+
+          isDoctor ? history.push(SETTINGS_ROUTE)
+            : history.push(DOCTORS_ROUTE)
         }
       }
     }
@@ -207,10 +205,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     if (isEdit) {
-      id ?
-        getDoctor({ variables: { getDoctor: { id } } })
-        :
-        Alert.error(DOCTOR_NOT_FOUND)
+      id ? getDoctor({ variables: { getDoctor: { id } } })
+        : Alert.error(DOCTOR_NOT_FOUND)
     }
   }, [getDoctor, id, isEdit])
 
@@ -235,14 +231,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedBillingState } = billingState;
       const { id: selectedBillingCountry } = billingCountry;
 
-      let practiceId = '';
-      if (selectedFacility) {
-        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
-        const { practiceId: pId } = facility || {};
-
-        practiceId = pId || ''
-      }
-
       const doctorItemInput = {
         firstName, middleName, lastName, prefix, suffix, facilityId: selectedFacility,
         degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
@@ -251,9 +239,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         providerIntials, prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestampsForDob(dob) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
-        deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
-        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '', practiceId,
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
+        deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
+        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
       };
 
       const contactInput = {
@@ -312,7 +300,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <PageHeader
               title={isEdit ? EDIT_DOCTOR : ADD_DOCTOR}
-              path={[DASHBOARD_BREAD, isDoctor ? IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]}
+              path={[DASHBOARD_BREAD, isDoctor ?
+                IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD
+              ]}
             />
           </Box>
 
