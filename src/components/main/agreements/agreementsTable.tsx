@@ -4,7 +4,6 @@ import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@
 import { Link } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
 // components block
-import history from '../../../history';
 import Alert from '../../common/Alert';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
@@ -12,7 +11,7 @@ import Search from '../../common/Search';
 import DocViewer from './DocViewer';
 import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
-import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
+import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
 import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT } from '../../../constants';
 import { useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation } from '../../../generated/graphql';
 import { GeneralFormProps } from '../../../interfacesTypes';
@@ -57,9 +56,9 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
       if (fetchAllAgreementsResults) {
         const { agreements, pagination } = fetchAllAgreementsResults
-
         if (pagination) {
           const { totalPages } = pagination
+
 
           typeof totalPages === 'number' && dispatch({ type: ActionType.SET_PAGES, pages: totalPages })
         }
@@ -74,20 +73,20 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     try {
       const agreementInputs = isSuper ? {} :
         isPrac ? { agreementPracticeId: practiceId } :
-        isFac ? { agreementPracticeId: practiceId, agreementFacilityId: facilityId } : undefined
+          isFac ? { agreementPracticeId: practiceId, agreementFacilityId: facilityId } : undefined
 
       await fetchAllAgreements({
-          variables: {
-            agreementPaginationInput: {
-              paginationOptions: {
-                page,
-                limit: PAGE_LIMIT
-              },
-              searchString: searchQuery,
-              ...(agreementInputs ? agreementInputs : {})
-            }
+        variables: {
+          agreementPaginationInput: {
+            paginationOptions: {
+              page,
+              limit: PAGE_LIMIT
+            },
+            searchString: searchQuery,
+            ...(agreementInputs ? agreementInputs : {})
           }
-        })
+        }
+      })
     } catch (error) { }
   }, [facilityId, fetchAllAgreements, isFac, isPrac, isSuper, page, practiceId, searchQuery])
 
@@ -159,12 +158,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     },
   })
 
-  const handleTitleClick = async (id: string, body?: string | null) => {
-    if (body?.length) {
-      history.push(`${AGREEMENTS_ROUTE}/${id}`)
-      return
-    }
-
+  const handleTitleClick = async (id: string) => {
     await getAttachments({
       variables: {
         getAttachmentsByAgreementId: {
@@ -179,6 +173,13 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: false })
     dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: '' })
   }
+
+  useEffect(() => {
+    if (!agreements.length && page > 1) {
+      dispatch({ type: ActionType.SET_PAGE, page: page - 1 })
+    }
+  }, [agreements.length, page])
+
 
   return (
     <>
@@ -212,18 +213,23 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                   return (
                     <TableRow>
                       <TableCell scope="row" >
-                        <Button onClick={() => id && handleTitleClick(id, body)} variant="text">
-                          {title}
-                        </Button>
+                        {title}
                       </TableCell>
                       <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Box className={`${classes.iconsBackground} ${!body ? '' : 'disable-icon'}`}>
+                            <Button onClick={() => id && handleTitleClick(id)}>
+                              <EyeIcon />
+                            </Button>
+                          </Box>
+
                           <Link to={`${AGREEMENTS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
+
                           <Box className={classes.iconsBackground}
                             onClick={() => id && onDeleteClick(id)}
                           >

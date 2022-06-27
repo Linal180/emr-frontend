@@ -509,6 +509,12 @@ const AddForm = () => {
     });
 
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr1 })
+    dispatch({
+      type: ActionType.SET_SELECTED_FIELD, selected: {
+        fieldId: '', label: "", type: ElementType.Text, name: "", css: "", column: 12, placeholder: "", required: false,
+        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false
+      }
+    })
   }
 
   const clearHandler = () => dispatch({ type: ActionType.SET_FORM_VALUES, formValues: getFormInitialValues() })
