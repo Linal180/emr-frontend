@@ -7,11 +7,13 @@ import CardComponent from "../../../common/CardComponent"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import {
-  CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT, MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE,
-  PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
+  CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT,
+  MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
 } from "../../../../constants"
 
-const PatientPrivacyCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit }) => {
+const PatientPrivacyCard: FC<PatientCardsProps> = ({
+  state, dispatch, shouldDisableEdit, disableSubmit, isEdit
+}) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
 
   return (

@@ -55,6 +55,7 @@ export interface State {
   upComing: AppointmentsPayload['appointments'];
   completed: AppointmentsPayload['appointments'];
   appointment: AppointmentPayload['appointment'];
+  encounters: AppointmentsPayload['appointments'];
   appointments: AppointmentsPayload['appointments'];
   externalAppointment: {
     id: string;
@@ -88,6 +89,7 @@ export const initialState: State = {
   appPaid: false,
   pageComing: 1,
   facilityId: '',
+  encounters: [],
   facility: null,
   providerId: '',
   appDetail: true,
@@ -155,6 +157,7 @@ export enum ActionType {
   SET_APP_DETAIL = 'setAppDetail',
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
+  SET_ENCOUNTERS = 'setEncounters',
   SET_PAGE_COMING = 'setPageComing',
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
@@ -246,6 +249,7 @@ export type Action =
   | { type: ActionType.SET_COMPLETED; completed: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
+  | { type: ActionType.SET_ENCOUNTERS; encounters: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | { type: ActionType.SET_APPOINTMENT_CREATE_TYPE; appointmentCreateType: string }
@@ -376,6 +380,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         providerId: action.providerId
+      }
+
+    case ActionType.SET_ENCOUNTERS:
+      return {
+        ...state,
+        encounters: action.encounters
       }
 
     case ActionType.SET_TOTAL_PAGES:

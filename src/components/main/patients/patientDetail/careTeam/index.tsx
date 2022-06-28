@@ -3,6 +3,7 @@ import { Box, Card, Typography } from "@material-ui/core";
 // components block
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 import NoDataComponent from "../../../../common/NoDataComponent";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants block
 import { formatValue } from "../../../../../utils";
 import { BLUE_FOUR, WHITE_FOUR } from "../../../../../theme";
@@ -92,6 +93,8 @@ const CareTeamComponent = ({
               </Typography>
             </Box>
           </Box>}
+
+          {!!!patientProvidersData?.length && <NoDataFoundComponent />}
       </Box>
     </Card>
   )

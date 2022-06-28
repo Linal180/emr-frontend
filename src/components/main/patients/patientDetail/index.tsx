@@ -7,9 +7,12 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
+import CareTeamComponent from './careTeam';
+import SideDrawer from '../../../common/SideDrawer';
 import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
+import NoDataComponent from '../../../common/NoDataComponent';
 import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
@@ -17,8 +20,6 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
-import NoDataComponent from '../../../common/NoDataComponent';
-import CareTeamComponent from './careTeam/index'
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import history from "../../../../history";
@@ -46,8 +47,6 @@ import {
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
   HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
-import SideDrawer from '../../../common/SideDrawer';
-
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -61,7 +60,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
 
   const {
-    pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
+    pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed, encounters
   } = state
 
   const [, mediaDispatcher] =
@@ -107,8 +106,15 @@ const PatientDetailsComponent = (): JSX.Element => {
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
               new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
-              new Date()) as AppointmentsPayload['appointments']
+              new Date() && appointment?.status === AppointmentStatus.Scheduled) as AppointmentsPayload['appointments']
           });
+
+          appointmentDispatch({
+            type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter(appointment => {
+              const { status } = appointment || {}
+              return status === AppointmentStatus.Arrived
+            }) as AppointmentsPayload['appointments']
+          })
 
           appointmentDispatch({
             type: appointmentActionType.SET_COMPLETED,
@@ -126,7 +132,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
+            // appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
             paginationOptions: {
               limit: PAGE_LIMIT, page: pageComing
             },
@@ -354,7 +360,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 />
               </Box>
               <Box className='masonry-box'>
-                <EncounterList appointments={[]} />
+                <EncounterList appointments={encounters} />
               </Box>
             </Box>
           </TabPanel>
