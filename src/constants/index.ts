@@ -83,6 +83,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
@@ -184,6 +185,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const DRAW_SIGNATURE = "Please draw your signature"
 export const ADD_TAB = 'add_tab'
 export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
