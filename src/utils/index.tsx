@@ -1031,9 +1031,11 @@ export const formatPermissionName = (name: string) => {
 }
 
 export const formatRoleName = (name: string): string => {
-  const text = name.split(/[-_\s]+/)
+  let formatted = ''
+  name.split(/[-_\s]+/).map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)[0].trim()
+   return formatted.trim();
 };
 
 export const parseColumnGrid = (col: number): GridSize => {

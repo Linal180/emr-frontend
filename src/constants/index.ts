@@ -335,7 +335,8 @@ export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
-export const Admin_USER_TEXT = "Admin User";
+export const USER_DETAILS_TEXT = "User Details";
+export const PRACTICE_ADMIN_DETAILS_TEXT = "Practice Admin Details";
 export const PRACTICE_USER_TEXT = "Practice User";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
@@ -3507,7 +3508,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
-    permission: USER_PERMISSIONS.findAllPractices,
+    permission: USER_PERMISSIONS.getPractice,
   },
   {
     name: FACILITY_MANAGEMENT,
