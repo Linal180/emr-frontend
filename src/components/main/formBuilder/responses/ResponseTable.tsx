@@ -170,7 +170,7 @@ const ResponseTable: FC = (): JSX.Element => {
                               }
                             </TableCell>}
                           {index === 2 && userFormElements && <TableCell>
-                            <Box onClick={() => showMoreDataHandler(userFormElements)} color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2}>
+                            <Box onClick={() => showMoreDataHandler(userFormElements)} color={theme.palette.primary.main} className={responsesClasses.viewBtn}>
                               View more
                             </Box>
                           </TableCell>}

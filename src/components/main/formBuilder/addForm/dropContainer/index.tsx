@@ -128,15 +128,16 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
     <TabContext value={selectedTab}>
       <Grid container>
         <Grid item xs={10}>
-          <TabList onChange={handleChange} variant='scrollable'>
-            {formValues?.map((tab, i) => {
-              const { id, name } = tab || {}
-              return (
-                <Tab key={`${name}-${id}-${i}`} label={name} value={`${i}`} />
-              )
-            })}
-          </TabList>
+            <TabList onChange={handleChange} variant='scrollable' className='align-center'>
+              {formValues?.map((tab, i) => {
+                const { id, name } = tab || {}
+                return (
+                  <Tab key={`${name}-${id}-${i}`} label={name} value={`${i}`} />
+                )
+              })}
+            </TabList>
         </Grid>
+
         <Grid item xs={2}>
           <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
             <IconButton onClick={addTabHandler}>
