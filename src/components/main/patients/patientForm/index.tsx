@@ -35,7 +35,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { user, currentDoctor } = useContext(AuthContext)
   const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
-  const { id: selectedFacilityId } = facility || {};
+  const { id: selectedFacilityId, practiceId: selectedPracticeId } = facility || {};
 
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
@@ -355,14 +355,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { practiceId: pId } = facility || {};
 
         practiceId = pId || ''
+      } else {
+        practiceId = selectedPracticeId || ''
       }
+
+      let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
+        { facilityId: selectedFacilityId, practiceId }
+
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId,
-        callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
-        practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        email: basicEmail || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         gender: selectedGender as Genderidentity || Genderidentity.DeclineToSpecify,
@@ -375,7 +380,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
-        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider
+        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,
+        ...facilityInputs
       };
 
       const contactInput = {
