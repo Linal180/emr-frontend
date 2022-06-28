@@ -233,6 +233,7 @@ export enum AppointmentCreateType {
 }
 
 export type AppointmentInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentStatus?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;

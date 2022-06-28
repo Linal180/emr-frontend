@@ -3,7 +3,7 @@ import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReduce
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { Sort } from "@material-ui/icons";
+import { ChevronLeft, ChevronRight, Sort } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
 import {
@@ -45,7 +45,8 @@ import {
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
-  const classes = useTableStyles()
+  const classes = useTableStyles();
+  const [selectdate, setSelectDate] = useState(new Date().toDateString())
   const { user, currentUser, userPermissions } = useContext(AuthContext)
   const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
@@ -67,6 +68,26 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
+
+  const setDate = (newDate?: string) => {
+    const date = newDate || moment().format('MM-DD-YYYY');
+    setSelectDate(date)
+  };
+
+  const getPreviousDate = () => {
+    // const currentDayInMilli = new Date(selectdate).getTime()
+    // const oneDay = 1000 * 60 * 60 * 24
+    // const previousDayInMilli = currentDayInMilli - oneDay
+    // const previousDate = new Date(previousDayInMilli)
+    const previousDate= moment(selectdate).subtract(1, 'day').format('MM-DD-YYYY')
+    setDate(previousDate)
+  }
+
+  const getNextDate = () => {
+    const nextDate = moment(selectdate).add(1, 'day').format('MM-DD-YYYY')
+    setDate(nextDate)
+  }
+
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -192,20 +213,23 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           variables: {
             appointmentInput: {
               ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
-              appointmentTypeId: appointmentTypeId, sortBy: sortBy
+              appointmentTypeId: appointmentTypeId, sortBy: sortBy, appointmentDate: moment(selectdate).format('YYYY-MM-DD')
             }
           },
         })
       }
     } catch (error) { }
-  }, [
-    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId,
-    facilityId, findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy
-  ])
+  }, [doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectdate])
 
   useEffect(() => {
     fetchAppointments();
   }, [page, searchQuery, fetchAppointments, filterFacilityId]);
+
+
+  useEffect(() => {
+    setDate(moment().format('MM-DD-YYYY'));
+  }, []);
+
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -330,7 +354,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </Box>
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={8} sm={12} xs={12}>
             <FormProvider {...methods}>
               <Grid container spacing={3}>
                 {isAdminUser &&
@@ -343,12 +367,29 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     />
                   </Grid>}
 
-                <Grid item md={5} sm={12} xs={12}>
+                <Grid item md={4} sm={12} xs={12}>
                   <ServicesSelector
                     name="serviceId"
                     label={APPOINTMENT_TYPE}
                     shouldEmitFacilityId={isAdminUser}
                   />
+                </Grid>
+
+                <Grid item md={4} sm={12} xs={12}>
+                  <Box className="date-box-wrap">
+                    <Typography variant="body1" color="textPrimary">Date</Typography>
+
+                    <Box className="date-box" display="flex" alignItems="center">
+                      <Button variant="outlined"  className="btn-icon" size="small" color="default" onClick={getPreviousDate}><ChevronLeft /></Button>
+                      <Box className="date-input-box" mx={1}>
+                        <Typography variant="h6">{selectdate}</Typography>
+                      </Box>
+                      <Button variant="outlined"  className="btn-icon" size="small" color="default" onClick={getNextDate}><ChevronRight /></Button>
+                      <Box ml={1} />
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+
+                    </Box>
+                  </Box>
                 </Grid>
               </Grid>
             </FormProvider>
