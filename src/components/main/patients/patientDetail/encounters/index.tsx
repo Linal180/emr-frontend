@@ -1,5 +1,6 @@
 // packages block
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { Box, Typography, Button, Card } from "@material-ui/core";
 // components block
 import NoDataComponent from "../../../../common/NoDataComponent";
@@ -7,7 +8,7 @@ import NoDataComponent from "../../../../common/NoDataComponent";
 import { WHITE_FOUR } from "../../../../../theme";
 import { getDateWithDay } from "../../../../../utils";
 import { EncounterPros } from "../../../../../interfacesTypes";
-import { VIEW, ENCOUNTERS, MINUTES } from "../../../../../constants";
+import { VIEW, ENCOUNTERS, MINUTES, APPOINTMENTS_ROUTE, CHECK_IN_ROUTE } from "../../../../../constants";
 
 const EncounterList: FC<EncounterPros> = ({ appointments }) => {
   return (
@@ -18,8 +19,9 @@ const EncounterList: FC<EncounterPros> = ({ appointments }) => {
         </Box>
 
         {appointments?.map(encounter => {
-          const { id, appointmentType, scheduleStartDateTime, provider, facility } = encounter || {};
+          const { id, appointmentType, scheduleStartDateTime, provider, facility, patient } = encounter || {};
           const { name } = facility || {}
+          const { id: patientId } = patient || {}
           const { firstName, lastName } = provider || {}
           const { name: serviceName, duration } = appointmentType || {}
 
@@ -40,7 +42,9 @@ const EncounterList: FC<EncounterPros> = ({ appointments }) => {
               </Box>
 
               <Box display="flex" my={2}>
-                <Button type="submit" variant="contained" color="secondary">{VIEW}</Button>
+                <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
+                  <Button type="submit" variant="contained" color="secondary">{VIEW}</Button>
+                </Link>
               </Box>
             </Box>
           )
