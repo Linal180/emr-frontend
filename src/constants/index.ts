@@ -3862,7 +3862,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
-    permission: USER_PERMISSIONS.findAllPractices,
+    permission: USER_PERMISSIONS.getPractice,
   },
   {
     name: FACILITY_MANAGEMENT,
