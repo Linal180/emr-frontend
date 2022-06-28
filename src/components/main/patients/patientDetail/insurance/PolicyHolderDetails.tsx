@@ -13,10 +13,9 @@ import {
   LAST_NAME, LEGAL_SEX, MAPPED_POLICY_GENDER, MAPPED_STATES, MIDDLE_NAME, POLICY_HOLDER_ID_CERTIFICATION_NUMBER,
   SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../../constants";
-import { PolicyHolderRelationshipType, useGetPatientLazyQuery } from "../../../../../generated/graphql";
+import { PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, useGetPatientLazyQuery } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput, ParamsType } from "../../../../../interfacesTypes";
 import { setRecord } from "../../../../../utils";
-
 
 const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { id: patientId } = useParams<ParamsType>()
@@ -54,7 +53,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
       address2 && setValue('addressCTD', address2)
       dob && setValue('dob', dob)
       state && setValue('state', setRecord(state, state))
-      gender && setValue('sex', setRecord(gender, gender))
+      gender && setValue('sex', setRecord(Policy_Holder_Gender_Identity.None, Policy_Holder_Gender_Identity.None))
       ssn && setValue('ssn', ssn)
       trigger()
     }
