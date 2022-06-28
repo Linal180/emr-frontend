@@ -822,11 +822,7 @@ input::-webkit-inner-spin-button {
 }
 
 .appointment-view-list .MuiTable-root tbody tr .custom-cell {
-  padding: 0 0 5px 0;
-}
-
-.appointment-view-list .MuiTable-root tbody tr .custom-cell {
-  padding: 14px 11px 14px 30px;
+  padding: 10px;
 }
 
 .card-box {

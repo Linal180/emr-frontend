@@ -197,6 +197,7 @@ const PatientsTable: FC = (): JSX.Element => {
           <Grid item md={4} sm={12} xs={12}>
             <Search search={search} info tooltipData={PatientSearchingTooltipData} />
           </Grid>
+          
           <Grid item md={2} sm={12} xs={12}>
             <Box
               onClick={() => setOpen(!open)} className='pointer-cursor'
@@ -291,7 +292,7 @@ const PatientsTable: FC = (): JSX.Element => {
                   const { id, patientRecord, firstName, lastName, email, dob, contacts } = record || {};
 
                   const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
-                  const { phone, email:pEmail } = patientContact || {};
+                  const { phone } = patientContact || {};
 
                   return (
                     <TableRow key={id}>
@@ -301,7 +302,7 @@ const PatientsTable: FC = (): JSX.Element => {
                         </Link>
                       </TableCell>
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
-                      <TableCell scope="row">{email} {pEmail}</TableCell>
+                    <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{dob && getTimestampsForDob(dob)}</TableCell>
                       <TableCell scope="row">

@@ -239,7 +239,7 @@ export const getCurrentTimestamps = (existingDate: string, newDate: string | und
 };
 
 export const getTimestampsForDob = (date: string): string => {
-  return date ? moment(date).format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
+  return date ? moment(date, "MM-DD-YYYY").format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
 };
 
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
@@ -1036,7 +1036,7 @@ export const formatRoleName = (name: string): string => {
   name.split(/[-_\s]+/).map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-   return formatted.trim();
+  return formatted.trim();
 };
 
 export const parseColumnGrid = (col: number): GridSize => {
@@ -1826,10 +1826,10 @@ export const mediaType = (attachmentTitle: string): string[] => {
       return ACCEPTABLE_PDF_AND_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.InsuranceCard1:
-      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.InsuranceCard2:
-      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.LabOrders:
       return ACCEPTABLE_PDF_AND_IMAGES_FILES;

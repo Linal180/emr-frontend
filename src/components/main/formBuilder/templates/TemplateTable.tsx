@@ -80,7 +80,7 @@ export const TemplatesTable = () => {
   return (
     <Box>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 
