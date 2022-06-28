@@ -1,5 +1,5 @@
 import { makeStyles, } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -100,15 +100,9 @@ export const useChartingStyles = makeStyles({
         textTransform: 'uppercase',
       },
 
-      "& .MuiTableCell-body .MuiTypography-root": {
-        color: BLACK_ONE,
-        fontWeight: 500,
-        fontSize: 14,
-      },
-
       "& .MuiTableCell-body": {
-        paddingTop: 7,
-        paddingBottom: 7,
+        paddingTop: 10,
+        paddingBottom: 10,
       },
 
       "& .MuiIconButton-root": {

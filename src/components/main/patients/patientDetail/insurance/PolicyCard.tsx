@@ -69,7 +69,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
     },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue, trigger, formState } = methods;
+  const { handleSubmit, setValue, trigger } = methods;
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
@@ -203,33 +203,38 @@ const PolicyCard: FC<PolicyCardProps> = ({
     isEdit && findPolicy()
   }, [findPolicy, isEdit]);
 
-  useEffect(() => {
-    if (activeStep === 0) {
-      trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
+  const handleStepsValidation = async (step: number) => {
+    if (step === 0) {
+      return true
+    }
+
+    if (step === 1) {
+      const isValid = await trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
         "policyNumber", "issueDate", "expirationDate", "copayFields", "coInsurancePercentage",
         "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
-    } else if (activeStep === 1) {
-      trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode',
-        'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+      return isValid
     }
-  }, [activeStep, trigger])
 
-  const handleStepsValidation = useCallback(() => {
-    return !Object.keys(formState.errors).length
-  }, [formState.errors])
+    if (step === 2) {
+      const isValid = await trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode',
+        'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+      return isValid
+    }
 
-  const handleStep = (step: number) => {
-    const shouldProceed = handleStepsValidation()
+  }
+
+  const handleStep = async (step: number) => {
+    const shouldProceed = await handleStepsValidation(step)
     shouldProceed && setActiveStep(step);
   };
 
-  const handleBack = () => {
-    const shouldProceed = handleStepsValidation()
-    shouldProceed && setActiveStep(activeStep - 1);;
+  const handleBack = async () => {
+    const shouldProceed = await handleStepsValidation(activeStep - 1)
+    shouldProceed && setActiveStep(activeStep - 1);
   };
 
-  const handleForward = () => {
-    const shouldProceed = handleStepsValidation()
+  const handleForward = async () => {
+    const shouldProceed = await handleStepsValidation(activeStep + 1)
     shouldProceed && setActiveStep(activeStep + 1);
   };
 
