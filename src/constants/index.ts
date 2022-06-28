@@ -83,6 +83,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
@@ -184,6 +185,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const DRAW_SIGNATURE = "Please draw your signature"
 export const ADD_TAB = 'add_tab'
 export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
@@ -1047,6 +1049,7 @@ export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
+export const ATTACHMENT_NAME = "Attachment Name";
 export const USER_SETTINGS = "User Settings";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
@@ -1257,7 +1260,7 @@ export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record s
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement before agreeing";
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
-export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
+export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -1534,7 +1537,7 @@ export const PERMISSION_DENIED =
 export const PAYMENT_CANT_DONE =
   "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
-  "Cancelled appointment cant be edited!";
+  "Cancelled appointment can't be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE =
   "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE =

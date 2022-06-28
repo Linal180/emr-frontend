@@ -1,5 +1,5 @@
 import { getFormInitialValues } from "../constants";
-import { FormType, FormTabsInputs } from "../generated/graphql";
+import { FormType, FormTabsInputs, AgreementsPayload } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -17,7 +17,10 @@ export interface State {
   activeStep: number;
   serviceTypeId: string;
   transactionId: string;
-  provider: SelectorOption
+  provider: SelectorOption;
+  isSignature: boolean;
+  agreements: AgreementsPayload['agreements'];
+  signatureLoader: boolean
 }
 
 export const initialState: State = {
@@ -38,7 +41,10 @@ export const initialState: State = {
   provider: {
     id: "",
     name: ""
-  }
+  },
+  isSignature: false,
+  agreements: [],
+  signatureLoader: false
 }
 
 export enum ActionType {
@@ -56,7 +62,10 @@ export enum ActionType {
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_SERVICE_TYPE_ID = 'setServiceTypeId',
   SET_TRANSACTION_ID = 'setTransactionId',
-  SET_PROVIDER = 'setProvider'
+  SET_PROVIDER = 'setProvider',
+  SET_AGREEMENTS = 'setAgreements',
+  SET_SIGNATURE = 'setSignature',
+  SET_SIGNATURE_LOADER = 'setSignatureLoader'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -73,7 +82,10 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_ACTIVE_STEP; activeStep: number } |
 { type: ActionType.SET_SERVICE_TYPE_ID; serviceTypeId: string } |
 { type: ActionType.SET_TRANSACTION_ID; transactionId: string } |
-{ type: ActionType.SET_PROVIDER, provider: SelectorOption }
+{ type: ActionType.SET_PROVIDER, provider: SelectorOption } |
+{ type: ActionType.SET_AGREEMENTS; agreements: AgreementsPayload['agreements'] } |
+{ type: ActionType.SET_SIGNATURE; isSignature: boolean } |
+{ type: ActionType.SET_SIGNATURE_LOADER; signatureLoader: boolean }
 
 export const externalFormBuilderReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -165,6 +177,24 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
       return {
         ...state,
         provider: action.provider
+      }
+
+    case ActionType.SET_AGREEMENTS:
+      return {
+        ...state,
+        agreements: action.agreements
+      }
+
+    case ActionType.SET_SIGNATURE:
+      return {
+        ...state,
+        isSignature: action.isSignature
+      }
+
+    case ActionType.SET_SIGNATURE_LOADER:
+      return {
+        ...state,
+        signatureLoader: action.signatureLoader
       }
   }
 }

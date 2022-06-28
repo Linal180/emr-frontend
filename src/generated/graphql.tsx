@@ -76,6 +76,8 @@ export type Agreement = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  patientConsent?: Maybe<PatientConsent>;
+  patientConsentId?: Maybe<Scalars['String']>;
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
   signatureRequired?: Maybe<Scalars['Boolean']>;
@@ -204,6 +206,7 @@ export type Appointment = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
+  patientConsent?: Maybe<PatientConsent>;
   patientId?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
@@ -926,6 +929,13 @@ export type CreatePatientAllergyInput = {
   providerId?: Maybe<Scalars['String']>;
   reactionsIds: Array<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
+};
+
+export type CreatePatientConsentInputs = {
+  agreementIds?: Maybe<Array<Scalars['String']>>;
+  appointmentId?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientInput = {
@@ -2035,6 +2045,7 @@ export type Mutation = {
   createLabTestObservation: LabTestObservationPayload;
   createLoincCode: LoincCodePayload;
   createPatient: PatientPayload;
+  createPatientConsent: PatientConsentPayload;
   createPermission: PermissionPayload;
   createPolicy: PolicyPayload;
   createPolicyHolder: PolicyHolder;
@@ -2250,6 +2261,11 @@ export type MutationCreateLoincCodeArgs = {
 
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
+};
+
+
+export type MutationCreatePatientConsentArgs = {
+  createPatientConsentInputs: CreatePatientConsentInputs;
 };
 
 
@@ -2722,6 +2738,7 @@ export type Patient = {
   attachments?: Maybe<Array<Attachment>>;
   billings?: Maybe<Array<Billing>>;
   callToConsent: Scalars['Boolean'];
+  consent?: Maybe<PatientConsent>;
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
   deceasedDate?: Maybe<Scalars['String']>;
@@ -2850,6 +2867,31 @@ export enum PatientBillingStatus {
   Settled = 'SETTLED',
   WorkersCompClaim = 'WORKERS_COMP_CLAIM'
 }
+
+export type PatientConsent = {
+  __typename?: 'PatientConsent';
+  agreements?: Maybe<Array<Agreement>>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  attachmentId?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  signature?: Maybe<Attachment>;
+  updatedAt: Scalars['String'];
+};
+
+export type PatientConsentInput = {
+  id: Scalars['String'];
+};
+
+export type PatientConsentPayload = {
+  __typename?: 'PatientConsentPayload';
+  patientConsent?: Maybe<PatientConsent>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
 
 export type PatientDoctorPayload = {
   __typename?: 'PatientDoctorPayload';
@@ -3440,6 +3482,7 @@ export type Query = {
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
+  findPatientConsent: PatientConsentPayload;
   getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
@@ -3701,6 +3744,11 @@ export type QueryFindLoincCodeArgs = {
 
 export type QueryFindPatientAttachmentsArgs = {
   patientAttachmentsInput: PatientAttachmentsInput;
+};
+
+
+export type QueryFindPatientConsentArgs = {
+  patientInput: PatientConsentInput;
 };
 
 
@@ -5294,7 +5342,7 @@ export type FetchAllAgreementsQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null }> } };
+export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null, signatureRequired?: boolean | null }> } };
 
 export type FetchAgreementQueryVariables = Exact<{
   agreementId: Scalars['String'];
@@ -5902,7 +5950,7 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string } | null } };
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string, patientId?: string | null } | null } };
 
 export type GetFormPublicMediaUrlMutationVariables = Exact<{
   getPublicMediaInput: GetPublicMediaInput;
@@ -6134,6 +6182,13 @@ export type GetPatientProviderQueryVariables = Exact<{
 
 
 export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, provider?: { __typename?: 'DoctorPatient', id: string, doctorId?: string | null, patientId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null, city?: string | null, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null } | null } | null } };
+
+export type CreatePatientConsentMutationVariables = Exact<{
+  createPatientConsentInputs: CreatePatientConsentInputs;
+}>;
+
+
+export type CreatePatientConsentMutation = { __typename?: 'Mutation', createPatientConsent: { __typename?: 'PatientConsentPayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, patientConsent?: { __typename?: 'PatientConsent', id: string } | null } };
 
 export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6443,6 +6498,7 @@ export const FetchAllAgreementsDocument = gql`
       title
       body
       createdAt
+      signatureRequired
     }
   }
 }
@@ -10770,6 +10826,7 @@ export const SaveUserFormValuesDocument = gql`
     }
     appointment {
       id
+      patientId
     }
   }
 }
@@ -12672,6 +12729,46 @@ export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
 export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
 export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
+export const CreatePatientConsentDocument = gql`
+    mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
+  createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {
+    response {
+      name
+      status
+      message
+    }
+    patientConsent {
+      id
+    }
+  }
+}
+    `;
+export type CreatePatientConsentMutationFn = Apollo.MutationFunction<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>;
+
+/**
+ * __useCreatePatientConsentMutation__
+ *
+ * To run a mutation, you first call `useCreatePatientConsentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePatientConsentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPatientConsentMutation, { data, loading, error }] = useCreatePatientConsentMutation({
+ *   variables: {
+ *      createPatientConsentInputs: // value for 'createPatientConsentInputs'
+ *   },
+ * });
+ */
+export function useCreatePatientConsentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>(CreatePatientConsentDocument, options);
+      }
+export type CreatePatientConsentMutationHookResult = ReturnType<typeof useCreatePatientConsentMutation>;
+export type CreatePatientConsentMutationResult = Apollo.MutationResult<CreatePatientConsentMutation>;
+export type CreatePatientConsentMutationOptions = Apollo.BaseMutationOptions<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>;
 export const GetTokenDocument = gql`
     query GetToken {
   getToken {

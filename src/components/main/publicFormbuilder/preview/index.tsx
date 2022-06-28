@@ -1,4 +1,5 @@
 //packages block
+import axios from 'axios';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -19,12 +20,12 @@ import {
   State, Action, initialState, externalFormBuilderReducer, ActionType
 } from '../../../../reducers/externalFormBuilderReducer';
 import {
-  FormType, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation
+  FormType, useCreatePatientConsentMutation, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation
 } from '../../../../generated/graphql';
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
   PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES,
 } from '../../../../constants';
 //constants
 const initialValues = {};
@@ -34,7 +35,9 @@ const PublicFormPreview = () => {
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   //constants destructuring
-  const { isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep } = state
+  const {
+    isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep, signatureLoader, agreements
+  } = state
   const methods = useForm<any>({
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
@@ -87,7 +90,7 @@ const PublicFormPreview = () => {
       const { userForm, appointment, response } = saveUserFormValues;
       const { status } = response || {}
       const { id } = userForm || {}
-      const { id: appointmentId } = appointment || {}
+      const { id: appointmentId, patientId } = appointment || {}
       if (status === 200 && id && appointmentId) {
         if (isSubmit) {
           Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
@@ -95,6 +98,7 @@ const PublicFormPreview = () => {
         } else {
           setValue('appointmentId', appointmentId)
           setValue('userFormId', id)
+          patientId && setValue('patientId', patientId)
           nextStepHandler()
         }
 
@@ -107,6 +111,11 @@ const PublicFormPreview = () => {
     onError: ({ message }) => {
       Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
     }
+  })
+
+  const [createPatientConsent] = useCreatePatientConsentMutation({
+    onCompleted: () => { },
+    onError: () => { }
   })
 
   useMemo(() => {
@@ -124,6 +133,51 @@ const PublicFormPreview = () => {
     }
   }, [formValues])
 
+  const createPatientConsentHandler = async (patientId: string, id: string) => {
+    try {
+      const arr = agreements?.map(({ body, id }) => {
+        return {
+          id,
+          body
+        }
+      })
+      const body = JSON.stringify({ agreements: arr })
+      await createPatientConsent({
+        variables: {
+          createPatientConsentInputs: {
+            appointmentId: id,
+            patientId,
+            body
+          }
+        }
+      })
+    } catch (error) { }
+  }
+
+  const signatureUploadHandler = async (appointmentId: string, patientId: string, signature: File) => {
+    dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: true })
+
+    const formData = new FormData();
+    patientId && formData.append("typeId", patientId);
+    formData.append("title", ATTACHMENT_TITLES.Signature);
+    signature && formData.append("file", signature);
+
+    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
+      formData
+    ).then((response) => {
+      const { status } = response
+      if (status !== 201) Alert.error("Something went wrong!");
+      else {
+        createPatientConsentHandler(patientId, appointmentId)
+        dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
+      }
+    }).catch(error => {
+      const { response: { data: { error: errorMessage } } } = error || {}
+      Alert.error(errorMessage);
+      dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
+    });
+  }
+
   const submitHandler = async (values: any) => {
     if (id) {
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
@@ -137,9 +191,13 @@ const PublicFormPreview = () => {
         userFormElements: formValues
       }
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: false })
+
       if (formType === FormType.Appointment) {
-        const { scheduleEndDateTime, scheduleStartDateTime } = values;
+        const { scheduleEndDateTime, scheduleStartDateTime, signature, appointmentId, patientId } = values;
         if (scheduleStartDateTime && scheduleEndDateTime) {
+          if (signature && appointmentId && patientId) {
+            signatureUploadHandler(appointmentId, patientId, signature)
+          }
           await createUserForm({ variables: { createUserFormInput: data } })
 
         }
@@ -197,11 +255,11 @@ const PublicFormPreview = () => {
                       </Box>
 
                       <Box>
-                        {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
+                        {(loading || uploadImage || signatureLoader) && <CircularProgress size={20} color="inherit" />}
                         <Button
                           type={'submit'}
                           variant={'contained'} color={'primary'}
-                          disabled={loading || uploadImage}
+                          disabled={loading || uploadImage || signatureLoader}
                         >
                           {isSubmit ? FORM_SUBMIT_TEXT : NEXT}
                         </Button>

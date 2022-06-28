@@ -77,6 +77,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
         <Box py={2}>
           <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
             {SEND_EMAIL}
+
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>

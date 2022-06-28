@@ -270,6 +270,7 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 
     appointment {
       id
+      patientId
     }
   }
 }

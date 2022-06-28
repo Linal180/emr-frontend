@@ -19,11 +19,13 @@ import {
   ATTACHMENT_TITLES,
   CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, EMPTY_OPTION, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
 } from "../../../../constants";
+import { ActionType } from "../../../../reducers/mediaReducer";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
-  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment
+  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment, state, dispatch
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
+  const { files } = state || {}
   const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(addDocumentSchema)
@@ -64,7 +66,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   useEffect(() => {
     attachmentId && setPreview()
   }, [attachmentId, setPreview])
-
+  
   return (
     <Box maxWidth={500}>
       <FormProvider {...methods}>
@@ -169,7 +171,9 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                   handleClose={handleClose}
                   setAttachments={() => { }}
                   acceptableFilesType={mediaType(ATTACHMENT_TITLES.ProviderUploads)}
-                />
+                  setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
+                  />
+                {!files?.length ? <Typography className='danger' variant="caption">Please select atleast one file</Typography> : ''}
               </Grid>}
             </Grid>
           </Box>
