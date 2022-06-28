@@ -23,7 +23,7 @@ import {
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
 import Alert from '../../../common/Alert';
-import { generateString, getFormatDateString, renderItem } from '../../../../utils';
+import { generateString, getFormatDateString, renderItem, setRecord } from '../../../../utils';
 
 const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }): JSX.Element => {
   const methods = useForm<LabOrdersCreateFormInput>({
@@ -32,6 +32,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
       testField: [TEST_FIELD_INITIAL_VALUES],
       appointment: EMPTY_OPTION,
       diagnosesIds: [EMPTY_MULTISELECT_OPTION],
+      labTestStatus: setRecord(LabTestStatus.OrderEntered, LabTestStatus.OrderEntered)
     },
     resolver: yupResolver(createLabOrdersSchema)
   });
@@ -201,7 +202,6 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                       <Grid item md={3} sm={12} xs={12}>
                         <TimePicker
-                          isRequired
                           label={TEST_TIME}
                           name={`testField.${index}.testTime`}
                         />
