@@ -1910,3 +1910,7 @@ export interface SignatureProps {
   onSignatureEnd: (file: File | null) => void,
   controllerName: string
 }
+
+export interface EncounterPros {
+  appointments: AppointmentsPayload['appointments']
+}

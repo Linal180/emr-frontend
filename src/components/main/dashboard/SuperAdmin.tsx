@@ -17,7 +17,7 @@ import {
   BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
 } from "../../../assets/svgs";
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS, 
+  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS,
   TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, RECENT_PRACTICES,
 } from "../../../constants";
 import { Link } from "react-router-dom";
@@ -60,6 +60,18 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <PracticeUsers />
+          </Card>
+
+          <Box p={2} />
+
+          <Card>
+            <Box className="totalFacilitiesChartContainer">
+              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
+                <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
+              </Box>
+
+              <PracticeFacilities />
+            </Box>
           </Card>
         </Grid>
 
@@ -174,18 +186,6 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
         </Grid> */}
-
-        <Grid item md={6} sm={12} xs={12}>
-          <Card>
-            <Box className="totalFacilitiesChartContainer">
-              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
-                <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
-              </Box>
-
-              <PracticeFacilities />
-            </Box>
-          </Card>
-        </Grid>
       </Grid>
     </>
   )
