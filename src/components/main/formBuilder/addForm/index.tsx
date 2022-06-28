@@ -692,14 +692,15 @@ const AddForm = () => {
                           ))}
                         </Menu>
                       </Grid>
-
                     </Grid>
                   </Box>
                 </Grid>
 
                 <Grid item md={3} sm={4} xs={12}>
-                  <TabProperties formState={state} dispatch={dispatch} />
-                  <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                  <Box className={classes.main}>
+                    <TabProperties formState={state} dispatch={dispatch} />
+                    <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                  </Box>
                 </Grid>
               </Grid>
             </Box>

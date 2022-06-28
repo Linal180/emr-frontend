@@ -70,7 +70,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
   return (
     <FormProvider {...methods}>
       <Box className={classes.main}>
-        <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
+        <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <Typography variant='h4'>{PROPERTIES_TEXT}</Typography>
 
           <Button type='button' onClick={handleSubmit(submitHandler)} disabled={!disabledSave} variant={'contained'} color="primary">
