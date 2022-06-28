@@ -8,7 +8,7 @@ import {
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
   DOB_VALIDATION_MESSAGE, STATE, COUNTRY, PASSWORD, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE,
-  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE, 
+  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE,
   FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER,
   SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_NAME, NAME, EXPIRATION_DATE,
   NO_WHITE_SPACE_REGEX, PRACTICE, SPECIALTY, SUFFIX, MIDDLE_NAME, LANGUAGE_SPOKEN, SERVICE_NAME_TEXT,
@@ -29,6 +29,8 @@ import {
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT,
   CONTACT_NUMBER,
+  TITLE,
+  ATTACHMENT_NAME,
 } from "../constants";
 import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 
@@ -347,8 +349,9 @@ export const doctorSchema = yup.object({
 export const facilityServicesSchema = {
   facilityId: selectorSchema(FACILITY),
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
-  price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
-    .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
+  price: yup.string()
+    .test('', requiredMessage(PRICE), value => !!value)
+    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
     .matches(NUMBER_REGEX, ValidMessage(NUMBER))
@@ -434,24 +437,15 @@ export const employerPatientSchema = {
 
 export const extendedPatientSchema = (
   isOptional: boolean, isDoctor: boolean, isSuperAdminOrPracticeAdmin: boolean
-  ) => yup.object({
-  // ...PatientSchema,
-  // ...kinPatientSchema,
-  // ...basicContactSchema,
-  // ...guardianPatientSchema,
-  // ...employerPatientSchema,
-  // ...emergencyPatientSchema,
-  // ...guarantorPatientSchema,
-  // gender: selectorSchema(GENDER),
-  // basicPhone: notRequiredPhone(MOBILE_NUMBER),
-  facilityId: isSuperAdminOrPracticeAdmin ? selectorSchema(FACILITY) : yup.string().notRequired(),
+) => yup.object({
+  ...ssnSchema,
+  ...dobSchema,
+  ...firstLastNameSchema,
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
-  usualProviderId: isDoctor ? yup.string().notRequired() : selectorSchema(USUAL_PROVIDER_ID),
-  ...firstLastNameSchema,
-  ...ssnSchema,
-  ...dobSchema,
+  ...(isSuperAdminOrPracticeAdmin ? { facilityId: selectorSchema(FACILITY) } : {}),
+  ...(isDoctor ? {} : { usualProviderId: selectorSchema(USUAL_PROVIDER_ID) }),
 })
 
 export const extendedEditPatientSchema = (isOptional: boolean) => yup.object({
@@ -519,7 +513,15 @@ export const externalAppointmentSchema = yup.object({
   ...dobSchema,
   ...emailSchema,
   ...firstLastNameSchema,
+  serviceId: multiOptionSchema(APPOINTMENT)
+})
+
+export const externalSignatureAppointmentSchema = yup.object({
+  ...dobSchema,
+  ...emailSchema,
+  ...firstLastNameSchema,
   serviceId: multiOptionSchema(APPOINTMENT),
+  signature: yup.mixed().required()
 })
 
 export const externalPatientSchema = yup.object({
@@ -1024,9 +1026,18 @@ export const addLabProviderDetailsSchema = yup.object({
 })
 
 export const createAgreementSchema = yup.object({
-  title: yup.string().required(),
+  title: yup.string()
+    .required(requiredMessage(TITLE))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const profileSchema = yup.object({
   phone: notRequiredPhone(CONTACT_NUMBER),
+})
+
+
+export const labOrdersResultAttachmentSchema = yup.object({
+  attachmentName: yup.string()
+    .required(requiredMessage(ATTACHMENT_NAME))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })

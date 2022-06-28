@@ -32,10 +32,10 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({ getFacilityLoading, dis
     switch (moduleName) {
       case FACILITY_INFO:
         return facilityInfoRef?.current?.scrollIntoView({ behavior: 'smooth' });
-      case BILLING_PROFILE:
-        return billingProfileRef?.current?.scrollIntoView({ behavior: 'smooth' });
       case FACILITY_LOCATION:
         return facilityLocationRef?.current?.scrollIntoView({ behavior: 'smooth' });
+      case BILLING_PROFILE:
+        return billingProfileRef?.current?.scrollIntoView({ behavior: 'smooth' });
       case BUSINESS_HOURS:
         return businessHoursRef?.current?.scrollIntoView({ behavior: 'smooth' });
       default:
@@ -81,14 +81,14 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({ getFacilityLoading, dis
 
             <Box pb={3} />
 
-            <Grid md={12} id={BILLING_PROFILE_ROUTE} ref={billingProfileRef}>
-              <BillingProfileCard getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
+            <Grid md={12} id={FACILITY_LOCATION_ROUTE} ref={facilityLocationRef}>
+              <FacilityLocationCard getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
             </Grid>
 
             <Box pb={3} />
 
-            <Grid md={12} id={FACILITY_LOCATION_ROUTE} ref={facilityLocationRef}>
-              <FacilityLocationCard getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
+            <Grid md={12} id={BILLING_PROFILE_ROUTE} ref={billingProfileRef}>
+              <BillingProfileCard getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
             </Grid>
 
             <Box pb={3} />

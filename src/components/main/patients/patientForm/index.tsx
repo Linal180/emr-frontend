@@ -21,7 +21,7 @@ import {
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED, CONFLICT_EXCEPTION,
 } from "../../../../constants";
 import {
   ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
@@ -277,13 +277,10 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { status } = response
 
         if (status && status === 200) {
-          if (activeStep === 0) {
+          activeStep === 0 ?
+            Alert.success(PATIENT_CREATED)
+            : Alert.success(CHANGES_SAVED)
 
-            Alert.success(PATIENT_CREATED);
-          }
-          else {
-            Alert.success(CHANGES_SAVED);
-          }
           const { id } = patient || {}
           id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
           activeStep === 4 && history.push(PATIENTS_ROUTE)
@@ -294,10 +291,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   const [updatePatient, { loading: updatePatientLoading }] = useUpdatePatientMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -374,9 +370,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
-        gender: selectedGender as Genderidentity || Genderidentity.Male,
-        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
-        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.Male,
+        gender: selectedGender as Genderidentity || Genderidentity.DeclineToSpecify,
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.DeclineToSpecify,
+        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.DeclineToSpecify,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
         statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
@@ -455,6 +451,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+
         dispatch({
           type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
         })
@@ -476,24 +473,21 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+
         dispatch({
           type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
         })
       }
-    } else
-      Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
+    } else Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
   };
 
   useEffect(() => {
-    if (id) {
-      getPatient({ variables: { getPatient: { id } } })
-    }
+    id && getPatient({ variables: { getPatient: { id } } })
   }, [getPatient, id])
 
   useEffect(() => {
-    if (patientId) {
+    patientId &&
       getPatient({ variables: { getPatient: { id: patientId } } })
-    }
   }, [getPatient, patientId])
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;

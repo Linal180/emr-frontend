@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 //constants, interfaces, utils
 import { ClearIcon } from "../../../assets/svgs";
-import { ACTIONS, CODE, DESCRIPTION, ITEM_MODULE, PRICE_WITH_DOLLAR } from "../../../constants";
+import { ACTIONS, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, PRICE_WITH_DOLLAR } from "../../../constants";
 import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { renderTh } from "../../../utils";
@@ -21,6 +21,8 @@ const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName,
     mode: "all",
   });
 
+  const { setValue } = methods
+
   const saveHandler = (value: string, id: string) => {
     const index = tableData.findIndex((data) => data?.id === id)
     let newArr = [...tableData]; // copying the old datas array
@@ -34,16 +36,17 @@ const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName,
     handleCodes(moduleName, tableData)
   }, [handleCodes, moduleName, tableData])
 
-  const handleTableCodes = (data:SelectorOption) =>{
-    const valueAlreadyExist= tableData.find((tableDataValues)=>tableDataValues.id===data.id)
-    if(valueAlreadyExist){
-      return 
+  const handleTableCodes = (data: SelectorOption) => {
+    setValue(moduleName, EMPTY_OPTION)
+    const valueAlreadyExist = tableData.find((tableDataValues) => tableDataValues.id === data.id)
+    if (valueAlreadyExist) {
+      return
     }
 
     setTableData(prevState => [...prevState, {
       id: data.id,
-      code: moduleName===ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data.id || '',
-      description: data.name || '',
+      code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data.id || '',
+      description: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[1] || '' : data?.name || '',
     }])
   }
 
@@ -88,6 +91,7 @@ const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName,
                       <TableCell scope="row">
                         {valueToEdit === id ? <TextField
                           id={id}
+                          type="number"
                           variant={'outlined'}
                           onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
                       </TableCell>

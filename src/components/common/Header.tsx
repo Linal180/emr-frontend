@@ -26,7 +26,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const { roles } = user || {};
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
-  
+
   const showFacility = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles)
 

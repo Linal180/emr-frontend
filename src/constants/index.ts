@@ -83,6 +83,10 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const FILE_REQUIRED = 'Please select at least one file'
+export const AGREEMENT_BODY_REQUIRED = 'Agreement Body is a required Field'
+export const DESCRIPTION_TYPE = 'Description Type';
+export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
 export const ORGANIZATION_NAME = 'Organization Name';
@@ -184,6 +188,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const DRAW_SIGNATURE = "Please draw your signature"
 export const ADD_TAB = 'add_tab'
 export const EDIT_TAB = 'edit_tab'
 export const BPM_TEXT = 'bpm'
@@ -331,6 +336,8 @@ export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const USER_DETAILS_TEXT = "User Details";
+export const PRACTICE_ADMIN_DETAILS_TEXT = "Practice Admin Details";
+export const PRACTICE_USER_TEXT = "Practice User";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
 export const FACILITY_DETAILS_TEXT = "Facility Details";
@@ -739,6 +746,7 @@ export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
+export const RECENT_PRACTICES = "Recent Practices";
 export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
 export const VITAL_LIST_PAGE_LIMIT = 4;
@@ -1047,6 +1055,7 @@ export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
+export const ATTACHMENT_NAME = "Attachment Name";
 export const USER_SETTINGS = "User Settings";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
@@ -1065,6 +1074,7 @@ export const PREFERRED_NAME = "Preferred Name";
 export const HOLD_STATEMENT = "Hold Statement";
 export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
+export const ADDRESS_NUMBER = "Address Number";
 export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const CONTACT_NUMBER = "Contact Number";
 export const VIEW_ENCOUNTER = "View Encounter";
@@ -1256,7 +1266,7 @@ export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record s
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement before agreeing";
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
-export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance cards file";
+export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -2022,16 +2032,8 @@ export const TEMPORARY_CPT_CODES = [
     description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip);"
   },
   {
-    cptCode: "86328",
-    description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
-  },
-  {
     cptCode: "86408",
     description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); screen"
-  },
-  {
-    cptCode: "86409",
-    description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); titer"
   },
   {
     cptCode: "86413",
@@ -2046,200 +2048,8 @@ export const TEMPORARY_CPT_CODES = [
     description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; adenovirus enteric types 40/41"
   },
   {
-    cptCode: "87305",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Aspergillus"
-  },
-  {
-    cptCode: "87320",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Chlamydia trachomatis"
-  },
-  {
-    cptCode: "87324",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Clostridium difficile toxin(s)"
-  },
-  {
-    cptCode: "87327",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Cryptococcus neoformans"
-  },
-  {
-    cptCode: "87328",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; cryptosporidium"
-  },
-  {
-    cptCode: "87329",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; giardia"
-  },
-  {
-    cptCode: "87332",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; cytomegalovirus"
-  },
-  {
-    cptCode: "87335",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Escherichia coli 0157"
-  },
-  {
-    cptCode: "87336",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Entamoeba histolytica dispar group"
-  },
-  {
-    cptCode: "87337",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Entamoeba histolytica group"
-  },
-  {
-    cptCode: "87338",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Helicobacter pylori, stool"
-  },
-  {
-    cptCode: "87339",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Helicobacter pylori"
-  },
-  {
-    cptCode: "87340",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis B surface antigen (HBsAg)"
-  },
-  {
-    cptCode: "87341",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis B surface antigen (HBsAg) neutralization"
-  },
-  {
-    cptCode: "87350",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis Be antigen (HBeAg)"
-  },
-  {
-    cptCode: "87380",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; hepatitis, delta agent"
-  },
-  {
-    cptCode: "87385",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Histoplasma capsulatum"
-  },
-  {
-    cptCode: "87389",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-1 antigen(s), with HIV-1 and HIV-2 antibodies, single result"
-  },
-  {
-    cptCode: "87390",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-1"
-  },
-  {
-    cptCode: "87391",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; HIV-2"
-  },
-  {
-    cptCode: "87400",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Influenza, A or B, each"
-  },
-  {
-    cptCode: "87420",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; respiratory syncytial virus"
-  },
-  {
-    cptCode: "87425",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; rotavirus"
-  },
-  {
-    cptCode: "87426",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; severe acute respiratory syndrome coronavirus (eg, SARS-CoV, SARS-CoV-2 [COVID-19])"
-  },
-  {
-    cptCode: "87427",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Shiga-like toxin"
-  },
-  {
-    cptCode: "87428",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; severe acute respiratory syndrome coronavirus (eg, SARS-CoV, SARS-CoV-2 [COVID-19]) and influenza virus types A and B"
-  },
-  {
-    cptCode: "87430",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; Streptococcus, group A"
-  },
-  {
-    cptCode: "87449",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; not otherwise specified, each organism"
-  },
-  {
-    cptCode: "87451",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; polyvalent for multiple organisms, each polyvalent antiserum"
-  },
-  {
-    cptCode: "87635",
-    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), amplified probe technique"
-  },
-  {
-    cptCode: "87636",
-    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) and influenza virus types A and B, multiplex amplified probe technique"
-  },
-  {
-    cptCode: "87637",
-    description: "Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), influenza virus types A and B, and respiratory syncytial virus, multiplex amplified probe technique"
-  },
-  {
-    cptCode: "87802",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Streptococcus, group B"
-  },
-  {
-    cptCode: "87803",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Clostridium difficile toxin A"
-  },
-  {
-    cptCode: "87806",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; HIV-1 antigen(s), with HIV-1 and HIV-2 antibodies"
-  },
-  {
-    cptCode: "87804",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Influenza"
-  },
-  {
-    cptCode: "87807",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; respiratory syncytial virus"
-  },
-  {
-    cptCode: "87811",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
-  },
-  {
-    cptCode: "87808",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Trichomonas vaginalis"
-  },
-  {
-    cptCode: "87809",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; adenovirus"
-  },
-  {
-    cptCode: "87810",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Chlamydia trachomatis"
-  },
-  {
-    cptCode: "87850",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Neisseria gonorrhoeae"
-  },
-  {
-    cptCode: "87880",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; Streptococcus, group A"
-  },
-  {
-    cptCode: "87899",
-    description: "Infectious agent antigen detection by immunoassay with direct optical (ie, visual) observation; not otherwise specified"
-  },
-  {
-    cptCode: "87913",
-    description: "Infectious agent genotype analysis by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]), mutation identification in targeted region(s)"
-  },
-  {
-    cptCode: "0202U",
-    description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
-  },
-  {
     cptCode: "0223U",
     description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
-  },
-  {
-    cptCode: "0224U",
-    description: "Antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), includes titer(s), when performed"
-  },
-  {
-    cptCode: "0225U",
-    description: "Infectious disease (bacterial or viral respiratory tract infection) pathogen-specific DNA and RNA, 21 targets, including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), amplified probe technique, including multiplex reverse transcription for RNA targets, each analyte reported as detected or not detected"
   },
   {
     cptCode: "0226U",
@@ -2250,10 +2060,6 @@ export const TEMPORARY_CPT_CODES = [
     description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 3 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B), upper respiratory specimen, each pathogen reported as detected or not detected"
   },
   {
-    cptCode: "0241U",
-    description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 4 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B, respiratory syncytial virus [RSV]), upper respiratory specimen, each pathogen reported as detected or not detected"
-  },
-  {
     cptCode: "99072",
     description: "Additional supplies, materials, and clinical staff time over and above those usually included in an office visit or other non-facility service(s), when performed during a Public Health Emergency, as defined by law, due to respiratory-transmitted infectious disease"
   },
@@ -2261,162 +2067,6 @@ export const TEMPORARY_CPT_CODES = [
     cptCode: "0001A",
     description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
   },
-  {
-    cptCode: "0002A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; second dose"
-  },
-  {
-    cptCode: "0003A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; third dose"
-  },
-  {
-    cptCode: "0004A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; booster dose"
-  },
-  {
-    cptCode: "0051A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; first dose"
-  },
-  {
-    cptCode: "0052A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; second dose"
-  },
-  {
-    cptCode: "0053A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; third dose"
-  },
-  {
-    cptCode: "0054A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation; booster dose"
-  },
-  {
-    cptCode: "0071A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; first dose"
-  },
-  {
-    cptCode: "0072A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; second dose"
-  },
-  {
-    cptCode: "0073A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; third dose"
-  },
-  {
-    cptCode: "0074A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; booster dose"
-  },
-  {
-    cptCode: "0081A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; first dose"
-  },
-  {
-    cptCode: "0082A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation; second dose"
-  },
-  {
-    cptCode: "0011A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; first dose"
-  },
-  {
-    cptCode: "0012A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; second dose"
-  },
-  {
-    cptCode: "0013A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage; third dose"
-  },
-  {
-    cptCode: "0064A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.25 mL dosage, booster dose"
-  },
-  {
-    cptCode: "0094A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.5 mL dosage, booster dose"
-  },
-  {
-    cptCode: "0021A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; first dose"
-  },
-  {
-    cptCode: "0022A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; second dose"
-  },
-  {
-    cptCode: "0031A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; single dose"
-  },
-  {
-    cptCode: "0034A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage; booster dose"
-  },
-  {
-    cptCode: "0041A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage; first dose"
-  },
-  {
-    cptCode: "0042A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage; second dose"
-  },
-  {
-    cptCode: "0104A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, monovalent, preservative free, 5 mcg/0.5 mL dosage, adjuvant AS03 emulsion, booster dose"
-  },
-  {
-    cptCode: "0111A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage; first dose"
-  },
-  {
-    cptCode: "0112A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage; second dose"
-  },
-  {
-    cptCode: "91300",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted, for intramuscular use"
-  },
-  {
-    cptCode: "91305",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, tris-sucrose formulation, for intramuscular use"
-  },
-  {
-    cptCode: "91307",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 10 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation, for intramuscular use"
-  },
-  {
-    cptCode: "91308",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 3 mcg/0.2 mL dosage, diluent reconstituted, tris-sucrose formulation, for intramuscular use"
-  },
-  {
-    cptCode: "91301",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 100 mcg/0.5 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91306",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.25 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91311",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 25 mcg/0.25 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91309",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 50 mcg/0.5 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91302",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, chimpanzee adenovirus Oxford 1 (ChAdOx1) vector, preservative free, 5x1010 viral particles/0.5 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91303",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, DNA, spike protein, adenovirus type 26 (Ad26) vector, preservative free, 5x1010 viral particles/0.5 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91304",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, recombinant spike protein nanoparticle, saponin-based adjuvant, preservative free, 5 mcg/0.5 mL dosage, for intramuscular use"
-  },
-  {
-    cptCode: "91310",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, monovalent, preservative free, 5 mcg/0.5 mL dosage, adjuvant AS03 emulsion, for intramuscular use"
-  }
 ]
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
@@ -3625,12 +3275,12 @@ export const FacilityMenuNav = [
     linkTo: FACILITY_INFO_ROUTE,
   },
   {
-    title: BILLING_PROFILE,
-    linkTo: BILLING_PROFILE_ROUTE,
-  },
-  {
     title: FACILITY_LOCATION,
     linkTo: FACILITY_LOCATION_ROUTE,
+  },
+  {
+    title: BILLING_PROFILE,
+    linkTo: BILLING_PROFILE_ROUTE,
   },
   {
     title: BUSINESS_HOURS,
@@ -3858,7 +3508,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
-    permission: USER_PERMISSIONS.findAllPractices,
+    permission: USER_PERMISSIONS.getPractice,
   },
   {
     name: FACILITY_MANAGEMENT,

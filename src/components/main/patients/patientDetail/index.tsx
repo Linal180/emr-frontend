@@ -106,7 +106,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
               new Date()) as AppointmentsPayload['appointments']
           });
 
@@ -288,7 +288,9 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-                  <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
+                  <Box pb={3}>
+                    <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
+                  </Box>
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -312,7 +314,9 @@ const PatientDetailsComponent = (): JSX.Element => {
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
+                  <Box pb={3}>
+                    <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
+                  </Box>
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -345,8 +349,8 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </Card>
               </Box>
               <Box className='masonry-box'>
-                <CareTeamComponent                
-                  patientProvidersData={patientProvidersData}              
+                <CareTeamComponent
+                  patientProvidersData={patientProvidersData}
                 />
               </Box>
               <Box className='masonry-box'>

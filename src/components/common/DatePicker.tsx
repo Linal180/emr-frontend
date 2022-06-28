@@ -11,7 +11,7 @@ import { renderLoading, requiredLabel } from '../../utils';
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
 const DatePicker: FC<PickerProps> = ({
-  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading
+  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading, defaultValue
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -23,7 +23,7 @@ const DatePicker: FC<PickerProps> = ({
         <Controller
           name={name}
           control={control}
-          defaultValue=''
+          defaultValue={defaultValue ? defaultValue : ""}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
             <FormControl fullWidth margin="normal" error={invalid}>
               <InputLabel shrink htmlFor={`${name}-dialog`}>
