@@ -126,10 +126,11 @@ const LabOrderListingTable = (): JSX.Element => {
                 const performed = getPerformedDate(testDate || '',testTime || '')
                 const { doctorsSignOff, attachments, resultValue, resultUnit} = testObservations?.[0] ?? {}
                 const { attachmentName } = attachments?.[0] ?? {}
+                const primaryProviderName = `${firstName} ${lastName}` === 'undefined undefined' ? N_A : `${firstName} ${lastName}`
 
                 return (
                   <TableRow>
-                  <TableCell scope="row">{`${firstName} ${lastName}`}</TableCell>
+                  <TableCell scope="row">{primaryProviderName}</TableCell>
                   <TableCell scope="row">{loincNum}</TableCell>
                   <TableCell scope="row">{diagnoses?.map((diagnose)=>{
                     return <li>{`${diagnose?.code} | ${diagnose?.description}`}</li>
