@@ -1,15 +1,13 @@
 // packages block
 import { FC } from "react";
 import { Box, Typography, Button, Card } from "@material-ui/core";
+// components block
+import NoDataComponent from "../../../../common/NoDataComponent";
 // styles, constants blocks
 import { WHITE_FOUR } from "../../../../../theme";
 import { getDateWithDay } from "../../../../../utils";
-import { AppointmentsPayload } from "../../../../../generated/graphql";
+import { EncounterPros } from "../../../../../interfacesTypes";
 import { VIEW, ENCOUNTERS, MINUTES } from "../../../../../constants";
-
-interface EncounterPros {
-  appointments: AppointmentsPayload['appointments']
-}
 
 const EncounterList: FC<EncounterPros> = ({ appointments }) => {
   return (
@@ -47,6 +45,8 @@ const EncounterList: FC<EncounterPros> = ({ appointments }) => {
             </Box>
           )
         })}
+
+        {!!!appointments?.length && <NoDataComponent />}
       </Box>
     </Card>
   )
