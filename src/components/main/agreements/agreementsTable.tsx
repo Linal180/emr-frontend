@@ -12,12 +12,15 @@ import DocViewer from './DocViewer';
 import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
 import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
-import { ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT } from '../../../constants';
-import { useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation } from '../../../generated/graphql';
+import { 
+  ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT 
+} from '../../../constants';
+import { 
+  useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation 
+} from '../../../generated/graphql';
 import { GeneralFormProps } from '../../../interfacesTypes';
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { useTableStyles } from '../../../styles/tableStyles';
-import { WHITE } from '../../../theme';
 import { convertDateFromUnix, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from '../../../utils';
 import { AuthContext } from '../../../context';
 
@@ -183,14 +186,12 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
   return (
     <>
-      <Box bgcolor={WHITE}>
-        <Box p={2} bgcolor={WHITE}>
-          <Box py={2} maxWidth={450}>
+      <Box className={classes.mainTableContainer}>
+          <Box maxWidth={450}>
             <Search search={search} />
           </Box>
-        </Box>
 
-        <Box bgcolor={WHITE} className="table-overflow table-header">
+        <Box className="table-overflow" mt={4}>
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>

@@ -1,19 +1,14 @@
 // packages block
 import { FC, Reducer, useReducer } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
-import Selector from "../../common/Selector";
 import PieChart from "../../common/charts/PieChart";
 import PracticesTableComponent from "./tables/practicesTable";
 import PracticeUsers from "../../common/charts/PracticeUsers";
-import PracticesByYear from "../../common/charts/PracticesByYear";
 import PracticeFacilities from "../../common/charts/PracticeFacilities";
 // constants, styles and svgs block
 import history from "../../../history";
 import { BLUE_SEVEN, BLUE_TEN, GREEN_ONE, PURPLE_TWO, WHITE } from "../../../theme";
-import { renderArrayAsSelectorOptions } from "../../../utils";
-import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import {
   practiceReducer, Action, initialState, State
@@ -22,20 +17,19 @@ import {
   BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
 } from "../../../assets/svgs";
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
-  TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
+  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS, 
+  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING,
 } from "../../../constants";
 import { Link } from "react-router-dom";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-  const methods = useForm<dashboardInputsProps>({
-    mode: "all",
-    defaultValues: { year: { id: "2022", name: "2022" } }
-  });
-  const { watch } = methods;
-  const { year } = watch()
+  // const methods = useForm<dashboardInputsProps>({
+  //   mode: "all",
+  //   defaultValues: { year: { id: "2022", name: "2022" } }
+  // });
+  // const { watch } = methods;
+  // const { year } = watch()
   const [{ practices }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
 
   return (
@@ -53,7 +47,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Link>
             </Box>
 
-            <Box p={1}>
+            <Box>
               <PracticesTableComponent dispatch={dispatch} />
             </Box>
           </Card>
@@ -160,10 +154,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Box p={2} />
+      {/* <Box p={2} /> */}
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
+      <Grid container spacing={0}>
+        {/* <Grid item md={6} sm={12} xs={12}>
           <Card>
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -179,7 +173,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               <PracticesByYear year={year} />
             </Box>
           </Card>
-        </Grid>
+        </Grid> */}
 
         <Grid item md={6} sm={12} xs={12}>
           <Card>

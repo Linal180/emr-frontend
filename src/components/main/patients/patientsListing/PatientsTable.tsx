@@ -197,6 +197,7 @@ const PatientsTable: FC = (): JSX.Element => {
           <Grid item md={4} sm={12} xs={12}>
             <Search search={search} info tooltipData={PatientSearchingTooltipData} />
           </Grid>
+          
           <Grid item md={2} sm={12} xs={12}>
             <Box
               onClick={() => setOpen(!open)} className='pointer-cursor'

@@ -127,7 +127,7 @@ const ServicesTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 

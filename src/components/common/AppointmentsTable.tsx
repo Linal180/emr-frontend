@@ -38,7 +38,7 @@ import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
-  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, TEN_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
+  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
   USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
 } from "../../constants";
 
@@ -183,7 +183,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       }
       else {
-        const pageInputs = { paginationOptions: { page, limit: TEN_PAGE_LIMIT } }
+        const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
             : { facilityId, ...pageInputs }
@@ -322,7 +322,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <>
-      <Box pt={2}>
+      <Box className={classes.mainTableContainer}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
@@ -354,8 +354,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </FormProvider>
           </Grid>
         </Grid>
-      </Box>
-      <Box pt={2} maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+
         <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
             <TableHead>
