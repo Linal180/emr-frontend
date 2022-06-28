@@ -251,7 +251,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         {isEdit && MODULES.map((module, index) => {
           if (module !== MODULE_TYPES.Practice) {
             let modulePermissions = [];
-            
+
             if (module === MODULE_TYPES.Service) {
               modulePermissions = permissions?.filter(permission =>
                 permission?.moduleType === MODULE_TYPES.Service
