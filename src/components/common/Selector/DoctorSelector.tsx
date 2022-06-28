@@ -67,28 +67,6 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       if (shouldOmitFacilityId) {
-        if (isPracAdmin && isFacAdmin) {
-          doctorsInputs && await findAllDoctor({
-            variables: {
-              doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery,
-              }
-            }
-          })
-          return
-        }
-
-        if (isPracAdmin || isFacAdmin) {
-          doctorsInputs && await findAllDoctor({
-            variables: {
-              doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery, facilityId: facilityId,
-              }
-            }
-          })
-          return
-        }
-
         doctorsInputs && await findAllDoctor({
           variables: {
             doctorInput: {

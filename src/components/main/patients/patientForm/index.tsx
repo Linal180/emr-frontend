@@ -20,7 +20,7 @@ import {
 } from '../../../../utils';
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
-  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE, 
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
 } from "../../../../constants";
 import {
@@ -35,7 +35,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { user, currentDoctor } = useContext(AuthContext)
   const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
-  const { id: selectedFacilityId } = facility || {};
+  const { id: selectedFacilityId, practiceId: selectedPracticeId } = facility || {};
 
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
@@ -359,13 +359,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { practiceId: pId } = facility || {};
 
         practiceId = pId || ''
+      } else {
+        practiceId = selectedPracticeId || ''
       }
+
+      let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
+        { facilityId: selectedFacilityId, practiceId }
+
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
-        practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        email: basicEmail || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         gender: selectedGender as Genderidentity || Genderidentity.Male,
@@ -378,7 +384,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
-        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider
+        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,
+        ...facilityInputs
       };
 
       const contactInput = {
