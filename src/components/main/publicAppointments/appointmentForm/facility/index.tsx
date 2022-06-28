@@ -172,7 +172,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId,
-                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.Male,
+                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify,
                 practiceId: practiceId || ''
               },
             }
