@@ -116,13 +116,10 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             const signature = agreements?.some(({ signatureRequired }) => signatureRequired)
             dispatch({ type: ActionType.SET_SIGNATURE, isSignature: signature })
           }
-
         }
       }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const [createPatientConsent] = useCreatePatientConsentMutation({

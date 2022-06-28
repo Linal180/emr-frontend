@@ -10,7 +10,6 @@ import { SignatureProps } from '../../../interfacesTypes';
 import { CLEAR_TEXT, DRAW_SIGNATURE } from '../../../constants';
 
 const Signature = ({ onSignatureEnd, controllerName }: SignatureProps) => {
-
   const { control, register } = useFormContext();
   const signCanvas = createRef<any>()
 

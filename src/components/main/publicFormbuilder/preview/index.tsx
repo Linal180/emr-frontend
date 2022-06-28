@@ -290,7 +290,6 @@ const PublicFormPreview = () => {
                       )}
                     </Grid>
                   </Grid>
-
                 </form>
               </FormProvider>
             </Box> :

@@ -94,9 +94,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
         }
       }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const [createExternalAppointment] = useCreateExternalAppointmentMutation({

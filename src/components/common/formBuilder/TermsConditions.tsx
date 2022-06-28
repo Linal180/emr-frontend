@@ -23,18 +23,16 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
         const { agreements, response } = fetchAllAgreements || {}
         const { status } = response || {}
         if (status === 200) {
+
           if (agreements) {
             dispatcher && dispatcher({ type: ActionType.SET_AGREEMENTS, agreements: agreements as AgreementsPayload['agreements'] })
             const signature = agreements?.some(({ signatureRequired }) => signatureRequired)
             dispatcher && dispatcher({ type: ActionType.SET_SIGNATURE, isSignature: signature })
           }
-
         }
       }
     },
-    onError: () => {
-
-    }
+    onError: () => { }
   })
 
   const fetchAllAgreements = useCallback(async () => {
@@ -47,9 +45,7 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
           }
         }
       })
-    } catch (error) {
-
-    }
+    } catch (error) { }
   }, [facilityId, getAllAgreements])
 
   const onSignatureEnd = (file: File | null) => setValue('signature', file)
