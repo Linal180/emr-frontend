@@ -332,7 +332,8 @@ export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
-export const USER_DETAILS_TEXT = "User Details";
+export const Admin_USER_TEXT = "Admin User";
+export const PRACTICE_USER_TEXT = "Practice User";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
 export const FACILITY_DETAILS_TEXT = "Facility Details";
@@ -741,6 +742,7 @@ export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
+export const RECENT_PRACTICES = "Recent Practices";
 export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
 export const VITAL_LIST_PAGE_LIMIT = 4;
@@ -3629,12 +3631,12 @@ export const FacilityMenuNav = [
     linkTo: FACILITY_INFO_ROUTE,
   },
   {
-    title: BILLING_PROFILE,
-    linkTo: BILLING_PROFILE_ROUTE,
-  },
-  {
     title: FACILITY_LOCATION,
     linkTo: FACILITY_LOCATION_ROUTE,
+  },
+  {
+    title: BILLING_PROFILE,
+    linkTo: BILLING_PROFILE_ROUTE,
   },
   {
     title: BUSINESS_HOURS,
