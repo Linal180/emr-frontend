@@ -22,9 +22,9 @@ import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../.
 // constant
 import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
-  SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE, 
+  SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE,
   FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, SEARCH_PATIENT_NAME_ID,
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, SEARCH_PATIENT_NAME_ID, ADD_FACILITY,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -60,9 +60,10 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
     try {
       practiceId && await findAllFacility({
         variables: {
-          facilityInput: { 
+          facilityInput: {
             practiceId,
-            paginationOptions: { limit: 7, page: 1 } }
+            paginationOptions: { limit: 5, page: 1 }
+          }
         }
       })
     } catch (error) { }
@@ -139,6 +140,12 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 </Box>
               )
             })}
+
+            <Box width="100%" mb={2} display='flex' justifyContent='center'>
+              <Link to={`${FACILITIES_ROUTE}/new`}>
+                <Button variant="contained" color="primary" size="large">{ADD_FACILITY}</Button>
+              </Link>
+            </Box>
           </Card>
         </Grid>
 
@@ -222,6 +229,16 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Grid container spacing={3}>
         <Grid item md={8}>
           <Card>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
+              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
+            </Box>
+
+            <FacilityAppointments practiceId={practiceId || ''} />
+          </Card>
+
+          <Box p={2} />
+
+          <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
@@ -237,16 +254,6 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <PracticeUserRoles practiceId={practiceId || ''} />
-          </Card>
-
-          <Box p={2} />
-
-          <Card>
-            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
-              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
-            </Box>
-
-            <FacilityAppointments practiceId={practiceId || ''} />
           </Card>
         </Grid>
 
