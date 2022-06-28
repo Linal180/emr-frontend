@@ -467,6 +467,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+
         dispatch({
           type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
         })
@@ -479,9 +480,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   }, [getPatient, id])
 
   useEffect(() => {
-    if (patientId) {
+    patientId &&
       getPatient({ variables: { getPatient: { id: patientId } } })
-    }
   }, [getPatient, patientId])
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;

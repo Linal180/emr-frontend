@@ -333,6 +333,7 @@ export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const USER_DETAILS_TEXT = "User Details";
+export const PRACTICE_ADMIN_DETAILS_TEXT = "Practice Admin Details";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
 export const FACILITY_DETAILS_TEXT = "Facility Details";
