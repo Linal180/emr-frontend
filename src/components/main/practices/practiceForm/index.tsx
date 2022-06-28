@@ -21,7 +21,7 @@ import {
 } from '../../../../generated/graphql';
 import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
-  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, USER_DETAILS_TEXT, PRACTICE_NAME,
+  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, Admin_USER_TEXT, PRACTICE_NAME,
   COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
@@ -291,7 +291,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Grid md={12} item>
                     {!isEdit &&
-                      <CardComponent cardTitle={USER_DETAILS_TEXT}>
+                      <CardComponent cardTitle={Admin_USER_TEXT}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
