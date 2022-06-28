@@ -125,7 +125,6 @@ const GuarantorCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispat
       </Grid>
 
       <FormControl component="fieldset" disabled={shouldDisableEdit}>
-        loading={getPatientLoading}
         <FormGroup>
           <Box mr={3} mb={2} mt={2}>
             <FormControlLabel
