@@ -1,26 +1,27 @@
 // packages block
-import { Box, Card, IconButton, Typography } from "@material-ui/core";
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
+import { Box, Card, IconButton, Typography } from "@material-ui/core";
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
 // components
 import SideDrawer from "../../../../common/SideDrawer";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 import PolicyCard from "./PolicyCard";
 // constant, utils, svgs, interfaces, graphql and styles block
+import { getFormatDateString } from '../../../../../utils';
+import { ParamsType } from "../../../../../interfacesTypes";
+import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
 import {
   ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
-import { ParamsType } from "../../../../../interfacesTypes";
-import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { getFormatDateString } from '../../../../../utils';
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
+
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
 
@@ -57,7 +58,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     findAllPolicies()
   }, [findAllPolicies]);
 
-  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
 
   const alreadyAddedPolicies = useMemo(() => {
     if (!policies.length) {
@@ -66,6 +67,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
     return policies.reduce<string[]>((acc, policy) => {
       const { orderOfBenefit } = policy ?? {}
+
       if (!acc.length) {
         acc.push(orderOfBenefit || '')
         return acc
@@ -94,10 +96,13 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     switch (insuranceStatus) {
       case OrderOfBenefitType.Primary:
         return PRIMARY_INSURANCE
+
       case OrderOfBenefitType.Secondary:
         return SECONDARY_INSURANCE
+
       case OrderOfBenefitType.Tertiary:
         return TERTIARY_INSURANCE
+
       default:
         break;
     }
@@ -186,8 +191,15 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
             }
             <SideDrawer
               drawerOpened={drawerOpened}
-              toggleSideDrawer={toggleSideDrawer} >
-              <PolicyCard isEdit={!!policyToEdit} id={policyToEdit} handleReload={handleReload} filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions} setPolicyToEdit={setPolicyToEdit} />
+              toggleSideDrawer={toggleSideDrawer}
+            >
+              <PolicyCard
+                id={policyToEdit}
+                isEdit={!!policyToEdit}
+                handleReload={handleReload}
+                setPolicyToEdit={setPolicyToEdit}
+                filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
+              />
             </SideDrawer>
           </>
         }

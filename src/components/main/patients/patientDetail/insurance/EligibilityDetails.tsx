@@ -1,19 +1,19 @@
 //packages import
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from "@material-ui/core";
 import { ChangeEvent, FC, useState } from "react";
-//constants, interfaces, utiles import
-import { CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE, OVERRIDE_PAYER_RETURNED_RESULT } from "../../../../../constants";
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from "@material-ui/core";
+//constants, interfaces, utils import
 import { GeneralFormProps } from "../../../../../interfacesTypes";
+import {
+  CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE, OVERRIDE_PAYER_RETURNED_RESULT
+} from "../../../../../constants";
 
 const EligibilityDetails: FC<GeneralFormProps> = () => {
   const [state, setState] = useState({ one: false, two: false, three: false })
 
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setState({ ...state, [name]: event.target.checked });
-  };
-  
+  ) => setState({ ...state, [name]: event.target.checked });
+
   return (
     <Box minWidth="100%" pt={3}>
       <Grid container spacing={3}>

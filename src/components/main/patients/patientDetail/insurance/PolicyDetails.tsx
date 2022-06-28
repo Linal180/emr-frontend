@@ -1,28 +1,29 @@
-//packages import
-import { Box, Button, Grid, Typography } from "@material-ui/core";
-import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
+// packages import
 import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-//components import
-import DatePicker from "../../../../common/DatePicker";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
+// components import
 import Selector from "../../../../common/Selector";
-import DoctorSelector from "../../../../common/Selector/DoctorSelector";
+import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
-//constants, types, interfaces, utils import
-import {
-  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION, EXPIRATION_DATE,
-  INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
-  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
-  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER, VALUE
-} from "../../../../../constants";
+import DoctorSelector from "../../../../common/Selector/DoctorSelector";
+// constants, types, interfaces, utils import
+import { formatValue, setRecord } from "../../../../../utils";
 import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
-import { formatValue, setRecord } from "../../../../../utils";
+import {
+  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION,
+  EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
+  MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER,
+  REFERRING_PROVIDER, REMOVE_COPAY_AMOUNT, VALUE
+} from "../../../../../constants";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { control } = useFormContext<InsuranceCreateInput>()
-
-  const { fields: copayFields, remove: removeCopayField, append: appendCopayField } = useFieldArray({ control: control, name: "copayFields" });
+  const { fields: copayFields, remove: removeCopayField, append: appendCopayField } =
+    useFieldArray({ control: control, name: "copayFields" });
 
   return (
     <Box minWidth="100%" pt={3}>
@@ -32,8 +33,10 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             addEmpty
             name="patientRelationship"
             label={PATIENT_RELATIONSHIP_TO_POLICY_HOLDER}
-            value={isEdit ? EMPTY_OPTION : setRecord(PolicyHolderRelationshipType.Self, formatValue(PolicyHolderRelationshipType.Self))}
             options={MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE}
+            value={isEdit ? EMPTY_OPTION :
+              setRecord(PolicyHolderRelationshipType.Self,
+                formatValue(PolicyHolderRelationshipType.Self))}
           />
         </Grid>
 
@@ -41,8 +44,8 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             isRequired
             fieldType="text"
-            info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
             controllerName="certificationNumber"
+            info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
             controllerLabel={MEMBER_ID_CERTIFICATE_NUMBER}
           />
         </Grid>
@@ -87,7 +90,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                       className="danger"
                     >
                       <RemoveCircleOutline />
-                      <Typography> Remove Copay Amount</Typography>
+                      <Typography>{REMOVE_COPAY_AMOUNT}</Typography>
                     </Button>
                   </Box>
                 </Grid>}
@@ -108,10 +111,10 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                   <Box >
                     <InputController
                       isRequired
-                      info={COPAY_AMOUNTS_TOOLTIP}
                       fieldType="number"
-                      controllerName={`copayFields.${index}.amount`}
                       controllerLabel={VALUE}
+                      info={COPAY_AMOUNTS_TOOLTIP}
+                      controllerName={`copayFields.${index}.amount`}
                       className="input-dollar-class custom-num-input"
                     />
                   </Box>
@@ -122,7 +125,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
           <Grid container justifyContent="flex-end">
             <Grid item md={12} sm={12} xs={12}>
-
               <Box pb={1}
                 onClick={() => appendCopayField(INITIAL_COPAY_VALUE)}
                 className="billing-box" display="flex" alignItems="center" justifyContent="flex-end"
@@ -130,7 +132,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 <AddCircleOutline color='inherit' />
                 <Typography>{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
               </Box>
-
             </Grid>
           </Grid>
         </Grid>
