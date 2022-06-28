@@ -1163,6 +1163,17 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
+    else if (values[property] instanceof File) {
+      const file = values[property];
+      const title = values[property]?.name;
+      const key = await userFormUploadImage(file, property, title, id);
+      if (key) {
+        arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
+      }
+      else {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
+      }
+    }
     else if (typeof values[property] === 'boolean') {
       arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }

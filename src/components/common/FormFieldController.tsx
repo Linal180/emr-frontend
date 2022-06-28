@@ -97,7 +97,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         return <ConsentForm />
 
       case FormBuilderApiSelector.TERMS_CONDITIONS:
-        return <TermsConditions item={item} />
+        return <TermsConditions item={item} dispatcher={dispatcher}
+          state={state} />
 
       default:
         return <Controller

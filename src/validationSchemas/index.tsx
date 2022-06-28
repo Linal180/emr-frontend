@@ -522,7 +522,15 @@ export const externalAppointmentSchema = yup.object({
   ...dobSchema,
   ...emailSchema,
   ...firstLastNameSchema,
+  serviceId: multiOptionSchema(APPOINTMENT)
+})
+
+export const externalSignatureAppointmentSchema = yup.object({
+  ...dobSchema,
+  ...emailSchema,
+  ...firstLastNameSchema,
   serviceId: multiOptionSchema(APPOINTMENT),
+  signature: yup.mixed().required()
 })
 
 export const externalPatientSchema = yup.object({
