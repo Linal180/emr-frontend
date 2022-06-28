@@ -354,7 +354,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 />
               </Box>
               <Box className='masonry-box'>
-                <EncounterList />
+                <EncounterList appointments={[]} />
               </Box>
             </Box>
           </TabPanel>

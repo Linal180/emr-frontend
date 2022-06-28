@@ -302,7 +302,7 @@ const PatientsTable: FC = (): JSX.Element => {
                         </Link>
                       </TableCell>
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
-                      <TableCell scope="row">{email}</TableCell>
+                    <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{dob && getTimestampsForDob(dob)}</TableCell>
                       <TableCell scope="row">

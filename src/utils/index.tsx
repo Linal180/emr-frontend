@@ -739,13 +739,14 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
-export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string) => {
-  if (!starTimestamp && !endTimestamp) return "";
+export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string): Number => {
+  if (!starTimestamp && !endTimestamp) return 0;
 
   var startTime = moment(new Date(parseInt(starTimestamp)));
   var endTime = moment(new Date(parseInt(endTimestamp)));
 
-  return endTime.diff(startTime, 'minutes');
+  const dateDifference = endTime.diff(startTime, 'minutes');
+  return Math.abs(dateDifference)
 };
 
 export const getDayFromTimestamps = (timestamp: string) => {
@@ -1031,9 +1032,11 @@ export const formatPermissionName = (name: string) => {
 }
 
 export const formatRoleName = (name: string): string => {
-  const text = name.split(/[-_\s]+/)
+  let formatted = ''
+  name.split(/[-_\s]+/).map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)[0].trim()
+   return formatted.trim();
 };
 
 export const parseColumnGrid = (col: number): GridSize => {
