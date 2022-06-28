@@ -2,14 +2,15 @@
 import moment from 'moment'
 import { useCallback, useEffect, useState, Fragment } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Box, colors, FormControl, FormHelperText, Typography } from '@material-ui/core'
+import { Box, colors, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 //components
 import ViewDataLoader from '../ViewDataLoader'
+import NoSlotsComponent from '../NoSlotsComponent'
 import AppointmentDatePicker from '../../main/publicAppointments/appointmentForm/AppointmentDatePicker'
 //constants, graphql, utils, styles, interfaces
-import { getCurrentTimestamps, getStandardTime, requiredMessage } from '../../../utils'
-import { AVAILABLE_SLOTS, DAYS, NO_SLOT_AVAILABLE, SLOTS_TEXT } from '../../../constants'
+import { AVAILABLE_SLOTS, DAYS, } from '../../../constants'
+import { getCurrentTimestamps, getStandardTime, } from '../../../utils'
 import { Slots, SlotsPayload, useGetSlotsLazyQuery } from '../../../generated/graphql'
 import { usePublicAppointmentStyles } from '../../../styles/publicAppointmentStyles'
 import { SlotsComponentProps } from '../../../interfacesTypes'
@@ -23,9 +24,8 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   const { id: providerId } = provider || {}
 
   const classes = usePublicAppointmentStyles()
-  const { setValue, getValues, watch } = useFormContext()
+  const { setValue, getValues } = useFormContext()
   const values = getValues()
-  const { scheduleStartDateTime } = watch()
 
   const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     fetchPolicy: "network-only",
@@ -114,17 +114,10 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
               </li>
             )
           }) : (
-            <Fragment>
-              <FormControl component="fieldset" margin="normal" error={Boolean(!scheduleStartDateTime)}>
-                <FormHelperText>{!scheduleStartDateTime && requiredMessage(SLOTS_TEXT)}</FormHelperText>
-              </FormControl>
-
-              <Typography>{NO_SLOT_AVAILABLE}</Typography>
-            </Fragment>
+            <NoSlotsComponent />
           )}
         </ul>
       )}
-
     </Fragment>
   )
 }

@@ -23,7 +23,7 @@ import {
 } from "../../../assets/svgs";
 import {
   ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
+  PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, RECENT_PRACTICES,
   TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
 } from "../../../constants";
 import { Link } from "react-router-dom";
@@ -44,7 +44,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Typography variant="h5">{PRACTICES}</Typography>
+              <Typography variant="h5">{RECENT_PRACTICES}</Typography>
 
               <Link to={PRACTICE_MANAGEMENT_ROUTE}>
                 <IconButton>

@@ -193,7 +193,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               ) : (
                 doctors?.map((doctor: DoctorPayload['doctor']) => {
                   const { id, firstName, lastName, speciality, contacts, facility, email } = doctor || {};
-                  const doctorContact = contacts && contacts[0];
+                  const doctorContact = contacts?.find(contact => contact.primaryContact);
                   const { phone } = doctorContact || {};
                   const { name } = facility || {};
 
