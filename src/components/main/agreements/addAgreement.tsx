@@ -137,8 +137,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   }, [findAgreement, id])
 
   const onSubmit: SubmitHandler<CreateAgreementFormProps> = async ({ title }) => {
-    const agreementInputs = isSuper ? { practiceId: '', facilityId: '' } :
-      isPrac ? { practiceId, facilityId: '' } :
+    const agreementInputs = isSuper ? { practiceId: null, facilityId: null } :
+      isPrac ? { practiceId, facilityId: null } :
         isFac ? { practiceId, facilityId } : undefined
     if (id) {
       if (withFile) {
@@ -248,17 +248,18 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                     {descriptionType === descriptionTypes[0] && !withFile && <Grid item md={12} sm={12} xs={12}>
                       <Typography>{AGREEMENT_BODY}</Typography>
                       <Box p={0.5} />
-                      {id && agreementBody?.length > 0 ?
+                      {id && agreementBody?.length &&
                         <CKEditor
                           name="agreementBody"
                           initData={agreementBody}
                           onChange={onEditorChange}
-                        /> : <CKEditor
-                          name="agreementBody"
-                          initData={agreementBody}
-                          onChange={onEditorChange}
-
                         />}
+
+                      {!id && <CKEditor
+                        name="agreementBody"
+                        initData={agreementBody}
+                        onChange={onEditorChange}
+                      />}
                       {!agreementBody.length ? <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography> : ''}
                     </Grid>}
 
