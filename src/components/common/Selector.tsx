@@ -3,9 +3,9 @@ import { FC, useRef } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 // utils and interfaces/types block
-import { renderLoading, requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
+import { renderLoading, requiredLabel } from "../../utils";
 import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@material-ui/core";
 
 const Selector: FC<SelectorProps> = ({
