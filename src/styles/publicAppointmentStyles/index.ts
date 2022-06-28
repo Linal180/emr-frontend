@@ -9,8 +9,8 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       margin: theme.spacing(0.5),
       backgroundColor: WHITE,
       minHeight: 100,
-      position: "sticky",
-      top: 100,
+      // position: "sticky",
+      // top: 100,
       zIndex: 1,
     },
 

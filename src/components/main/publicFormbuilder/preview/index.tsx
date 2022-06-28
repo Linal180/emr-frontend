@@ -188,6 +188,7 @@ const PublicFormPreview = () => {
                         {formName}
                       </Typography>
                     </Box>
+
                     <Box display={'flex'} justifyContent={'flex-end'}>
                       <Box marginX={2}>
                         <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
@@ -207,19 +208,20 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
                   </Box>
-                  {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"> */}
+
                   <Grid container spacing={3}>
                     <Grid item xs={2}>
                       <Stepper activeStep={activeStep} orientation="vertical">
                         {formValues?.map((tab, index) => {
                           const { name, id } = tab || {}
                           return <Step key={`${id}-${index}`}>
-                            <StepLabel>{name}</StepLabel>
+                            <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
                           </Step>
                         }
                         )}
                       </Stepper>
                     </Grid>
+
                     <Grid item xs={10}>
                       {formValues?.map((tab, index) => {
                         const { sections, name, id } = tab || {}
@@ -232,12 +234,13 @@ const PublicFormPreview = () => {
                       )}
                     </Grid>
                   </Grid>
-                  {/* </Box> */}
                 </form>
               </FormProvider>
-            </Box> :
+            </Box> 
+            :
             <Grid container>
               <Grid item xs={false} sm={false} md={4} />
+
               <Grid item xs={12} sm={12} md={4}>
                 <Card>
                   <Box minHeight="400px" display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -252,6 +255,7 @@ const PublicFormPreview = () => {
                   </Box>
                 </Card>
               </Grid>
+              
               <Grid item xs={false} sm={false} md={4} />
             </Grid>
           } </Fragment> :

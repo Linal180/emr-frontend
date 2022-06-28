@@ -923,6 +923,30 @@ input[type=number] {
   padding-bottom: 16px;
 }
 
+.align-center {
+  align-items: center !important;
+}
+
+/* form-builder */
+.formBuilder-stepLabel .MuiStepIcon-root {
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  border-radius: 50px;
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root  .MuiStepIcon-text {
+  fill: rgba(0, 0, 0, 0.38);
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root.MuiStepIcon-active {
+  color: #204ECF;
+  border: 1px solid #ffffff;
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root.MuiStepIcon-active .MuiStepIcon-text {
+  fill: #ffffff;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {
