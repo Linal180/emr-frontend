@@ -83,6 +83,9 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const FILE_REQUIRED = 'Please select at least one file'
+export const AGREEMENT_BODY_REQUIRED = 'Agreement Body is a required Field'
+export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
 export const CONTRACT_NO = 'Contract No';
