@@ -3,6 +3,17 @@ import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, GREY_THREE, theme, WHIT
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
+    main: {
+      padding: theme.spacing(3),
+      borderRadius: theme.spacing(1),
+      margin: theme.spacing(0.5),
+      backgroundColor: WHITE,
+      minHeight: 100,
+      position: "sticky",
+      top: 100,
+      zIndex: 1,
+    },
+
     changePasswordContainer: {
       display: 'flex',
       justifyContent: 'center',
