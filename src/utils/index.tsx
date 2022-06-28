@@ -739,13 +739,14 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
-export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string) => {
-  if (!starTimestamp && !endTimestamp) return "";
+export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string): Number => {
+  if (!starTimestamp && !endTimestamp) return 0;
 
   var startTime = moment(new Date(parseInt(starTimestamp)));
   var endTime = moment(new Date(parseInt(endTimestamp)));
 
-  return endTime.diff(startTime, 'minutes');
+  const dateDifference = endTime.diff(startTime, 'minutes');
+  return Math.abs(dateDifference)
 };
 
 export const getDayFromTimestamps = (timestamp: string) => {
