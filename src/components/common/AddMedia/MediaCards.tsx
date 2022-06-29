@@ -29,11 +29,11 @@ const MediaCards: FC<MediaCardsType> = ({
   const renderCard = (title: string, allAttachments: Attachment[]) => {
     return (
       <MediaCardComponent
-        notDescription={notDescription}
-        title={title}
-        button={button}
-        buttonText={buttonText}
-        imageSide={imageSide}
+      title={title}
+      button={button}
+      imageSide={imageSide}
+      buttonText={buttonText}
+      notDescription={notDescription}
         setOpen={(isOpen: boolean) => {
           dispatch({
             type: ActionType.SET_IS_OPEN,

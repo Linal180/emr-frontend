@@ -16,9 +16,9 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
   allAttachments, imageSide, notDescription, button, buttonText
 }): JSX.Element => {
+  const classes = documentVerificationFormStyles()
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
-  const classes = documentVerificationFormStyles()
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {

@@ -3,9 +3,9 @@ import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReduce
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Sort } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
+import { ChevronLeft, ChevronRight, Sort } from "@material-ui/icons";
 import {
   Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
@@ -24,7 +24,9 @@ import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../ass
 import history from "../../history";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../reducers/appointmentReducer";
+import {
+  Action, ActionType, appointmentReducer, initialState, State
+} from "../../reducers/appointmentReducer";
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
@@ -46,8 +48,9 @@ dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles();
-  const [selectdate, setSelectDate] = useState(new Date().toDateString())
+  const [selectDate, setSelectDate] = useState(new Date().toDateString())
   const { user, currentUser, userPermissions } = useContext(AuthContext)
+
   const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
   const isAdminUser = isUserAdmin(roles)
@@ -75,16 +78,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   };
 
   const getPreviousDate = () => {
-    // const currentDayInMilli = new Date(selectdate).getTime()
-    // const oneDay = 1000 * 60 * 60 * 24
-    // const previousDayInMilli = currentDayInMilli - oneDay
-    // const previousDate = new Date(previousDayInMilli)
-    const previousDate= moment(selectdate).subtract(1, 'day').format('MM-DD-YYYY')
+    const previousDate = moment(selectDate).subtract(1, 'day').format('MM-DD-YYYY')
     setDate(previousDate)
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectdate).add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate).add(1, 'day').format('MM-DD-YYYY')
     setDate(nextDate)
   }
 
@@ -213,13 +212,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           variables: {
             appointmentInput: {
               ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
-              appointmentTypeId: appointmentTypeId, sortBy: sortBy, appointmentDate: moment(selectdate).format('YYYY-MM-DD')
+              appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+              appointmentDate: moment(selectDate).format('YYYY-MM-DD')
             }
           },
         })
       }
     } catch (error) { }
-  }, [doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId, findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectdate])
+  }, [
+    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
+    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
+  ])
 
   useEffect(() => {
     fetchAppointments();
@@ -258,11 +261,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   };
 
   const handleCancelAppointment = async () => {
-    if (deleteAppointmentId) {
+    deleteAppointmentId &&
       await removeAppointment({
         variables: { removeAppointment: { id: deleteAppointmentId } }
       })
-    }
   };
 
   const search = (query: string) => {
@@ -297,7 +299,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             variables: {
               updateAppointmentInput: {
                 id, status: getAppointmentStatus(name) as AppointmentStatus,
-                ...(isCheckedInStatus && { checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') })
+                ...(isCheckedInStatus && {
+                  checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+                })
               }
             }
           })
@@ -380,14 +384,33 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     <Typography variant="body1" color="textPrimary">Date</Typography>
 
                     <Box className="date-box" display="flex" alignItems="center">
-                      <Button variant="outlined"  className="btn-icon" size="small" color="default" onClick={getPreviousDate}><ChevronLeft /></Button>
-                      <Box className="date-input-box" mx={1}>
-                        <Typography variant="h6">{selectdate}</Typography>
-                      </Box>
-                      <Button variant="outlined"  className="btn-icon" size="small" color="default" onClick={getNextDate}><ChevronRight /></Button>
-                      <Box ml={1} />
-                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getPreviousDate}
+                      >
+                        <ChevronLeft />
+                      </Button>
 
+                      <Box className="date-input-box" mx={1}>
+                        <Typography variant="h6">{selectDate}</Typography>
+                      </Box>
+
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getNextDate}
+                      >
+                        <ChevronRight />
+                      </Button>
+
+                      <Box ml={1} />
+
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
                     </Box>
                   </Box>
                 </Grid>
@@ -410,6 +433,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
+
             <TableBody>
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
@@ -440,6 +464,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         >
                           <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
                           <Box px={0.5} />
+
                           <Typography variant="body2">
                             ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
                           </Typography>
@@ -488,6 +513,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>}
                         </>}
                       </TableCell>
+
                       <TableCell scope="row">
                         {id && <Box className={classes.selectorBox}>
                           <Box p={0} className={classes.status} component='span' color={textColor}
@@ -499,6 +525,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           </Box>
                         </Box>}
                       </TableCell>
+
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           {
