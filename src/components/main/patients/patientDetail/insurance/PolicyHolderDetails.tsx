@@ -19,7 +19,7 @@ import {
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER,
 } from "../../../../../constants";
 
-const PolicyHolderDetails: FC<GeneralFormProps> = () => {
+const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
   const { id: patientId } = useParams<ParamsType>()
   const { watch, setValue, trigger } = useFormContext<InsuranceCreateInput>()
   const { patientRelationship } = watch()
@@ -63,8 +63,8 @@ const PolicyHolderDetails: FC<GeneralFormProps> = () => {
   }, [getPatient, patientRelationshipValue, setValue, trigger])
 
   useEffect(() => {
-    handlePolicyHolderSelfRelation()
-  }, [getPatient, handlePolicyHolderSelfRelation, patientRelationshipValue])
+    !isEdit && handlePolicyHolderSelfRelation()
+  }, [getPatient, handlePolicyHolderSelfRelation, isEdit, patientRelationshipValue])
 
   return (
     <Box minWidth="100%" pt={3}>
