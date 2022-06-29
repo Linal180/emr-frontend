@@ -34,8 +34,14 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
     onError({ message }) {
       Alert.error(message);
     },
-    async onCompleted() {
-      Alert.success(ATTACHMENT_DELETED);
+    async onCompleted(data) {
+      const { removeAttachmentData } = data || {}
+      const { response } = removeAttachmentData
+      const { status } = response || {}
+      if (status === 200) {
+        await fetchDocuments()
+        Alert.success(ATTACHMENT_DELETED);
+      }
     }
   })
 
