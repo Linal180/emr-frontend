@@ -133,6 +133,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           prefferedName && setValue("prefferedName", prefferedName)
           holdStatement && setValue("holdStatement", holdStatement)
           statementNote && setValue("statementNote", statementNote)
+          console.log('registrationDate', registrationDate)
           registrationDate && setValue("registrationDate", registrationDate)
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
@@ -340,6 +341,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedCountry } = basicCountry || {};
       const { id: selectedSexAtBirth } = sexAtBirth || {};
       const { id: selectedBasicState } = basicState || {};
+      const { id: selectedEmployerState } = employerState || {};
       const { id: selectedMaritalStatus } = maritialStatus || {};
       const { id: selectedGenderIdentity } = genderIdentity || {};
       const { id: selectedGuarantorState } = guarantorState || {};
@@ -349,7 +351,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedSexualOrientation } = sexualOrientation || {};
       const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
       const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
-      const { id: selectedEmployerState } = employerState || {};
 
       let practiceId = '';
       if (selectedFacility) {
@@ -363,8 +364,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
         { facilityId: selectedFacilityId, practiceId }
-
-
+console.log(">>>>>>>>>>>>>>>>>>", registrationDate)
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
@@ -379,7 +379,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
         statementDelivereOnline: statementDelivereOnline || false, dob: dob ? dob : '',
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
-        registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
+        registrationDate: registrationDate ? registrationDate : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
         usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,

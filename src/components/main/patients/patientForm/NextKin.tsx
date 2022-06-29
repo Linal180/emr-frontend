@@ -1,14 +1,16 @@
-//packages import
+// packages import
 import { Grid } from "@material-ui/core"
 import { FC } from "react"
-//constants and interface props
+// components import
+import Selector from "../../../common/Selector"
+import PhoneField from "../../../common/PhoneInput"
+import CardComponent from "../../../common/CardComponent"
+// constants and interface props
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
-import { HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP } from "../../../../constants"
-//components import
-import PhoneField from "../../../common/PhoneInput"
-import Selector from "../../../common/Selector"
-import CardComponent from "../../../common/CardComponent"
+import {
+  HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP
+} from "../../../../constants"
 
 const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
   return (
@@ -39,7 +41,12 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
         <Grid item md={3} sm={12} xs={12}>
           <PhoneField name="kinPhone" label={HOME_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
         </Grid>
-
+        <PhoneField
+                  name="basicPhone"
+                  label={MOBILE_PHONE}
+                  disabled={shouldDisableEdit}
+                  loading={getPatientLoading}
+                />
         <Grid item md={3} sm={12} xs={12}>
           <PhoneField name="kinMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
         </Grid>
