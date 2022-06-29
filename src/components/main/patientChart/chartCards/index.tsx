@@ -26,7 +26,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
       <Box mt={3}>
         <TabContext value={tabValue}>
           <Grid container spacing={3}>
-            <Grid item md={2} sm={4} xs={12}>
+            <Grid item lg={2} md={3} sm={12} xs={12}>
               <Card>
                 <Box p={3} className={classes.cardBox} minHeight={450}>
                   <TabList className={classes.tabList} orientation='vertical' onChange={handleChange} aria-label="communication tabs">
@@ -40,7 +40,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
               </Card>
             </Grid>
 
-            <Grid item md={10} sm={8} xs={12}>
+            <Grid item lg={10} md={9} sm={12} xs={12}>
               <TabPanel value="1" className='tab-panel'>
                 <VitalTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
