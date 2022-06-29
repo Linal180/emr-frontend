@@ -239,7 +239,7 @@ export const getCurrentTimestamps = (existingDate: string, newDate: string | und
 };
 
 export const getTimestampsForDob = (date: string): string => {
-  return date ? moment(date, "MM-DD-YYYY").format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
+  return date ? moment(date).format("MM-DD-YYYY") : moment().format("MM-DD-YYYY")
 };
 
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
