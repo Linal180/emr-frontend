@@ -142,7 +142,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
           } = appointment || {}
 
           if (status === AppointmentStatus.Cancelled) {
@@ -191,7 +191,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
           scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
           scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
-
+          appointmentCreateType && setAppointmentType(appointmentCreateType)
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
