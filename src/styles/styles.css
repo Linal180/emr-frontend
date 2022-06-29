@@ -878,7 +878,12 @@ input::-webkit-inner-spin-button {
 
 .vitals-column .MuiTypography-h5 {
   line-height: 1.43 !important;
+  white-space: normal;
 }
+
+ .patient-add-form .MuiInputLabel-formControl{
+   position: relative;
+ }
 
 .copay-type-value {
   position: relative;
@@ -1005,4 +1010,9 @@ input[type=number] {
     top: 0;
     margin-bottom: 0.875rem;
   }
+  .profile-hero-patient{
+    flex-direction: column;
+  }
 }
+
+ 
