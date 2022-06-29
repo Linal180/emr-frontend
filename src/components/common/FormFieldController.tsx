@@ -3,22 +3,23 @@ import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 //interfaces, styles, constants
-import { FieldComponentProps } from '../../interfacesTypes';
-import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
+import { useFormStyles } from '../../styles/formsStyles';
+import { FieldComponentProps } from '../../interfacesTypes';
 import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
-import ServiceSelector from './formBuilder/ServiceSelector';
+import PaymentForm from './formBuilder/PaymentForm'
+import ConsentForm from './formBuilder/ConsentForm';
+import ContractForm from "./formBuilder/ContractForm"
+import InsuranceForm from './formBuilder/InsuranceForm'
+import DocumentsForm from './formBuilder/DocumentsForm'
 import SlotsComponent from './formBuilder/SlotsComponent'
 import ProviderSelector from './formBuilder/DoctorSelector'
 import PaymentSelector from './formBuilder/PaymentSelector'
-import FacilitySelector from './formBuilder/FacilitySelector';
-import ConsentForm from './formBuilder/ConsentForm';
+import ServiceSelector from './formBuilder/ServiceSelector';
 import TermsConditions from './formBuilder/TermsConditions';
-import ContractForm from "./formBuilder/ContractForm"
-import InsuranceForm from './formBuilder/InsuranceForm'
-import PaymentForm from './formBuilder/PaymentForm'
+import FacilitySelector from './formBuilder/FacilitySelector';
 //graphql 
 import { ElementType } from '../../generated/graphql';
 //field renderer component
@@ -82,6 +83,17 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           addEmpty
         />
 
+      case FormBuilderApiSelector.DRIVING_LICENSE:
+        return <DocumentsForm
+          item={item}
+          dispatcher={dispatcher}
+          state={state} />
+
+      case FormBuilderApiSelector.INSURANCE_CARD:
+        return <DocumentsForm
+          item={item}
+          dispatcher={dispatcher} state={state} />
+
       case FormBuilderApiSelector.PAYMENT_TYPE:
         return <>
           <PaymentSelector item={item} dispatcher={dispatcher} />
@@ -90,8 +102,6 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
             {getPaymentComponent(paymentType || '')}
           </Box>
         </>
-
-
 
       case FormBuilderApiSelector.PATIENT_CONSENT:
         return <ConsentForm />

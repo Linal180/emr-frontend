@@ -110,8 +110,6 @@ const AddForm = () => {
             practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
             const { tabs } = layout
             tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
-            // const facilityName = facilityId && getFacilityNameHandler(facilityId)
-            // if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
       }

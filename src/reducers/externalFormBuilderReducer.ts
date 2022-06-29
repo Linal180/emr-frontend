@@ -1,5 +1,5 @@
 import { getFormInitialValues } from "../constants";
-import { FormType, FormTabsInputs, AgreementsPayload } from "../generated/graphql";
+import { FormType, FormTabsInputs, AgreementsPayload, Attachment } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -20,7 +20,12 @@ export interface State {
   provider: SelectorOption;
   isSignature: boolean;
   agreements: AgreementsPayload['agreements'];
-  signatureLoader: boolean
+  signatureLoader: boolean;
+  patientId: string;
+  insuranceCard1: Attachment | undefined
+  insuranceCard2: Attachment | undefined
+  drivingLicense1: Attachment | undefined
+  drivingLicense2: Attachment | undefined
 }
 
 export const initialState: State = {
@@ -44,7 +49,12 @@ export const initialState: State = {
   },
   isSignature: false,
   agreements: [],
-  signatureLoader: false
+  signatureLoader: false,
+  patientId: "",
+  insuranceCard1: undefined,
+  insuranceCard2: undefined,
+  drivingLicense1: undefined,
+  drivingLicense2: undefined,
 }
 
 export enum ActionType {
@@ -65,7 +75,12 @@ export enum ActionType {
   SET_PROVIDER = 'setProvider',
   SET_AGREEMENTS = 'setAgreements',
   SET_SIGNATURE = 'setSignature',
-  SET_SIGNATURE_LOADER = 'setSignatureLoader'
+  SET_SIGNATURE_LOADER = 'setSignatureLoader',
+  SET_PATIENT_ID = 'patientId',
+  SET_INSURANCE_CARD_1 = 'SET_INSURANCE_CARD_1',
+  SET_INSURANCE_CARD_2 = 'SET_INSURANCE_CARD_2',
+  SET_DRIVING_LICENSE_1 = 'SET_DRIVING_LICENSE_1',
+  SET_DRIVING_LICENSE_2 = 'SET_DRIVING_LICENSE_2'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
@@ -85,7 +100,12 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_PROVIDER, provider: SelectorOption } |
 { type: ActionType.SET_AGREEMENTS; agreements: AgreementsPayload['agreements'] } |
 { type: ActionType.SET_SIGNATURE; isSignature: boolean } |
-{ type: ActionType.SET_SIGNATURE_LOADER; signatureLoader: boolean }
+{ type: ActionType.SET_SIGNATURE_LOADER; signatureLoader: boolean } |
+{ type: ActionType.SET_PATIENT_ID; patientId: string }
+  | { type: ActionType.SET_INSURANCE_CARD_1; insuranceCard1: Attachment | undefined }
+  | { type: ActionType.SET_INSURANCE_CARD_2; insuranceCard2: Attachment | undefined }
+  | { type: ActionType.SET_DRIVING_LICENSE_1; drivingLicense1: Attachment | undefined }
+  | { type: ActionType.SET_DRIVING_LICENSE_2; drivingLicense2: Attachment | undefined }
 
 export const externalFormBuilderReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -195,6 +215,36 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
       return {
         ...state,
         signatureLoader: action.signatureLoader
+      }
+
+    case ActionType.SET_PATIENT_ID:
+      return {
+        ...state,
+        patientId: action.patientId
+      }
+
+    case ActionType.SET_DRIVING_LICENSE_1:
+      return {
+        ...state,
+        drivingLicense1: action.drivingLicense1
+      }
+
+    case ActionType.SET_DRIVING_LICENSE_2:
+      return {
+        ...state,
+        drivingLicense2: action.drivingLicense2
+      }
+
+    case ActionType.SET_INSURANCE_CARD_1:
+      return {
+        ...state,
+        insuranceCard1: action.insuranceCard1
+      }
+
+    case ActionType.SET_INSURANCE_CARD_2:
+      return {
+        ...state,
+        insuranceCard2: action.insuranceCard2
       }
   }
 }
