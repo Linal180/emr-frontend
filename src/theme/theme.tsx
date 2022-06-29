@@ -367,6 +367,8 @@ export const theme = createTheme({
 
       formControl: {
         top: -24,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
 
         [breakpoints.between(1280, 1441)]: {
           top: -30,
@@ -604,6 +606,8 @@ export const theme = createTheme({
 
     MuiFormLabel: {
       root: {
+        lineHeight: 'inherit !important',
+
         "&.Mui-focused": {
           color: GRAY_THREE
         }

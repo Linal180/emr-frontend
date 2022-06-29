@@ -77,7 +77,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
               dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
             } = doctor
-
             const { id: facilityId, name } = facility || {}
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
@@ -109,7 +108,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             degreeCredentials && setValue('degreeCredentials', degreeCredentials)
             speciality && setValue('speciality', setRecord(speciality, speciality))
             licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
-            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name, false))
             licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
