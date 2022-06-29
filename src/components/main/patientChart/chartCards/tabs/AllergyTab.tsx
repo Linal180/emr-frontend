@@ -3,12 +3,12 @@ import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, SEVERITY, STATUS } from "../../../../../constants";
+import { ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, INACTIVE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, SEVERITY, STATUS } from "../../../../../constants";
 import { Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN } from "../../../../../theme";
+import { GREEN, RED, WHITE } from "../../../../../theme";
 import { formatValue, getFormatDateString, getSeverityColor, renderTh } from "../../../../../utils";
 import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
@@ -161,6 +161,8 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                     <TableBody>
                       {patientAllergies?.map((patientAllergy) => {
                         const { allergySeverity, allergyStartDate, allergy, comments, isActive, id } = patientAllergy ?? {}
+                        const ActiveStatus = isActive ? ACTIVE : INACTIVE;
+                        const StatusColor = isActive ? GREEN : RED
                         return (
                           <TableRow>
                             <TableCell scope="row">
@@ -182,23 +184,23 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                             </TableCell>
 
                             <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={GREEN}>
-                                {isActive ? 'Active' : 'Deactive'}
+                            <Box className={classes.activeBox}  color={WHITE} bgcolor={StatusColor}>
+                                {ActiveStatus}
                               </Box>
                             </TableCell>
 
                             {
                               !shouldDisableEdit && <TableCell scope="row">
-                              <Box display='flex' alignItems='center'>
-                                <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
-                                  <EditOutlinedIcon />
-                                </IconButton>
+                                <Box display='flex' alignItems='center'>
+                                  <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
+                                    <EditOutlinedIcon />
+                                  </IconButton>
 
-                                <IconButton onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
+                                  <IconButton onClick={() => id && onDeleteClick(id)}>
+                                    <TrashOutlinedSmallIcon />
+                                  </IconButton>
+                                </Box>
+                              </TableCell>
                             }
                           </TableRow>
                         )
