@@ -131,7 +131,7 @@ const HeaderNew: FC = (): JSX.Element => {
                     <Typography variant="h6">{firstName} {lastName}</Typography>
 
                     <Box className={classes.roleName}>
-                      <Typography variant="body1">{roleName}</Typography>
+                      <Typography variant="body1" className="text-overflow w-200">{roleName}</Typography>
                     </Box>
                   </>
                 )}

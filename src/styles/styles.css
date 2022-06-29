@@ -978,6 +978,16 @@ input[type=number] {
   align-items: center;
 }
 
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w-200 {
+  width: 200px;
+}
+
 /* media queries */
 @media(max-width : 768px) {
   .facility-registration-form {

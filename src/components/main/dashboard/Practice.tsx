@@ -162,63 +162,47 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box className={classes.cardContainer}>
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
-                        <ViewIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
+                  <ViewIcon />
 
-                        <Box p={0.7} />
+                  <Box p={0.7} />
 
-                        <Typography variant="h6">{VIEW_FACILITIES}</Typography>
-                      </Box>
-                    </Grid>
+                  <Typography variant="h6">{VIEW_FACILITIES}</Typography>
+                </Box>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(PATIENTS_ROUTE)}>
-                        <PatientsIcon />
+                <Box className={classes.cardBox} onClick={() => history.push(PATIENTS_ROUTE)}>
+                  <PatientsIcon />
 
-                        <Box p={0.2} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{VIEW_PATIENTS}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                  <Typography variant="h6">{VIEW_PATIENTS}</Typography>
+                </Box>
+              </Box>
 
               <Box p={1} />
 
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
-                        <ActionIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
+                  <ActionIcon />
 
-                        <Box p={0.7} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{PRACTICE_DETAILS_TEXT}</Typography>
-                      </Box>
-                    </Grid>
+                  <Typography variant="h6">{PRACTICE_DETAILS_TEXT}</Typography>
+                </Box>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
-                        <LockIcon />
+                <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
+                  <LockIcon />
 
-                        <Box p={0.2} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                  <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>
+                </Box>
+              </Box>
             </Box>
           </Card>
         </Grid>
