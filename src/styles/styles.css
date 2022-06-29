@@ -981,6 +981,12 @@ input[type=number] {
 }
 
 /* media queries */
+@media(max-width : 960px) {
+  .appointment-action-btn{
+     flex-direction: column;
+  }
+}
+
 @media(max-width : 768px) {
   .facility-registration-form {
     flex-direction: column;

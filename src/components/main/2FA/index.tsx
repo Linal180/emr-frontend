@@ -1,6 +1,6 @@
 // packages block
-import { Link } from 'react-router-dom';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // component block
 import Alert from '../../common/Alert';
@@ -9,27 +9,30 @@ import CardComponent from '../../common/CardComponent';
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 import { Box, Button, CircularProgress, FormControl, Grid, IconButton, Typography, } from '@material-ui/core';
 // constants, history, styling block
-import { InfoSearchIcon } from '../../../assets/svgs';
-import { GRAY_THREE, RED, WHITE } from '../../../theme';
-import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-import {
-  TWO_FA_AUTHENTICATION, DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED,
-  NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE, TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION,
-} from '../../../constants';
 import { AuthContext } from '../../../context';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { twoFAValidationSchema } from '../../../validationSchemas';
+import { InfoSearchIcon } from '../../../assets/svgs';
+import { GRAY_THREE, RED, WHITE } from '../../../theme';
 import { TwoFactorInputProps } from '../../../interfacesTypes';
+import { twoFAValidationSchema } from '../../../validationSchemas';
+import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import { useUpdate2FactorAuthMutation } from '../../../generated/graphql';
 import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatientStyles';
+import {
+  TWO_FA_AUTHENTICATION, DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD,
+  TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE,
+  TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION,
+} from '../../../constants';
 
 const TwoFAComponent = (): JSX.Element => {
   const { user, currentDoctor, currentStaff, fetchUser } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
   const { contacts } = currentDoctor || {}
+
   const { phone: doctorPhone } = contacts?.find(({ primaryContact }) => primaryContact) || {}
   const { phone: staffPhone } = currentStaff || {}
   const classes = useHeaderStyles();
+
   const [isChecked, setIsChecked] = useState<boolean>(userTwoFactor as boolean);
   const methods = useForm<TwoFactorInputProps>({
     mode: "all", defaultValues: {
@@ -40,10 +43,7 @@ const TwoFAComponent = (): JSX.Element => {
 
   const [faEnabled, { loading }] = useUpdate2FactorAuthMutation({
     onError({ message }) {
-      message === NOT_FOUND_EXCEPTION ?
-        Alert.error(VALID_PASSWORD_MESSAGE)
-        :
-        Alert.error(message)
+      Alert.error(message === NOT_FOUND_EXCEPTION ? VALID_PASSWORD_MESSAGE : message)
     },
 
     async onCompleted(data) {
@@ -54,12 +54,10 @@ const TwoFAComponent = (): JSX.Element => {
           const { status } = response
 
           if (status === 200) {
-            if (isChecked) {
+            isChecked ?
               Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
-            }
-            else
-              Alert.success(TWO_FA_DISABLED_SUCCESSFULLY)
-            await fetchUser()
+              : Alert.success(TWO_FA_DISABLED_SUCCESSFULLY)
+            fetchUser()
           }
         }
       }
@@ -95,11 +93,14 @@ const TwoFAComponent = (): JSX.Element => {
       <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
         <Box p={2} mb={2}>
           {!(phone || doctorPhone || staffPhone) &&
-            <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} mb={1} borderRadius={5}>
+            <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between'
+              px={2} py={1} mb={1} borderRadius={5}
+            >
               <Box display="flex" alignItems='center'>
                 <IconButton size="small" color='inherit' className={classes.iconPadding}>
                   <InfoSearchIcon />
                 </IconButton>
+
                 <Typography variant='h4'>
                   {ADD_PHONE_NUM_DESCRIPTION}
                 </Typography>
@@ -126,7 +127,9 @@ const TwoFAComponent = (): JSX.Element => {
                       <FormControl fullWidth className={classes.toggleContainer}>
                         <label className="toggle-main">
                           <Box color={isChecked ? WHITE : GRAY_THREE} pr={1}>{ENABLED}</Box>
-                          <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
+                          <AntSwitch checked={isChecked}
+                            onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled'
+                          />
                           <Box color={isChecked ? GRAY_THREE : WHITE}>{DISABLED}</Box>
                         </label>
                       </FormControl>
@@ -139,17 +142,20 @@ const TwoFAComponent = (): JSX.Element => {
 
               <Grid md={6} spacing={3}>
                 <InputController
+                  isPassword
                   fieldType="password"
                   controllerName="password"
-                  isPassword={true}
                   controllerLabel={ENTER_PASSWORD}
                 />
               </Grid>
 
               <Box p={1} />
 
-              <Button type="submit" variant="contained" color='primary' disabled={!(phone || doctorPhone || staffPhone)}>
+              <Button type="submit" variant="contained" color='primary'
+                disabled={!(phone || doctorPhone || staffPhone)}
+              >
                 {SAVE_TEXT}
+
                 {loading && <CircularProgress size={20} color="inherit" />}
               </Button>
             </form>
