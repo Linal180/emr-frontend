@@ -1597,12 +1597,9 @@ export interface DoctorProfileHeroProps {
 }
 
 export interface VitalListingTableProps {
-  patientVitals: PatientVitalsPayload['patientVitals'];
   patientStates: PatientState;
-  setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
   shouldDisableEdit?: boolean
-  setVitalToEdit?: Function
-  setOpen?: Function
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface VitalFormInput {
@@ -1625,9 +1622,7 @@ export interface AddPatientVitalsProps extends GeneralFormProps {
   fetchPatientAllVitals: Function;
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
-  isOpen?: boolean
   handleClose?: () => void
-  vitalToEdit?: PatientVitalPayload['patientVital']
 }
 
 export interface PatientVitalsListingProps {

@@ -2,9 +2,8 @@ import { usStreet } from "smartystreets-javascript-sdk";
 import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
-  AppointmentPayload,
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
-  TempUnitType, UnitType, WeightType
+  PatientVitalPayload, PatientVitalsPayload, TempUnitType, UnitType, WeightType, AppointmentPayload
 } from "../generated/graphql"
 
 export interface State {
@@ -71,7 +70,12 @@ export interface State {
   doctorId: string;
   isEdit: boolean;
   nextAppointment: AppointmentPayload['appointment'],
-  lastAppointment: AppointmentPayload['appointment']
+  lastAppointment: AppointmentPayload['appointment'],
+  openVital: boolean,
+  vitalPage: number,
+  vitalTotalPages: number,
+  vitalToEdit: PatientVitalPayload['patientVital'],
+  patientVitals: PatientVitalsPayload['patientVitals'],
 }
 
 export const initialState: State = {
@@ -138,7 +142,12 @@ export const initialState: State = {
   doctorId: 'string',
   isEdit: false,
   nextAppointment: undefined,
-  lastAppointment: undefined
+  lastAppointment: undefined,
+  openVital: false,
+  vitalPage: 1,
+  vitalTotalPages: 0,
+  vitalToEdit: null,
+  patientVitals: [],
 }
 
 export enum ActionType {
@@ -204,6 +213,11 @@ export enum ActionType {
   SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
   SET_HEAD_CIRCUMFERENCE_UNIT = 'setHeadCircumferenceUnit',
   SET_MEDICATION_HISTORY_AUTHORITY = 'setMedicationHistoryAuthority',
+  SET_OPEN_VITAL = 'setOpenVital',
+  SET_VITAL_PAGE = 'setVitalPage',
+  SET_VITAL_TOTAL_PAGES = 'setVitalTotalPages',
+  SET_VITAL_TO_EDIT = 'setVitalToEdit',
+  SET_PATIENT_VITALS = 'setPatientVitals',
 }
 
 export type Action =
@@ -269,6 +283,11 @@ export type Action =
   | { type: ActionType.SET_NEXT_APPOINTMENT, nextAppointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: PatientProviderPayload['providers'] }
   | { type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT; headCircumferenceUnit: { id: HeadCircumferenceType, name: string } }
+  | { type: ActionType.SET_OPEN_VITAL; openVital: boolean }
+  | { type: ActionType.SET_VITAL_PAGE; vitalPage: number }
+  | { type: ActionType.SET_VITAL_TOTAL_PAGES; vitalTotalPages: number }
+  | { type: ActionType.SET_VITAL_TO_EDIT; vitalToEdit: PatientVitalPayload['patientVital'] }
+  | { type: ActionType.SET_PATIENT_VITALS; patientVitals: PatientVitalsPayload['patientVitals'] }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -641,6 +660,36 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         lastAppointment: action.lastAppointment
+      }
+
+    case ActionType.SET_OPEN_VITAL:
+      return {
+        ...state,
+        openVital: action.openVital
+      }
+
+    case ActionType.SET_VITAL_PAGE:
+      return {
+        ...state,
+        vitalPage: action.vitalPage
+      }
+
+    case ActionType.SET_VITAL_TOTAL_PAGES:
+      return {
+        ...state,
+        vitalTotalPages: action.vitalTotalPages
+      }
+
+    case ActionType.SET_VITAL_TO_EDIT:
+      return {
+        ...state,
+        vitalToEdit: action.vitalToEdit
+      }
+
+    case ActionType.SET_PATIENT_VITALS:
+      return {
+        ...state,
+        patientVitals: action.patientVitals
       }
   }
 };
