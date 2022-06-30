@@ -2,15 +2,15 @@ import {
   Box, Button, Card, Grid, Typography
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 //constants, interfaces, utils
 import { AddWhiteIcon } from "../../../../../assets/svgs";
 import { ADD_NEW_TEXT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
-import { PatientVitalPayload, PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
+import {  PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
-import { Action, initialState, patientReducer, State } from "../../../../../reducers/patientReducer";
+import { Action, initialState, patientReducer, State, ActionType } from "../../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { usePatientVitalListingStyles } from "../../../../../styles/patientVitalsStyles";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -23,22 +23,18 @@ import { VitalListingTable } from "../../vitalsCard/listing/lists";
 const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const vitalClasses = usePatientVitalListingStyles()
-  const [open, setOpen] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
-  const [vitalToEdit, setVitalToEdit] = useState<PatientVitalPayload['patientVital']>(null);
-  const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
   const [patientStates, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const { openVital, vitalPage, vitalTotalPages, vitalToEdit, patientVitals } = patientStates || {}
 
   const { id } = useParams<ParamsType>()
 
   const handleClose = () => {
-    setVitalToEdit(null)
-    setOpen(false)
+    dispatch({ type: ActionType.SET_VITAL_TO_EDIT, vitalToEdit: null })
+    dispatch({ type: ActionType.SET_OPEN_VITAL, openVital: false })
   };
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) => {
-    setPage(page)
+    dispatch({ type: ActionType.SET_VITAL_PAGE, vitalPage: page })
   }
 
 
@@ -51,7 +47,7 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     fetchPolicy: "network-only",
 
     onError() {
-      setPatientVitals([])
+      dispatch({ type: ActionType.SET_PATIENT_VITALS, patientVitals: [] })
     },
 
     onCompleted(data) {
@@ -71,13 +67,14 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 }
                 return 0
               })
-              sortedVitals?.length > 0 && setPatientVitals(sortedVitals as PatientVitalsPayload['patientVitals'])
+
+              sortedVitals?.length > 0 && dispatch({ type: ActionType.SET_PATIENT_VITALS, patientVitals: sortedVitals as PatientVitalsPayload['patientVitals'] })
             }
           }
 
           if (pagination) {
             const { totalPages } = pagination
-            typeof totalPages === 'number' && setTotalPages(totalPages)
+            typeof totalPages === 'number' && dispatch({ type: ActionType.SET_VITAL_TOTAL_PAGES, vitalTotalPages: totalPages })
           }
         }
       }
@@ -88,11 +85,11 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await getPatientVitals({
         variables: {
-          patientVitalInput: { patientId: id, paginationOptions: { page, limit: VITAL_LIST_PAGE_LIMIT } }
+          patientVitalInput: { patientId: id, paginationOptions: { page: vitalPage, limit: VITAL_LIST_PAGE_LIMIT } }
         },
       })
     } catch (error) { }
-  }, [getPatientVitals, id, page])
+  }, [getPatientVitals, id, vitalPage])
 
   useEffect(() => {
     id && fetchPatientAllVitals()
@@ -111,49 +108,12 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                       <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant='h3'>{VITALS_TEXT}</Typography>
 
-                        {!shouldDisableEdit && <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
-                            <AddWhiteIcon />
-                            <Box p={0.5} />
-                            {ADD_NEW_TEXT}
-                          </Button>}
+                        {!shouldDisableEdit && <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_VITAL, openVital: true })} variant='contained' color='primary'>
+                          <AddWhiteIcon />
+                          <Box p={0.5} />
+                          {ADD_NEW_TEXT}
+                        </Button>}
                       </Box>
-                      {/* <Box px={2} pt={2} pb={2} display="flex" justifyContent="flex-end" alignItems="center">
-                       <Box display="flex" alignItems="center">
-                          <Box className={classes.tableHeaderDropdown}>
-                            <Selector
-                              name="units"
-                              label={''}
-                              value={EMPTY_OPTION}
-                            />
-                          </Box>
-
-                          <Box p={2} />
-
-                          <Box className={classes.tableHeaderDropdown}>
-                            <Selector
-                              name="results"
-                              label={''}
-                              value={EMPTY_OPTION}
-                            />
-                          </Box>
-                        </Box> 
-
-                        <Box display="flex" alignItems="center">
-                           <Button variant='contained' color='secondary'>
-                            <PrinterWhiteIcon />
-                            <Box p={0.5} />
-                            {PRINT_CHART}
-                          </Button> 
-
-                          <Box p={1} />
-
-                          {!shouldDisableEdit && <Button onClick={() => setOpen(true)} variant='contained' color='primary'>
-                            <AddWhiteIcon />
-                            <Box p={0.5} />
-                            {ADD_NEW_TEXT}
-                          </Button>}
-                        </Box>
-                      </Box> */}
                     </form>
                   </FormProvider>
 
@@ -169,11 +129,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           {!patientVitals?.length ?
                             <NoDataFoundComponent /> :
                             <VitalListingTable
-                              patientVitals={patientVitals}
+                              dispatcher={dispatch}
                               patientStates={patientStates}
-                              setPatientVitals={setPatientVitals}
-                              setVitalToEdit={setVitalToEdit}
-                              setOpen={setOpen}
                               shouldDisableEdit={shouldDisableEdit}
                             />}
                         </Box>
@@ -184,24 +141,22 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             }
           </Card>
 
-          {open && <AddVitals
+          {openVital && <AddVitals
             dispatcher={dispatch}
             fetchPatientAllVitals={fetchPatientAllVitals}
             patientStates={patientStates}
             handleClose={handleClose}
-            isOpen={open}
-            vitalToEdit={vitalToEdit}
             isEdit={!!vitalToEdit}
           />}
         </Grid>
       </Grid>
-      {totalPages > 1 && (
+      {vitalTotalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" mt={1}>
           <Pagination
-            count={totalPages}
+            count={vitalTotalPages}
             shape="rounded"
             variant="outlined"
-            page={page}
+            page={vitalPage}
             onChange={handleChange}
           />
         </Box>

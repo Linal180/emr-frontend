@@ -991,8 +991,16 @@ input[type=number] {
   text-overflow: ellipsis;
 }
 
-.w-200 {
-  width: 200px;
+.max-width-200 {
+  max-width: 200px !important;
+}
+
+.schedule-modal .MuiDialog-paper{
+    overflow-y: inherit;
+}
+
+.cke_path{
+  display: none !important;
 }
 
 /* media queries */
@@ -1021,6 +1029,16 @@ input[type=number] {
 
   .profile-hero-patient{
     flex-direction: column;
+  }
+}
+
+@media(max-width : 572px) {
+  .page-hero-box{
+    flex-direction: column;
+  }
+
+  .breadcrumb-list{
+    margin-bottom: 10px;
   }
 }
 

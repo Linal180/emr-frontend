@@ -564,8 +564,8 @@ export interface PreSignedUrlInterface {
 
 export type ExtendedStaffInputProps = Omit<
   CreateStaffItemInput,
-  "facilityId" | "roleType" | "gender"
-> & { facilityId: SelectorOption } & { roleType: SelectorOption } & {
+  "facilityId" | "roleType" | "gender" | "practiceId"
+> & { facilityId: SelectorOption } & { practiceId: SelectorOption } & { roleType: SelectorOption } & {
   gender: SelectorOption;
 } & { providerIds: SelectorOption };
 
@@ -1554,6 +1554,12 @@ export interface PatientSearchInputProps {
   provider: SelectorOption;
 }
 
+export interface DoctorSearchInputProps {
+  speciality: SelectorOption
+  facilityId: SelectorOption
+}
+
+
 export type TwoFactorInputProps = Omit<TwoFactorInput, "userId">;
 
 export type VerifyCodeInputProps = Omit<VerifyCodeInput, "id">;
@@ -1597,12 +1603,9 @@ export interface DoctorProfileHeroProps {
 }
 
 export interface VitalListingTableProps {
-  patientVitals: PatientVitalsPayload['patientVitals'];
   patientStates: PatientState;
-  setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
   shouldDisableEdit?: boolean
-  setVitalToEdit?: Function
-  setOpen?: Function
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface VitalFormInput {
@@ -1625,9 +1628,7 @@ export interface AddPatientVitalsProps extends GeneralFormProps {
   fetchPatientAllVitals: Function;
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
-  isOpen?: boolean
   handleClose?: () => void
-  vitalToEdit?: PatientVitalPayload['patientVital']
 }
 
 export interface PatientVitalsListingProps {

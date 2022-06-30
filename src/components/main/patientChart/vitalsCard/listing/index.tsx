@@ -1,6 +1,6 @@
 // packages block
 import { useParams } from 'react-router';
-import { Fragment, useState, useEffect, useCallback } from 'react';
+import { Fragment, useEffect, useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core'
 //component block
 import { AddVitals } from '../add';
@@ -12,9 +12,9 @@ import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from '../../..
 import { ParamsType, PatientVitalsListingProps } from '../../../../../interfacesTypes';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { usePatientVitalListingStyles } from '../../../../../styles/patientVitalsStyles';
+import { ActionType } from '../../../../../reducers/patientReducer';
 
 const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: PatientVitalsListingProps) => {
-  const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
 
   const classes = usePatientVitalListingStyles()
   const { id } = useParams<ParamsType>()
@@ -27,7 +27,8 @@ const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: 
     fetchPolicy: "network-only",
 
     onError() {
-      setPatientVitals([])
+      dispatcher({ type: ActionType.SET_PATIENT_VITALS, patientVitals: [] })
+
     },
 
     onCompleted(data) {
@@ -47,7 +48,7 @@ const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: 
                 }
                 return 0
               })
-              sortedVitals?.length > 0 && setPatientVitals(sortedVitals as PatientVitalsPayload['patientVitals'])
+              sortedVitals?.length > 0 && dispatcher({ type: ActionType.SET_PATIENT_VITALS, patientVitals: sortedVitals as PatientVitalsPayload['patientVitals'] })
             }
           }
         }
@@ -81,7 +82,7 @@ const PatientVitalsListing = ({ patientStates, dispatcher, shouldDisableEdit }: 
 
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
-                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} shouldDisableEdit={shouldDisableEdit} />
+                <VitalListingTable dispatcher={dispatcher} patientStates={patientStates} shouldDisableEdit={shouldDisableEdit} />
               </Box>
             </Grid>
           </Grid>
