@@ -3,18 +3,20 @@ import { FC, useContext } from "react";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
-import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import DoctorPatients from "../../common/Dashboard/DoctorPatients";
-import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
+import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import DoctorAppointmentsAndPatients from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs and constant block
+import { AuthContext } from "../../../context";
 import { RedirectIcon, } from "../../../assets/svgs";
 import { TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, } from "../../../constants";
-import { AuthContext } from "../../../context";
+import ScheduleListing from "../../common/scheduling/Listing";
 
 const DoctorDashboardComponent: FC = (): JSX.Element => {
-  const {currentUser} = useContext(AuthContext)
-  const { id } = currentUser || {}
+  const { currentUser } = useContext(AuthContext)
+  const { id, facility } = currentUser || {}
+  const { id: facilityId } = facility || {}
+
   return (
     <>
       <PatientSearchComponent />
@@ -24,7 +26,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
           <Card>
             <Box p={3} pb={2}>
               <Typography variant="h5">{MY_APPOINTMENTS}</Typography>
-            
+
               <CalendarComponent showHeader={false} />
             </Box>
           </Card>
@@ -65,7 +67,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
 
           <Card>
             <Box px={3}>
-              <ScheduleAvailableComponent />
+              <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
             </Box>
           </Card>
         </Grid>

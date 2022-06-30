@@ -25,7 +25,7 @@ import {
   DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
 } from "../../../constants";
 
-const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId }) => {
+const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId, doctorId }) => {
   const { id } = useParams<ParamsType>();
   const classes = useDoctorScheduleStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(scheduleReducer, initialState)
@@ -122,14 +122,14 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId 
 
   const fetchSchedules = useCallback(async () => {
     try {
-      isDoctor ? await getDoctorSchedule({ variables: { getDoctorSchedule: { id } } })
+      isDoctor ? await getDoctorSchedule({ variables: { getDoctorSchedule: { id: doctorId ? doctorId : id } } })
         : await getFacilitySchedule({ variables: { getFacilitySchedule: { id } } })
     } catch (error) { }
-  }, [getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
+  }, [doctorId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
 
   useEffect(() => {
-    id ? fetchSchedules() : Alert.error(DOCTOR_NOT_FOUND)
-  }, [fetchSchedules, id])
+    id || doctorId ? fetchSchedules() : Alert.error(DOCTOR_NOT_FOUND)
+  }, [doctorId, fetchSchedules, id])
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
 

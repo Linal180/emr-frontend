@@ -378,11 +378,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         id ?
           cancelAppStatus ?
             Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
-            :
-            await updateAppointment({
+            : await updateAppointment({
               variables: { updateAppointmentInput: { id, ...payload } }
-            })
-          : Alert.error(CANT_UPDATE_APPOINTMENT)
+            }) : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
           variables: { createAppointmentInput: { ...payload } }
@@ -602,7 +600,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
                                 {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </Box>
                             </li>

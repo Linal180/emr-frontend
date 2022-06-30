@@ -498,10 +498,10 @@ export interface StepperData {
 }
 
 export interface SearchComponentProps {
-  search: Function;
   info?: boolean;
-  tooltipData?: TooltipData[]
   placeHolder?: string;
+  tooltipData?: TooltipData[]
+  search: Function;
 }
 
 export interface AppMenuItemTypes {
@@ -1890,6 +1890,7 @@ export interface ScheduleFormProps {
 
 export interface ScheduleListingProps {
   isDoctor?: boolean;
+  doctorId?: string;
   typeId?: string;
   doctorFacilityId?: string;
 }

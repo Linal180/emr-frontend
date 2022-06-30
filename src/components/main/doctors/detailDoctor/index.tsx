@@ -25,6 +25,7 @@ const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+
   const { currentTab, doctor } = state;
   const { facilityId: doctorFacilityId } = doctor || {}
   const [, mediaDispatcher] =
@@ -63,7 +64,6 @@ const DoctorDetailComponent = (): JSX.Element => {
           
           <TabPanel value="2">
             <Grid spacing={3}>
-              {/* <DoctorScheduleForm doctorFacilityId={doctorFacilityId || ''} /> */}
               <ScheduleListing isDoctor doctorFacilityId={doctorFacilityId || ''} />
             </Grid>
           </TabPanel>
