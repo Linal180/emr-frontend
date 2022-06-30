@@ -12,8 +12,8 @@ import InputController from "../../../../controller";
 import { ActionType } from "../../../../reducers/patientReducer";
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes";
 import {
-  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE, GUARANTOR_RELATION, LAST_NAME,
-  MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
+  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPLOYER, FIRST_NAME, GUARANTOR, GUARANTOR_NOTE,
+  GUARANTOR_RELATION, LAST_NAME, MAPPED_COUNTRIES, MAPPED_RELATIONSHIP_TYPE, MAPPED_STATES,
   MIDDLE_NAME, PHONE, SAME_AS_PATIENT, SSN, STATE, SUFFIX, ZIP_CODE
 } from "../../../../constants";
 import SnnController from "../../../../controller/SnnController";
