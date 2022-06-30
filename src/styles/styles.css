@@ -995,6 +995,14 @@ input[type=number] {
   width: 200px;
 }
 
+.schedule-modal .MuiDialog-paper{
+    overflow-y: inherit;
+}
+
+.cke_path{
+  display: none !important;
+}
+
 /* media queries */
 @media(max-width : 960px) {
   .appointment-action-btn{
@@ -1021,6 +1029,16 @@ input[type=number] {
 
   .profile-hero-patient{
     flex-direction: column;
+  }
+}
+
+@media(max-width : 572px) {
+  .page-hero-box{
+    flex-direction: column;
+  }
+
+  .breadcrumb-list{
+    margin-bottom: 10px;
   }
 }
 
