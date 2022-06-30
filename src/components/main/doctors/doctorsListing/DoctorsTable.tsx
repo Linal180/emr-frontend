@@ -2,7 +2,7 @@
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -30,9 +30,13 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
   CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED,
-  PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE
+  PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE, MAPPED_SPECIALTIES
 } from "../../../../constants";
 import history from "../../../../history";
+import Selector from "../../../common/Selector";
+import { DoctorSearchInputProps } from "../../../../interfacesTypes";
+import { FormProvider, useForm } from "react-hook-form";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,6 +48,16 @@ const DoctorsTable: FC = (): JSX.Element => {
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const isRegularUser = isUser(roles)
+
+  const methods = useForm<DoctorSearchInputProps>({ mode: "all" });
+
+  const { watch } = methods;
+  const {
+    facilityId: selectedFacilityId,
+    speciality
+  } = watch()
+  const { id: selectedFacility } = selectedFacilityId || {}
+  const { id: selectedSpecialty } = speciality || {}
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeDoctor)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateDoctor)
@@ -87,14 +101,17 @@ const DoctorsTable: FC = (): JSX.Element => {
         isPracticeUser ? { practiceId, ...pageInputs } :
           isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
+      const searchFilterInputs = {
+        ...(selectedFacility ? { facilityId: selectedFacility } : {}),
+        ...(selectedSpecialty ? { speciality: selectedSpecialty } : {}),
+
+      }
+
       doctorInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery, ...searchFilterInputs } }
       })
     } catch (error) { }
-  }, [
-    facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page,
-    practiceId, searchQuery
-  ])
+  }, [facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page, practiceId, searchQuery, selectedFacility, selectedSpecialty])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -166,9 +183,35 @@ const DoctorsTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box mb={2} maxWidth={450}>
-          <Search search={search} />
-        </Box>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Box mt={2}>
+              <Search search={search} />
+            </Box>
+          </Grid>
+
+          <Grid item md={8} sm={12} xs={12}>
+            <FormProvider {...methods}>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Selector
+                    addEmpty
+                    label={SPECIALTY}
+                    name="speciality"
+                    options={MAPPED_SPECIALTIES}
+                  />
+                </Grid>
+                <Grid item md={6} sm={12} xs={12}>
+                  <FacilitySelector
+                    label={FACILITY}
+                    name="facilityId"
+                    addEmpty
+                  />
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Grid>
+        </Grid>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">

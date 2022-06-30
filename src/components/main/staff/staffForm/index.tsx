@@ -21,7 +21,7 @@ import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  getTimestamps, setRecord, renderItem, formatValue, isUserAdmin, renderLoading
+  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin
 } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
@@ -31,8 +31,9 @@ import {
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   ADD_STAFF, DASHBOARD_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD, FORBIDDEN_EXCEPTION,
-  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF,
+  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF, PRACTICE,
 } from "../../../../constants";
+import PracticeSelector from '../../../common/Selector/PracticeSelector';
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
@@ -40,8 +41,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { fetchAllDoctorList } = useContext(FacilityContext)
 
   const { roles, facility } = user || {}
-  const { id: currentFacility, name: currentFacilityName, practiceId: currentPractice } = facility || {}
-  const isAdminUser = isUserAdmin(roles)
+  const { id: currentFacility, name: currentFacilityName, practice } = facility || {}
+  const { id: currentPractice, name: currentPracticeName } = practice || {}
+  const isAdminUser = isSuperAdmin(roles)
 
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
@@ -75,14 +77,16 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           if (staff && status && status === 200) {
             const {
               firstName, lastName, username, email, phone, mobile, dob, gender,
-              facilityId, user, facility
+              facilityId, user, facility, practice
             } = staff || {}
 
             const { roles } = user || {}
             const { role } = (roles && roles[0]) || {}
             const { name } = facility || {}
+            const { id: practiceId, name: practiceName }= practice || {}
 
             facilityId && name && setValue('facilityId', setRecord(facilityId, name))
+            practiceId && practiceName && setValue('practiceId', setRecord(practiceId, practiceName))
 
             dob && setValue('dob', dob)
             email && setValue('email', email)
@@ -162,23 +166,31 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getStaff, id, isEdit])
 
   const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({
-    firstName, lastName, email, phone, mobile, dob, gender, facilityId, roleType, providerIds
+    firstName, lastName, email, phone, mobile, dob, gender, facilityId, roleType, providerIds, practiceId
   }) => {
     const { id: staffGender } = gender
     const { id: selectedFacility } = facilityId
+    const { id: selectedPractice } = practiceId
     const { id: selectedProvider } = providerIds
 
-    let practiceId = '';
-    if (selectedFacility) {
+    let transformPracticeId = ''
+    let transformFacilityId = ''
+
+    if(roleType.id===SYSTEM_ROLES.PracticeAdmin){
+      const facility = facilityList?.find(f => f?.practiceId === selectedPractice);
+      transformFacilityId= facility?.id || ''
+      transformPracticeId= selectedPractice
+    }else {
       const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
       const { practiceId: pId } = facility || {};
 
-      practiceId = pId || ''
+      transformFacilityId= selectedFacility
+      transformPracticeId= pId || ''
     }
 
     const staffInputs = {
       firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId, facilityId: selectedFacility }
+      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }
       )
     };
@@ -217,7 +229,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     if (roleType) {
       const { id } = roleType || {}
 
-      if (id === SYSTEM_ROLES.FacilityAdmin) {
+      if (id === SYSTEM_ROLES.FacilityAdmin || id === SYSTEM_ROLES.PracticeAdmin) {
         setIsFacilityAdmin(true)
         setValue('providerIds', EMPTY_OPTION)
       } else {
@@ -256,19 +268,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
                   <Grid item md={6}>
-                    {isAdminUser ?
-                      <FacilitySelector
-                        loading={getStaffLoading}
-                        addEmpty
-                        isRequired
-                        label={FACILITY}
-                        name="facilityId"
-                      />
-                      : renderItem(FACILITY, currentFacilityName)
-                    }
-                  </Grid>
-
-                  <Grid item md={6}>
                     {isEdit && roleType ?
                       getStaffLoading ? renderLoading(ROLE) : renderItem(ROLE, formatValue(roleType.name || ''))
                       : <RoleSelector
@@ -280,6 +279,33 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       />
                     }
                   </Grid>
+
+                  {roleType?.id === SYSTEM_ROLES.PracticeAdmin ?
+                    <Grid item md={6}>
+                      {isAdminUser ?
+                        <PracticeSelector
+                          loading={getStaffLoading}
+                          addEmpty
+                          isRequired
+                          label={PRACTICE}
+                          name="practiceId"
+                        />
+                        : renderItem(PRACTICE, currentPracticeName)
+                      }
+                    </Grid> :
+                    <Grid item md={6}>
+                      {isAdminUser ?
+                        <FacilitySelector
+                          loading={getStaffLoading}
+                          addEmpty
+                          isRequired
+                          label={FACILITY}
+                          name="facilityId"
+                        />
+                        : renderItem(FACILITY, currentFacilityName)
+                      }
+                    </Grid>
+                  }
                 </Grid>
 
                 <Grid container spacing={3}>
