@@ -214,7 +214,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
+    <Dialog className="schedule-modal" open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
