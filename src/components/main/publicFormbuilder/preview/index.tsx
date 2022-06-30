@@ -98,7 +98,10 @@ const PublicFormPreview = () => {
         } else {
           setValue('appointmentId', appointmentId)
           setValue('userFormId', id)
-          patientId && setValue('patientId', patientId)
+          if (patientId) {
+            setValue('patientId', patientId)
+            dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
+          }
           nextStepHandler()
         }
 
@@ -294,7 +297,7 @@ const PublicFormPreview = () => {
                   </Grid>
                 </form>
               </FormProvider>
-            </Box> 
+            </Box>
             :
             <Grid container>
               <Grid item xs={false} sm={false} md={4} />
@@ -313,7 +316,7 @@ const PublicFormPreview = () => {
                   </Box>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={false} sm={false} md={4} />
             </Grid>
           } </Fragment> :

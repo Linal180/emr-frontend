@@ -1,7 +1,7 @@
 // packages block
 import { FC, useEffect, useReducer, Reducer, useRef } from "react";
 import dotenv from 'dotenv';
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
 } from "@material-ui/core";
@@ -20,10 +20,11 @@ dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
-  title, reload, providerName, filesLimit, attachmentMetadata
+  title, reload, providerName, filesLimit, attachmentMetadata, btnType = 'button'
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
-  const { handleSubmit, reset } = useForm<ICreateMediaInput>();
+  const methods = useForm<ICreateMediaInput>();
+  const { handleSubmit, reset } = methods
   const [{ fileUrl, attachmentId }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -85,8 +86,8 @@ const AddImageModal: FC<MediaModalTypes> = ({
       aria-describedby="image-dialog-description" maxWidth="sm" fullWidth
     >
       <DialogTitle id="image-dialog-title">{ADD_MEDIA}</DialogTitle>
+      <FormProvider {...methods} >
 
-      <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>
           {fileUrl ?
             <Box className="media-image">
@@ -118,14 +119,14 @@ const AddImageModal: FC<MediaModalTypes> = ({
         </DialogContent>
 
         <DialogActions>
-          <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
+          <Button variant="contained" color="primary" type={btnType} onClick={handleSubmit((data) => handleMediaSubmit(data))} disabled={deleteAttachmentLoading}>
             {deleteAttachmentLoading &&
               <CircularProgress size={20} />
             }
             {ADD}
           </Button>
         </DialogActions>
-      </form>
+      </FormProvider>
     </Dialog>
   );
 };
