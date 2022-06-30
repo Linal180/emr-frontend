@@ -133,13 +133,15 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           prefferedName && setValue("prefferedName", prefferedName)
           holdStatement && setValue("holdStatement", holdStatement)
           statementNote && setValue("statementNote", statementNote)
-          console.log('registrationDate', registrationDate)
           registrationDate && setValue("registrationDate", registrationDate)
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
-          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
+          homeBound && dispatch({
+            type: ActionType.SET_IS_CHECKED,
+            isChecked: homeBound === Homebound.Yes ? true : false
+          })
 
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
@@ -364,7 +366,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
         { facilityId: selectedFacilityId, practiceId }
-console.log(">>>>>>>>>>>>>>>>>>", registrationDate)
+
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
