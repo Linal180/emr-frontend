@@ -2,17 +2,17 @@
 import { FC } from 'react';
 import { Box, Card } from '@material-ui/core';
 // component block
-import GuarantorCard from './GuarantorCard';
-import EmploymentCard from './EmploymentCard';
-import ContactInfoCard from './ContactInfoCard';
-import IdentificationCard from './IdentificationCard';
-import PatientNextKinCard from './PatientNextKinCard';
-import PatientPrivacyCard from './PatientPrivacyCard';
+import GuarantorCard from './Guarantor';
+import EmploymentCard from './Employment';
+import ContactInfoCard from './ContactInfo';
+import IdentificationCard from './Identification';
+import PatientNextKinCard from './NextKin';
+import PatientPrivacyCard from './Privacy';
 import StepperCard from '../../../common/StepperCard';
-import PatientGuardianCard from './PatientGuardianCard';
-import PatientDemographicsCard from "./DemographicsCard";
-import EmergencyContactCard from './EmergencyContactCard';
-import RegistrationDatesCard from './RegistrationDatesCard';
+import PatientGuardianCard from './Guardian';
+import PatientDemographicsCard from "./Demographics";
+import EmergencyContactCard from './EmergencyContact';
+import RegistrationDatesCard from './RegistrationDates';
 // utils. interfaces, constants
 import { RegisterPatientMenuNav } from '../../../../constants';
 import { PatientCardsProps } from '../../../../interfacesTypes';

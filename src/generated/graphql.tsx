@@ -768,8 +768,6 @@ export type CreateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the string - Sign-up */
-  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -4799,8 +4797,6 @@ export type UpdateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the string - Sign-up */
-  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;

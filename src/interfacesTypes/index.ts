@@ -447,7 +447,6 @@ interface IControlLabel {
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
-  control: Control<ResetPasswordInputs, object>;
   controllerName: ResetPasswordControlTypes;
 }
 
@@ -482,11 +481,11 @@ export interface CustomInputControlProps extends IControlLabel {
   clearable?: boolean;
   autoFocus?: boolean;
   controllerName: string;
+  defaultValue?: string;
   isHelperText?: boolean;
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
-  defaultValue?: string;
 }
 
 export interface TooltipData {

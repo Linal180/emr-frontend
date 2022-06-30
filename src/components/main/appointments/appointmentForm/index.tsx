@@ -26,16 +26,21 @@ import ServiceSelector from '../../../common/Selector/ServiceSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
-import { ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType } from "../../../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../reducers/appointmentReducer';
 import {
-  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps, isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
+  ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType
+} from "../../../../interfacesTypes";
+import {
+  Action, ActionType, appointmentReducer, initialState, State
+} from '../../../../reducers/appointmentReducer';
+import {
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
+  isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -337,7 +342,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
 
-    const durationOfDays = moment(date).date() - moment(scheduleStartDateTime).date()
+    const durationOfDays = moment(date).diff(moment(scheduleStartDateTime), 'days')
     const scStartTimeStamps = moment(scheduleStartDateTime).add(durationOfDays, 'day').format().toString()
     const scEndTimeStamps = moment(scheduleEndDateTime).add(durationOfDays, 'day').format().toString()
 
@@ -380,7 +385,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...payload, isExternal: false } }
+          variables: { createAppointmentInput: { ...payload } }
         })
       }
     }

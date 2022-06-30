@@ -233,7 +233,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const doctorItemInput = {
         firstName, middleName, lastName, prefix, suffix, facilityId: selectedFacility,
-        degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
+        degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
         npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
         providerIntials, prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestampsForDob(dob) : '',
