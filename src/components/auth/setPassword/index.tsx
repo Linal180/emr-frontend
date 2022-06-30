@@ -28,7 +28,7 @@ const SetPasswordComponent = (): JSX.Element => {
     mode: 'all',
     resolver: yupResolver(resetPasswordValidationSchema)
   });
-  const { handleSubmit, reset, setError, watch } = methods
+  const { handleSubmit, reset, setError, clearErrors, watch } = methods
   const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
@@ -63,9 +63,9 @@ const SetPasswordComponent = (): JSX.Element => {
 
   useEffect(() => {
     password === repeatPassword ?
-      setError("repeatPassword", {})
+      clearErrors("repeatPassword")
       : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
-  }, [password, repeatPassword, setError, watch])
+  }, [clearErrors, password, repeatPassword, setError, watch])
 
   return (
     <AuthLayout>
