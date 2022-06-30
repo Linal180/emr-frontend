@@ -1,8 +1,8 @@
 // packages block
 import { yupResolver } from '@hookform/resolvers/yup';
-import { 
-  Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, 
-  FormGroup, Grid, Typography 
+import {
+  Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel,
+  FormGroup, Grid, Typography
 } from '@material-ui/core';
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -10,14 +10,15 @@ import { useParams } from 'react-router';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, 
+  ACTIVE_TEXT,
+  ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
   PATIENT_ALLERGY_UPDATED, REACTION, REACTION_SELECTION_REQUIRED, SEVERITY, UPDATE, UPDATE_ALLERGY
 } from '../../../../../constants';
 import { ChartContext } from '../../../../../context';
 // component block
 import InputController from '../../../../../controller';
 import {
-  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery, 
+  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
   useUpdatePatientAllergyMutation
 } from '../../../../../generated/graphql';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
@@ -27,6 +28,7 @@ import { GRAY_SIX, GREY_THREE, WHITE } from '../../../../../theme';
 import { formatValue, getSeverityColor, getTimestamps } from '../../../../../utils';
 import { createPatientAllergySchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
+import CheckboxController from '../../../../common/CheckboxController';
 import DatePicker from '../../../../common/DatePicker';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 
@@ -63,7 +65,7 @@ const AllergyModal: FC<AddModalProps> = ({
       const { getPatientAllergy: { patientAllergy } } = data;
 
       if (patientAllergy) {
-        const { allergyOnset, allergyStartDate, allergySeverity, reactions, comments } = patientAllergy
+        const { allergyOnset, allergyStartDate, allergySeverity, reactions, comments, isActive } = patientAllergy
 
         if (!!reactions) {
           setIds(reactions.map((reaction => reaction?.id || '') ?? []))
@@ -73,6 +75,7 @@ const AllergyModal: FC<AddModalProps> = ({
         allergyStartDate && setValue('allergyStartDate', allergyStartDate || '')
         allergySeverity && setSeverityId(allergySeverity)
         comments && setValue('comments', comments)
+        isActive && setValue('isActive', isActive as boolean)
       }
     }
   });
@@ -146,7 +149,7 @@ const AllergyModal: FC<AddModalProps> = ({
   }
 
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
-    comments
+    comments, isActive
   }) => {
     if (ids.length) {
       const selectedReactions = ids
@@ -160,7 +163,7 @@ const AllergyModal: FC<AddModalProps> = ({
       }
 
       const inputs = {
-        comments, isActive: true,
+        comments,
         ...(severityId && { allergySeverity: severityId as AllergySeverity, }),
         allergyStartDate: ''
       }
@@ -172,14 +175,14 @@ const AllergyModal: FC<AddModalProps> = ({
         recordId && await updatePatientAllergy({
           variables: {
             updateAllergyInput: {
-              ...commonInputs, updatePatientAllergyInput: { id: recordId, ...extendedInputs }
+              ...commonInputs, updatePatientAllergyInput: { id: recordId, ...extendedInputs, isActive: isActive }
             }
           }
         })
       } else {
         await addPatientAllergy({
           variables: {
-            createPatientAllergyInput: { ...commonInputs, ...extendedInputs }
+            createPatientAllergyInput: { ...commonInputs, ...extendedInputs, isActive: true }
           }
         })
       }
@@ -277,9 +280,17 @@ const AllergyModal: FC<AddModalProps> = ({
                   </Box>
                 </Box>
 
+                {
+                  isEdit && (
+                    <Grid md={12} item>
+                    <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
+                  </Grid>
+                  )
+                }
+
                 <Grid container spacing={3} className={chartingClasses.problemGrid}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker  defaultValue={new Date()} name="allergyStartDate" label={ONSET_DATE} />
+                    <DatePicker defaultValue={new Date()} name="allergyStartDate" label={ONSET_DATE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>

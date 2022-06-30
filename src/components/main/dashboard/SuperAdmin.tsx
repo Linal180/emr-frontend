@@ -83,30 +83,20 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer}>
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
-                        <PlusRoundIcon />
-                        <Box p={0.7} />
-                        <Typography variant="h6">{CREATE_PRACTICE}</Typography>
-                      </Box>
-                    </Grid>
+            <Box className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
+              <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
+                <PlusRoundIcon />
+                <Box p={0.7} />
+                <Typography variant="h6">{CREATE_PRACTICE}</Typography>
+              </Box>
 
-                    <Box p={1} />
+              <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
-                        <BillingCardIcon />
-                        <Box p={0.7} />
-                        <Typography variant="h6">{VIEW_BILLING}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+              <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
+                <BillingCardIcon />
+                <Box p={1} />
+                <Typography variant="h6">{VIEW_BILLING}</Typography>
+              </Box>
             </Box>
           </Card>
 

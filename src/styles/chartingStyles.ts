@@ -206,12 +206,14 @@ export const useChartingStyles = makeStyles({
   activeBox: {
     borderRadius: 6,
     width: 'fit-content',
-    height: 30,
-    padding: '0 10px',
+    height : '100%',
+    minHeight: 30,
+    padding: '2px 10px',
     color: WHITE,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign : 'center'
   },
 
   textOverflow: {

@@ -483,6 +483,7 @@ body .MuiTabPanel-root {
 
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   margin-top: 2px;
   margin-bottom: 2px;
@@ -492,6 +493,7 @@ body .MuiTabPanel-root {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #E0E0E0;
 }
 
@@ -878,7 +880,12 @@ input::-webkit-inner-spin-button {
 
 .vitals-column .MuiTypography-h5 {
   line-height: 1.43 !important;
+  white-space: normal;
 }
+
+ .patient-add-form .MuiInputLabel-formControl{
+   position: relative;
+ }
 
 .copay-type-value {
   position: relative;
@@ -978,7 +985,23 @@ input[type=number] {
   align-items: center;
 }
 
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w-200 {
+  width: 200px;
+}
+
 /* media queries */
+@media(max-width : 960px) {
+  .appointment-action-btn{
+     flex-direction: column;
+  }
+}
+
 @media(max-width : 768px) {
   .facility-registration-form {
     flex-direction: column;
@@ -995,4 +1018,10 @@ input[type=number] {
     top: 0;
     margin-bottom: 0.875rem;
   }
+
+  .profile-hero-patient{
+    flex-direction: column;
+  }
 }
+
+ 

@@ -74,7 +74,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
             </Box>
 
             {type === AppointmentStatus.Scheduled &&
-              <Box display="flex" my={2}>
+              <Box display="flex" my={2} className="appointment-action-btn">
                 <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                   <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
                 </Link>

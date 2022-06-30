@@ -334,7 +334,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
           <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
           :
           <Box flex={1}>
-            <Box display='flex'>
+            <Box display='flex' className="profile-hero-patient">
               <Box flex={1} flexWrap="wrap">
                 {renderName()}
 

@@ -447,7 +447,6 @@ interface IControlLabel {
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
-  control: Control<ResetPasswordInputs, object>;
   controllerName: ResetPasswordControlTypes;
 }
 
@@ -482,11 +481,11 @@ export interface CustomInputControlProps extends IControlLabel {
   clearable?: boolean;
   autoFocus?: boolean;
   controllerName: string;
+  defaultValue?: string;
   isHelperText?: boolean;
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
-  defaultValue?: string;
 }
 
 export interface TooltipData {
@@ -1095,6 +1094,7 @@ export interface MediaModalTypes extends DialogTypes {
   reload: Function;
   setEdit: Function;
   setAttachments: Function;
+  btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
   attachmentMetadata?: any
 }
@@ -1112,6 +1112,7 @@ export interface MediaCardsType {
   moduleType: AttachmentType;
   attachmentData?: Attachment;
   reload: Function;
+  btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
   attachmentMetadata?: any
 }
@@ -1455,7 +1456,7 @@ export interface AddModalProps {
   handleClose?: () => void
 }
 
-export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
+export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate' | 'isActive'>
 
 export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
   & { appointmentId: SelectorOption } & { snowMedCodeId: SelectorOption }

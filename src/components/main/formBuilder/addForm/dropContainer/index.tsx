@@ -81,7 +81,13 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
   }
 
-  const addTabHandler = () => dispatch({ type: ActionType.SET_FORM_VALUES, formValues: [...formValues, getFormInitialValues()[0]] })
+  const addTabHandler = () => {
+    const parsedIndex = parseInt(selectedTab)
+    const tabs = getFormInitialValues()
+    const newTab = tabs[0]
+    formValues?.splice(parsedIndex + 1, 0, newTab)
+    dispatch({ type: ActionType.SET_FORM_VALUES, formValues })
+  }
 
   const delTabHandler = () => {
     const parsedIndex = parseInt(selectedTab)
@@ -128,14 +134,14 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
     <TabContext value={selectedTab}>
       <Grid container>
         <Grid item xs={10}>
-            <TabList onChange={handleChange} variant='scrollable' className='align-center'>
-              {formValues?.map((tab, i) => {
-                const { id, name } = tab || {}
-                return (
-                  <Tab key={`${name}-${id}-${i}`} label={name} value={`${i}`} />
-                )
-              })}
-            </TabList>
+          <TabList onChange={handleChange} variant='scrollable' className='align-center'>
+            {formValues?.map((tab, i) => {
+              const { id, name } = tab || {}
+              return (
+                <Tab key={`${name}-${id}-${i}`} label={name} value={`${i}`} />
+              )
+            })}
+          </TabList>
         </Grid>
 
         <Grid item xs={2}>

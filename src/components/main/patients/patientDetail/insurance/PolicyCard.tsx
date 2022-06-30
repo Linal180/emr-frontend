@@ -15,16 +15,18 @@ import TextLoader from "../../../../common/TextLoader";
 import PolicyHolderDetails from "./PolicyHolderDetails";
 import ItemSelector from "../../../../common/ItemSelector";
 //constants, types, utils import
-import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { GREY_SIXTEEN } from "../../../../../theme";
+import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
-import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
+import {
+  CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles
+} from '../../../../../styles/checkInStyles';
 import {
   FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption
 } from "../../../../../interfacesTypes";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_STEPS, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
+  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
   INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
@@ -73,10 +75,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -96,10 +97,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const [updatePolicy, { loading: updatePolicyLoading }] = useUpdatePolicyMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -144,13 +144,13 @@ const PolicyCard: FC<PolicyCardProps> = ({
           }
         })
 
+        notes && setValue('notes', notes)
+        issueDate && setValue('issueDate', issueDate)
+        groupNumber && setValue('policyNumber', groupNumber)
+        memberId && setValue('certificationNumber', memberId)
+        expirationDate && setValue('expirationDate', expirationDate)
         transformedCopayFields && setValue('copayFields', transformedCopayFields)
         coinsurancePercentage && setValue('coInsurancePercentage', coinsurancePercentage)
-        expirationDate && setValue('expirationDate', expirationDate)
-        groupNumber && setValue('policyNumber', groupNumber)
-        issueDate && setValue('issueDate', issueDate)
-        memberId && setValue('certificationNumber', memberId)
-        notes && setValue('notes', notes)
         orderOfBenefit && setValue('orderOfBenefit', setRecord(orderOfBenefit, orderOfBenefit))
         policyHolderRelationship &&
           setValue('patientRelationship', setRecord(policyHolderRelationship, policyHolderRelationship))
@@ -169,21 +169,21 @@ const PolicyCard: FC<PolicyCardProps> = ({
           setValue('referringProvider', setRecord(referringProvider.id,
             `${referringProvider.firstName} ${referringProvider.lastName}`))
 
-        pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
-        employer && setValue('employer', employer)
+        dob && setValue('dob', dob)
+        ssn && setValue('ssn', ssn)
+        city && setValue('city', city)
         suffix && setValue('suffix', suffix)
+        address && setValue('address', address)
+        zipCode && setValue('zipCode', zipCode)
+        lastName && setValue('lastName', lastName)
+        employer && setValue('employer', employer)
+        sex && setValue('sex', setRecord(sex, sex))
         firstName && setValue('firstName', firstName)
         middleName && setValue('middleName', middleName)
-        lastName && setValue('lastName', lastName)
-        zipCode && setValue('zipCode', zipCode)
-        city && setValue('city', city)
-        address && setValue('address', address)
         addressCTD && setValue('addressCTD', addressCTD)
-        dob && setValue('dob', dob)
         state && setValue('state', setRecord(state, state))
-        sex && setValue('sex', setRecord(sex, sex))
-        ssn && setValue('ssn', ssn)
         certificationNumber && setValue('policyHolderId', certificationNumber)
+        pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
 
         setPolicyId(id ?? '')
         setPolicyHolderId(policyHolderIdToUpdate ?? '')
@@ -195,7 +195,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const findPolicy = useCallback(async () => {
     try {
-      await fetchPolicy({ variables: { id: id ?? '' } })
+      id && await fetchPolicy({ variables: { id } })
     } catch (error) { }
   }, [fetchPolicy, id])
 
@@ -216,8 +216,8 @@ const PolicyCard: FC<PolicyCardProps> = ({
     }
 
     if (step === 2) {
-      const isValid = await trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode',
-        'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+      const isValid = await trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName',
+        'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
       return isValid
     }
 
@@ -254,70 +254,59 @@ const PolicyCard: FC<PolicyCardProps> = ({
     }) ?? []
 
     const policyHolderInfo = {
-      address,
-      addressCTD,
-      city,
-      dob,
-      employer,
-      firstName,
-      middleName,
-      lastName,
-      certificationNumber: inputPolicyHolderId,
-      ssn,
-      state: state?.id ?? '',
-      suffix,
-      zipCode,
+      address, addressCTD, city, dob, employer, firstName, suffix, zipCode,
+      middleName, lastName, certificationNumber: inputPolicyHolderId, ssn, state: state?.id ?? '',
       ...(sex?.id && { sex: sex?.id as Policy_Holder_Gender_Identity })
     }
 
+    const { id: selectedInsurance } = insuranceId || {}
+    const { id: selectedReferringProvider } = referringProvider || {}
+    const { id: selectedPrimaryCareProvider } = primaryCareProvider || {}
+
     if (isEdit) {
-      await updatePolicy({
+      policyId && await updatePolicy({
         variables: {
           updatePolicyInput: {
-            id: policyId,
-            coinsurancePercentage: coInsurancePercentage,
-            ...(transformedCopays.length && { copays: transformedCopays }),
-            expirationDate,
-            insuranceId: insuranceId?.id ?? '',
-            issueDate,
-            memberId: certificationNumber,
-            groupNumber: policyNumber,
-            notes,
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+            id: policyId, coinsurancePercentage: coInsurancePercentage,
+            expirationDate, insuranceId: selectedInsurance || '', issueDate,
+            memberId: certificationNumber, groupNumber: policyNumber, notes,
             patientId: patientId,
-            ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
-            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
-            referringProviderId: referringProvider?.id ?? '',
-            primaryCareProviderId: primaryCareProvider?.id ?? '',
-            policyHolderInfo: { ...policyHolderInfo, id: policyHolderId }
+            referringProviderId: selectedReferringProvider || '',
+            primaryCareProviderId: selectedPrimaryCareProvider || '',
+            policyHolderInfo: { ...policyHolderInfo, id: policyHolderId },
+            ...(transformedCopays.length && { copays: transformedCopays }),
+            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+            ...(patientRelationship?.id && {
+              policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+            }),
+            ...(pricingProductType?.id && {
+              pricingProductType: pricingProductType?.id as PricingProductType
+            }),
           }
         }
       })
+
       setPolicyToEdit && setPolicyToEdit('')
     } else {
       createPolicy({
         variables: {
           createPolicyInput: {
-            coinsurancePercentage: coInsurancePercentage,
+            coinsurancePercentage: coInsurancePercentage, patientId: patientId,
+            expirationDate, insuranceId: selectedInsurance || '', issueDate,
+            memberId: certificationNumber, groupNumber: policyNumber, notes,
+            policyHolderInfo, referringProviderId: selectedReferringProvider || '',
+            primaryCareProviderId: selectedPrimaryCareProvider || '',
+            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
+            ...(patientRelationship?.id && {
+              policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+            }),
             ...(transformedCopays.length && {
               copays: transformedCopays.map((copayValues) => {
                 const { id: copayId, ...copayValue } = copayValues
                 return copayValue
               })
             }),
-            expirationDate,
-            insuranceId: insuranceId?.id ?? '',
-            issueDate,
-            memberId: certificationNumber,
-            groupNumber: policyNumber,
-            notes,
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
-            patientId: patientId,
-            ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
-            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
-            referringProviderId: referringProvider?.id ?? '',
-            primaryCareProviderId: primaryCareProvider?.id ?? '',
-            policyHolderInfo
           }
         }
       })
@@ -359,7 +348,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
       case 1:
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
-        return <Box p={3}><PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} /></Box>
+        return <Box p={3}>
+          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} />
+        </Box>
       default:
         return 'Unknown step';
     }
@@ -373,7 +364,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
             display="flex" justifyContent="space-between" alignItems="center"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
-            <Typography variant='h3'>{ADD_INSURANCE}</Typography>
+            <Typography variant='h3'>{isEdit ? EDIT_INSURANCE : ADD_INSURANCE}</Typography>
 
             <Box display="flex" alignItems="center">
               {activeStep !== 0 && (<>
@@ -392,7 +383,10 @@ const PolicyCard: FC<PolicyCardProps> = ({
               </Button>
             </Box>
           </Box>
-          {isEdit && isFormLoaded ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
+
+          {isEdit && isFormLoaded ?
+            <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
+            :
             <Box p={2}>
               <Box className={addInsuranceClasses.checkInProfileBox}>
                 <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
@@ -423,4 +417,4 @@ const PolicyCard: FC<PolicyCardProps> = ({
   )
 }
 
-export default PolicyCard
+export default PolicyCard;

@@ -19,7 +19,11 @@ const DropzoneContainer: FC<FormVerification> = ({ imageSide }) => {
       </Box>
 
       <Box ml={2}>
-        <Typography component="h4" variant="h4">Drop your image here, <Box display="inline" color={BLUE_ONE}>or browse</Box></Typography>
+        <Typography component="h4" variant="h4">
+          Drop your image here,
+          <Box display="inline" color={BLUE_ONE}>or browse</Box>
+        </Typography>
+        
         <Typography component="h6" variant="body1">Supports: JPG,JPEG2000,PNG</Typography>
       </Box>
 
