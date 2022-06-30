@@ -585,7 +585,9 @@ export const updatePasswordSchema = yup.object({
 })
 
 export const roleSchema = yup.object({
-  role: yup.string().required(requiredMessage(ROLE_NAME))
+  role: yup.string()
+  .required(requiredMessage(ROLE_NAME))
+  .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({

@@ -91,8 +91,8 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
   }, [getAttachments])
 
   useEffect(() => {
-    fetchAttachmentsByPolicyId()
-  }, [fetchAttachmentsByPolicyId])
+    policyId && fetchAttachmentsByPolicyId()
+  }, [fetchAttachmentsByPolicyId, policyId])
 
   const [removeAttachmentMedia, { loading: removeAttachmentLoading }] = useRemoveAttachmentMediaMutation({
     onError({ message }) {

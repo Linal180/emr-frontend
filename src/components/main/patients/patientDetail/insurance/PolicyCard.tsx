@@ -26,7 +26,7 @@ import {
   FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption
 } from "../../../../../interfacesTypes";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
+  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
   INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
@@ -364,7 +364,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
             display="flex" justifyContent="space-between" alignItems="center"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
-            <Typography variant='h3'>{ADD_INSURANCE}</Typography>
+            <Typography variant='h3'>{isEdit ? EDIT_INSURANCE : ADD_INSURANCE}</Typography>
 
             <Box display="flex" alignItems="center">
               {activeStep !== 0 && (<>

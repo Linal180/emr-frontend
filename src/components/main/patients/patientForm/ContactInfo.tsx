@@ -85,9 +85,9 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item lg={6} md={12} sm={12} xs={12}>
             <Grid container spacing={1} alignItems={'center'}>
-              <Grid item md={10} sm={10} xs={10}>
+              <Grid item md={9} sm={10} xs={10}>
                 <InputController
                   disabled={shouldDisableEdit}
                   fieldType="text"
@@ -97,7 +97,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                 />
               </Grid>
 
-              <Grid item md={2}>
+              <Grid item md={3}>
                 {!isVerified ? <Box>
                   <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
                     <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
@@ -116,7 +116,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             </Grid>
           </Grid>
 
-          <Grid item md={2}>
+          <Grid item lg={2} md={4}>
             <InputController
               disabled={shouldDisableEdit}
               fieldType="text"
@@ -126,7 +126,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             />
           </Grid>
 
-          <Grid item md={2}>
+          <Grid item lg={2} md={4}>
             <Selector
               disabled={shouldDisableEdit}
               name="basicState"
@@ -137,7 +137,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             />
           </Grid>
 
-          <Grid item md={2}>
+          <Grid item lg={2} md={4}>
             <Selector
               disabled={shouldDisableEdit}
               name="basicCountry"
