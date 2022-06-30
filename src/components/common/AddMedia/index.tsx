@@ -126,7 +126,6 @@ const AddImageModal: FC<MediaModalTypes> = ({
             {ADD}
           </Button>
         </DialogActions>
-
       </FormProvider>
     </Dialog>
   );
