@@ -13,8 +13,8 @@ import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS, 
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE, 
+  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
   SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
 } from "../../constants";
 
@@ -34,8 +34,8 @@ const Header: FC = (): JSX.Element => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleMobileMenuOpen = (event: MouseEvent<HTMLElement>) =>
-    setMobileMoreAnchorEl(event.currentTarget);
+  const handleMobileMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) =>
+    setMobileMoreAnchorEl(currentTarget);
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
