@@ -1094,6 +1094,7 @@ export interface MediaModalTypes extends DialogTypes {
   reload: Function;
   setEdit: Function;
   setAttachments: Function;
+  btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
   attachmentMetadata?: any
 }
@@ -1111,6 +1112,7 @@ export interface MediaCardsType {
   moduleType: AttachmentType;
   attachmentData?: Attachment;
   reload: Function;
+  btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
   attachmentMetadata?: any
 }

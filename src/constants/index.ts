@@ -4089,13 +4089,15 @@ export const ALLERGIES_DUMMY_DATA = [
 ]
 
 export enum FormBuilderApiSelector {
-  SERVICE_SELECT = 'serviceSelect',
-  SERVICE_SLOT = 'serviceSlot',
-  FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities',
+  SERVICE_SLOT = 'serviceSlot',
+  SERVICE_SELECT = 'serviceSelect',
+  INSURANCE_CARD = 'insuranceCard',
+  DRIVING_LICENSE = 'drivingLicense',
   PATIENT_CONSENT = 'patientConsent',
-  TERMS_CONDITIONS = 'termsConditions'
+  TERMS_CONDITIONS = 'termsConditions',
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PRACTICE_FACILITIES = 'practiceFacilities',
 }
 
 export enum FormBuilderPaymentTypes {
