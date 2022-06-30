@@ -24,6 +24,92 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   const classes = useExternalPatientStyles()
   const { activeStep } = state || {}
 
+  const getActiveComponent = (step: number | undefined) => {
+    switch (step) {
+      case 0:
+        return (<>
+          <Box mb={3}>
+            <IdentificationCard
+              getPatientLoading={getPatientLoading}
+              shouldDisableEdit={shouldDisableEdit}
+              state={state}
+              dispatch={dispatch}
+              disableSubmit={disableSubmit}
+              isEdit={isEdit}
+            />
+          </Box>
+
+          <RegistrationDatesCard
+            getPatientLoading={getPatientLoading}
+            shouldDisableEdit={shouldDisableEdit}
+          />
+        </>)
+
+      case 1:
+        return (
+          <PatientDemographicsCard
+            getPatientLoading={getPatientLoading}
+            state={state} dispatch={dispatch}
+            shouldDisableEdit={shouldDisableEdit}
+            disableSubmit={disableSubmit}
+            isEdit={isEdit}
+          />)
+
+      case 2:
+        return (
+          <ContactInfoCard
+            getPatientLoading={getPatientLoading}
+            state={state} dispatch={dispatch}
+            shouldDisableEdit={shouldDisableEdit}
+            disableSubmit={disableSubmit}
+            isEdit={isEdit}
+          />)
+
+      case 3:
+        return (
+          <PatientPrivacyCard
+            getPatientLoading={getPatientLoading}
+            state={state} dispatch={dispatch}
+            shouldDisableEdit={shouldDisableEdit}
+            disableSubmit={disableSubmit}
+            isEdit={isEdit}
+          />)
+      default:
+        return (
+          <>
+            <Box mb={3}>
+              <EmergencyContactCard
+                getPatientLoading={getPatientLoading}
+                shouldDisableEdit={shouldDisableEdit}
+                state={state} dispatch={dispatch}
+                disableSubmit={disableSubmit}
+                isEdit={isEdit}
+              />
+            </Box>
+
+            <Box mb={3}>
+              <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            </Box>
+
+            <Box mb={3}>
+              <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            </Box>
+
+            <Box mb={3}>
+              <GuarantorCard
+                getPatientLoading={getPatientLoading}
+                state={state} dispatch={dispatch}
+                shouldDisableEdit={shouldDisableEdit}
+                isEdit={isEdit}
+              />
+            </Box>
+
+            <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+          </>
+        )
+    }
+  }
+
   return (
     <Box className='patient-add-form' display="flex" flexWrap="wrap" gridGap={20}>
       <Box className={classes.stepperGrid}>
@@ -33,82 +119,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
       </Box>
 
       <Box flex={1}>
-        {activeStep === 0 ? (
-          <>
-            <Box mb={3}>
-              <IdentificationCard
-                getPatientLoading={getPatientLoading}
-                shouldDisableEdit={shouldDisableEdit}
-                state={state}
-                dispatch={dispatch}
-                disableSubmit={disableSubmit}
-                isEdit={isEdit}
-              />
-            </Box>
-
-            <RegistrationDatesCard
-              getPatientLoading={getPatientLoading}
-              shouldDisableEdit={shouldDisableEdit}
-            />
-          </>
-        )
-          : activeStep === 1 ? (
-            <PatientDemographicsCard
-              getPatientLoading={getPatientLoading}
-              state={state} dispatch={dispatch}
-              shouldDisableEdit={shouldDisableEdit}
-              disableSubmit={disableSubmit}
-              isEdit={isEdit}
-            />)
-            : activeStep === 2 ? (
-              <ContactInfoCard
-                getPatientLoading={getPatientLoading}
-                state={state} dispatch={dispatch}
-                shouldDisableEdit={shouldDisableEdit}
-                disableSubmit={disableSubmit}
-                isEdit={isEdit}
-              />)
-              : activeStep === 3 ? (
-                <PatientPrivacyCard
-                  getPatientLoading={getPatientLoading}
-                  state={state} dispatch={dispatch}
-                  shouldDisableEdit={shouldDisableEdit}
-                  disableSubmit={disableSubmit}
-                  isEdit={isEdit}
-                />)
-                : (
-                  <>
-                    <Box mb={3}>
-                      <EmergencyContactCard
-                        getPatientLoading={getPatientLoading}
-                        shouldDisableEdit={shouldDisableEdit}
-                        state={state} dispatch={dispatch}
-                        disableSubmit={disableSubmit}
-                        isEdit={isEdit}
-                      />
-                    </Box>
-
-                    <Box mb={3}>
-                      <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-                    </Box>
-
-                    <Box mb={3}>
-                      <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-                    </Box>
-
-                    <Box mb={3}>
-                      <GuarantorCard
-                        getPatientLoading={getPatientLoading}
-                        state={state} dispatch={dispatch}
-                        shouldDisableEdit={shouldDisableEdit}
-                        isEdit={isEdit}
-                      />
-                    </Box>
-
-                    <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-                  </>
-                )
-        }
+        {getActiveComponent(activeStep)}
       </Box>
     </Box>
   )
