@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback, useContext, useEffect } from "react"
+import { FC, memo, useContext } from "react"
 import { Grid } from "@material-ui/core"
 import { useFormContext } from "react-hook-form"
 //components block
@@ -9,8 +9,8 @@ import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
 //constants, interfaces and utils block
 import { PatientCardsProps, PatientInputProps } from "../../../../interfacesTypes"
-import { AuthContext, FacilityContext } from "../../../../context"
-import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem, setRecord } from "../../../../utils"
+import { AuthContext } from "../../../../context"
+import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem } from "../../../../utils"
 import {
   DECREASED_DATE, DOCTOR, EMPTY_OPTION, FACILITY, REGISTRATION_DATE,
   REGISTRATION_DATES, USUAL_PROVIDER_ID
@@ -28,25 +28,14 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
   const methods = useFormContext<PatientInputProps>()
 
   const { watch, setValue } = methods;
-  const { fetchAllDoctorList } = useContext(FacilityContext)
+
   const {
-    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+    facilityId: { id: selectedFacility } = {},
   } = watch();
 
-  const fetchList = useCallback((id: string, name: string) => {
+  const onSelect = () => {
     setValue('usualProviderId', EMPTY_OPTION)
-
-    selectedFacility && fetchAllDoctorList(selectedFacility);
-  }, [selectedFacility, fetchAllDoctorList, setValue]);
-
-  useEffect(() => {
-    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
-  }, [fetchList, selectedFacility, selectedFacilityName, watch])
-
-  useEffect(() => {
-    selectedFacility && selectedFacilityName &&
-      setValue("facilityId", setRecord(selectedFacility, selectedFacilityName, false))
-  }, [selectedFacility, selectedFacilityName, setValue, watch])
+  }
 
   return (
     <CardComponent cardTitle={REGISTRATION_DATES}>
@@ -61,6 +50,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
                 label={FACILITY}
                 name="facilityId"
                 loading={getPatientLoading}
+                onSelect={onSelect}
               />
             }
           </Grid>
@@ -101,4 +91,4 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
   )
 }
 
-export default RegistrationDatesCard;
+export default memo(RegistrationDatesCard);
