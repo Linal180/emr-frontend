@@ -459,7 +459,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         const { role: name } = role;
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
-          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
+          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN
           && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
           name && data.push({ id: name.trim(), name: formatValue(name) })

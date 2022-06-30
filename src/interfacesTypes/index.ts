@@ -564,8 +564,8 @@ export interface PreSignedUrlInterface {
 
 export type ExtendedStaffInputProps = Omit<
   CreateStaffItemInput,
-  "facilityId" | "roleType" | "gender"
-> & { facilityId: SelectorOption } & { roleType: SelectorOption } & {
+  "facilityId" | "roleType" | "gender" | "practiceId"
+> & { facilityId: SelectorOption } & { practiceId: SelectorOption } & { roleType: SelectorOption } & {
   gender: SelectorOption;
 } & { providerIds: SelectorOption };
 
@@ -1553,6 +1553,12 @@ export interface PatientSearchInputProps {
   location: SelectorOption;
   provider: SelectorOption;
 }
+
+export interface DoctorSearchInputProps {
+  speciality: SelectorOption
+  facilityId: SelectorOption
+}
+
 
 export type TwoFactorInputProps = Omit<TwoFactorInput, "userId">;
 

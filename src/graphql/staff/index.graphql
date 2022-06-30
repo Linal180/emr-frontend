@@ -59,6 +59,11 @@ query GetStaff($getStaff: GetStaff!){
         id
         name
       }
+
+      practice {
+        id
+        name
+      }
     }
   }
 }
