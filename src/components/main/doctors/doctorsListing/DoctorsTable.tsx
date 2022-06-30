@@ -1,14 +1,17 @@
 // packages block
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Grid } from "@material-ui/core";
 // components block
+import Selector from "../../../common/Selector";
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
@@ -33,10 +36,7 @@ import {
   PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE, MAPPED_SPECIALTIES
 } from "../../../../constants";
 import history from "../../../../history";
-import Selector from "../../../common/Selector";
 import { DoctorSearchInputProps } from "../../../../interfacesTypes";
-import { FormProvider, useForm } from "react-hook-form";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -52,10 +52,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const methods = useForm<DoctorSearchInputProps>({ mode: "all" });
 
   const { watch } = methods;
-  const {
-    facilityId: selectedFacilityId,
-    speciality
-  } = watch()
+  const { facilityId: selectedFacilityId, speciality } = watch()
   const { id: selectedFacility } = selectedFacilityId || {}
   const { id: selectedSpecialty } = speciality || {}
 
@@ -104,7 +101,6 @@ const DoctorsTable: FC = (): JSX.Element => {
       const searchFilterInputs = {
         ...(selectedFacility ? { facilityId: selectedFacility } : {}),
         ...(selectedSpecialty ? { speciality: selectedSpecialty } : {}),
-
       }
 
       doctorInputs && await findAllDoctor({
