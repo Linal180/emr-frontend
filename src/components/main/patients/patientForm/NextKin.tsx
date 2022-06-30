@@ -41,12 +41,7 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
         <Grid item md={3} sm={12} xs={12}>
           <PhoneField name="kinPhone" label={HOME_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
         </Grid>
-        <PhoneField
-                  name="basicPhone"
-                  label={MOBILE_PHONE}
-                  disabled={shouldDisableEdit}
-                  loading={getPatientLoading}
-                />
+
         <Grid item md={3} sm={12} xs={12}>
           <PhoneField name="kinMobile" label={MOBILE_PHONE} disabled={shouldDisableEdit} loading={getPatientLoading} />
         </Grid>
