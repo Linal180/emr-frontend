@@ -1007,6 +1007,14 @@ input[type=number] {
   margin-bottom: 24px !important;
 }
 /* media queries */
+
+@media(max-width : 1260px) {
+  .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
+    height: 36px;
+    width: 36px;
+  }
+}
+
 @media(max-width : 960px) {
   .appointment-action-btn{
      flex-direction: column;
