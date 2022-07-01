@@ -37,7 +37,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     {pathname !== LOCK_ROUTE && <Header />}
 
     <Box display="flex" padding="102px 30px 0px" position="relative">
-      <Box component="main" flex={1} paddingLeft={3.75}>
+      <Box component="main" flex={1} width="100%">
         <Box minHeight="calc(100vh - 170px)" paddingBottom={3}>
           {children}
         </Box>

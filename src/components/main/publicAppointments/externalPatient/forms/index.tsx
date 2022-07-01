@@ -16,15 +16,15 @@ import PhoneField from '../../../../common/PhoneInput';
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import PatientStepper from '../../../../common/PatientStepper';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
+import DoctorSelector from '../../../../common/Selector/DoctorSelector';
 //context, graphql and utils block
 import history from '../../../../../history';
-import { EMRLogo } from '../../../../../assets/svgs';
+import { AIMEDLOGO } from '../../../../../assets/svgs';
+import { getDocumentByType, setRecord } from "../../../../../utils";
+import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
-import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
-import { getDocumentByType, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import {
@@ -41,28 +41,31 @@ import {
   AttachmentType, Communicationtype, ContactType, AttachmentsPayload, useUpdatePatientMutation,
   RelationshipType, useGetAttachmentsLazyQuery, useGetPatientLazyQuery, useRemoveAttachmentDataMutation,
   Attachment,
+  DoctorPatientRelationType,
 } from "../../../../../generated/graphql";
 import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
   FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, SSN, ATTACHMENT_DELETED,
   CITY, COUNTRY, EMPTY_OPTION, PREFERRED_PHARMACY, APPOINTMENT_CONFIRMATION_PERMISSIONS, DONE,
-  PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, CONSENT_TO_MESSAGES_DESCRIPTION,
+  PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, NO_TEXT,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
-  MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, DEMOGRAPHICS,
-  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A, YES_TEXT, NO_TEXT,
+  MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, PATIENT_NOT_FOUND, DEMOGRAPHICS,
+  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
+  YES_TEXT, CONSENT_TO_MESSAGES_DESCRIPTION,
 } from "../../../../../constants";
-import DoctorSelector from '../../../../common/Selector/DoctorSelector';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useExternalPatientStyles();
   const dropzoneClasses = useDropzoneStyles()
+
   const toggleButtonClass = usePublicAppointmentStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     activeStep, isAppointment, isBilling, isSms, facilityId
   } = state
+
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const methods = useForm<ExternalPatientInputProps>({
@@ -133,7 +136,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
           if (patient) {
             const {
               ssn, contacts, doctorPatients, facility, phonePermission, pharmacy, smsPermission,
-              preferredCommunicationMethod, releaseOfInfoBill, attachments,
+              preferredCommunicationMethod, releaseOfInfoBill, attachments
             } = patient;
 
             const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
@@ -150,20 +153,25 @@ const PatientFormComponent: FC = (): JSX.Element => {
             mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
 
             if (doctorPatients) {
-              const currentDoctor = doctorPatients.map(doctorPatient => {
-                const { currentProvider, doctorId, doctor } = doctorPatient || {}
+              const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+                relation === DoctorPatientRelationType.PrimaryProvider)
 
-                if (currentProvider) {
-                  const { firstName, lastName } = doctor || {}
-                  const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
+              if (doesPrimaryProviderExist) {
+                const { doctor } = doesPrimaryProviderExist ?? {}
+                const { firstName, lastName, id } = doctor ?? {}
 
-                  doctorId && setValue("providerId", setRecord(doctorId, fullName))
+                setValue("providerId", setRecord(id || '', `${firstName} ${lastName}`))
+                dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+              } else {
+                const currentDoctorPatients = doctorPatients[0]
+
+                if (currentDoctorPatients) {
+                  const { doctor } = currentDoctorPatients || {};
+                  const { firstName, lastName, id } = doctor ?? {}
+
+                  setValue("providerId", setRecord(id || '', `${firstName} ${lastName}`))
+                  dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
                 }
-
-                return null
-              })[0];
-
-              if (currentDoctor) {
               }
             }
 
@@ -303,8 +311,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   useEffect(() => {
     id ?
       getPatient({ variables: { getPatient: { id } } })
-      :
-      Alert.error(PATIENT_NOT_FOUND)
+      : Alert.error(PATIENT_NOT_FOUND)
   }, [getPatient, id])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -383,18 +390,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
   }
 
   return (
-    <Box bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
+    <Box className='patient-information-form' bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
       <Box pt={3}>
-        <EMRLogo />
+        <AIMEDLOGO />
       </Box>
 
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-            <Typography variant="h4">{MORE_INFO}</Typography>
-
-            <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
-              {/* <Button
+          <Box mb={3} display="flex" justifyContent="flex-end" alignItems="center" flexWrap="wrap">
+            {/* <Button
                 variant="outlined"
                 color="secondary"
                 onClick={() => history.push(`${CANCEL_APPOINTMENT}/${id}`)}
@@ -402,28 +406,27 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 {CANCEL_APPOINTMENT_TEXT}
               </Button> */}
 
-              <Box p={1} />
+            <Box p={1} />
 
-              {activeStep < 1 ?
-                <Button
-                  variant="contained" color='primary'
-                  disabled={updatePatientLoading} onClick={handleNextStep}
-                  type={activeStep === 0 ? 'submit' : 'button'}
-                >
-                  {NEXT}
+            {activeStep < 1 ?
+              <Button
+                variant="contained" color='primary'
+                disabled={updatePatientLoading} onClick={handleNextStep}
+                type={activeStep === 0 ? 'submit' : 'button'}
+              >
+                {NEXT}
 
-                  {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
-                </Button>
-                :
-                <Button
-                  variant="contained" color='primary' type="button"
-                  onClick={handleFinish} disabled={updatePatientLoading}
-                >
-                  {DONE}
-                </Button>
+                {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
+              </Button>
+              :
+              <Button
+                variant="contained" color='primary' type="button"
+                onClick={handleFinish} disabled={updatePatientLoading}
+              >
+                {DONE}
+              </Button>
 
-              }
-            </Box>
+            }
           </Box>
 
           <Box display="flex" flexWrap="wrap" gridGap={20}>
@@ -438,13 +441,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
                     <CardComponent cardTitle={DEMOGRAPHICS}>
-                      {getPatientLoading ? <ViewDataLoader columns={6} rows={3} /> : <>
+                      <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               isRequired
                               fieldType="text"
                               controllerName="address"
+                              loading={getPatientLoading}
                               controllerLabel={STREET_ADDRESS}
                             />
                           </Grid>
@@ -453,6 +457,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="address2"
+                              loading={getPatientLoading}
                               controllerLabel={APARTMENT_SUITE_OTHER}
                             />
                           </Grid>
@@ -464,6 +469,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               isRequired
                               fieldType="text"
                               controllerName="zipCode"
+                              loading={getPatientLoading}
                               controllerLabel={ZIP_CODE}
                             />
                           </Grid>
@@ -474,6 +480,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               fieldType="text"
                               controllerName="city"
                               controllerLabel={CITY}
+                              loading={getPatientLoading}
                             />
                           </Grid>
 
@@ -484,6 +491,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               label={STATE}
                               name="state"
                               options={MAPPED_STATES}
+                              loading={getPatientLoading}
                             />
                           </Grid>
 
@@ -491,10 +499,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
                               isRequired
-                              value={EMPTY_OPTION}
-                              label={COUNTRY}
                               name="country"
+                              label={COUNTRY}
+                              value={EMPTY_OPTION}
                               options={MAPPED_COUNTRIES}
+                              loading={getPatientLoading}
                             />
                           </Grid>
                         </Grid>
@@ -502,11 +511,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={4} sm={12} xs={12}>
                             <DoctorSelector
-                              isRequired
-                              label={SELECT_PROVIDER}
-                              name="providerId"
                               addEmpty
+                              isRequired
+                              name="providerId"
+                              label={SELECT_PROVIDER}
                               facilityId={facilityId}
+                              loading={getPatientLoading}
                             />
                           </Grid>
 
@@ -514,6 +524,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="pharmacy"
+                              loading={getPatientLoading}
                               controllerLabel={PREFERRED_PHARMACY}
                             />
                           </Grid>
@@ -523,23 +534,24 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               fieldType="text"
                               controllerName="ssn"
                               controllerLabel={SSN}
+                              loading={getPatientLoading}
                             />
                           </Grid>
                         </Grid>
                       </>
-                      }
                     </CardComponent>
                   </Box>
 
                   <Box mb={2} mr={2}>
                     <CardComponent cardTitle={EMERGENCY_CONTACT}>
-                      {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
+                      <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
                               controllerName="emergencyName"
                               controllerLabel={NAME}
+                              loading={getPatientLoading}
                             />
                           </Grid>
 
@@ -549,13 +561,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               label={RELATIONSHIP_TO_PATIENT}
                               name="emergencyRelationship"
                               options={MAPPED_RELATIONSHIP_TYPE}
+                              loading={getPatientLoading}
                             />
                           </Grid>
                         </Grid>
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField label={PHONE} name='emergencyPhone' />
+                            <PhoneField loading={getPatientLoading} label={PHONE} name='emergencyPhone' />
                           </Grid>
                         </Grid>
 
@@ -583,14 +596,16 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="emergencyAddress"
+                              loading={getPatientLoading}
                               controllerLabel={STREET_ADDRESS}
+                              controllerName="emergencyAddress"
                             />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
+                              loading={getPatientLoading}
                               controllerName="emergencyAddress2"
                               controllerLabel={APARTMENT_SUITE_OTHER}
                             />
@@ -600,54 +615,60 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={3} sm={12} xs={12}>
                             <InputController
+                              isRequired
                               fieldType="text"
-                              controllerName="emergencyZipCode"
                               controllerLabel={ZIP_CODE}
+                              loading={getPatientLoading}
+                              controllerName="emergencyZipCode"
                             />
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="emergencyCity"
                               controllerLabel={CITY}
+                              loading={getPatientLoading}
+                              controllerName="emergencyCity"
                             />
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
-                              value={EMPTY_OPTION}
                               label={STATE}
+                              value={EMPTY_OPTION}
                               name="emergencyState"
                               options={MAPPED_STATES}
+                              loading={getPatientLoading}
                             />
                           </Grid>
 
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
-                              value={EMPTY_OPTION}
                               label={COUNTRY}
+                              value={EMPTY_OPTION}
                               name="emergencyCountry"
                               options={MAPPED_COUNTRIES}
+                              loading={getPatientLoading}
                             />
                           </Grid>
                         </Grid>
-                      </>}
+                      </>
                     </CardComponent>
                   </Box>
 
                   <Box mr={2}>
                     <CardComponent cardTitle={CONTACT_METHOD}>
-                      {getPatientLoading ? <ViewDataLoader columns={6} rows={2} hasMedia={false} /> : <>
+                      <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <Selector
                               isRequired
                               value={EMPTY_OPTION}
-                              label={PREFERRED_COMMUNICATION_METHOD}
+                              loading={getPatientLoading}
                               name="preferredCommunicationMethod"
                               options={MAPPED_COMMUNICATION_METHOD}
+                              label={PREFERRED_COMMUNICATION_METHOD}
                             />
                           </Grid>
                         </Grid>
@@ -695,7 +716,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
                         </Grid>
                       </>
-                      }
                     </CardComponent>
                   </Box>
                 </Box>

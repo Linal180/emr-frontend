@@ -8,24 +8,30 @@ import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
 import CareTeamComponent from './careTeam';
+import SideDrawer from '../../../common/SideDrawer';
 import CareTeamProvider from './careTeam/sideDrawer';
 import PortalTable from '../../../common/patient/portal';
 import CardComponent from '../../../common/CardComponent';
+import NoDataComponent from '../../../common/NoDataComponent';
 import AppointmentList from '../../../common/AppointmentList';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import BarChart2Component from '../../../common/charts/PracticesByYear';
+import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
-import EnounterComponent from '../../patients/patientDetail/encounters';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
+import { WHITE } from '../../../../theme';
+import history from "../../../../history";
+import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
+import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import {
-  AppointmentsPayload, Appointmentstatus, AttachmentsPayload, PatientPayload, PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProviderLazyQuery
-} from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
+  useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
+} from '../../../../generated/graphql';
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -38,20 +44,24 @@ import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
-  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE, HEART_RATE_VALUE,
+  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
+  HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
 } from "../../../../constants";
-import { getFormattedDate } from '../../../../utils';
-import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
-  const [{ openDelete, tabValue, patientData, patientProvidersData }, dispatch] =
-    useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [{
-    pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed
-  }, appointmentDispatch] = useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+    openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
+  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
+  const [state, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
+  const {
+    pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed, encounters
+  } = state
 
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -60,7 +70,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
-
   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
@@ -96,9 +105,16 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
-              new Date()) as AppointmentsPayload['appointments']
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date() && appointment?.status === AppointmentStatus.Scheduled) as AppointmentsPayload['appointments']
           });
+
+          appointmentDispatch({
+            type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter(appointment => {
+              const { status } = appointment || {}
+              return status === AppointmentStatus.Arrived
+            }) as AppointmentsPayload['appointments']
+          })
 
           appointmentDispatch({
             type: appointmentActionType.SET_COMPLETED,
@@ -116,7 +132,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            appointmentStatus: Appointmentstatus.Initiated.toLocaleLowerCase(),
+            // appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
             paginationOptions: {
               limit: PAGE_LIMIT, page: pageComing
             },
@@ -134,7 +150,12 @@ const PatientDetailsComponent = (): JSX.Element => {
     type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
   });
 
-  const [getPatientProvider, { loading: getPatientLoading }] = useGetPatientProviderLazyQuery({
+  const handleProviderEdit = (id: string, providerId: string) => {
+    dispatch({ type: ActionType.SET_DOCTOR_PATIENT_ID, doctorPatientId: id })
+    dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: providerId })
+  }
+
+  const [getPatientProviders, { loading: getPatientLoading }] = useGetPatientProvidersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -142,12 +163,15 @@ const PatientDetailsComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { getPatientProvider } = data;
+        const { getPatientProviders } = data;
 
-        if (getPatientProvider) {
+        if (getPatientProviders) {
 
-          const { providers } = getPatientProvider;
-          dispatch({ type: ActionType.SET_PATIENT_PROVIDERS_DATA, patientProvidersData: providers as PatientProviderPayload['providers'] })
+          const { providers } = getPatientProviders;
+          dispatch({
+            type: ActionType.SET_PATIENT_PROVIDERS_DATA,
+            patientProvidersData: providers as PatientProviderPayload['providers']
+          })
         }
       }
     },
@@ -155,41 +179,33 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchAllPatientsProviders = useCallback(async () => {
     try {
-      id && await getPatientProvider({
+      id && await getPatientProviders({
         variables: {
           getPatient: { id }
         }
       })
     } catch (error) { }
-  }, [id, getPatientProvider])
+  }, [id, getPatientProviders])
 
   useEffect(() => {
     fetchAllPatientsProviders()
   }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
-    if (id) {
-      fetchComing();
-    }
+    id && fetchComing();
   }, [fetchComing, id]);
 
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <Box display="flex" flexWrap="wrap">
-            <TabList onChange={handleChange} aria-label="Profile top tabs">
-              {PROFILE_TOP_TABS.map(item => (
-                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-              ))}
-            </TabList>
-          </Box>
-
-          <Box pr={2}>
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
+        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+          <TabList onChange={handleChange}
+            variant="scrollable"
+            aria-label="Profile top tabs">
+            {PROFILE_TOP_TABS.map(item => (
+              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+            ))}
+          </TabList>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -202,81 +218,89 @@ const PatientDetailsComponent = (): JSX.Element => {
             }
           />
 
-          <Box p={1} />
+          <Box pt={1.5} pb={1.5} />
+
+          <Box display="flex" alignItems="center">
+            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+              {EDIT_PATIENT}
+            </Button>
+
+            <Box p={1} />
+
+            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+            </Link>
+          </Box>
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3} >
-                    <BloodPressureIcon />
-                    <Box>
-                      <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
-                      <Typography component="span" align='right'>
-                        {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
-                      </Typography>
+            <Box mb={2} pb={4} className='masonry-container'>
+              <Box className='masonry-box'>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3} >
+                        <BloodPressureIcon />
+                        <Box>
+                          <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
+                          <Typography component="span" align='right'>
+                            {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box className='bloodPressure-measurement'>
+                        <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
+                          <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
+                        </Typography>
+
+                        <Typography className='measure-frequency primary' component="span">
+                          {BLOOD_PRESSURE_RANGES.Normal}
+                        </Typography>
+                      </Box>
+
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartOne} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
 
-                  <Box className='bloodPressure-measurement'>
-                    <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
-                      <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
-                    </Typography>
+                  <Grid item md={6} xs={12} sm={12}>
+                    <Box width="100%" className='card-chart'>
+                      <Box display="flex" justifyContent="space-between" p={3}>
+                        <HeartRateIcon />
 
-                    <Typography className='measure-frequency primary' component="span">
-                      {BLOOD_PRESSURE_RANGES.Normal}
-                    </Typography>
-                  </Box>
+                        <Box>
+                          <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
 
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartOne} />
-                  </Box>
-                </Box>
-              </Grid>
+                          <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                        </Box>
+                      </Box>
 
-              <Grid item md={3} xs={12} sm={12}>
-                <Box width="100%" className='card-chart'>
-                  <Box display="flex" justifyContent="space-between" p={3}>
-                    <HeartRateIcon />
+                      <Box className='heartRate-measurement'>
+                        <Typography variant="h2">{HEART_RATE_VALUE}
+                          <span className='measure-unit'>{HEART_RATE_UNIT}</span>
+                        </Typography>
 
-                    <Box>
-                      <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
+                        <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                      </Box>
 
-                      <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                      <Box className='areaBloodPressureChart areaChartContainer'>
+                        <AreaChartComponent data={areaChartTwo} />
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
+                </Grid>
+              </Box>
 
-                  <Box className='heartRate-measurement'>
-                    <Typography variant="h2">{HEART_RATE_VALUE}
-                      <span className='measure-unit'>{HEART_RATE_UNIT}</span>
-                    </Typography>
-
-                    <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
-                  </Box>
-
-                  <Box className='areaBloodPressureChart areaChartContainer'>
-                    <AreaChartComponent data={areaChartTwo} />
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <Card>
-                  <BarChart2Component year={{ id: '2022', name: '2022' }} />
-                </Card>
-              </Grid>
-            </Grid>
-
-            <Box p={2} />
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
-                  <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} />
+                  <Box pb={3}>
+                    <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
+                  </Box>
 
                   {((!upComingLoading && upComing?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent />
                     </Box>
                   )}
 
@@ -292,27 +316,17 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Grid>
+              </Box>
 
-              <Grid item xs={12} sm={12} md={6}>
-                <EnounterComponent />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6}>
-                <CareTeamComponent
-                  toggleSideDrawer={toggleSideDrawer} patientId={id} loading={getPatientLoading} reload={() => fetchAllPatientsProviders()}  patientProvidersData={patientProvidersData}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={6}>
+              <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>
-                  <AppointmentList appointments={completed} type={Appointmentstatus.Completed} />
+                  <Box pb={3}>
+                    <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
+                  </Box>
 
                   {((!upComingLoading && completed?.length === 0) || upComingError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
+                      <NoDataComponent />
                     </Box>
                   )}
 
@@ -328,8 +342,27 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   }
                 </CardComponent>
-              </Grid>
-            </Grid>
+              </Box>
+
+              <Box className='masonry-box'>
+                <Card>
+                  <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
+                    <Typography variant="h4">{VISITS}</Typography>
+                  </Box>
+
+                  {/* Implement patient visits by year */}
+                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
+                </Card>
+              </Box>
+              <Box className='masonry-box'>
+                <CareTeamComponent
+                  patientProvidersData={patientProvidersData}
+                />
+              </Box>
+              <Box className='masonry-box'>
+                <EncounterList appointments={encounters} />
+              </Box>
+            </Box>
           </TabPanel>
 
           <TabPanel value="2">
@@ -337,7 +370,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable />
+            <DocumentsTable patient={patientData} />
           </TabPanel>
 
           <TabPanel value="9">
@@ -347,11 +380,39 @@ const PatientDetailsComponent = (): JSX.Element => {
           <TabPanel value="10">
             <LabOrdersTable />
           </TabPanel>
+
+          <TabPanel value="11">
+            <CareTeamComponent
+              onEdit={(id: string, providerId: string) => handleProviderEdit(id, providerId)}
+              toggleSideDrawer={toggleSideDrawer}
+              patientId={id}
+              loading={getPatientLoading}
+              reload={() => fetchAllPatientsProviders()}
+              patientProvidersData={patientProvidersData}
+              drawerOpened={drawerOpened}
+              patientDispatcher={dispatch}
+              providerBtn={true}
+              isEditable={true}
+            />
+          </TabPanel>
         </Box>
       </TabContext>
 
       <Box className="careTeam-side-drawer">
-        <CareTeamProvider drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer} patientId={id} reload={() => fetchAllPatientsProviders()} />
+        <SideDrawer
+          drawerOpened={drawerOpened}
+          toggleSideDrawer={toggleSideDrawer} >
+          <CareTeamProvider
+            toggleSideDrawer={toggleSideDrawer}
+            patientId={id}
+            reload={() => fetchAllPatientsProviders()}
+            doctorId={doctorId}
+            doctorPatientId={doctorPatientId}
+            isEdit={isEdit}
+            doctorName={doctorName}
+            patientProvidersData={patientProvidersData}
+          />
+        </SideDrawer>
       </Box>
 
       <ConfirmationModal

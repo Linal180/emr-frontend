@@ -1,26 +1,23 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isPracticeAdmin, isSuperAdmin, renderServices, requiredLabel } from "../../../utils";
+import { renderServices, requiredLabel, sortingValue } from "../../../utils";
+import { ServiceSelectorProps } from "../../../interfacesTypes";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from "../../../reducers/serviceReducer";
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
-import { AuthContext } from "../../../context";
 
-const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
+import {
+  ActionType as FormActionType
+} from "../../../reducers/externalFormBuilderReducer";
+
+const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId, dispatcher }): JSX.Element => {
   const { control } = useFormContext()
-  const { user } = useContext(AuthContext);
-  const { facility, roles } = user || {}
-  const { id: userFacilityId } = facility || {}
-  const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
-  const isSuperAndPracAdmin = isSuper || isPracAdmin
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services, serviceType } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
@@ -51,13 +48,11 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
   const fetchAllServices = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      isSuperAndPracAdmin ? facilityId && await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId: facilityId ?? userFacilityId } }
-      }) : await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId: facilityId ?? userFacilityId } }
+      facilityId && await findAllService({
+        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId: facilityId } }
       })
     } catch (error) { }
-  }, [page, isSuperAndPracAdmin, findAllService, searchQuery, facilityId, userFacilityId])
+  }, [page, findAllService, searchQuery, facilityId])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
@@ -71,13 +66,14 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
 
   return (
     <Controller
-      rules={{ required: true }}
+      rules={{ required: isRequired }}
       name={name}
       control={control}
+      defaultValue={''}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={serviceType}
             disabled={disabled}
             disableClearable
@@ -104,6 +100,7 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
             onChange={(_, data) => {
               const { id } = data || {}
               field.onChange(id)
+              dispatcher && dispatcher({ type: FormActionType.SET_SERVICE_TYPE_ID, serviceTypeId: id })
               dispatch({ type: ActionType.SET_SERVICE_TYPE, serviceType: data })
             }}
           />

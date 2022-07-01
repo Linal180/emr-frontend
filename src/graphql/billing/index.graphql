@@ -1,0 +1,42 @@
+mutation CreateBilling($createBillingInput: BillingInput!) {
+  createBilling(createBillingInput: $createBillingInput){
+    response {
+      status
+      message
+    }
+
+    billing {
+      id
+    }
+  }
+}
+
+query FetchBillingDetailsByAppointmentId($appointmentId: String!){
+  fetchBillingDetailsByAppointmentId(appointmentId: $appointmentId){
+    response {
+      status
+      message
+    }
+    
+    billing {
+      id
+      patientPaymentType
+      patientBillingStatus
+      onsetDateType
+      onsetDate
+      otherDateType
+      employment
+      autoAccident
+      otherAccident
+      otherDate
+      amount
+      codes {
+        id
+        code
+        description
+        price
+        codeType
+      }
+    }
+  }
+}

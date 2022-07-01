@@ -1,28 +1,62 @@
 //packages Import
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { Box, Grid, Typography } from "@material-ui/core";
-import { RemoveCircleOutline } from "@material-ui/icons";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { Box, Grid, IconButton, Typography } from "@material-ui/core";
 //components Import
-import MediaCards from "../../../../common/AddMedia/MediaCards";
 import Alert from "../../../../common/Alert";
+import DropzoneImage from "../../../../common/DropZoneImage";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 //constants, types, interfaces imports 
-import { ADD_UPLOAD_IMAGES, ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, 
-        INSURANCE_CARD, NOT_FOUND_EXCEPTION, TAKE_A_PICTURE_OF_INSURANCE, USER_NOT_FOUND_EXCEPTION_MESSAGE } from "../../../../../constants";
-import { Attachment, AttachmentMetaDataType, AttachmentType, 
-         useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation } from "../../../../../generated/graphql";
-import { ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, mediaReducer, State } from "../../../../../reducers/mediaReducer";
+import { mediaType } from "../../../../../utils";
+import { TrashOutlinedIcon } from "../../../../../assets/svgs";
+import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
+import {
+  ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
+  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE, 
+  USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from "../../../../../constants";
+import {
+  AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery,
+  useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation
+} from "../../../../../generated/graphql";
 
-const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }) => {
+const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [{ attachmentUrl, attachmentData, attachments }, dispatch] =
-    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const dropZoneRef = useRef<FormForwardRef>(null);
 
-  const [getAttachments] = useGetAttachmentsByPolicyIdLazyQuery({
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const [documentTypeId, setDocumentTypeId] = useState<string>('')
+  const [attachments, setAttachments] =
+    useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
+
+  const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      name: PATIENT_INSURANCE
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchDocumentTypeByName } = data ?? {}
+        const { documentType } = fetchDocumentTypeByName ?? {}
+        const { id } = documentType ?? {}
+        setDocumentTypeId(id || '')
+      }
+    }
+  })
+
+  useEffect(() => {
+    fetchDocumentType()
+  }, [fetchDocumentType])
+
+  const [getAttachments, { loading }] = useGetAttachmentsByPolicyIdLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     variables: {
       getAttachmentsByPolicyId: {
         policyId: policyId ?? '',
@@ -34,15 +68,18 @@ const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }
       return null;
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { getAttachmentsByPolicyId } = data
 
         if (getAttachmentsByPolicyId) {
-          const { attachments } = getAttachmentsByPolicyId
-          attachments && dispatch({ type: ActionType.SET_ATTACHMENTS, attachments: attachments as Attachment[] })
-        }
+          const { attachmentsWithPreSignedUrl } = getAttachmentsByPolicyId
 
+          attachmentsWithPreSignedUrl &&
+            setAttachments(
+              attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
+            )
+        }
       }
     },
   })
@@ -54,19 +91,18 @@ const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }
   }, [getAttachments])
 
   useEffect(() => {
-    fetchAttachmentsByPolicyId()
-  }, [fetchAttachmentsByPolicyId])
+    policyId && fetchAttachmentsByPolicyId()
+  }, [fetchAttachmentsByPolicyId, policyId])
 
   const [removeAttachmentMedia, { loading: removeAttachmentLoading }] = useRemoveAttachmentMediaMutation({
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted() {
-      Alert.success('Insurance Card deleted successfully')
+      Alert.success(INSURANCE_CARD_DELETED)
       fetchAttachmentsByPolicyId()
     }
   });
@@ -80,55 +116,75 @@ const PolicyAttachments: FC<PolicyAttachmentProps> = ({ policyId, handleReload }
 
   const handleFileDeletion = async () => {
     await removeAttachmentMedia({
-      variables: {
-        id: policyAttachmentId
-      }
+      variables: { id: policyAttachmentId }
     })
 
     setOpenDelete(false)
   }
 
+  useImperativeHandle(ref, () => ({
+    submit() {
+      dropZoneRef?.current?.submit()
+    }
+  }));
 
   return (
-    <Box minWidth="100%" pt={3}>
-      <Grid container spacing={3}>
-        <Grid item md={12} sm={12} xs={12}>
-          <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
-          {
-            attachments.map((attachment) => {
-              return (
-                <li>{attachment.attachmentName}    <RemoveCircleOutline onClick={() => onDeleteClick(attachment?.id || '')} /> </li>
-              )
-            })
-          }
-          <Box p={2} />
+    loading ? <ViewDataLoader columns={3} rows={4} /> :
+      <Box minWidth="100%">
+        <Grid container spacing={3}>
+          <Grid item md={12} sm={12} xs={12}>
+            <Typography variant='h5'>{TAKE_A_PICTURE_OF_INSURANCE}</Typography>
+            <Box my={3}>
+              <Grid container spacing={3}>
+                {attachments?.map((attachment) => {
+                  return (
+                    <Grid item md={3} sm={12} xs={12}>
+                      <Box className="card-box">
+                        <Box className="card-img">
+                          <img src={attachment?.preSignedUrl || ''} alt={attachment?.preSignedUrl || ''} />
+                        </Box>
 
-          <MediaCards
-            itemId={patientId ?? ''}
-            button={true}
-            notDescription={true}
-            imageSide={attachmentUrl}
-            buttonText={ADD_UPLOAD_IMAGES}
-            moduleType={AttachmentType.Patient}
-            title={ATTACHMENT_TITLES.InsuranceCard1}
-            attachmentData={attachmentData || undefined}
-            filesLimit={2}
-            reload={() => handleReload()}
-            attachmentMetadata={{ metadataType: AttachmentMetaDataType.InsuranceCard1, policyId: policyId ?? '' }}
-          />
+                        <Box className="card-overlay">
+                          <IconButton className="del-icon" onClick={() => onDeleteClick(attachment?.id || '')}>
+                            <TrashOutlinedIcon />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            </Box>
 
-          <ConfirmationModal
-            title={INSURANCE_CARD}
-            isOpen={openDelete}
-            isLoading={removeAttachmentLoading}
-            description={DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION}
-            handleDelete={handleFileDeletion}
-            setOpen={(openDelete: boolean) => setOpenDelete(openDelete)}
-          />
+            <DropzoneImage
+              filesLimit={2}
+              isEdit={false}
+              ref={dropZoneRef}
+              attachmentId={''}
+              itemId={patientId}
+              attachmentName={''}
+              providerName={''}
+              imageModuleType={AttachmentType.Patient}
+              title={ATTACHMENT_TITLES.InsuranceCard1}
+              attachmentMetadata={{ documentTypeId, policyId: policyId ?? '' }}
+              reload={() => { }}
+              handleClose={() => { }}
+              setAttachments={() => { }}
+              acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
+            />
+
+            <ConfirmationModal
+              title={INSURANCE_CARD}
+              isOpen={openDelete}
+              isLoading={removeAttachmentLoading}
+              description={DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION}
+              handleDelete={handleFileDeletion}
+              setOpen={(openDelete: boolean) => setOpenDelete(openDelete)}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
   )
-}
+})
 
 export default PolicyAttachments

@@ -1,40 +1,42 @@
 // packages block
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
+import { Pagination } from "@material-ui/lab";
 import {
   Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell
 } from "@material-ui/core";
 // component block
+import Alert from "../../common/Alert";
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
-// constants, history, styling block
-import { handleLogout, isFacilityAdmin, isPracticeAdmin, renderTh } from "../../../utils";
-import { useTableStyles } from "../../../styles/tableStyles";
-import {
-  ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
-  EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS, TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION,
-  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, DEACTIVATE, EMERGENCY_ACCESS_ERROR_MESSGE, REVOKE,
-} from "../../../constants";
-import Alert from "../../common/Alert";
-import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
-import { AuthContext, ListContext } from "../../../context";
-import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
-
-import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
-import { Pagination } from "@material-ui/lab";
-import { RolePayloadInterface } from "../../../interfacesTypes";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
-
+import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
+// constants, history, styling block
+import { AuthContext, ListContext } from "../../../context";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { RolePayloadInterface } from "../../../interfacesTypes";
+import { handleLogout, isFacilityAdmin, isPracticeAdmin, renderTh } from "../../../utils";
+import {
+  UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation
+} from "../../../generated/graphql";
+import {
+  ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE,
+  EMERGENCY_ACCESS, EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS,
+  TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION, EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, REVOKE,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, DEACTIVATE,
+  EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, EMERGENCY_ACCESS_ERROR_MESSAGE,
+} from "../../../constants";
 
 const EmergencyAccessComponent = (): JSX.Element => {
   const classes = useTableStyles();
-  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
-  const { user, userRoles, setUserRoles, setUserPermissions, setUser, setIsLoggedIn, setCurrentUser  } = useContext(AuthContext);
+  const { setFacilityList, setRoleList } = useContext(ListContext)
+  const { user, userRoles, setUserRoles, setUserPermissions, setUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
   const [emergencyAccessUsers, setEmergencyAccessUsers] = useState<User[] | null>(null);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [shouldFetchEmergencyUser, setShouldFetchEmergencyUser] = useState(true)
   const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
-  const [searchTerm,setSearchTerm]=useState<string>('')
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
   const isPracAdmin = isPracticeAdmin(user?.roles);
@@ -46,7 +48,6 @@ const EmergencyAccessComponent = (): JSX.Element => {
     handleLogout();
     setFacilityList([]);
     setRoleList([])
-    setPracticeList([])
   };
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
@@ -56,8 +57,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
       onError({ message }) {
         if (message === FORBIDDEN_EXCEPTION) {
           Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS);
-        } else{
-          Alert.error(EMERGENCY_ACCESS_ERROR_MESSGE);
+        } else {
+          Alert.error(EMERGENCY_ACCESS_ERROR_MESSAGE);
         }
 
         setOpenDelete(false)
@@ -134,13 +135,13 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   useEffect(() => {
     if (shouldFetchEmergencyUser) {
-      if(isPracAdmin){
+      if (isPracAdmin) {
         fetchEmergencyAccessUsers({
-          variables:{
+          variables: {
             emergencyAccessUsersInput: {
               paginationInput: { page, limit: 10 },
               practiceId: user?.facility?.practiceId,
-              email:searchTerm
+              email: searchTerm
             }
           }
         })
@@ -149,11 +150,11 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
       if (isFacAdmin) {
         fetchEmergencyAccessUsers({
-          variables:{
+          variables: {
             emergencyAccessUsersInput: {
               paginationInput: { page, limit: 10 },
               facilityId: user?.facilityId,
-              email:searchTerm
+              email: searchTerm
             }
           }
         })
@@ -161,10 +162,10 @@ const EmergencyAccessComponent = (): JSX.Element => {
       }
 
       fetchEmergencyAccessUsers({
-        variables:{
+        variables: {
           emergencyAccessUsersInput: {
             paginationInput: { page, limit: 10 },
-            email:searchTerm
+            email: searchTerm
           }
         }
       })
@@ -236,15 +237,15 @@ const EmergencyAccessComponent = (): JSX.Element => {
     return handleEmergencyAccessToggle()
   }
 
-  const search = (query: string) => { 
+  const search = (query: string) => {
     setSearchTerm(query)
     setShouldFetchEmergencyUser(true)
   }
 
-  const isEmergencyAccessEnabled=userRoles.includes(EMERGENCY_ACCESS_VALUE)
-  const emergencyAccessText= rolePayload? REVOKE_ACCESS : !isEmergencyAccessEnabled? ACTIVATE_EMERGENCY_ACCESS_MODE: DEACTIVATE_EMERGENCY_ACCESS_MODE
-  const updateConfirmationModalDescription= rolePayload? `Confirm to ${REVOKE_EMERGENCY_ACCESS_MODE}`: `Confirm to ${emergencyAccessText}`
-  const emrgencyAccessModalButton= rolePayload? REVOKE : !isEmergencyAccessEnabled ? ACTIVATE : DEACTIVATE
+  const isEmergencyAccessEnabled = userRoles.includes(EMERGENCY_ACCESS_VALUE)
+  const emergencyAccessText = rolePayload ? REVOKE_ACCESS : !isEmergencyAccessEnabled ? ACTIVATE_EMERGENCY_ACCESS_MODE : DEACTIVATE_EMERGENCY_ACCESS_MODE
+  const updateConfirmationModalDescription = rolePayload ? `Confirm to ${REVOKE_EMERGENCY_ACCESS_MODE}` : `Confirm to ${emergencyAccessText}`
+  const emrgencyAccessModalButton = rolePayload ? REVOKE : !isEmergencyAccessEnabled ? ACTIVATE : DEACTIVATE
 
   return (
     <>
@@ -317,7 +318,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
       <Box p={2} />
       {shoulShowRevokePanel && <Card>
         <Box className={classes.mainTableContainer}>
-          <Box py={2} mb={2} maxWidth={450}>
+          <Box mb={2} maxWidth={450}>
             <Search search={search} />
           </Box>
 
@@ -378,12 +379,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
         )}
       </Card>}
 
-
-
-
       <UpdateConfirmationModal title={emergencyAccessText} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={updateConfirmationModalDescription} handleDelete={handleEmergencyAccessRevoke}
-        setOpen={(open: boolean) => setOpenDelete(open)} actionText={emrgencyAccessModalButton} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText}/>
+        setOpen={(open: boolean) => setOpenDelete(open)} actionText={emrgencyAccessModalButton} learnMoreText={TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION} aboutToText={emergencyAccessText} />
     </>
   );
 };

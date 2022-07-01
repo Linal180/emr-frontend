@@ -5,13 +5,13 @@ import { FC, useState, useEffect, useCallback, useMemo } from "react"
 import { Box, FormControl, FormHelperText, Grid, InputLabel, TextField } from "@material-ui/core"
 //components
 import InputController from "../../../controller"
-//interfaces, utils
+//interfaces, utils, interfaces
 import { requiredLabel } from "../../../utils"
-import { SelectorOption } from "../../../interfacesTypes"
-import { InsurancesPayload, useFetchAllInsurancesLazyQuery } from "../../../generated/graphql"
 import { COMPANY_NAME, GROUP_NUMBER, MEMBER_ID } from "../../../constants"
+import { FieldComponentProps, SelectorOption } from "../../../interfacesTypes"
+import { InsurancesPayload, useFetchAllInsurancesLazyQuery } from "../../../generated/graphql"
 
-const InsuranceComponent: FC<any> = ({ item }): JSX.Element => {
+const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
 
   const [updatedOptions, setUpdatedOptions] = useState<SelectorOption[]>([])
   const [insurances, setInsurances] = useState<InsurancesPayload['insurances']>([])
@@ -90,7 +90,6 @@ const InsuranceComponent: FC<any> = ({ item }): JSX.Element => {
                       {...params}
                       variant="outlined"
                       error={invalid}
-                      required
                       className="selectorClass"
                       onChange={(event) => setSearchQuery(event.target.value)}
                     />

@@ -16,8 +16,8 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
-import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
@@ -36,19 +36,20 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES, SETTINGS_ROUTE, IS_DOCTOR_BREAD,
+  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES,
+  SETTINGS_ROUTE, IS_DOCTOR_BREAD, EDIT_DOCTOR, CONFLICT_EXCEPTION,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext)
-  const { facilityList } = useContext(ListContext)
   const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
+
   const methods = useForm<DoctorInputProps>({
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
   const { reset, handleSubmit, setValue } = methods;
-  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
 
   const [getDoctor, { loading: GetDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -74,16 +75,15 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
               upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
-              dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber,
+              dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
             } = doctor
-
             const { id: facilityId, name } = facility || {}
-
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
             ssn && setValue('ssn', ssn)
             upin && setValue('upin', upin)
             taxId && setValue('taxId', taxId)
+            email && setValue('email', email)
             prefix && setValue('prefix', prefix)
             suffix && setValue('suffix', suffix)
             lastName && setValue('lastName', lastName)
@@ -108,7 +108,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             degreeCredentials && setValue('degreeCredentials', degreeCredentials)
             speciality && setValue('speciality', setRecord(speciality, speciality))
             licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
-            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name, false))
             licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
@@ -119,12 +119,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const primaryContact = contacts.filter(contact => contact.primaryContact)[0]
 
               if (primaryContact) {
-                const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
+                const { id, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
 
                 dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
                 fax && setValue('fax', fax)
                 city && setValue('city', city)
-                email && setValue('email', email)
                 phone && setValue('phone', phone)
                 pager && setValue('pager', pager)
                 mobile && setValue('mobile', mobile)
@@ -158,10 +157,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const [createDoctor, { loading: createDoctorLoading }] = useCreateDoctorMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -181,7 +179,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const [updateDoctor, { loading: updateDoctorLoading }] = useUpdateDoctorMutation({
     onError({ message }) {
-      Alert.error(message)
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -193,11 +193,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
           reset()
-          if (isDoctor) {
-            history.push(SETTINGS_ROUTE)
-          } else {
-            history.push(DOCTORS_ROUTE)
-          }
+
+          isDoctor ? history.push(SETTINGS_ROUTE)
+            : history.push(DOCTORS_ROUTE)
         }
       }
     }
@@ -207,10 +205,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     if (isEdit) {
-      id ?
-        getDoctor({ variables: { getDoctor: { id } } })
-        :
-        Alert.error(DOCTOR_NOT_FOUND)
+      id ? getDoctor({ variables: { getDoctor: { id } } })
+        : Alert.error(DOCTOR_NOT_FOUND)
     }
   }, [getDoctor, id, isEdit])
 
@@ -235,25 +231,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedBillingState } = billingState;
       const { id: selectedBillingCountry } = billingCountry;
 
-      let practiceId = '';
-      if (selectedFacility) {
-        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
-        const { practiceId: pId } = facility || {};
-
-        practiceId = pId || ''
-      }
-
       const doctorItemInput = {
-        firstName, middleName, lastName, prefix, suffix, email, facilityId: selectedFacility,
-        degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
+        firstName, middleName, lastName, prefix, suffix, facilityId: selectedFacility,
+        degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
         npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
         providerIntials, prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestampsForDob(dob) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
-        deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
-        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '', practiceId,
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
+        deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
+        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
       };
 
       const contactInput = {
@@ -311,8 +299,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Box ml={2} />
 
             <PageHeader
-              title={ADD_DOCTOR}
-              path={[DASHBOARD_BREAD, isDoctor ? IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]}
+              title={isEdit ? EDIT_DOCTOR : ADD_DOCTOR}
+              path={[DASHBOARD_BREAD, isDoctor ?
+                IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD
+              ]}
             />
           </Box>
 
@@ -331,322 +321,333 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
-                {GetDoctorLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <FacilitySelector
-                          addEmpty
-                          isRequired
-                          label={FACILITY}
-                          name="facilityId"
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <FacilitySelector
+                      addEmpty
+                      isRequired
+                      label={FACILITY}
+                      name="facilityId"
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={SPECIALTY}
-                          name="speciality"
-                          options={MAPPED_SPECIALTIES}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      isRequired
+                      value={EMPTY_OPTION}
+                      label={SPECIALTY}
+                      name="speciality"
+                      options={MAPPED_SPECIALTIES}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="firstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      isRequired
+                      fieldType="text"
+                      controllerName="firstName"
+                      controllerLabel={FIRST_NAME}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="lastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      isRequired
+                      fieldType="text"
+                      controllerName="lastName"
+                      controllerLabel={LAST_NAME}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="middleName"
-                          controllerLabel={MIDDLE_NAME}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="middleName"
+                      controllerLabel={MIDDLE_NAME}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6}>
-                        <DatePicker isRequired name="dob" label={DOB} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6}>
+                    <DatePicker isRequired name="dob" label={DOB} />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="degreeCredentials"
-                          controllerLabel={DEGREE_CREDENTIALS}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="degreeCredentials"
+                      controllerLabel={DEGREE_CREDENTIALS}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="prefix"
-                          controllerLabel={PREFIX}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="prefix"
+                      controllerLabel={PREFIX}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="suffix"
-                          controllerLabel={SUFFIX}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="suffix"
+                      controllerLabel={SUFFIX}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="providerIntials"
-                          controllerLabel={PROVIDER_INITIALS}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="providerIntials"
+                      controllerLabel={PROVIDER_INITIALS}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
 
               <Box pb={3} />
 
               <CardComponent cardTitle={ADDITIONAL_INFO}>
-                {GetDoctorLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="ssn"
-                          controllerLabel={SOCIAL_SECURITY_NUMBER}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="ssn"
+                      controllerLabel={SOCIAL_SECURITY_NUMBER}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="deaNumber"
-                          controllerLabel={DEA_NUMBER}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="deaNumber"
+                      controllerLabel={DEA_NUMBER}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deaTermDate" label={DEA_TERM_DATE} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="taxonomyCode"
-                          controllerLabel={TAXONOMY_CODE}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="taxonomyCode"
+                      controllerLabel={TAXONOMY_CODE}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="languagesSpoken"
-                          controllerLabel={LANGUAGE_SPOKEN}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="languagesSpoken"
+                      controllerLabel={LANGUAGE_SPOKEN}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
 
               <Box pb={3} />
 
               <CardComponent cardTitle={BILLING_ADDRESS}>
-                {GetDoctorLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="billingEmail"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="billingEmail"
+                    controllerLabel={EMAIL}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingPhone" label={PHONE} />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingPhone" label={PHONE} loading={GetDoctorLoading} />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingFax" label={FAX} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingFax" label={FAX} loading={GetDoctorLoading} />
+                  </Grid>
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="billingZipCode"
-                        controllerLabel={ZIP_CODE}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="billingZipCode"
+                    controllerLabel={ZIP_CODE}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="billingAddress"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="billingAddress"
+                    controllerLabel={ADDRESS}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="billingAddress2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="billingAddress2"
+                    controllerLabel={ADDRESS_2}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="billingCity"
+                      controllerLabel={CITY}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={STATE}
-                          name="billingState"
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
+                  <Grid item md={4}>
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={STATE}
+                      name="billingState"
+                      options={MAPPED_STATES}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={COUNTRY}
-                          name="billingCountry"
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
+                  <Grid item md={4}>
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={COUNTRY}
+                      name="billingCountry"
+                      options={MAPPED_COUNTRIES}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
             </Grid>
 
             <Grid md={6} item>
               <CardComponent cardTitle={CONTACT_INFORMATION}>
-                {GetDoctorLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="email"
-                        controllerName="email"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    isRequired
+                    fieldType="email"
+                    controllerName="email"
+                    controllerLabel={EMAIL}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="phone" label={MOBILE} />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField isRequired name="phone" label={MOBILE} loading={GetDoctorLoading} />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" label={PHONE} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="mobile" label={PHONE} loading={GetDoctorLoading} />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="pager" label={PAGER} />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="pager" label={PAGER} loading={GetDoctorLoading} />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="fax" label={FAX} />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="fax" label={FAX} loading={GetDoctorLoading} />
+                  </Grid>
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="zipCode"
-                        controllerLabel={ZIP_CODE}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="zipCode"
+                    controllerLabel={ZIP_CODE}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="address"
-                        controllerLabel={ADDRESS}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="address"
+                    controllerLabel={ADDRESS}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="address2"
-                        controllerLabel={ADDRESS_2}
-                      />
-                    </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="address2"
+                    controllerLabel={ADDRESS_2}
+                    loading={GetDoctorLoading}
+                  />
+                </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="city"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="city"
+                      controllerLabel={CITY}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={STATE}
-                          name="state"
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
+                  <Grid item md={4}>
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={STATE}
+                      name="state"
+                      options={MAPPED_STATES}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
 
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={COUNTRY}
-                          name="country"
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
+                  <Grid item md={4}>
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={COUNTRY}
+                      name="country"
+                      options={MAPPED_COUNTRIES}
+                      loading={GetDoctorLoading}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
 
               <Box pb={3} />
@@ -661,6 +662,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="taxId"
                           controllerLabel={TAX_ID}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -670,6 +672,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="npi"
                           controllerLabel={NPI}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -681,6 +684,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="upin"
                           controllerLabel={UPIN}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -689,6 +693,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="emcProviderId"
                           controllerLabel={EMC_PROVIDER_ID}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -699,6 +704,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="medicareGrpNumber"
                           controllerLabel={MEDICARE_GRP_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -707,6 +713,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="medicaidGrpNumber"
                           controllerLabel={MEDICAID_GRP_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -718,6 +725,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="meammographyCertNumber"
                           controllerLabel={MAMMOGRAPHY_CERT_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -726,6 +734,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="campusGrpNumber"
                           controllerLabel={CHAMPUS_GRP_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -736,6 +745,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="blueShildNumber"
                           controllerLabel={BLUE_SHIED_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -744,6 +754,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="taxIdStuff"
                           controllerLabel={TAX_ID_STUFF}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -754,6 +765,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="specialityLicense"
                           controllerLabel={SPECIALTY_LICENSE}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -762,6 +774,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="anesthesiaLicense"
                           controllerLabel={ANESTHESIA_LICENSE}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
@@ -772,6 +785,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="dpsCtpNumber"
                           controllerLabel={CTP_NUMBER}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
 
@@ -780,17 +794,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="stateLicense"
                           controllerLabel={STATE_LICENSE}
+                          loading={GetDoctorLoading}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} />
+                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} loading={GetDoctorLoading} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} />
+                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} loading={GetDoctorLoading} />
                       </Grid>
                     </Grid>
 
@@ -799,6 +814,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         fieldType="text"
                         controllerName="prescriptiveAuthNumber"
                         controllerLabel={PRESCRIPTIVE_AUTH_NUMBER}
+                        loading={GetDoctorLoading}
                       />
                     </Grid>
                   </>

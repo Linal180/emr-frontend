@@ -4,6 +4,11 @@ query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!){
       id
       code
       description
+
+      snoMedCode{
+        id
+        referencedComponentId
+      }
     }
   }
 }

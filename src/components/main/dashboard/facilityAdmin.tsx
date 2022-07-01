@@ -3,26 +3,27 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
+import ScheduleListing from "../../common/scheduling/Listing";
 import PieChart3Component from "../../common/charts/pieChart3";
 import PieChart4Component from "../../common/charts/pieChart4";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
-import AppointmentListComponent from "../../common/Dashboard/appointmentList";
-import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
-import { BLUE, BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE, GRAY_SEVEN, } from "../../../theme";
+import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs block, styles, history
 import history from "../../../history";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
+import { BLUE, BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE, GRAY_SEVEN, } from "../../../theme";
 import {
-  CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon, StaffWhiteIcon, UserBlackIcon,
-  UserBlackIconTwo, UserOutlinedIcon,
+  CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon, StaffWhiteIcon,
+  UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
 } from "../../../assets/svgs";
 // constant
 import {
-  QUICK_ACTIONS, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TODAYS_APPOINTMENTS,
-  ACTIVE_PROVIDERS_IN_CURRENT_SHIFT, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS, AVAILABLE_USERS_IN_CURRENT_SHIFT,
-  NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS, TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS,
-  PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS, RECENTLY_ADDED_PATIENTS, ADDED_PATIENTS_LIST, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE,
+  QUICK_ACTIONS, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE,
+  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS_IN_CURRENT_SHIFT, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
+  AVAILABLE_USERS_IN_CURRENT_SHIFT, NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS,
+  TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS,
+  RECENTLY_ADDED_PATIENTS, ADDED_PATIENTS_LIST, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE,
 } from "../../../constants";
 
 const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
@@ -75,7 +76,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                 </IconButton>
               </Box>
 
-              <AppointmentListComponent />
+              <UpcomingAppointments />
             </Box>
           </Card>
 
@@ -297,7 +298,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
 
           <Card>
             <Box px={3}>
-              <ScheduleAvailableComponent />
+              <ScheduleListing />
             </Box>
           </Card>
         </Grid>

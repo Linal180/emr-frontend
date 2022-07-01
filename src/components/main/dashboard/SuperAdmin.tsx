@@ -1,19 +1,14 @@
 // packages block
 import { FC, Reducer, useReducer } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
-import Selector from "../../common/Selector";
 import PieChart from "../../common/charts/PieChart";
 import PracticesTableComponent from "./tables/practicesTable";
 import PracticeUsers from "../../common/charts/PracticeUsers";
-import PracticesByYear from "../../common/charts/PracticesByYear";
 import PracticeFacilities from "../../common/charts/PracticeFacilities";
 // constants, styles and svgs block
 import history from "../../../history";
 import { BLUE_SEVEN, BLUE_TEN, GREEN_ONE, PURPLE_TWO, WHITE } from "../../../theme";
-import { renderArrayAsSelectorOptions } from "../../../utils";
-import { dashboardInputsProps } from "../../../interfacesTypes";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import {
   practiceReducer, Action, initialState, State
@@ -22,19 +17,19 @@ import {
   BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
 } from "../../../assets/svgs";
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
-  TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, YEARS
+  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS,
+  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, RECENT_PRACTICES,
 } from "../../../constants";
+import { Link } from "react-router-dom";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-  const methods = useForm<dashboardInputsProps>({
-    mode: "all",
-    defaultValues: { year: { id: "2022", name: "2022" } }
-  });
-  const { watch } = methods;
-  const { year } = watch()
+  // const methods = useForm<dashboardInputsProps>({
+  //   mode: "all",
+  //   defaultValues: { year: { id: "2022", name: "2022" } }
+  // });
+  // const { watch } = methods;
+  // const { year } = watch()
   const [{ practices }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
 
   return (
@@ -43,14 +38,16 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Typography variant="h5">{PRACTICES}</Typography>
+              <Typography variant="h5">{RECENT_PRACTICES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={PRACTICE_MANAGEMENT_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
-            <Box p={1}>
+            <Box>
               <PracticesTableComponent dispatch={dispatch} />
             </Box>
           </Card>
@@ -64,6 +61,18 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
             <PracticeUsers />
           </Card>
+
+          <Box p={2} />
+
+          <Card>
+            <Box className="totalFacilitiesChartContainer">
+              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
+                <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
+              </Box>
+
+              <PracticeFacilities />
+            </Box>
+          </Card>
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
@@ -74,30 +83,20 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer}>
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
-                        <PlusRoundIcon />
-                        <Box p={0.7} />
-                        <Typography variant="h6">{CREATE_PRACTICE}</Typography>
-                      </Box>
-                    </Grid>
+            <Box className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
+              <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
+                <PlusRoundIcon />
+                <Box p={0.7} />
+                <Typography variant="h6">{CREATE_PRACTICE}</Typography>
+              </Box>
 
-                    <Box p={1} />
+              <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
-                        <BillingCardIcon />
-                        <Box p={0.7} />
-                        <Typography variant="h6">{VIEW_BILLING}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+              <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
+                <BillingCardIcon />
+                <Box p={1} />
+                <Typography variant="h6">{VIEW_BILLING}</Typography>
+              </Box>
             </Box>
           </Card>
 
@@ -113,9 +112,11 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="body2">{practices?.length} {TOTAL_TEXT}</Typography>
               </Box>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={PRACTICE_MANAGEMENT_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             <PieChart practices={practices} />
@@ -155,40 +156,26 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Box p={2} />
+      {/* <Box p={2} /> */}
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
+      <Grid container spacing={0}>
+        {/* <Grid item md={6} sm={12} xs={12}>
           <Card>
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h4">{PRACTICE_REGISTRATIONS}</Typography>
 
-                <Box>
-                  <Box className={classes.yearDropdown}>
-                    <FormProvider {...methods}>
-                      <Selector label="" name="year" options={renderArrayAsSelectorOptions(YEARS)} />
-                    </FormProvider>
-                  </Box>
+                <Box className={classes.yearDropdown}>
+                  <FormProvider {...methods}>
+                    <Selector label="" name="year" options={renderArrayAsSelectorOptions(YEARS)} />
+                  </FormProvider>
                 </Box>
               </Box>
 
               <PracticesByYear year={year} />
             </Box>
           </Card>
-        </Grid>
-
-        <Grid item md={6} sm={12} xs={12}>
-          <Card>
-            <Box className="totalFacilitiesChartContainer">
-              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
-                <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
-              </Box>
-
-              <PracticeFacilities />
-            </Box>
-          </Card>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   )

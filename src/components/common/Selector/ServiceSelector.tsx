@@ -1,113 +1,146 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
-import { Autocomplete } from "@material-ui/lab";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
+import Select, { GroupBase, OptionsOrGroups } from 'react-select';
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // utils and interfaces/types block
-import { isPracticeAdmin, isSuperAdmin, renderServices, requiredLabel } from "../../../utils";
-import {
-  serviceReducer, serviceAction, initialState, State, ActionType
-} from "../../../reducers/serviceReducer";
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
 import { AuthContext } from "../../../context";
+import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
+import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
+import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderLoading, renderMultiServices, requiredLabel } from "../../../utils";
 
-const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
-  const { control } = useFormContext()
+const ServicesSelector: FC<ServiceSelectorInterface> = ({
+  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId, loading
+}): JSX.Element => {
+  const { control, setValue } = useFormContext();
+  const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
+  const [values, setValues] = useState<multiOptionType[] | multiOptionType>([])
+
   const { user } = useContext(AuthContext);
-  const {facility, roles} = user || {}
-  const {id: userFacilityId} = facility || {}
+  const { facility, roles } = user || {}
+  const { id: userFacilityId, practiceId } = facility || {}
+
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
-  const isSuperAndPracAdmin = isSuper || isPracAdmin
-  const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
-  const { page, searchQuery, services } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
+  const isPracticeUser = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [findAllService,] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_SERVICES, services: [] })
+      setOptions([])
     },
 
     onCompleted(data) {
       const { findAllServices } = data || {};
 
       if (findAllServices) {
-        const { pagination, services } = findAllServices
-        services && dispatch({ type: ActionType.SET_SERVICES, services: services as ServicesPayload['services'] })
-
-        if (pagination) {
-          const { totalPages } = pagination
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-        }
+        const { services } = findAllServices
+        services && setOptions(renderMultiServices(services as ServicesPayload['services']))
       }
     }
   });
 
-  const fetchAllServices = useCallback(async () => {
+  const fetchAllServices = useCallback(async (query: string) => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      isSuperAndPracAdmin ? facilityId && await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
-      }): await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
-      })
+      const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
+      const servicesInputs = isSuper ? { ...pageInputs } :
+        isPracticeUser ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { userFacilityId, ...pageInputs } : undefined
+
+      if (!!shouldEmitFacilityId) {
+        await findAllService({
+          variables: {
+            serviceInput: {
+              ...pageInputs, isActive: true, serviceName: query,
+              ...servicesInputs
+            }
+          }
+        })
+      } else {
+        await findAllService({
+          variables: {
+            serviceInput: {
+              ...pageInputs, isActive: true, serviceName: query,
+              facilityId: !!facilityId ? facilityId : userFacilityId
+            }
+          }
+        })
+      }
+
     } catch (error) { }
-  }, [page, isSuperAndPracAdmin, findAllService, searchQuery, facilityId, userFacilityId])
+  }, [isSuper, isPracticeUser, practiceId, isFacAdmin, userFacilityId, shouldEmitFacilityId, findAllService, facilityId])
+
+  useEffect(() => { fetchAllServices('') }, [fetchAllServices]);
+  useEffect(() => { setOptions([]) }, [facilityId])
 
   useEffect(() => {
-    if (!searchQuery.length || searchQuery.length > 2) {
-      fetchAllServices()
+    if (isEdit) {
+      if (defaultValues) {
+        setValue('diagnosesIds', defaultValues)
+        setOptions(defaultValues)
+        setValues(defaultValues)
+      }
     }
-  }, [page, searchQuery, fetchAllServices]);
+  }, [defaultValues, isEdit, setValue])
 
-  useEffect(() => {
-    dispatch({ type: ActionType.SET_SERVICES, services: [] as ServicesPayload['services'] })
-  }, [facilityId])
+  const updateValues = (newValues: multiOptionType[]) => {
+    setValue('diagnosesIds', newValues)
+    setValues(newValues as multiOptionType[])
+  }
+
+  const multiSelectProps = isMulti ? {
+    isMulti: isMulti,
+    options: options as (multiOptionType | GroupBase<multiOptionType>)[]
+  } : {
+    options: options as OptionsOrGroups<multiOptionType, GroupBase<multiOptionType>> | undefined
+  }
 
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={updatedOptions[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={updatedOptions ?? []}
-            value={field.value}
-            disabled={disabled}
-            disableClearable
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
+    <>
+      {
+        loading ? renderLoading(inputLabel || '') :
+          <Controller
+            name={name}
+            control={control}
+            defaultValue={options}
+            render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+              return (
+                <FormControl fullWidth margin={'normal'} error={Boolean(invalid)}>
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>
 
-                </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
-                />
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-            onChange={(_, data) => field.onChange(data)}
+                  <Select
+                    {...field}
+                    isClearable
+                    {...multiSelectProps}
+                    name={name}
+                    defaultValue={options}
+                    value={values}
+                    onChange={(newValue) => {
+                      field.onChange(newValue)
+                      updateValues(newValue as multiOptionType[])
+                    }}
+                    onInputChange={(query: string) => {
+                      (query.length > 2 || query.length === 0) && fetchAllServices(query)
+                    }}
+                    className={message ? `selectorClassTwoError diagnosesSelectorClass` : `selectorClassTwo diagnosesSelectorClass`}
+                  />
+
+                  <FormHelperText>{invalid && message}</FormHelperText>
+                </FormControl>
+              )
+            }}
           />
-        );
-      }}
-    />
-  );
-};
+      }
+    </>
+  )
+}
 
-export default ServiceSelector;
+export default ServicesSelector;

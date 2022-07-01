@@ -22,7 +22,7 @@ const Sidebar = ({ dispatch, formState }: FormSidebarProps) => {
       </Box>
 
       <TabContext value={selectedTab}>
-        <TabList onChange={handleChange}>
+        <TabList onChange={handleChange} variant='scrollable' className='align-center'>
           {FORM_BUILDER_ADD_FIELDS_TABS.map(item => (
             <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
           ))}
@@ -36,7 +36,6 @@ const Sidebar = ({ dispatch, formState }: FormSidebarProps) => {
           <FormFields />
         </TabPanel>
       </TabContext>
-
     </Box>
   )
 }

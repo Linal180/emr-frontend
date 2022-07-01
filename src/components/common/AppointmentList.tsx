@@ -7,15 +7,16 @@ import Alert from "./Alert";
 // interfaces, constants, utils blocks
 import history from "../../history";
 import { WHITE_FOUR } from "../../theme";
-import { convertDateFromUnix, getAppointmentDateTime } from "../../utils";
-import { Appointmentstatus, useUpdateAppointmentMutation } from "../../generated/graphql"
+import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
+import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE, MINUTES
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId } = useParams<ParamsType>();
+
   const [updateAppointment, { loading: updateAppointmentLoading }] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
 
@@ -26,7 +27,12 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
 
   const handlePatientCheckIn = async (id: string) => {
     const { data } = await updateAppointment({
-      variables: { updateAppointmentInput: { id,status:Appointmentstatus.CheckedIn, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.Arrived,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
@@ -43,10 +49,10 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
   return (
     <Box>
       {appointments?.map(appointment => {
-        const { id, scheduleStartDateTime, appointmentType, provider, facility } = appointment || {};
+        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility } = appointment || {};
         const { firstName, lastName } = provider || {};
         const { name: facilityName } = facility || {};
-        const { duration, name: serviceName } = appointmentType || {};
+        const { name: serviceName } = appointmentType || {};
 
         return (
           <Box
@@ -56,7 +62,9 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
             <Box>
               <Typography variant="h6">{getAppointmentDateTime(scheduleStartDateTime || '')}</Typography>
               <Box p={0.5} />
-              <Typography variant="body1">{serviceName} ({duration} Minutes)</Typography>
+              <Typography variant="body1">
+                {serviceName}   ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+              </Typography>
 
               {provider &&
                 <Typography variant="body1">{SCHEDULE_WITH_DOCTOR} {firstName} {lastName}</Typography>}
@@ -65,14 +73,17 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                 <Typography variant="body1">{SCHEDULED_IN_FACILITY} {facilityName}</Typography>}
             </Box>
 
-            {type === Appointmentstatus.Initiated &&
-              <Box display="flex" my={2}>
+            {type === AppointmentStatus.Scheduled &&
+              <Box display="flex" my={2} className="appointment-action-btn">
                 <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                   <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
                 </Link>
 
                 <Box p={1} />
-                <Button type="submit" variant="contained" color="secondary" onClick={() => handlePatientCheckIn(id || '')} disabled={updateAppointmentLoading}>
+                <Button type="submit" variant="contained" color="secondary"
+                  onClick={() => handlePatientCheckIn(id || '')}
+                  disabled={updateAppointmentLoading}
+                >
                   {CHECK_IN}
                 </Button>
               </Box>

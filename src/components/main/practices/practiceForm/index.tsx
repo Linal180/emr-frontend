@@ -12,7 +12,6 @@ import PageHeader from '../../../common/PageHeader';
 import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -22,20 +21,17 @@ import {
 } from '../../../../generated/graphql';
 import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
-  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, USER_DETAILS_TEXT, PRACTICE_NAME,
+  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT,
   COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_NEW_BREAD,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const {
-    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, setPracticeList,
-    setRoleList
-  } = useContext(ListContext)
+  const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
@@ -90,7 +86,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPractice: { response, practice } } = data;
+      const { createPractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -98,10 +94,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          addPracticeList(practice)
           setFacilityList([])
           setRoleList([])
-          setPracticeList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -115,7 +109,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updatePractice: { response, practice } } = data;
+      const { updatePractice: { response } } = data;
 
       if (response) {
         const { status, message } = response
@@ -123,7 +117,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          updatePracticeList(practice)
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }
@@ -216,72 +209,81 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid container>
                   <Grid md={12} item>
                     <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
-                      {getPracticeLoading ? <ViewDataLoader rows={2} columns={6} /> :
-                        <>
-                          <Grid container spacing={3}>
-                            <Grid item md={12} sm={12} xs={12}>
-                              <InputController
-                                isRequired
-                                fieldType="text"
-                                controllerName="name"
-                                controllerLabel={PRACTICE_NAME}
-                              />
-                            </Grid>
+                      <Grid container spacing={3}>
+                        <Grid item md={12} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            controllerName="name"
+                            controllerLabel={PRACTICE_NAME}
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
 
-                            <Grid item md={6} sm={12} xs={12}>
-                              <PhoneField name="phone" label={PHONE} />
-                            </Grid>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <PhoneField
+                            name="phone"
+                            loading={getPracticeLoading}
+                            label={PHONE}
+                          />
+                        </Grid>
 
-                            <Grid item md={6} sm={12} xs={12}>
-                              <PhoneField name="fax" label={FAX} />
-                            </Grid>
-                          </Grid>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <PhoneField
+                            name="fax"
+                            loading={getPracticeLoading}
+                            label={FAX} />
+                        </Grid>
+                      </Grid>
 
-                          <Typography>{PRACTICE_IDENTIFIER}</Typography>
+                      <Typography>{PRACTICE_IDENTIFIER}</Typography>
 
-                          <Grid container spacing={3}>
-                            <Grid item md={3} sm={12} xs={12}>
-                              <InputController
-                                placeholder={EIN}
-                                fieldType="text"
-                                controllerName="ein"
-                              />
-                            </Grid>
+                      <Grid container spacing={3}>
+                        <Grid item md={2} sm={12} xs={12}>
+                          <InputController
+                            placeholder={EIN}
+                            fieldType="text"
+                            controllerName="ein"
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
 
-                            <Grid item md={3} sm={12} xs={12}>
-                              <InputController
-                                placeholder={UPIN}
-                                fieldType="text"
-                                controllerName="upin"
-                              />
-                            </Grid>
+                        <Grid item md={2} sm={12} xs={12}>
+                          <InputController
+                            placeholder={UPIN}
+                            fieldType="text"
+                            controllerName="upin"
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
 
-                            <Grid item md={2} sm={12} xs={12}>
-                              <InputController
-                                placeholder={MEDICARE}
-                                fieldType="text"
-                                controllerName="medicare"
-                              />
-                            </Grid>
+                        <Grid item md={2} sm={12} xs={12}>
+                          <InputController
+                            placeholder={MEDICARE}
+                            fieldType="text"
+                            controllerName="medicare"
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
 
-                            <Grid item md={2} sm={12} xs={12}>
-                              <InputController
-                                placeholder={MEDICAID}
-                                fieldType="text"
-                                controllerName="medicaid"
-                              />
-                            </Grid>
+                        <Grid item md={2} sm={12} xs={12}>
+                          <InputController
+                            placeholder={MEDICAID}
+                            fieldType="text"
+                            controllerName="medicaid"
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
 
-                            <Grid item md={2} sm={12} xs={12}>
-                              <InputController
-                                placeholder={CHAMPUS}
-                                fieldType="text"
-                                controllerName="champus"
-                              />
-                            </Grid>
-                          </Grid>
-                        </>
-                      }
+                        <Grid item md={2} sm={12} xs={12}>
+                          <InputController
+                            placeholder={CHAMPUS}
+                            fieldType="text"
+                            controllerName="champus"
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
+                      </Grid>
                     </CardComponent>
                   </Grid>
 
@@ -289,7 +291,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Grid md={12} item>
                     {!isEdit &&
-                      <CardComponent cardTitle={USER_DETAILS_TEXT}>
+                      <CardComponent cardTitle={PRACTICE_ADMIN_DETAILS_TEXT}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
@@ -311,7 +313,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={8} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               isRequired
                               fieldType="email"
@@ -320,7 +322,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={4} sm={12} xs={12}>
+                          <Grid item md={6} sm={12} xs={12}>
                             <PhoneField name="userPhone" label={PHONE} />
                           </Grid>
                         </Grid>

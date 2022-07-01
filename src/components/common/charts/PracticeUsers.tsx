@@ -41,7 +41,7 @@ const PracticeUsers: FC = (): JSX.Element => {
             const practiceName = pluck(practiceUsers, 'name') || ['']
             const usersCount = pluck(practiceUsers, 'userCount') || []
 
-            !!usersCount.length && setChartOptions({
+            !!usersCount.length && usersCount.length > 10 && setChartOptions({
               ...chartOptions, series: { ...chartOptions.series, data: usersCount },
               xAxis: { ...chartOptions.xAxis, categories: practiceName as string[] }
             })
@@ -62,7 +62,6 @@ const PracticeUsers: FC = (): JSX.Element => {
   return (
     <>
       {!loading &&
-
         <Box className="practice-bar-chart-container">
           <HighchartsReact highcharts={Highcharts} options={chartOptions} />
         </Box>

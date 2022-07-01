@@ -367,6 +367,8 @@ export const theme = createTheme({
 
       formControl: {
         top: -24,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
 
         [breakpoints.between(1280, 1441)]: {
           top: -30,
@@ -418,7 +420,7 @@ export const theme = createTheme({
     MuiTableCell: {
       root: {
         borderBottom: `1px solid ${WHITE_THREE}`,
-        padding: "14px 11px",
+        padding: 10,
       },
 
       head: {
@@ -604,6 +606,8 @@ export const theme = createTheme({
 
     MuiFormLabel: {
       root: {
+        lineHeight: 'inherit !important',
+
         "&.Mui-focused": {
           color: GRAY_THREE
         }

@@ -1,34 +1,36 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
-import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
+} from '@material-ui/core';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useParams } from 'react-router-dom';
+// constants block
+import { PageBackIcon } from '../../../../../assets/svgs';
+import {
+  ACTIVE, ADD, ADD_PROBLEM, CANCEL, CHRONIC, COMMENTS, DASHES, UPDATE_PROBLEM, EMPTY_OPTION, ONSET_DATE, PATIENT_PROBLEM_ADDED,
+  PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE
+} from '../../../../../constants';
 // component block
+import InputController from '../../../../../controller';
+import {
+  IcdCodes, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
+  useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
+} from '../../../../../generated/graphql';
+import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
+import { ActionType } from '../../../../../reducers/chartReducer';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { ACUTE, GRAY_SIX, GREEN, GREY_THREE, GREY_TWO, MILD, WHITE } from '../../../../../theme';
+import { formatValue, setRecord } from '../../../../../utils';
+import { patientProblemSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import DatePicker from '../../../../common/DatePicker';
-import InputController from '../../../../../controller';
-// constants block
-import { GRAY_SIX } from '../../../../../theme';
-import { ClearIcon } from '../../../../../assets/svgs';
-import { formatValue, setRecord } from '../../../../../utils';
-import { ActionType } from '../../../../../reducers/chartReducer';
-import { patientProblemSchema } from '../../../../../validationSchemas';
-import { AddModalProps, ParamsType, PatientProblemInputs, SelectorOption } from '../../../../../interfacesTypes';
-import {
-  ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE, SNO_MED_CODE, EMPTY_OPTION, APPOINTMENT_TEXT,
-} from '../../../../../constants';
-import {
-  IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
-  useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation
-} from '../../../../../generated/graphql';
-import ItemSelector from '../../../../common/ItemSelector';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
-import AppointmentSelector from '../../../../common/Selector/AppointmentSelector';
 
-const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen }): JSX.Element => {
-  const { id: icdCodeId, code, description } = item as IcdCodes || {}
+const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose }): JSX.Element => {
+  const chartingClasses = useChartingStyles()
+  const { id: icdCodeId, code, description, } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
@@ -44,6 +46,9 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const closeAddModal = () => {
     reset()
     dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
+    dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' });
+    dispatcher({ type: ActionType.SET_SELECTED_ITEM, selectedItem: undefined });
+    handleClose && handleClose()
   }
 
   const [getPatientProblem, { loading: getProblemLoading }] = useGetPatientProblemLazyQuery({
@@ -130,26 +135,6 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     }
   });
 
-  const [removePatientProblem, { loading: removeProblemLoading }] = useRemovePatientProblemMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    onCompleted(data) {
-      const { removePatientProblem: { response } } = data;
-
-      if (response) {
-        const { status } = response
-
-        if (status && status === 200) {
-          fetch()
-          Alert.success(PATIENT_PROBLEM_DELETED);
-          closeAddModal()
-        }
-      }
-    }
-  });
-
   const fetchPatientProblem = useCallback(async () => {
     try {
       recordId && await getPatientProblem({
@@ -165,21 +150,16 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const handleStatus = (status: string) => setTypeStatus(status)
   const handleSeverity = (severity: string) => setSeverity(severity)
 
-  const handleDelete = async () => {
-    recordId && await removePatientProblem({
-      variables: { removeProblem: { id: recordId } }
-    })
-  }
-
   const onSubmit: SubmitHandler<PatientProblemInputs> = async ({
-    note, appointmentId, problemStartDate, snowMedCodeId
+    note, appointmentId, problemStartDate
   }) => {
     const { id: selectedAppointment } = appointmentId || {};
-    const { id: selectedSnoMedCode } = snowMedCodeId || {};
 
     const commonInput = {
-      note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
-      problemType: typeStatus.toUpperCase() as ProblemType
+      note,
+      ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
+      problemStartDate,
+      ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
     }
 
     const extendedInput = selectedAppointment ?
@@ -188,105 +168,165 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     if (isEdit) {
       recordId && await updatePatientProblem({
         variables: {
-          updateProblemInput: { id: recordId, ...extendedInput }
+          updateProblemInput: {
+            id: recordId, ...extendedInput,
+          }
         }
       })
     } else {
+      const { snoMedCode } = item as IcdCodesWithSnowMedCode
+      const { id: selectedSnoMedCode } = snoMedCode || {};
+
       await addPatientProblem({
         variables: {
-          createProblemInput: { patientId, icdCodeId, ...extendedInput, snowMedCodeId: selectedSnoMedCode }
+          createProblemInput: {
+            patientId, icdCodeId, ...extendedInput,
+            ...(selectedSnoMedCode && { snowMedCodeId: selectedSnoMedCode })
+          }
         }
       })
     }
   }
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
+  const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
+
+  const getProblemSeverityColor = (severity: string) => {
+    switch (severity) {
+      case CHRONIC:
+        return ACUTE;
+
+      case 'Acute':
+        return MILD;
+    }
+  };
+
+  const getProblemTypeColor = (type: string) => {
+    switch (type) {
+      case ACTIVE:
+        return GREEN
+      case 'Historic':
+        return GREY_TWO
+      default:
+        return '';
+    }
+  }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant='h4'>{code}</Typography>
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
+      <DialogTitle>
+        <Typography variant="h4">{isEdit ? UPDATE_PROBLEM : ADD_PROBLEM}</Typography>
+      </DialogTitle>
 
-          <IconButton onClick={closeAddModal}>
-            <ClearIcon />
-          </IconButton>
-        </Box>
+      <FormProvider {...methods}>
+        <DialogContent className={chartingClasses.chartModalBox}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box display="flex" alignItems="center">
+              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+                <PageBackIcon />
+              </Box>
 
-        <Typography variant='h6'>{description}</Typography>
+              <Box>
+                <Typography variant='h4'>{description}</Typography>
 
-        <Box p={2} />
-
-
-        {getProblemLoading ?
-          <ViewDataLoader columns={12} rows={4} />
-          : <>
-            <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
-            <Typography variant='body1'>{STATUS}</Typography>
-
-            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-              {statuses.map(status =>
-                <Box onClick={() => handleStatus(status)}
-                  className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}>
-                  <Typography variant='h6'>{status}</Typography>
+                <Box mt={1} color={GREY_THREE}>
+                  {isEdit ? <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCode?.name && snoMedCode?.name !== DASHES ? `| SnoMedCode: ${snoMedCode?.name}` : ''}</Typography> :
+                    <Typography variant='h6'><strong>ICD-10 Code:</strong> {code} {snoMedCodeInfo?.referencedComponentId && `| SnoMedCode: ${snoMedCodeInfo?.referencedComponentId}`}</Typography>}
                 </Box>
-              )}
+              </Box>
             </Box>
 
-            <Typography variant='body1'>{TYPE}</Typography>
+            <Box m={2} />
 
-            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-              {severities.map(type =>
-                <Box onClick={() => handleSeverity(type)}
-                  className={type === severity ? 'selectedBox selectBox' : 'selectBox'}>
-                  <Typography variant='h6'>{type}</Typography>
+            {getProblemLoading ?
+              <ViewDataLoader columns={12} rows={4} />
+              : <>
+                <Grid container className={chartingClasses.problemGrid}>
+                  <Grid item md={12} sm={12} xs={12}>
+                    <DatePicker defaultValue={new Date()} label={ONSET_DATE} name='problemStartDate' isRequired />
+                  </Grid>
+                </Grid>
+
+                <Typography variant='body1'>{STATUS}</Typography>
+
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {statuses.map(status =>
+                      <Box onClick={() => handleStatus(status)}
+                        className={status === typeStatus ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: status === typeStatus ? WHITE : getProblemTypeColor(status),
+                          backgroundColor: status === typeStatus ? getProblemTypeColor(status) : WHITE,
+                        }}
+                      >
+                        <Typography variant='h6'>{status}</Typography>
+                      </Box>
+                    )}
+                  </Box>
                 </Box>
-              )}
-            </Box>
 
-            <ItemSelector
-              isEdit
-              label={SNO_MED_CODE}
-              name="snowMedCodeId"
-              value={snoMedCode}
-              searchQuery={code || ''}
-              modalName={ITEM_MODULE.snoMedCode}
-            />
+                <Typography variant='body1'>{TYPE}</Typography>
 
-            <AppointmentSelector
-              addEmpty
-              name="appointmentId"
-              patientId={patientId}
-              label={APPOINTMENT_TEXT}
-            />
+                <Box className={chartingClasses.toggleProblem}>
+                  <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {severities.map(type =>
+                      <Box onClick={() => handleSeverity(type)}
+                        className={type === severity ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: type === severity ? WHITE : getProblemSeverityColor(type as ProblemSeverity),
+                          backgroundColor: type === severity ? getProblemSeverityColor(type as ProblemSeverity) : WHITE,
+                        }}
+                      >
+                        <Typography variant='h6'>{type}</Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
 
-            <InputController
-              multiline
-              fieldType="text"
-              controllerName="note"
-              controllerLabel={COMMENTS}
-            />
+                <Grid container className={chartingClasses.problemGrid}>
+                  {/* <Grid item md={12} sm={12} xs={12}>
+                    <ItemSelector
+                      isEdit
+                      label={SNO_MED_CODE}
+                      name="snowMedCodeId"
+                      value={snoMedCode}
+                      searchQuery={code || ''}
+                      modalName={ITEM_MODULE.snoMedCode}
+                    />
+                  </Grid> */}
 
-            <Box display='flex' justifyContent='flex-end'>
-              {isEdit &&
-                <Button disabled={removeProblemLoading} onClick={handleDelete} variant='contained'
-                  className='btnDanger'
-                >
-                  {DELETE}
-                </Button>
-              }
+                  <Box m={2} />
 
-              <Box p={1} />
+                  <Grid item md={12} sm={12} xs={12}>
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="note"
+                      controllerLabel={COMMENTS}
+                    />
+                  </Grid>
+                </Grid>
+              </>}
+          </form>
+        </DialogContent>
 
-              <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
-                {isEdit ? UPDATE : ADD}
+        <DialogActions>
+          <Box display='flex' justifyContent='flex-end' alignItems='center'>
+            <Button variant='text' onClick={closeAddModal}>
+              {CANCEL}
+            </Button>
 
-                {isDisable && <CircularProgress size={20} color="inherit" />}
-              </Button>
-            </Box>
-          </>}
-      </form>
-    </FormProvider>
+            <Box p={1} />
+
+            <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
+              {isEdit ? UPDATE : ADD}
+
+              {isDisable && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </DialogActions>
+      </FormProvider>
+    </Dialog>
   )
 };
 

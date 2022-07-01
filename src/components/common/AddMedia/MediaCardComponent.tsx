@@ -16,9 +16,9 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
   allAttachments, imageSide, notDescription, button, buttonText
 }): JSX.Element => {
+  const classes = documentVerificationFormStyles()
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
-  const classes = documentVerificationFormStyles()
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
@@ -102,7 +102,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid item md={12} xs={12}>
+          {(!notDescription || button) && <Grid item md={12} xs={12}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {buttonText || UPLOAD}
@@ -123,7 +123,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
                 <Typography component="h6" variant="body1">{SUPPORT_DOC_TEXT}</Typography>
               </Box>
             </Box>}
-          </Grid>
+          </Grid>}
 
         </Grid>
       </Box>

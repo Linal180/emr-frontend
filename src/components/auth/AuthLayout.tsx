@@ -5,7 +5,7 @@ import { Box, Typography } from "@material-ui/core";
 import history from "../../history";
 import { Children } from "../../interfacesTypes";
 import { useLoginStyles } from "../../styles/loginStyles";
-import { EMRLogo, LoginSideImage } from "../../assets/svgs";
+import { AIMEDLOGO, LoginSideImage } from "../../assets/svgs";
 import {
   FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, FORGOT_PASSWORD_TEXT_MESSAGE, LOGIN_ROUTE, LOGIN_TEXT_MESSAGE,
   RESET_PASSWORD_ROUTE, RESET_PASSWORD_TEXT, RESET_PASSWORD_TEXT_MESSAGE, ROOT_ROUTE, SET, SET_PASSWORD_ROUTE,
@@ -52,7 +52,7 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
       <Box className={classes.loginFormImageContainer}>
         <Box pb={3} pt={10}>
           <Box>
-            <EMRLogo />
+            <AIMEDLOGO />
             <Typography variant="body1" className={classes.loginDescription}>{text}</Typography>
           </Box>
         </Box>

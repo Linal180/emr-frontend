@@ -13,12 +13,22 @@ query GetAttachments($getAttachment: GetAttachment!){
       type
       title
       typeId
-      signedAt
-      signedBy
-      providerName
       attachmentName
       createdAt
       updatedAt
+
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        comments
+        documentDate
+
+        documentType {
+          id
+          type
+        }
+      }
     }
 
     pagination {
@@ -64,7 +74,6 @@ mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
       key
       type
       typeId
-      providerName
       createdAt
       updatedAt
     }
@@ -106,9 +115,9 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
       attachmentName
       url
       type
-      comments
+
       attachmentMetadata{
-        metadataType
+        comments
         labOrderNum
       }
       attachmentMetadataId
@@ -118,18 +127,66 @@ query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrd
 
 query GetAttachmentsByPolicyId($getAttachmentsByPolicyId: GetAttachmentsByPolicyId!) {
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: $getAttachmentsByPolicyId) {
-     attachments{
+     attachmentsWithPreSignedUrl{
+      id
+      title
+      attachmentName
+      preSignedUrl
+      url
+      type
+
+      attachmentMetadata{
+        comments
+        policyId
+      }
+    }
+  }
+}
+
+query GetAttachmentsByAgreementId($getAttachmentsByAgreementId: GetAttachmentsByAgreementId!) {
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: $getAttachmentsByAgreementId) {
+     attachmentsWithPreSignedUrl{
       id
       title
       attachmentName
       url
+      preSignedUrl
       type
-      comments
+
       attachmentMetadata{
-        metadataType
-        policyId
+        comments
+        agreementId
       }
-      attachmentMetadataId
+    }
+  }
+}
+
+query FetchDocumentTypeByName($name: String!) {
+  fetchDocumentTypeByName(name: $name) {
+    documentType{
+      type
+      id
+    }
+  }
+}
+
+query FetchDocumentTypes($documentTypeInput: DocumentTypeInput!) {
+  fetchDocumentTypes(documentTypeInput: $documentTypeInput) {
+    documentTypes{
+      type
+      id
+      practiceId
+    }
+
+    response {
+      error
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
     }
   }
 }

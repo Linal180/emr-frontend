@@ -28,23 +28,36 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(submitHandler)}>
               <Grid container spacing={2}>
-                {data?.map((item, index) => (
-                  <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                    <CardComponent cardTitle={item?.name}>
-                      <Grid container spacing={3}>
-                        {item?.fields?.map((field) => (
-                          <Grid
-                            item
-                            md={parseColumnGrid(field?.column)}
-                            key={`${item?.id}-${field?.fieldId}`}
-                          >
-                            <FieldController item={field} isCreating={true} />
+                {data?.map((tab, i) => {
+                  const { sections } = tab || {}
+
+                  return sections?.map((item, index) => {
+                    const { col, fields, id, name } = item || {}
+                    return (
+                      <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
+                        <CardComponent cardTitle={name}>
+                          <Grid container spacing={3}>
+                            {fields?.map((field) => {
+                              const { fieldId, column } = field
+                              return (
+                                <Grid
+                                  item
+                                  md={parseColumnGrid(column)}
+                                  key={`${id}-${fieldId}`}
+                                >
+                                  <FieldController item={field} isCreating={true} />
+                                </Grid>
+                              )
+                            }
+                            )}
                           </Grid>
-                        ))}
+                        </CardComponent>
                       </Grid>
-                    </CardComponent>
-                  </Grid>
-                ))}
+                    )
+
+                  })
+                }
+                )}
               </Grid>
             </form>
           </FormProvider>

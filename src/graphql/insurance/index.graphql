@@ -22,7 +22,7 @@ query FetchAllPolicies($policyInput: PolicyPaginationInput!){
   fetchAllPolicies(policyInput: $policyInput){
     policies {
       id
-      orderOfBenifit
+      orderOfBenefit
       expirationDate
       issueDate
       memberId
@@ -68,7 +68,74 @@ query FetchPolicy($id: String!){
       memberId
       groupNumber
       notes
-      orderOfBenifit
+      orderOfBenefit
+      referringProvider{
+        firstName
+        lastName
+        id
+      }
+      
+      primaryCareProvider{
+        firstName
+        lastName
+        id
+      }
+      
+      copays {
+        id
+        type
+        amount
+      }
+
+      policyHolder {
+        id
+        address
+        addressCTD
+        city
+        dob
+        employer
+        firstName
+        middleName
+        lastName
+        certificationNumber
+        ssn
+        state
+        suffix
+        zipCode
+        sex
+      }
+
+      patient {
+        id
+      }
+
+      insurance {
+        payerName
+        payerId
+        id
+      }
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+query FetchPatientInsurances($id: String!){
+  fetchPatientInsurances(id: $id){
+    policies {
+      id
+      policyHolderRelationship
+      coinsurancePercentage
+      expirationDate
+      pricingProductType
+      issueDate
+      memberId
+      groupNumber
+      notes
+      orderOfBenefit
       referringProvider{
         firstName
         lastName
@@ -135,6 +202,13 @@ mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
     }
   }
 }
+
+mutation CreateCopay($createCopayInput: CopayInput!) {
+  createCopay(createCopayInput: $createCopayInput){
+    id
+  }
+}
+
 
 mutation UpdatePolicy($updatePolicyInput: UpdatePolicyInput!) {
   updatePolicy(updatePolicyInput: $updatePolicyInput){

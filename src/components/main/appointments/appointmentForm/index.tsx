@@ -1,63 +1,91 @@
 // packages block
-import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent, useState } from 'react';
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from 'react';
+import moment from 'moment';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
+import {
+  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
-import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import NoSlotsComponent from '../../../common/NoSlotsComponent';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GREY_TWO, WHITE } from '../../../../theme';
-import { appointmentSchema } from '../../../../validationSchemas';
-import { FacilityContext, ListContext } from '../../../../context';
+import { useChartingStyles } from '../../../../styles/chartingStyles';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
 import {
-  appointmentReducer, Action, initialState, State, ActionType
+  ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType
+} from "../../../../interfacesTypes";
+import {
+  Action, ActionType, appointmentReducer, initialState, State
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps, filterSlots
+  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
+  isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
 } from "../../../../utils";
 import {
-  PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetSlotsLazyQuery, Appointmentstatus, SlotsPayload, BillingStatus,
+  AppointmentCreateType, AppointmentStatus, BillingStatus,
+  PaymentType, Slots, SlotsPayload, useCreateAppointmentMutation,
+  useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
-  FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED,
-  APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
-  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE, DAYS, EDIT_APPOINTMENT, DASHBOARD_BREAD, VIEW_APPOINTMENTS_BREAD,
-  APPOINTMENT_NEW_BREAD, NO_SLOT_AVAILABLE, APPOINTMENT_EDIT_BREAD, ADD_PATIENT_MODAL,
-} from "../../../../constants";
+  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
+  APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
+  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
+  FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD,
+} from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
+  const { user, currentUser } = useContext(AuthContext)
+  const chartingClasses = useChartingStyles()
   const classes = usePublicAppointmentStyles();
+
   const { facilityList } = useContext(ListContext)
   const params = new URLSearchParams(window.location.search);
+
+  const { roles, facility, } = user || {}
+  const { id: currentDoctor } = currentUser || {}
+  const { id: userFacilityId, practiceId: userPracticeId } = facility || {}
+
+  const isHigherAdmin = isUserAdmin(roles)
+  const onlyDoctor = isOnlyDoctor(roles)
   const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
+
   const [appEndDate] = useState<string>(params.get('endDate') || '')
   const [pId] = useState<string>(params.get('patientId') || '')
   const [pName] = useState<string>(params.get('patientName') || '')
+  const [serviceIds, setServiceId] = useState<multiOptionType[]>([])
+
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
     fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+
+  const appointmentTypes = [AppointmentCreateType.Appointment, AppointmentCreateType.Telehealth]
+  const [appointmentType, setAppointmentType] = useState<string>(appointmentTypes[0])
+
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     facilityName, cancelAppStatus, patientName, openPatientModal
@@ -65,15 +93,20 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
-    resolver: yupResolver(appointmentSchema)
+    resolver: yupResolver(appointmentType === AppointmentCreateType.Telehealth ?
+      providerAppointmentSchema : appointmentSchema(isUserAdmin(roles)))
   });
+
   const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
-    serviceId: { id: selectedService } = {},
+    serviceId: selectedServiceId,
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    patientId: selectedPatient
+    patientId: selectedPatient, scheduleStartDateTime
   } = watch();
+  const { value: selectedService } = selectedServiceId ?? {}
+  const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -114,10 +147,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
           } = appointment || {}
 
-          if (status === Appointmentstatus.Cancelled) {
+          if (status === AppointmentStatus.Cancelled) {
             dispatch({ type: ActionType.SET_CANCEL_APP_STATUS, cancelAppStatus: true })
           }
 
@@ -126,11 +159,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
 
-
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
-
-
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
             dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
@@ -138,7 +166,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           if (serviceId && serviceName) {
             dispatch({ type: ActionType.SET_SERVICE_NAME, serviceName })
-            setValue('serviceId', setRecord(serviceId, serviceName))
+            setValue('serviceId', {
+              value: serviceId,
+              label: serviceName
+            })
+
+            setServiceId([{
+              value: serviceId,
+              label: serviceName
+            }])
           }
 
           if (providerId) {
@@ -158,7 +194,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-
+          scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
+          scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
+          appointmentCreateType && setAppointmentType(appointmentCreateType)
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
@@ -268,18 +306,20 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       getSlots({
         variables: {
-          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
+          getSlots: selectedProvider || onlyDoctor ?
+            { providerId: onlyDoctor ? currentDoctor : selectedProvider, ...slotsInput }
+            : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
   }, [
     currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch,
-    getSlots, appStartDate, setValue, appEndDate
+    getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor
   ])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
-      serviceId: EMPTY_OPTION,
+      serviceId: { value: '', label: '' },
       patientId: EMPTY_OPTION,
       providerId: EMPTY_OPTION,
       facilityId: { id, name }
@@ -302,15 +342,19 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
 
+    const durationOfDays = moment(date).diff(moment(scheduleStartDateTime), 'days')
+    const scStartTimeStamps = moment(scheduleStartDateTime).add(durationOfDays, 'day').format().toString()
+    const scEndTimeStamps = moment(scheduleEndDateTime).add(durationOfDays, 'day').format().toString()
+
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
-      const { id: selectedService } = serviceId || {};
       const { id: selectedPatient } = patientId || {};
       const { id: selectedProvider } = providerId || {};
       const { id: selectedFacility } = facilityId || {};
+      const { value: selectedService } = serviceId || {};
 
-      let practiceId = '';
+      let practiceId = userPracticeId || '';
       if (selectedFacility) {
         const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
         const { practiceId: pId } = facility || {};
@@ -319,30 +363,27 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,
-          appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime,
-          appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: scStartTimeStamps, practiceId,
+        scheduleEndDateTime: scEndTimeStamps, autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
-        notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
-        employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
+        notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
+        appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
+        billingStatus: BillingStatus.Due, appointmentCreateType: appointmentType as AppointmentCreateType
       };
 
-      const payload = selectedProvider ?
+      const payload = onlyDoctor ? { ...appointmentInput, providerId: currentDoctor } : selectedProvider ?
         { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
 
       if (isEdit) {
         id ?
           cancelAppStatus ?
             Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
-            :
-            await updateAppointment({
+            : await updateAppointment({
               variables: { updateAppointmentInput: { id, ...payload } }
-            })
-          : Alert.error(CANT_UPDATE_APPOINTMENT)
+            }) : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...payload, isExternal: true } }
+          variables: { createAppointmentInput: { ...payload } }
         })
       }
     }
@@ -351,7 +392,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -377,6 +417,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [pId, pName, setValue])
 
   useEffect(() => { }, [date, appStartDate])
+
+  const handleAppointmentType = (type: string) => setAppointmentType(type)
 
   return (
     <>
@@ -410,88 +452,119 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid md={8} item>
-                <CardComponent cardTitle={APPOINTMENT}>
-                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                <Card className='overflowVisible'>
+                  <Box p={3}>
+                    <Box py={2} mb={4} display='flex' justifyContent='space-between'
+                      alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                    >
+                      <Typography variant='h4'>{APPOINTMENT}</Typography>
+                    </Box>
+
                     <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(FACILITY, facilityName) :
-                          <FacilitySelector
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Typography variant='body1'>{TYPE}</Typography>
+
+                        <Box className={chartingClasses.toggleProblem}>
+                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                            {appointmentTypes.map(type =>
+                              <Box onClick={() => handleAppointmentType(type)}
+                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
+                              >
+                                <Typography variant='h6'>{type}</Typography>
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(FACILITY || '') : renderItem(FACILITY, facilityName)
+                          : <FacilitySelector
                             isRequired
                             label={FACILITY}
                             name="facilityId"
                           />
                         }
-                      </Grid>
+                      </Grid>}
 
                       <Grid item md={6} sm={12} xs={12}>
                         <ServiceSelector
                           isRequired
                           label={APPOINTMENT_TYPE}
                           name="serviceId"
-                          facilityId={selectedFacility}
-                          addEmpty
+                          isEdit={isEdit}
+                          defaultValues={serviceIds}
+                          facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          loading={getAppointmentLoading}
                         />
                       </Grid>
                     </Grid>
-                  )}
-                </CardComponent>
-
+                  </Box>
+                </Card>
                 <Box pb={3} />
 
                 <CardComponent cardTitle={INFORMATION}>
-                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                    <>
-                      <Grid container spacing={3}>
+                  <>
+                    <Grid container spacing={3}>
+                      {!onlyDoctor &&
                         <Grid item md={6} sm={12} xs={12}>
                           <DoctorSelector
                             label={PROVIDER}
                             name="providerId"
                             facilityId={selectedFacility}
                             addEmpty
+                            loading={getAppointmentLoading}
+                          />
+                        </Grid>}
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
+                          : <PatientSelector
+                            isModal
+                            isRequired
+                            label={PATIENT}
+                            name="patientId"
+                            setValue={setValue}
+                            isOpen={openPatientModal}
+                            handlePatientModal={handlePatientModal}
+                          />
+                        }
+                      </Grid>
+                    </Grid>
+
+                    <InputController
+                      fieldType="text"
+                      controllerName="reason"
+                      controllerLabel={REASON}
+                      loading={getAppointmentLoading}
+                    />
+
+                    {/* <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="primaryInsurance"
+                            controllerLabel={PRIMARY_INSURANCE}
                           />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          {isEdit ? renderItem(PATIENT, patientName) :
-                            <PatientSelector
-                              handlePatientModal={handlePatientModal}
-                              isModal
-                              isRequired
-                              label={PATIENT}
-                              name="patientId"
-                              setValue={setValue}
-                              isOpen={openPatientModal}
-                            />}
+                          <InputController
+                            fieldType="text"
+                            controllerName="secondaryInsurance"
+                            controllerLabel={SECONDARY_INSURANCE}
+                          />
                         </Grid>
-                      </Grid>
+                      </Grid> */}
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="reason"
-                        controllerLabel={REASON}
-                      />
-
-
-                      <InputController
-                        fieldType="text"
-                        controllerName="primaryInsurance"
-                        controllerLabel={PRIMARY_INSURANCE}
-                      />
-
-                      <InputController
-                        fieldType="text"
-                        controllerName="secondaryInsurance"
-                        controllerLabel={SECONDARY_INSURANCE}
-                      />
-
-                      <InputController
-                        multiline
-                        fieldType="text"
-                        controllerName="notes"
-                        controllerLabel={NOTES}
-                      />
-                    </>
-                  )}
+                    <InputController
+                      multiline
+                      fieldType="text"
+                      controllerName="notes"
+                      controllerLabel={NOTES}
+                      loading={getAppointmentLoading}
+                    />
+                  </>
                 </CardComponent>
               </Grid>
 
@@ -518,20 +591,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <ul className={classes.timeSlots}>
                         {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                           const { startTime, endTime } = slot || {}
+                          const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
 
                           return (
-                            <li onClick={() => handleSlot(slot)} key={index}>
-                              <div>
-                                <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
-                                <label htmlFor={`timeSlot-${index}`}>
-                                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                  {getStandardTime(new Date(endTime || '').getTime().toString())}
-                                </label>
-                              </div>
+                            <li key={index}>
+                              <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
+                                bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
+                                color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
+                                className={classes.timeSlot}
+                                onClick={() => handleSlot(slot)}>
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
+                              </Box>
                             </li>
                           )
                         }) : (
-                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                          <NoSlotsComponent />
                         )}
                       </ul>
                     )}
@@ -544,7 +619,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item lg={6} md={12} sm={12} xs={12}>
                           <Controller
                             name='employment'
                             control={control}
@@ -592,7 +667,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                                 <label className="toggle-main">
                                   <Box color={isOtherAccident ? WHITE : GREY_TWO}>Yes</Box>
-                                  <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
+                                  <AntSwitch checked={isOtherAccident}
+                                    onChange={(event) => { handleChange(event) }} name='otherAccident'
+                                  />
+
                                   <Box color={isOtherAccident ? GREY_TWO : WHITE}>No</Box>
                                 </label>
                               </FormControl>
@@ -612,7 +690,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       <AddPatientModal
         facilityId={selectedFacility}
         isOpen={openPatientModal}
-        setIsOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
+        setIsOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
       />
     </>
   );

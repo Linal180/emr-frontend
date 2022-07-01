@@ -1,32 +1,26 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin } from "../../../utils";
+import { FormDoctorSelectorProps } from "../../../interfacesTypes";
+import { requiredLabel, renderDoctors, sortingValue } from "../../../utils";
+import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
 
-const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired = false, addEmpty, facilityId: selectedFacilityId, shouldOmitFacilityId = false
-}): JSX.Element => {
+const DoctorSelector: FC<FormDoctorSelectorProps> = (
+  { name, label, disabled, isRequired = false, addEmpty, facilityId, formDispatch, formState }
+): JSX.Element => {
   const { control } = useFormContext()
-  const { user } = useContext(AuthContext);
-  const { facility, roles } = user || {}
-  const { id: facilityId, practiceId } = facility || {}
-  const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
-  const isFacAdmin = isFacilityAdmin(roles);
-  const isSuperAndPracAdmin = isSuper || isPracAdmin
+  const { provider } = formState || {}
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { page, searchQuery, doctors, provider } = state;
+  const { page, searchQuery, doctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
@@ -56,59 +50,16 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const fetchAllDoctors = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-      if (shouldOmitFacilityId) {
-        if (isPracAdmin && isFacAdmin) {
-          doctorsInputs && await findAllDoctor({
-            variables: {
-              doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery,
-              }
-            }
-          })
-          return
-        }
-
-        if (isPracAdmin || isFacAdmin) {
-          doctorsInputs && await findAllDoctor({
-            variables: {
-              doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery, facilityId: facilityId,
-              }
-            }
-          })
-          return
-        }
-
-        doctorsInputs && await findAllDoctor({
-          variables: {
-            doctorInput: {
-              ...doctorsInputs, doctorFirstName: searchQuery
-            }
-          }
-        })
-
-        return
-      }
-
-      doctorsInputs && isSuperAndPracAdmin ? selectedFacilityId && await findAllDoctor({
+      pageInputs && facilityId && await findAllDoctor({
         variables: {
           doctorInput: {
-            ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId
-          }
-        }
-      }) : await findAllDoctor({
-        variables: {
-          doctorInput: {
-            ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId, ...pageInputs
+            ...pageInputs, doctorFirstName: searchQuery, facilityId: facilityId
           }
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, shouldOmitFacilityId, isSuperAndPracAdmin, selectedFacilityId, findAllDoctor, searchQuery])
+  }, [page, facilityId, findAllDoctor, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
@@ -118,7 +69,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_DOCTORS, doctors: [] as AllDoctorPayload['doctors'] })
-  }, [selectedFacilityId])
+  }, [facilityId])
 
   return (
     <Controller
@@ -129,7 +80,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={provider}
             disabled={disabled}
             disableClearable
@@ -156,9 +107,9 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
             )}
 
             onChange={(_, data) => {
-              const { id } = data || {}
+              const { id, name } = data || {}
               field.onChange(id)
-              dispatch({ type: ActionType.SET_PROVIDER, provider: data })
+              formDispatch && formDispatch({ type: FormActionType.SET_PROVIDER, provider: { id, name } })
             }}
           />
         );

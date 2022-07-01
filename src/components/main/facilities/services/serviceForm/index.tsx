@@ -1,9 +1,9 @@
 // packages block
-import { FC, useEffect, useContext, ChangeEvent, useState, useCallback } from 'react';
+import { FC, useEffect, useContext, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, Grid } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from '../../../../common/Alert';
 import PageHeader from '../../../../common/PageHeader';
@@ -11,6 +11,8 @@ import BackButton from '../../../../common/BackButton';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
+import CheckboxController from '../../../../common/CheckboxController';
+import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
 import { setRecord } from '../../../../../utils';
@@ -24,20 +26,20 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD, 
-  FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD, SERVICES_BREAD,
+  FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
+  FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD,
+  SERVICES_BREAD,
 } from "../../../../../constants";
-import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
-  const [checked, setChecked] = useState(true);
   const { facilityList } = useContext(ListContext)
+
   const methods = useForm<extendedServiceInput>({
     mode: "all",
     resolver: yupResolver(serviceSchema)
   });
-  const { setValue, handleSubmit, control, formState: { errors } } = methods;
+  const { setValue, handleSubmit, formState: { errors } } = methods;
 
   const [getService, { loading: getServiceLoading }] = useGetServiceLazyQuery({
     fetchPolicy: "network-only",
@@ -66,7 +68,6 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             price && setValue('price', price)
             color && setValue('color', color)
             duration && setValue('duration', duration)
-            isActive && setChecked(isActive as boolean)
             isActive && setValue('isActive', isActive as boolean)
           }
         }
@@ -132,15 +133,11 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     }
   }, [currentFacility, getService, id, isEdit, setCurrentFacility])
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
-
-  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price, color }) => {
+  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price, color, isActive }) => {
     const { id: selectedFacilityId } = facilityId
     const serviceInput = {
-      name: name || '', duration: duration || "", isActive: checked,
-      price: price || "", facilityId: selectedFacilityId || "", color: color || ''
+      name: name || '', duration: duration || "", isActive: isActive,
+      price: price || "", facilityId: selectedFacilityId || "", color: color || 'black'
     };
 
     if (isEdit) {
@@ -246,17 +243,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                     </Grid>
 
                     <Grid md={12} item>
-                      <Controller
-                        name="isActive"
-                        control={control}
-                        render={() => {
-                          return (
-                            <FormControl>
-                              <FormControlLabel label={ACTIVE_TEXT} id={"isActive"} control={<Checkbox color="primary" value={checked} checked={checked} onChange={handleChange} />} />
-                            </FormControl>
-                          )
-                        }}
-                      />
+                      <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
                     </Grid>
                   </>
                 )}

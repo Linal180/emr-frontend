@@ -1,45 +1,54 @@
 // packages block
-import { ChangeEvent, useState, useEffect, useCallback, useContext } from "react";
+import { ChangeEvent, useEffect, useCallback, useContext, Reducer, useReducer } from "react";
+import { pluck } from "underscore";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
-import { TrashNewIcon } from "../../../../assets/svgs";
-import { formatRoleName, renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
-import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION, SYSTEM_ROLES } from "../../../../constants";
-import { RolesTableProps } from "../../../../interfacesTypes";
 import { AuthContext } from "../../../../context";
-import { pluck } from "underscore";
+import { TrashNewIcon } from "../../../../assets/svgs";
+import { renderTh } from "../../../../utils";
+import { RolesTableProps } from "../../../../interfacesTypes";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import {
+  roleReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/roleReducer";
+import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
+import {
+  NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION,
+  SYSTEM_ROLES, PAGE_LIMIT
+} from "../../../../constants";
 
 const RolesTable = ({ customRole = false }: RolesTableProps) => {
   const { user } = useContext(AuthContext)
   const { roles: currentRole } = user || {}
   const userRoles = pluck(currentRole || [], 'role')
   const isSuperAdmin = userRoles.includes(SYSTEM_ROLES.SuperAdmin)
+
   const classes = useTableStyles()
-  const [page, setPage] = useState<number>(1);
-  const [pages, setPages] = useState<number>(0);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [roles, setRoles] = useState<RolesPayload['roles']>([]);
-  const [deleteRoleId, setDeleteRoleId] = useState<string>('');
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(roleReducer, initialState)
+  const { page, roles, searchQuery, totalPages, deleteRoleId, openModal } = state
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
-      roleInput: { paginationOptions: { page, limit: 10 }, customRole }
+      roleInput: {
+        paginationOptions: { page, limit: PAGE_LIMIT },
+        customRole, roleName: searchQuery
+      }
     },
 
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setRoles([])
+      dispatch({ type: ActionType.SET_ROLES, roles: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -51,10 +60,10 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
           if (pagination) {
             const { totalPages } = pagination
-            totalPages && setPages(totalPages)
+            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
 
-          roles && setRoles(roles as RolesPayload['roles'])
+          roles && dispatch({ type: ActionType.SET_ROLES, roles: roles as RolesPayload['roles'] })
         }
       }
     }
@@ -68,9 +77,10 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
   useEffect(() => {
     fetchRoles()
-  }, [page, fetchRoles])
+  }, [page, fetchRoles, searchQuery])
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
 
   const [removeRole, { loading: deleteRoleLoading }] = useRemoveRoleMutation({
     notifyOnNetworkStatusChange: true,
@@ -78,7 +88,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
     onError() {
       Alert.error(CANT_DELETE_ROLE)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: false })
     },
 
     async onCompleted(data) {
@@ -89,7 +99,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
           if (response) {
             const { message } = response
             message && Alert.success(message);
-            setOpenDelete(false)
+            dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: false })
             await findAllRoles();
           }
         }
@@ -99,21 +109,27 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
   const onDelete = (id: string) => {
     if (id) {
-      setDeleteRoleId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_ROLE_ID, deleteRoleId: id })
+      dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     }
   };
 
   const handleDeleteRole = async () => {
-    deleteRoleId &&
-      await removeRole({
-        variables: { removeRole: { id: deleteRoleId } }
-      })
+    deleteRoleId && await removeRole({
+      variables: { removeRole: { id: deleteRoleId } }
+    })
   };
+
+  const search = (query: string) =>
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
 
   return (
     <>
       <Box className={classes.mainTableContainer}>
+        <Box mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
+
         <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>
@@ -128,7 +144,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={2} />
+                    <TableLoader numberOfRows={customRole ? PAGE_LIMIT : 5} numberOfColumns={customRole ? 3 : 2} />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -139,7 +155,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
                     <TableRow>
                       <TableCell scope="row">
                         <Link to={`${ROLES_ROUTE}/${id}`}>
-                          {formatRoleName(roleName || '')}
+                          {roleName}
                         </Link>
                       </TableCell>
 
@@ -174,17 +190,17 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
 
       <ConfirmationModal
         title={ROLE}
-        isOpen={openDelete}
+        isOpen={openModal}
         isLoading={deleteRoleLoading}
         handleDelete={handleDeleteRole}
         description={DELETE_ROLE_DESCRIPTION}
-        setOpen={(open: boolean) => setOpenDelete(open)}
+        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
       />
 
-      {pages > 1 &&
-        <Box display="flex" justifyContent="flex-end" p={3}>
+      {totalPages > 1 &&
+        <Box display="flex" justifyContent="flex-end" pt={1.5}>
           <Pagination
-            count={pages}
+            count={totalPages}
             shape="rounded"
             variant="outlined"
             page={page}

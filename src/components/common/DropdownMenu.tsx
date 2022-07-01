@@ -11,7 +11,7 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
   const classes = useHeaderStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleClick = ({ currentTarget }: MouseEvent<HTMLElement>) => setAnchorEl(currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   return (

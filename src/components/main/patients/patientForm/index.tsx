@@ -1,51 +1,63 @@
 // packages block
-import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, CircularProgress } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 // components block
-import FormCard from './FormCard';
 import Alert from "../../../common/Alert";
+import RegisterFormComponent from './RegisterForm';
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from '../../../../utils';
-import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  ADD_PATIENT, CREATE_PATIENT, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION,
-  FAILED_TO_CREATE_PATIENT, FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD,
-  PATIENTS_ROUTE, PATIENT_CREATED, PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, PATIENT_NOT_FOUND, PATIENT_UPDATED,
-  SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER
+  getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord
+} from '../../../../utils';
+import {
+  ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
+  FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
+  CONFLICT_EXCEPTION,
 } from "../../../../constants";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
+  ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
   Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
   useUpdatePatientMutation
 } from "../../../../generated/graphql";
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
-  { id, isEdit, shouldShowBread = true }, ref
+  { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
 ): JSX.Element => {
-  const { user } = useContext(AuthContext)
+  const { user, currentDoctor } = useContext(AuthContext)
+  const { id: selectedDoctorId } = currentDoctor || {}
+  const { roles, facility } = user || {};
+
+  const { id: selectedFacilityId, practiceId: selectedPracticeId } = facility || {};
+  const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
+  const isDoctor = isOnlyDoctor(roles);
+
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission, optionalEmail
+    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
+    activeStep, patientId, optionalEmail
   } = state
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? extendedEditPatientSchema(optionalEmail) : extendedPatientSchema(optionalEmail))
+    resolver: yupResolver(extendedPatientSchema(optionalEmail, isDoctor, isSuperAdminOrPracticeAdmin))
   });
+
   const { handleSubmit, setValue, watch } = methods;
   const {
-    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2,
   } = watch();
 
@@ -68,11 +80,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         if (patient) {
           const {
             suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, email,
-            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
-            releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
-            sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
-            statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients, registrationDate, smsPermission
+            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice, releaseOfInfoBill,
+            callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer, sexualOrientation,
+            genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts, statementDelivereOnline,
+            statementNote, statementNoteDateFrom, statementNoteDateTo, facility, medicationHistoryAuthority,
+            doctorPatients, registrationDate, smsPermission
           } = patient;
 
           if (facility) {
@@ -80,23 +92,31 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
             if (facilityId) {
               fetchAllDoctorList(facilityId)
-              name && setValue("facilityId", setRecord(facilityId, name))
+              name && setValue("facilityId", setRecord(facilityId, name, false))
               dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
           if (doctorPatients) {
-            const currentDoctor = doctorPatients.map(doctorPatient => {
-              const { currentProvider, doctor } = doctorPatient
+            const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+              relation === DoctorPatientRelationType.PrimaryProvider)
 
-              return currentProvider ? doctor : null
-            })[0];
+            if (doesPrimaryProviderExist) {
+              const { doctor } = doesPrimaryProviderExist ?? {}
+              const { firstName, lastName, id } = doctor ?? {}
 
-            if (currentDoctor) {
-              const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-              usualProviderId &&
-                setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+              setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
               dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+            } else {
+              const currentDoctorPatients = doctorPatients[0]
+
+              if (currentDoctorPatients) {
+                const { doctor } = currentDoctorPatients || {};
+                const { firstName, lastName, id } = doctor ?? {}
+
+                setValue("usualProviderId", setRecord(id || '', `${firstName} ${lastName}`))
+                dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
+              }
             }
           }
 
@@ -118,7 +138,10 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
-          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
+          homeBound && dispatch({
+            type: ActionType.SET_IS_CHECKED,
+            isChecked: homeBound === Homebound.Yes ? true : false
+          })
 
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
@@ -135,9 +158,12 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
           dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: callToConsent || false })
           dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: privacyNotice || false })
-          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
-          dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: medicationHistoryAuthority || false })
           dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: smsPermission || false })
+          dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
+          dispatch({
+            type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY,
+            medicationHistoryAuthority: medicationHistoryAuthority || false
+          })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -222,7 +248,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (employer) {
-            const { id: employerId, name, email, phone, industry, usualOccupation } = employer;
+            const { id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
@@ -230,6 +256,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             phone && setValue('employerPhone', phone)
             industry && setValue('employerIndustry', industry)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
+            address && setValue('employerAddress', address)
+            city && setValue('employerCity', city)
+            state && setValue("employerState", setRecord(state, state))
+            address && setValue('employerAddress', address)
+            zipCode && setValue("employerZipCode", zipCode)
           }
         }
       }
@@ -245,14 +276,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     },
 
     onCompleted(data) {
-      const { createPatient: { response } } = data;
+      const { createPatient: { response, patient } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_CREATED);
-          history.push(PATIENTS_ROUTE)
+          activeStep === 0 ?
+            Alert.success(PATIENT_CREATED)
+            : Alert.success(CHANGES_SAVED)
+
+          const { id } = patient || {}
+          id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
+          activeStep === 4 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -260,10 +296,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   const [updatePatient, { loading: updatePatientLoading }] = useUpdatePatientMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -273,8 +308,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_UPDATED);
-          shouldShowBread && history.push(PATIENTS_ROUTE)
+          activeStep && Alert.success(CHANGES_SAVED);
+          activeStep === 4 && history.push(PATIENTS_ROUTE)
         }
       }
     }
@@ -295,27 +330,29 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
+      employerAddress, employerCity, employerState, employerZipCode
     } = inputs;
 
     if (user) {
       const { id: userId } = user;
-      const { id: selectedRace } = race;
-      const { id: selectedGender } = gender;
-      const { id: selectedPronouns } = pronouns;
-      const { id: selectedFacility } = facilityId;
-      const { id: selectedEthnicity } = ethnicity;
-      const { id: selectedCountry } = basicCountry;
-      const { id: selectedSexAtBirth } = sexAtBirth;
-      const { id: selectedBasicState } = basicState;
-      const { id: selectedMaritalStatus } = maritialStatus;
-      const { id: selectedGenderIdentity } = genderIdentity;
-      const { id: selectedGuarantorState } = guarantorState;
-      const { id: selectedUsualProvider } = usualProviderId;
-      const { id: selectedKinRelationship } = kinRelationship;
-      const { id: selectedGuarantorCountry } = guarantorCountry;
-      const { id: selectedSexualOrientation } = sexualOrientation;
-      const { id: selectedGuarantorRelationship } = guarantorRelationship;
-      const { id: selectedEmergencyRelationship } = emergencyRelationship;
+      const { id: selectedRace } = race || {};
+      const { id: selectedGender } = gender || {};
+      const { id: selectedPronouns } = pronouns || {};
+      const { id: selectedFacility } = facilityId || {};
+      const { id: selectedEthnicity } = ethnicity || {};
+      const { id: selectedCountry } = basicCountry || {};
+      const { id: selectedSexAtBirth } = sexAtBirth || {};
+      const { id: selectedBasicState } = basicState || {};
+      const { id: selectedEmployerState } = employerState || {};
+      const { id: selectedMaritalStatus } = maritialStatus || {};
+      const { id: selectedGenderIdentity } = genderIdentity || {};
+      const { id: selectedGuarantorState } = guarantorState || {};
+      const { id: selectedUsualProvider } = usualProviderId || {};
+      const { id: selectedKinRelationship } = kinRelationship || {};
+      const { id: selectedGuarantorCountry } = guarantorCountry || {};
+      const { id: selectedSexualOrientation } = sexualOrientation || {};
+      const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
+      const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
 
       let practiceId = '';
       if (selectedFacility) {
@@ -323,25 +360,32 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         const { practiceId: pId } = facility || {};
 
         practiceId = pId || ''
+      } else {
+        practiceId = selectedPracticeId || ''
       }
+
+      let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
+        { facilityId: selectedFacilityId, practiceId }
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
-        practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        email: basicEmail || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
-        gender: selectedGender as Genderidentity || Genderidentity.None,
-        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
-        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
+        gender: selectedGender as Genderidentity || Genderidentity.DeclineToSpecify,
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.DeclineToSpecify,
+        genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.DeclineToSpecify,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
         statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
-        registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
+        registrationDate: registrationDate ? registrationDate : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
+        usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,
+        ...facilityInputs
       };
 
       const contactInput = {
@@ -381,9 +425,11 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const employerInput = {
         name: employerName, email: employerEmail, phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
+        address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState,
       };
 
-      if (isEdit && id) {
+      if (id || patientId) {
+        const itemId = id || patientId
         const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
         const contactIdInput = basicContactId ?
           { id: basicContactId, ...contactInput } : { ...contactInput }
@@ -399,7 +445,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         await updatePatient({
           variables: {
             updatePatientInput: {
-              updatePatientItemInput: { id, ...patientItemInput },
+              updatePatientItemInput: { id: itemId, ...patientItemInput },
               updateContactInput: { ...contactIdInput },
               updateEmployerInput: { ...employerIdInput },
               updateGuardianContactInput: { ...guardianIdInput },
@@ -409,9 +455,13 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
+        })
       } else {
         const optionalInputs = {
-          usualProviderId: selectedUsualProvider || '', adminId: userId || '',
+          usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider || '', adminId: userId || '',
         }
 
         await createPatient({
@@ -427,43 +477,36 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
+
+        dispatch({
+          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
+        })
       }
-    } else
-      Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
+    } else Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
   };
 
   useEffect(() => {
-    if (isEdit) {
-      id ?
-        getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
-    }
-  }, [getPatient, id, isEdit])
-
-  const fetchList = useCallback((id: string, name: string) => {
-    setValue('usualProviderId', EMPTY_OPTION)
-
-    id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, setValue]);
+    id && getPatient({ variables: { getPatient: { id } } })
+  }, [getPatient, id])
 
   useEffect(() => {
-    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
-  }, [fetchList, selectedFacility, selectedFacilityName, watch])
+    patientId &&
+      getPatient({ variables: { getPatient: { id: patientId } } })
+  }, [getPatient, patientId])
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 
   const getAddressHandler = useCallback(async () => {
-
     if (basicZipCode) {
       const data = await getAddressByZipcode(basicZipCode);
       const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
+
       if (status) {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-    } else {
-      Alert.error(ZIP_CODE_ENTER)
-    }
+    } else Alert.error(ZIP_CODE_ENTER)
   }, [basicZipCode, setValue])
 
   useEffect(() => {
@@ -472,8 +515,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
-    setValue('ssn', SSN_FORMAT)
-  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -484,7 +526,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {shouldShowBread && <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+        {shouldShowBread &&
           <Box display="flex">
             <BackButton to={`${PATIENTS_ROUTE}`} />
 
@@ -494,25 +536,19 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
                 path={[DASHBOARD_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
               />
             </Box>
-          </Box>
+          </Box>}
 
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
-
-            {disableSubmit && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>}
-
-        <FormCard
+        <RegisterFormComponent
           isEdit={isEdit}
+          disableSubmit={disableSubmit}
           dispatch={dispatch} state={state}
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}
+          shouldDisableEdit={shouldDisableEdit}
         />
       </form>
     </FormProvider>
   );
 });
 
-export default PatientForm;
-
+export default PatientForm

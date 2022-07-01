@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, StepConnector, Switch, withStyles, } from "@material-ui/core";
-import { 
-  theme, WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, GREY_TWO, BLACK_ONE, GRAY_SIX, GREY_SEVEN, BLACK, BLUE,
+import {
+  theme, WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, GREY_TWO, BLACK_ONE, GRAY_SIX, GREY_SEVEN, BLACK, BLUE, BLUE_ELEVEN,
 } from "../../theme";
 
 export const CustomConnector = withStyles({
@@ -10,13 +10,13 @@ export const CustomConnector = withStyles({
 
   active: {
     "& $line": {
-      border: `1px solid ${BLUE}`,
+      border: `1px solid ${BLUE_ELEVEN}`,
     },
   },
 
   completed: {
     "& $line": {
-      border: `1px solid ${BLUE}`,
+      border: `1px solid ${BLUE_ELEVEN}`,
     },
   },
 
@@ -48,7 +48,7 @@ export const useColorLibStepIconStyles = makeStyles({
   },
 
   active: {
-    backgroundColor: BLUE,
+    backgroundColor: BLUE_ELEVEN,
     width: 24,
     height: 24,
     zIndex: 1,
@@ -62,11 +62,11 @@ export const useColorLibStepIconStyles = makeStyles({
     zIndex: 1,
     fontSize: 18,
     color: BLUE,
-    border: `2px solid ${BLUE}`,
+    border: `2px solid ${BLUE_ELEVEN}`,
 
     "& .MuiSvgIcon-root": {
       padding: 2,
-      color: BLUE,
+      color: BLUE_ELEVEN,
     },
   },
 });
@@ -83,12 +83,6 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   stepperContainer: {
-    height: "calc(100vh - 130px)",
-
-    "@media (max-width:960px)": {
-      height: "auto",
-    },
-
     "& .MuiStepper-root": {
       marginTop: 40,
       padding: 30,
@@ -311,3 +305,21 @@ export const AntSwitch = withStyles(() =>
     checked: {},
   })
 )(Switch);
+
+export const useQontoStepIconStyles = makeStyles({
+  root: {
+    color: '#eaeaf0',
+    display: 'flex',
+    height: 25,
+    alignItems: 'center',
+    paddingRight: 5
+  },
+  active: {
+    color: '#784af4',
+  },
+  completed: {
+    color: '#784af4',
+    zIndex: 1,
+    fontSize: 20,
+  },
+});

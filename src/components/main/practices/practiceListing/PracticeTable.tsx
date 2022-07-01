@@ -12,8 +12,8 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
 import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
+import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -27,9 +27,7 @@ import {
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const {
-    deletePracticeList, setFacilityList, fetchAllFacilityList, setRoleList, setPracticeList
-  } = useContext(ListContext)
+  const { setFacilityList, fetchAllFacilityList, setRoleList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -56,13 +54,16 @@ const PracticeTable: FC = (): JSX.Element => {
 
         if (findAllPractices) {
           const { pagination, practices } = findAllPractices
-          practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+          practices && dispatch({
+            type: ActionType.SET_PRACTICES,
+            practices: practices as PracticesPayload['practices']
+          })
 
           if (pagination) {
             const { totalPages } = pagination
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
-        } 
+        }
       } else {
         dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
       }
@@ -88,10 +89,8 @@ const PracticeTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
-            deletePracticeList(deletePracticeId);
             setFacilityList([])
             setRoleList([])
-            setPracticeList([])
             fetchAllFacilityList()
           }
         }
@@ -125,7 +124,7 @@ const PracticeTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 
@@ -144,7 +143,7 @@ const PracticeTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={4} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={4} />
                   </TableCell>
                 </TableRow>) : (
                 practices?.map(practice => {

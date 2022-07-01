@@ -26,6 +26,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
     onCompleted: ({ updatePatientNoteInfo }) => {
       const { response, patient } = updatePatientNoteInfo || {}
       const { status } = response || {}
+
       if (status && status === 200) {
         const { patientNote, patientNoteOpen } = patient || {}
         const newPatient = { ...patientData, patientNoteOpen, patientNote }
@@ -33,6 +34,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
         Alert.success(PATIENT_NOTE_SUCCESS_MESSAGE)
       }
     },
+
     onError: () => {
       Alert.error(PATIENT_NOTE_ERROR_MESSAGE)
     }
@@ -69,7 +71,6 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
 
   return (
     <Fragment>
-
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography>{PINNED_NOTES}</Typography>
 
@@ -78,6 +79,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
           <IconButton onClick={() => setIsEdit(true)}><EditOutlinedIcon /></IconButton>
         }
       </Box>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {isEdit ?

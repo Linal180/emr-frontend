@@ -1,29 +1,30 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
   Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
 } from '@material-ui/lab';
 // components block
 import Search from "../../common/Search";
-import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
 import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
 import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
+import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
 // svgs block, style
 import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, PURPLE_TWO, BLUE_TEN, PINK_TWO } from "../../../theme";
+import { BLUE, WHITE, PURPLE_TWO, BLUE_TEN, PINK_TWO } from "../../../theme";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
 import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
-  SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG, EMERGENCY_LOG_LIST, RECENT_ACTIVITIES,
-  EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, ACTIVATED
+  SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE,
+  FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
+  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, SEARCH_PATIENT_NAME_ID, ADD_FACILITY,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -57,13 +58,16 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
   const fetchFacilities = useCallback(async () => {
     try {
-      await findAllFacility({
+      practiceId && await findAllFacility({
         variables: {
-          facilityInput: { paginationOptions: { limit: 7, page: 1 } }
+          facilityInput: {
+            practiceId,
+            paginationOptions: { limit: 5, page: 1 }
+          }
         }
       })
     } catch (error) { }
-  }, [findAllFacility])
+  }, [findAllFacility, practiceId])
 
   useEffect(() => {
     fetchFacilities()
@@ -83,7 +87,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               alignItems="center"
             >
               <Box className={classes.searchContainer} width="90%" maxWidth="90%">
-                <Search search={search} placeHolder="Patient Name, Patient ID or Insurance Number etc..." />
+                <Search search={search} placeHolder={SEARCH_PATIENT_NAME_ID} />
               </Box>
 
               <Button variant="contained" color="primary" size="large">{SEARCH_PLACEHOLDER}</Button>
@@ -113,9 +117,11 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={FACILITIES_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             {facilities?.map((facility) => {
@@ -134,6 +140,12 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 </Box>
               )
             })}
+
+            <Box width="100%" mb={2} display='flex' justifyContent='center'>
+              <Link to={`${FACILITIES_ROUTE}/new`}>
+                <Button variant="contained" color="primary" size="large">{ADD_FACILITY}</Button>
+              </Link>
+            </Box>
           </Card>
         </Grid>
 
@@ -150,63 +162,47 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box className={classes.cardContainer}>
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
-                        <ViewIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
+                  <ViewIcon />
 
-                        <Box p={0.7} />
+                  <Box p={0.7} />
 
-                        <Typography variant="h6">{VIEW_FACILITIES}</Typography>
-                      </Box>
-                    </Grid>
+                  <Typography variant="h6">{VIEW_FACILITIES}</Typography>
+                </Box>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(PATIENTS_ROUTE)}>
-                        <PatientsIcon />
+                <Box className={classes.cardBox} onClick={() => history.push(PATIENTS_ROUTE)}>
+                  <PatientsIcon />
 
-                        <Box p={0.2} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{VIEW_PATIENTS}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                  <Typography variant="h6">{VIEW_PATIENTS}</Typography>
+                </Box>
+              </Box>
 
               <Box p={1} />
 
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
-                        <ActionIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
+                  <ActionIcon />
 
-                        <Box p={0.7} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{PRACTICE_DETAILS_TEXT}</Typography>
-                      </Box>
-                    </Grid>
+                  <Typography variant="h6">{PRACTICE_DETAILS_TEXT}</Typography>
+                </Box>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
-                        <LockIcon />
+                <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
+                  <LockIcon />
 
-                        <Box p={0.2} />
+                  <Box p={0.2} />
 
-                        <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                  <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>
+                </Box>
+              </Box>
             </Box>
           </Card>
         </Grid>
@@ -217,7 +213,17 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Grid container spacing={3}>
         <Grid item md={8}>
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
+              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
+            </Box>
+
+            <FacilityAppointments practiceId={practiceId || ''} />
+          </Card>
+
+          <Box p={2} />
+
+          <Card>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
 
@@ -227,26 +233,16 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={2} />
 
           <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
             <PracticeUserRoles practiceId={practiceId || ''} />
           </Card>
-
-          <Box p={2} />
-
-          <Card>
-            <Box px={3} pt={3} color={WHITE} bgcolor={PINK_TWO}>
-              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
-            </Box>
-
-            <FacilityAppointments practiceId={practiceId || ''} />
-          </Card>
         </Grid>
 
         <Grid item md={4}>
-          <Card>
+          {/* <Card>
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant="h5">{EMERGENCY_ACCESS_LOG}</Typography>
 
@@ -284,9 +280,9 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 </Box>
               )
             })}
-          </Card>
+          </Card> */}
 
-          <Box p={2} />
+          {/* <Box p={2} /> */}
 
           <Card>
             <Box px={2} mb={2} fontWeight="bold" display='flex' justifyContent='space-between' alignItems='center'>
@@ -297,7 +293,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <Box className="Recent-Activity-Timeline">
+            <Box className="recent-activity-timeline">
               <Timeline>
                 <TimelineItem>
                   <TimelineSeparator>

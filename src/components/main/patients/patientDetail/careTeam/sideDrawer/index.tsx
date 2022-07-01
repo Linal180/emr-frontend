@@ -1,21 +1,20 @@
 // packages block
-import { Drawer } from '@material-ui/core';
 import { CareTeamsProps } from '../../../../../../interfacesTypes';
 //components block
 import CreateTeamForm from '../careTeamForm';
 
-const CareTeamProvider = ({ drawerOpened, toggleSideDrawer, patientId, reload }: CareTeamsProps) => {
-
-  const closeSlider = () => toggleSideDrawer && toggleSideDrawer()
+const CareTeamProvider = ({toggleSideDrawer, patientId, reload, doctorId, doctorPatientId, isEdit, doctorName, patientProvidersData }: CareTeamsProps) => {
 
   return (
-    <Drawer
-      open={drawerOpened}
-      onClose={closeSlider}
-      anchor="right"
-    >
-      <CreateTeamForm toggleSideDrawer={toggleSideDrawer} patientId={patientId} reload={reload} />
-    </Drawer>
+    <CreateTeamForm
+      toggleSideDrawer={toggleSideDrawer&&toggleSideDrawer}
+      patientId={patientId} reload={reload}
+      doctorId={doctorId}
+      doctorPatientId={doctorPatientId}
+      isEdit={isEdit}
+      doctorName={doctorName}
+      patientProvidersData={patientProvidersData}
+    />
   )
 }
 

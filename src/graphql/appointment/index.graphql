@@ -20,6 +20,8 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       reason
       primaryInsurance
       billingStatus
+      checkInActiveStep
+      appointmentCreateType
       
       provider {
         id
@@ -76,6 +78,8 @@ query GetAppointment($getAppointment: GetAppointment!){
       billingStatus
       checkedInAt
       selfCheckIn
+      checkInActiveStep
+      appointmentCreateType
       
       appointmentType {
         id
@@ -138,6 +142,11 @@ mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
       status
       message
     }
+
+    appointment {
+      id
+      status
+    }
   }
 }
 
@@ -155,6 +164,7 @@ mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExtern
       providerId
       patientId
       facilityId
+
       appointmentType {
         id
         name
@@ -235,6 +245,59 @@ mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatu
     appointment {
       id
       status
+    }
+  }
+}
+
+query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppointmentInput!){
+  getPatientPastUpcomingAppointment(getPatientAppointmentInput: $getPatientAppointmentInput){
+    response {
+      status
+    }
+    
+    appointments {
+      pastAppointment {
+        id
+        scheduleStartDateTime
+      }
+      
+      upcomingAppointment{
+        id
+        scheduleStartDateTime
+      }
+    }
+  }
+}
+
+query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
+  findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
+    response {
+      status
+    }
+    
+		 appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
     }
   }
 }

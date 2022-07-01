@@ -6,30 +6,34 @@ import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
+import DatePicker from "../../../common/DatePicker";
+import PhoneField from "../../../common/PhoneInput";
+import InputController from "../../../../controller";
 import CardComponent from "../../../common/CardComponent";
-// import ViewDataLoader from "../../../common/ViewDataLoader";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // interfaces/types block, theme, svgs and constants
+import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
-import { extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema } from "../../../../validationSchemas";
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
 import { checkPermission, getTimestampsForDob, isPracticeAdmin, isSuperAdmin } from "../../../../utils";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
+  extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema
+} from "../../../../validationSchemas";
+import {
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race,
+  RelationshipType, Sexualorientation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
-  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX, MAPPED_GENDER_IDENTITY,
-  DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY,
+  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX,
+  MAPPED_GENDER_IDENTITY, DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY,
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import DatePicker from "../../../common/DatePicker";
-import PhoneField from "../../../common/PhoneInput";
-import history from "../../../../history";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
 
 const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
   const { userPermissions, user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const { roles, facility } = user || {};
+
   const isSuper = isSuperAdmin(roles);
   const isPracAdmin = isPracticeAdmin(roles);
   const methods = useForm<PatientInputProps>({
@@ -37,6 +41,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
     resolver: yupResolver((isSuper || isPracAdmin) ?
       extendedPatientAppointmentWithNonAdminSchema : extendedPatientAppointmentSchema)
   });
+
   const { reset, handleSubmit } = methods;
 
   const handleClose = useCallback(() => {
@@ -54,10 +59,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
   const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      message === FORBIDDEN_EXCEPTION ?
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted(data) {
@@ -75,7 +79,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   });
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
-    const { firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId: userFacilityId } = inputs;
+    const {
+      firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId: userFacilityId
+    } = inputs;
 
     if (user) {
       const { id: userId } = user;
@@ -98,32 +104,40 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         deceasedDate: '', registrationDate: '', statementNoteDateTo: '', statementNoteDateFrom: '',
         suffix: '', firstName, middleName: '', lastName, firstNameUsed: '', prefferedName: '', previousFirstName: '',
         facilityId: facilityId || '', callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, practiceId,
-        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No, holdStatement: Holdstatement.None,
-        previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '', email: basicEmail,
-        pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.None, sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, genderIdentity: Genderidentity.None,
-        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '',
+        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
+        previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male,
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male, genderIdentity: Genderidentity.Male,
+        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None,
+        statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '', holdStatement: Holdstatement.None,
       };
 
       const contactInput = {
-        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone, mobile: basicMobile, address2: '', address: '',
-        contactType: ContactType.Self, country: '', primaryContact: true,
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone,
+        mobile: basicMobile, address2: '', address: '', contactType: ContactType.Self,
+        country: '', primaryContact: true,
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: '', phone: '', mobile: '', primaryContact: false, relationship: RelationshipType.Other,
+        contactType: ContactType.Emergency, name: '', phone: '', mobile: '', primaryContact: false,
+        relationship: RelationshipType.Other,
       };
 
       const guarantorContactInput = {
-        firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor, relationship: RelationshipType.Other, employerName: '',
-        address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '', country: '', userId: userId, ssn: SSN_FORMAT, primaryContact: false, address: '',
+        firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
+        relationship: RelationshipType.Other, employerName: '', address2: '', zipCode: '', city: '',
+        state: '', phone: '', suffix: '', country: '', userId: userId, ssn: SSN_FORMAT, address: '',
+        primaryContact: false,
       };
 
       const guardianContactInput = {
-        firstName: '', middleName: '', userId: userId, primaryContact: false, lastName: '', contactType: ContactType.Guardian, suffix: '',
+        firstName: '', middleName: '', userId: userId, primaryContact: false, lastName: '',
+        contactType: ContactType.Guardian, suffix: '',
       };
 
       const nextOfKinContactInput = {
-        contactType: ContactType.NextOfKin, name: '', phone: '', relationship: RelationshipType.Other, mobile: '', primaryContact: false,
+        contactType: ContactType.NextOfKin, name: '', phone: '', relationship: RelationshipType.Other,
+        mobile: '', primaryContact: false,
       };
 
       const employerInput = { name: '', email: '', phone: '', usualOccupation: '', industry: '' };
@@ -201,6 +215,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
               <Grid item md={6} sm={12} xs={12}>
                 <Selector
+                  isRequired
                   name="sexAtBirth"
                   label={SEX}
                   value={EMPTY_OPTION}

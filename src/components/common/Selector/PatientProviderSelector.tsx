@@ -41,8 +41,8 @@ export const PatientProviderSelector: FC<PatientProviderSelectorProps> = ({ pati
      <Selector 
         label={ASSIGNED_PROVIDER}
         name="assignedProvider"
-        addEmpty
         options={patientProviders ?? []}
+        value={patientProviders[0]}
      />
   )
 }

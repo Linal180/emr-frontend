@@ -1,7 +1,7 @@
 // packages block
 import { Reducer, useReducer, useState, useContext, Fragment, useEffect, useCallback } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Edit } from '@material-ui/icons';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, CircularProgress, Collapse, Grid, } from "@material-ui/core";
 //components block
 import Alert from '../../common/Alert';
@@ -14,15 +14,17 @@ import MediaCards from '../../common/AddMedia/MediaCards';
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 // constants, history, styling block
 import { AuthContext } from '../../../context';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { profileSchema } from '../../../validationSchemas';
 import { ProfileEditFormType } from '../../../interfacesTypes';
 import { useProfileStyles } from "../../../styles/profileStyles";
-import { formatPhone, getProfileImageType, renderItem, setRecord } from '../../../utils';
-import {
-  ADDRESS_NUMBER, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME,
-  LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT, STATE, SYSTEM_ROLES, 
-  UPLOAD_PICTURE, ZIP_CODE
-} from "../../../constants";
+import { formatPhone, getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
 import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import {
+  ADDRESS, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
+  FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
+  STATE, SUPER, SYSTEM_ROLES, UPLOAD_PICTURE, ZIP_CODE
+} from "../../../constants";
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as MediaState
@@ -30,16 +32,20 @@ import {
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
-  const { user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment } = useContext(AuthContext);
-  const { email, userType, userId, phone: userPhone } = user || {}
+  const {
+    user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment
+  } = useContext(AuthContext);
+
+  const { email, userType, userId, phone: userPhone, roles } = user || {}
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
+
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+  const isSuper = isSuperAdmin(roles)
 
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
   const { attachmentUrl, attachmentId, attachmentData } = mediaState
-
   const [edit, setEdit] = useState<boolean>(false)
 
   const methods = useForm<ProfileEditFormType>({
@@ -55,7 +61,8 @@ const ProfileComponent = (): JSX.Element => {
       country: EMPTY_OPTION,
       zipCode: "",
       contactId: ""
-    }
+    },
+    resolver: yupResolver(profileSchema)
   });
   const { handleSubmit, setValue, reset } = methods;
 
@@ -121,64 +128,68 @@ const ProfileComponent = (): JSX.Element => {
           }
         }
       })
-    }
-    else if (userType === SYSTEM_ROLES.SuperAdmin) {
-
-    }
-    else {
-
-      if (userId) {
-        await updateStaff({
-          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone } } }
-        })
-      }
+    } else {
+      userId && await updateStaff({
+        variables: {
+          updateStaffInput: {
+            updateStaffItemInput: { id: userId, firstName, lastName, phone }
+          }
+        }
+      })
     }
   }
 
+  const doctorPreview = () => {
+    setValue('city', city || '')
+    setValue('zipCode', zipCode || '')
+    setValue('addressNumber', address || '')
+    setValue('phone', phone || doctorPhone || '')
+    contactId && setValue('contactId', contactId)
+    doctorState && setValue('state', setRecord(doctorState, doctorState))
+    country && setValue('country', setRecord(country, country))
+  }
+
+  const staffPreview = () => setValue('phone', phone || userPhone || '')
+
   const editHandler = () => {
-    if (userType === SYSTEM_ROLES.Doctor) {
-      setValue('firstName', doctorFirstName || staffFirstName || '')
-      setValue('lastName', doctorLastName || staffLastName || '')
-      setValue('email', email || '')
-      setValue('phone', phone || doctorPhone || '')
-      setValue('addressNumber', address || '')
-      setValue('city', city || '')
-      doctorState && setValue('state', setRecord(doctorState, doctorState))
-      country && setValue('country', setRecord(country, country))
-      setValue('zipCode', zipCode || '')
-      contactId && setValue('contactId', contactId)
-    } else {
-      setValue('firstName', doctorFirstName || staffFirstName || '')
-      setValue('lastName', doctorLastName || staffLastName || '')
-      setValue('email', email || '')
-      setValue('phone', phone || userPhone || '')
-    }
+    setValue('email', email || '')
+    setValue('lastName', doctorLastName || staffLastName || '')
+    setValue('firstName', doctorFirstName || staffFirstName || '')
+
+    userType === SYSTEM_ROLES.Doctor ?
+      doctorPreview() : staffPreview()
+
     setEdit(!edit)
   }
 
   const setAttachment = useCallback(async () => {
-    profileAttachment && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profileAttachment })
     const { id: userAttachmentId } = profileAttachment || {}
-    userAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: userAttachmentId })
-    profileUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: profileUrl })
+
+    profileAttachment &&
+      mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profileAttachment })
+
+    userAttachmentId &&
+      mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: userAttachmentId })
+
+    profileUrl &&
+      mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: profileUrl })
   }, [profileAttachment, profileUrl])
 
   useEffect(() => {
     profileUrl && profileAttachment && setAttachment()
   }, [profileUrl, profileAttachment, setAttachment])
 
-
   return (
     <ProfileSettingsLayout>
       <CardComponent cardTitle={PROFILE_TEXT}>
         <Box className={classes.profileContainer}>
-          <Grid container>
+          <Grid container spacing={0}>
             <Grid item md={4} sm={12} xs={12}>
               <Box key={attachmentId} mx={3.5}>
                 <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
               </Box>
 
-              <Box>
+              <Box minWidth={224}>
                 {!email ?
                   <CircularProgress color='inherit' />
                   :
@@ -198,7 +209,7 @@ const ProfileComponent = (): JSX.Element => {
             </Grid>
 
             <Grid item md={8} sm={12} xs={12}>
-              <Box px={2}>
+              <Box mx={5}>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     {userType !== SYSTEM_ROLES.SuperAdmin &&
@@ -227,18 +238,21 @@ const ProfileComponent = (): JSX.Element => {
                     }
 
                     <Collapse in={!edit} mountOnEnter unmountOnExit>
-                      {!email ?
-                        <Box py={2}>
-                          <ViewDataLoader rows={5} columns={6} hasMedia={false} />
-                        </Box> :
+                      {email ?
                         <Box py={2}>
                           <Grid container spacing={5}>
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
+                              {isSuper ?
+                                renderItem(FIRST_NAME, SUPER) :
+                                renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')
+                              }
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
+                              {isSuper ?
+                                renderItem(LAST_NAME, ADMIN) :
+                                renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')
+                              }
                             </Grid>
                           </Grid>
 
@@ -250,14 +264,17 @@ const ProfileComponent = (): JSX.Element => {
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone)) || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')}
+                              {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone))
+                                || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')
+                              }
                             </Grid>
                           </Grid>
+
                           {userType === SYSTEM_ROLES.Doctor &&
                             <Fragment>
                               <Grid container spacing={5}>
                                 <Grid item md={12} sm={12} xs={12}>
-                                  {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                  {renderItem(ADDRESS, address || 'N/A')}
                                 </Grid>
                               </Grid>
 
@@ -282,7 +299,9 @@ const ProfileComponent = (): JSX.Element => {
                               </Grid>
                             </Fragment>}
                         </Box>
-                      }
+                        : <Box py={2}>
+                          <ViewDataLoader rows={5} columns={6} hasMedia={false} />
+                        </Box>}
                     </Collapse>
 
                     <Collapse in={edit} mountOnEnter unmountOnExit>
@@ -326,8 +345,8 @@ const ProfileComponent = (): JSX.Element => {
                               <Grid item md={12} sm={12} xs={12}>
                                 <InputController
                                   fieldType="text"
-                                  controllerName="addressNumber"
-                                  controllerLabel={ADDRESS_NUMBER}
+                                  controllerName="address"
+                                  controllerLabel={ADDRESS}
                                 />
                               </Grid>
                             </Grid>
@@ -382,4 +401,5 @@ const ProfileComponent = (): JSX.Element => {
     </ProfileSettingsLayout>
   )
 }
+
 export default ProfileComponent;

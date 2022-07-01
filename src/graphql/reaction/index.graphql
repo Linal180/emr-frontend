@@ -4,5 +4,12 @@ query FindAllReactions($reactionInput: ReactionInput!){
       id
       name
     }
+
+    pagination{
+      page
+      limit
+      totalCount
+      totalPages
+    }
   }
 }

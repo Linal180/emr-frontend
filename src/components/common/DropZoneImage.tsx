@@ -1,24 +1,25 @@
 // packages block
-import { FC, useImperativeHandle, useState, forwardRef, useContext } from "react";
-import axios from "axios";
-import { Edit } from "@material-ui/icons";
-import { DropzoneArea } from "material-ui-dropzone";
 import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
+import axios from "axios";
+import { DropzoneArea } from "material-ui-dropzone";
+import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
-import { AuthContext } from "../../context";
-import { getToken, handleLogout } from "../../utils";
-import { AttachmentType } from "../../generated/graphql";
-import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
+import { AuthContext } from "../../context";
+import { AttachmentType } from "../../generated/graphql";
 import {
-  MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType, MediaStaffDataType, MediaUserDataType
+  DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
+  MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
+import { useDropzoneStyles } from "../../styles/dropzoneStyles";
+import { getToken, handleLogout } from "../../utils";
 
-const DropzoneImage: FC<any> = forwardRef(({
+const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType, setFiles: setAttachmentFiles
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -69,6 +70,8 @@ const DropzoneImage: FC<any> = forwardRef(({
       itemId && formData.append("typeId", itemId);
       attachmentId && formData.append("id", attachmentId);
       providerName && formData.append("providerName", providerName);
+      attachmentName && formData.append("attachmentName", attachmentName);
+
       if (attachmentMetadata) {
         for (var key in attachmentMetadata) {
           formData.append(key, attachmentMetadata[key]);
@@ -173,8 +176,10 @@ const DropzoneImage: FC<any> = forwardRef(({
       }).then(data => {
 
       }).catch(error => {
-        const { response: { data: { error: errorMessage } } } = error || {}
-        Alert.error(errorMessage);
+        // const { response } = error || {}
+        // const { data } = response || {}
+        // const { error: errorMessage } = data || {}
+        // // Alert.error(errorMessage);
       });
     })
   }
@@ -224,16 +229,21 @@ const DropzoneImage: FC<any> = forwardRef(({
               </Box>
             )}
 
-            <DropzoneArea
-              previewGridClasses={{ item: 'media-inner-image' }}
-              filesLimit={filesLimit ?? 1}
-              maxFileSize={5000000}
-              acceptedFiles={ACCEPTABLE_FILES}
-              onChange={(files) => setFiles(files)}
-              alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={imageEdit ?
-                PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
-            />
+            <Box className="dropzone-area-preview-list">
+              <DropzoneArea
+                previewGridClasses={{ item: 'media-inner-image' }}
+                filesLimit={filesLimit ?? 1}
+                maxFileSize={5000000}
+                acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
+                onChange={(files) => {
+                  setFiles(files)
+                  setAttachmentFiles && setAttachmentFiles(files)
+                }}
+                alertSnackbarProps={{ autoHideDuration: 3000 }}
+                dropzoneText={imageEdit ?
+                  PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
+              />
+            </Box>
           </Box>
         )
       )}

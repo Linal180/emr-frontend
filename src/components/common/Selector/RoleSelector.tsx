@@ -1,22 +1,31 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderStaffRoles, requiredLabel } from "../../../utils";
+import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, sortingValue } from "../../../utils";
+import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 import {
   roleReducer, Action, initialState, State, ActionType
 } from "../../../reducers/roleReducer";
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
-import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
+import { AuthContext } from "../../../context";
 
-const RoleSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, }): JSX.Element => {
+const RoleSelector: FC<FacilitySelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, loading }): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(roleReducer, initialState)
   const { page, searchQuery, roles } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderStaffRoles(roles ?? [])] : [...renderStaffRoles(roles ?? [])]
+  const inputLabel = isRequired ? requiredLabel(label) : label
+
+  const { user } = useContext(AuthContext)
+  const { roles: userRoles } = user || {}
+  const isAdminUser = isSuperAdmin(userRoles) || isPracticeAdmin(userRoles)
+
+  const updatedOptions = addEmpty ?
+    [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], isAdminUser)] : [...renderStaffRoles(roles ?? [], isAdminUser)]
 
   const [findAllRole,] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -57,43 +66,47 @@ const RoleSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequ
   }, [page, searchQuery, fetchAllRoles]);
 
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={updatedOptions[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={updatedOptions ?? []}
-            value={field.value}
-            disabled={disabled}
-            disableClearable
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
-                />
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          rules={{ required: true }}
+          name={name}
+          control={control}
+          defaultValue={updatedOptions[0]}
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+            return (
+              <Autocomplete
+                options={sortingValue(updatedOptions) ?? []}
+                value={field.value}
+                disabled={disabled}
+                disableClearable
+                getOptionLabel={(option) => option.name || ""}
+                renderOption={(option) => option.name}
+                renderInput={(params) => (
+                  <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
+                    <Box position="relative">
+                      <InputLabel id={`${name}-autocomplete`} shrink>
+                        {isRequired ? requiredLabel(label) : label}
+                      </InputLabel>
+                    </Box>
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      error={invalid}
+                      className="selectorClass"
+                      onChange={(event) =>
+                        dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                    />
 
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-            onChange={(_, data) => field.onChange(data)}
-          />
-        );
-      }}
-    />
+                    <FormHelperText>{message}</FormHelperText>
+                  </FormControl>
+                )}
+                onChange={(_, data) => field.onChange(data)}
+              />
+            );
+          }}
+        />}
+    </>
   );
 };
 

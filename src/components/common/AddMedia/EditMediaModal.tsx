@@ -10,7 +10,8 @@ import DropzoneImage from "../DropZoneImage";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 import { TrashNewIcon } from "../../../assets/svgs";
-import { EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
+import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
+import { mediaType } from "../../../utils";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
@@ -72,23 +73,33 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               </Box>
             </Box> :
             <DropzoneImage
-              filesLimit={filesLimit}
+              filesLimit={filesLimit || 1}
               title={title}
               reload={reload}
               itemId={itemId}
               isEdit={isEdit}
               ref={dropZoneRef}
               handleClose={handleClose}
-              providerName={providerName}
+              providerName={providerName || ''}
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
+              acceptableFilesType={mediaType(title)}
             />
           }
         </DialogContent>
 
         <DialogActions>
-          <Box px={2} py={1} display="flex">
+          <Box  py={1} display="flex">
+            <Button                             
+              type="button"
+              onClick={handleClose}               
+            >
+              {CANCEL}
+            </Button>
+
+            <Box px={1} />
+            
             <Button
               variant="contained"
               color="primary"

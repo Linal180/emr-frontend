@@ -1,7 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
 import {
-  BLACK_ONE,
-  BLACK_THREE,
   BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
@@ -47,7 +45,7 @@ export const useTableStyles = makeStyles(() => ({
     background: WHITE,
     borderRadius: 12,
     overflow: "auto",
-    padding: theme.spacing(2),
+    padding: theme.spacing(2.5),
     maxHeight: "calc(100vh - 248px)",
   },
 
@@ -64,12 +62,34 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
+  selectorBox: {
+    // maxWidth: 120,
+    
+    "& .MuiFormControl-fullWidth": {
+      // width: 120,
+      borderRadius: 8,
+    },
+
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: 'WHITE',
+      borderRadius: 8,
+      padding: '0 5px',
+      minHeight: 34,
+    },
+    "& .MuiAutocomplete-option": {
+      backgroundColor: WHITE,
+      border: '1px solid red',
+    },
+  },
+
   status: {
-    fontWeight: 'bold',
-    fontSize: '0.75rem',
+    minWidth: 120,
+    fontWeight: 500,
+    fontSize: '0.875rem',
     borderRadius: 8,
-    padding: '8px 15px',
+    padding: '0',
     display: 'inline-block',
+    textAlign: 'left',
   },
 
   iconsBackground: {
@@ -85,7 +105,15 @@ export const useTableStyles = makeStyles(() => ({
 
     "& svg": {
       maxWidth: 16
-    }
+    },
+
+    "& .MuiButton-root": {
+      minWidth: 'auto',
+    },
+
+    "& .MuiButton-root:hover": {
+      backgroundColor: 'transparent',
+    },
   },
 
   iconsBackgroundDisabled: {
@@ -161,26 +189,5 @@ export const useTableStyles = makeStyles(() => ({
     "& svg": {
       maxWidth: 16,
     }
-  },
-
-  dashboardTableContainer: {
-    background: WHITE,
-    borderRadius: 12,
-    overflow: "auto",
-    padding: theme.spacing(2),
-    maxHeight: 500,
-    overflowY: 'hidden',
-
-    "& .MuiTableCell-head": {
-      color: BLACK_THREE,
-      fontSize: 12,
-      fontWeight: 600,
-    },
-
-    "& .MuiTableCell-body": {
-      color: BLACK_ONE,
-      fontSize: 14,
-      fontWeight: 500,
-    },
   },
 }))

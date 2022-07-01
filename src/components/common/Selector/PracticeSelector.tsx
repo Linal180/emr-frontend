@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isSuperAdmin, renderPractices, requiredLabel } from "../../../utils";
+import { isSuperAdmin, renderPractices, requiredLabel, sortingValue } from "../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../reducers/practiceReducer";
@@ -13,15 +13,21 @@ import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { PracticesPayload, useFindAllPracticeListLazyQuery } from "../../../generated/graphql";
 
-const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, }): JSX.Element => {
+const PracticeSelector: FC<FacilitySelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty
+}): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext)
   const { roles } = user || {};
+
   const isSuper = isSuperAdmin(roles);
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { page, searchQuery, practices } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderPractices(practices ?? [])] : [...renderPractices(practices ?? [])]
-  
+
+  const updatedOptions = addEmpty ?
+    [EMPTY_OPTION, ...renderPractices(practices ?? [])]
+    : [...renderPractices(practices ?? [])]
+
   const [findAllPractice,] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -35,7 +41,10 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
 
       if (findAllPractices) {
         const { pagination, practices } = findAllPractices
-        practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+        practices && dispatch({
+          type: ActionType.SET_PRACTICES,
+          practices: practices as PracticesPayload['practices']
+        })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -72,7 +81,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={field.value}
             disabled={disabled}
             disableClearable
@@ -85,16 +94,19 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
+
                 <TextField
                   {...params}
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
-                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  onChange={(event) =>
+                    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
+
             onChange={(_, data) => field.onChange(data)}
           />
         );

@@ -27,6 +27,7 @@
     "@types/react-router": "^5.1.18",
     "axios": "^0.22.0",
     "braintree-web-drop-in-react": "^1.2.1",
+    "ckeditor4-react": "^3.1.0",
     "country-state-city": "^3.0.1",
     "date-fns": "^2.28.0",
     "dompurify": "^2.3.3",

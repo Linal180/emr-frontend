@@ -56,7 +56,7 @@ const LoginComponent = (): JSX.Element => {
           if (status === 200 && roles) {
             const userRoles = roles.map(role => role.role)
             const isAdmin = userRoles.filter(role => role !== SYSTEM_ROLES.Patient)
-            
+
             if (!!isAdmin?.length) {
               if (!isTwoFactorEnabled) {
                 access_token && localStorage.setItem(TOKEN, access_token);
@@ -67,7 +67,7 @@ const LoginComponent = (): JSX.Element => {
               } else {
                 access_2fa_token && localStorage.setItem(FA_TOKEN, access_2fa_token);
                 history.push(TWO_FA_AUTHENTICATION_ROUTE);
-              } 
+              }
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }

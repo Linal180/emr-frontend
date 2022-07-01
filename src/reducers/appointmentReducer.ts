@@ -1,13 +1,15 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload
+  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload, AgreementsPayload
 } from "../generated/graphql"
+import { DESC } from "../constants";
 
 export interface State {
   page: number;
   instance: any;
   offset: number;
+  isEdit: boolean;
   agreed: boolean;
   copied: boolean;
   appEdit: boolean;
@@ -54,6 +56,7 @@ export interface State {
   upComing: AppointmentsPayload['appointments'];
   completed: AppointmentsPayload['appointments'];
   appointment: AppointmentPayload['appointment'];
+  encounters: AppointmentsPayload['appointments'];
   appointments: AppointmentsPayload['appointments'];
   externalAppointment: {
     id: string;
@@ -62,6 +65,11 @@ export interface State {
     patientId: string;
     providerId: string;
   };
+  primaryInsurance: string
+  appointmentCreateType: string
+  sortBy: string;
+  agreements: AgreementsPayload['agreements'];
+  isSignature: boolean
 }
 
 export const initialState: State = {
@@ -73,6 +81,7 @@ export const initialState: State = {
   doctor: null,
   totalPages: 0,
   copied: false,
+  isEdit: false,
   patientId: '',
   agreed: false,
   appEdit: false,
@@ -81,6 +90,7 @@ export const initialState: State = {
   appPaid: false,
   pageComing: 1,
   facilityId: '',
+  encounters: [],
   facility: null,
   providerId: '',
   appDetail: true,
@@ -122,7 +132,13 @@ export const initialState: State = {
     patientId: "",
     providerId: '',
   },
+  primaryInsurance: '',
+  appointmentCreateType: '',
+  sortBy: DESC,
+  agreements: [],
+  isSignature: false
 }
+
 
 export enum ActionType {
   SET_PAGE = 'setPage',
@@ -130,6 +146,8 @@ export enum ActionType {
   SET_COPIED = 'setCopied',
   SET_AGREED = 'setAgreed',
   SET_DOCTOR = 'setDoctor',
+  SET_SORT_BY = 'setSortBy',
+  SET_IS_EDIT = 'setIsEdit',
   SET_APP_EDIT = 'setAppEdit',
   SET_APP_OPEN = 'setAppOpen',
   SET_APP_PAID = 'setAppPaid',
@@ -137,11 +155,14 @@ export enum ActionType {
   SET_FACILITY = 'setFacility',
   SET_UP_COMING = 'setUpComing',
   SET_COMPLETED = 'setComplete',
+  SET_SIGNATURE = 'setSignature',
   SET_PATIENT_ID = 'setPatientId',
   SET_APP_DETAIL = 'setAppDetail',
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
+  SET_ENCOUNTERS = 'setEncounters',
   SET_PAGE_COMING = 'setPageComing',
+  SET_AGREEMENTS = 'setAgreements',
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
@@ -165,6 +186,7 @@ export enum ActionType {
   SET_APP_SHOW_PAY_BTN = 'setAppShowPayBtn',
   SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
   SET_CANCEL_APP_STATUS = 'setCancelAppStatus',
+  SET_PRIMARY_INSURANCE = 'setPrimaryInsurance',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
   SET_TOTAL_PAGES_COMING = 'setTotalPagesComing',
@@ -174,14 +196,17 @@ export enum ActionType {
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
+  SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
 }
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_SORT_BY; sortBy: string }
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }
+  | { type: ActionType.SET_IS_EDIT, isEdit: boolean }
   | { type: ActionType.SET_APP_EDIT; appEdit: boolean }
   | { type: ActionType.SET_APP_OPEN; appOpen: boolean }
   | { type: ActionType.SET_APP_PAID; appPaid: boolean }
@@ -191,6 +216,7 @@ export type Action =
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
   | { type: ActionType.SET_PAGE_COMING; pageComing: number }
   | { type: ActionType.SET_FACILITY_ID; facilityId: string }
+  | { type: ActionType.SET_SIGNATURE; isSignature: boolean }
   | { type: ActionType.SET_PROVIDER_ID, providerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_APP_INVOICE; appInvoice: boolean }
@@ -211,6 +237,7 @@ export type Action =
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_APP_SHOW_PAY_BTN; appShowPayBtn: boolean }
   | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
+  | { type: ActionType.SET_PRIMARY_INSURANCE; primaryInsurance: string }
   | { type: ActionType.SET_CANCEL_APP_STATUS; cancelAppStatus: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
@@ -222,10 +249,13 @@ export type Action =
   | { type: ActionType.SET_TOTAL_PAGES_COMPLETED; totalPagesCompleted: number }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
+  | { type: ActionType.SET_APPOINTMENT_CREATE_TYPE; appointmentCreateType: string }
+  | { type: ActionType.SET_AGREEMENTS; agreements: AgreementsPayload['agreements'] }
   | { type: ActionType.SET_UP_COMING; upComing: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_COMPLETED; completed: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
+  | { type: ActionType.SET_ENCOUNTERS; encounters: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
@@ -249,6 +279,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         agreed: action.agreed
+      }
+
+    case ActionType.SET_IS_EDIT:
+      return {
+        ...state,
+        isEdit: action.isEdit
       }
 
     case ActionType.SET_DATE:
@@ -345,6 +381,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         providerId: action.providerId
+      }
+
+    case ActionType.SET_ENCOUNTERS:
+      return {
+        ...state,
+        encounters: action.encounters
       }
 
     case ActionType.SET_TOTAL_PAGES:
@@ -518,6 +560,34 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         totalPagesCompleted: action.totalPagesCompleted
+      }
+    case ActionType.SET_PRIMARY_INSURANCE:
+      return {
+        ...state,
+        primaryInsurance: action.primaryInsurance
+      }
+    case ActionType.SET_APPOINTMENT_CREATE_TYPE:
+      return {
+        ...state,
+        appointmentCreateType: action.appointmentCreateType
+      }
+
+    case ActionType.SET_SORT_BY:
+      return {
+        ...state,
+        sortBy: action.sortBy
+      }
+
+    case ActionType.SET_AGREEMENTS:
+      return {
+        ...state,
+        agreements: action.agreements
+      }
+
+    case ActionType.SET_SIGNATURE:
+      return {
+        ...state,
+        isSignature: action.isSignature
       }
   }
 };

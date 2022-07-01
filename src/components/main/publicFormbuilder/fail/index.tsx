@@ -1,14 +1,10 @@
 // packages block
-import { Box, Button, Card, colors, Typography } from '@material-ui/core';
+import { Box, Card, colors, Typography } from '@material-ui/core';
 // styles and theme block
 import { WHITE_TWO } from '../../../../theme';
-import { FORM_FAIL_DESCRIPTION, THANK_YOU_TEXT } from '../../../../constants';
-import { failStyles } from '../../../../styles/publicAppointmentStyles/failsStyles';
-//component
+import { FORM_FAIL_DESCRIPTION, } from '../../../../constants';
+
 const FormFailComponent = () => {
-  //style hook
-  const classes = failStyles();
-  //render
   return (
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
@@ -17,11 +13,11 @@ const FormFailComponent = () => {
             <Typography variant="h3"><strong>{FORM_FAIL_DESCRIPTION}</strong></Typography>
           </Box>
 
-          <Box className={classes.container}>
-            <Typography variant="h3">{THANK_YOU_TEXT}</Typography>
+          <Box p={3} minHeight={160} display="flex" flexDirection="column">
+            <Typography variant="h5">Form link has expired, kindly contact with our support team.</Typography>
 
-            <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button variant='outlined' color='secondary'>Go Back</Button>
+            <Box mt={1} component='span'>
+              <a href='mailto:support@aimed.com'>support@aimed.com</a>
             </Box>
           </Box>
         </Box>

@@ -6,11 +6,12 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // components block
 import CardComponent from "./CardComponent";
 import ViewDataLoader from "./ViewDataLoader";
+import NoSlotsComponent from "./NoSlotsComponent";
 import AppointmentDatePicker from "../main/publicAppointments/appointmentForm/AppointmentDatePicker";
 // constants, graphql and utils block
+import { DAYS, AVAILABLE_SLOTS } from "../../constants";
 import { filterSlots, getStandardTime } from "../../utils";
 import { AppointmentSlotsProps } from "../../interfacesTypes";
-import { DAYS, AVAILABLE_SLOTS, NO_SLOT_AVAILABLE } from "../../constants";
 import { usePublicAppointmentStyles } from "../../styles/publicAppointmentStyles";
 import { useGetSlotsLazyQuery, SlotsPayload, Slots } from "../../generated/graphql";
 import {
@@ -24,7 +25,7 @@ const AppointmentSlots: FC<AppointmentSlotsProps> = ({ facilityId, providerId, d
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const { watch, setValue } = useFormContext()
   const { serviceId } = watch()
-  const { id: selectedService } = serviceId || {}
+  const { value: selectedService } = serviceId || {}
 
   const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     fetchPolicy: "network-only",
@@ -108,9 +109,7 @@ const AppointmentSlots: FC<AppointmentSlotsProps> = ({ facilityId, providerId, d
                 </label>
               </li>
             )
-          }) : (
-            <Typography>{NO_SLOT_AVAILABLE}</Typography>
-          )}
+          }) : <NoSlotsComponent />}
         </ul>
       )}
     </CardComponent>

@@ -13,7 +13,7 @@ import {
   patientReducer, State, initialState, Action, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  FEVER_TEXT, FEVER_UNITS, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
+  TEMPERATURE_TEXT, FEVER_UNITS, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
   PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, PDF_TEXT, UNITS, WEIGHT_TEXT
 } from "../../../../constants";
 import {
@@ -22,7 +22,7 @@ import {
 } from "../../../../reducers/mediaReducer";
 import { GRAY_SIX } from "../../../../theme";
 
-const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => {
+const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar, shouldDisableEdit }): JSX.Element => {
   const [patientStates, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -117,7 +117,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => 
               <Box display={'flex'} justifyContent="space-between" alignItems="center">
 
                 <Box>
-                  <Typography variant="h5">{FEVER_TEXT}</Typography>
+                  <Typography variant="h5">{TEMPERATURE_TEXT}</Typography>
                 </Box>
 
                 <Box p={1} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
@@ -151,7 +151,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => 
 
       <Box>
         <Box className="table-overflow">
-          <VitalsListing patientStates={patientStates} dispatcher={dispatch} />
+          <VitalsListing patientStates={patientStates} dispatcher={dispatch} shouldDisableEdit={shouldDisableEdit}/>
         </Box>
       </Box>
 

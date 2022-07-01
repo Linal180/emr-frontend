@@ -1,66 +1,135 @@
 
-import { FormControl, InputLabel } from '@material-ui/core';
+import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 //interfaces, styles, constants
-import { FieldComponentProps } from '../../interfacesTypes';
-import { useFormStyles } from '../../styles/formsStyles';
 import { getUserFormDefaultValue } from '../../utils';
-import { FormBuilderApiSelector } from '../../constants';
+import { useFormStyles } from '../../styles/formsStyles';
+import { FieldComponentProps } from '../../interfacesTypes';
+import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
-import ServiceSelector from './formBuilder/ServiceSelector';
+import PaymentForm from './formBuilder/PaymentForm'
+import ConsentForm from './formBuilder/ConsentForm';
+import ContractForm from "./formBuilder/ContractForm"
+import InsuranceForm from './formBuilder/InsuranceForm'
+import DocumentsForm from './formBuilder/DocumentsForm'
 import SlotsComponent from './formBuilder/SlotsComponent'
 import ProviderSelector from './formBuilder/DoctorSelector'
 import PaymentSelector from './formBuilder/PaymentSelector'
+import ServiceSelector from './formBuilder/ServiceSelector';
+import TermsConditions from './formBuilder/TermsConditions';
+import FacilitySelector from './formBuilder/FacilitySelector';
+//graphql 
+import { ElementType } from '../../generated/graphql';
 //field renderer component
-export const FieldController = ({ item, isCreating, facilityId, state }: FieldComponentProps) => {
+export const FieldController = ({ item, isCreating, facilityId, state, practiceId, dispatcher }: FieldComponentProps) => {
   //hooks
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { required, label, fieldId, type, isMultiSelect, apiCall } = item;
+  const { required, label, fieldId, type, isMultiSelect, apiCall, defaultValue } = item;
+  const { facilityFieldId, paymentType } = state || {}
+  const { id: facilityField } = facilityFieldId || {}
 
-  if (facilityId && apiCall) {
+  const getPaymentComponent = (value: string) => {
+
+    switch (value) {
+      case FormBuilderPaymentTypes.INSURANCE:
+        return <InsuranceForm item={item} />
+      case FormBuilderPaymentTypes.CONTRACT:
+        return <ContractForm />
+      case FormBuilderPaymentTypes.NO_INSURANCE:
+        return <PaymentForm dispatcher={dispatcher} state={state} />
+      default:
+        return <></>
+    }
+  }
+
+  if (type === ElementType.Custom && apiCall) {
     switch (apiCall) {
+      case FormBuilderApiSelector.PRACTICE_FACILITIES:
+        return <FacilitySelector
+          isRequired={required || true}
+          practiceId={practiceId || ''}
+          dispatcher={dispatcher}
+          name={fieldId}
+          label={label}
+          state={state}
+          addEmpty
+        />
+
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
           isRequired={required || true}
-          label={label}
+          facilityId={facilityField || facilityId || ''}
           name={fieldId}
-          facilityId={facilityId}
+          label={label}
+          dispatcher={dispatcher}
           addEmpty
         />
 
       case FormBuilderApiSelector.SERVICE_SLOT:
-        return <SlotsComponent facilityId={facilityId || ""} state={state} />
+        return <SlotsComponent facilityId={facilityField || facilityId || ""} state={state} />
 
       case FormBuilderApiSelector.FACILITY_PROVIDERS:
         return <ProviderSelector
-          facilityId={facilityId || ""}
-          label={label}
-          name={fieldId}
-          addEmpty
+          facilityId={facilityField || facilityId || ""}
           isRequired={required || true}
+          name={fieldId}
+          label={label}
+          formDispatch={dispatcher}
+          formState={state}
+          addEmpty
         />
 
+      case FormBuilderApiSelector.DRIVING_LICENSE:
+        return <DocumentsForm
+          item={item}
+          dispatcher={dispatcher}
+          state={state} />
+
+      case FormBuilderApiSelector.INSURANCE_CARD:
+        return <DocumentsForm
+          item={item}
+          dispatcher={dispatcher} state={state} />
+
       case FormBuilderApiSelector.PAYMENT_TYPE:
-        return <PaymentSelector item={item} />
+        return <>
+          <PaymentSelector item={item} dispatcher={dispatcher} />
+
+          <Box>
+            {getPaymentComponent(paymentType || '')}
+          </Box>
+        </>
+
+      case FormBuilderApiSelector.PATIENT_CONSENT:
+        return <ConsentForm />
+
+      case FormBuilderApiSelector.TERMS_CONDITIONS:
+        return <TermsConditions item={item} dispatcher={dispatcher}
+          state={state} />
+
       default:
         return <Controller
           name={fieldId}
           control={control}
-          defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-          render={({ field }) => (
-            <FormControl fullWidth margin="normal">
-              <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
-                {required ? `${label} *` : label}
-              </InputLabel>
-              <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
-            </FormControl>
-          )}
+          defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
+          render={({ field, fieldState }) => {
+            return (
+              <FormControl fullWidth margin="normal">
+                <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
+                  {required ? `${label} *` : label}
+                </InputLabel>
+                <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
+              </FormControl>
+            )
+          }}
         />
     }
   }
+
+
 
   return (
     <Controller
@@ -68,15 +137,21 @@ export const FieldController = ({ item, isCreating, facilityId, state }: FieldCo
       name={fieldId}
       control={control}
       defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
-      render={({ field }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
-            {required ? `${label} *` : label}
-          </InputLabel>
-          <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
-        </FormControl>
-      )}
+      render={({ field, fieldState }) => {
+        const { invalid, error: { message } = {} } = fieldState
+        return (
+          <FormControl fullWidth margin="normal" error={Boolean(invalid)} id={fieldId}>
+            <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
+              {required ? `${label} *` : label}
+            </InputLabel>
+            <FieldRenderer item={item} field={field} isCreating={isCreating} facilityId={facilityId} />
+            <FormHelperText>
+              {message}
+            </FormHelperText>
+          </FormControl>
+        )
+      }}
     />
   )
 }
-export default FieldController
+export default memo(FieldController)

@@ -1,51 +1,92 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { FormProvider, useForm } from "react-hook-form";
+import { ChevronLeft, ChevronRight, Sort } from "@material-ui/icons";
+import {
+  Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
+import Selector from "./Selector";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
+import ServicesSelector from "./Selector/ServiceSelector";
 import NoDataFoundComponent from "./NoDataFoundComponent";
+import FacilitySelector from "./Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../history";
 import { AuthContext } from "../../context";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
+import history from "../../history";
 import { useTableStyles } from "../../styles/tableStyles";
-import { AppointmentsTableProps } from "../../interfacesTypes";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
-  appointmentReducer, Action, initialState, State, ActionType
+  Action, ActionType, appointmentReducer, initialState, State
 } from "../../reducers/appointmentReducer";
 import {
-  getDateWithDay, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
-  isFacilityAdmin, isPracticeAdmin, convertDateFromUnix
+  appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
+  convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
+  getStandardTimeDuration, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh, setRecord
 } from "../../utils";
 import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
-  useGetAppointmentsLazyQuery, useUpdateAppointmentMutation
+  AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
+  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
-  AppointmentSearchingTooltipData, CHECK_IN_ROUTE,
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
+  APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
+  CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
+  DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
 } from "../../constants";
 
 dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
-  const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const classes = useTableStyles();
+  const [selectDate, setSelectDate] = useState(new Date().toDateString())
+  const { user, currentUser, userPermissions } = useContext(AuthContext)
+
+  const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
-  const { id: facilityId, practiceId } = facility || {}
+  const isAdminUser = isUserAdmin(roles)
+
+  const { id: providerId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
-  const isFacAdmin = isFacilityAdmin(roles);
+  const { id: facilityId, practiceId } = facility || {}
+
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
+  const isDoctor = isOnlyDoctor(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
+  const methods = useForm<StatusInputProps>({ mode: "all" });
+
+  const { setValue, watch } = methods
+  const {
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments, sortBy
+  } = state;
+  const { status, serviceId } = watch()
+  const { value: appointmentTypeId } = serviceId ?? {}
+
+  const setDate = (newDate?: string) => {
+    const date = newDate || moment().format('MM-DD-YYYY');
+    setSelectDate(date)
+  };
+
+  const getPreviousDate = () => {
+    const previousDate = moment(selectDate).subtract(1, 'day').format('MM-DD-YYYY')
+    setDate(previousDate)
+  }
+
+  const getNextDate = () => {
+    const nextDate = moment(selectDate).add(1, 'day').format('MM-DD-YYYY')
+    setDate(nextDate)
+  }
+
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -115,6 +156,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     onError({ message }) {
       Alert.error(message)
     },
+
+    onCompleted(data) {
+      const { updateAppointment: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
+          updateAppointmentData()
+          clearEdit()
+        }
+      }
+    }
   });
 
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
@@ -142,36 +197,60 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (doctorId) {
+      if (isDoctor) {
         await getAppointments({
-          variables: { getAppointments: { doctorId } }
+          variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
         })
-      }
-      else {
-        const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      } else {
+        const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
-          isPracticeUser ? { practiceId, ...pageInputs } :
-            isFacAdmin ? { facilityId, ...pageInputs } : undefined
+          isPracticeUser ? { practiceId, ...pageInputs }
+            : { facilityId, ...pageInputs }
 
         inputs && await findAllAppointments({
           variables: {
-            appointmentInput: { ...inputs, searchString: searchQuery }
+            appointmentInput: {
+              ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
+              appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+              appointmentDate: moment(selectDate).format('YYYY-MM-DD')
+            }
           },
         })
       }
     } catch (error) { }
   }, [
-    doctorId, getAppointments, page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId,
-    findAllAppointments, searchQuery
+    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
+    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
   ])
 
   useEffect(() => {
     fetchAppointments();
-  }, [page, searchQuery, fetchAppointments]);
+  }, [page, searchQuery, fetchAppointments, filterFacilityId]);
+
+
+  useEffect(() => {
+    setDate(moment().format('MM-DD-YYYY'));
+  }, []);
+
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
   });
+
+  const updateAppointmentData = () => {
+    const { id, name } = status || {}
+    const appointment = appointments?.find(appointment => appointment?.id === id)
+    const updatedAppointment = {
+      ...appointment, status: getAppointmentStatus(name || '')
+    } as AppointmentPayload['appointment']
+
+    const index = appointments?.findIndex(appointment => appointment?.id === id)
+
+    if (!!updatedAppointment && !!appointments && !!appointments?.length && index !== undefined) {
+      appointments.splice(index, 1, updatedAppointment)
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments })
+    }
+  }
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -181,13 +260,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   };
 
   const handleCancelAppointment = async () => {
-    if (deleteAppointmentId) {
+    deleteAppointmentId &&
       await removeAppointment({
-        variables: {
-          removeAppointment: { id: deleteAppointmentId }
-        }
+        variables: { removeAppointment: { id: deleteAppointmentId } }
       })
-    }
   };
 
   const search = (query: string) => {
@@ -196,9 +272,51 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const handleStatusUpdate = (id: string, status: string) => {
+    if (id && status) {
+      setValue('status', setRecord(id, status))
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: !!id })
+      dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
+    }
+  }
+
+  const clearEdit = () => {
+    setValue('status', EMPTY_OPTION)
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: '' })
+  }
+
+  const onSubmit = async ({ id, name }: SelectorOption) => {
+    try {
+      if (getAppointmentStatus(name || '') === AppointmentStatus.Rescheduled) {
+        history.push(`${APPOINTMENTS_ROUTE}/${id}`)
+      } else {
+        const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.Arrived
+
+        if (id && name && name !== '--') {
+          await updateAppointment({
+            variables: {
+              updateAppointmentInput: {
+                id, status: getAppointmentStatus(name) as AppointmentStatus,
+                ...(isCheckedInStatus && {
+                  checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+                })
+              }
+            }
+          })
+        } else clearEdit()
+      }
+    } catch (error) { }
+  }
+
   const handleCheckIn = async (id: string, patientId: string) => {
     const { data } = await updateAppointment({
-      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
+      variables: {
+        updateAppointmentInput: {
+          id, status: AppointmentStatus.Arrived,
+          checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
+        }
+      }
     })
 
     const { updateAppointment: updateAppointmentResponse } = data ?? {}
@@ -212,84 +330,237 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
+  const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
+    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+        : onDeleteClick(id || '')
+  }
+
+  const renderIcon = () => <IconButton className='py-0 ml-5'
+    onClick={() => {
+      sortBy === ASC ?
+        dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
+        : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
+    }}>
+    <Sort />
+  </IconButton>;
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
-        </Box>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Box mt={2}>
+              <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
+            </Box>
+          </Grid>
 
-        <Box className="table-overflow">
+          <Grid item md={8} sm={12} xs={12}>
+            <FormProvider {...methods}>
+              <Grid container spacing={3}>
+                {isAdminUser &&
+                  <Grid item md={4} sm={12} xs={12}>
+                    <FacilitySelector
+                      addEmpty
+                      label={FACILITY}
+                      name="facilityId"
+                      onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                    />
+                  </Grid>}
+
+                <Grid item md={4} sm={12} xs={12}>
+                  <ServicesSelector
+                    name="serviceId"
+                    label={APPOINTMENT_TYPE}
+                    shouldEmitFacilityId={isAdminUser}
+                  />
+                </Grid>
+                {!isDoctor &&
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Box className="date-box-wrap">
+                      <Typography variant="body1" color="textPrimary">Date</Typography>
+
+                      <Box className="date-box" display="flex" alignItems="center">
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getPreviousDate}
+                        >
+                          <ChevronLeft />
+                        </Button>
+
+                        <Box className="date-input-box" mx={1}>
+                          <Typography variant="h6">{selectDate}</Typography>
+                        </Box>
+
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getNextDate}
+                        >
+                          <ChevronRight />
+                        </Button>
+
+                        <Box ml={1} />
+
+                        <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      </Box>
+                    </Box>
+                  </Grid>}
+              </Grid>
+            </FormProvider>
+          </Grid>
+        </Grid>
+
+        <Box className="table-overflow appointment-view-list">
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(TYPE)}
-                {!doctorId && renderTh(DOCTOR)}
-                {renderTh(PATIENT)}
-                {renderTh(DATE)}
                 {renderTh(TIME)}
+                {renderTh(PATIENT)}
+                {renderTh(TYPE)}
+                {renderTh(DATE, undefined, undefined, undefined, undefined, renderIcon)}
                 {renderTh(FACILITY)}
-                {renderTh(STATUS)}
+                {renderTh(ARRIVAL_STATUS)}
+                {renderTh(STAGE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
+
             <TableBody>
               {(loading || getAppointmentsLoading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
                   </TableCell>
                 </TableRow>
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime,
+                    checkInActiveStep, appointmentCreateType
                   } = appointment || {};
+
                   const { name } = facility || {};
                   const { id: patientId, firstName, lastName } = patient || {};
                   const { name: type } = appointmentType || {};
-                  const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-                  const { text, textColor } = appointmentStatus(status || '')
+
+                  const { text, textColor, bgColor } = appointmentStatus(status || '')
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '',
+                    (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
-                      <TableCell scope="row">{type}</TableCell>
-                      {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
-                      <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
+                          className="custom-cell"
+                        >
+                          <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                          <Box px={0.5} />
 
-                      <TableCell scope="row">
-                        {getDateWithDay(scheduleStartDateTime || '')}
-                      </TableCell>
-
-                      <TableCell scope="row">
-                        {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
-                      </TableCell>
-                      <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">
-                        <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
-                          {text}
+                          <Typography variant="body2">
+                            ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+                          </Typography>
                         </Box>
                       </TableCell>
 
+                      <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">{type}</TableCell>
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100}
-                          onClick={() => id && patientId && handleCheckIn(id, patientId)}
-                          justifyContent="center">
+                        <Box display='flex' flexDirection='column'>
+                          {getDateWithDay(scheduleStartDateTime || '')}
+
+                          {status === AppointmentStatus.Arrived &&
+                            <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
+                              {VIEW_ENCOUNTER}
+                            </Link>}
+                        </Box>
+                      </TableCell>
+
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">
+                        {id && <>
+                          {isEdit && appointmentId === id ?
+                            <FormProvider {...methods}>
+                              <Selector
+                                label=""
+                                focus
+                                value={{ id, name: text }}
+                                name="status"
+                                options={AppointmentStatusStateMachine(
+                                  status || AppointmentStatus.Scheduled, id, appointmentCreateType
+                                )}
+                                onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                                onOutsideClick={clearEdit}
+                                isEdit={isEdit}
+                              />
+                            </FormProvider>
+                            : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
+                              handleStatusUpdate(id, text)}
+                              className={`${classes.status} pointer-cursor`}
+                              component='span' color={textColor}
+                              display="flex"
+                              flexDirection="column"
+                            >
+                              {text}
+                            </Box>}
+                        </>}
+                      </TableCell>
+
+                      <TableCell scope="row">
+                        {id && <Box className={classes.selectorBox}>
+                          <Box p={0} className={classes.status} component='span' color={textColor}
+                            display="flex" flexDirection="column"
+                          >
+                            <Box display="flex" color={stageColor}>
+                              {stage}
+                            </Box>
+                          </Box>
+                        </Box>}
+                      </TableCell>
+
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          {
+                            appointmentCreateType === AppointmentCreateType.Telehealth ?
+                              <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
+                                <VideoIcon />
+                              </Box> :
+                              (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
+                                onClick={() => canUpdateAppointmentStatus(status) ?
+                                  id && patientId && handleCheckIn(id, patientId)
+                                  : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                                }>
+                                <CheckInTickIcon />
+                              </Box>
+                          }
+
+                          {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
+                            <IconButton onMouseEnter={() => {
+                              Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                            }}>
+                              <CheckInTickIcon />
+                            </IconButton>
+                          </Box>}
+
                           <Box className={classes.iconsBackground}>
-                            <CheckInTickIcon />
+                            <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
+                              <EditNewIcon />
+                            </Button>
                           </Box>
 
-                          <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                            <Box className={classes.iconsBackground}>
-                              <EditNewIcon />
-                            </Box>
-                          </Link>
-
-                          <Box className={classes.iconsBackground} onClick={() => {
-                            moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                              Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
-                          }}>
-                            <TrashNewIcon />
+                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
+                            <Button disableElevation onClick={() => scheduleStartDateTime && id
+                              && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
+                            >
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>

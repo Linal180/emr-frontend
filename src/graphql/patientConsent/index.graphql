@@ -1,0 +1,13 @@
+mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
+  createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {
+    response {
+      name
+      status
+      message
+    }
+
+    patientConsent {
+      id
+    }
+  }
+}
