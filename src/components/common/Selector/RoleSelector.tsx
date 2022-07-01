@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { renderLoading, renderStaffRoles, requiredLabel } from "../../../utils";
+import { renderLoading, renderStaffRoles, requiredLabel, updateSortOptions } from "../../../utils";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 import {
   roleReducer, Action, initialState, State, ActionType
@@ -21,14 +21,6 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
 
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderStaffRoles(roles ?? [])] : [...renderStaffRoles(roles ?? [])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllRole,] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -75,11 +67,11 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
           rules={{ required: true }}
           name={name}
           control={control}
-          defaultValue={updateSortOptions[0]}
+          defaultValue={updatedOptions[0]}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-                options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+                options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
                 value={field.value}
                 disabled={disabled}
                 disableClearable

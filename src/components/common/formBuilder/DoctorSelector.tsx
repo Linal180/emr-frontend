@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { FormDoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors } from "../../../utils";
+import { requiredLabel, renderDoctors, updateSortOptions } from "../../../utils";
 import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
@@ -23,14 +23,6 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
   const { page, searchQuery, doctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -88,7 +80,7 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={provider}
             disabled={disabled}
             disableClearable

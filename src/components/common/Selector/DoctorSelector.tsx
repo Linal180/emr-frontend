@@ -9,7 +9,7 @@ import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
-  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading
+  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading, updateSortOptions
 } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -35,14 +35,6 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const { page, searchQuery, doctors, allDoctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllDoctor,] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -139,12 +131,12 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
             rules={{ required: true }}
             name={name}
             control={control}
-            defaultValue={updateSortOptions[0]}
+            defaultValue={updatedOptions[0]}
             render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
               return (
                 <Autocomplete
-                  options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
-                  value={field.value}
+                options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+                value={field.value}
                   disabled={disabled}
                   disableClearable
                   getOptionLabel={(option) => option.name || ""}

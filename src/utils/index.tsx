@@ -1853,3 +1853,16 @@ export const mediaType = (attachmentTitle: string): string[] => {
       return ACCEPTABLE_FILES
   }
 };
+
+export const updateSortOptions = (options: SelectorOption[]) => {
+  const updateSortOptions = options?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+  return (
+    updateSortOptions
+  )
+}

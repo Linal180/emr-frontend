@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isSuperAdmin, renderPractices, requiredLabel } from "../../../utils";
+import { isSuperAdmin, renderPractices, requiredLabel, updateSortOptions } from "../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../reducers/practiceReducer";
@@ -27,14 +27,6 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderPractices(practices ?? [])]
     : [...renderPractices(practices ?? [])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllPractice,] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -85,12 +77,12 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={updateSortOptions[0]}
+      defaultValue={updatedOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
-          value={field.value}
+            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            value={field.value}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}

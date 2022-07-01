@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderServices, requiredLabel } from "../../../utils";
+import { renderServices, requiredLabel, updateSortOptions } from "../../../utils";
 import { ServiceSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
@@ -21,13 +21,6 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services, serviceType } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllService] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -80,7 +73,7 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={serviceType}
             disabled={disabled}
             disableClearable

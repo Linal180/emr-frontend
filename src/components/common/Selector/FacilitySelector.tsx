@@ -9,7 +9,7 @@ import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel, updateSortOptions
 } from "../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -34,14 +34,6 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
 
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllFacility,] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -96,12 +88,12 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
           rules={{ required: true }}
           name={name}
           control={control}
-          defaultValue={updateSortOptions[0]}
+          defaultValue={updatedOptions[0]}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-              options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
-              value={field.value}
+                options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+                value={field.value}
                 disabled={disabled}
                 disableClearable
                 getOptionLabel={(option) => option.name}

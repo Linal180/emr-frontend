@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderAppointments, requiredLabel } from "../../../utils";
+import { renderAppointments, requiredLabel, updateSortOptions } from "../../../utils";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
@@ -20,14 +20,6 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
   const { page, searchQuery, appointments } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderAppointments(appointments ?? [])] : [...renderAppointments(appointments ?? [])]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllAppointment,] = useFindAllAppointmentsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -72,12 +64,12 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={updateSortOptions[0]}
+      defaultValue={updatedOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
-            value={field.value}
+          options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+          value={field.value}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}

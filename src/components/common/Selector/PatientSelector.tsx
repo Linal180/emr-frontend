@@ -13,7 +13,7 @@ import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, updateSortOptions
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -36,14 +36,6 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
-
-  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
-    const firstLetter = option && option?.name?.toUpperCase() as string;
-    return {
-      firstLetter,
-      ...option,
-    };
-  });
 
   const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -104,11 +96,11 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={updateSortOptions[0]}
+      defaultValue={updatedOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={field.value}
             loading={loading}
             disableClearable
