@@ -21,6 +21,14 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderAppointments(appointments ?? [])] : [...renderAppointments(appointments ?? [])]
 
+  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+
   const [findAllAppointment,] = useFindAllAppointmentsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -64,11 +72,11 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={updatedOptions[0]}
+      defaultValue={updateSortOptions[0]}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={field.value}
             disabled={disabled}
             disableClearable

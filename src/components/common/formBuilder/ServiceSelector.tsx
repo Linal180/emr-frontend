@@ -21,6 +21,13 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services, serviceType } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
+  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
 
   const [findAllService] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -73,7 +80,7 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={serviceType}
             disabled={disabled}
             disableClearable

@@ -24,6 +24,14 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
+  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+
   const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -80,7 +88,7 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={provider}
             disabled={disabled}
             disableClearable

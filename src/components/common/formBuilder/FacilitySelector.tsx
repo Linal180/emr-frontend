@@ -19,6 +19,13 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
   const { page, searchQuery, facilities } = state;
   const { facilityFieldId } = formState || {}
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
+  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
 
   const [findAllFacility] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -68,7 +75,7 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
             value={facilityFieldId}
             disabled={disabled}
             disableClearable

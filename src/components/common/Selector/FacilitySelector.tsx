@@ -35,6 +35,14 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
 
+  const updateSortOptions = updatedOptions && updatedOptions?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+
   const [findAllFacility,] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -88,12 +96,12 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
           rules={{ required: true }}
           name={name}
           control={control}
-          defaultValue={updatedOptions[0]}
+          defaultValue={updateSortOptions[0]}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-                options={updatedOptions ?? []}
-                value={field.value}
+              options={(updateSortOptions && updateSortOptions?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+              value={field.value}
                 disabled={disabled}
                 disableClearable
                 getOptionLabel={(option) => option.name}
