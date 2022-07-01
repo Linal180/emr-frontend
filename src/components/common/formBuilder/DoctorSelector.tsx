@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { FormDoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors } from "../../../utils";
+import { requiredLabel, renderDoctors, sortingValue } from "../../../utils";
 import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
@@ -80,7 +80,7 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={provider}
             disabled={disabled}
             disableClearable

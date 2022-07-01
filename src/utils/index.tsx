@@ -1856,3 +1856,18 @@ export const mediaType = (attachmentTitle: string): string[] => {
       return ACCEPTABLE_FILES
   }
 };
+
+export const updateSortOptions = (options: SelectorOption[]) => {
+  const updateSortOptions = options?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+  return (
+    updateSortOptions
+  )
+}
+
+export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))

@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel } from "../../../utils";
+import { isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, sortingValue } from "../../../utils";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 import {
   roleReducer, Action, initialState, State, ActionType
@@ -76,7 +76,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-                options={updatedOptions ?? []}
+                options={sortingValue(updatedOptions) ?? []}
                 value={field.value}
                 disabled={disabled}
                 disableClearable
