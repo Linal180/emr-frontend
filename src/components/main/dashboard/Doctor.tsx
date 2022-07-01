@@ -72,11 +72,10 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
 
           <Box p={2} />
 
-          <Card>
-            <Box px={3}>
-              <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
-            </Box>
-          </Card>
+          <Box>
+            <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
+          </Box>
+
         </Grid>
       </Grid>
     </>

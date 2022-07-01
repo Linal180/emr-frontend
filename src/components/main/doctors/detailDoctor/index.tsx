@@ -61,10 +61,14 @@ const DoctorDetailComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1" />
-          
+
           <TabPanel value="2">
             <Grid spacing={3}>
-              <ScheduleListing isDoctor doctorFacilityId={doctorFacilityId || ''} />
+
+              <Grid md={6}>
+                <ScheduleListing isDoctor doctorFacilityId={doctorFacilityId || ''} />
+              </Grid>
+
             </Grid>
           </TabPanel>
 

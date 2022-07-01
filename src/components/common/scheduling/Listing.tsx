@@ -134,44 +134,42 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
 
   return (
-    <Grid container spacing={3}>
-      <Grid item md={6}>
-        <CardComponent cardTitle={AVAILABILITY_TEXT}>
-          {getLoading ?
-            <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
-              <Grid container spacing={3}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                    <AddSlotIcon />
+    <>
+      <CardComponent cardTitle={AVAILABILITY_TEXT}>
+        {getLoading ?
+          <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
+            <Grid container spacing={3}>
+              <Grid item md={12} sm={12} xs={12}>
+                <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                  <AddSlotIcon />
 
-                    <Typography>
-                      {ADD_MORE_RECORDS_TEXT}
-                    </Typography>
-                  </Box>
+                  <Typography>
+                    {ADD_MORE_RECORDS_TEXT}
+                  </Typography>
+                </Box>
 
-                  <Box>
-                    {byDaySchedules?.map((schedule: DaySchedule) => {
-                      const { day, slots } = schedule || {}
+                <Box>
+                  {byDaySchedules?.map((schedule: DaySchedule) => {
+                    const { day, slots } = schedule || {}
 
-                      return slots && slots.length > 0
-                        && (
-                          <Box key={day} className={classes.viewSlots} mb={3}>
-                            <Typography className={classes.heading}>
-                              {day}
-                            </Typography>
+                    return slots && slots.length > 0
+                      && (
+                        <Box key={day} className={classes.viewSlots} mb={3}>
+                          <Typography className={classes.heading}>
+                            {day}
+                          </Typography>
 
-                            {slots.map(slot => slot &&
-                              <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
-                            )}
-                          </Box>
-                        )
-                    })}
-                  </Box>
-                </Grid>
+                          {slots.map(slot => slot &&
+                            <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
+                          )}
+                        </Box>
+                      )
+                  })}
+                </Box>
               </Grid>
-            )}
-        </CardComponent>
-      </Grid>
+            </Grid>
+          )}
+      </CardComponent>
 
       <ScheduleModal
         id={scheduleId}
@@ -193,7 +191,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
           type: ActionType.SET_OPEN_DELETE, openDelete: open
         })}
       />
-    </Grid>
+    </>
   );
 };
 
