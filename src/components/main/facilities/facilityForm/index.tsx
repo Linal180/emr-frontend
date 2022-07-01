@@ -3,7 +3,7 @@ import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Tab } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, Tab } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import RegisterFormComponent from './RegisterForm';
@@ -304,7 +304,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       </TabPanel>
 
       <TabPanel value='2'>
-        <ScheduleListing />
+        <Grid spacing={3}>
+          <Grid md={6} sm={12} xs={12}>
+            <ScheduleListing />
+          </Grid>
+        </Grid>
       </TabPanel>
     </TabContext>
   );
