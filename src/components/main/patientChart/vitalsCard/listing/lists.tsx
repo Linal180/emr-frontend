@@ -7,13 +7,14 @@ import {
   HeadCircumferenceType, PatientVitalPayload, TempUnitType, UnitType, WeightType
 } from '../../../../../generated/graphql';
 import { VitalListingTableProps } from '../../../../../interfacesTypes';
+import { ActionType } from '../../../../../reducers/patientReducer';
 import {
   fahrenheitToCelsius, formatValue, getFormatDateString, inchesToCentimeter, kilogramToOunce, kilogramToPounds, renderTh, roundOffUpto2Decimal
 } from '../../../../../utils';
 
-export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit, setOpen, shouldDisableEdit }: VitalListingTableProps) => {
+export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher }: VitalListingTableProps) => {
   const { heightUnit: { id: heightId }, weightUnit: { id: weightId }, headCircumferenceUnit: {
-    id: headCircumferenceId }, feverUnit: { id: feverId } } = patientStates;
+    id: headCircumferenceId }, feverUnit: { id: feverId }, patientVitals } = patientStates;
 
   const getWeightValue = (weight: string) => {
     if (weight) {
@@ -88,8 +89,8 @@ export const VitalListingTable = ({ patientVitals, patientStates, setVitalToEdit
   const renderIcon = (vital: PatientVitalPayload['patientVital']) => {
     return (
       <IconButton className='py-0 ml-5' onClick={() => {
-        setVitalToEdit && setVitalToEdit(vital);
-        setOpen && setOpen(true)
+        dispatcher({ type: ActionType.SET_VITAL_TO_EDIT, vitalToEdit: vital })
+        dispatcher({ type: ActionType.SET_OPEN_VITAL, openVital: true })
       }}>
         <FormEditNewIcon />
       </IconButton>

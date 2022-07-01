@@ -29,7 +29,9 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
+  SYSTEM_ROLES,
 } from "../constants";
+import { SelectorOption } from "../interfacesTypes";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
   return yup.string()
@@ -289,7 +291,16 @@ const staffBasicSchema = {
 export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  facilityId: selectorSchema(FACILITY, isUserAdmin),
+  facilityId: selectorSchema(FACILITY, false).when('roleType', {
+    is: (roleType: SelectorOption)=>roleType?.id === SYSTEM_ROLES.FacilityAdmin,
+    then: selectorSchema(FACILITY, false),
+    otherwise: selectorSchema(FACILITY, true)
+  }),
+  practiceId: selectorSchema(PRACTICE, false).when('roleType', {
+    is: (roleType: SelectorOption)=>roleType?.id !== SYSTEM_ROLES.FacilityAdmin,
+    then: selectorSchema(PRACTICE, false),
+    otherwise: selectorSchema(PRACTICE, true)
+  }),
   roleType: selectorSchema(ROLE, !isEdit)
 })
 
