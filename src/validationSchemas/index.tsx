@@ -291,15 +291,16 @@ const staffBasicSchema = {
 export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  facilityId: selectorSchema(FACILITY, false).when('roleType', {
-    is: (roleType: SelectorOption)=>roleType?.id === SYSTEM_ROLES.FacilityAdmin,
-    then: selectorSchema(FACILITY, false),
-    otherwise: selectorSchema(FACILITY, true)
-  }),
+  facilityId: selectorSchema(FACILITY, false)
+    .when('roleType', {
+      is: (roleType: SelectorOption) => roleType?.id !== SYSTEM_ROLES.PracticeAdmin ? isUserAdmin : false,
+      then: selectorSchema(FACILITY, true),
+      otherwise: selectorSchema(FACILITY, false)
+    }),
   practiceId: selectorSchema(PRACTICE, false).when('roleType', {
-    is: (roleType: SelectorOption)=>roleType?.id !== SYSTEM_ROLES.FacilityAdmin,
-    then: selectorSchema(PRACTICE, false),
-    otherwise: selectorSchema(PRACTICE, true)
+    is: (roleType: SelectorOption) => roleType?.id === SYSTEM_ROLES.PracticeAdmin,
+    then: selectorSchema(PRACTICE, true),
+    otherwise: selectorSchema(PRACTICE, false)
   }),
   roleType: selectorSchema(ROLE, !isEdit)
 })

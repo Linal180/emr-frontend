@@ -1,20 +1,25 @@
 // packages block
 import { FC, useContext } from "react";
+import { Link } from "react-router-dom";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
-import PatientSearchComponent from "../../common/Dashboard/patientSearch";
+import ScheduleListing from "../../common/scheduling/Listing";
 import DoctorPatients from "../../common/Dashboard/DoctorPatients";
-import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
+import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import DoctorAppointmentsAndPatients from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs and constant block
-import { RedirectIcon, } from "../../../assets/svgs";
-import { TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, } from "../../../constants";
 import { AuthContext } from "../../../context";
+import { RedirectIcon, } from "../../../assets/svgs";
+import {
+  TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE
+} from "../../../constants";
 
 const DoctorDashboardComponent: FC = (): JSX.Element => {
-  const {currentUser} = useContext(AuthContext)
-  const { id } = currentUser || {}
+  const { currentUser } = useContext(AuthContext)
+  const { id, facility } = currentUser || {}
+  const { id: facilityId } = facility || {}
+
   return (
     <>
       <PatientSearchComponent />
@@ -24,7 +29,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
           <Card>
             <Box p={3} pb={2}>
               <Typography variant="h5">{MY_APPOINTMENTS}</Typography>
-            
+
               <CalendarComponent showHeader={false} />
             </Box>
           </Card>
@@ -36,9 +41,11 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{TODAYS_APPOINTMENTS}</Typography>
 
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
+                <Link to={VIEW_APPOINTMENTS_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
               </Box>
 
               <DoctorAppointmentsAndPatients providerId={id || ''} />
@@ -52,9 +59,11 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{MY_PATIENTS}</Typography>
 
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
+                <Link to={PATIENTS_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
               </Box>
 
               <DoctorPatients providerId={id || ''} />
@@ -63,11 +72,10 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
 
           <Box p={2} />
 
-          <Card>
-            <Box px={3}>
-              <ScheduleAvailableComponent />
-            </Box>
-          </Card>
+          <Box>
+            <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
+          </Box>
+
         </Grid>
       </Grid>
     </>

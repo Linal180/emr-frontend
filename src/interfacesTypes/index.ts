@@ -33,12 +33,12 @@ import {
   CreatePatientAllergyInput, CreatePatientItemInput, CreatePracticeItemInput, CreateProblemInput,
   CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient,
   FacilitiesPayload, FieldsInputs, FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload,
-  IcdCodesWithSnowMedCode, LoginUserInput, Maybe, Patient, PatientPayload, PatientProviderPayload,
-  PatientsPayload, PatientVitalPayload, PatientVitals, PatientVitalsPayload, PermissionsPayload,
+  IcdCodesWithSnowMedCode, LoginUserInput, Patient, PatientPayload, PatientProviderPayload,
+  PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput,
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, 
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -498,10 +498,10 @@ export interface StepperData {
 }
 
 export interface SearchComponentProps {
-  search: Function;
   info?: boolean;
-  tooltipData?: TooltipData[]
   placeHolder?: string;
+  tooltipData?: TooltipData[]
+  search: Function;
 }
 
 export interface AppMenuItemTypes {
@@ -1891,6 +1891,7 @@ export interface ScheduleFormProps {
 
 export interface ScheduleListingProps {
   isDoctor?: boolean;
+  doctorId?: string;
   typeId?: string;
   doctorFacilityId?: string;
 }

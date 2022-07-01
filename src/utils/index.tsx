@@ -450,8 +450,12 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
   return data;
 }
 
-export const renderStaffRoles = (roles: RolesPayload['roles']) => {
+export const renderStaffRoles = (roles: RolesPayload['roles'], isAdminUser: boolean) => {
   const data: SelectorOption[] = [];
+  const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
+  if (!isAdminUser) {
+    rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
+  }
 
   if (!!roles) {
     for (let role of roles) {
@@ -459,8 +463,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         const { role: name } = role;
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
-          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN
-          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
+          !rolesToEmit.includes(name || '')
         )
           name && data.push({ id: name.trim(), name: formatValue(name) })
       }
@@ -1853,3 +1856,18 @@ export const mediaType = (attachmentTitle: string): string[] => {
       return ACCEPTABLE_FILES
   }
 };
+
+export const updateSortOptions = (options: SelectorOption[]) => {
+  const updateSortOptions = options?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+  return (
+    updateSortOptions
+  )
+}
+
+export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))

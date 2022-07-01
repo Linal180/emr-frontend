@@ -13,7 +13,7 @@ import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -24,11 +24,11 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user, currentUser } = useContext(AuthContext)
-
   const { roles, facility } = user || {};
+
   const { id: currentDoctor } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPractice = isPracticeAdmin(roles);
 
   const onlyDoctor = isOnlyDoctor(roles)
   const { id: facilityId, practiceId } = facility || {}
@@ -67,7 +67,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs }
+        isPractice ? { practiceId, ...pageInputs }
           : { facilityId, ...pageInputs }
 
       patientsInputs && await findAllPatient({
@@ -79,7 +79,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, facilityId, findAllPatient, searchQuery, onlyDoctor, currentDoctor])
+  }, [page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery, onlyDoctor, currentDoctor])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
@@ -100,7 +100,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={field.value}
             loading={loading}
             disableClearable
@@ -138,7 +138,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                
+
                 <TextField
                   {...params}
                   variant="outlined"

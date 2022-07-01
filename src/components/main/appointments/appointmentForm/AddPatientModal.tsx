@@ -59,10 +59,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
   const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      message === FORBIDDEN_EXCEPTION ?
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted(data) {
@@ -80,7 +79,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   });
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
-    const { firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId: userFacilityId } = inputs;
+    const {
+      firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId: userFacilityId
+    } = inputs;
 
     if (user) {
       const { id: userId } = user;
