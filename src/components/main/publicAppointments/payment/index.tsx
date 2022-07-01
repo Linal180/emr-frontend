@@ -11,9 +11,9 @@ import Alert from '../../../common/Alert';
 import ACHPaymentComponent from '../achPayment'
 import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
-import { GREY } from '../../../../theme';
+import { GREY, WHITE } from '../../../../theme';
 import history from '../../../../history';
-import { AIMEDLOGO } from '../../../../assets/svgs';
+import { ACHIcon, AIMEDLOGO, PayLaterIcon } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import { appointmentChargesDescription } from '../../../../utils';
 import { useHeaderStyles } from '../../../../styles/headerStyles';
@@ -241,6 +241,25 @@ const ExternalPaymentComponent = (): JSX.Element => {
                       onPaymentOptionSelected={onPaymentOptionSelected}
                       onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
+
+                    <Grid container>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <ACHIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={moveNext} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <PayLaterIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_LATER}</Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+
                     <Grid container justifyContent='flex-end'>
                       {showPayBtn && (
                         <Grid item md={12} sm={12}>
@@ -251,15 +270,6 @@ const ExternalPaymentComponent = (): JSX.Element => {
                           </Box>
                         </Grid>
                       )}
-
-                      <Grid item>
-                        <Box pr={2}>
-                          <Button variant='contained' onClick={achClickHandler} color={'primary'}>{PAY_VIA_ACH}</Button>
-                        </Box>
-                      </Grid>
-                      <Grid item>
-                        <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-                      </Grid>
                     </Grid>
                   </Fragment>)}
 
