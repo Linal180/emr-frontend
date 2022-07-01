@@ -36,7 +36,7 @@ import {
 } from '../../../../../utils';
 
 export const AddVitals = memo(({
-  fetchPatientAllVitals, patientStates, dispatcher, isOpen = false, handleClose, vitalToEdit }: AddPatientVitalsProps) => {
+  fetchPatientAllVitals, patientStates, dispatcher, handleClose, }: AddPatientVitalsProps) => {
   const chartingClasses = useChartingStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
@@ -44,7 +44,7 @@ export const AddVitals = memo(({
   const { PatientHeight, PatientWeight, patientHeadCircumference, patientTemperature } = watch()
   const {
     prevHeightUnit, heightUnit, isHeightEdit, isWeightEdit, prevWeightUnit, weightUnit, isHeadEdit, prevHeadUnit,
-    headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit } = patientStates || {}
+    headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit, openVital, vitalToEdit } = patientStates || {}
   const { id: feverUnitId } = feverUnit
   const { id: heightUnitId } = heightUnit
   const { id: weightUnitId } = weightUnit
@@ -315,7 +315,7 @@ export const AddVitals = memo(({
   }, [isTempEdit, tempUnitConvertHandler])
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
+    <Dialog fullWidth maxWidth="sm" open={openVital} onClose={handleModalClose}>
       <DialogTitle>
         <Typography variant="h4">{vitalToEdit ? UPDATE_VITALS : ADD_VITALS}</Typography>
       </DialogTitle>

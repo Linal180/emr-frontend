@@ -1,38 +1,40 @@
 // packages block
-import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 // components block
 import Alert from "../../../common/Alert";
-import Search from "../../../common/Search";
-import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Search from "../../../common/Search";
+import Selector from "../../../common/Selector";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
 import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
+import {
+  ACTION, CANT_DELETE_DOCTOR, DELETE_DOCTOR_DESCRIPTION, DOCTOR, DOCTORS_ROUTE, EMAIL, FACILITY, LINK_COPIED,
+  MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, PUBLIC_LINK, ROOT_ROUTE,
+  SPECIALTY, USER_PERMISSIONS
+} from "../../../../constants";
+import { AuthContext } from "../../../../context";
+import {
+  AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
+} from "../../../../generated/graphql";
+import history from "../../../../history";
+import { DoctorSearchInputProps } from "../../../../interfacesTypes";
+import {
+  Action as AppointmentAction, ActionType as AppointmentActionType, appointmentReducer, initialState as AppointmentInitialState,
+  State as AppointmentState
+} from "../../../../reducers/appointmentReducer";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   checkPermission,
   formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
-import {
-  doctorReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/doctorReducer";
-import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
-  State as AppointmentState, ActionType as AppointmentActionType
-} from "../../../../reducers/appointmentReducer";
-import {
-  AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
-} from "../../../../generated/graphql";
-import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED,
-  PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE
-} from "../../../../constants";
-import history from "../../../../history";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,6 +46,13 @@ const DoctorsTable: FC = (): JSX.Element => {
   const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const isRegularUser = isUser(roles)
+
+  const methods = useForm<DoctorSearchInputProps>({ mode: "all" });
+
+  const { watch } = methods;
+  const { facilityId: selectedFacilityId, speciality } = watch()
+  const { id: selectedFacility } = selectedFacilityId || {}
+  const { id: selectedSpecialty } = speciality || {}
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeDoctor)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateDoctor)
@@ -87,14 +96,16 @@ const DoctorsTable: FC = (): JSX.Element => {
         isPracticeUser ? { practiceId, ...pageInputs } :
           isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
+      const searchFilterInputs = {
+        ...(selectedFacility ? { facilityId: selectedFacility } : {}),
+        ...(selectedSpecialty ? { speciality: selectedSpecialty as Speciality } : {}),
+      }
+
       doctorInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery, ...searchFilterInputs } }
       })
     } catch (error) { }
-  }, [
-    facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page,
-    practiceId, searchQuery
-  ])
+  }, [facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page, practiceId, searchQuery, selectedFacility, selectedSpecialty])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -166,9 +177,35 @@ const DoctorsTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box mb={2} maxWidth={450}>
-          <Search search={search} />
-        </Box>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Box mt={2}>
+              <Search search={search} />
+            </Box>
+          </Grid>
+
+          <Grid item md={8} sm={12} xs={12}>
+            <FormProvider {...methods}>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Selector
+                    addEmpty
+                    label={SPECIALTY}
+                    name="speciality"
+                    options={MAPPED_SPECIALTIES}
+                  />
+                </Grid>
+                <Grid item md={6} sm={12} xs={12}>
+                  <FacilitySelector
+                    label={FACILITY}
+                    name="facilityId"
+                    addEmpty
+                  />
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Grid>
+        </Grid>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
