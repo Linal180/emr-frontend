@@ -22,7 +22,7 @@ import {
 } from "../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
+  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
 } from "../../../constants";
 
 const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId, doctorId }) => {
@@ -128,7 +128,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
   }, [doctorId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
 
   useEffect(() => {
-    id || doctorId ? fetchSchedules() : Alert.error(DOCTOR_NOT_FOUND)
+    (id || doctorId) && fetchSchedules()
   }, [doctorId, fetchSchedules, id])
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
