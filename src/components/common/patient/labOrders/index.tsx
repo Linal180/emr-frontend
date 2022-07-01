@@ -13,7 +13,7 @@ import Selector from "../../Selector";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import history from "../../../../history";
-import { EyeIcon, OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
+import {  OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { LabOrderInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
@@ -229,9 +229,9 @@ const LabOrdersTable = (): JSX.Element => {
                             <OutlinedAddIcon />
                           </IconButton>
 
-                          <IconButton>
+                          {/* <IconButton>
                             <EyeIcon />
-                          </IconButton>
+                          </IconButton> */}
 
                           <IconButton onClick={() => window.print()}>
                             <PrinterIcon />
