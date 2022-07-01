@@ -1,52 +1,47 @@
 // packages block
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
-import Pagination from "@material-ui/lab/Pagination";
 import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import Pagination from "@material-ui/lab/Pagination";
+import { FormProvider, useForm } from "react-hook-form";
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import Search from "../../../common/Search";
 import Selector from "../../../common/Selector";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
-import {
-  ACTION, CANT_DELETE_DOCTOR, DELETE_DOCTOR_DESCRIPTION, DOCTOR, DOCTORS_ROUTE, EMAIL, FACILITY, LINK_COPIED,
-  MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, PUBLIC_LINK, ROOT_ROUTE,
-  SPECIALTY, USER_PERMISSIONS
-} from "../../../../constants";
+import history from "../../../../history";
 import { AuthContext } from "../../../../context";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
+import { DoctorSearchInputProps } from "../../../../interfacesTypes";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
+import {
+  checkPermission, formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+} from "../../../../utils";
 import {
   AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
 } from "../../../../generated/graphql";
-import history from "../../../../history";
-import { DoctorSearchInputProps } from "../../../../interfacesTypes";
 import {
-  Action as AppointmentAction, ActionType as AppointmentActionType, appointmentReducer, initialState as AppointmentInitialState,
-  State as AppointmentState
-} from "../../../../reducers/appointmentReducer";
-import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
-import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import {
-  checkPermission,
-  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
-} from "../../../../utils";
+  ACTION, CANT_DELETE_DOCTOR, DELETE_DOCTOR_DESCRIPTION, DOCTOR, DOCTORS_ROUTE, EMAIL, FACILITY,
+  MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, ROOT_ROUTE,
+  SPECIALTY, USER_PERMISSIONS
+} from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user, userPermissions } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const { id: facilityId, practiceId } = facility || {}
 
+  const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
+
   const isFacAdmin = isFacilityAdmin(roles);
   const isRegularUser = isUser(roles)
-
   const methods = useForm<DoctorSearchInputProps>({ mode: "all" });
 
   const { watch } = methods;
@@ -56,11 +51,8 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeDoctor)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateDoctor)
-
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
-  const [{ copied }, appointmentDispatcher] =
-    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -105,7 +97,10 @@ const DoctorsTable: FC = (): JSX.Element => {
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery, ...searchFilterInputs } }
       })
     } catch (error) { }
-  }, [facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page, practiceId, searchQuery, selectedFacility, selectedSpecialty])
+  }, [
+    facilityId, findAllDoctor, isFacAdmin, isPracticeUser, isRegularUser, isSuper, page, practiceId,
+    searchQuery, selectedFacility, selectedSpecialty
+  ])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -156,16 +151,6 @@ const DoctorsTable: FC = (): JSX.Element => {
       await removeDoctor({
         variables: { removeDoctor: { id: deleteDoctorId } }
       })
-  };
-
-  const handleClipboard = (id: string) => {
-    if (id) {
-      navigator.clipboard.writeText(
-        `${process.env.REACT_APP_URL}${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/${id}`
-      )
-
-      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
-    }
   };
 
   const search = (query: string) => {
@@ -248,12 +233,6 @@ const DoctorsTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <LinkIcon />
-                            </Box>
-                          </DetailTooltip>
-
                           <Link to={`${DOCTORS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />

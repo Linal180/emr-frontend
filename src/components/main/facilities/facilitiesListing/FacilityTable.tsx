@@ -12,22 +12,18 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
 import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
-  State as AppointmentState, ActionType as AppointmentActionType
-} from "../../../../reducers/appointmentReducer";
-import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, SERVICES, PRACTICE,
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE, FACILITY_SERVICES_ROUTE,
-  PUBLIC_LINK, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
+  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, SERVICES, PRACTICE,
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
+  FACILITY_SERVICES_ROUTE,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -43,9 +39,7 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
-  const [{ copied }, appointmentDispatcher] =
-    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
-
+  
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -135,16 +129,6 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleClipboard = (id: string) => {
-    if (id) {
-      navigator.clipboard.writeText(
-        `${process.env.REACT_APP_URL}${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/${id}`
-      )
-
-      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
-    }
-  };
-
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
@@ -198,12 +182,6 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')} onMouseLeave={() => appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: false })}>
-                              <LinkIcon />
-                            </Box>
-                          </DetailTooltip>
-
                           <DetailTooltip title={SERVICES}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
