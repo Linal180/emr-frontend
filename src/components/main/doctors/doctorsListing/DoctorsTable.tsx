@@ -1,42 +1,38 @@
 // packages block
-import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import Pagination from "@material-ui/lab/Pagination";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Grid } from "@material-ui/core";
 // components block
-import Selector from "../../../common/Selector";
 import Alert from "../../../common/Alert";
-import Search from "../../../common/Search";
-import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Search from "../../../common/Search";
+import Selector from "../../../common/Selector";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
 import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
+import {
+  ACTION, CANT_DELETE_DOCTOR, DELETE_DOCTOR_DESCRIPTION, DOCTOR, DOCTORS_ROUTE, EMAIL, FACILITY, LINK_COPIED, MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, PUBLIC_LINK, ROOT_ROUTE, SPECIALTY, USER_PERMISSIONS
+} from "../../../../constants";
+import { AuthContext } from "../../../../context";
+import {
+  AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
+} from "../../../../generated/graphql";
+import history from "../../../../history";
+import { DoctorSearchInputProps } from "../../../../interfacesTypes";
+import {
+  Action as AppointmentAction, ActionType as AppointmentActionType, appointmentReducer, initialState as AppointmentInitialState,
+  State as AppointmentState
+} from "../../../../reducers/appointmentReducer";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   checkPermission,
   formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
-import {
-  doctorReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/doctorReducer";
-import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
-  State as AppointmentState, ActionType as AppointmentActionType
-} from "../../../../reducers/appointmentReducer";
-import {
-  AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
-} from "../../../../generated/graphql";
-import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED,
-  PUBLIC_LINK, USER_PERMISSIONS, PERMISSION_DENIED, ROOT_ROUTE, MAPPED_SPECIALTIES
-} from "../../../../constants";
-import history from "../../../../history";
-import { DoctorSearchInputProps } from "../../../../interfacesTypes";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -100,7 +96,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
       const searchFilterInputs = {
         ...(selectedFacility ? { facilityId: selectedFacility } : {}),
-        ...(selectedSpecialty ? { speciality: selectedSpecialty } : {}),
+        ...(selectedSpecialty ? { speciality: selectedSpecialty as Speciality } : {}),
       }
 
       doctorInputs && await findAllDoctor({

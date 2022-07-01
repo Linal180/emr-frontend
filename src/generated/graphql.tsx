@@ -1203,6 +1203,7 @@ export type DoctorInput = {
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  speciality?: Maybe<Speciality>;
 };
 
 export type DoctorPatient = {
@@ -5260,6 +5261,7 @@ export type UserIdInput = {
 export type UserInfoInput = {
   autoLogoutTime?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
 };
