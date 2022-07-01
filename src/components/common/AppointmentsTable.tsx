@@ -197,7 +197,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (doctorId || isDoctor) {
+      if (isDoctor) {
         await getAppointments({
           variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
         })
