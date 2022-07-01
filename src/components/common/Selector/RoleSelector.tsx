@@ -1,16 +1,17 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { renderLoading, renderStaffRoles, requiredLabel, updateSortOptions } from "../../../utils";
+import { isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, updateSortOptions } from "../../../utils";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 import {
   roleReducer, Action, initialState, State, ActionType
 } from "../../../reducers/roleReducer";
+import { AuthContext } from "../../../context";
 
 const RoleSelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, loading }): JSX.Element => {
@@ -19,8 +20,12 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const { page, searchQuery, roles } = state;
   const inputLabel = isRequired ? requiredLabel(label) : label
 
+  const { user } = useContext(AuthContext)
+  const { roles: userRoles } = user || {}
+  const isAdminUser = isSuperAdmin(userRoles) || isPracticeAdmin(userRoles)
+
   const updatedOptions = addEmpty ?
-    [EMPTY_OPTION, ...renderStaffRoles(roles ?? [])] : [...renderStaffRoles(roles ?? [])]
+    [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], isAdminUser)] : [...renderStaffRoles(roles ?? [], isAdminUser)]
 
   const [findAllRole,] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,

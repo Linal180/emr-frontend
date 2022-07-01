@@ -21,7 +21,7 @@ import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin
+  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin, isPracticeAdmin
 } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
@@ -44,14 +44,16 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { id: currentFacility, name: currentFacilityName, practice } = facility || {}
   const { id: currentPractice, name: currentPracticeName } = practice || {}
   const isAdminUser = isSuperAdmin(roles)
+  const isPracAdmin = isPracticeAdmin(roles)
 
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser))
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPracAdmin))
   });
 
-  const { reset, setValue, handleSubmit, watch } = methods;
+  const { reset, setValue, handleSubmit, watch, formState } = methods;
+  console.log('formState', formState)
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
@@ -83,7 +85,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             const { roles } = user || {}
             const { role } = (roles && roles[0]) || {}
             const { name } = facility || {}
-            const { id: practiceId, name: practiceName }= practice || {}
+            const { id: practiceId, name: practiceName } = practice || {}
 
             facilityId && name && setValue('facilityId', setRecord(facilityId, name))
             practiceId && practiceName && setValue('practiceId', setRecord(practiceId, practiceName))
@@ -176,16 +178,16 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     let transformPracticeId = ''
     let transformFacilityId = ''
 
-    if(roleType.id===SYSTEM_ROLES.PracticeAdmin){
+    if (roleType.id === SYSTEM_ROLES.PracticeAdmin) {
       const facility = facilityList?.find(f => f?.practiceId === selectedPractice);
-      transformFacilityId= facility?.id || ''
-      transformPracticeId= selectedPractice
-    }else {
+      transformFacilityId = facility?.id || ''
+      transformPracticeId = selectedPractice
+    } else {
       const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
       const { practiceId: pId } = facility || {};
 
-      transformFacilityId= selectedFacility
-      transformPracticeId= pId || ''
+      transformFacilityId = selectedFacility
+      transformPracticeId = pId || ''
     }
 
     const staffInputs = {

@@ -15,7 +15,7 @@ import {
   PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, FACILITIES_ROUTE, SETTINGS_TEXT,
   FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS,
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, CLINICAL_TEXT, MISCELLANEOUS_SETTINGS,
   PROVIDER_PROFILE_DESCRIPTION,
 } from "../../../constants";
 
@@ -76,6 +76,7 @@ export const SettingsComponent = () => {
               const { name, link, desc, permission } = item || {}
               const practiceAdminRoute = isSuper && name === PRACTICE_DETAILS;
               const facilityAdminRoute = isFacility && name === FACILITY_MANAGEMENT;
+              
               const doctorAdminRoute = isDoctor && name === PROVIDER_MANAGEMENT;
               const facilityDetailRoute = `${FACILITIES_ROUTE}/${facilityId}`
               const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
@@ -113,7 +114,7 @@ export const SettingsComponent = () => {
 
         <Box p={2} />
 
-        <CardComponent cardTitle={INVENTORY}>
+        {/* <CardComponent cardTitle={INVENTORY}>
           <Box pb={3}>
             {INVENTORY_ITEMS.map(({ name, link, desc }) => {
               return (
@@ -129,7 +130,7 @@ export const SettingsComponent = () => {
               )
             })}
           </Box>
-        </CardComponent>
+        </CardComponent> */}
 
         <Box p={2} />
 
