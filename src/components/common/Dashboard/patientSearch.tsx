@@ -1,17 +1,24 @@
 // packages block
-import { FC } from "react";
-import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { FC, useState } from "react";
+import { Link } from "react-router-dom";
 import { BLUE, WHITE } from "../../../theme";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
 // components
 import Search from "../Search";
 // history, constant and styles block
+import history from "../../../history";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { FACILITY_ADMIN_SEARCH_PLACEHOLDER, REGISTERED_PATIENTS, SEARCH_PATIENT, SEARCH_PLACEHOLDER, } from "../../../constants";
+import {
+  FACILITY_ADMIN_SEARCH_PLACEHOLDER, PATIENTS_ROUTE, REGISTERED_PATIENTS, SEARCH_PATIENT,
+  SEARCH_PLACEHOLDER,
+} from "../../../constants";
 
 const PatientSearchComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
-  const search = (query: string) => { }
+  const search = (query: string) => setSearchQuery(query)
+  const handleSearch = () => history.push({ pathname: PATIENTS_ROUTE, search: searchQuery })
 
   return (
     <Box p={3} mb={3} bgcolor={BLUE} borderRadius={5}>
@@ -29,18 +36,20 @@ const PatientSearchComponent: FC = (): JSX.Element => {
               <Search search={search} placeHolder={FACILITY_ADMIN_SEARCH_PLACEHOLDER} />
             </Box>
 
-            <Button variant="contained" color="primary" size="large">{SEARCH_PLACEHOLDER}</Button>
+            <Button variant="contained" color="primary" size="large" onClick={handleSearch}>{SEARCH_PLACEHOLDER}</Button>
           </Box>
         </Grid>
 
         <Grid item md={2} sm={12} xs={12}>
+          <Link to={PATIENTS_ROUTE}>
           <Box
             className='pointer-cursor'
             border={`1px solid ${WHITE}`} borderRadius={4}
             color={WHITE} p={1.5} display='flex' width={175}
-          >
+            >
             <Typography variant="body1">{REGISTERED_PATIENTS}</Typography>
           </Box>
+            </Link>
         </Grid>
       </Grid>
     </Box>
