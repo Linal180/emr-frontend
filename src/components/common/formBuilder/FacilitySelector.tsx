@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderFacilities, requiredLabel, updateSortOptions } from "../../../utils";
+import { renderFacilities, requiredLabel, sortingValue } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FormBuilderFacilitySelectorProps } from "../../../interfacesTypes";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
@@ -68,7 +68,7 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+          options={sortingValue(updatedOptions) ?? []}
           value={facilityFieldId}
             disabled={disabled}
             disableClearable

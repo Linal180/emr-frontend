@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isSuperAdmin, renderPractices, requiredLabel, updateSortOptions } from "../../../utils";
+import { isSuperAdmin, renderPractices, requiredLabel, sortingValue } from "../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../reducers/practiceReducer";
@@ -81,7 +81,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={field.value}
             disabled={disabled}
             disableClearable

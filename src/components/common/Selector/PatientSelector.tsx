@@ -13,7 +13,7 @@ import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, updateSortOptions
+  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -100,7 +100,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={field.value}
             loading={loading}
             disableClearable

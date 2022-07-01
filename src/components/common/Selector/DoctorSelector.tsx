@@ -9,7 +9,7 @@ import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
-  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading, updateSortOptions
+  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading, sortingValue
 } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -135,7 +135,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
             render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
               return (
                 <Autocomplete
-                options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+                options={sortingValue(updatedOptions) ?? []}
                 value={field.value}
                   disabled={disabled}
                   disableClearable

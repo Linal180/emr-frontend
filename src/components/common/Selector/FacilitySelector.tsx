@@ -9,7 +9,7 @@ import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel, updateSortOptions
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -92,7 +92,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-                options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+                options={sortingValue(updatedOptions) ?? []}
                 value={field.value}
                 disabled={disabled}
                 disableClearable

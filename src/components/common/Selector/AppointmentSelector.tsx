@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderAppointments, requiredLabel, updateSortOptions } from "../../../utils";
+import { renderAppointments, requiredLabel, sortingValue } from "../../../utils";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
@@ -68,7 +68,7 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={(updatedOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))) ?? []}
+          options={sortingValue(updatedOptions) ?? []}
           value={field.value}
             disabled={disabled}
             disableClearable
