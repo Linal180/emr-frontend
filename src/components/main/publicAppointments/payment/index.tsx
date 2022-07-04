@@ -242,7 +242,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                       onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
 
-                    <Grid container>
+                    {!showPayBtn && <Grid container>
                       <Grid item md={12} sm={12} xs={12}>
                         <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
                           <ACHIcon />
@@ -258,7 +258,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                           <Typography variant='body1'>{PAY_LATER}</Typography>
                         </Box>
                       </Grid>
-                    </Grid>
+                    </Grid>}
 
                     <Grid container justifyContent='flex-end'>
                       {showPayBtn && (
