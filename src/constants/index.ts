@@ -84,7 +84,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
-export const AGREEMENT_BODY_REQUIRED = 'Agreement Body is a required Field'
+export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
@@ -1584,9 +1584,9 @@ export const EXPIRE_TOKEN_MESSAGE =
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
   "You don't have permission to change emergency access status.";
 export const CREATE_AGREEMENT_MESSAGE =
-  "Agreement created Successfully";
+  "Agreement created successfully";
 export const UPDATE_AGREEMENT_MESSAGE =
-  "Agreement updated Successfully";
+  "Agreement updated successfully";
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
