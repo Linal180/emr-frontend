@@ -22,40 +22,45 @@ import { createAgreementSchema } from '../../../validationSchemas';
 import { useChartingStyles } from '../../../styles/chartingStyles';
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
-import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
+import {
+  CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType
+} from '../../../interfacesTypes';
 import {
   AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation
 } from '../../../generated/graphql';
 import {
-  ADD_AGREEMENT,
   AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY,
   ATTACHMENT_TITLES, CREATE_AGREEMENT_MESSAGE, DASHBOARD_BREAD, DETAILS, EDIT_AGREEMENT, REQUIRE_SIGNATURE,
-  SAVE_TEXT, TITLE, UPDATE_AGREEMENT_MESSAGE, REQUIRE_AGREEMENT_BEFORE_AGREEING, DESCRIPTION_TYPE, AGREEMENT_BODY_REQUIRED, FILE_REQUIRED
+  SAVE_TEXT, TITLE, UPDATE_AGREEMENT_MESSAGE, REQUIRE_AGREEMENT_BEFORE_AGREEING, DESCRIPTION_TYPE,
+  AGREEMENT_BODY_REQUIRED, FILE_REQUIRED, ADD_AGREEMENT, PLEASE_SELECT_MEDIA,
 } from '../../../constants';
 
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
+  const { id } = useParams<ParamsType>()
+  const { user } = useContext(AuthContext)
   const chartingClasses = useChartingStyles()
   const descriptionTypes = ['Text Editor', 'File Upload']
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
-  const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing, descriptionType, isLoaded, withFile, files } = state
-  const { id } = useParams<ParamsType>()
 
-  const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
+  const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
+    descriptionType, isLoaded, withFile, files
+  } = state
+
   const { id: facilityId, practice } = facility || {};
   const { id: practiceId } = practice || {}
-
   const isSuper = isSuperAdmin(roles)
-  const isPrac = isPracticeAdmin(roles)
-  const isFac = isFacilityAdmin(roles)
 
+  const isPractice = isPracticeAdmin(roles)
+  const isFac = isFacilityAdmin(roles)
   const dropZoneRef = useRef<FormForwardRef>(null)
 
   const methods = useForm<CreateAgreementFormProps>({
     mode: "all",
     resolver: yupResolver(createAgreementSchema)
   });
-  const { reset, handleSubmit, setValue } = methods
+  const { reset, handleSubmit, setValue, formState: { errors } } = methods
+  const validated = !!Object.keys(errors).length
 
   const [createAgreement, { loading: createAgreementLoading }] = useCreateAgreementMutation({
     onError({ message }) {
@@ -138,7 +143,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
   const onSubmit: SubmitHandler<CreateAgreementFormProps> = async ({ title }) => {
     const agreementInputs = isSuper ? { practiceId: null, facilityId: null } :
-      isPrac ? { practiceId, facilityId: null } :
+      isPractice ? { practiceId, facilityId: null } :
         isFac ? { practiceId, facilityId } : undefined
     if (id) {
       if (withFile) {
@@ -171,8 +176,9 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
       }
     }
 
-    if ((descriptionType === descriptionTypes[0] && !agreementBody.length) || (descriptionType === descriptionTypes[1] && !files?.length)) {
-      return
+    if ((descriptionType === descriptionTypes[0] && !agreementBody.length)
+      || (descriptionType === descriptionTypes[1] && !files?.length)) {
+      return Alert.error(PLEASE_SELECT_MEDIA)
     }
 
     await createAgreement({
@@ -265,25 +271,30 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
                     <Box p={2} />
 
-                    {!id ? descriptionType === descriptionTypes[1] && <Grid item md={12} sm={12} xs={12}>
-                      <DropzoneImage
-                        isEdit={false}
-                        ref={dropZoneRef}
-                        attachmentId={''}
-                        itemId={agreementId}
-                        attachmentName={''}
-                        providerName={''}
-                        imageModuleType={AttachmentType.SuperAdmin}
-                        title={ATTACHMENT_TITLES.Agreement}
-                        attachmentMetadata={{ agreementId: agreementId ?? '' }}
-                        reload={() => { }}
-                        handleClose={() => { }}
-                        setAttachments={() => { }}
-                        setFiles={(files: File[]) => dispatch({ type: ActionType.SET_FILES, files: files })}
-                        acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
-                      />
-                      {!files?.length ? <Typography className='danger' variant="caption">{FILE_REQUIRED}</Typography> : ''}
-                    </Grid> : null}
+                    {!id && descriptionType === descriptionTypes[1] &&
+                      <Grid item md={12} sm={12} xs={12}>
+                        <DropzoneImage
+                          isEdit={false}
+                          ref={dropZoneRef}
+                          attachmentId={''}
+                          itemId={agreementId}
+                          attachmentName={''}
+                          providerName={''}
+                          imageModuleType={AttachmentType.SuperAdmin}
+                          title={ATTACHMENT_TITLES.Agreement}
+                          attachmentMetadata={{ agreementId: agreementId ?? '' }}
+                          reload={() => { }}
+                          handleClose={() => { }}
+                          setAttachments={() => { }}
+                          setFiles={(files: File[]) => dispatch({ type: ActionType.SET_FILES, files: files })}
+                          acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
+                        />
+
+                        {validated && !!!files?.length &&
+                          <Typography className='danger' variant="caption">{FILE_REQUIRED}</Typography>
+                        }
+                      </Grid>}
+
                     <Grid item md={12} sm={12} xs={12}>
                       <FormGroup>
                         <FormControlLabel

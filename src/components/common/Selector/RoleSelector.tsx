@@ -18,8 +18,8 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const { control } = useFormContext()
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(roleReducer, initialState)
   const { page, searchQuery, roles } = state;
-  const inputLabel = isRequired ? requiredLabel(label) : label
 
+  const inputLabel = isRequired ? requiredLabel(label) : label
   const { user } = useContext(AuthContext)
   const { roles: userRoles } = user || {}
   const isAdminUser = isSuperAdmin(userRoles) || isPracticeAdmin(userRoles)
@@ -27,7 +27,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], isAdminUser)] : [...renderStaffRoles(roles ?? [], isAdminUser)]
 
-  const [findAllRole,] = useFindAllRoleListLazyQuery({
+  const [findAllRole] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -54,7 +54,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllRole({
-        variables: { roleInput: { ...pageInputs, roleName: searchQuery } }
+        variables: { roleInput: { ...pageInputs, roleName: searchQuery, customRole: false } }
       })
     } catch (error) { }
   }, [page, findAllRole, searchQuery])
