@@ -1490,6 +1490,7 @@ export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
+export const PLEASE_SELECT_MEDIA = "Please select a file to upload!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
 export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";

@@ -107,10 +107,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const [createStaff, { loading: CreateStaffLoading }] = useCreateStaffMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      message === FORBIDDEN_EXCEPTION ?
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted(data) {
@@ -192,7 +191,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     const staffInputs = {
       firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
+      gender: staffGender as Gender, username: '',
+      ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }
       )
     };
@@ -207,9 +207,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             }
           }
         })
-      } else {
-        Alert.error(CANT_UPDATE_STAFF)
-      }
+      } else Alert.error(CANT_UPDATE_STAFF)
     } else {
       if (user) {
         const { id } = user
