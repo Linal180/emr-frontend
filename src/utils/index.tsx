@@ -1870,4 +1870,11 @@ export const updateSortOptions = (options: SelectorOption[]) => {
   )
 }
 
-export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))
+export const sortingValue = (updatedOptions: SelectorOption[]) =>
+  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) =>
+    -b?.firstLetter.localeCompare(a?.firstLetter)
+  )
+
+export const isValidDate = (date: Date) => {
+  return date instanceof Date && !isNaN(date.getTime());
+}
