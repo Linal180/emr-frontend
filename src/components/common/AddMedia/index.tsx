@@ -9,12 +9,12 @@ import {
 import Alert from "../Alert";
 import DropzoneImage from "..//DropZoneImage";
 // constants and interfaces block
+import { mediaType } from "../../../utils";
 import { ADD, ADD_MEDIA } from "../../../constants";
 import { TrashNewIcon } from "../../../assets/svgs";
 import { FormForwardRef, ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { CreateAttachmentInput, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer"
-import { mediaType } from "../../../utils";
 
 dotenv.config()
 
@@ -25,6 +25,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<ICreateMediaInput>();
   const { handleSubmit, reset } = methods
+
   const [{ fileUrl, attachmentId }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -70,7 +71,6 @@ const AddImageModal: FC<MediaModalTypes> = ({
     const { title } = mediaData
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
-    setOpen && setOpen(!isOpen);
   };
 
   const handleDelete = async () => {
