@@ -1,6 +1,6 @@
 // packages block
 import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { FormProvider, useForm } from "react-hook-form";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, getTimestampsForDob
+  checkPermission, isUser, renderTh, dobDateFormat
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -60,6 +60,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
 
+  const { search: patientSearch } = useLocation()
   const { watch, setValue } = methods;
   const {
     location: { id: selectedLocationId } = {},
@@ -141,11 +142,13 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if(!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)){
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)) {
       history.push(ROOT_ROUTE)
       Alert.error(PERMISSION_DENIED)
     }
-  }, [user, userPermissions]);
+
+    !!patientSearch && dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: patientSearch.replace('?', '') })
+  }, [patientSearch, user, userPermissions]);
 
   useEffect(() => {
     isDoctor && currentUserId &&
@@ -197,7 +200,7 @@ const PatientsTable: FC = (): JSX.Element => {
           <Grid item md={4} sm={12} xs={12}>
             <Search search={search} info tooltipData={PatientSearchingTooltipData} />
           </Grid>
-          
+
           <Grid item md={2} sm={12} xs={12}>
             <Box
               onClick={() => setOpen(!open)} className='pointer-cursor'
@@ -301,10 +304,11 @@ const PatientsTable: FC = (): JSX.Element => {
                           {patientRecord}
                         </Link>
                       </TableCell>
+
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{dob && getTimestampsForDob(dob)}</TableCell>
+                      <TableCell scope="row">{!!dob && dobDateFormat(dob)}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>

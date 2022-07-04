@@ -14,7 +14,7 @@ import { ActionType } from "../../../../reducers/facilityReducer"
 import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
 import {
   SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP,
-  ADDRESS, ADDRESS_2, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL, CITY, CLIA_ID_NUMBER,
+  ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL, CITY, CLIA_ID_NUMBER,
   MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_COUNTRIES, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
   CLIA_ID_NUMBER_INFO, COUNTRY, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, MAMMOGRAPHY_CERTIFICATION_NUMBER
 } from "../../../../constants"
@@ -135,14 +135,14 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
           <InputController
             fieldType="text"
             controllerName="billingAddress"
-            controllerLabel={ADDRESS}
+            controllerLabel={ADDRESS_ONE}
             loading={getFacilityLoading}
           />
 
           <InputController
             fieldType="text"
             controllerName="billingAddress2"
-            controllerLabel={ADDRESS_2}
+            controllerLabel={ADDRESS_TWO}
             loading={getFacilityLoading}
           />
 

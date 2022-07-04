@@ -291,15 +291,16 @@ const staffBasicSchema = {
 export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  facilityId: selectorSchema(FACILITY, false).when('roleType', {
-    is: (roleType: SelectorOption)=>roleType?.id === SYSTEM_ROLES.FacilityAdmin,
-    then: selectorSchema(FACILITY, false),
-    otherwise: selectorSchema(FACILITY, true)
-  }),
+  facilityId: selectorSchema(FACILITY, false)
+    .when('roleType', {
+      is: (roleType: SelectorOption) => roleType?.id !== SYSTEM_ROLES.PracticeAdmin ? isUserAdmin : false,
+      then: selectorSchema(FACILITY, true),
+      otherwise: selectorSchema(FACILITY, false)
+    }),
   practiceId: selectorSchema(PRACTICE, false).when('roleType', {
-    is: (roleType: SelectorOption)=>roleType?.id !== SYSTEM_ROLES.FacilityAdmin,
-    then: selectorSchema(PRACTICE, false),
-    otherwise: selectorSchema(PRACTICE, true)
+    is: (roleType: SelectorOption) => roleType?.id === SYSTEM_ROLES.PracticeAdmin,
+    then: selectorSchema(PRACTICE, true),
+    otherwise: selectorSchema(PRACTICE, false)
   }),
   roleType: selectorSchema(ROLE, !isEdit)
 })
@@ -508,13 +509,13 @@ export const scheduleSchema = (isDoctor: boolean) => yup.object({
   ).test('', requiredMessage(APPOINTMENT), (value: any) => isDoctor ? !!value && value.length > 0 : true)
 })
 
-export const providerAppointmentSchema = yup.object({
+export const providerAppointmentSchema = (onlyDoctor : boolean) => yup.object({
   serviceId: multiOptionSchema(APPOINTMENT),
   notes: yup.string(),
   patientId: selectorSchema(PATIENT),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
-  providerId: selectorSchema(PROVIDER).required()
+  providerId: selectorSchema(PROVIDER, onlyDoctor === false)
 })
 
 export const doctorScheduleSchema = yup.object({

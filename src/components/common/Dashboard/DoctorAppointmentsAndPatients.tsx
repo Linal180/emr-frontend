@@ -73,7 +73,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
 
 
               return (
-                <Box mb={3} display='flex' justifyContent='space-between' alignItems='start'>
+                <Box display='flex' justifyContent='space-between' alignItems='start' className="mb-3">
                   <Box display='flex'>
                     <Avatar id={profileAttachment || ''} name={`${firstName} ${lastName}`} />
                     <Box>

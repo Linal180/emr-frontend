@@ -1,32 +1,36 @@
 // packages block
 import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
 import axios from "axios";
+import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
 import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
-import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 import { AuthContext } from "../../context";
+import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
+import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import {
   DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
   MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
-import { useDropzoneStyles } from "../../styles/dropzoneStyles";
-import { getToken, handleLogout } from "../../utils";
+import {
+  ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT, PLEASE_SELECT_MEDIA,
+  SOMETHING_WENT_WRONG
+} from "../../constants";
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType, setFiles: setAttachmentFiles
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
+  setFiles: setAttachmentFiles
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
+
   const [imageEdit, setImageEdit] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>();
-
   const token = getToken();
   let moduleRoute = "";
 
@@ -63,7 +67,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   }));
 
   const handleFileChange = async () => {
-    files && files.map(async (file) => {
+    !!files?.length ? files.map(async (file) => {
       const formData = new FormData();
       file && formData.append("file", file);
       title && formData.append("title", title);
@@ -165,7 +169,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               break;
           }
         } else {
-          Alert.error("Something went wrong!");
+          Alert.error(SOMETHING_WENT_WRONG);
 
           if (status === 401) {
             setIsLoggedIn(false)
@@ -173,15 +177,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
             handleLogout();
           }
         }
-      }).then(data => {
-
-      }).catch(error => {
-        // const { response } = error || {}
-        // const { data } = response || {}
-        // const { error: errorMessage } = data || {}
-        // // Alert.error(errorMessage);
-      });
-    })
+      }).then(data => { }).catch(error => { });
+    }) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
   const handleUpdateImage = () => setImageEdit(true)

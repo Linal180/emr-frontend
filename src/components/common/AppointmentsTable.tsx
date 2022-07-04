@@ -197,12 +197,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (doctorId || isDoctor) {
+      if (isDoctor) {
         await getAppointments({
           variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
         })
-      }
-      else {
+      } else {
         const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
           isPracticeUser ? { practiceId, ...pageInputs }
@@ -378,42 +377,42 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
+                {!isDoctor &&
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Box className="date-box-wrap">
+                      <Typography variant="body1" color="textPrimary">Date</Typography>
 
-                <Grid item md={4} sm={12} xs={12}>
-                  <Box className="date-box-wrap">
-                    <Typography variant="body1" color="textPrimary">Date</Typography>
+                      <Box className="date-box" display="flex" alignItems="center">
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getPreviousDate}
+                        >
+                          <ChevronLeft />
+                        </Button>
 
-                    <Box className="date-box" display="flex" alignItems="center">
-                      <Button
-                        variant="outlined"
-                        className="btn-icon"
-                        size="small"
-                        color="default"
-                        onClick={getPreviousDate}
-                      >
-                        <ChevronLeft />
-                      </Button>
+                        <Box className="date-input-box" mx={1}>
+                          <Typography variant="h6">{selectDate}</Typography>
+                        </Box>
 
-                      <Box className="date-input-box" mx={1}>
-                        <Typography variant="h6">{selectDate}</Typography>
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getNextDate}
+                        >
+                          <ChevronRight />
+                        </Button>
+
+                        <Box ml={1} />
+
+                        <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
                       </Box>
-
-                      <Button
-                        variant="outlined"
-                        className="btn-icon"
-                        size="small"
-                        color="default"
-                        onClick={getNextDate}
-                      >
-                        <ChevronRight />
-                      </Button>
-
-                      <Box ml={1} />
-
-                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
                     </Box>
-                  </Box>
-                </Grid>
+                  </Grid>}
               </Grid>
             </FormProvider>
           </Grid>
@@ -529,7 +528,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           {
-                            appointmentCreateType === AppointmentCreateType.Telehealth ?
+                            (appointmentCreateType === AppointmentCreateType.Telehealth && status !== AppointmentStatus.Cancelled) ?
                               <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
                                 <VideoIcon />
                               </Box> :
@@ -542,7 +541,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                           }
 
-                          {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
+                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Telehealth &&
+                            <Box className={classes.iconsBackgroundDisabled}>
+                              <IconButton onMouseEnter={() => {
+                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                              }}>
+                                <VideoIcon />
+                              </IconButton>
+                            </Box>
+                          }
+
+                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Appointment && <Box className={classes.iconsBackgroundDisabled}>
                             <IconButton onMouseEnter={() => {
                               Alert.info(APPOINTMENT_CANCELLED_TEXT)
                             }}>

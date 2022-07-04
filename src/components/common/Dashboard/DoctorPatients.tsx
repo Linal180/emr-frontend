@@ -1,18 +1,17 @@
 // packages block
-import { Box, Typography } from "@material-ui/core";
 import { FC, useState, useCallback, useEffect } from "react";
+import { Box, Typography } from "@material-ui/core";
 //components
 import Avatar from "../Avatar";
 import ViewDataLoader from "../ViewDataLoader";
 // history, constant and styles block
 import { NoDataIcon } from "../../../assets/svgs";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
-import { DOB_TEXT, NO_RECORDS, PAGE_LIMIT } from "../../../constants";
 import { DoctorPatientsProps } from '../../../interfacesTypes'
+import { DOB_TEXT, NO_RECORDS, PAGE_LIMIT } from "../../../constants";
 import { DoctorPatientsPayload, useFindAllDoctorPatientLazyQuery, } from "../../../generated/graphql";
 
 const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element => {
-
   const [doctorPatients, setDoctorPatients] = useState<DoctorPatientsPayload['doctorPatients']>([])
 
   const [fetchAllPatientsQuery, { loading }] = useFindAllDoctorPatientLazyQuery({
@@ -61,7 +60,7 @@ const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element =>
               const { id, firstName, lastName, profileAttachment, dob } = patient || {}
 
               return (
-                <Box mb={3} display='flex' justifyContent='space-between' alignItems='start' key={id}>
+                <Box display='flex' justifyContent='space-between' alignItems='start' key={id} className="mb-3">
                   <Box display='flex'>
                     <Avatar id={profileAttachment || ''} name={`${firstName} ${lastName}`} />
                     <Box>

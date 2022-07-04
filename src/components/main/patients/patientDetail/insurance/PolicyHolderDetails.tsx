@@ -14,7 +14,7 @@ import {
   PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, useGetPatientLazyQuery
 } from "../../../../../generated/graphql";
 import {
-  ADDRESS, ADDRESS_CTD, CITY, DOB, EMPLOYER, EMPTY_OPTION, FIRST_NAME, SUFFIX, ZIP_CODE,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, DOB, EMPLOYER, EMPTY_OPTION, FIRST_NAME, SUFFIX, ZIP_CODE,
   LAST_NAME, LEGAL_SEX, MAPPED_POLICY_GENDER, MAPPED_STATES, MIDDLE_NAME, SSN, STATE,
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER,
 } from "../../../../../constants";
@@ -136,7 +136,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             fieldType="text"
             controllerName="address"
-            controllerLabel={ADDRESS}
+            controllerLabel={ADDRESS_ONE}
           />
         </Grid>
 
@@ -144,7 +144,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             fieldType="text"
             controllerName="addressCTD"
-            controllerLabel={ADDRESS_CTD}
+            controllerLabel={ADDRESS_TWO}
           />
         </Grid>
       </Grid>

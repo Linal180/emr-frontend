@@ -2,10 +2,10 @@
 import { FC, Fragment, useState } from "react";
 import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
-import { SearchComponentProps } from "../../interfacesTypes";
 import { SearchTooltip } from "../../styles/searchTooltip";
+import { SearchComponentProps } from "../../interfacesTypes";
+import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 
 const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder }): JSX.Element => {
   const classes = useTableStyles()
