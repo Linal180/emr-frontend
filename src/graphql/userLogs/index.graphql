@@ -1,0 +1,29 @@
+
+query findAllUserLogs($userLogsInput: UserLogsInput!) {
+  findAllUserLogs(userLogsInput: $userLogsInput) {
+
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    userLogs {
+      id
+      userId
+      createdAt
+      ipAddress
+      patientId
+      refererUrl
+      moduleType
+      responseCode
+      operationName
+      activityPayload
+    }
+  }
+}

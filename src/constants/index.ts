@@ -4066,6 +4066,8 @@ export enum FormBuilderPaymentTypes {
   INTERNATIONAL_TRAVELER = 'international_traveler',
 }
 
+export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
+
 export const AUDIT_LOG_TABLE_DUMMY_DATA = [
   {
     date: '5/18/2020',
