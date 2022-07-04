@@ -52,8 +52,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPracAdmin))
   });
 
-  const { reset, setValue, handleSubmit, watch, formState } = methods;
-  console.log('formState', formState)
+  const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 

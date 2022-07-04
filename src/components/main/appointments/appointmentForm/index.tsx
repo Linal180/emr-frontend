@@ -94,7 +94,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentType === AppointmentCreateType.Telehealth ?
-      providerAppointmentSchema : appointmentSchema(isUserAdmin(roles)))
+      providerAppointmentSchema(onlyDoctor) : appointmentSchema(isUserAdmin(roles)))
   });
 
   const { reset, setValue, handleSubmit, watch, control } = methods;

@@ -15,7 +15,7 @@ import InputController from "../../../../controller"
 import { ActionType } from "../../../../reducers/facilityReducer"
 import { CustomFacilityInputProps, FacilityCardsProps, SmartyUserData } from "../../../../interfacesTypes"
 import {
-  ADDRESS, ADDRESS_2, CITY, COUNTRY, EMAIL, EMPTY_OPTION, FACILITY_LOCATION, FAX, MAPPED_COUNTRIES,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, COUNTRY, EMAIL, EMPTY_OPTION, FACILITY_LOCATION, FAX, MAPPED_COUNTRIES,
   MAPPED_STATES, PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP, ZIP_CODE_AND_CITY
 } from "../../../../constants"
 
@@ -84,7 +84,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
         <InputController
           fieldType="text"
           controllerName="address"
-          controllerLabel={ADDRESS}
+          controllerLabel={ADDRESS_ONE}
           loading={getFacilityLoading}
         />
         <Grid container spacing={3}>
@@ -93,7 +93,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
             <InputController
               fieldType="text"
               controllerName="address2"
-              controllerLabel={ADDRESS_2}
+              controllerLabel={ADDRESS_TWO}
               loading={getFacilityLoading}
             />
           </Grid>
