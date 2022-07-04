@@ -3,7 +3,6 @@ import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
 import { Close, VideocamOutlined } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
 import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
@@ -18,29 +17,19 @@ import { AuthContext } from '../../../../context';
 import { GRAY_ONE, WHITE_FOUR } from '../../../../theme';
 import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
-import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
+import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
+import { appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
+import { CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon, } from '../../../../assets/svgs';
+import { useGetTokenLazyQuery, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, AppointmentCreateType } from '../../../../generated/graphql';
 import {
-  convertDateFromUnix, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord
-} from '../../../../utils';
-import {
-  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
-} from '../../../../assets/svgs';
-import {
-  AppointmentStatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus,
-  useUpdateAppointmentMutation,
-  AppointmentCreateType
-} from '../../../../generated/graphql';
-import {
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, PAY_AMOUNT,
-  PATIENT_NAME, FACILITY_CONTACT, PATIENT_CONTACT, FACILITY_NAME, CURRENT_DATE, APPOINTMENT_TYPE,
   FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, CREATE_INVOICE,
-  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
+  PATIENT_NAME, FACILITY_CONTACT, PATIENT_CONTACT, FACILITY_NAME, CURRENT_DATE, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
-  PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,  CANCEL_APPOINTMENT_DESCRIPTION,
-  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE , CANCEL_RECORD, START_TELEHEALTH, TELEHEALTH_URL,
+  TRANSACTION_PAID_SUCCESSFULLY, CANCEL_TIME_PAST_MESSAGE, CANCEL_RECORD, START_TELEHEALTH, TELEHEALTH_URL,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS, CASH_PAID, CHECKOUT,
+  PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CANCEL_APPOINTMENT_DESCRIPTION,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
@@ -53,9 +42,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
     appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus, appointmentCreateType
   } = state;
-  const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
-  const { handleSubmit, watch, setValue } = methods;
-  const { appointmentStatus } = watch();
 
   const [createInvoice] = useCreateInvoiceMutation({
     onError({ message }) {
@@ -145,6 +131,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
   const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
   const isEditableAppointment = appointmentDatePassingView && (CURRENT_DATE < appointmentDatePassingView)
+  const apStatus = appointmentMeta?.data.appointmentStatus
+  const { textColor } = appointmentStatus(apStatus || '')
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -172,7 +160,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: false })
           }
 
-          status && setValue('appointmentStatus', setRecord(status, status))
+          // status && setValue('appointmentStatus', setRecord(status, status))
           appointmentCreateType && dispatch({ type: ActionType.SET_APPOINTMENT_CREATE_TYPE, appointmentCreateType: appointmentCreateType })
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
           dispatch({ type: ActionType.SET_APP_BILLING_STATUS, appBillingStatus: billingStatus as BillingStatus })
@@ -186,37 +174,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
       variables: { getAppointment: { id: id.toString() } },
     });
   }, [getAppointment, id]);
-
-  const [updateAppointmentStatus] = useUpdateAppointmentStatusMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    async onCompleted(data) {
-      const { updateAppointmentStatus: { appointment } } = data;
-
-      if (appointment) {
-        const { status: appointmentStatus } = appointment
-
-        if (appointmentStatus) {
-          dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentStatus })
-          Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
-        }
-      }
-    }
-  });
-
-  const onSubmit: SubmitHandler<UpdateStatusInputProps> = async (inputs) => {
-    const { appointmentStatus } = inputs;
-
-    id && await updateAppointmentStatus({
-      variables: {
-        appointmentStatusInput: {
-          id: id.toString(), status: appointmentStatus.name as AppointmentStatus
-        }
-      }
-    })
-  };
 
   const handleClose = () => {
     dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: true })
@@ -280,19 +237,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: true })
   }
 
-  const updateStatus = useCallback(async () => {
-    if (appEdit && id && appointmentStatus) {
-
-      await updateAppointmentStatus({
-        variables: {
-          appointmentStatusInput: {
-            id: id.toString(), status: appointmentStatus.id as AppointmentStatus
-          }
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appointmentStatus, id, updateAppointmentStatus]);
 
   const createAppointmentInvoice = async () => {
     id && await createInvoice({
@@ -313,10 +257,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     id && fetchAppointment()
   }, [id, fetchAppointment]);
 
-  useEffect(() => {
-    id && appEdit && updateStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, updateStatus, watch]);
 
   useEffect(() => {
     typeof visible === 'boolean' && dispatch({ type: ActionType.SET_APP_OPEN, appOpen: visible })
@@ -378,30 +318,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     }
   };
 
-  const [updateAppointment] = useUpdateAppointmentMutation({
-    fetchPolicy: "network-only",
-
-    onError({ message }) {
-      Alert.error(message)
-    },
-  });
-
-  const handlePatientCheckIn = async (id: string) => {
-    const { data } = await updateAppointment({
-      variables: { updateAppointmentInput: { id, checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a') } }
-    })
-
-    const { updateAppointment: updateAppointmentResponse } = data ?? {}
-    const { response } = updateAppointmentResponse ?? {}
-    if (response) {
-      const { status } = response
-
-      if (status && status === 200) {
-        Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
-        history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
-      }
-    }
-  }
 
   const deleteAppointmentHandler = (scheduleStartDateTime: any) => {
     moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
@@ -442,25 +358,25 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             />
 
             <Box className={classes.cardText}>
-              <FormProvider {...methods}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start">
-                    <Box>
-                      <Typography variant='h4'>{patientName}</Typography>
+              <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start">
+                <Box>
+                  <Typography variant='h4'>{patientName}</Typography>
 
-                      <Box p={0.5} />
+                  <Box p={0.5} />
 
-                      <Typography variant="body1">{appDate}</Typography>
-                      <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
+                  <Typography variant="body1">{appDate}</Typography>
+                  <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
+                </Box>
+                {
+                  appointmentCreateType === AppointmentCreateType.Telehealth ?
+                    <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}><VideocamOutlined />&nbsp;{START_TELEHEALTH}</Button> :
+                      <Box p={0} className={classes.status} component='span' color={textColor} border={`2px solid ${textColor}`}
+                        display="flex" flexDirection="column"
+                      >
+                        {appStatus}
                     </Box>
-                    {
-                      appointmentCreateType === AppointmentCreateType.Telehealth ?
-                        <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}><VideocamOutlined />&nbsp;{START_TELEHEALTH}</Button> :
-                        <Button variant="contained" color="primary" onClick={() => handlePatientCheckIn(id)}>{CHECK_IN}</Button>
-                    }
-                  </Box>
-                </form>
-              </FormProvider>
+                }
+              </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{APPOINTMENT_TYPE}</Typography>

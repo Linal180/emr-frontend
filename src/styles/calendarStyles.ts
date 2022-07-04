@@ -118,6 +118,16 @@ export const useCalendarStyles = makeStyles(() =>
       justifyContent: 'center',
       bgcolor: 'transparent',
       position: 'absolute'
-    }
+    },
+  
+    status: {
+      minWidth: 120,
+      fontWeight: 500,
+      fontSize: '0.875rem',
+      borderRadius: 8,
+      paddingTop: 16,
+      display: 'flex',
+      textAlign: 'center',
+    },
   })
 );
