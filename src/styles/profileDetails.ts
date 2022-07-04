@@ -29,6 +29,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
+      [theme.breakpoints.down('xs')]: {
+        "& .MuiBox-root-1825" :{
+          flexDirection : 'column'
+        }
+      }
     },
 
     profileCard: {
