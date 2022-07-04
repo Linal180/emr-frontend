@@ -45,16 +45,15 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { id: currentFacility, name: currentFacilityName, practice } = facility || {}
   const { id: currentPractice, name: currentPracticeName } = practice || {}
   const isAdminUser = isSuperAdmin(roles)
-  const isPracAdmin = isPracticeAdmin(roles)
+  const isPractice = isPracticeAdmin(roles)
 
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPracAdmin))
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPractice))
   });
 
-  const { reset, setValue, handleSubmit, watch, formState } = methods;
-  console.log('formState', formState)
+  const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
