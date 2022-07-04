@@ -289,7 +289,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const customizePath = isDoctor ? [DASHBOARD_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD] : [DASHBOARD_BREAD, DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]
+  const customizePath = isDoctor
+    ? [DASHBOARD_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]
+    : [DASHBOARD_BREAD, DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]
 
   return (
     <FormProvider {...methods}>

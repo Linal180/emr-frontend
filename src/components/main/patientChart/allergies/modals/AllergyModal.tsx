@@ -75,13 +75,10 @@ const AllergyModal: FC<AddModalProps> = ({
           setValue('allergyStartDate', allergyStartDate || '')
         }
         else {
-          console.log('ssss')
           setValue('allergyStartDate', null)
           setOnset(formatValue(allergyOnset).trim())
         }
 
-        // !allergyStartDate && allergyOnset && setOnset(formatValue(allergyOnset).trim())
-        // allergyStartDate && setValue('allergyStartDate', allergyStartDate || '')
         allergySeverity && setSeverityId(allergySeverity)
         comments && setValue('comments', comments)
         isActive && setValue('isActive', isActive as boolean)
@@ -214,8 +211,7 @@ const AllergyModal: FC<AddModalProps> = ({
       }
     }
   };
-  console.log('onset', onset)
-  console.log('allergyStartDate', allergyStartDate)
+  
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
       <DialogTitle>

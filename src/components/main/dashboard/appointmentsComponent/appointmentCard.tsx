@@ -21,7 +21,10 @@ import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import { appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
 import { CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon, } from '../../../../assets/svgs';
-import { useGetTokenLazyQuery, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus, AppointmentCreateType } from '../../../../generated/graphql';
+import {
+  useGetTokenLazyQuery, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation,
+  BillingStatus, AppointmentCreateType
+} from '../../../../generated/graphql';
 import {
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, PAY_AMOUNT,
   FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, CREATE_INVOICE,
@@ -160,7 +163,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: false })
           }
 
-          // status && setValue('appointmentStatus', setRecord(status, status))
           appointmentCreateType && dispatch({ type: ActionType.SET_APPOINTMENT_CREATE_TYPE, appointmentCreateType: appointmentCreateType })
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
           dispatch({ type: ActionType.SET_APP_BILLING_STATUS, appBillingStatus: billingStatus as BillingStatus })
@@ -370,10 +372,10 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                 {
                   appointmentCreateType === AppointmentCreateType.Telehealth ?
                     <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}><VideocamOutlined />&nbsp;{START_TELEHEALTH}</Button> :
-                      <Box p={0} className={classes.status} component='span' color={textColor} border={`2px solid ${textColor}`}
-                        display="flex" flexDirection="column"
-                      >
-                        {appStatus}
+                    <Box p={0} className={classes.status} component='span' color={textColor} border={`2px solid ${textColor}`}
+                      display="flex" flexDirection="column"
+                    >
+                      {appStatus}
                     </Box>
                 }
               </Box>
