@@ -384,8 +384,10 @@ export interface SelectorProps {
 }
 
 export interface PatientSelectorProps extends SelectorProps {
+  styles?: string;
   isOpen?: boolean
   isModal?: boolean
+  placeholder?: boolean
   handlePatientModal?: Function
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }

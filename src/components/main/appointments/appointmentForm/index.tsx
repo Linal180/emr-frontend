@@ -521,7 +521,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
                           : <PatientSelector
                             isModal
+                            styles='log-class'
                             isRequired
+                            // placeholder
                             label={PATIENT}
                             name="patientId"
                             setValue={setValue}

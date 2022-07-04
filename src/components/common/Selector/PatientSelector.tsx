@@ -20,7 +20,7 @@ import {
 } from "../../../reducers/patientReducer";
 
 const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue
+  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user, currentUser } = useContext(AuthContext)
@@ -133,17 +133,19 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+                {!!!placeholder &&
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>}
 
                 <TextField
                   {...params}
                   variant="outlined"
                   error={invalid}
-                  className="selectorClass"
+                  placeholder={placeholder ? label : ''}
+                  className={`selectorClass ${styles}`}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
 

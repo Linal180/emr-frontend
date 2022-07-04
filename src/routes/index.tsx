@@ -80,7 +80,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 // constants, contexts and utils
 import {
-  ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUTO_LOGOUT_ROUTE,
+  ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE, AUTO_LOGOUT_ROUTE,
   CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE, CHECK_IN_ROUTE, CLAIMS_ROUTE,
   CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE, DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
   FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FORGET_PASSWORD_ROUTE, FORM_BUILDER_COPY_TEMPLATE_ROUTE,
@@ -93,6 +93,7 @@ import {
 } from "../constants";
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
+import AuditLogComponent from "../components/main/auditLog";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -176,6 +177,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={AGREEMENTS_ROUTE} component={Agreements} />
+      <PrivateRoute exact path={AUDIT_LOG_ROUTE} component={AuditLogComponent} />
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/new`} component={AddAgreement} />
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
