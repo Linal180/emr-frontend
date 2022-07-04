@@ -31,7 +31,8 @@ import {
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   ADD_STAFF, DASHBOARD_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD, FORBIDDEN_EXCEPTION,
-  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF, PRACTICE,
+  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF,
+  PRACTICE,
 } from "../../../../constants";
 import PracticeSelector from '../../../common/Selector/PracticeSelector';
 
@@ -44,16 +45,15 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { id: currentFacility, name: currentFacilityName, practice } = facility || {}
   const { id: currentPractice, name: currentPracticeName } = practice || {}
   const isAdminUser = isSuperAdmin(roles)
-  const isPracAdmin = isPracticeAdmin(roles)
+  const isPractice = isPracticeAdmin(roles)
 
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPracAdmin))
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPractice))
   });
 
-  const { reset, setValue, handleSubmit, watch, formState } = methods;
-  console.log('formState', formState)
+  const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
@@ -107,10 +107,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const [createStaff, { loading: CreateStaffLoading }] = useCreateStaffMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      message === FORBIDDEN_EXCEPTION ?
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted(data) {
@@ -192,7 +191,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     const staffInputs = {
       firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, username: '', ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
+      gender: staffGender as Gender, username: '',
+      ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }
       )
     };
@@ -207,9 +207,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             }
           }
         })
-      } else {
-        Alert.error(CANT_UPDATE_STAFF)
-      }
+      } else Alert.error(CANT_UPDATE_STAFF)
     } else {
       if (user) {
         const { id } = user
@@ -234,9 +232,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       if (id === SYSTEM_ROLES.FacilityAdmin || id === SYSTEM_ROLES.PracticeAdmin) {
         setIsFacilityAdmin(true)
         setValue('providerIds', EMPTY_OPTION)
-      } else {
-        setIsFacilityAdmin(false)
-      }
+      } else setIsFacilityAdmin(false)
     }
   }, [watch, roleType, setValue])
 

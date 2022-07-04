@@ -4,22 +4,24 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
+import { AuthContext } from "../../../context";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, sortingValue } from "../../../utils";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
+import {
+  isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, sortingValue
+} from "../../../utils";
 import {
   roleReducer, Action, initialState, State, ActionType
 } from "../../../reducers/roleReducer";
-import { AuthContext } from "../../../context";
 
 const RoleSelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, loading }): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(roleReducer, initialState)
   const { page, searchQuery, roles } = state;
-  const inputLabel = isRequired ? requiredLabel(label) : label
 
+  const inputLabel = isRequired ? requiredLabel(label) : label
   const { user } = useContext(AuthContext)
   const { roles: userRoles } = user || {}
   const isAdminUser = isSuperAdmin(userRoles) || isPracticeAdmin(userRoles)
@@ -27,7 +29,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], isAdminUser)] : [...renderStaffRoles(roles ?? [], isAdminUser)]
 
-  const [findAllRole,] = useFindAllRoleListLazyQuery({
+  const [findAllRole] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -54,7 +56,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllRole({
-        variables: { roleInput: { ...pageInputs, roleName: searchQuery } }
+        variables: { roleInput: { ...pageInputs, roleName: searchQuery, customRole: false } }
       })
     } catch (error) { }
   }, [page, findAllRole, searchQuery])
@@ -101,6 +103,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
                     <FormHelperText>{message}</FormHelperText>
                   </FormControl>
                 )}
+
                 onChange={(_, data) => field.onChange(data)}
               />
             );
