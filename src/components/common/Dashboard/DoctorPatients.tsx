@@ -60,7 +60,7 @@ const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element =>
               const { id, firstName, lastName, profileAttachment, dob } = patient || {}
 
               return (
-                <Box mb={3} display='flex' justifyContent='space-between' alignItems='start' key={id}>
+                <Box display='flex' justifyContent='space-between' alignItems='start' key={id} className="mb-3">
                   <Box display='flex'>
                     <Avatar id={profileAttachment || ''} name={`${firstName} ${lastName}`} />
                     <Box>

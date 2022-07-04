@@ -305,7 +305,8 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               <FormControlLabel
                                 control={
                                   <Box>
-                                    <Checkbox disabled={!(custom || isSuper)} color="primary" checked={ids.includes(id || '')}
+                                    <Checkbox disabled={!(custom || isSuper)} color="primary"
+                                      checked={ids.includes(id || '')}
                                       onChange={() => handleChangeForCheckBox(id || '')} />
                                   </Box>
                                 }

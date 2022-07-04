@@ -2010,7 +2010,7 @@ export type LoincCodesPayload = {
 /** The patient's maritial status type assigned */
 export enum Maritialstatus {
   Divorced = 'DIVORCED',
-  Maried = 'MARIED',
+  Maried = 'MARRIED',
   Separated = 'SEPARATED',
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
