@@ -1492,6 +1492,8 @@ const isToday = (someDate: Date) => {
 const isTimePassed = (time: string) => new Date() < new Date(time);
 
 export const filterSlots = (slots: SlotsPayload['slots'], date: string | MaterialUiPickersDate) => {
+  console.log("SLOTS", slots);
+  
   let filteredSlots: SlotsPayload['slots'] = []
 
   if (date && isToday(new Date(date.toString()))) {
