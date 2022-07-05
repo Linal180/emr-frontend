@@ -1,6 +1,6 @@
 import { Table, TableBody, TableHead, TableRow, } from "@material-ui/core"
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { VITALS_TEXT, VITAL_LABELS } from "../../../../../constants"
+import { DATE, VITAL_LABELS } from "../../../../../constants"
 import { VitalsLabelsProps } from "../../../../../interfacesTypes"
 import { renderTh } from "../../../../../utils"
 
@@ -31,8 +31,8 @@ export const VitalsLabels = ({ patientStates }: VitalsLabelsProps) => {
   return (
     <Table>
       <TableHead>
-        <TableRow>
-          {renderTh(VITALS_TEXT)}
+        <TableRow className="vitals-header">
+          {renderTh(DATE)}
         </TableRow>
       </TableHead>
 

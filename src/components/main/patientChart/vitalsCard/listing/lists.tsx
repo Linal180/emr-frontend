@@ -2,7 +2,7 @@
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { FormEditNewIcon } from '../../../../../assets/svgs';
-import { DASHES, HEAD_CIRCUMFERENCE, IN_TEXT, TEMPERATURE_TEXT, WEIGHT_TEXT } from '../../../../../constants';
+import { DASHES, IN_TEXT, KG_TEXT } from '../../../../../constants';
 import {
   HeadCircumferenceType, PatientVitalPayload, TempUnitType, UnitType, WeightType
 } from '../../../../../generated/graphql';
@@ -88,9 +88,9 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
 
   const editHandler = (vital: PatientVitalPayload['patientVital']) => {
     dispatcher({ type: ActionType.SET_HEIGHT_UNIT, heightUnit: { id: UnitType.Inch, name: IN_TEXT } })
-    dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: { id: WeightType.Kg, name: WEIGHT_TEXT } })
-    dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: HEAD_CIRCUMFERENCE}})
-    dispatcher({ type: ActionType.SET_FEVER_UNIT,feverUnit : { id: TempUnitType.DegF, name: TEMPERATURE_TEXT } })
+    dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: { id: WeightType.Kg, name: KG_TEXT } })
+    dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT } })
+    dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) } })
     dispatcher({ type: ActionType.SET_VITAL_TO_EDIT, vitalToEdit: vital })
     dispatcher({ type: ActionType.SET_OPEN_VITAL, openVital: true })
   }

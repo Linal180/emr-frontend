@@ -882,6 +882,14 @@ input::-webkit-inner-spin-button {
   height: 24px !important;
 }
 
+.vitals-header > th > div > h5 {
+  text-transform: capitalize !important;
+}
+
+ .patient-add-form .MuiInputLabel-formControl{
+   position: relative;
+ }
+ 
 .vitals-column .MuiTableCell-root {
   height: 45px !important;
 }
