@@ -51,7 +51,7 @@ export const initialState: State = {
   isEditModalOpen: false,
   deleteAttachmentId: '',
   signedByProvider: false,
-  isSignedTab: false,
+  isSignedTab: true,
   insuranceCard1: undefined,
   insuranceCard2: undefined,
   drivingLicense1: undefined,
@@ -102,7 +102,7 @@ export type Action =
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
   | { type: ActionType.SET_SIGNED_BY_PROVIDER, signedByProvider: boolean }
-  | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
+  | { type: ActionType.SET_IS_SIGNED_TAB }
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
   | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN; isEditModalOpen: boolean }
   | { type: ActionType.SET_INSURANCE_CARD_1; insuranceCard1: Attachment | undefined }
@@ -256,7 +256,7 @@ export const mediaReducer = (state: State, action: Action): State => {
     case ActionType.SET_IS_SIGNED_TAB:
       return {
         ...state,
-        isSignedTab: action.isSignedTab
+        isSignedTab: !state.isSignedTab
       }
 
     case ActionType.SET_FILES:
