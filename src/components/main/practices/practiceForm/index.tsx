@@ -25,7 +25,7 @@ import {
   COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
-  ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
   PRACTICE_NEW_BREAD, PRACTICE_NAME,
 } from "../../../../constants";
 
@@ -354,7 +354,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               isRequired
                               fieldType="text"
                               controllerName="address"
-                              controllerLabel={ADDRESS}
+                              controllerLabel={ADDRESS_ONE}
                             />
                           </Grid>
 
@@ -362,7 +362,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="address2"
-                              controllerLabel={ADDRESS_CTA}
+                              controllerLabel={ADDRESS_TWO}
                             />
                           </Grid>
 

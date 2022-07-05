@@ -528,7 +528,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           {
-                            appointmentCreateType === AppointmentCreateType.Telehealth ?
+                            (appointmentCreateType === AppointmentCreateType.Telehealth && status !== AppointmentStatus.Cancelled) ?
                               <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
                                 <VideoIcon />
                               </Box> :
@@ -541,7 +541,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                           }
 
-                          {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
+                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Telehealth &&
+                            <Box className={classes.iconsBackgroundDisabled}>
+                              <IconButton onMouseEnter={() => {
+                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                              }}>
+                                <VideoIcon />
+                              </IconButton>
+                            </Box>
+                          }
+
+                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Appointment && <Box className={classes.iconsBackgroundDisabled}>
                             <IconButton onMouseEnter={() => {
                               Alert.info(APPOINTMENT_CANCELLED_TEXT)
                             }}>

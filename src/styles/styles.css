@@ -878,14 +878,25 @@ input::-webkit-inner-spin-button {
   margin-left: 5px !important;
 }
 
-.vitals-column .MuiTypography-h5 {
-  line-height: 1.43 !important;
-  white-space: normal;
+.h-24 {
+  height: 24px !important;
+}
+
+.vitals-header > th > div > h5 {
+  text-transform: capitalize !important;
 }
 
  .patient-add-form .MuiInputLabel-formControl{
    position: relative;
  }
+ 
+.vitals-column .MuiTableCell-root {
+  height: 45px !important;
+}
+
+.vitals-column .MuiTableCell-root .MuiBox-root > .MuiTypography-noWrap {
+  white-space: normal !important;
+}
 
 .copay-type-value {
   position: relative;
@@ -1003,6 +1014,15 @@ input[type=number] {
   display: none !important;
 }
 
+.ach-hover:hover {
+  cursor: pointer;
+}
+
+.ach-hover:hover .MuiTypography-root {
+  font-weight: 600 !important;
+  transform: scale(1.05) !important;
+}
+
 .mb-3{
   margin-bottom: 24px !important;
 }
@@ -1012,6 +1032,14 @@ input[type=number] {
 }
 
 /* media queries */
+
+@media(max-width : 1260px) {
+  .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
+    height: 36px;
+    width: 36px;
+  }
+}
+
 @media(max-width : 960px) {
   .appointment-action-btn{
      flex-direction: column;

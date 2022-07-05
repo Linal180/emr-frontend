@@ -94,7 +94,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentType === AppointmentCreateType.Telehealth ?
-      providerAppointmentSchema : appointmentSchema(isUserAdmin(roles)))
+      providerAppointmentSchema(onlyDoctor) : appointmentSchema(isUserAdmin(roles)))
   });
 
   const { reset, setValue, handleSubmit, watch, control } = methods;
@@ -106,7 +106,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   } = watch();
   const { value: selectedService } = selectedServiceId ?? {}
   const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
-
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -147,7 +146,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status,
+            appointmentCreateType
           } = appointment || {}
 
           if (status === AppointmentStatus.Cancelled) {
@@ -602,7 +602,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
                                 {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </Box>
                             </li>

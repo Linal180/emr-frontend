@@ -195,6 +195,17 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
+export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
@@ -269,7 +280,7 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -1109,6 +1120,11 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
+export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
 export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
   return moment(date, 'x').format(format).toString()
@@ -1878,4 +1894,11 @@ export const updateSortOptions = (options: SelectorOption[]) => {
   )
 }
 
-export const sortingValue = (updatedOptions: SelectorOption[]) => updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))
+export const sortingValue = (updatedOptions: SelectorOption[]) =>
+  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) =>
+    -b?.firstLetter.localeCompare(a?.firstLetter)
+  )
+
+export const isValidDate = (date: Date) => {
+  return date instanceof Date && !isNaN(date.getTime());
+}

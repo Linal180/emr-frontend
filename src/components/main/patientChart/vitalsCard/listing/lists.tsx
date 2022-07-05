@@ -2,7 +2,7 @@
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { FormEditNewIcon } from '../../../../../assets/svgs';
-import { DASHES } from '../../../../../constants';
+import { DASHES, IN_TEXT, KG_TEXT } from '../../../../../constants';
 import {
   HeadCircumferenceType, PatientVitalPayload, TempUnitType, UnitType, WeightType
 } from '../../../../../generated/graphql';
@@ -86,12 +86,18 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
     }
   }
 
+  const editHandler = (vital: PatientVitalPayload['patientVital']) => {
+    dispatcher({ type: ActionType.SET_HEIGHT_UNIT, heightUnit: { id: UnitType.Inch, name: IN_TEXT } })
+    dispatcher({ type: ActionType.SET_WEIGHT_UNIT, weightUnit: { id: WeightType.Kg, name: KG_TEXT } })
+    dispatcher({ type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT, headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT } })
+    dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) } })
+    dispatcher({ type: ActionType.SET_VITAL_TO_EDIT, vitalToEdit: vital })
+    dispatcher({ type: ActionType.SET_OPEN_VITAL, openVital: true })
+  }
+
   const renderIcon = (vital: PatientVitalPayload['patientVital']) => {
     return (
-      <IconButton className='py-0 ml-5' onClick={() => {
-        dispatcher({ type: ActionType.SET_VITAL_TO_EDIT, vitalToEdit: vital })
-        dispatcher({ type: ActionType.SET_OPEN_VITAL, openVital: true })
-      }}>
+      <IconButton className='py-0 ml-5' onClick={() => editHandler(vital)}>
         <FormEditNewIcon />
       </IconButton>
     )
@@ -116,7 +122,7 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, pulseRate } = item || {};
                 return (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`}
                   scope="row">
-                  {pulseRate || DASHES}
+                  <Typography variant='body1' className='h-24'>{pulseRate || DASHES}</Typography>
                 </TableCell>)
               })}
             </TableRow>
@@ -124,17 +130,19 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
             <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, respiratoryRate } = item || {};
-                return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row"
-                >{respiratoryRate || DASHES}</TableCell>)
+                return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">
+                  <Typography variant='body1' className='h-24'>{respiratoryRate || DASHES}</Typography>
+                </TableCell>)
               })}
             </TableRow>
 
             <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, systolicBloodPressure, diastolicBloodPressure } = item || {};
-                return (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row"
-                >
-                  {(systolicBloodPressure && `${systolicBloodPressure}/${diastolicBloodPressure}`) || DASHES}
+                return (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row">
+                  <Typography variant='body1' className='h-24'>
+                    {(systolicBloodPressure && `${systolicBloodPressure}/${diastolicBloodPressure}`) || DASHES}
+                  </Typography>
                 </TableCell>)
               })}
             </TableRow>
@@ -142,8 +150,11 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
             <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, oxygenSaturation } = item || {};
-                return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row"
-                >{oxygenSaturation || DASHES}</TableCell>)
+                return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">
+                  <Typography variant='body1' className='h-24'>
+                    {oxygenSaturation || DASHES}
+                  </Typography>
+                </TableCell>)
               })}
             </TableRow>
 
@@ -152,7 +163,9 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, PatientHeight } = item || {};
                 const height = roundOffUpto2Decimal(getHeightValue(PatientHeight || ''))
                 return (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row">
-                  {height || DASHES}
+                  <Typography variant='body1' className='h-24'>
+                    {height || DASHES}
+                  </Typography>
                 </TableCell>)
               })}
             </TableRow>
@@ -162,7 +175,9 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, PatientWeight } = item || {};
                 const weight = roundOffUpto2Decimal(getWeightValue(PatientWeight || ''))
                 return (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row">
-                  {weight || DASHES}
+                  <Typography variant='body1' className='h-24'>
+                    {weight || DASHES}
+                  </Typography>
                 </TableCell>)
               })}
             </TableRow>
@@ -170,15 +185,22 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
             <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PatientBMI } = item || {};
-                return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{roundOffUpto2Decimal(PatientBMI) || DASHES}</TableCell>)
+                return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">
+                  <Typography variant='body1' className='h-24'>
+                    {roundOffUpto2Decimal(PatientBMI) || DASHES}
+                  </Typography>
+                </TableCell>)
               })}
             </TableRow>
 
             <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PainRange } = item || {};
-                return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row"
-                >{PainRange || DASHES}</TableCell>)
+                return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">
+                  <Typography variant='body1' className='h-24'>
+                    {PainRange || DASHES}
+                  </Typography>
+                </TableCell>)
               })}
             </TableRow>
 
@@ -187,7 +209,7 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, smokingStatus } = item || {};
                 const status = formatValue(smokingStatus || "")
                 return (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row">
-                  <Typography noWrap>
+                  <Typography noWrap variant='body1' className='h-24'>
                     {status || DASHES}
                   </Typography>
                 </TableCell>)
@@ -199,7 +221,7 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, patientHeadCircumference } = item || {};
                 const head = roundOffUpto2Decimal(getHeadValue(patientHeadCircumference || ''))
                 return (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row">
-                  <Typography>
+                  <Typography variant='body1' className='h-24'>
                     {head || DASHES}
                   </Typography>
                 </TableCell>)
@@ -211,7 +233,7 @@ export const VitalListingTable = ({ patientStates, shouldDisableEdit, dispatcher
                 const { id, patientTemperature } = item || {};
                 const fever = roundOffUpto2Decimal(getFeverValue(patientTemperature || ''))
                 return (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row">
-                  <Typography>
+                  <Typography variant='body1' className='h-24'>
                     {fever || DASHES}
                   </Typography>
                 </TableCell>)

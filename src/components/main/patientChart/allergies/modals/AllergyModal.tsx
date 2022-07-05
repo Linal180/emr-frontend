@@ -71,8 +71,14 @@ const AllergyModal: FC<AddModalProps> = ({
           setIds(reactions.map((reaction => reaction?.id || '') ?? []))
         }
 
-        !allergyStartDate && allergyOnset && setOnset(formatValue(allergyOnset).trim())
-        allergyStartDate && setValue('allergyStartDate', allergyStartDate || '')
+        if (allergyStartDate) {
+          setValue('allergyStartDate', allergyStartDate || '')
+        }
+        else {
+          setValue('allergyStartDate', null)
+          setOnset(formatValue(allergyOnset).trim())
+        }
+
         allergySeverity && setSeverityId(allergySeverity)
         comments && setValue('comments', comments)
         isActive && setValue('isActive', isActive as boolean)
@@ -205,7 +211,7 @@ const AllergyModal: FC<AddModalProps> = ({
       }
     }
   };
-
+  
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
       <DialogTitle>
@@ -283,8 +289,8 @@ const AllergyModal: FC<AddModalProps> = ({
                 {
                   isEdit && (
                     <Grid md={12} item>
-                    <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
-                  </Grid>
+                      <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
+                    </Grid>
                   )
                 }
 

@@ -84,7 +84,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
-export const AGREEMENT_BODY_REQUIRED = 'Agreement Body is a required Field'
+export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
@@ -586,6 +586,8 @@ export const SELECT = "Select";
 export const GENDER = "Gender";
 export const ENABLED = "Enabled";
 export const ADDRESS = "Address";
+export const ADDRESS_ONE = "Address One";
+export const ADDRESS_TWO = "Address Two";
 export const COUNTRY = "Country";
 export const RELATION = "Relation";
 export const ZIP_CODE = "Zip code";
@@ -1456,6 +1458,7 @@ export const CANT_DELETE_ROLE = "Role can't be deleted.";
 export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
+export const DRAG_FIELD = "Please drag at least one field";
 export const CHANGES_SAVED = "Changes saved successfully!";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
@@ -1500,6 +1503,7 @@ export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
+export const PLEASE_SELECT_MEDIA = "Please select a file to upload!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
 export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
@@ -1593,9 +1597,9 @@ export const EXPIRE_TOKEN_MESSAGE =
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
   "You don't have permission to change emergency access status.";
 export const CREATE_AGREEMENT_MESSAGE =
-  "Agreement created Successfully";
+  "Agreement created successfully";
 export const UPDATE_AGREEMENT_MESSAGE =
-  "Agreement updated Successfully";
+  "Agreement updated successfully";
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 

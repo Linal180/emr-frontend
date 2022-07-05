@@ -9,15 +9,16 @@ import MediaCards from "../../AddMedia/MediaCards";
 import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT
+} from "../../../../constants";
 import {
   formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
-  useGetPatientNearestAppointmentsLazyQuery,
-  DoctorPatientRelationType
+  useGetPatientNearestAppointmentsLazyQuery, DoctorPatientRelationType
 } from "../../../../generated/graphql";
 import {
   ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon
@@ -33,9 +34,11 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
+
   const [appointmentId, setAppointmentId] = useState<string>('')
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  
   const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
