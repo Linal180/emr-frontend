@@ -78,6 +78,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
             } = doctor
             const { id: facilityId, name } = facility || {}
+
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
             ssn && setValue('ssn', ssn)

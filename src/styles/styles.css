@@ -883,10 +883,6 @@ input::-webkit-inner-spin-button {
   white-space: normal;
 }
 
- .patient-add-form .MuiInputLabel-formControl{
-   position: relative;
- }
-
 .copay-type-value {
   position: relative;
 }
