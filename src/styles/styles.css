@@ -878,9 +878,8 @@ input::-webkit-inner-spin-button {
   margin-left: 5px !important;
 }
 
-.vitals-column .MuiTypography-h5 {
-  line-height: 1.43 !important;
-  white-space: normal;
+.h-24 {
+  height: 24px !important;
 }
 
 .vitals-header > th > div > h5 {
@@ -890,6 +889,14 @@ input::-webkit-inner-spin-button {
  .patient-add-form .MuiInputLabel-formControl{
    position: relative;
  }
+ 
+.vitals-column .MuiTableCell-root {
+  height: 45px !important;
+}
+
+.vitals-column .MuiTableCell-root .MuiBox-root > .MuiTypography-noWrap {
+  white-space: normal !important;
+}
 
 .copay-type-value {
   position: relative;
