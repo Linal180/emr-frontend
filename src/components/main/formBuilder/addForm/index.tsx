@@ -36,9 +36,9 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
-  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
+  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
   CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
-  PRE_DEFINED, ITEMS_ID, PRACTICE,
+  PRE_DEFINED, ITEMS_ID, PRACTICE, DRAG_FIELD,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -461,7 +461,7 @@ const AddForm = () => {
       }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
-    else Alert.error(DROP_FIELD)
+    else Alert.error(DRAG_FIELD)
 
   };
   //select field for edit handler
@@ -544,7 +544,7 @@ const AddForm = () => {
     })
     if (isFieldFound) {
       dispatch({ type: ActionType.SET_OPEN_TEMPLATE, openTemplate: true })
-    } else Alert.error(DROP_FIELD)
+    } else Alert.error(DRAG_FIELD)
   }
 
   return (

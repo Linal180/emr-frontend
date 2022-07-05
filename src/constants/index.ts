@@ -1446,6 +1446,7 @@ export const CANT_DELETE_ROLE = "Role can't be deleted.";
 export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
+export const DRAG_FIELD = "Please drag at least one field";
 export const CHANGES_SAVED = "Changes saved successfully!";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
