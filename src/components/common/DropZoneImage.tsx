@@ -7,8 +7,8 @@ import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
+import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
-import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import {
@@ -25,8 +25,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
   setFiles: setAttachmentFiles
 }, ref): JSX.Element => {
-  const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
+  const { logoutUser } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false);
 
   const [imageEdit, setImageEdit] = useState<boolean>(false);
@@ -172,9 +172,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
           Alert.error(SOMETHING_WENT_WRONG);
 
           if (status === 401) {
-            setIsLoggedIn(false)
-            setUser(null)
-            handleLogout();
+            logoutUser()
           }
         }
       }).then(data => { }).catch(error => { });
