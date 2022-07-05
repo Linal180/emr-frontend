@@ -48,7 +48,6 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
   const { reset, handleSubmit, setValue, watch } = methods;
 
-
   const {
     facilityId: { id: selectedFacility } = {},
   } = watch();
