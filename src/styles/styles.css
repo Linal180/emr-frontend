@@ -883,6 +883,10 @@ input::-webkit-inner-spin-button {
   white-space: normal;
 }
 
+.vitals-header > th > div > h5 {
+  text-transform: capitalize !important;
+}
+
  .patient-add-form .MuiInputLabel-formControl{
    position: relative;
  }

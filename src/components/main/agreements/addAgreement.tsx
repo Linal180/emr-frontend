@@ -254,9 +254,10 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         {descriptionTypes.map(type =>
                           <Box
                             className={type === descriptionType ? 'selectedBox selectBox' : 'selectBox'}
-                            onClick={() =>
+                            onClick={() => {
                               dispatch({ type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: type })
-                            }
+                              type === descriptionTypes[1] && dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: '' })
+                            }}
                           >
                             <Typography variant='h6'>{type}</Typography>
                           </Box>

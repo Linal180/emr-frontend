@@ -17,9 +17,9 @@ import {
   useUpdatePatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
 import {
-  ADD_VITALS, BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, CANCEL_TEXT, DATE, FEVER_UNITS, 
-  HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT, 
-  MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, 
+  ADD_VITALS, BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, CANCEL_TEXT, DATE, FEVER_UNITS,
+  HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT,
+  MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS,
   RESPIRATORY_RATE_TEXT, RPM_TEXT, SAVE_TEXT, SMOKING_STATUS_TEXT, VITAL_ERROR_MSG, WEIGHT_TEXT,
   MAPPED_SMOKING_STATUS, PULSE_TEXT, TEMPERATURE_TEXT, UPDATE_VITALS
 } from '../../../../../constants';
@@ -337,38 +337,6 @@ export const AddVitals = memo(({
 
             <Grid container alignContent='center' alignItems='center'>
               <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{TEMPERATURE_TEXT}</Typography>
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <InputController
-                  fieldType="number"
-                  controllerName="patientTemperature"
-                  controllerLabel={''}
-                  notStep
-                />
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
-                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                    {FEVER_UNITS?.map((temp, index) => {
-                      const { id, name } = temp || {}
-                      return (<Box key={`${index}-${name}-${id}`}
-                        className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
-                        onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
-                      >
-                        <Typography variant='h6'>{name}</Typography>
-                      </Box>
-                      )
-                    })}
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-
-            <Grid container alignContent='center' alignItems='center'>
-              <Grid item md={3} sm={12} xs={12}>
                 <Typography variant='body1'>{PULSE_TEXT}</Typography>
               </Grid>
 
@@ -612,6 +580,38 @@ export const AddVitals = memo(({
                     })}
                   </Box>
                 </Box>
+              </Grid>
+
+              <Grid container alignContent='center' alignItems='center'>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Typography variant='body1'>{TEMPERATURE_TEXT}</Typography>
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="number"
+                    controllerName="patientTemperature"
+                    controllerLabel={''}
+                    notStep
+                  />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                    <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                      {FEVER_UNITS?.map((temp, index) => {
+                        const { id, name } = temp || {}
+                        return (<Box key={`${index}-${name}-${id}`}
+                          className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                          onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
+                        >
+                          <Typography variant='h6'>{name}</Typography>
+                        </Box>
+                        )
+                      })}
+                    </Box>
+                  </Box>
+                </Grid>
               </Grid>
             </Grid>
           </form>
