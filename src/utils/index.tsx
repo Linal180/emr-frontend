@@ -277,7 +277,7 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;

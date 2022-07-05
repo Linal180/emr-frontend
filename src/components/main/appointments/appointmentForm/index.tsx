@@ -146,7 +146,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status,
+            appointmentCreateType
           } = appointment || {}
 
           if (status === AppointmentStatus.Cancelled) {
@@ -599,7 +600,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
                                 {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </Box>
                             </li>
