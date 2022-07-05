@@ -1716,10 +1716,11 @@ export interface ACHPaymentComponentProps {
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
-  controllerName: string;
-  isHelperText?: boolean;
+  title?: string;
+  loading?: boolean
   autoFocus?: boolean;
-  title?: string
+  isHelperText?: boolean;
+  controllerName: string;
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];

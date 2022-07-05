@@ -364,6 +364,10 @@ body .MuiTabPanel-root {
   font-weight: 600;
 }
 
+.permissionDenied {
+  margin-right: 16px !important;
+}
+
 .permissionDenied:hover {
   cursor: not-allowed;
 }

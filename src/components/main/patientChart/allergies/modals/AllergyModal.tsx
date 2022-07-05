@@ -1,36 +1,35 @@
 // packages block
-import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel,
-  FormGroup, Grid, Typography
-} from '@material-ui/core';
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
-// constants block
-import { PageBackIcon } from '../../../../../assets/svgs';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  ACTIVE_TEXT,
-  ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
-  PATIENT_ALLERGY_UPDATED, REACTION, REACTION_SELECTION_REQUIRED, SEVERITY, UPDATE, UPDATE_ALLERGY
-} from '../../../../../constants';
-import { ChartContext } from '../../../../../context';
+  Box, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
+  FormControlLabel, FormGroup, Grid, Typography
+} from '@material-ui/core';
 // component block
+import Alert from '../../../../common/Alert';
+import DatePicker from '../../../../common/DatePicker';
+import TextLoader from '../../../../common/TextLoader';
 import InputController from '../../../../../controller';
-import {
-  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
-  useUpdatePatientAllergyMutation
-} from '../../../../../generated/graphql';
+import CheckboxController from '../../../../common/CheckboxController';
+// constants block
+import { ChartContext } from '../../../../../context';
+import { PageBackIcon } from '../../../../../assets/svgs';
+import { GRAY_SIX, GREY_THREE, WHITE } from '../../../../../theme';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { createPatientAllergySchema } from '../../../../../validationSchemas';
+import { formatValue, getSeverityColor, getTimestamps, renderLoading } from '../../../../../utils';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { GRAY_SIX, GREY_THREE, WHITE } from '../../../../../theme';
-import { formatValue, getSeverityColor, getTimestamps } from '../../../../../utils';
-import { createPatientAllergySchema } from '../../../../../validationSchemas';
-import Alert from '../../../../common/Alert';
-import CheckboxController from '../../../../common/CheckboxController';
-import DatePicker from '../../../../common/DatePicker';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
+import {
+  ACTIVE_TEXT, ADD, ADD_ALLERGY, CANCEL, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
+  PATIENT_ALLERGY_UPDATED, REACTION, REACTION_SELECTION_REQUIRED, SEVERITY, UPDATE, UPDATE_ALLERGY
+} from '../../../../../constants';
+import {
+  Allergies, AllergyOnset, AllergySeverity, AllergyType, useAddPatientAllergyMutation,
+  useGetPatientAllergyLazyQuery, useUpdatePatientAllergyMutation
+} from '../../../../../generated/graphql';
 
 const AllergyModal: FC<AddModalProps> = ({
   item, dispatcher, isEdit, recordId, fetch, newAllergy, allergyType, isOpen = false, handleClose
@@ -39,15 +38,18 @@ const AllergyModal: FC<AddModalProps> = ({
   const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
+
   const allergySeverity = MAPPED_ALLERGY_SEVERITY.map((severity) => severity.id)
   const [onset, setOnset] = useState<string>(onsets[0])
   const [severityId, setSeverityId] = useState<string>(allergySeverity[0])
+
   const [ids, setIds] = useState<string[]>([])
   const { reactionList } = useContext(ChartContext)
   const methods = useForm<CreatePatientAllergyProps>({
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
+
   const { handleSubmit, setValue, watch, reset } = methods;
   const { allergyStartDate } = watch()
   const [{ selectedReactions }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -199,7 +201,6 @@ const AllergyModal: FC<AddModalProps> = ({
     }
   }
 
-  const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
   useEffect(() => { }, [selectedReactions, getAllergyLoading]);
 
   const handleChangeForCheckBox = (id: string) => {
@@ -211,7 +212,9 @@ const AllergyModal: FC<AddModalProps> = ({
       }
     }
   };
-  
+
+  const loading = getAllergyLoading || addAllergyLoading || updateAllergyLoading
+
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
       <DialogTitle>
@@ -222,109 +225,115 @@ const AllergyModal: FC<AddModalProps> = ({
         <DialogContent className={chartingClasses.chartModalBox}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box mb={2} display="flex" alignItems="center">
-              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}>
+              <Box className='pointer-cursor' mr={2}
+                onClick={() => dispatcher({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })}
+              >
                 <PageBackIcon />
               </Box>
 
-              <Typography variant='h4'>{name ?? newAllergy}</Typography>
+              {loading ? <TextLoader rows={[{ column: 1, size: 3 }]} />
+                : <Typography variant='h4'>{name ?? newAllergy}</Typography>
+              }
             </Box>
 
-            {getAllergyLoading ?
-              <ViewDataLoader columns={12} rows={4} />
-              :
-              <>
-                <Box display="flex" alignItems="center">
-                  <Typography variant="h6">{REACTION}</Typography>
+            <Box display="flex" alignItems="center">
+              <Typography variant="h6">{REACTION}</Typography>
 
-                  <Box color={GREY_THREE} ml={1}>
-                    <Typography variant='h6'>{!ids.length ? REACTION_SELECTION_REQUIRED : ''} </Typography>
-                  </Box>
-                </Box>
+              <Box color={GREY_THREE} ml={1}>
+                <Typography variant='h6'>{!ids.length ? REACTION_SELECTION_REQUIRED : ''} </Typography>
+              </Box>
+            </Box>
 
-                <Grid container spacing={0} className={chartingClasses.problemGrid}>
-                  {reactionList?.map(reaction => {
-                    const { id, name } = reaction || {}
+            <Grid container spacing={0} className={chartingClasses.problemGrid}>
+              {reactionList?.map(reaction => {
+                const { id, name } = reaction || {}
 
-                    return (
-                      <Grid item md={3} sm={6}>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Box className='permissionDenied'>
-                                <Checkbox color="primary" checked={ids.includes(id || '')}
-                                  onChange={() => handleChangeForCheckBox(id || '')} />
-                              </Box>
-                            }
-                            label={name}
-                          />
-                        </FormGroup>
-                      </Grid>
+                return (
+                  <Grid item md={3} sm={6}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Box className='permissionDenied'>
+                            <Checkbox color="primary" checked={ids.includes(id || '')}
+                              onChange={() => handleChangeForCheckBox(id || '')} />
+                          </Box>
+                        }
+                        label={loading ?
+                          <TextLoader rows={[{ column: 1, size: 2 }]} />
+                          : name}
+                      />
+                    </FormGroup>
+                  </Grid>
+                )
+              })}
+            </Grid>
+
+            <Box mt={2} mb={2}>
+              <Typography variant="h6">{SEVERITY}</Typography>
+            </Box>
+
+            {loading ? renderLoading('') :
+              <Box mb={4} className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
+                <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                  {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
+                    const { id, name } = head || {}
+
+                    return (<Box key={`${index}-${name}-${id}`}
+                      className={id === severityId ? 'selectedBox selectBox' : 'selectBox'}
+                      style={{
+                        color: id === severityId ? WHITE : getSeverityColor(id as AllergySeverity),
+                        backgroundColor: id === severityId ? getSeverityColor(id as AllergySeverity) : WHITE,
+                      }}
+                      onClick={() => setSeverityId(id)}
+                    >
+                      <Typography variant='h6'>{name}</Typography>
+                    </Box>
                     )
                   })}
-                </Grid>
-
-                <Box mt={2} mb={2}>
-                  <Typography variant="h6">{SEVERITY}</Typography>
                 </Box>
+              </Box>}
 
-                <Box mb={4} className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
-                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                    {MAPPED_ALLERGY_SEVERITY?.map((head, index) => {
-                      const { id, name } = head || {}
-                      return (<Box key={`${index}-${name}-${id}`}
-                        className={id === severityId ? 'selectedBox selectBox' : 'selectBox'}
-                        style={{
-                          color: id === severityId ? WHITE : getSeverityColor(id as AllergySeverity),
-                          backgroundColor: id === severityId ? getSeverityColor(id as AllergySeverity) : WHITE,
-                        }}
-                        onClick={() => setSeverityId(id)}
-                      >
-                        <Typography variant='h6'>{name}</Typography>
-                      </Box>
-                      )
-                    })}
-                  </Box>
-                </Box>
+            {isEdit && <Grid md={12} item>
+              <CheckboxController loading={loading}
+                controllerName="isActive"
+                controllerLabel={ACTIVE_TEXT} margin="none"
+              />
+            </Grid>}
 
-                {
-                  isEdit && (
-                    <Grid md={12} item>
-                      <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
-                    </Grid>
-                  )
-                }
+            <Grid container spacing={3} className={chartingClasses.problemGrid}>
+              <Grid item md={6} sm={12} xs={12}>
+                <DatePicker loading={loading} name="allergyStartDate" label={ONSET_DATE} />
+              </Grid>
 
-                <Grid container spacing={3} className={chartingClasses.problemGrid}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker defaultValue={new Date()} name="allergyStartDate" label={ONSET_DATE} />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
-                      <Box p={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
+                  <Box p={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {loading ? <TextLoader rows={[{ column: 1, size: 2 }]} /> :
+                      <>
                         {onsets.map(onSet =>
                           <Box onClick={() => handleOnset(onSet)}
                             className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
                             <Typography variant='h6'>{onSet}</Typography>
                           </Box>
                         )}
-                      </Box>
-                    </Box>
-                  </Grid>
-                </Grid>
+                      </>
+                    }
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
 
-                <Grid container className={chartingClasses.problemGrid}>
-                  <Grid item md={12} sm={12} xs={12}>
-                    <InputController
-                      multiline
-                      fieldType="text"
-                      controllerName="comments"
-                      controllerLabel={NOTE}
-                    />
-                  </Grid>
-                </Grid>
-              </>
-            }
+            <Grid container className={chartingClasses.problemGrid}>
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  multiline
+                  fieldType="text"
+                  loading={loading}
+                  controllerLabel={NOTE}
+                  controllerName="comments"
+                />
+              </Grid>
+            </Grid>
           </form>
         </DialogContent>
 
@@ -337,10 +346,12 @@ const AllergyModal: FC<AddModalProps> = ({
 
             <Box p={1} />
 
-            <Button type='submit' disabled={isDisable} variant='contained' color='primary' onClick={handleSubmit(onSubmit)}>
+            <Button type='submit' disabled={loading} variant='contained' color='primary'
+              onClick={handleSubmit(onSubmit)}
+            >
               {isEdit ? UPDATE : ADD}
 
-              {isDisable && <CircularProgress size={20} color="inherit" />}
+              {loading && <CircularProgress size={20} color="inherit" />}
             </Button>
           </Box>
         </DialogActions>
