@@ -30,7 +30,7 @@ import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { GRAY_SIX, GREY_TWO } from '../../../../../theme';
 import {
-  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI,
+  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, formatValue, getBMI,
   getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
   kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, roundOffUpto2Decimal
 } from '../../../../../utils';
@@ -160,7 +160,7 @@ export const AddVitals = memo(({
       setValue('patientHeadCircumference', patientHeadCircumference || '')
       setValue('PatientHeight', PatientHeight || '')
       setValue('PatientWeight', PatientWeight || '')
-      setValue('smokingStatus', { id: smokingStatus as SmokingStatus, name: smokingStatus })
+      setValue('smokingStatus', { id: smokingStatus as SmokingStatus, name: formatValue(smokingStatus) })
       setValue('systolicBloodPressure', systolicBloodPressure || '')
       setValue('diastolicBloodPressure', diastolicBloodPressure || '')
       setValue('PatientBMI', PatientBMI || '')
