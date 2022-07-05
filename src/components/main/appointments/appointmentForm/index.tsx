@@ -107,7 +107,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { value: selectedService } = selectedServiceId ?? {}
   const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
 
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
 

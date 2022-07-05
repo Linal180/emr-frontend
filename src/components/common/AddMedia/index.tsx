@@ -86,8 +86,8 @@ const AddImageModal: FC<MediaModalTypes> = ({
       aria-describedby="image-dialog-description" maxWidth="sm" fullWidth
     >
       <DialogTitle id="image-dialog-title">{ADD_MEDIA}</DialogTitle>
-      <FormProvider {...methods} >
 
+      <FormProvider {...methods}>
         <DialogContent>
           {fileUrl ?
             <Box className="media-image">
@@ -119,7 +119,9 @@ const AddImageModal: FC<MediaModalTypes> = ({
         </DialogContent>
 
         <DialogActions>
-          <Button variant="contained" color="primary" type={btnType} onClick={handleSubmit((data) => handleMediaSubmit(data))} disabled={deleteAttachmentLoading}>
+          <Button variant="contained" color="primary" type={btnType}
+            onClick={handleSubmit((data) => handleMediaSubmit(data))} disabled={deleteAttachmentLoading}
+          >
             {deleteAttachmentLoading &&
               <CircularProgress size={20} />
             }

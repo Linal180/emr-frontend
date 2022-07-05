@@ -247,19 +247,21 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (employer) {
-            const { id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode } = employer;
+            const {
+              id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode
+            } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
+            city && setValue('employerCity', city)
             name && setValue('employerName', name)
             email && setValue('employerEmail', email)
             phone && setValue('employerPhone', phone)
-            industry && setValue('employerIndustry', industry)
-            usualOccupation && setValue('employerUsualOccupation', usualOccupation)
             address && setValue('employerAddress', address)
-            city && setValue('employerCity', city)
-            state && setValue("employerState", setRecord(state, state))
             address && setValue('employerAddress', address)
             zipCode && setValue("employerZipCode", zipCode)
+            industry && setValue('employerIndustry', industry)
+            state && setValue("employerState", setRecord(state, state))
+            usualOccupation && setValue('employerUsualOccupation', usualOccupation)
           }
         }
       }
