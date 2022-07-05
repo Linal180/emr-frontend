@@ -15,15 +15,24 @@ query findAllUserLogs($userLogsInput: UserLogsInput!) {
 
     userLogs {
       id
-      userId
       createdAt
       ipAddress
-      patientId
       refererUrl
       moduleType
       responseCode
-      operationName
+      operationType
       activityPayload
+
+      user {
+        email
+      }
+
+      patient {
+        lastName
+        firstName
+        patientRecord
+      }
     }
+    
   }
 }

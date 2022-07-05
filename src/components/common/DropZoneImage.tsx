@@ -88,6 +88,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            pathname: window.location.pathname
           },
         }
       ).then(response => {

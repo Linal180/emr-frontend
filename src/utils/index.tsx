@@ -227,6 +227,9 @@ export const getPracticeType = (type: PracticeType): string => {
   }
 };
 
+export const getFormatLogsDate = (date: string | undefined): string => date ? moment(Number(date)).format('MM/DD/YYYY') : '';
+export const getFormatLogsTime = (date: string | undefined): string => date ? moment(Number(date)).format('hh:mm:ss A') : '';
+
 export const getTimestamps = (date: string): string =>
   date ? moment(date).format().toString() : moment().format().toString();
 
@@ -1120,7 +1123,12 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -1870,4 +1878,4 @@ export const updateSortOptions = (options: SelectorOption[]) => {
   )
 }
 
-export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))
+export const sortingValue = (updatedOptions: SelectorOption[]) => updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))

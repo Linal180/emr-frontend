@@ -9,17 +9,17 @@ import DatePicker from "../../common/DatePicker";
 import TableLoader from "../../common/TableLoader";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 //constants bock
-import { renderTh } from "../../../utils";
 import { GRAY_SIX, } from "../../../theme";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { useChartingStyles } from '../../../styles/chartingStyles';
+import { getFormatLogsDate, getFormatLogsTime, renderTh } from "../../../utils";
+import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated/graphql";
 import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer'
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT,
   AUDIT_TIME_ENUMS, PAGE_LIMIT,
 } from "../../../constants";
-import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated/graphql";
 
 const AuditLogTable = (): JSX.Element => {
 
@@ -43,7 +43,11 @@ const AuditLogTable = (): JSX.Element => {
       }
 
     },
-    onError: () => { }
+    onError: () => {
+      dispatch({ type: ActionType.SET_PAGE, page: 1 })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+      dispatch({ type: ActionType.SET_USER_LOGS, userLogs: [] })
+    }
   })
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
@@ -151,15 +155,17 @@ const AuditLogTable = (): JSX.Element => {
                 </TableRow> :
                 <Fragment>
                   {userLogs?.map((item) => {
-                    const { id, createdAt, ipAddress, operationName, moduleType, patientId, userId, activityPayload } = item || {}
+                    const { id, createdAt, ipAddress, moduleType, activityPayload, user, patient, operationType } = item || {}
+                    const { email } = user || {}
+                    const { firstName, lastName } = patient || {}
                     return (
                       <TableRow key={id}>
-                        <TableCell scope="row">{createdAt}</TableCell>
-                        <TableCell scope="row">{createdAt}</TableCell>
-                        <TableCell scope="row">{patientId}</TableCell>
-                        <TableCell scope="row">{userId}</TableCell>
+                        <TableCell scope="row">{getFormatLogsDate(createdAt)}</TableCell>
+                        <TableCell scope="row">{getFormatLogsTime(createdAt)}</TableCell>
+                        <TableCell scope="row">{`${firstName ?? ''} ${lastName ?? ''}`}</TableCell>
+                        <TableCell scope="row">{email}</TableCell>
                         <TableCell scope="row">{moduleType}</TableCell>
-                        <TableCell scope="row">{operationName}</TableCell>
+                        <TableCell scope="row">{operationType}</TableCell>
                         <TableCell scope="row">{activityPayload}</TableCell>
                         <TableCell scope="row">{ipAddress}</TableCell>
                       </TableRow>

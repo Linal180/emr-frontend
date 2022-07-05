@@ -5288,11 +5288,13 @@ export type UserLogs = {
   moduleType?: Maybe<Scalars['String']>;
   operationName?: Maybe<Scalars['String']>;
   operationType?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   refererUrl?: Maybe<Scalars['String']>;
   responseCode?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
+  user?: Maybe<User>;
   userId?: Maybe<Scalars['String']>;
 };
 
@@ -6527,7 +6529,7 @@ export type FindAllUserLogsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllUserLogsQuery = { __typename?: 'Query', findAllUserLogs: { __typename?: 'UserLogsPayload', response: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null }, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, userLogs?: Array<{ __typename?: 'UserLogs', id: string, userId?: string | null, createdAt: string, ipAddress?: string | null, patientId?: string | null, refererUrl?: string | null, moduleType?: string | null, responseCode?: string | null, operationName?: string | null, activityPayload?: string | null } | null> | null } };
+export type FindAllUserLogsQuery = { __typename?: 'Query', findAllUserLogs: { __typename?: 'UserLogsPayload', response: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null }, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, userLogs?: Array<{ __typename?: 'UserLogs', id: string, createdAt: string, ipAddress?: string | null, refererUrl?: string | null, moduleType?: string | null, responseCode?: string | null, operationType?: string | null, activityPayload?: string | null, user?: { __typename?: 'User', email: string } | null, patient?: { __typename?: 'Patient', lastName?: string | null, firstName?: string | null, patientRecord?: string | null } | null } | null> | null } };
 
 
 export const FetchAllAgreementsDocument = gql`
@@ -14740,15 +14742,21 @@ export const FindAllUserLogsDocument = gql`
     }
     userLogs {
       id
-      userId
       createdAt
       ipAddress
-      patientId
       refererUrl
       moduleType
       responseCode
-      operationName
+      operationType
       activityPayload
+      user {
+        email
+      }
+      patient {
+        lastName
+        firstName
+        patientRecord
+      }
     }
   }
 }
