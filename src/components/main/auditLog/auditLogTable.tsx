@@ -8,6 +8,7 @@ import Selector from "../../common/Selector";
 import DatePicker from "../../common/DatePicker";
 import TableLoader from "../../common/TableLoader";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
+import LogsPatientSelector from "../../common/userLogs/PatientSelector";
 //constants bock
 import { GRAY_SIX, } from "../../../theme";
 import { useTableStyles } from "../../../styles/tableStyles";
@@ -22,13 +23,13 @@ import {
 } from "../../../constants";
 
 const AuditLogTable = (): JSX.Element => {
-
   const classes = useTableStyles();
   const methods = useForm({ mode: "all" });
   const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
 
   const { timeDuration, page, totalPages, userLogs } = state
+  const {setValue} = methods
 
   const [findAllUserLogs, { loading, error }] = useFindAllUserLogsLazyQuery({
     onCompleted: (data) => {
@@ -41,7 +42,6 @@ const AuditLogTable = (): JSX.Element => {
         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         userLogs && dispatch({ type: ActionType.SET_USER_LOGS, userLogs: userLogs as UserLogsPayload['userLogs'] })
       }
-
     },
     onError: () => {
       dispatch({ type: ActionType.SET_PAGE, page: 1 })
@@ -56,14 +56,12 @@ const AuditLogTable = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       await findAllUserLogs({ variables: { userLogsInput: { ...pageInputs } } })
-
     } catch (error) { }
   }, [page, findAllUserLogs])
 
   useEffect(() => {
     fetchAllUserLogs()
   }, [fetchAllUserLogs])
-
 
   return (
     <Fragment>
@@ -73,9 +71,10 @@ const AuditLogTable = (): JSX.Element => {
             <Grid item md={10} sm={12} xs={12}>
               <Grid container spacing={3} direction='row'>
                 <Grid item md={2} sm={12} xs={12}>
-                  <Selector
+                  <LogsPatientSelector
                     addEmpty
                     label={PATIENT_NAME}
+                    setValue={setValue}
                     name="patientName"
                   />
                 </Grid>

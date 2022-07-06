@@ -8,7 +8,6 @@ export interface State {
   userLogs: UserLogsPayload['userLogs']
 }
 
-
 export const initialState: State = {
   page: 1,
   userLogs: [],
@@ -28,7 +27,6 @@ export type Action =
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
   { type: ActionType.SET_TIME_DURATION; timeDuration: string } |
   { type: ActionType.SET_USER_LOGS; userLogs: UserLogsPayload['userLogs'] }
-
 
 export const userLogsReducer = (state: State, action: Action): State => {
   switch (action.type) {
