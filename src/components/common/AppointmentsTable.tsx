@@ -206,8 +206,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
       const inputs = isSuper
         ? { facilityId: filterFacilityId }
-        :
-        isPracticeUser
+        : isPracticeUser
           ? { practiceId, facilityId: filterFacilityId }
           : isDoctor
             ? { providerId }
@@ -216,7 +215,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       inputs && await findAllAppointments({
         variables: {
           appointmentInput: {
-            ...inputs, ...pageInputs, searchString: searchQuery, facilityId: filterFacilityId,
+            ...inputs, ...pageInputs, searchString: searchQuery,
             appointmentTypeId: appointmentTypeId, sortBy: sortBy,
             appointmentDate: moment(selectDate).format('YYYY-MM-DD')
           }
@@ -232,11 +231,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     fetchAppointments();
   }, [page, searchQuery, fetchAppointments, filterFacilityId]);
 
-
   useEffect(() => {
     setDate(moment().format('MM-DD-YYYY'));
   }, []);
-
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
