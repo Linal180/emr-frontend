@@ -13,10 +13,11 @@ import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_TEXT,
+  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
+import { Link } from 'react-router-dom';
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
@@ -162,7 +163,9 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                     <Box minWidth={200} my={2}>
                       <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
-                      <Typography variant="body2">{CHECK_ELIGIBILITY_TODAY}</Typography>
+                      <Link to={ELIGIBILITY_ROUTE}>
+                        <Typography variant="body2" color='secondary'>{CHECK_ELIGIBILITY_TODAY}</Typography>
+                      </Link>
                     </Box>
                   </Box>
                 </Box>

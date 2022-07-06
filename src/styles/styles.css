@@ -1016,6 +1016,10 @@ input[type=number] {
   margin-bottom: 24px !important;
 }
 
+.text-underline {
+  text-decoration: underline !important;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {

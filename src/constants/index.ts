@@ -702,6 +702,7 @@ export const BILLING_TYPE = "Billing Type";
 export const PRESCRIBED_BY = "Prescribed By";
 export const STARTING_TIME = "Starting time";
 export const RECEIVED_DATE = "Received Date";
+  export const TIME_OF_CHECK = "Time of Check";
 export const COLLECTED_DATE = "Collected Date";
 export const DRUG = "Drug";
 export const FILE = "File";
@@ -859,11 +860,23 @@ export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
 export const RECENT_READINGS = "Recent Readings";
 export const LAST_READING_DATE = "Last Reading Date: ";
+export const PATIENT_INFORMATION = "Patient Information";
 export const REGISTERED_PATIENTS = "Registered Patients";
 export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
 export const TOTAL_NUMBER_OF_USERS = "Total Number of Users";
+export const SUBSCRIBER_INFORMATION = "Subscriber Information";
+export const PLAN_DETAIL_INFORMATION = "Plan Detail Information";
+export const PRIMARY_CARE_PROVIDER_INFO = "Primary Care Provider Info";
+export const DETAILED_COVERAGE_INFORMATION = "Detailed Coverage Information";
 export const ADD_VITALS = "Add Vitals";
+export const REMAINING = "Remaining";
+export const MESSAGE = "Message";
+export const IN_NETWORK = "In Network";
+export const AUTH_CERT_REQUIRED = "Auth/Cert Required";
+export const TIME_PERIOD = "Time Period";
+export const SERVICE_TYPE = "Service Type";
+export const COVERAGE_LEVEL = "Coverage Level";
 export const UPDATE_VITALS = "Update Vitals";
 export const ADD_PROBLEM = "Add Problem";
 export const ADD_PROBLEMS = "Add Problems";
@@ -880,6 +893,7 @@ export const SEARCH_PATIENT = "Search Patient";
 export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
+export const ALL_INSURANCES = "All Insurances";
 export const DOCTOR_SIGNOFF = "Doctor Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
@@ -913,6 +927,9 @@ export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PATIENT_INSURANCE = "Patient Insurance";
+export const CHECK_ELIGIBILITY = "Check Eligibility";
+export const COVERAGE_DETAILS = "Coverage Details";
+export const ELIGIBILITY_LISTING = "Eligibility Listing";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const ENTER_OTP_CODE = "Please enter your OTP Code";
 export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
@@ -1330,10 +1347,12 @@ export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
+export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
+export const ELIGIBILITY_ROUTE = "/check-eligibility";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
@@ -2368,6 +2387,8 @@ export const SERVICES_BREAD = (facilityId: string) => {
 }
 
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
+export const ELIGIBILITY_BREAD = { text: ELIGIBILITY_LISTING, link: ELIGIBILITY_ROUTE, };
+export const COVERAGE_BREAD = { text: COVERAGE_DETAILS, link: COVERAGE_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
@@ -4142,5 +4163,312 @@ export const AGREEMENTS_TABLE_DUMMY_DATA = [
   {
     name: 'Clone of Cami Fit Form',
     date: '1/15/12',
+  },
+]
+
+export const ELIGIBILITY_TABLE_DUMMY_DATA = [
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '17 Oct, 2020, 08:00 AM',
+    status: 'Pending',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '24 May, 2020, 9:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '17 Oct, 2020, 08:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '1 Feb, 2020, 11:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '22 Oct, 2020, 09:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '8 Sep, 2020, 08:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'ACTNA',
+    time: '21 Sep, 2020 , 11:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '24 May, 2020 12:00 PM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '21 Sep, 2020 , 11:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'ACTNA',
+    time: '21 Sep, 2020, 04:00 PM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+]
+
+export const PATIENT_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Relationship',
+    value: 'Self',
+  },
+  {
+    name: 'First Name',
+    value: 'Ariana',
+  },
+  {
+    name: 'Middle Name',
+    value: '-',
+  },
+  {
+    name: 'Last Name',
+    value: 'Cornwell',
+  },
+  {
+    name: 'SSN',
+    value: '-',
+  },
+  {
+    name: 'DOB',
+    value: '01/28/1978',
+  },
+  {
+    name: 'Sex',
+    value: 'F',
+  },
+  {
+    name: 'Street',
+    value: '7704 Suraci CT Apt 303',
+  },
+  {
+    name: 'City/State/Zip',
+    value: 'Annandale. VA 220023',
+  },
+]
+
+export const SUBSCRIBER_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'First Name',
+    value: 'Ariana',
+  },
+  {
+    name: 'Middle Name',
+    value: '-',
+  },
+  {
+    name: 'Last Name',
+    value: 'Cornwell',
+  },
+  {
+    name: 'Member ID',
+    value: '117185225',
+  },
+  {
+    name: 'SSN',
+    value: '-',
+  },
+  {
+    name: 'DOB',
+    value: '01/28/1978',
+  },
+  {
+    name: 'Sex',
+    value: 'F',
+  },
+  {
+    name: 'Street',
+    value: '7704 Suraci CT Apt 303',
+  },
+  {
+    name: 'City/State/Zip',
+    value: 'Annandale. VA 220023',
+  },
+]
+
+export const PLAN_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Payer Name',
+    value: 'United Health Care',
+  },
+  {
+    name: 'Plan Name',
+    value: 'VA Medicaid Expension Adults',
+  },
+  {
+    name: 'Plan Number',
+    value: 'AX63762',
+  },
+  {
+    name: 'Plan Begin Date',
+    value: '01/01/2022',
+  },
+  {
+    name: 'Plan End Date',
+    value: '12/31/2022',
+  },
+  {
+    name: 'Group Name',
+    value: 'Premium Plus',
+  },
+  {
+    name: 'Group Number',
+    value: 'VAMDN',
+  },
+]
+
+export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Provider Name',
+    value: 'Dr. Mitchell Thomson',
+  },
+  {
+    name: 'Provider Phone',
+    value: '+1765345267542',
+  },
+]
+
+export const DETAILED_COVERAGE_DUMMY_DATA = [
+  {
+    service: 'Coinsurance',
+    coverage: 'Employee and Spouse',
+    amount: '0%',
+    remaining: '0%',
+    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE',
+    network: 'Yes',
+    facility: '-',
+    auth: 'No',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Copay',
+    coverage: 'Employee and Spouse',
+    amount: '$25.00',
+    remaining: '$10.00',
+    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE,COPAY INCLUDED IN OOP',
+    network: 'Yes',
+    facility: 'Inpatient Hopital',
+    auth: 'No',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Limitations',
+    coverage: 'Employee and Spouse',
+    amount: '-',
+    remaining: '-',
+    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE/PLAN DED WAIVED',
+    network: 'Yes',
+    facility: '-',
+    auth: '-',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Coinsurance',
+    coverage: 'Employee and Spouse',
+    amount: '25%',
+    remaining: '25%',
+    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
+    network: 'No',
+    facility: 'Office',
+    auth: 'Yes',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Copay',
+    coverage: 'Employee and Spouse',
+    amount: '$0.00',
+    remaining: '$0.00',
+    message: 'URGENT CARE',
+    network: 'No',
+    facility: '-',
+    auth: '-',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Coinsurance',
+    coverage: 'Employee and Spouse',
+    amount: '25%',
+    remaining: '25%',
+    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
+    network: 'No',
+    facility: 'Office',
+    auth: 'Yes',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Coinsurance',
+    coverage: 'Employee and Spouse',
+    amount: '25%',
+    remaining: '25%',
+    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
+    network: 'No',
+    facility: 'Office',
+    auth: 'Yes',
+    time: 'Calendar Year',
+  },
+  {
+    service: 'Coinsurance',
+    coverage: 'Employee and Spouse',
+    amount: '25%',
+    remaining: '25%',
+    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
+    network: 'No',
+    facility: 'Office',
+    auth: 'Yes',
+    time: 'Calendar Year',
+  },
+]
+
+export const COVERAGE_SUMMARY_DUMMY_DATA = [
+  {
+    name: 'Copay',
+    urgentCare: '$25.00',
+    professionalOfficeVisit: '$15.00',
+    healthPlanBenefits: '-',
+  },
+  {
+    name: 'Deductible Remaining',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '-',
+  },
+  {
+    name: 'Individual',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '$564.17',
+  },
+  {
+    name: 'Family',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '$1288.12',
+  },
+  {
+    name: 'Coinsurance',
+    urgentCare: '0%',
+    professionalOfficeVisit: '0%',
+    healthPlanBenefits: '-',
   },
 ]
