@@ -364,6 +364,10 @@ body .MuiTabPanel-root {
   font-weight: 600;
 }
 
+.permissionDenied {
+  margin-right: 16px !important;
+}
+
 .permissionDenied:hover {
   cursor: not-allowed;
 }
@@ -929,8 +933,8 @@ input[type=number] {
   pointer-events: none;
 }
 
-.MuiSkeleton-text {
-  height: 30px !important;
+.makeStyles-chartModalBox-137 .MuiSkeleton-text{
+  transform: scale(1, 1) !important;
 }
 
 .skelton-label-margin {
