@@ -663,6 +663,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 9;
+export const USER_LOG_PAGE_LIMIT = 50;
 export const EIGHT_PAGE_LIMIT = 8;
 export const VALUE = "Value";
 export const VISIT = "Visit";
@@ -4203,4 +4204,44 @@ export const AUDIT_LOG_TABLE_DUMMY_DATA = [
     detail: 'accessed Dashboard',
     ip: '92.188.192.32',
   },
+]
+
+
+export const MODULE_LOGS_TYPES = [
+	"Agreement",
+	"Appointment",
+	"Attachments",
+	"DocumentTypes",
+	"Billing",
+	"Dashboard",
+	"Facility",
+	"Service",
+	"Element",
+	"Form",
+	"UserForm",
+	"Copay",
+	"Insurance",
+	"PolicyHolder",
+	"Policy",
+	"LabTestObservation",
+	"LabTests",
+	"LoincCodes",
+	"TestSpecimen",
+	"PatientAllergies",
+	"Problem",
+	"Vitals",
+	"DoctorPatient",
+	"Patient",
+	"PatientConsent",
+	"Invoice",
+	"Payment",
+	"Practice",
+	"Staff",
+	"Role",
+	"Users",
+	"Doctor",
+	"Contact",
+	"Schedule",
+	"Permission",
+	"RolePermission",
 ]

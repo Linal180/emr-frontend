@@ -1930,5 +1930,21 @@ export interface LogsPatientSelectorProps extends SelectorProps {
   isModal?: boolean
   placeholder?: boolean
   handlePatientModal?: Function
-  setValue: Function
+  setValue?: Function
+}
+
+export type AuditLogsInputs = {
+  endDate: string;
+  startDate: string;
+  user: SelectorOption;
+  patient: SelectorOption;
+  module: SelectorOption;
+};
+
+export interface AuditSubmitInputs {
+  endDate?: string;
+  startDate?: string;
+  userId?: string;
+  patientId?: string;
+  moduleType?: string;
 }
