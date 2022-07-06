@@ -22,7 +22,7 @@ const UserSelector: FC<LogsPatientSelectorProps> = ({
   const isPractice = isPracticeAdmin(roles);
   const isFacility = isFacilityAdmin(roles)
 
-  const { id: facilityId, practiceId } = facility || {}
+  const { id: facilityId } = facility || {}
 
   const [{ page, searchQuery, users }, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
 
@@ -58,7 +58,7 @@ const UserSelector: FC<LogsPatientSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const usersInputs = isSuper ? { ...pageInputs } :
-        isPractice ? { practiceId, ...pageInputs }
+        isPractice ? { ...pageInputs }
           : isFacility ? { facilityId, ...pageInputs } : { facilityId, ...pageInputs }
 
       usersInputs && await findAllUsers({
@@ -69,7 +69,7 @@ const UserSelector: FC<LogsPatientSelectorProps> = ({
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPractice, practiceId, facilityId, findAllUsers, searchQuery, isFacility])
+  }, [page, isSuper, isPractice, facilityId, findAllUsers, searchQuery, isFacility])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllUsers()
