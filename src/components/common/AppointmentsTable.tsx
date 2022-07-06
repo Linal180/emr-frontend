@@ -34,7 +34,7 @@ import {
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
-  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
+  useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
 } from "../../generated/graphql";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
@@ -119,36 +119,36 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getAppointments, {
-    loading: getAppointmentsLoading, error: doctorAppointmentError
-  }] = useGetAppointmentsLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
+  // const [getAppointments, {
+  //   loading: getAppointmentsLoading, error: doctorAppointmentError
+  // }] = useGetAppointmentsLazyQuery({
+  //   fetchPolicy: "network-only",
+  //   nextFetchPolicy: 'no-cache',
+  //   notifyOnNetworkStatusChange: true,
 
-    onError() {
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-    },
+  //   onError() {
+  //     dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+  //   },
 
-    onCompleted(data) {
-      const { getAppointments } = data || {};
+  //   onCompleted(data) {
+  //     const { getAppointments } = data || {};
 
-      if (getAppointments) {
-        const { appointments, pagination } = getAppointments
+  //     if (getAppointments) {
+  //       const { appointments, pagination } = getAppointments
 
-        if (pagination) {
-          const { totalPages } = pagination
+  //       if (pagination) {
+  //         const { totalPages } = pagination
 
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-        }
+  //         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+  //       }
 
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
-      }
-    }
-  });
+  //       dispatch({
+  //         type: ActionType.SET_APPOINTMENTS,
+  //         appointments: appointments as AppointmentsPayload['appointments']
+  //       });
+  //     }
+  //   }
+  // });
 
   const [updateAppointment] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
@@ -197,29 +197,34 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (isDoctor) {
-        await getAppointments({
-          variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
-        })
-      } else {
-        const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
-        const inputs = isSuper ? { ...pageInputs } :
-          isPracticeUser ? { practiceId, ...pageInputs }
+      // if (isDoctor) {
+      //   await getAppointments({
+      //     variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
+      //   })
+      // } else {
+      const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+      const inputs = isSuper
+        ? { ...pageInputs }
+        :
+        isPracticeUser
+          ? { practiceId, ...pageInputs }
+          : isDoctor
+            ? { providerId, ...pageInputs }
             : { facilityId, ...pageInputs }
 
-        inputs && await findAllAppointments({
-          variables: {
-            appointmentInput: {
-              ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
-              appointmentTypeId: appointmentTypeId, sortBy: sortBy,
-              appointmentDate: moment(selectDate).format('YYYY-MM-DD')
-            }
-          },
-        })
-      }
+      inputs && await findAllAppointments({
+        variables: {
+          appointmentInput: {
+            ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
+            appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+            appointmentDate: moment(selectDate).format('YYYY-MM-DD')
+          }
+        },
+      })
+      // }
     } catch (error) { }
   }, [
-    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
+    isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
     findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
   ])
 
@@ -434,7 +439,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableHead>
 
             <TableBody>
-              {(loading || getAppointmentsLoading) ? (
+              {(loading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
                     <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
@@ -581,7 +586,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableBody>
           </Table>
 
-          {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
+          {((!loading && appointments?.length === 0) || error) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
