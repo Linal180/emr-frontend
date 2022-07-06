@@ -239,12 +239,12 @@ const ProblemModal: FC<AddModalProps> = ({
               </Box>
 
               <Box>
-                {loading ? <TextLoader rows={[{ column: 1, size: 3 }]} />
+                {loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} />
                   : <Typography variant='h4'>{description}</Typography>
                 }
 
                 <Box mt={1} color={GREY_THREE}>
-                  {isEdit ? loading ? <TextLoader rows={[{ column: 1, size: 3 }]} /> :
+                  {isEdit ? loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} /> :
                    <Typography variant='h6'>
                     <strong>{ICD_TEN_CODE}:</strong> {code} {snowMedCodeName && snowMedCodeName !== DASHES
                       ? `| SnoMedCode: ${snowMedCodeName}` : ''

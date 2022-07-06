@@ -22,10 +22,12 @@ dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: any, forward: any) => {
   const token = localStorage.getItem(TOKEN) || localStorage.getItem(FA_TOKEN);
+  const pathname = window.location.pathname;
 
   operation.setContext({
     headers: {
       authorization: `Bearer ${token}`,
+      pathname
     },
   });
 
@@ -72,7 +74,7 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
             }
           }
         }
-        
+
         return forward(operation);
       }
     );

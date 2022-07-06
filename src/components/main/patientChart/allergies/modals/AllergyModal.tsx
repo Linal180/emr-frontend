@@ -231,7 +231,7 @@ const AllergyModal: FC<AddModalProps> = ({
                 <PageBackIcon />
               </Box>
 
-              {loading ? <TextLoader rows={[{ column: 1, size: 3 }]} />
+              {loading ? <TextLoader width="300px" height={48} rows={[{ column: 1, size: 12 }]} />
                 : <Typography variant='h4'>{name ?? newAllergy}</Typography>
               }
             </Box>
@@ -258,9 +258,7 @@ const AllergyModal: FC<AddModalProps> = ({
                               onChange={() => handleChangeForCheckBox(id || '')} />
                           </Box>
                         }
-                        label={loading ?
-                          <TextLoader rows={[{ column: 1, size: 2 }]} />
-                          : name}
+                        label={name}
                       />
                     </FormGroup>
                   </Grid>
@@ -306,19 +304,23 @@ const AllergyModal: FC<AddModalProps> = ({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
-                  <Box p={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                    {loading ? <TextLoader rows={[{ column: 1, size: 2 }]} /> :
-                      <>
+                <Box mt={3}>
+                  {loading ?
+                    <Grid>
+                      <TextLoader height={48} width='100%' rows={[{ column: 1, size: 12 }]} />
+                    </Grid>
+                    :
+                    <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleAllergy}`}>
+                      <Box p={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                         {onsets.map(onSet =>
                           <Box onClick={() => handleOnset(onSet)}
                             className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
                             <Typography variant='h6'>{onSet}</Typography>
                           </Box>
                         )}
-                      </>
-                    }
-                  </Box>
+                      </Box>
+                    </Box>
+                  }
                 </Box>
               </Grid>
             </Grid>
