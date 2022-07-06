@@ -19,7 +19,7 @@ import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
 import {
   Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-   useGetPracticeLazyQuery, useUpdatePracticeMutation
+  useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
@@ -73,28 +73,33 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
             const practiceAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.PracticeLogo);
             const { id } = practiceAttachment || {}
 
-            id &&
-              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
+            id && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
 
-            practiceAttachment &&
-              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: practiceAttachment })
+            practiceAttachment && mediaDispatch({
+              type: mediaActionType.SET_ATTACHMENT_DATA,
+              attachmentData: practiceAttachment
+            })
 
             setPracticeData(practice)
-            const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
-
-            fax && setValue('fax', fax)
-            ein && setValue('ein', ein)
-            upin && setValue('upin', upin)
-            name && setValue('name', name.trim())
-            phone && setValue('phone', phone)
-            champus && setValue('champus', champus)
-            medicare && setValue('medicare', medicare)
-            medicaid && setValue('medicaid', medicaid)
+            setEditData(practice);
           }
         }
       }
     }
   });
+
+  const setEditData = (practice: PracticePayload['practice']) => {
+    const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice || {};
+
+    fax && setValue('fax', fax)
+    ein && setValue('ein', ein)
+    upin && setValue('upin', upin)
+    name && setValue('name', name.trim())
+    phone && setValue('phone', phone)
+    champus && setValue('champus', champus)
+    medicare && setValue('medicare', medicare)
+    medicaid && setValue('medicaid', medicaid)
+  }
 
   const [getAttachments, { loading: getAttachmentsLoading }] = useGetAttachmentsLazyQuery({
     fetchPolicy: "network-only",
@@ -208,7 +213,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     })
   };
 
-  const editHandler = () => setEdit(!edit)
+  const editHandler = () => {
+    setEdit(!edit)
+    edit && setEditData(practiceData)
+  }
+
   const isLoading = loading || updatePracticeLoading
   const attachmentLoading = loading || getAttachmentLoading || getAttachmentsLoading
 

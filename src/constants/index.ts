@@ -496,7 +496,6 @@ export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
-export const ICD_TEN_CODE = "ICD-10 Code:";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
@@ -959,7 +958,6 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
-export const AGREEMENT_BODY = 'Agreement Body'
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -975,7 +973,6 @@ export const HOME_TEXT = "Home";
 export const DETAILS = "Details";
 export const PENDING = "Pending";
 export const MISSING = "Missing";
-export const CANCEL_RECORD = "Cancel record";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -1015,8 +1012,6 @@ export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
-export const ADD_AGREEMENT = "Add Agreement";
-export const EDIT_AGREEMENT = "Edit Agreement";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
@@ -1039,6 +1034,7 @@ export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
 export const EFFECTIVE_TEXT = "EFFECTIVE";
+export const ICD_TEN_CODE = "ICD-10 Code"; 
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -1060,15 +1056,16 @@ export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
 export const DOCUMENT_TYPE = "Document Type";
+export const CANCEL_RECORD = "Cancel record";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
-export const EDIT_INSURANCE = "Edit Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
+export const ADD_AGREEMENT = "Add Agreement";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
@@ -1084,6 +1081,8 @@ export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
 export const PREFERRED_NAME = "Preferred Name";
+export const EDIT_INSURANCE = "Edit Insurance";
+export const EDIT_AGREEMENT = "Edit Agreement";
 export const HOLD_STATEMENT = "Hold Statement";
 export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
@@ -1092,6 +1091,7 @@ export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const CONTACT_NUMBER = "Contact Number";
 export const VIEW_ENCOUNTER = "View Encounter";
 export const ENTER_RELATION = "Enter Relation";
+export const AGREEMENT_BODY = "Agreement Body";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -2818,6 +2818,7 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
+  "User",
   "Practice",
   "Facility",
   "Emergency Access",
@@ -2829,7 +2830,6 @@ export const MODULES = [
   "Schedule",
   "Lab Orders",
   "Patient Charting",
-  "User",
 ];
 
 export const MAPPED_STATUS = [

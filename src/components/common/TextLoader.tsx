@@ -5,11 +5,11 @@ import Skeleton from '@material-ui/lab/Skeleton'
 // interfaces/types block
 import { TextLoaderInterface } from "../../interfacesTypes";
 
-const TextLoader: FC<TextLoaderInterface> = ({ rows }): JSX.Element => {
+const TextLoader: FC<TextLoaderInterface> = ({ rows, height, width }): JSX.Element => {
   const skeltonReplica = () => {
     return (
         <Box pl={2} pr={2} pb={2}  display="flex" justifyContent="space-between" alignItems="center">
-          <Skeleton animation="wave" variant="text" width={1200} height={30} />
+          <Skeleton animation="wave" variant="text" width={width || 1200} height={height || 30} />
         </Box>
     )
   }
