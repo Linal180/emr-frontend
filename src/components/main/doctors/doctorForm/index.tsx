@@ -239,7 +239,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         providerIntials, prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestampsForDob(dob) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
-        speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
+        speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology_10,
         deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
         deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
       };

@@ -38,7 +38,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, 
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -860,7 +860,6 @@ export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
   moduleName: ITEM_MODULE
-  handleCodes: Function
 }
 
 export interface PolicyCardProps extends GeneralFormProps {
@@ -902,6 +901,8 @@ export interface CreateBillingProps {
   onsetDate?: string
   otherDateType?: SelectorOption
   otherDate?: string
+  [ITEM_MODULE.icdCodes]: TableCodesProps[]
+  [ITEM_MODULE.cptCode]: TableCodesProps[]
 }
 
 export interface CreateLabTestProviderProps {
@@ -1299,6 +1300,8 @@ export interface CustomSelectControlProps extends IControlLabel {
 export interface ItemSelectorProps extends SelectorProps {
   modalName: ITEM_MODULE;
   searchQuery?: string;
+  filteredOptions?: SelectorOption[]
+  shouldFilter?: boolean
 }
 
 export interface FieldEditModalProps {
