@@ -1699,6 +1699,19 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
   } else return [EMPTY_OPTION]
 }
 
+export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[] {
+  if (enumerable) {
+    let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+
+    return enumMembers.map(member => {
+      return {
+        id: member,
+        name: formatServiceCode(member)
+      }
+    });
+  } else return [EMPTY_OPTION]
+}
+
 export const getAppointmentStatus = (status: string) => {
   switch (status) {
     case formatValue(AppointmentStatus.Cancelled):

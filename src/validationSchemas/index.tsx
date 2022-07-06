@@ -29,7 +29,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES,
+  SYSTEM_ROLES, ITEM_MODULE
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
 
@@ -132,6 +132,11 @@ const selectorSchema = (label: string, isRequired: boolean = true) => yup.object
   name: yup.string(),
   id: yup.string()
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
+
+const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
+  id: yup.string(),
+  code: yup.string()
+}).test('', requiredMessage(label), ({ id, code }) => isRequired ? !!id && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   label: yup.string().required(),
@@ -588,10 +593,14 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   facilityName: nameSchema(FACILITY_NAME),
   address: addressValidation(ADDRESS, true),
+  npi: yup.string().required(),
+  taxId: yup.string().required()
 })
 
 export const updatePracticeSchema = yup.object({
-  ...practiceFacilitySchema
+  ...practiceFacilitySchema,
+  npi: yup.string().required(),
+  taxId: yup.string().required()
 })
 
 export const updatePasswordSchema = yup.object({
@@ -1027,7 +1036,13 @@ export const createCopaySchema = yup.object({
 export const createBillingSchema = yup.object({
   billingStatus: selectorSchema(BILLING_STATUS),
   paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
-  amount: yup.string()
+  amount: yup.string(),
+  [ITEM_MODULE.icdCodes]: yup.array().of(
+    tableSelectorSchema(ITEM_MODULE.icdCodes)
+  ).test('', requiredMessage(ITEM_MODULE.icdCodes), (value: any) => !!value && value.length > 0 ),
+  [ITEM_MODULE.cptCode]: yup.array().of(
+    tableSelectorSchema(ITEM_MODULE.icdCodes)
+  ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0 ),
 })
 
 export const addDocumentSchema = yup.object({
