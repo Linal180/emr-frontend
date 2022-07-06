@@ -7,29 +7,38 @@ import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Ty
 import Selector from "../../common/Selector";
 import DatePicker from "../../common/DatePicker";
 import TableLoader from "../../common/TableLoader";
+import UserSelector from "../../common/userLogs/UserSelector";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import LogsPatientSelector from "../../common/userLogs/PatientSelector";
 //constants bock
 import { GRAY_SIX, } from "../../../theme";
+import { AuditLogsInputs } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { useChartingStyles } from '../../../styles/chartingStyles';
-import { getFormatLogsDate, getFormatLogsTime, renderTh } from "../../../utils";
 import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated/graphql";
+import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh } from "../../../utils";
 import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer'
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT,
-  AUDIT_TIME_ENUMS, PAGE_LIMIT,
+  AUDIT_TIME_ENUMS, USER_LOG_PAGE_LIMIT, MODULE_LOGS_TYPES, PAGE_LIMIT
 } from "../../../constants";
 
 const AuditLogTable = (): JSX.Element => {
+  const moduleOptions = formatModuleTypes(MODULE_LOGS_TYPES)
   const classes = useTableStyles();
-  const methods = useForm({ mode: "all" });
+  const methods = useForm<AuditLogsInputs>({
+    mode: "all", defaultValues: {
+      endDate: new Date().toString(),
+      startDate: new Date().toString()
+    }
+  });
   const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
 
   const { timeDuration, page, totalPages, userLogs } = state
-  const {setValue} = methods
+  const { handleSubmit, getValues, setValue } = methods
+  const { patient, module, user, startDate, endDate } = getValues()
 
   const [findAllUserLogs, { loading, error }] = useFindAllUserLogsLazyQuery({
     onCompleted: (data) => {
@@ -37,9 +46,8 @@ const AuditLogTable = (): JSX.Element => {
       const { response, pagination, userLogs } = findAllUserLogs || {}
       const { status } = response || {}
       if (status === 200) {
-        const { page, totalPages } = pagination || {}
-        page && dispatch({ type: ActionType.SET_PAGE, page })
-        totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        const { totalPages } = pagination || {}
+        dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages ?? 0 })
         userLogs && dispatch({ type: ActionType.SET_USER_LOGS, userLogs: userLogs as UserLogsPayload['userLogs'] })
       }
     },
@@ -53,15 +61,72 @@ const AuditLogTable = (): JSX.Element => {
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const fetchAllUserLogs = useCallback(async () => {
+    const { id: userId } = user || {}
+    const { id: moduleType } = module || {}
+    const { id: patientId } = patient || {}
+
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = {
+        paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT }, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
+        patientId: patientId ? patientId : null, startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
+      }
       await findAllUserLogs({ variables: { userLogsInput: { ...pageInputs } } })
     } catch (error) { }
-  }, [page, findAllUserLogs])
+  }, [page, findAllUserLogs, user, module, patient, startDate, endDate])
 
   useEffect(() => {
     fetchAllUserLogs()
   }, [fetchAllUserLogs])
+
+  const onSubmit = async (data: AuditLogsInputs) => {
+    const { module, patient, user, startDate, endDate } = data
+    const { id: userId } = user
+    const { id: moduleType } = module
+    const { id: patientId } = patient
+
+    try {
+      const pageInputs = { paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT } }
+      await findAllUserLogs({
+        variables: {
+          userLogsInput: {
+            ...pageInputs, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
+            patientId: patientId ? patientId : null, startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
+          }
+        }
+      })
+    } catch (error) { }
+  }
+
+  const dateHandler = (timeKey: string) => {
+    switch (timeKey) {
+      case 'Day':
+        setValue('endDate', new Date()?.toString())
+        setValue('startDate', new Date(new Date()?.setDate(new Date().getDate() - 1))?.toString())
+        break;
+
+      case 'Week':
+        setValue('endDate', new Date()?.toString())
+        setValue('startDate', new Date(new Date().setDate(new Date().getDate() - 7))?.toString())
+        break;
+
+      case 'Month':
+
+        setValue('endDate', new Date()?.toString())
+        setValue('startDate', new Date(new Date().setMonth(new Date().getMonth() - 1))?.toString())
+        break;
+
+      case 'Year':
+        setValue('endDate', new Date()?.toString())
+        setValue('startDate', new Date(new Date().setFullYear(new Date().getFullYear() - 1))?.toString())
+        break;
+
+
+      default:
+        setValue('endDate', new Date()?.toString())
+        setValue('startDate', new Date(new Date()?.setDate(new Date().getDate() - 1))?.toString())
+        break;
+    }
+  }
 
   return (
     <Fragment>
@@ -74,16 +139,15 @@ const AuditLogTable = (): JSX.Element => {
                   <LogsPatientSelector
                     addEmpty
                     label={PATIENT_NAME}
-                    setValue={setValue}
-                    name="patientName"
+                    name="patient"
                   />
                 </Grid>
 
                 <Grid item md={2} sm={12} xs={12}>
-                  <Selector
+                  <UserSelector
                     addEmpty
                     label={USER_NAME}
-                    name="userName"
+                    name="user"
                   />
                 </Grid>
 
@@ -91,21 +155,22 @@ const AuditLogTable = (): JSX.Element => {
                   <Selector
                     addEmpty
                     label={ALL_LOG_TYPES}
-                    name="allLog"
+                    options={moduleOptions}
+                    name="module"
                   />
                 </Grid>
 
                 <Grid item md={2} sm={12} xs={12}>
-                  <DatePicker name="date" label={FROM_DATE} />
+                  <DatePicker name="startDate" label={FROM_DATE} />
                 </Grid>
 
                 <Grid item md={2} sm={12} xs={12}>
-                  <DatePicker name="date" label={TO_DATE} />
+                  <DatePicker name="endDate" label={TO_DATE} />
                 </Grid>
 
                 <Grid item md={2} sm={12} xs={12}>
                   <Box mt={2.5}>
-                    <Button variant="contained" color="secondary">{UPDATE_FILTER}</Button>
+                    <Button variant="contained" color="secondary" onClick={handleSubmit(onSubmit)}>{UPDATE_FILTER}</Button>
                   </Box>
                 </Grid>
               </Grid>
@@ -117,7 +182,10 @@ const AuditLogTable = (): JSX.Element => {
                   {AUDIT_TIME_ENUMS?.map((timeKey, index) => {
                     return (<Box key={`${timeKey}-${index}`}
                       className={timeKey === timeDuration ? 'selectedBox selectBox' : 'selectBox'}
-                      onClick={() => dispatch({ type: ActionType.SET_TIME_DURATION, timeDuration: timeKey })}
+                      onClick={() => {
+                        dispatch({ type: ActionType.SET_TIME_DURATION, timeDuration: timeKey })
+                        dateHandler(timeKey)
+                      }}
                     >
                       <Typography variant='h6'>{timeKey}</Typography>
                     </Box>

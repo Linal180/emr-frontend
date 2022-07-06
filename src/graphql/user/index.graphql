@@ -55,3 +55,26 @@ query GetCurrentUser {
     }
   }
 }
+
+
+query fetchAllUsers($userInput: UsersInput!) {
+  fetchAllUsers(userInput: $userInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    users {
+      id
+      email
+      facilityId
+
+    }
+}
+}

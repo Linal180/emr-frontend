@@ -36,9 +36,7 @@ const Header: FC = (): JSX.Element => {
 
   const handleMobileMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) =>
     setMobileMoreAnchorEl(currentTarget);
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
 
   const renderMobileMenu = (
     <Menu

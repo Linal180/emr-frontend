@@ -167,7 +167,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
                 sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify,
-                usualProviderId: doctorId, practiceId: practiceId || '',
+                usualProviderId: doctorId
               },
             }
           }
