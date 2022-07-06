@@ -1027,6 +1027,10 @@ input[type=number] {
   margin-bottom: 24px !important;
 }
 
+.log-class {
+  border: 10px solid red;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {
