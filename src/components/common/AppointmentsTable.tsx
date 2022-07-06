@@ -19,10 +19,10 @@ import ServicesSelector from "./Selector/ServiceSelector";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 import FacilitySelector from "./Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../context";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import history from "../../history";
+import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
@@ -30,7 +30,8 @@ import {
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
-  getStandardTimeDuration, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh, setRecord
+  getStandardTimeDuration, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh,
+  setRecord
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -58,10 +59,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { id: providerId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
-  const { id: facilityId, practiceId } = facility || {}
+  const isFacility = isFacilityAdmin(roles)
 
+  const { id: facilityId, practiceId } = facility || {}
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
   const isDoctor = isOnlyDoctor(roles)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<StatusInputProps>({ mode: "all" });
 
@@ -87,7 +90,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     setDate(nextDate)
   }
 
-
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -95,6 +97,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
     onError() {
       dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
     },
 
     onCompleted(data) {
@@ -109,12 +112,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
 
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
-      } else {
-        dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+        if (!!appointments?.length) {
+          dispatch({
+            type: ActionType.SET_APPOINTMENTS,
+            appointments: appointments as AppointmentsPayload['appointments']
+          });
+        } else {
+          dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+        }
       }
     }
   });
@@ -127,6 +133,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     notifyOnNetworkStatusChange: true,
 
     onError() {
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
       dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
     },
 
@@ -142,10 +149,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
 
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
+        if (!!appointments?.length) {
+          dispatch({
+            type: ActionType.SET_APPOINTMENTS,
+            appointments: appointments as AppointmentsPayload['appointments']
+          });
+        } else {
+          dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+        }
       }
     }
   });
@@ -203,14 +215,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         })
       } else {
         const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
-        const inputs = isSuper ? { ...pageInputs } :
-          isPracticeUser ? { practiceId, ...pageInputs }
-            : { facilityId, ...pageInputs }
+        const inputs = isSuper ? { facilityId: filterFacilityId } :
+          isPracticeUser ? { practiceId, facilityId: filterFacilityId }
+            : { facilityId }
 
         inputs && await findAllAppointments({
           variables: {
             appointmentInput: {
-              ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
+              ...inputs, ...pageInputs, searchString: searchQuery,
               appointmentTypeId: appointmentTypeId, sortBy: sortBy,
               appointmentDate: moment(selectDate).format('YYYY-MM-DD')
             }
@@ -331,11 +343,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   }
 
   const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
-    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
-      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
-      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-        : onDeleteClick(id || '')
+    if (id) {
+      if (isSuper || isPracticeUser || isFacility) {
+        return onDeleteClick(id)
+      }
+
+      moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+        ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+        : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+          ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+          : onDeleteClick(id || '')
+    }
   }
 
   const renderIcon = () => <IconButton className='py-0 ml-5'
@@ -377,6 +395,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
+
                 {!isDoctor &&
                   <Grid item md={4} sm={12} xs={12}>
                     <Box className="date-box-wrap">
@@ -443,8 +462,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime,
-                    checkInActiveStep, appointmentCreateType
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status,
+                    scheduleEndDateTime, checkInActiveStep, appointmentCreateType
                   } = appointment || {};
 
                   const { name } = facility || {};
@@ -452,8 +471,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const { name: type } = appointmentType || {};
 
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '',
-                    (appointmentCreateType || '') as AppointmentCreateType)
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0),
+                    status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
@@ -527,21 +546,23 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {
-                            (appointmentCreateType === AppointmentCreateType.Telehealth && status !== AppointmentStatus.Cancelled) ?
-                              <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                                <VideoIcon />
-                              </Box> :
-                              (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
-                                onClick={() => canUpdateAppointmentStatus(status) ?
-                                  id && patientId && handleCheckIn(id, patientId)
-                                  : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
-                                }>
-                                <CheckInTickIcon />
-                              </Box>
+                          {(appointmentCreateType === AppointmentCreateType.Telehealth &&
+                            status !== AppointmentStatus.Cancelled) ?
+                            <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
+                              <VideoIcon />
+                            </Box> :
+                            (status && !(status === AppointmentStatus.Cancelled)) &&
+                            <Box className={classes.iconsBackground}
+                              onClick={() => canUpdateAppointmentStatus(status) ?
+                                id && patientId && handleCheckIn(id, patientId)
+                                : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                              }>
+                              <CheckInTickIcon />
+                            </Box>
                           }
 
-                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Telehealth &&
+                          {status === AppointmentStatus.Cancelled &&
+                            appointmentCreateType === AppointmentCreateType.Telehealth &&
                             <Box className={classes.iconsBackgroundDisabled}>
                               <IconButton onMouseEnter={() => {
                                 Alert.info(APPOINTMENT_CANCELLED_TEXT)
@@ -551,13 +572,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             </Box>
                           }
 
-                          {status === AppointmentStatus.Cancelled && appointmentCreateType === AppointmentCreateType.Appointment && <Box className={classes.iconsBackgroundDisabled}>
-                            <IconButton onMouseEnter={() => {
-                              Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                            }}>
-                              <CheckInTickIcon />
-                            </IconButton>
-                          </Box>}
+                          {status === AppointmentStatus.Cancelled &&
+                            appointmentCreateType === AppointmentCreateType.Appointment &&
+                            <Box className={classes.iconsBackgroundDisabled}>
+                              <IconButton onMouseEnter={() => {
+                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                              }}>
+                                <CheckInTickIcon />
+                              </IconButton>
+                            </Box>}
 
                           <Box className={classes.iconsBackground}>
                             <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
@@ -581,11 +604,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableBody>
           </Table>
 
-          {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
+          {((!loading && !getAppointmentsLoading && appointments?.length === 0)
+            || error || doctorAppointmentError) &&
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
-          )}
+          }
 
           <ConfirmationModal
             title={APPOINTMENT}

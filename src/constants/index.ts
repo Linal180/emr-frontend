@@ -2804,6 +2804,7 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
+  "User",
   "Practice",
   "Facility",
   "Emergency Access",
@@ -2815,7 +2816,6 @@ export const MODULES = [
   "Schedule",
   "Lab Orders",
   "Patient Charting",
-  "User",
 ];
 
 export const MAPPED_STATUS = [
