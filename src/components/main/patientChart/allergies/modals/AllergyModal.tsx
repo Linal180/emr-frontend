@@ -213,7 +213,7 @@ const AllergyModal: FC<AddModalProps> = ({
     }
   };
 
-  const loading = getAllergyLoading || addAllergyLoading || updateAllergyLoading || true
+  const loading = getAllergyLoading || addAllergyLoading || updateAllergyLoading
 
   return (
     <Dialog fullWidth maxWidth="lg" open={isOpen} onClose={handleClose}>
