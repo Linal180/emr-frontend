@@ -24,7 +24,7 @@ const CheckboxController: FC<CheckboxControllerProps> = ({
 
           <FormControlLabel
             control={<Checkbox name={controllerName} id={controllerName} checked={value} onChange={onChange}/>}
-            label={loading ? <TextLoader rows={[{ column: 1, size: 2 }]} /> : controllerLabel || ''}
+            label={loading ? <TextLoader  width="300px" rows={[{ column: 1, size: 8 }]} /> : controllerLabel || ''}
             value={value}
             onChange={onChange}
             onBlur={onBlur}

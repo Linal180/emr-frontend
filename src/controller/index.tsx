@@ -30,7 +30,7 @@ const InputController: FC<CustomInputControlProps> = ({
 
   return (
     <>
-      {loading ? renderLoading(label || '') :
+      {!loading ? renderLoading(label || '') :
         <Controller
           name={controllerName}
           control={control}

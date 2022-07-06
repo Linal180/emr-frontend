@@ -310,6 +310,8 @@ interface TextLoaderRow {
 
 export interface TextLoaderInterface {
   rows: TextLoaderRow[]
+  height? : number 
+  width? : string;
 }
 
 export interface DataLoaderInterface {
