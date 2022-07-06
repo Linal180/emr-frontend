@@ -40,3 +40,23 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
     }
   }
 }
+
+query CreateClaim($claimInput: ClaimInput!) {
+  createClaim(claimInput: $claimInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+query GetClaimFile($claimInput: ClaimInput!) {
+  getClaimFile(claimInput: $claimInput){
+    response {
+      status
+      message
+    }
+
+    claimFile
+  }
+}

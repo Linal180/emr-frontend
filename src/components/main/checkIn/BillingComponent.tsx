@@ -9,21 +9,22 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import { useParams } from "react-router";
 import {
   ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
-  CHECKOUT, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
+  CHECKOUT, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, FORBIDDEN_EXCEPTION, HCFA_DESC, ICD_TEN_CODES,
+  ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
   MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
-  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES,
-  VIEW_APPOINTMENTS_ROUTE, YES
+  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, VIEW_APPOINTMENTS_ROUTE, YES
 } from "../../../constants";
 import InputController from '../../../controller';
 import {
-  Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
-  PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery,
-  useFetchPatientInsurancesLazyQuery
+  CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
+  PatientPaymentType, useCreateBillingMutation, useCreateClaimLazyQuery, useFetchBillingDetailsByAppointmentIdLazyQuery,
+  useFetchPatientInsurancesLazyQuery,
+  useGetClaimFileLazyQuery
 } from "../../../generated/graphql";
 //constants block
 import history from "../../../history";
 import {
-  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
+  BillingComponentProps, CodeTablesData, CreateBillingProps, ParamsType
 } from "../../../interfacesTypes";
 import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
 import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
@@ -46,7 +47,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   const [otherAccident, setOtherAccident] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [insuranceId, setInsuranceId] = useState<string>('')
-  const [billingCodes, setBillingCodes] = useState<CodeTypeInterface>({})
   const [tableCodesData, setTableCodesData] = useState<CodeTablesData>({})
 
   const methods = useForm<CreateBillingProps>({
@@ -74,6 +74,91 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
     }
   });
+
+  const [createClaim] = useCreateClaimLazyQuery({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        
+      }
+    }
+  });
+
+  const [getClaimFile] = useGetClaimFileLazyQuery({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        console.log('data', data)
+        const { getClaimFile } = data
+        const { claimFile } = getClaimFile || {}
+
+        const buffer = Buffer.from(claimFile || [])
+        const blob = new Blob([new Uint8Array(buffer)], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob)
+        console.log("blob", blob, url)
+        // setFileBuffer(URL.createObjectURL())
+        // console.log("buffer", new Blob([buffer], {
+        //   type: 'application/pdf'
+        // }))
+        var win = window.open();
+        win?.document.write('<iframe src="' + url + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>')
+      }
+    }
+  });
+
+  const createClaimCallback = useCallback((claimMethod?: boolean) => {
+    try {
+      const { onsetDate, onsetDateType, otherDate, otherDateType, CPTCode, IcdCodes } = watch()
+      const { id: onSetDateTypeId } = onsetDateType ?? {}
+      const { id: otherDateTypeId } = otherDateType ?? {}
+
+      const billingCodes = [...CPTCode, ...IcdCodes]
+      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
+        const { id, ...billingCodeToCreate } = billingCode
+        return billingCodeToCreate
+      })
+
+      const claimInput = {
+        appointmentId,
+        autoAccident,
+        codes: transformedBillingCodes,
+        employment,
+        onsetDate,
+        onsetDateType: onSetDateTypeId as OnsetDateType,
+        otherAccident,
+        otherDate,
+        otherDateType: otherDateTypeId as OtherDateType,
+        patientId: id
+      }
+
+      if (!claimMethod) {
+        createClaim({
+          variables: {
+            claimInput
+          }
+        })
+      } else {
+        getClaimFile({
+          variables: {
+            claimInput
+          }
+        })
+      }
+
+    } catch (error) { }
+  }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
 
   const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
     onCompleted(data) {
@@ -131,40 +216,21 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     shouldDisableEdit && fetchBillingDetails();
   }, [fetchBillingDetails, shouldDisableEdit]);
 
-  const getCodeType = (codeName: TABLE_SELECTOR_MODULES) => {
-    switch (codeName) {
-      case TABLE_SELECTOR_MODULES.icdCodes:
-        return CodeType.Icd_10Code
-      case TABLE_SELECTOR_MODULES.hcpcsCode:
-        return CodeType.HcpcsCode
-      case TABLE_SELECTOR_MODULES.customCode:
-        return CodeType.CustomCode
-      case TABLE_SELECTOR_MODULES.cptCode:
-        return CodeType.CptCode
-      default:
-        break;
-    }
-  }
-
   const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
-      const { amount, billingStatus, paymentType, onsetDate, onsetDateType, otherDate, otherDateType } = values
+      const { amount, billingStatus, paymentType, onsetDate, onsetDateType, otherDate, otherDateType, CPTCode, IcdCodes } = values
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
       const { id: billingStatusId } = billingStatus ?? {}
       const { id: paymentTypeId } = paymentType ?? {}
 
-      const transformedBillingCodes = billingCodes && Object.keys(billingCodes).reduce<CodesInput[]>((acc, key) => {
-        const billingCodeValues = billingCodes[key as keyof CodeTypeInterface] ?? []
-        const transformedBillingCodeValues = billingCodeValues.map((billingCodeValue) => {
-          const { id, ...billingCodeToCreate } = billingCodeValue ?? {}
-          return billingCodeToCreate
-        })
-        acc.push(...transformedBillingCodeValues)
-        return acc
-      }, [])
+      const billingCodes = [...CPTCode, ...IcdCodes]
+      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
+        const { id, ...billingCodeToCreate } = billingCode
+        return billingCodeToCreate
+      })
 
       const createBillingInput = {
         ...(appointmentId && { appointmentId: appointmentId || '' }),
@@ -238,18 +304,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   };
 
-  const handleCodes = useCallback((type: TABLE_SELECTOR_MODULES, codes: Code[]) => {
-    setBillingCodes(prevValue => ({
-      ...prevValue,
-      [type]: codes.map((codeValues) => {
-        return {
-          ...codeValues,
-          codeType: getCodeType(type) as CodeType
-        }
-      })
-    }))
-  }, [])
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -257,11 +311,29 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
-              {submitButtonText ?? CHECKOUT}
-              {createBillingLoading && <CircularProgress size={20} color="inherit" />}
-              <ChevronRight />
-            </Button>}
+            <Box>
+              {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
+                {submitButtonText ?? CHECKOUT}
+                {createBillingLoading && <CircularProgress size={20} color="inherit" />}
+                <ChevronRight />
+              </Button>}
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: 20 }}
+                onClick={() => createClaimCallback()}
+              >
+                Create Claim
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: 20 }}
+                onClick={() => createClaimCallback(true)}
+              >
+                HCFA - 1500 Form
+              </Button>
+            </Box>
           </Box>
 
           <Box mt={1.5} p={3}>
@@ -270,9 +342,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
                 <Selector
                   disabled={shouldDisableEdit}
                   isRequired
+                  addEmpty
                   name="paymentType"
                   label={PATIENT_PAYMENT_TYPE}
-                  value={EMPTY_OPTION}
                   options={MAPPED_PATIENT_PAYMENT_TYPE}
                 />
               </Grid>
@@ -281,9 +353,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
                 <Selector
                   disabled={shouldDisableEdit}
                   isRequired
+                  addEmpty
                   name="billingStatus"
                   label={BILLING_STATUS}
-                  value={EMPTY_OPTION}
                   options={MAPPED_PATIENT_BILLING_STATUS}
                 />
               </Grid>
@@ -376,9 +448,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
                     <Grid item md={3} sm={12} xs={12}>
                       <Selector
                         disabled={shouldDisableEdit}
+                        addEmpty
                         name="onsetDateType"
                         label={ONSET_DATE_TYPE}
-                        value={EMPTY_OPTION}
                         options={MAPPED_ONSET_DATE_TYPE}
                       />
                     </Grid>
@@ -394,9 +466,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
                     <Grid item md={3} sm={12} xs={12}>
                       <Selector
                         disabled={shouldDisableEdit}
+                        addEmpty
                         name="otherDateType"
                         label={OTHER_DATE_TYPE}
-                        value={EMPTY_OPTION}
                         options={MAPPED_OTHER_DATE_TYPE}
                       />
                     </Grid>
@@ -422,13 +494,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
+                <TableSelector moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
             }
             <Box p={2} />
             {/* {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.HcpcsCode)} shouldShowPrice tableData={tableCodesData.HCPCS_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.hcpcsCode} title={HCPCS_CODES} shouldShowPrice />
+                <TableSelector moduleName={TABLE_SELECTOR_MODULES.hcpcsCode} title={HCPCS_CODES} shouldShowPrice />
             } */}
           </Grid>
 
@@ -436,13 +508,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
+                <TableSelector moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
             }
             <Box p={2} />
             {/* {
               shouldDisableEdit ?
                 <CodesTable title={formatValue(CodeType.CustomCode)} shouldShowPrice tableData={tableCodesData.CUSTOM_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.customCode} title={CUSTOM_CODES} shouldShowPrice />
+                <TableSelector moduleName={TABLE_SELECTOR_MODULES.customCode} title={CUSTOM_CODES} shouldShowPrice />
             } */}
           </Grid>
         </Grid>

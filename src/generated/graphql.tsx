@@ -5818,6 +5818,20 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 
 export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
 
+export type CreateClaimQueryVariables = Exact<{
+  claimInput: ClaimInput;
+}>;
+
+
+export type CreateClaimQuery = { __typename?: 'Query', createClaim: { __typename?: 'ClaimPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type GetClaimFileQueryVariables = Exact<{
+  claimInput: ClaimInput;
+}>;
+
+
+export type GetClaimFileQuery = { __typename?: 'Query', getClaimFile: { __typename?: 'ClaimFilePayload', claimFile?: Array<number> | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
 }>;
@@ -6447,7 +6461,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -8601,6 +8615,83 @@ export function useFetchBillingDetailsByAppointmentIdLazyQuery(baseOptions?: Apo
 export type FetchBillingDetailsByAppointmentIdQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdQuery>;
 export type FetchBillingDetailsByAppointmentIdLazyQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdLazyQuery>;
 export type FetchBillingDetailsByAppointmentIdQueryResult = Apollo.QueryResult<FetchBillingDetailsByAppointmentIdQuery, FetchBillingDetailsByAppointmentIdQueryVariables>;
+export const CreateClaimDocument = gql`
+    query CreateClaim($claimInput: ClaimInput!) {
+  createClaim(claimInput: $claimInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useCreateClaimQuery__
+ *
+ * To run a query within a React component, call `useCreateClaimQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateClaimQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateClaimQuery({
+ *   variables: {
+ *      claimInput: // value for 'claimInput'
+ *   },
+ * });
+ */
+export function useCreateClaimQuery(baseOptions: Apollo.QueryHookOptions<CreateClaimQuery, CreateClaimQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CreateClaimQuery, CreateClaimQueryVariables>(CreateClaimDocument, options);
+      }
+export function useCreateClaimLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CreateClaimQuery, CreateClaimQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CreateClaimQuery, CreateClaimQueryVariables>(CreateClaimDocument, options);
+        }
+export type CreateClaimQueryHookResult = ReturnType<typeof useCreateClaimQuery>;
+export type CreateClaimLazyQueryHookResult = ReturnType<typeof useCreateClaimLazyQuery>;
+export type CreateClaimQueryResult = Apollo.QueryResult<CreateClaimQuery, CreateClaimQueryVariables>;
+export const GetClaimFileDocument = gql`
+    query GetClaimFile($claimInput: ClaimInput!) {
+  getClaimFile(claimInput: $claimInput) {
+    response {
+      status
+      message
+    }
+    claimFile
+  }
+}
+    `;
+
+/**
+ * __useGetClaimFileQuery__
+ *
+ * To run a query within a React component, call `useGetClaimFileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetClaimFileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetClaimFileQuery({
+ *   variables: {
+ *      claimInput: // value for 'claimInput'
+ *   },
+ * });
+ */
+export function useGetClaimFileQuery(baseOptions: Apollo.QueryHookOptions<GetClaimFileQuery, GetClaimFileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetClaimFileQuery, GetClaimFileQueryVariables>(GetClaimFileDocument, options);
+      }
+export function useGetClaimFileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetClaimFileQuery, GetClaimFileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetClaimFileQuery, GetClaimFileQueryVariables>(GetClaimFileDocument, options);
+        }
+export type GetClaimFileQueryHookResult = ReturnType<typeof useGetClaimFileQuery>;
+export type GetClaimFileLazyQueryHookResult = ReturnType<typeof useGetClaimFileLazyQuery>;
+export type GetClaimFileQueryResult = Apollo.QueryResult<GetClaimFileQuery, GetClaimFileQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
@@ -13296,6 +13387,8 @@ export const GetPracticeDocument = gql`
       medicare
       medicaid
       champus
+      taxId
+      npi
       createdAt
       updatedAt
       attachments {
