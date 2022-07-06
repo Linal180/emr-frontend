@@ -382,42 +382,41 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
-                {!isDoctor &&
-                  <Grid item md={4} sm={12} xs={12}>
-                    <Box className="date-box-wrap">
-                      <Typography variant="body1" color="textPrimary">Date</Typography>
+                <Grid item md={4} sm={12} xs={12}>
+                  <Box className="date-box-wrap">
+                    <Typography variant="body1" color="textPrimary">Date</Typography>
 
-                      <Box className="date-box" display="flex" alignItems="center">
-                        <Button
-                          variant="outlined"
-                          className="btn-icon"
-                          size="small"
-                          color="default"
-                          onClick={getPreviousDate}
-                        >
-                          <ChevronLeft />
-                        </Button>
+                    <Box className="date-box" display="flex" alignItems="center">
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getPreviousDate}
+                      >
+                        <ChevronLeft />
+                      </Button>
 
-                        <Box className="date-input-box" mx={1}>
-                          <Typography variant="h6">{selectDate}</Typography>
-                        </Box>
-
-                        <Button
-                          variant="outlined"
-                          className="btn-icon"
-                          size="small"
-                          color="default"
-                          onClick={getNextDate}
-                        >
-                          <ChevronRight />
-                        </Button>
-
-                        <Box ml={1} />
-
-                        <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      <Box className="date-input-box" mx={1}>
+                        <Typography variant="h6">{selectDate}</Typography>
                       </Box>
+
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getNextDate}
+                      >
+                        <ChevronRight />
+                      </Button>
+
+                      <Box ml={1} />
+
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
                     </Box>
-                  </Grid>}
+                  </Box>
+                </Grid>
               </Grid>
             </FormProvider>
           </Grid>
