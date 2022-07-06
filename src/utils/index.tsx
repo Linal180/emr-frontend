@@ -25,7 +25,7 @@ import {
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload,
+  AttachmentType, AttachmentsPayload, UsersPayload,
 } from "../generated/graphql";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
@@ -572,6 +572,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
       if (patient) {
         const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderUser = (users: UsersPayload['users']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!users) {
+    for (let user of users) {
+      if (user) {
+        const { id, email } = user;
+        data.push({ id, name: `${email}` })
       }
     }
   }
@@ -1902,3 +1917,5 @@ export const sortingValue = (updatedOptions: SelectorOption[]) =>
 export const isValidDate = (date: Date) => {
   return date instanceof Date && !isNaN(date.getTime());
 }
+
+export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
