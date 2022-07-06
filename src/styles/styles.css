@@ -1031,6 +1031,10 @@ input[type=number] {
   margin-bottom: 24px !important;
 }
 
+.rotate-180 {
+  transform: rotateX(180deg);
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {
@@ -1078,4 +1082,4 @@ input[type=number] {
   }
 }
 
- 
+

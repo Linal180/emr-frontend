@@ -69,6 +69,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   const handleFileChange = async () => {
     !!files?.length ? files.map(async (file) => {
       const formData = new FormData();
+
       file && formData.append("file", file);
       title && formData.append("title", title);
       itemId && formData.append("typeId", itemId);
@@ -83,6 +84,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }
 
       setLoading(true);
+
       await axios.post(
         isEdit ?
           `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`

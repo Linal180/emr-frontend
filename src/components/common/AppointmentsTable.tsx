@@ -356,12 +356,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
-  const renderIcon = () => <IconButton className='py-0 ml-5'
+  const renderIcon = () => <IconButton className={`py-0 ml-5 ${sortBy === ASC ? 'rotate-180' : ''}`}
     onClick={() => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
         : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
     }}>
+
     <Sort />
   </IconButton>;
 
@@ -441,10 +442,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(TIME)}
+                {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}
                 {renderTh(PATIENT)}
                 {renderTh(TYPE)}
-                {renderTh(DATE, undefined, undefined, undefined, undefined, renderIcon)}
+                {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
