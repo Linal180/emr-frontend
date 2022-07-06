@@ -102,17 +102,22 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          {(!notDescription || button) && <Grid item md={12} xs={12}>
-            {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
+          {notDescription && button && <Grid item md={12} xs={12}>
+            <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {buttonText || UPLOAD}
-            </Button>}
+            </Button>
+          </Grid>
+          }
 
-            {notDescription && !button && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+          {notDescription && !button &&
+            <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
-            </Typography>}
+            </Typography>
+          }
 
-            {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
+          {!notDescription && <Grid item md={12} xs={12}>
+            <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
                 <FileUploadIcon />
                 <Typography component="p" variant="body2">{imageSide}</Typography>
@@ -122,9 +127,8 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
                 <Typography component="h4" variant="h4">{DROP_YOUR_IMAGE_TEXT}</Typography>
                 <Typography component="h6" variant="body1">{SUPPORT_DOC_TEXT}</Typography>
               </Box>
-            </Box>}
+            </Box>
           </Grid>}
-
         </Grid>
       </Box>
 

@@ -25,7 +25,7 @@ import {
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload,
+  AttachmentType, AttachmentsPayload, UsersPayload,
 } from "../generated/graphql";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
@@ -195,6 +195,17 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
+export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
@@ -226,6 +237,9 @@ export const getPracticeType = (type: PracticeType): string => {
       return 'Hospital'
   }
 };
+
+export const getFormatLogsDate = (date: string | undefined): string => date ? moment(Number(date)).format('MM/DD/YYYY') : '';
+export const getFormatLogsTime = (date: string | undefined): string => date ? moment(Number(date)).format('hh:mm:ss A') : '';
 
 export const getTimestamps = (date: string): string =>
   date ? moment(date).format().toString() : moment().format().toString();
@@ -266,7 +280,7 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -558,6 +572,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
       if (patient) {
         const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderUser = (users: UsersPayload['users']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!users) {
+    for (let user of users) {
+      if (user) {
+        const { id, email } = user;
+        data.push({ id, name: `${email}` })
       }
     }
   }
@@ -1106,6 +1135,11 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
+export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
 export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
   return moment(date, 'x').format(format).toString()
@@ -1120,7 +1154,12 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -1883,4 +1922,13 @@ export const updateSortOptions = (options: SelectorOption[]) => {
   )
 }
 
-export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))
+export const sortingValue = (updatedOptions: SelectorOption[]) =>
+  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) =>
+    -b?.firstLetter.localeCompare(a?.firstLetter)
+  )
+
+export const isValidDate = (date: Date) => {
+  return date instanceof Date && !isNaN(date.getTime());
+}
+
+export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))

@@ -19,10 +19,10 @@ import ServicesSelector from "./Selector/ServiceSelector";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 import FacilitySelector from "./Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../context";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import history from "../../history";
+import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
+import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
@@ -30,11 +30,12 @@ import {
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
-  getStandardTimeDuration, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh, setRecord
+  getStandardTimeDuration, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh,
+  setRecord
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
-  useGetAppointmentsLazyQuery, useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
+  useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
 } from "../../generated/graphql";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
@@ -58,10 +59,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { id: providerId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
-  const { id: facilityId, practiceId } = facility || {}
+  const isFacility = isFacilityAdmin(roles)
 
+  const { id: facilityId, practiceId } = facility || {}
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
   const isDoctor = isOnlyDoctor(roles)
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<StatusInputProps>({ mode: "all" });
 
@@ -87,7 +90,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     setDate(nextDate)
   }
 
-
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -95,6 +97,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
     onError() {
       dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
     },
 
     onCompleted(data) {
@@ -109,46 +112,49 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
 
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
-      } else {
-        dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-      }
-    }
-  });
-
-  const [getAppointments, {
-    loading: getAppointmentsLoading, error: doctorAppointmentError
-  }] = useGetAppointmentsLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-    },
-
-    onCompleted(data) {
-      const { getAppointments } = data || {};
-
-      if (getAppointments) {
-        const { appointments, pagination } = getAppointments
-
-        if (pagination) {
-          const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+        if (!!appointments?.length) {
+          dispatch({
+            type: ActionType.SET_APPOINTMENTS,
+            appointments: appointments as AppointmentsPayload['appointments']
+          });
+        } else {
+          dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
         }
-
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
       }
     }
   });
+
+  // const [getAppointments, {
+  //   loading: getAppointmentsLoading, error: doctorAppointmentError
+  // }] = useGetAppointmentsLazyQuery({
+  //   fetchPolicy: "network-only",
+  //   nextFetchPolicy: 'no-cache',
+  //   notifyOnNetworkStatusChange: true,
+
+  //   onError() {
+  //     dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+  //   },
+
+  //   onCompleted(data) {
+  //     const { getAppointments } = data || {};
+
+  //     if (getAppointments) {
+  //       const { appointments, pagination } = getAppointments
+
+  //       if (pagination) {
+  //         const { totalPages } = pagination
+
+  //         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+  //       }
+
+  //       dispatch({
+  //         type: ActionType.SET_APPOINTMENTS,
+  //         appointments: appointments as AppointmentsPayload['appointments']
+  //       });
+  //     }
+  //   }
+  // });
 
   const [updateAppointment] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
@@ -197,29 +203,27 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      if (isDoctor) {
-        await getAppointments({
-          variables: { getAppointments: { doctorId: isDoctor ? providerId : doctorId } }
-        })
-      } else {
-        const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
-        const inputs = isSuper ? { ...pageInputs } :
-          isPracticeUser ? { practiceId, ...pageInputs }
-            : { facilityId, ...pageInputs }
+      const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+      const inputs = isSuper
+        ? { facilityId: filterFacilityId }
+        : isPracticeUser
+          ? { practiceId, facilityId: filterFacilityId }
+          : isDoctor
+            ? { providerId }
+            : { facilityId }
 
-        inputs && await findAllAppointments({
-          variables: {
-            appointmentInput: {
-              ...inputs, searchString: searchQuery, facilityId: filterFacilityId,
-              appointmentTypeId: appointmentTypeId, sortBy: sortBy,
-              appointmentDate: moment(selectDate).format('YYYY-MM-DD')
-            }
-          },
-        })
-      }
+      inputs && await findAllAppointments({
+        variables: {
+          appointmentInput: {
+            ...inputs, ...pageInputs, searchString: searchQuery,
+            appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+            appointmentDate: moment(selectDate).format('YYYY-MM-DD')
+          }
+        },
+      })
     } catch (error) { }
   }, [
-    doctorId, isDoctor, getAppointments, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
+    isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
     findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
   ])
 
@@ -227,11 +231,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     fetchAppointments();
   }, [page, searchQuery, fetchAppointments, filterFacilityId]);
 
-
   useEffect(() => {
     setDate(moment().format('MM-DD-YYYY'));
   }, []);
-
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -331,19 +333,26 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   }
 
   const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
-    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
-      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
-      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-        : onDeleteClick(id || '')
+    if (id) {
+      if (isSuper || isPracticeUser || isFacility) {
+        return onDeleteClick(id)
+      }
+
+      moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
+        ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+        : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+          ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+          : onDeleteClick(id || '')
+    }
   }
 
-  const renderIcon = () => <IconButton className='py-0 ml-5'
+  const renderIcon = () => <IconButton className={`py-0 ml-5 ${sortBy === ASC ? 'rotate-180' : ''}`}
     onClick={() => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
         : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
     }}>
+
     <Sort />
   </IconButton>;
 
@@ -377,42 +386,41 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
-                {!isDoctor &&
-                  <Grid item md={4} sm={12} xs={12}>
-                    <Box className="date-box-wrap">
-                      <Typography variant="body1" color="textPrimary">Date</Typography>
+                <Grid item md={4} sm={12} xs={12}>
+                  <Box className="date-box-wrap">
+                    <Typography variant="body1" color="textPrimary">Date</Typography>
 
-                      <Box className="date-box" display="flex" alignItems="center">
-                        <Button
-                          variant="outlined"
-                          className="btn-icon"
-                          size="small"
-                          color="default"
-                          onClick={getPreviousDate}
-                        >
-                          <ChevronLeft />
-                        </Button>
+                    <Box className="date-box" display="flex" alignItems="center">
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getPreviousDate}
+                      >
+                        <ChevronLeft />
+                      </Button>
 
-                        <Box className="date-input-box" mx={1}>
-                          <Typography variant="h6">{selectDate}</Typography>
-                        </Box>
-
-                        <Button
-                          variant="outlined"
-                          className="btn-icon"
-                          size="small"
-                          color="default"
-                          onClick={getNextDate}
-                        >
-                          <ChevronRight />
-                        </Button>
-
-                        <Box ml={1} />
-
-                        <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      <Box className="date-input-box" mx={1}>
+                        <Typography variant="h6">{selectDate}</Typography>
                       </Box>
+
+                      <Button
+                        variant="outlined"
+                        className="btn-icon"
+                        size="small"
+                        color="default"
+                        onClick={getNextDate}
+                      >
+                        <ChevronRight />
+                      </Button>
+
+                      <Box ml={1} />
+
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
                     </Box>
-                  </Grid>}
+                  </Box>
+                </Grid>
               </Grid>
             </FormProvider>
           </Grid>
@@ -422,10 +430,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(TIME)}
+                {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}
                 {renderTh(PATIENT)}
                 {renderTh(TYPE)}
-                {renderTh(DATE, undefined, undefined, undefined, undefined, renderIcon)}
+                {renderTh(DATE)}
                 {renderTh(FACILITY)}
                 {renderTh(ARRIVAL_STATUS)}
                 {renderTh(STAGE)}
@@ -434,7 +442,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableHead>
 
             <TableBody>
-              {(loading || getAppointmentsLoading) ? (
+              {(loading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
                     <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
@@ -443,8 +451,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               ) : (
                 appointments?.map((appointment: AppointmentPayload['appointment']) => {
                   const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status, scheduleEndDateTime,
-                    checkInActiveStep, appointmentCreateType
+                    id, scheduleStartDateTime, facility, patient, appointmentType, status,
+                    scheduleEndDateTime, checkInActiveStep, appointmentCreateType
                   } = appointment || {};
 
                   const { name } = facility || {};
@@ -452,8 +460,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   const { name: type } = appointmentType || {};
 
                   const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0), status ?? '',
-                    (appointmentCreateType || '') as AppointmentCreateType)
+                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0),
+                    status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
 
                   return (
                     <TableRow key={id}>
@@ -527,27 +535,41 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {
-                            appointmentCreateType === AppointmentCreateType.Telehealth ?
-                              <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                                <VideoIcon />
-                              </Box> :
-                              (status && !(status === AppointmentStatus.Cancelled)) && <Box className={classes.iconsBackground}
-                                onClick={() => canUpdateAppointmentStatus(status) ?
-                                  id && patientId && handleCheckIn(id, patientId)
-                                  : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
-                                }>
-                                <CheckInTickIcon />
-                              </Box>
+                          {(appointmentCreateType === AppointmentCreateType.Telehealth &&
+                            status !== AppointmentStatus.Cancelled) ?
+                            <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
+                              <VideoIcon />
+                            </Box> :
+                            (status && !(status === AppointmentStatus.Cancelled)) &&
+                            <Box className={classes.iconsBackground}
+                              onClick={() => canUpdateAppointmentStatus(status) ?
+                                id && patientId && handleCheckIn(id, patientId)
+                                : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                              }>
+                              <CheckInTickIcon />
+                            </Box>
                           }
 
-                          {status === AppointmentStatus.Cancelled && <Box className={classes.iconsBackgroundDisabled}>
-                            <IconButton onMouseEnter={() => {
-                              Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                            }}>
-                              <CheckInTickIcon />
-                            </IconButton>
-                          </Box>}
+                          {status === AppointmentStatus.Cancelled &&
+                            appointmentCreateType === AppointmentCreateType.Telehealth &&
+                            <Box className={classes.iconsBackgroundDisabled}>
+                              <IconButton onMouseEnter={() => {
+                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                              }}>
+                                <VideoIcon />
+                              </IconButton>
+                            </Box>
+                          }
+
+                          {status === AppointmentStatus.Cancelled &&
+                            appointmentCreateType === AppointmentCreateType.Appointment &&
+                            <Box className={classes.iconsBackgroundDisabled}>
+                              <IconButton onMouseEnter={() => {
+                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                              }}>
+                                <CheckInTickIcon />
+                              </IconButton>
+                            </Box>}
 
                           <Box className={classes.iconsBackground}>
                             <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
@@ -571,11 +593,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableBody>
           </Table>
 
-          {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
+          {((!loading && appointments?.length === 0)
+            || error) &&
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
-          )}
+          }
 
           <ConfirmationModal
             title={APPOINTMENT}

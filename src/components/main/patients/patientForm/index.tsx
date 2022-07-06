@@ -11,12 +11,12 @@ import PageHeader from '../../../common/PageHeader';
 import { getAddressByZipcode } from '../../../common/smartyAddress';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { AuthContext, FacilityContext } from '../../../../context';
 import { extendedPatientSchema } from '../../../../validationSchemas';
-import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  getDate, getTimestamps, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, setRecord
+  getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord
 } from '../../../../utils';
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
@@ -37,11 +37,10 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const { id: selectedDoctorId } = currentDoctor || {}
   const { roles, facility } = user || {};
 
-  const { id: selectedFacilityId, practiceId: selectedPracticeId } = facility || {};
+  const { id: selectedFacilityId } = facility || {};
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctor = isOnlyDoctor(roles);
 
-  const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
@@ -248,19 +247,21 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           }
 
           if (employer) {
-            const { id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode } = employer;
+            const {
+              id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode
+            } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
+            city && setValue('employerCity', city)
             name && setValue('employerName', name)
             email && setValue('employerEmail', email)
             phone && setValue('employerPhone', phone)
-            industry && setValue('employerIndustry', industry)
-            usualOccupation && setValue('employerUsualOccupation', usualOccupation)
             address && setValue('employerAddress', address)
-            city && setValue('employerCity', city)
-            state && setValue("employerState", setRecord(state, state))
             address && setValue('employerAddress', address)
             zipCode && setValue("employerZipCode", zipCode)
+            industry && setValue('employerIndustry', industry)
+            state && setValue("employerState", setRecord(state, state))
+            usualOccupation && setValue('employerUsualOccupation', usualOccupation)
           }
         }
       }
@@ -354,19 +355,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
       const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
 
-      let practiceId = '';
-      if (selectedFacility) {
-        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
-        const { practiceId: pId } = facility || {};
-
-        practiceId = pId || ''
-      } else {
-        practiceId = selectedPracticeId || ''
-      }
-
-      let facilityInputs = isSuperAdminOrPracticeAdmin ? { facilityId: selectedFacility, practiceId } :
-        { facilityId: selectedFacilityId, practiceId }
-
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
@@ -379,13 +367,14 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.DeclineToSpecify,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
+        statementDelivereOnline: statementDelivereOnline || false,
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
         registrationDate: registrationDate ? registrationDate : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
         statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
         usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,
-        ...facilityInputs
+        facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId,
+        dob: !!dob && isValidDate(new Date(dob)) ? dob : new Date().toString(),
       };
 
       const contactInput = {

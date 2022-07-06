@@ -13,15 +13,21 @@ import PageHeader from '../../../common/PageHeader';
 import PhoneField from '../../../common/PhoneInput';
 import Selector from '../../../common/Selector';
 // interfaces, graphql, constants block /styles
-import {
-  ADDRESS, ADDRESS_CTA, CHAMPUS, CITY, CONFLICT_EXCEPTION, COUNTRY, EIN, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, FACILITY_NAME, FAX, FIRST_NAME, FORBIDDEN_EXCEPTION, GROUP_NPI, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, NPI_INFO, PHONE, PRACTICE_ADMIN_DETAILS_TEXT, PRACTICE_BREAD, PRACTICE_DETAILS_TEXT, PRACTICE_EDIT_BREAD, PRACTICE_IDENTIFIER, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_NAME, PRACTICE_NEW_BREAD, PRACTICE_NOT_FOUND, PRACTICE_OR_FACILITY_ALREADY_EXISTS, PRACTICE_USER_ALREADY_EXISTS, SAVE_TEXT, STATE, SYSTEM_PASSWORD, SYSTEM_ROLES, TAX_ID, TAX_ID_DETAILS, TAX_ID_INFO, UPIN, ZIP_CODE
-} from "../../../../constants";
 import { AuthContext, ListContext } from '../../../../context';
 import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { createPracticeSchema, updatePracticeSchema } from '../../../../validationSchemas';
+import {
+  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
+  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT,
+  COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
+  LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
+  PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, TAX_ID, NPI_INFO, GROUP_NPI,
+} from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -378,7 +384,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               isRequired
                               fieldType="text"
                               controllerName="address"
-                              controllerLabel={ADDRESS}
+                              controllerLabel={ADDRESS_ONE}
                             />
                           </Grid>
 
@@ -386,7 +392,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="address2"
-                              controllerLabel={ADDRESS_CTA}
+                              controllerLabel={ADDRESS_TWO}
                             />
                           </Grid>
 

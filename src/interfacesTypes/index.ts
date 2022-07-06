@@ -60,26 +60,27 @@ export interface CalendarChart {
 
 export interface AuthContextProps {
   user: User | null;
-  userRoles: string[];
+  profileUrl: string;
   isLoggedIn: boolean;
+  userRoles: string[];
   practiceName: string;
   userPermissions: string[];
-  currentUser: Doctor | Staff | null;
-  currentDoctor: Doctor | null;
   currentStaff: Staff | null;
+  currentDoctor: Doctor | null;
+  currentUser: Doctor | Staff | null;
+  profileAttachment: null | Attachment
+  fetchUser: () => void
+  logoutUser: () => void
+  fetchAttachment: () => void,
+  setProfileUrl: (url: string) => void;
   setUser: (user: User | null) => void;
+  setUserRoles: (roles: string[]) => void;
   setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
-  setCurrentUser: (user: Doctor | Staff | null) => void;
-  setCurrentDoctor: (doctor: Doctor | null) => void;
   setCurrentStaff: (staff: Staff | null) => void;
-  setUserRoles: (roles: string[]) => void;
+  setCurrentDoctor: (doctor: Doctor | null) => void;
   setUserPermissions: (permissions: string[]) => void;
-  setProfileUrl: (url: string) => void;
-  profileUrl: string;
-  fetchUser: () => void
-  fetchAttachment: () => void,
-  profileAttachment: null | Attachment
+  setCurrentUser: (user: Doctor | Staff | null) => void;
 }
 
 export interface AppContextProps {
@@ -309,6 +310,8 @@ interface TextLoaderRow {
 
 export interface TextLoaderInterface {
   rows: TextLoaderRow[]
+  height? : number 
+  width? : string;
 }
 
 export interface DataLoaderInterface {
@@ -384,8 +387,10 @@ export interface SelectorProps {
 }
 
 export interface PatientSelectorProps extends SelectorProps {
+  styles?: string;
   isOpen?: boolean
   isModal?: boolean
+  placeholder?: boolean
   handlePatientModal?: Function
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
@@ -1718,10 +1723,11 @@ export interface ACHPaymentComponentProps {
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
-  controllerName: string;
-  isHelperText?: boolean;
+  title?: string;
+  loading?: boolean
   autoFocus?: boolean;
-  title?: string
+  isHelperText?: boolean;
+  controllerName: string;
 }
 export interface AppointmentListProps {
   appointments?: AppointmentsPayload['appointments'];
@@ -1919,4 +1925,29 @@ export interface SignatureProps {
 
 export interface EncounterPros {
   appointments: AppointmentsPayload['appointments']
+}
+
+export interface LogsPatientSelectorProps extends SelectorProps {
+  styles?: string;
+  isOpen?: boolean
+  isModal?: boolean
+  placeholder?: boolean
+  handlePatientModal?: Function
+  setValue?: Function
+}
+
+export type AuditLogsInputs = {
+  endDate: string;
+  startDate: string;
+  user: SelectorOption;
+  patient: SelectorOption;
+  module: SelectorOption;
+};
+
+export interface AuditSubmitInputs {
+  endDate?: string;
+  startDate?: string;
+  userId?: string;
+  patientId?: string;
+  moduleType?: string;
 }

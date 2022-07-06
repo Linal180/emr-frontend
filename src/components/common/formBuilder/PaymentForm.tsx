@@ -11,7 +11,7 @@ import Alert from '../../common/Alert';
 import ViewDataLoader from "../ViewDataLoader";
 import ACHPaymentComponent from './AchPaymentForm'
 // constants and types block
-import { GREY } from '../../../theme';
+import { GREY, WHITE } from '../../../theme';
 import { appointmentChargesDescription } from '../../../utils';
 import { useChargePaymentMutation, useGetServiceLazyQuery, useGetTokenLazyQuery } from '../../../generated/graphql';
 import {
@@ -24,6 +24,7 @@ import {
   CHOOSE_YOUR_PAYMENT_METHOD, PAY, PAY_LATER, PAY_VIA_ACH, PAY_VIA_PAYPAL,
   PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD,
 } from '../../../constants';
+import { ACHIcon, PayLaterIcon } from '../../../assets/svgs';
 
 interface PaymentComponentProps {
   dispatcher?: Dispatch<PublicFormBuilderAction>;
@@ -170,6 +171,7 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
       <Box mt={3} mb={1}>
         <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>
+
       {appointmentPaymentToken ? (
         <Fragment>
           <Typography variant='body1'>
@@ -178,8 +180,7 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
 
           <Grid container spacing={3} justifyContent='center' alignItems='center'>
             <Grid item md={12} sm={12} xs={12}>
-              <Box mt={5} p={5} className="paypal-card-wrap">
-
+              <Box mt={2} className="paypal-card-wrap">
                 <Box>
                   {!achPayment && (<Fragment>
                     <DropIn
@@ -227,6 +228,25 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
                       onPaymentOptionSelected={onPaymentOptionSelected}
                       onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
+
+                    <Grid container>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <ACHIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={moveNext} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <PayLaterIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_LATER}</Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+
                     <Grid container>
                       {showPayBtn && (
                         <Grid item>
@@ -237,15 +257,6 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
                           </Box>
                         </Grid>
                       )}
-
-                      <Grid item>
-                        <Box pr={2}>
-                          <Button variant='contained' onClick={achClickHandler} color={'primary'}>{PAY_VIA_ACH}</Button>
-                        </Box>
-                      </Grid>
-                      <Grid item>
-                        <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-                      </Grid>
                     </Grid>
                   </Fragment>)}
                   {achPayment && <ACHPaymentComponent
@@ -255,14 +266,12 @@ const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProp
                     formState={formState}
                   />}
                 </Box>
-
               </Box>
             </Grid>
           </Grid>
         </Fragment>) : (
         <ViewDataLoader rows={3} columns={12} hasMedia={false} />
       )}
-
     </Box>
   );
 };

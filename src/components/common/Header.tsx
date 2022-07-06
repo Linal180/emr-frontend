@@ -36,9 +36,7 @@ const Header: FC = (): JSX.Element => {
 
   const handleMobileMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) =>
     setMobileMoreAnchorEl(currentTarget);
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
 
   const renderMobileMenu = (
     <Menu
@@ -231,10 +229,10 @@ const Header: FC = (): JSX.Element => {
                 className={classes.profileItemName}
               >
                 {isSuper ?
-                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6" className="text-overflow max-width-200">{SUPER_ADMIN}</Typography>
                   : (
                     <>
-                      <Typography variant="h6">{firstName} {lastName}</Typography>
+                      <Typography variant="h6" className="text-overflow max-width-200">{firstName} {lastName}</Typography>
 
                       <Box className={classes.roleName}>
                         <Typography variant="body1" className="text-overflow max-width-200">{roleName}</Typography>

@@ -507,20 +507,21 @@ export const appointmentSchema = (adminUser: boolean) => yup.object({
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
 })
 
-export const scheduleSchema = (isDoctor: boolean) => yup.object({
+export const scheduleSchema = (isDoctor: boolean, shouldHaveRecursion: boolean) => yup.object({
   ...scheduleTimeSchema,
+  recurringEndDate: !shouldHaveRecursion ? yup.string().required(requiredMessage(DATE)): yup.string().optional(),
   serviceId: yup.array().of(
     multiOptionSchema(APPOINTMENT)
   ).test('', requiredMessage(APPOINTMENT), (value: any) => isDoctor ? !!value && value.length > 0 : true)
 })
 
-export const providerAppointmentSchema = yup.object({
+export const providerAppointmentSchema = (onlyDoctor : boolean) => yup.object({
   serviceId: multiOptionSchema(APPOINTMENT),
   notes: yup.string(),
   patientId: selectorSchema(PATIENT),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
-  providerId: selectorSchema(PROVIDER).required()
+  providerId: selectorSchema(PROVIDER, onlyDoctor === false)
 })
 
 export const doctorScheduleSchema = yup.object({

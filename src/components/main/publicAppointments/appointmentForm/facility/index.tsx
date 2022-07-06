@@ -172,8 +172,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId,
-                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify,
-                practiceId: practiceId || ''
+                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify
               },
             }
           }
@@ -215,8 +214,11 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
     signature && formData.append("file", signature);
 
     await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
-      formData
-    ).then((response) => {
+      formData, {
+      headers: {
+        pathname: window.location.pathname
+      }
+    }).then((response) => {
       const { status } = response
       if (status !== 201) Alert.error("Something went wrong!");
       else {

@@ -111,7 +111,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   }
 
   return (
-    <Box className='patient-add-form' display="flex" flexWrap="wrap" gridGap={20}>
+    <Box display="flex" flexWrap="wrap" gridGap={20}>
       <Box className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
           <StepperCard stepperData={RegisterPatientMenuNav} activeStep={activeStep as number} dispatch={dispatch} />

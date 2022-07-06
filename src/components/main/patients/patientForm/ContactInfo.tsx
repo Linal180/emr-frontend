@@ -4,7 +4,7 @@ import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import {
-  ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
   VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
 } from "../../../../constants"
 import InputController from "../../../../controller"
@@ -68,7 +68,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
               disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="basicAddress"
-              controllerLabel={ADDRESS}
+              controllerLabel={ADDRESS_ONE}
               loading={getPatientLoading}
             />
           </Grid>
@@ -78,7 +78,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
               disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="basicAddress2"
-              controllerLabel={ADDRESS_2}
+              controllerLabel={ADDRESS_TWO}
               loading={getPatientLoading}
             />
           </Grid>

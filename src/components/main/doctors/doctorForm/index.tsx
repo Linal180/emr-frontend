@@ -28,7 +28,7 @@ import {
   FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
   CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR, EMPTY_OPTION,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER,
-  DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
+  DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS_ONE, ADDRESS_TWO,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
@@ -37,7 +37,7 @@ import {
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
   SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES,
-  SETTINGS_ROUTE, IS_DOCTOR_BREAD, EDIT_DOCTOR, CONFLICT_EXCEPTION,
+  SETTINGS_ROUTE, EDIT_DOCTOR, CONFLICT_EXCEPTION,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -78,6 +78,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
             } = doctor
             const { id: facilityId, name } = facility || {}
+
             dob && setValue('dob', dob)
             npi && setValue('npi', npi)
             ssn && setValue('ssn', ssn)
@@ -289,6 +290,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
+  const customizePath = isDoctor
+    ? [DASHBOARD_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]
+    : [DASHBOARD_BREAD, DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -300,9 +305,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <PageHeader
               title={isEdit ? EDIT_DOCTOR : ADD_DOCTOR}
-              path={[DASHBOARD_BREAD, isDoctor ?
-                IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD
-              ]}
+              path={customizePath}
             />
           </Box>
 
@@ -512,7 +515,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="billingAddress"
-                    controllerLabel={ADDRESS}
+                    controllerLabel={ADDRESS_ONE}
                     loading={GetDoctorLoading}
                   />
                 </Grid>
@@ -521,7 +524,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="billingAddress2"
-                    controllerLabel={ADDRESS_2}
+                    controllerLabel={ADDRESS_TWO}
                     loading={GetDoctorLoading}
                   />
                 </Grid>
@@ -604,7 +607,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="address"
-                    controllerLabel={ADDRESS}
+                    controllerLabel={ADDRESS_ONE}
                     loading={GetDoctorLoading}
                   />
                 </Grid>
@@ -613,7 +616,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="address2"
-                    controllerLabel={ADDRESS_2}
+                    controllerLabel={ADDRESS_TWO}
                     loading={GetDoctorLoading}
                   />
                 </Grid>

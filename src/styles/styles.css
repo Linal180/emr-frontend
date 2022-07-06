@@ -364,6 +364,10 @@ body .MuiTabPanel-root {
   font-weight: 600;
 }
 
+.permissionDenied {
+  margin-right: 16px !important;
+}
+
 .permissionDenied:hover {
   cursor: not-allowed;
 }
@@ -878,14 +882,25 @@ input::-webkit-inner-spin-button {
   margin-left: 5px !important;
 }
 
-.vitals-column .MuiTypography-h5 {
-  line-height: 1.43 !important;
-  white-space: normal;
+.h-24 {
+  height: 24px !important;
 }
 
- .patient-add-form .MuiInputLabel-formControl{
-   position: relative;
- }
+.vitals-header>th>div>h5 {
+  text-transform: capitalize !important;
+}
+
+.patient-add-form .MuiInputLabel-formControl {
+  position: relative;
+}
+
+.vitals-column .MuiTableCell-root {
+  height: 45px !important;
+}
+
+.vitals-column .MuiTableCell-root .MuiBox-root>.MuiTypography-noWrap {
+  white-space: normal !important;
+}
 
 .copay-type-value {
   position: relative;
@@ -918,8 +933,8 @@ input[type=number] {
   pointer-events: none;
 }
 
-.MuiSkeleton-text {
-  height: 30px !important;
+.makeStyles-chartModalBox-137 .MuiSkeleton-text {
+  transform: scale(1, 1) !important;
 }
 
 .skelton-label-margin {
@@ -971,7 +986,7 @@ input[type=number] {
   transform-origin: top left;
 }
 
-.date-box .btn-icon{
+.date-box .btn-icon {
   min-width: 35px;
   min-height: 41px;
 }
@@ -995,17 +1010,35 @@ input[type=number] {
   max-width: 200px !important;
 }
 
-.schedule-modal .MuiDialog-paper{
-    overflow-y: inherit;
+.schedule-modal .MuiDialog-paper {
+  overflow-y: inherit;
 }
 
-.cke_path{
+.cke_path {
   display: none !important;
 }
 
-.mb-3{
+.ach-hover:hover {
+  cursor: pointer;
+}
+
+.ach-hover:hover .MuiTypography-root {
+  font-weight: 600 !important;
+  transform: scale(1.05) !important;
+}
+
+.mb-3 {
   margin-bottom: 24px !important;
 }
+
+.rotate-180 {
+  transform: rotateX(180deg);
+}
+
+.log-class {
+  border: 10px solid red;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {
@@ -1016,8 +1049,8 @@ input[type=number] {
 }
 
 @media(max-width : 960px) {
-  .appointment-action-btn{
-     flex-direction: column;
+  .appointment-action-btn {
+    flex-direction: column;
   }
 }
 
@@ -1038,19 +1071,17 @@ input[type=number] {
     margin-bottom: 0.875rem;
   }
 
-  .profile-hero-patient{
+  .profile-hero-patient {
     flex-direction: column;
   }
 }
 
 @media(max-width : 572px) {
-  .page-hero-box{
+  .page-hero-box {
     flex-direction: column;
   }
 
-  .breadcrumb-list{
+  .breadcrumb-list {
     margin-bottom: 10px;
   }
 }
-
- 

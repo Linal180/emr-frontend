@@ -1,41 +1,33 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
-import { TextField, FormControl, FormHelperText, InputLabel, Box, Typography } from "@material-ui/core";
+import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
+import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
-import { AddPatientIcon } from "../../../assets/svgs";
-import { PatientSelectorProps } from "../../../interfacesTypes";
+import { LogsPatientSelectorProps } from "../../../interfacesTypes";
 import { PatientsPayload, useFetchAllPatientListLazyQuery } from "../../../generated/graphql";
-import {
-  ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
-} from "../../../constants";
-import {
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue
-} from "../../../utils";
-import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../reducers/patientReducer";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION } from "../../../constants";
+import { patientReducer, Action, initialState, State, ActionType } from "../../../reducers/patientReducer";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue } from "../../../utils";
 
-const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles
+const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
+  name, label, disabled, isRequired, placeholder, styles
 }): JSX.Element => {
   const { control } = useFormContext()
-  const { user, currentUser } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
 
-  const { id: currentDoctor } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPractice = isPracticeAdmin(roles);
+  const isFacility = isFacilityAdmin(roles)
 
-  const onlyDoctor = isOnlyDoctor(roles)
   const { id: facilityId, practiceId } = facility || {}
+
   const [{ page, searchQuery, patients }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
+  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients)]
 
   const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -68,26 +60,21 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPractice ? { practiceId, ...pageInputs }
-          : { facilityId, ...pageInputs }
+          : isFacility ? { facilityId, ...pageInputs } : { facilityId, ...pageInputs }
 
       patientsInputs && await findAllPatient({
         variables: {
           patientInput: {
             ...patientsInputs, searchString: searchQuery,
-            ...(onlyDoctor ? { doctorId: currentDoctor } : {})
           }
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery, onlyDoctor, currentDoctor])
+  }, [page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery, isFacility])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
-
-  useEffect(() => {
-    !isOpen && setValue('patientId', EMPTY_OPTION)
-  }, [isOpen, setValue])
 
   const defaultFilterOptions = createFilterOptions();
 
@@ -111,26 +98,13 @@ const PatientSelector: FC<PatientSelectorProps> = ({
               const results = defaultFilterOptions(options, state);
 
               if (results.length === 0) {
-                return [NO_RECORDS_OPTION, DUMMY_OPTION];
+                return [NO_RECORDS_OPTION];
               }
 
               return results;
             }}
 
-            renderOption={(option) => {
-              if (option.id === ADD_PATIENT_MODAL) {
-                return (
-                  <Box display='flex' alignItems='center' bgcolor={GREY} borderRadius={5} width='100%' p={1.5}>
-                    <AddPatientIcon />
-                    <Box p={0.5} />
-                    <Typography variant="h6">{option.name}</Typography>
-                  </Box>
-                )
-              }
-
-              return option.name
-            }}
-
+            renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 {!!!placeholder &&
@@ -160,4 +134,4 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   );
 };
 
-export default PatientSelector;
+export default LogsPatientSelector;

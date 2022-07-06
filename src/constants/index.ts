@@ -84,7 +84,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
-export const AGREEMENT_BODY_REQUIRED = 'Agreement Body is a required Field'
+export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
 export const GRANTED_TEXT = 'Granted';
@@ -496,7 +496,6 @@ export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
-export const ICD_TEN_CODE = "ICD-10 Code:";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
@@ -531,9 +530,11 @@ export const FACILITY_SCHEDULE_DESCRIPTION =
   "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
+export const AUDIT_LOG = "Audit Log";
 export const FORM_FIELDS = "Form Fields";
 export const NO_TEMPLATE = "No Template Found";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
+export const AUDIT_LOG_DESCRIPTION = "View all logs of different activities";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
@@ -584,6 +585,8 @@ export const SELECT = "Select";
 export const GENDER = "Gender";
 export const ENABLED = "Enabled";
 export const ADDRESS = "Address";
+export const ADDRESS_ONE = "Address One";
+export const ADDRESS_TWO = "Address Two";
 export const COUNTRY = "Country";
 export const RELATION = "Relation";
 export const ZIP_CODE = "Zip code";
@@ -661,6 +664,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 9;
+export const USER_LOG_PAGE_LIMIT = 50;
 export const EIGHT_PAGE_LIMIT = 8;
 export const VALUE = "Value";
 export const VISIT = "Visit";
@@ -675,6 +679,7 @@ export const SERIAL_NO = "S.No";
 export const DRAWER_WIDTH = 300;
 export const REPORTS = "Reports";
 export const GENERAL = "General";
+export const TO_DATE = "To Date";
 export const UNKNOWN = "Unknown";
 export const TIME_TO = "TIME:TO";
 export const SET = "Set Password";
@@ -690,6 +695,7 @@ export const INSURANCE = "Insurance";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
+export const FROM_DATE = "From Date";
 export const REACTION_PAGE_LIMIT = 50;
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const HISTORICAL = "Historical";
@@ -698,6 +704,7 @@ export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
 export const BILLING_TYPE = "Billing Type";
+export const UPDATE_FILTER = "Update Filter";
 export const PRESCRIBED_BY = "Prescribed By";
 export const STARTING_TIME = "Starting time";
 export const RECEIVED_DATE = "Received Date";
@@ -713,8 +720,9 @@ export const BILLED = "Billed";
 export const RESULT = "Result";
 export const ACTIVE = "Active";
 export const STATUS = "Status";
+export const USER_TEXT = "User";
 export const TAGS_TEXT = "Tags";
-export const ACTION = "Actions";
+export const ACTION = "Action";
 export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const SUCCESS = "success";
@@ -747,6 +755,7 @@ export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
+export const ALL_LOG_TYPES = "All Log Types";
 export const RECENT_PRACTICES = "Recent Practices";
 export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
@@ -945,11 +954,11 @@ export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const IP_TEXT = "IP";
 export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
-export const AGREEMENT_BODY = 'Agreement Body'
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -960,11 +969,11 @@ export const SEARCH = "Search";
 export const SIGNED = "Signed";
 export const DELETE = "Delete";
 export const UPLOAD = "Upload";
+export const DETAIL = "Detail";
 export const HOME_TEXT = "Home";
 export const DETAILS = "Details";
 export const PENDING = "Pending";
 export const MISSING = "Missing";
-export const CANCEL_RECORD = "Cancel record";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -1004,8 +1013,6 @@ export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
-export const ADD_AGREEMENT = "Add Agreement";
-export const EDIT_AGREEMENT = "Edit Agreement";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
@@ -1028,6 +1035,7 @@ export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
 export const EFFECTIVE_TEXT = "EFFECTIVE";
+export const ICD_TEN_CODE = "ICD-10 Code"; 
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -1049,15 +1057,16 @@ export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
 export const DOCUMENT_TYPE = "Document Type";
+export const CANCEL_RECORD = "Cancel record";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
-export const EDIT_INSURANCE = "Edit Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
+export const ADD_AGREEMENT = "Add Agreement";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
@@ -1071,7 +1080,10 @@ export const DECREASED_DATE = "Deceased Date";
 export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
+export const EXPORT_TO_FILE = "Export To File";
 export const PREFERRED_NAME = "Preferred Name";
+export const EDIT_INSURANCE = "Edit Insurance";
+export const EDIT_AGREEMENT = "Edit Agreement";
 export const HOLD_STATEMENT = "Hold Statement";
 export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
@@ -1080,6 +1092,7 @@ export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const CONTACT_NUMBER = "Contact Number";
 export const VIEW_ENCOUNTER = "View Encounter";
 export const ENTER_RELATION = "Enter Relation";
+export const AGREEMENT_BODY = "Agreement Body";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -1130,6 +1143,7 @@ export const CURRENT_PASSWORD = "Current password";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const UPDATE_SIGNATURE = "Update Signature";
 export const BOOK_APPOINTMENT = "Book Appointment";
+export const AUDIT_LOG_REPORT = "Audit Log Report";
 export const ORDER_OF_BENEFIT = "Order of Benefit";
 export const CREATE_LAB_ORDER = "Create Lab Order";
 export const ORDER_CREATED_AT = "Order Created At";
@@ -1323,6 +1337,7 @@ export const MAINTENANCE_ROUTE = "/maintenance";
 export const PAST_APPOINTMENTS = "Past Appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const AGREEMENTS_ROUTE = "/agreements";
+export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
@@ -1445,6 +1460,7 @@ export const CANT_DELETE_ROLE = "Role can't be deleted.";
 export const SELECT_DAY_MESSAGE = "Please select a day!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
+export const DRAG_FIELD = "Please drag at least one field";
 export const CHANGES_SAVED = "Changes saved successfully!";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
@@ -1489,6 +1505,7 @@ export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
+export const PLEASE_SELECT_MEDIA = "Please select a file to upload!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
 export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
@@ -1582,9 +1599,9 @@ export const EXPIRE_TOKEN_MESSAGE =
 export const EMERGENCY_ACCESS_ERROR_MESSAGE =
   "You don't have permission to change emergency access status.";
 export const CREATE_AGREEMENT_MESSAGE =
-  "Agreement created Successfully";
+  "Agreement created successfully";
 export const UPDATE_AGREEMENT_MESSAGE =
-  "Agreement updated Successfully";
+  "Agreement updated successfully";
 export const LOREM_TEXT_15 =
   "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
@@ -2149,6 +2166,7 @@ export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
 export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 export const AGREEMENTS_BREAD = { text: AGREEMENTS, link: AGREEMENTS_ROUTE, };
+export const AUDIT_LOG_BREAD = { text: AUDIT_LOG, link: AUDIT_LOG_ROUTE, };
 export const AGREEMENTS_NEW_BREAD = { text: ADD_AGREEMENT, link: `${AGREEMENTS_ROUTE}/new`, };
 export const AGREEMENTS_EDIT_BREAD = { text: EDIT_AGREEMENT, link: "", };
 
@@ -2521,6 +2539,7 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
+  "User",
   "Practice",
   "Facility",
   "Emergency Access",
@@ -2532,7 +2551,6 @@ export const MODULES = [
   "Schedule",
   "Lab Orders",
   "Patient Charting",
-  "User",
 ];
 
 export const MAPPED_STATUS = [
@@ -2644,6 +2662,11 @@ export const CLINICAL_ITEMS = [
     name: FORM_BUILDER,
     link: FORM_BUILDER_ROUTE,
     desc: FORM_BUILDER_DESCRIPTION,
+  },
+  {
+    name: AUDIT_LOG,
+    link: AUDIT_LOG_ROUTE,
+    desc: AUDIT_LOG_DESCRIPTION,
   },
 ];
 
@@ -3369,6 +3392,13 @@ export const PATIENT_WEIGHT_UNITS = [
   { id: WeightType.PoundOunce, name: OZ_TEXT },
 ]
 
+// export const AUDIT_LOG_SCHEDULE = [
+// { id: ScheduleType.Day, name: 'Day' },
+// { id: ScheduleType.Week, name: 'Week' },
+// { id: ScheduleType.Month, name: 'Month' },
+// { id: ScheduleType.Year, name: 'Year' },
+// ]
+
 export const HEAD_CIRCUMFERENCE_UNITS = [
   { id: HeadCircumferenceType.Inch, name: IN_TEXT },
   { id: HeadCircumferenceType.Centimeter, name: CM_TEXT },
@@ -3730,72 +3760,6 @@ export const PATIENT_CHARTING_TABS = [
   }
 ]
 
-export const VITALS_DUMMY_DATA = [
-  {
-    value: "124",
-    name: "Pulse (bpm)",
-  },
-  {
-    value: "120 / 70",
-    name: "Blood Pressure (mmHg)",
-  },
-  {
-    value: "68",
-    name: "Oxygen Saturation (%)",
-  },
-  {
-    value: "40",
-    name: "Respiratory Rate (rpm)",
-  },
-  {
-    value: "98",
-    name: "Fever (°C)",
-  },
-  {
-    value: "9",
-    name: "Pain (1-10)",
-  },
-  {
-    value: "69.60",
-    name: "Height (in)",
-  },
-  {
-    value: "149.91",
-    name: "Weight (lbs)",
-  },
-  {
-    value: "21.76",
-    name: "BMI (kg/m2)",
-  },
-  {
-    value: "25",
-    name: "Head Circumference (in)",
-  },
-]
-
-export const PROBLEMS_DUMMY_DATA = [
-  {
-    name: "Functional Heartburn",
-    value: "Moderate",
-    status: "Active"
-  },
-  {
-    name: "Pain in lower limb (left)",
-    value: "Mild",
-    status: "Active"
-  },
-  {
-    name: "High blood pressure",
-    value: "Acute",
-    status: "Active"
-  },
-  {
-    name: "Abnormal heartbeat",
-    value: "Acute",
-    status: "Historical"
-  },
-]
-
 export const ALLERGIES_DUMMY_DATA = [
   {
     name: "peanut",
@@ -3828,37 +3792,177 @@ export enum FormBuilderPaymentTypes {
   INTERNATIONAL_TRAVELER = 'international_traveler',
 }
 
-export const AGREEMENTS_TABLE_DUMMY_DATA = [
+export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
+
+export const AUDIT_LOG_TABLE_DUMMY_DATA = [
   {
-    name: 'Submit Website Form',
-    date: '9/4/12',
+    date: '5/18/2020',
+    time: '05:14:33 pm',
+    patient: 'Courtney Fox',
+    user: 'Fox2123',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '92.188.192.32',
   },
   {
-    name: 'Community Meet Up Form',
-    date: '7/11/19',
+    date: '1/8/2020',
+    time: '01:34:24 pm',
+    patient: 'Philip Richards',
+    user: 'PhilipR',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Appointment',
+    ip: '161.25.240.35',
   },
   {
-    name: 'Referral Form',
-    date: '6/19/14',
+    date: '10/11/2020',
+    time: '11:49:00 pm',
+    patient: 'Darrell Fox',
+    user: 'Darrell1298',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '164.102.123.48',
   },
   {
-    name: 'Neighborhood Recommendations Form',
-    date: '12/10/13',
+    date: '11/20/2019',
+    time: '04:15:03 am',
+    patient: 'Ronald Lane',
+    user: 'RonalddA2',
+    type: 'Account',
+    action: 'Update',
+    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
+    ip: '227.18.220.55',
   },
   {
-    name: 'Submit Website Form',
-    date: '8/2/19',
+    date: '5/18/2020',
+    time: '05:14:33 pm',
+    patient: 'Courtney Fox',
+    user: 'Fox2123',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '92.188.192.32',
   },
   {
-    name: 'Preliminary Vacation Itinerary',
-    date: '7/18/17',
+    date: '1/8/2020',
+    time: '01:34:24 pm',
+    patient: 'Philip Richards',
+    user: 'PhilipR',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Appointment',
+    ip: '161.25.240.35',
   },
   {
-    name: 'School Withdrawal Survey Form',
-    date: '5/7/16',
+    date: '10/11/2020',
+    time: '11:49:00 pm',
+    patient: 'Darrell Fox',
+    user: 'Darrell1298',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '164.102.123.48',
   },
   {
-    name: 'Clone of Cami Fit Form',
-    date: '1/15/12',
+    date: '11/20/2019',
+    time: '04:15:03 am',
+    patient: 'Ronald Lane',
+    user: 'RonalddA2',
+    type: 'Account',
+    action: 'Update',
+    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
+    ip: '227.18.220.55',
   },
+  {
+    date: '5/18/2020',
+    time: '05:14:33 pm',
+    patient: 'Courtney Fox',
+    user: 'Fox2123',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '92.188.192.32',
+  },
+  {
+    date: '1/8/2020',
+    time: '01:34:24 pm',
+    patient: 'Philip Richards',
+    user: 'PhilipR',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Appointment',
+    ip: '161.25.240.35',
+  },
+  {
+    date: '10/11/2020',
+    time: '11:49:00 pm',
+    patient: 'Darrell Fox',
+    user: 'Darrell1298',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '164.102.123.48',
+  },
+  {
+    date: '11/20/2019',
+    time: '04:15:03 am',
+    patient: 'Ronald Lane',
+    user: 'RonalddA2',
+    type: 'Account',
+    action: 'Update',
+    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
+    ip: '227.18.220.55',
+  },
+  {
+    date: '5/18/2020',
+    time: '05:14:33 pm',
+    patient: 'Courtney Fox',
+    user: 'Fox2123',
+    type: 'Navigation View',
+    action: 'Read',
+    detail: 'accessed Dashboard',
+    ip: '92.188.192.32',
+  },
+]
+
+
+export const MODULE_LOGS_TYPES = [
+	"Agreement",
+	"Appointment",
+	"Attachments",
+	"DocumentTypes",
+	"Billing",
+	"Dashboard",
+	"Facility",
+	"Service",
+	"Element",
+	"Form",
+	"UserForm",
+	"Copay",
+	"Insurance",
+	"PolicyHolder",
+	"Policy",
+	"LabTestObservation",
+	"LabTests",
+	"LoincCodes",
+	"TestSpecimen",
+	"PatientAllergies",
+	"Problem",
+	"Vitals",
+	"DoctorPatient",
+	"Patient",
+	"PatientConsent",
+	"Invoice",
+	"Payment",
+	"Practice",
+	"Staff",
+	"Role",
+	"Users",
+	"Doctor",
+	"Contact",
+	"Schedule",
+	"Permission",
+	"RolePermission",
 ]

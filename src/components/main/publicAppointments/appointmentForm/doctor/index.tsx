@@ -167,7 +167,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
                 sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify,
-                usualProviderId: doctorId, practiceId: practiceId || '',
+                usualProviderId: doctorId
               },
             }
           }
@@ -221,7 +221,11 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     signature && formData.append("file", signature);
 
     await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
-      formData
+      formData, {
+      headers: {
+        pathname: window.location.pathname
+      }
+    }
     ).then((response) => {
       const { status } = response
       if (status !== 201) Alert.error("Something went wrong!");

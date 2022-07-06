@@ -166,19 +166,23 @@ const PublicFormPreview = () => {
     signature && formData.append("file", signature);
 
     await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
-      formData
-    ).then((response) => {
-      const { status } = response
-      if (status !== 201) Alert.error("Something went wrong!");
-      else {
-        createPatientConsentHandler(patientId, appointmentId)
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }).then((response) => {
+        const { status } = response
+        if (status !== 201) Alert.error("Something went wrong!");
+        else {
+          createPatientConsentHandler(patientId, appointmentId)
+          dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
+        }
+      }).catch(error => {
+        const { response: { data: { error: errorMessage } } } = error || {}
+        Alert.error(errorMessage);
         dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
-      }
-    }).catch(error => {
-      const { response: { data: { error: errorMessage } } } = error || {}
-      Alert.error(errorMessage);
-      dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
-    });
+      });
   }
 
   const submitHandler = async (values: any) => {
