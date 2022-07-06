@@ -107,7 +107,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { value: selectedService } = selectedServiceId ?? {}
   const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
 
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
 
@@ -147,7 +146,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status,
+            appointmentCreateType
           } = appointment || {}
 
           if (status === AppointmentStatus.Cancelled) {
@@ -521,7 +521,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
                           : <PatientSelector
                             isModal
+                            styles='log-class'
                             isRequired
+                            // placeholder
                             label={PATIENT}
                             name="patientId"
                             setValue={setValue}
@@ -600,7 +602,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
                                 {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </Box>
                             </li>

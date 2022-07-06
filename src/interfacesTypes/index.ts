@@ -384,8 +384,10 @@ export interface SelectorProps {
 }
 
 export interface PatientSelectorProps extends SelectorProps {
+  styles?: string;
   isOpen?: boolean
   isModal?: boolean
+  placeholder?: boolean
   handlePatientModal?: Function
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
@@ -1916,4 +1918,13 @@ export interface SignatureProps {
 
 export interface EncounterPros {
   appointments: AppointmentsPayload['appointments']
+}
+
+export interface LogsPatientSelectorProps extends SelectorProps {
+  styles?: string;
+  isOpen?: boolean
+  isModal?: boolean
+  placeholder?: boolean
+  handlePatientModal?: Function
+  setValue: Function
 }

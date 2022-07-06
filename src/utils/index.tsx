@@ -195,6 +195,17 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
+export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
@@ -226,6 +237,9 @@ export const getPracticeType = (type: PracticeType): string => {
       return 'Hospital'
   }
 };
+
+export const getFormatLogsDate = (date: string | undefined): string => date ? moment(Number(date)).format('MM/DD/YYYY') : '';
+export const getFormatLogsTime = (date: string | undefined): string => date ? moment(Number(date)).format('hh:mm:ss A') : '';
 
 export const getTimestamps = (date: string): string =>
   date ? moment(date).format().toString() : moment().format().toString();
@@ -266,7 +280,7 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -1125,7 +1139,12 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
