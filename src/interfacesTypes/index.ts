@@ -88,6 +88,10 @@ export interface AppContextProps {
   setIsSidebarOpen: Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface ApiContextProps {
+  clientRemote: string;
+}
+
 export interface ListContextInterface {
   roleList: RolesPayload["roles"];
   setRoleList: Function;
