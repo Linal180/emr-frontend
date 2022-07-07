@@ -29,7 +29,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE
+  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
 
@@ -193,7 +193,7 @@ const scheduleTimeSchema = {
 
 const facilityTimeSchema = {
   startTime: yup.string().test('', invalidMessage(START_TIME), value => !!value),
-  endTime: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startTime } }) =>
+  endTime: yup.string().test('', INVALID_END_TIME, (value, { parent: { startTime } }) =>
     !value ? !!value : timeValidation(value, startTime))
 }
 
