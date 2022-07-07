@@ -86,7 +86,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     },
   });
 
-  const [getAttachments, { loading, error }] = useGetAttachmentsLazyQuery({
+  const [getAttachments, { loading }] = useGetAttachmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -263,13 +263,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
             ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
           >
             <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'}
-              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB })}
+              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
             >
               {PENDING}
             </Typography>
 
             <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'}
-              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB })}
+              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
             >
               {SIGNED}
             </Typography>
@@ -294,7 +294,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           />
         </SideDrawer>
 
-        {isSignedTab && <Button onClick={handleUpload} variant="contained"
+        {!isSignedTab && <Button onClick={handleUpload} variant="contained"
           startIcon={<UploadIcon />} color="primary"
         >
           {UPLOAD}
@@ -385,7 +385,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           </form>
         </FormProvider>
 
-        {((!loading && attachmentsData?.length === 0) || error) &&
+        {(!loading && attachmentsData?.length === 0) &&
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

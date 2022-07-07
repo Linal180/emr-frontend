@@ -138,13 +138,15 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
                   <Grid item xs={10}>
                     <Box className={vitalClasses.listingTable}>
-                      {!patientVitals?.length ?
-                        <NoDataFoundComponent /> :
-                        <VitalListingTable
-                          dispatcher={dispatch}
-                          patientStates={patientStates}
-                          shouldDisableEdit={shouldDisableEdit}
-                        />}
+                      <VitalListingTable
+                        loading={loading}
+                        dispatcher={dispatch}
+                        patientStates={patientStates}
+                        shouldDisableEdit={shouldDisableEdit}
+                      />
+
+                      {!loading && !patientVitals?.length &&
+                        <NoDataFoundComponent />}
                     </Box>
                   </Grid>
                 </Grid>
