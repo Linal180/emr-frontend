@@ -128,7 +128,7 @@ const dobSchema = {
 //       value => moment().diff(moment(value), 'years') < 100)
 // }
 
-const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
+export const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   name: yup.string(),
   id: yup.string()
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
