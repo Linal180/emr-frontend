@@ -1,53 +1,62 @@
 // packages block
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
-} from "@material-ui/core";
-import { AddCircleOutline, ChevronRight } from '@material-ui/icons';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING, BILLING_STATUS,
-  CHECKOUT, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
-  MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
-  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, TABLE_SELECTOR_MODULES,
+  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Tab, Typography
+} from "@material-ui/core";
+import { GREY_SEVEN, WHITE } from "../../../theme";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { AddCircleOutline, ChevronRight } from '@material-ui/icons';
+//components block
+import Alert from "../../common/Alert";
+import history from "../../../history";
+import Selector from '../../common/Selector';
+import CodesTable from "../../common/CodesTable";
+import CopayModal from "../../common/CopayModal";
+import DatePicker from "../../common/DatePicker";
+import InputController from '../../../controller';
+import TableSelector from "../../common/Selector/TableSelector";
+//constants, interfaces, styles
+import { formatValue, setRecord } from "../../../utils";
+import { createBillingSchema } from "../../../validationSchemas";
+import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
+import {
+  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
+} from "../../../interfacesTypes";
+import {
+  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS,
+  COPAY_AMOUNT, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
+  HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE,
+  POS, RENDERING, RESOURCE, SERVICE_DATE, SERVICING_PROVIDER, SUPERVISOR, SUPER_BILL, TABLE_SELECTOR_MODULES,
   VIEW_APPOINTMENTS_ROUTE, YES
 } from "../../../constants";
-import InputController from '../../../controller';
 import {
   Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
   PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery,
   useFetchPatientInsurancesLazyQuery
 } from "../../../generated/graphql";
-//constants block
-import history from "../../../history";
-import {
-  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
-} from "../../../interfacesTypes";
-import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
-import { GREY_SEVEN, WHITE } from "../../../theme";
-import { formatValue, setRecord } from "../../../utils";
-import { createBillingSchema } from "../../../validationSchemas";
-//components block
-import Alert from "../../common/Alert";
-import CodesTable from "../../common/CodesTable";
-import CopayModal from "../../common/CopayModal";
-import DatePicker from "../../common/DatePicker";
-import Selector from '../../common/Selector';
-import TableSelector from "../../common/Selector/TableSelector";
+import InsuranceComponent from "../patients/patientDetail/insurance";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id, appointmentId } = useParams<ParamsType>()
   const [employment, setEmployment] = useState(false);
+
   const [autoAccident, setAutoAccident] = useState(false);
   const [otherAccident, setOtherAccident] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
   const [insuranceId, setInsuranceId] = useState<string>('')
   const [billingCodes, setBillingCodes] = useState<CodeTypeInterface>({})
   const [tableCodesData, setTableCodesData] = useState<CodeTablesData>({})
+
+  const [selectedTab, setSelectedTab] = useState<string>('1')
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
+    setSelectedTab(newValue)
+  }
 
   const methods = useForm<CreateBillingProps>({
     mode: "all",
@@ -257,38 +266,246 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
-              {submitButtonText ?? CHECKOUT}
-              {createBillingLoading && <CircularProgress size={20} color="inherit" />}
-              <ChevronRight />
-            </Button>}
+            <Box display='flex' alignItems='center'>
+              <Button variant="contained" color="secondary">{SUPER_BILL}</Button>
+
+              <Box mx={3} minWidth={160} className="billing-selector">
+                <Selector
+                  label={''}
+                  name="type"
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Box>
+
+              {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
+                {submitButtonText ?? CHECKOUT}
+                {createBillingLoading && <CircularProgress size={20} color="inherit" />}
+                <ChevronRight />
+              </Button>}
+            </Box>
           </Box>
 
           <Box mt={1.5} p={3}>
             <Grid container spacing={3}>
+              <Grid item md={2} sm={12} xs={12}>
+                <Box className="claim-box">
+                  <InputController
+                    fieldType="text"
+                    controllerName="claim"
+                    controllerLabel={CLAIM_NO}
+                    placeholder="CL23825816"
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <DatePicker
+                  name="serviceDate"
+                  label={SERVICE_DATE}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <DatePicker
+                  name="claimDate"
+                  label={CLAIM_DATE}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <Selector
+                  name="appointmentFacility"
+                  label={APPOINTMENT_FACILITY}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="POS"
+                  controllerLabel={POS}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
               <Grid item md={3} sm={12} xs={12}>
                 <Selector
-                  disabled={shouldDisableEdit}
-                  isRequired
-                  name="paymentType"
-                  label={PATIENT_PAYMENT_TYPE}
+                  name="servicingProvider"
+                  label={SERVICING_PROVIDER}
                   value={EMPTY_OPTION}
-                  options={MAPPED_PATIENT_PAYMENT_TYPE}
+                  options={[]}
                 />
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
                 <Selector
-                  disabled={shouldDisableEdit}
-                  isRequired
-                  name="billingStatus"
-                  label={BILLING_STATUS}
+                  name="resource"
+                  label={RESOURCE}
                   value={EMPTY_OPTION}
-                  options={MAPPED_PATIENT_BILLING_STATUS}
+                  options={[]}
                 />
               </Grid>
 
-              {
+              <Grid item md={2} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="copayAmount"
+                  controllerLabel={COPAY_AMOUNT}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <Box pt={3.7}
+                  onClick={() => setIsModalOpen(!isModalOpen)}
+                  className="billing-box" display="flex" alignItems="center"
+                >
+                  <AddCircleOutline color='inherit' />
+
+                  <Typography>{ADD_ANOTHER}</Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="billing"
+                  label={BILLING}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="rendering"
+                  label={RENDERING}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="supervisor"
+                  label={SUPERVISOR}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="claimStatus"
+                  label={CLAIM_STATUS}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+            </Grid>
+
+            <Typography variant="body2">{HCFA_DESC}</Typography>
+
+            <Box p={2} />
+
+            <Grid container spacing={3}>
+              <Grid item md={2} sm={12} xs={12}>
+                <Controller
+                  name='employment'
+                  control={control}
+                  render={() => (
+                    <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                      <InputLabel shrink>{EMPLOYMENT}</InputLabel>
+
+                      <label className="toggle-main">
+                        <Box color={employment ? WHITE : GREY_SEVEN}>{YES}</Box>
+                        <AntSwitch checked={employment} onChange={(event) => { toggleHandleChange(event, 'employment') }} name='employment' />
+                        <Box color={employment ? GREY_SEVEN : WHITE}>{NO}</Box>
+                      </label>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <Controller
+                  name='autoAccident'
+                  control={control}
+                  render={() => (
+                    <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                      <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
+
+                      <label className="toggle-main">
+                        <Box color={autoAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
+                        <AntSwitch checked={autoAccident} onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} name='autoAccident' />
+                        <Box color={autoAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
+                      </label>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <Controller
+                  name='otherAccident'
+                  control={control}
+                  render={() => (
+                    <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                      <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
+
+                      <label className="toggle-main">
+                        <Box color={otherAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
+                        <AntSwitch checked={otherAccident} onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} name='otherAccident' />
+                        <Box color={otherAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
+                      </label>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="onSetDateType"
+                  label={ONSET_DATE_TYPE}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="onSetDate"
+                  label={ONSET_DATE}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={12} xs={12}>
+                <Selector
+                  name="onSetDateType"
+                  label={ONSET_DATE_TYPE}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="otherDate"
+                  controllerLabel={OTHER_DATE}
+                />
+              </Grid>
+            </Grid>
+
+            {/* {
                 !shouldShowInsuranceFields && (
                   <>
                     <Grid item md={2} sm={12} xs={12}>
@@ -410,43 +627,79 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
                     </Grid>
                   </>
                 )
-              }
-            </Grid>
+              } */}
           </Box>
         </Card>
 
         <Box p={2} />
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            {
-              shouldDisableEdit ?
-                <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
-            }
-            <Box p={2} />
-            {/* {
-              shouldDisableEdit ?
-                <CodesTable title={formatValue(CodeType.HcpcsCode)} shouldShowPrice tableData={tableCodesData.HCPCS_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.hcpcsCode} title={HCPCS_CODES} shouldShowPrice />
-            } */}
-          </Grid>
+        <Box>
+          <TabContext value={selectedTab}>
+            <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>
+              <TabList onChange={handleChange} aria-label="billing tabs">
+                {BILLING_TABS.map(item => (
+                  <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+                ))}
+              </TabList>
+            </Box>
 
-          <Grid item md={6} sm={12} xs={12}>
-            {
-              shouldDisableEdit ?
-                <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
-            }
-            <Box p={2} />
-            {/* {
-              shouldDisableEdit ?
-                <CodesTable title={formatValue(CodeType.CustomCode)} shouldShowPrice tableData={tableCodesData.CUSTOM_CODE} /> :
-                <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.customCode} title={CUSTOM_CODES} shouldShowPrice />
-            } */}
-          </Grid>
-        </Grid>
+            <Box mt={2} className="billing-tabs">
+              <TabPanel value="1">
+                <Grid container direction="row" spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Card>
+                      {
+                        shouldDisableEdit ?
+                          <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
+                          <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
+                      }
+                    </Card>
+
+                    <Box p={2} />
+
+                    <Card>
+                      {/* {
+                      shouldDisableEdit ?
+                        <CodesTable title={formatValue(CodeType.HcpcsCode)} shouldShowPrice tableData={tableCodesData.HCPCS_CODE} /> :
+                        <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.hcpcsCode} title={HCPCS_CODES} shouldShowPrice />
+                    } */}
+                    </Card>
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Card>
+                      {
+                        shouldDisableEdit ?
+                          <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
+                          <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
+                      }
+                    </Card>
+
+                    <Box p={2} />
+
+                    <Card>
+                      {/* {
+                          shouldDisableEdit ?
+                            <CodesTable title={formatValue(CodeType.CustomCode)} shouldShowPrice tableData={tableCodesData.CUSTOM_CODE} /> :
+                            <TableSelector handleCodes={handleCodes} moduleName={TABLE_SELECTOR_MODULES.customCode} title={CUSTOM_CODES} shouldShowPrice />
+                        } */}
+                    </Card>
+                  </Grid>
+                </Grid>
+              </TabPanel>
+
+              <TabPanel value="2">
+                <Box>
+                  <Card>
+                    <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+                  </Card>
+                </Box>
+              </TabPanel>
+            </Box>
+          </TabContext>
+        </Box>
       </form>
+
       <CopayModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} insuranceId={insuranceId} />
     </FormProvider>
   )

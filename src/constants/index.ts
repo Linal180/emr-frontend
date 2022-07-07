@@ -367,21 +367,22 @@ export const ADD_PATIENT = "Add Patient";
 export const ADD_COPAY = "Add Copay";
 export const ADD_PRACTICE = "Add practice";
 export const EDIT_PRACTICE = "Edit practice";
-export const ADD_PATIENT_MODAL = "Add New Patient";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
+export const CREATE_COPAY = "Create Copay";
 export const SET_TIME_ZONE = "Set Time Zone";
 export const UPDATE_DOCTOR = "Update Doctor";
 export const UPDATE_PATIENT = "Update Patient";
 export const CREATE_PATIENT = "Create Patient";
-export const CREATE_COPAY = "Create Copay";
+export const CREATE_INVOICE = "Create Invoice";
 export const UPDATE_FACILITY = "Update Facility";
 export const ADD_APPOINTMENT = "Add Appointment";
+export const ADD_PATIENT_MODAL = "Add New Patient";
 export const EDIT_APPOINTMENT = "Edit Appointment";
-export const CREATE_INVOICE = "Create Invoice";
-export const PRACTICE_SETTINGS = "Practice Settings";
 export const USERS_MANAGEMENT = "Users Management";
+export const UNCOVERED_AMOUNT = "Pt. Uncovered Amt";
+export const PRACTICE_SETTINGS = "Practice Settings";
 export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
@@ -391,7 +392,15 @@ export const REACTION = "Reaction";
 export const PROVIDER = "Provider";
 export const SEVERITY = "Severity";
 export const INVENTORY = "Inventory";
+export const RESOURCE = "Resource";
+export const RENDERING = "Rendering";
 export const ONSET_DATE = "Onset Date";
+export const ADD_ANOTHER = "ADD ANOTHER";
+export const SERVICE_DATE = "Service Date";
+export const COPAY_AMOUNT = "Copay Amount";
+export const CLAIM_STATUS = "Claim Status";
+export const CLAIM_DATE = "Claim Date";
+export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
@@ -411,7 +420,9 @@ export const PRIMARY_PROVIDER = "Primary Provider";
 export const FACILITY_INFO = "Facility Information";
 export const ONSET_DATE_TYPE = "Onset Date Type";
 export const OTHER_DATE_TYPE = "Other Date Type";
+export const SERVICING_PROVIDER = "Servicing Provider";
 export const ASSOCIATED_FACILITY = "Associated Facility";
+export const APPOINTMENT_FACILITY = "Appointment Facility";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
@@ -788,6 +799,7 @@ export const RECURRING = "Recurring";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
 export const LAST_FIVE_RESULTS = "Last 5 Results";
+export const BILLING_AND_INSURANCE = "Billing & Insurance";
 export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const NEW_STAFF = "New Staff";
 export const LAST_NAME = "Last Name";
@@ -992,6 +1004,7 @@ export const ADDED_BY = "Added by";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
+export const CLAIM_NO = "Claim No";
 export const ADD_NUM = "Add Number";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
@@ -2520,6 +2533,17 @@ export const DOCTOR_TOP_TABS = [
   },
 ];
 
+export const BILLING_TABS = [
+  {
+    title: "ICD & CPT",
+    value: "1",
+  },
+  {
+    title: "Insurance",
+    value: "2",
+  },
+];
+
 export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Monday, name: DAYS.Monday },
   { id: DAYS.Tuesday, name: DAYS.Tuesday },
@@ -3277,11 +3301,9 @@ export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
-  INSURANCE,
   CHART_TEXT,
-  // VITALS_TEXT,
   LAB_ORDERS,
-  BILLING_TEXT,
+  BILLING_AND_INSURANCE,
 ];
 
 export const ADD_INSURANCE_STEPS = [

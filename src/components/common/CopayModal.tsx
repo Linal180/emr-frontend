@@ -2,11 +2,12 @@
 import { FC, useCallback } from "react";
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, Grid } from "@material-ui/core";
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Selector from "./Selector";
-import CardComponent from "./CardComponent";
 import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
 import { createCopaySchema } from "../../validationSchemas";
@@ -74,12 +75,16 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}
+      aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
     >
+      <DialogTitle>
+        <Typography variant="h4">{ADD_COPAY}</Typography>
+      </DialogTitle>
+
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardComponent cardTitle={ADD_COPAY}>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
@@ -98,27 +103,27 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
                   controllerLabel={AMOUNT_WITH_DOLLAR}
                 />
               </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <Box pb={3} display='flex' justifyContent='flex-end' alignItems='center'>
-                  <Button onClick={handleClose} color="default">
-                    {CANCEL}
-                  </Button>
-
-                  <Box p={1} />
-
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={createCopayLoading}
-                  >
-                    {CREATE_COPAY}
-
-                    {createCopayLoading && <CircularProgress size={20} color="inherit" />}
-                  </Button>
-                </Box>
-              </Grid>
             </Grid>
-          </CardComponent>
-        </form>
+          </form>
+        </DialogContent>
+
+        <DialogActions>
+          <Box display='flex' justifyContent='flex-end' alignItems='center'>
+            <Button onClick={handleClose} color="default">
+              {CANCEL}
+            </Button>
+
+            <Box p={1} />
+
+            <Button type="submit" variant="contained" color="primary"
+              disabled={createCopayLoading}
+            >
+              {CREATE_COPAY}
+
+              {createCopayLoading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </DialogActions>
       </FormProvider>
     </Dialog>
   );

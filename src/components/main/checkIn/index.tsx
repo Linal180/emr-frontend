@@ -1,21 +1,21 @@
 // packages block
-import { Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { Check, ChevronRight } from '@material-ui/icons';
-import clsx from 'clsx';
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import clsx from 'clsx';
+import { 
+  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography 
+} from "@material-ui/core";
+import { Check, ChevronRight } from '@material-ui/icons';
 // component block
+import CheckIn from "./CheckIn";
+import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
 import PatientForm from "../patients/patientForm";
 import BillingComponent from "./BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
-import InsuranceComponent from "../patients/patientDetail/insurance";
-// constants, interfaces, utils block
-import CheckIn from "./CheckIn";
-import LabOrders from "./LabOrders";
 // constants, interfaces, utils block
 import {
-  CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
+  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
 } from "../../../constants";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
@@ -195,13 +195,13 @@ const CheckInComponent = (): JSX.Element => {
         return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
       case 1:
         return <PatientInfo />
+      // case 2:
+      //   return <Insurance />
       case 2:
-        return <Insurance />
-      case 3:
         return <Chart />
+      case 3:
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={()=> handleStep(4)} />
       case 4:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={handleStep} />
-      case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return <CircularProgress />;
@@ -221,7 +221,7 @@ const CheckInComponent = (): JSX.Element => {
           <Typography variant="h4">{PATIENT_INFO}</Typography>
 
           <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-            {INSURANCE}
+            {TO_CHART}
             <ChevronRight />
           </Button>
         </Box>
@@ -239,21 +239,21 @@ const CheckInComponent = (): JSX.Element => {
     </>
 
   // 2- INSURANCE
-  const Insurance = () =>
-    <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{INSURANCE}</Typography>
+  // const Insurance = () =>
+  //   <>
+  //     <Card>
+  //       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+  //         <Typography variant="h4">{INSURANCE}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-            {TO_CHART}
-            <ChevronRight />
-          </Button>
-        </Box>
-        <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
-        <Box p={2}></Box>
-      </Card>
-    </>
+  //         <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
+  //           {TO_CHART}
+  //           <ChevronRight />
+  //         </Button>
+  //       </Box>
+  //       <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+  //       <Box p={2}></Box>
+  //     </Card>
+  //   </>
 
   // 3- CHART
   const Chart = () =>
@@ -262,7 +262,7 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{CHART_TEXT}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(4)}>
+          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
             {TO_LAB_ORDERS}
             <ChevronRight />
           </Button>
