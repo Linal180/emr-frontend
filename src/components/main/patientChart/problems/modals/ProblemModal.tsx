@@ -195,7 +195,7 @@ const ProblemModal: FC<AddModalProps> = ({
     }
   }
 
-  const loading = addProblemLoading || updateProblemLoading || getProblemLoading || true
+  const loading = addProblemLoading || updateProblemLoading || getProblemLoading
   const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
   const { referencedComponentId } = snoMedCodeInfo || {}
 

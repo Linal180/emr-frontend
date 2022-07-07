@@ -16,7 +16,9 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
+import {
+  formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
+} from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -27,22 +29,25 @@ import {
 import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
-  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
+  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY, INVALID_END_TIME,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
   const { facility, roles } = user || {};
+
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
   const { addFacilityList, updateFacilityList } = useContext(ListContext)
+
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(facilitySchema(isSuper))
   });
-  const { reset, handleSubmit, setValue, watch } = methods;
-  const { zipCode } = watch()
+  const { reset, handleSubmit, setValue, watch, setError, clearErrors } = methods;
+
+  const { zipCode, startTime, endTime } = watch()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { billingId, contactId } = state
   const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
@@ -89,9 +94,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             if (contacts && contacts.length > 0) {
               const primaryContact = contacts.filter(item => item.primaryContact)[0]
-              const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country } = primaryContact || {}
-              dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
+              const {
+                id, email, phone, zipCode, mobile, fax, address, address2, city, state, country
+              } = primaryContact || {}
 
+              dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
               fax && setValue('fax', fax)
               city && setValue('city', city)
               email && setValue('email', email)
@@ -181,6 +188,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }, [getFacility, isEdit, id])
 
+  useEffect(() => {
+    if (startTime) {
+      timeValidation(endTime || '', startTime)
+        ? clearErrors('endTime') : setError('endTime', { message: INVALID_END_TIME })
+    }
+  }, [clearErrors, endTime, setError, startTime])
+
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
       name, cliaIdNumber, federalTaxId, npi, tamxonomyCode, practice,
@@ -200,9 +214,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode, practiceId: facilityPractice,
-      mammographyCertificationNumber, serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
-      startTime: startTime && setTime(startTime), endTime: endTime && setTime(endTime),
+      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode,
+      practiceId: facilityPractice, mammographyCertificationNumber, endTime: endTime && setTime(endTime),
+      serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
+      startTime: startTime && setTime(startTime),
     }
 
     const contactInput = {
