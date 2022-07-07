@@ -43,6 +43,9 @@ export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentT
             case ElementType.Number:
               validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
               break;
+            case ElementType.Dropdown:
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+              break;
             default:
               break;
           }
