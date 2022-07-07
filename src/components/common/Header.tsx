@@ -17,6 +17,7 @@ import {
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
   SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
 } from "../../constants";
+import { BLACK } from "../../theme";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -226,19 +227,19 @@ const Header: FC = (): JSX.Element => {
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="flex-end"
-                className={classes.profileItemName}
+                maxWidth='200px'
               >
                 {isSuper ?
-                  <Typography variant="h6" className="text-overflow max-width-200">{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6" noWrap>{SUPER_ADMIN}</Typography>
                   : (
-                    <>
-                      <Typography variant="h6" className="text-overflow max-width-200">{firstName} {lastName}</Typography>
-
-                      <Box className={classes.roleName}>
-                        <Typography variant="body1" className="text-overflow max-width-200">{roleName}</Typography>
+                    <Box maxWidth="200px" textAlign="right">
+                      <Box color={BLACK} minWidth='30px'>
+                        <Typography color="inherit" variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
-                    </>
-                  )}
+                    </Box>
+                  )
+                }
               </Box>
 
               <ProfileDropdownMenu />
