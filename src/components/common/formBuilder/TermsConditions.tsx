@@ -13,7 +13,8 @@ import { AgreementsPayload, useFetchAllAgreementsLazyQuery } from "../../../gene
 
 const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): JSX.Element => {
   const { label, fieldId } = item
-  const { isSignature = false, agreements = [], facilityId } = state || {}
+  const { isSignature = false, agreements = [], facilityId, facilityFieldId } = state || {}
+  const { id } = facilityFieldId || {}
   const { setValue } = useFormContext()
 
   const [getAllAgreements] = useFetchAllAgreementsLazyQuery({
@@ -40,20 +41,19 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
       await getAllAgreements({
         variables: {
           agreementPaginationInput: {
-            agreementFacilityId: facilityId,
+            agreementFacilityId: facilityId || id,
             paginationOptions: { limit: PUBLIC_AGREEMENTS_PAGE_LIMIT, page: 1 }
           }
         }
       })
     } catch (error) { }
-  }, [facilityId, getAllAgreements])
+  }, [id, facilityId, getAllAgreements])
 
   const onSignatureEnd = (file: File | null) => setValue('signature', file)
 
   useEffect(() => {
-    facilityId && fetchAllAgreements()
-  }, [facilityId, fetchAllAgreements])
-
+    (id || facilityId) && fetchAllAgreements()
+  }, [id, facilityId, fetchAllAgreements])
 
   return <Box my={3}>
     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
