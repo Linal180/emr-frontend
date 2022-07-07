@@ -6,12 +6,12 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { AuthContext } from "../../../context";
 import { LogsPatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFetchAllPatientListLazyQuery } from "../../../generated/graphql";
+import { useFetchAllUsersLazyQuery, UsersPayload } from "../../../generated/graphql";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION } from "../../../constants";
-import { patientReducer, Action, initialState, State, ActionType } from "../../../reducers/patientReducer";
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue } from "../../../utils";
+import { userLogsReducer, Action, ActionType, State, initialState } from "../../../reducers/userLogsReducer";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderUser, requiredLabel, sortingValue } from "../../../utils";
 
-const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
+const UserSelector: FC<LogsPatientSelectorProps> = ({
   name, label, disabled, isRequired, placeholder, styles
 }): JSX.Element => {
   const { control } = useFormContext()
@@ -22,28 +22,27 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
   const isPractice = isPracticeAdmin(roles);
   const isFacility = isFacilityAdmin(roles)
 
-  const { id: facilityId, practiceId } = facility || {}
+  const { id: facilityId } = facility || {}
 
-  const [{ page, searchQuery, patients }, dispatch] =
-    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{ page, searchQuery, users }, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
 
-  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients)]
+  const updatedOptions = [EMPTY_OPTION, ...renderUser(users)]
 
-  const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
+  const [findAllUsers, { loading }] = useFetchAllUsersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_USERS, users: [] })
     },
 
     onCompleted(data) {
-      const { fetchAllPatients } = data || {};
+      const { fetchAllUsers } = data || {};
 
-      if (fetchAllPatients) {
-        const { pagination, patients } = fetchAllPatients
-        patients && dispatch({
-          type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
+      if (fetchAllUsers) {
+        const { pagination, users } = fetchAllUsers
+        users && dispatch({
+          type: ActionType.SET_USERS, users: users as UsersPayload['users']
         })
 
         if (pagination) {
@@ -55,26 +54,26 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
     }
   });
 
-  const fetchAllPatients = useCallback(async () => {
+  const fetchAllUsers = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } :
-        isPractice ? { practiceId, ...pageInputs }
+      const usersInputs = isSuper ? { ...pageInputs } :
+        isPractice ? { ...pageInputs }
           : isFacility ? { facilityId, ...pageInputs } : { facilityId, ...pageInputs }
 
-      patientsInputs && await findAllPatient({
+      usersInputs && await findAllUsers({
         variables: {
-          patientInput: {
-            ...patientsInputs, searchString: searchQuery,
+          userInput: {
+            ...usersInputs, searchString: searchQuery ? searchQuery : null,
           }
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery, isFacility])
+  }, [page, isSuper, isPractice, facilityId, findAllUsers, searchQuery, isFacility])
 
   useEffect(() => {
-    (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
-  }, [page, searchQuery, fetchAllPatients]);
+    (!searchQuery.length || searchQuery.length > 2) && fetchAllUsers()
+  }, [page, searchQuery, fetchAllUsers]);
 
   const defaultFilterOptions = createFilterOptions();
 
@@ -134,4 +133,4 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
   );
 };
 
-export default LogsPatientSelector;
+export default UserSelector;

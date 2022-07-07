@@ -1,41 +1,48 @@
-import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router";
-import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION, INACTIVE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PATIENT_ALLERGY_DELETED, SEVERITY, STATUS } from "../../../../../constants";
-import { Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation } from "../../../../../generated/graphql";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GREEN, RED, WHITE } from "../../../../../theme";
-import { formatValue, getFormatDateString, getSeverityColor, renderTh } from "../../../../../utils";
+import { Pagination } from "@material-ui/lab";
+import {
+  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
+  Typography
+} from "@material-ui/core";
+// components block
 import Alert from "../../../../common/Alert";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
+import TableLoader from "../../../../common/TableLoader";
 import AddAllergy from "../../allergies/modals/AddAllergy";
 import AllergyModal from "../../allergies/modals/AllergyModal";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+// constants, utils, styles, interfaces and graphql block
+import { GREEN, RED, WHITE } from "../../../../../theme";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
+import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
+import { formatValue, getFormatDateString, getSeverityColor, renderTh } from "../../../../../utils";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import {
+  Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
+} from "../../../../../generated/graphql";
+import {
+  ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
+  INACTIVE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
+  STATUS
+} from "../../../../../constants";
 
 const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+  const { id } = useParams<ParamsType>()
   const classes = useChartingStyles()
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
   const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(0)
+
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
   const [{ isSubModalOpen, selectedItem, itemId, allergyDeleteId }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
-  const { id } = useParams<ParamsType>()
-
-  const handleModalClose = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
-    setPage(page)
-  }
+  const handleModalClose = () => setIsOpen(!isOpen);
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => setPage(page)
 
   const [findAllPatientAllergies, { loading, error }] = useFindAllPatientAllergiesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -144,77 +151,82 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 }
               </Box>
 
-              {loading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
-                <Box className={classes.tableBox}>
-                  <Table aria-label="customized table">
-                    <TableHead>
-                      <TableRow>
-                        {renderTh(ALLERGY_TEXT)}
-                        {renderTh(ONSET_DATE)}
-                        {renderTh(SEVERITY)}
-                        {renderTh(NOTES)}
-                        {renderTh(STATUS)}
-                        {!shouldDisableEdit && renderTh(ACTIONS)}
-                      </TableRow>
-                    </TableHead>
+              <Box className={classes.tableBox}>
+                <Table aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      {renderTh(ALLERGY_TEXT)}
+                      {renderTh(ONSET_DATE)}
+                      {renderTh(SEVERITY)}
+                      {renderTh(NOTES)}
+                      {renderTh(STATUS)}
+                      {!shouldDisableEdit && renderTh(ACTIONS)}
+                    </TableRow>
+                  </TableHead>
 
-                    <TableBody>
-                      {patientAllergies?.map((patientAllergy) => {
-                        const { allergySeverity, allergyStartDate, allergy, comments, isActive, id } = patientAllergy ?? {}
-                        const ActiveStatus = isActive ? ACTIVE : INACTIVE;
-                        const StatusColor = isActive ? GREEN : RED
-                        return (
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Typography>{allergy?.name}</Typography>
-                            </TableCell>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={8}>
+                        <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
+                      </TableCell>
+                    </TableRow>
+                  ) : <TableBody>
+                    {patientAllergies?.map((patientAllergy) => {
+                      const { allergySeverity, allergyStartDate, allergy, comments, isActive, id } = patientAllergy ?? {}
+                      const ActiveStatus = isActive ? ACTIVE : INACTIVE;
+                      const StatusColor = isActive ? GREEN : RED
 
-                            <TableCell scope="row">
-                              <Typography>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : DASHES}</Typography>
-                            </TableCell>
+                      return (
+                        <TableRow>
+                          <TableCell scope="row">
+                            <Typography>{allergy?.name}</Typography>
+                          </TableCell>
 
-                            <TableCell scope="row">
-                              <Box className={classes.activeBox} bgcolor={allergySeverity && getSeverityColor(allergySeverity)}>
-                                {allergySeverity ? formatValue(allergySeverity) : DASHES}
+                          <TableCell scope="row">
+                            <Typography>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Box className={classes.activeBox} bgcolor={allergySeverity && getSeverityColor(allergySeverity)}>
+                              {allergySeverity ? formatValue(allergySeverity) : DASHES}
+                            </Box>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography className={classes.textOverflow}>{comments}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Box className={classes.activeBox} color={WHITE} bgcolor={StatusColor}>
+                              {ActiveStatus}
+                            </Box>
+                          </TableCell>
+
+                          {
+                            !shouldDisableEdit && <TableCell scope="row">
+                              <Box display='flex' alignItems='center'>
+                                <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
+                                  <EditOutlinedIcon />
+                                </IconButton>
+
+                                <IconButton onClick={() => id && onDeleteClick(id)}>
+                                  <TrashOutlinedSmallIcon />
+                                </IconButton>
                               </Box>
                             </TableCell>
+                          }
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>}
+                </Table>
 
-                            <TableCell scope="row">
-                              <Typography className={classes.textOverflow}>{comments}</Typography>
-                            </TableCell>
-
-                            <TableCell scope="row">
-                            <Box className={classes.activeBox}  color={WHITE} bgcolor={StatusColor}>
-                                {ActiveStatus}
-                              </Box>
-                            </TableCell>
-
-                            {
-                              !shouldDisableEdit && <TableCell scope="row">
-                                <Box display='flex' alignItems='center'>
-                                  <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
-                                    <EditOutlinedIcon />
-                                  </IconButton>
-
-                                  <IconButton onClick={() => id && onDeleteClick(id)}>
-                                    <TrashOutlinedSmallIcon />
-                                  </IconButton>
-                                </Box>
-                              </TableCell>
-                            }
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-
-                  {((!loading && patientAllergies?.length === 0) || error) && (
-                    <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                      <NoDataFoundComponent />
-                    </Box>
-                  )}
-                </Box>
-              }
+                {((!loading && patientAllergies?.length === 0) || error) && (
+                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                    <NoDataFoundComponent />
+                  </Box>
+                )}
+              </Box>
             </Box>
           </Card>
         </Grid>

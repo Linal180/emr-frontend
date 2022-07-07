@@ -14,7 +14,7 @@ import {
 } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect, filteredOptions, shouldFilter
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
@@ -166,6 +166,10 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       }
     }
   }, [isEdit, modalName, setValue, value])
+
+  // useEffect(() => {
+  //   shouldFilter && filteredOptions?.length && setOptions(options?.filter((option) => !filteredOptions?.find(filteredOption => filteredOption.id === option.id)))
+  // }, [filteredOptions, options, shouldFilter, value])
 
   return (
     <Controller

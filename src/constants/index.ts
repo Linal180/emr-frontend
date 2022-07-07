@@ -26,7 +26,7 @@ import {
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
-  formatServiceCode, formatValue, getFormattedDate, getStandardTime, mapEnum, setRecord
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord
 } from "../utils";
 
 // regex
@@ -507,7 +507,6 @@ export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
-export const ICD_TEN_CODE = "ICD-10 Code:";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
@@ -619,6 +618,7 @@ export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
 export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
+export const GROUP_NPI = "Group NPI";
 export const HASH = "#";
 export const N_A = "N/A";
 export const DAY = "Day";
@@ -675,6 +675,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 9;
+export const USER_LOG_PAGE_LIMIT = 50;
 export const EIGHT_PAGE_LIMIT = 8;
 export const VALUE = "Value";
 export const VISIT = "Visit";
@@ -970,7 +971,6 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
-export const AGREEMENT_BODY = 'Agreement Body'
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -986,7 +986,6 @@ export const HOME_TEXT = "Home";
 export const DETAILS = "Details";
 export const PENDING = "Pending";
 export const MISSING = "Missing";
-export const CANCEL_RECORD = "Cancel record";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
@@ -1027,8 +1026,6 @@ export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
-export const ADD_AGREEMENT = "Add Agreement";
-export const EDIT_AGREEMENT = "Edit Agreement";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
@@ -1051,6 +1048,7 @@ export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
 export const EFFECTIVE_TEXT = "EFFECTIVE";
+export const ICD_TEN_CODE = "ICD-10 Code"; 
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -1072,15 +1070,16 @@ export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
 export const DOCUMENT_TYPE = "Document Type";
+export const CANCEL_RECORD = "Cancel record";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
-export const EDIT_INSURANCE = "Edit Insurance";
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
+export const ADD_AGREEMENT = "Add Agreement";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
@@ -1096,6 +1095,8 @@ export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
 export const PREFERRED_NAME = "Preferred Name";
+export const EDIT_INSURANCE = "Edit Insurance";
+export const EDIT_AGREEMENT = "Edit Agreement";
 export const HOLD_STATEMENT = "Hold Statement";
 export const ENTER_PASSWORD = "Enter Password";
 export const PAYMENT_METHOD = "Payment Method";
@@ -1104,6 +1105,7 @@ export const AMOUNT_WITH_DOLLAR = "Amount ($)";
 export const CONTACT_NUMBER = "Contact Number";
 export const VIEW_ENCOUNTER = "View Encounter";
 export const ENTER_RELATION = "Enter Relation";
+export const AGREEMENT_BODY = "Agreement Body";
 export const MARITAL_STATUS = "Marital Status";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -1855,208 +1857,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  {
-    id: ServiceCode.Pharmacy_01,
-    name: formatServiceCode(ServiceCode.Pharmacy_01),
-  },
-  {
-    id: ServiceCode.TelehealthOtherThanPatientHome_02,
-    name: formatServiceCode(ServiceCode.TelehealthOtherThanPatientHome_02),
-  },
-  { id: ServiceCode.School_03, name: formatServiceCode(ServiceCode.School_03) },
-  {
-    id: ServiceCode.HomelessShelter_04,
-    name: formatServiceCode(ServiceCode.HomelessShelter_04),
-  },
-  {
-    id: ServiceCode.IndianHealthServiceFreeStandingFacility_05,
-    name: formatServiceCode(
-      ServiceCode.IndianHealthServiceFreeStandingFacility_05
-    ),
-  },
-  {
-    id: ServiceCode.IndianHealthServiceProviderBasedFacility_06,
-    name: formatServiceCode(
-      ServiceCode.IndianHealthServiceProviderBasedFacility_06
-    ),
-  },
-  { id: ServiceCode.Tribal_07, name: formatServiceCode(ServiceCode.Tribal_07) },
-  { id: ServiceCode.Prison_09, name: formatServiceCode(ServiceCode.Prison_09) },
-  { id: ServiceCode.Prison_10, name: formatServiceCode(ServiceCode.Prison_10) },
-  { id: ServiceCode.Office_11, name: formatServiceCode(ServiceCode.Office_11) },
-  { id: ServiceCode.Home_12, name: formatServiceCode(ServiceCode.Home_12) },
-  {
-    id: ServiceCode.AssistedLiving_13,
-    name: formatServiceCode(ServiceCode.AssistedLiving_13),
-  },
-  {
-    id: ServiceCode.GroupHome_14,
-    name: formatServiceCode(ServiceCode.GroupHome_14),
-  },
-  {
-    id: ServiceCode.MobileUnit_15,
-    name: formatServiceCode(ServiceCode.MobileUnit_15),
-  },
-  {
-    id: ServiceCode.TemporaryLoOgoing_16,
-    name: formatServiceCode(ServiceCode.TemporaryLoOgoing_16),
-  },
-  {
-    id: ServiceCode.PlaceOfEmployment_18,
-    name: formatServiceCode(ServiceCode.PlaceOfEmployment_18),
-  },
-  {
-    id: ServiceCode.OffCampusOutpatientHospital_19,
-    name: formatServiceCode(ServiceCode.OffCampusOutpatientHospital_19),
-  },
-  {
-    id: ServiceCode.UrgentCare_20,
-    name: formatServiceCode(ServiceCode.UrgentCare_20),
-  },
-  {
-    id: ServiceCode.InpatientHospital_21,
-    name: formatServiceCode(ServiceCode.InpatientHospital_21),
-  },
-  {
-    id: ServiceCode.OutpatientHospital_22,
-    name: formatServiceCode(ServiceCode.OutpatientHospital_22),
-  },
-  {
-    id: ServiceCode.EmergencyRoomHospital_23,
-    name: formatServiceCode(ServiceCode.EmergencyRoomHospital_23),
-  },
-  {
-    id: ServiceCode.AmbulatorySurgicalCenter_24,
-    name: formatServiceCode(ServiceCode.AmbulatorySurgicalCenter_24),
-  },
-  {
-    id: ServiceCode.BirthingCenter_25,
-    name: formatServiceCode(ServiceCode.BirthingCenter_25),
-  },
-  {
-    id: ServiceCode.MilitaryTreatmentFacility_26,
-    name: formatServiceCode(ServiceCode.MilitaryTreatmentFacility_26),
-  },
-  {
-    id: ServiceCode.SkilledNursingFacility_31,
-    name: formatServiceCode(ServiceCode.SkilledNursingFacility_31),
-  },
-  {
-    id: ServiceCode.NursingFacility_32,
-    name: formatServiceCode(ServiceCode.NursingFacility_32),
-  },
-  {
-    id: ServiceCode.CustodialCareFacility_33,
-    name: formatServiceCode(ServiceCode.CustodialCareFacility_33),
-  },
-  {
-    id: ServiceCode.Hospice_34,
-    name: formatServiceCode(ServiceCode.Hospice_34),
-  },
-  {
-    id: ServiceCode.AmbulanceLand_41,
-    name: formatServiceCode(ServiceCode.AmbulanceLand_41),
-  },
-  {
-    id: ServiceCode.Ambulance_42,
-    name: formatServiceCode(ServiceCode.Ambulance_42),
-  },
-  {
-    id: ServiceCode.IndependentClinic_49,
-    name: formatServiceCode(ServiceCode.IndependentClinic_49),
-  },
-  {
-    id: ServiceCode.FederallyQualifiedHealthCenter_50,
-    name: formatServiceCode(ServiceCode.FederallyQualifiedHealthCenter_50),
-  },
-  {
-    id: ServiceCode.InpatientPsychiatricFacility_51,
-    name: formatServiceCode(ServiceCode.InpatientPsychiatricFacility_51),
-  },
-  {
-    id: ServiceCode.PsychiatricFacilityPartialHospitilization_52,
-    name: formatServiceCode(
-      ServiceCode.PsychiatricFacilityPartialHospitilization_52
-    ),
-  },
-  {
-    id: ServiceCode.CommunityMentalHealthCenter_53,
-    name: formatServiceCode(ServiceCode.CommunityMentalHealthCenter_53),
-  },
-  {
-    id: ServiceCode.IntermediateCareFacilityMentallyRetarded_54,
-    name: formatServiceCode(
-      ServiceCode.IntermediateCareFacilityMentallyRetarded_54
-    ),
-  },
-  {
-    id: ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55,
-    name: formatServiceCode(
-      ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55
-    ),
-  },
-  {
-    id: ServiceCode.PsychiatricResidentialTreatmentCenter_56,
-    name: formatServiceCode(
-      ServiceCode.PsychiatricResidentialTreatmentCenter_56
-    ),
-  },
-  {
-    id: ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57,
-    name: formatServiceCode(
-      ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57
-    ),
-  },
-  {
-    id: ServiceCode.NonResidentialOpioidTreatmentFacility_58,
-    name: formatServiceCode(
-      ServiceCode.NonResidentialOpioidTreatmentFacility_58
-    ),
-  },
-  {
-    id: ServiceCode.MassImmunizationCenter_60,
-    name: formatServiceCode(ServiceCode.MassImmunizationCenter_60),
-  },
-  {
-    id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61,
-    name: formatServiceCode(
-      ServiceCode.ComprehensiveInpatientRehabilitationFacility_61
-    ),
-  },
-  {
-    id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62,
-    name: formatServiceCode(
-      ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62
-    ),
-  },
-  {
-    id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65,
-    name: formatServiceCode(
-      ServiceCode.EndStageRenalDiseaseTreatmentFacility_65
-    ),
-  },
-  {
-    id: ServiceCode.StateOrLocalPublicHealthClinic_71,
-    name: formatServiceCode(ServiceCode.StateOrLocalPublicHealthClinic_71),
-  },
-  {
-    id: ServiceCode.RuralHealthClinic_72,
-    name: formatServiceCode(ServiceCode.RuralHealthClinic_72),
-  },
-  {
-    id: ServiceCode.IndependentLaboratory_81,
-    name: formatServiceCode(ServiceCode.IndependentLaboratory_81),
-  },
-  {
-    id: ServiceCode.Telehealth_10,
-    name: formatServiceCode('TELEHEALTH_82'),
-  },
-  {
-    id: ServiceCode.WalkInRetailHealthClinic,
-    name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic),
-  },
-];
+export const MAPPED_SERVICE_CODES = mapServiceEnum<typeof ServiceCode>(ServiceCode)
 
 export const TEMPORARY_CPT_CODES = [
   {
@@ -2101,86 +1902,7 @@ export const TEMPORARY_CPT_CODES = [
   },
 ]
 
-export const MAPPED_SPECIALTIES: SelectorOption[] = [
-  {
-    id: Speciality.AllergyOrImmunology,
-    name: formatValue(Speciality.AllergyOrImmunology),
-  },
-  {
-    id: Speciality.Anesthesiology,
-    name: formatValue(Speciality.Anesthesiology),
-  },
-  { id: Speciality.Cardiology, name: formatValue(Speciality.Cardiology) },
-  { id: Speciality.Dermatology, name: formatValue(Speciality.Dermatology) },
-  {
-    id: Speciality.FamilyPractice,
-    name: formatValue(Speciality.FamilyPractice),
-  },
-  {
-    id: Speciality.Gastroenterology,
-    name: formatValue(Speciality.Gastroenterology),
-  },
-  {
-    id: Speciality.GeneralPractice,
-    name: formatValue(Speciality.GeneralPractice),
-  },
-  {
-    id: Speciality.GeneralSurgery,
-    name: formatValue(Speciality.GeneralSurgery),
-  },
-  {
-    id: Speciality.InternalMedicine,
-    name: formatValue(Speciality.InternalMedicine),
-  },
-  {
-    id: Speciality.InterventionalPainManagement,
-    name: formatValue(Speciality.InterventionalPainManagement),
-  },
-  { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
-  { id: Speciality.Neurosurgery, name: formatValue(Speciality.Neurosurgery) },
-  {
-    id: Speciality.ObstetricsOrGynecology,
-    name: formatValue(Speciality.ObstetricsOrGynecology),
-  },
-  { id: Speciality.Ophthalmology, name: formatValue(Speciality.Ophthalmology) },
-  { id: Speciality.OralSurgery, name: formatValue(Speciality.OralSurgery) },
-  {
-    id: Speciality.OrthopedicSurgery,
-    name: formatValue(Speciality.OrthopedicSurgery),
-  },
-  {
-    id: Speciality.OsteopathicManipulativeTherapy,
-    name: formatValue(Speciality.OsteopathicManipulativeTherapy),
-  },
-  {
-    id: Speciality.Otolaryngology,
-    name: formatValue(Speciality.Otolaryngology),
-  },
-  { id: Speciality.Pathology, name: formatValue(Speciality.Pathology) },
-  {
-    id: Speciality.PediatricDentist,
-    name: formatValue(Speciality.PediatricDentist),
-  },
-  {
-    id: Speciality.PediatricDermatology,
-    name: formatValue(Speciality.PediatricDermatology),
-  },
-  { id: Speciality.Periodontics, name: formatValue(Speciality.Periodontics) },
-  { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
-  {
-    id: Speciality.PhysicalMedicineAndRehabilitation,
-    name: formatValue(Speciality.PhysicalMedicineAndRehabilitation),
-  },
-  {
-    id: Speciality.PhysicianAssistant,
-    name: formatValue(Speciality.PhysicianAssistant),
-  },
-  {
-    id: Speciality.PlasticAndReconstructiveSurgery,
-    name: formatValue(Speciality.PlasticAndReconstructiveSurgery),
-  },
-  { id: Speciality.Psychiatry, name: formatValue(Speciality.Psychiatry) },
-];
+export const MAPPED_SPECIALTIES = mapEnum<typeof Speciality>(Speciality)
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
@@ -2841,6 +2563,7 @@ export enum MODULE_TYPES {
 }
 
 export const MODULES = [
+  "User",
   "Practice",
   "Facility",
   "Emergency Access",
@@ -2852,7 +2575,6 @@ export const MODULES = [
   "Schedule",
   "Lab Orders",
   "Patient Charting",
-  "User",
 ];
 
 export const MAPPED_STATUS = [
@@ -3660,8 +3382,8 @@ export const MAPPED_DOCTOR_PATIENT_RELATION: SelectorOption[] = [
     id: DoctorPatientRelationType.PrimaryProvider,
   },
   {
-    name: formatValue(DoctorPatientRelationType.BackupProvider),
-    id: DoctorPatientRelationType.BackupProvider,
+    name: formatValue(DoctorPatientRelationType.RenderingProvider),
+    id: DoctorPatientRelationType.RenderingProvider,
   },
   {
     name: formatValue(DoctorPatientRelationType.PreferredProvider),
@@ -4225,4 +3947,44 @@ export const AUDIT_LOG_TABLE_DUMMY_DATA = [
     detail: 'accessed Dashboard',
     ip: '92.188.192.32',
   },
+]
+
+
+export const MODULE_LOGS_TYPES = [
+	"Agreement",
+	"Appointment",
+	"Attachments",
+	"DocumentTypes",
+	"Billing",
+	"Dashboard",
+	"Facility",
+	"Service",
+	"Element",
+	"Form",
+	"UserForm",
+	"Copay",
+	"Insurance",
+	"PolicyHolder",
+	"Policy",
+	"LabTestObservation",
+	"LabTests",
+	"LoincCodes",
+	"TestSpecimen",
+	"PatientAllergies",
+	"Problem",
+	"Vitals",
+	"DoctorPatient",
+	"Patient",
+	"PatientConsent",
+	"Invoice",
+	"Payment",
+	"Practice",
+	"Staff",
+	"Role",
+	"Users",
+	"Doctor",
+	"Contact",
+	"Schedule",
+	"Permission",
+	"RolePermission",
 ]
