@@ -1030,7 +1030,7 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
-  amount: yup.string()
+  amount: yup.number()
 })
 
 export const createBillingSchema = yup.object({
