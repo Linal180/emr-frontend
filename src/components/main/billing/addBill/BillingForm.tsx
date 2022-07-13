@@ -1,6 +1,7 @@
 //packages block
 import { ChangeEvent, FC, useState } from "react"
 import { Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Tab, Typography } from "@material-ui/core"
+import { TabContext, TabList, TabPanel } from "@material-ui/lab"
 import { AddCircleOutline, ChevronRight } from "@material-ui/icons"
 import { Controller, FormProvider } from "react-hook-form"
 //components block
@@ -12,6 +13,7 @@ import Selector from "../../../common/Selector"
 import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
 import TableSelector from "../../../common/Selector/TableSelector"
+import InsuranceComponent from "../../patients/patientDetail/insurance"
 //constants, utils, interfaces block
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS, COPAY_AMOUNT,
@@ -25,8 +27,6 @@ import { GREY_SEVEN, WHITE } from "../../../../theme"
 import { formatValue, generateString, renderItem } from "../../../../utils"
 import { ActionType } from "../../../../reducers/billingReducer"
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles"
-import { TabContext, TabList, TabPanel } from "@material-ui/lab"
-import InsuranceComponent from "../../patients/patientDetail/insurance"
 
 
 const BillingForm: FC<BillingFormProps> = (
