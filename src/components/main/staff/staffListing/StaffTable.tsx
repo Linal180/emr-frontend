@@ -14,7 +14,9 @@ import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
-import { checkPermission, formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh } from "../../../../utils";
+import {
+  checkPermission, formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+} from "../../../../utils";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";

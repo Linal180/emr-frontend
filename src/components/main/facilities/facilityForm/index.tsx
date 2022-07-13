@@ -1,5 +1,7 @@
 // packages block
-import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
+import {
+  FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback
+} from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -29,7 +31,9 @@ import {
 import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
-  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY, INVALID_END_TIME,
+  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
+  INVALID_END_TIME,
+  USA,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -82,14 +86,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             npi && setValue('npi', npi)
             name && setValue('name', name)
-            startTime && setValue('startTime', getTimeString(startTime))
             endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
+            startTime && setValue('startTime', getTimeString(startTime))
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
             serviceCode && setValue('serviceCode', setRecord(serviceCode, formatServiceCode(serviceCode)))
-            practiceId && practiceName && setValue('practice', setRecord(practiceId, practiceName))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
             if (contacts && contacts.length > 0) {
@@ -107,14 +110,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
               address2 && setValue('address2', address2)
+              country && setValue('country', country || USA)
               state && setValue('state', setRecord(state, state))
-              country && setValue('country', setRecord(country, country))
             }
 
             if (billingAddress && billingAddress.length > 0) {
               const { id, email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+              
               dispatch({ type: ActionType.SET_BILLING_ID, billingId: id })
-
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
@@ -122,8 +125,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue('billingAddress', address)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
+              country && setValue('billingCountry', country || USA)
               state && setValue('billingState', setRecord(state, state))
-              country && setValue('billingCountry', setRecord(country, country))
+            }
+
+            if (practiceId && practiceName){
+              setValue('practice', setRecord(practiceId, practiceName, false))
             }
           }
         }
@@ -206,11 +213,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const { id: selectedState } = state;
     const { name: timeZoneName } = timeZone;
-    const { id: selectedCountry } = country;
     const { id: selectedPractice } = practice || {};
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedBillingState } = billingState;
-    const { id: selectedBillingCountry } = billingCountry;
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
@@ -221,14 +226,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
 
     const contactInput = {
-      phone, email, fax, city, state: selectedState, country: selectedCountry, zipCode, address,
+      phone, email, fax, city, state: selectedState, country: country || USA, zipCode, address,
       address2, primaryContact: true
     }
 
     const billingAddressInput = {
       phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
-      country: selectedBillingCountry || '', zipCode: billingZipCode || '',
+      country: billingCountry || USA, zipCode: billingZipCode || '',
     }
 
     if (isEdit && id) {
@@ -261,19 +266,16 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     setTabValue(newValue)
 
   const getAddressHandler = useCallback(async () => {
-
     if (zipCode) {
       const data = await getAddressByZipcode(zipCode);
       const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
+
       if (status) {
         setValue('city', defaultCity)
         setValue('state', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-    }
-    else {
-      Alert.error(ZIP_CODE_ENTER)
-    }
+    } else Alert.error(ZIP_CODE_ENTER)
   }, [zipCode, setValue])
 
   useEffect(() => {
@@ -309,10 +311,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             </Box>
 
             <RegisterFormComponent
-              dispatch={dispatch}
               state={state}
-              getFacilityLoading={getFacilityLoading}
               isSuper={isSuper}
+              dispatch={dispatch}
+              getFacilityLoading={getFacilityLoading}
             />
           </form>
         </FormProvider>

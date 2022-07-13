@@ -43,9 +43,13 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
+  const { currentUser } = useContext(AuthContext)
   const [ids, setIds] = useState<string[]>([])
+
+  const { id: currentDoctor } = currentUser || {}
   const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
   const { userPermissions } = useContext(AuthContext)
+
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
@@ -177,7 +181,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: typeId } : { facilityId: typeId }
+      const recordId = isDoctor ? { doctorId: typeId || currentDoctor } : { facilityId: typeId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
@@ -186,7 +190,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       }
     })
 
-    if (typeId) {
+    if (typeId || (isDoctor && currentDoctor)) {
       if (isEdit) {
         id ?
           await updateSchedule({

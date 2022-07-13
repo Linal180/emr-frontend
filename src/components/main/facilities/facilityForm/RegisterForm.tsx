@@ -25,9 +25,9 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({
   const patientCardBoxProps = { maxHeight: "calc(100vh - 210px)", className: "overflowY-auto" }
 
   const facilityInfoRef = createRef<HTMLDivElement>()
+  const businessHoursRef = createRef<HTMLDivElement>()
   const billingProfileRef = createRef<HTMLDivElement>()
   const facilityLocationRef = createRef<HTMLDivElement>()
-  const businessHoursRef = createRef<HTMLDivElement>()
 
   const handleScroll = (moduleName: string) => {
     setActiveBlock(moduleName)
@@ -67,7 +67,10 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({
                   </TimelineItem>
                 </Timeline>
 
-                <ListItem button className={item.title === activeBlock ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
+                <ListItem button
+                  className={item.title === activeBlock ? 'active' : ''}
+                  style={{ display: 'flex', alignItems: 'baseline' }}
+                >
                   <Typography variant='h5' className={item.title === activeBlock ? 'active' : ''}>
                     {item.title}
                   </Typography>

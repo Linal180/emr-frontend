@@ -1,8 +1,10 @@
 // packages block
-import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer
+} from 'react';
 import { Box } from "@material-ui/core";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer } from 'react';
 // components block
 import Alert from "../../../common/Alert";
 import RegisterFormComponent from './RegisterForm';
@@ -14,7 +16,9 @@ import history from '../../../../history';
 import { AuthContext, FacilityContext } from '../../../../context';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { FormForwardRef, PatientFormProps, PatientInputProps } from '../../../../interfacesTypes';
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import {
+  Action, ActionType, initialState, patientReducer, State
+} from "../../../../reducers/patientReducer";
 import {
   getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord
 } from '../../../../utils';
@@ -23,6 +27,7 @@ import {
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
   CONFLICT_EXCEPTION,
+  USA,
 } from "../../../../constants";
 import {
   ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
@@ -191,8 +196,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               address && setValue("basicAddress", address)
               zipCode && setValue("basicZipCode", zipCode)
               address2 && setValue("basicAddress2", address2)
+              country && setValue("basicCountry", country || USA)
               state && setValue("basicState", setRecord(state, state))
-              country && setValue("basicCountry", setRecord(country, country))
               setValue("basicEmail", (contactEmail ? contactEmail : email) || '')
             }
 
@@ -226,10 +231,10 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               address2 && setValue("guarantorAddress2", address2)
               lastName && setValue("guarantorLastName", lastName)
               firstName && setValue("guarantorFirstName", firstName)
+              country && setValue("guarantorCountry", country || USA)
               middleName && setValue("guarantorMiddleName", middleName)
               state && setValue("guarantorState", setRecord(state, state))
               employerName && setValue("guarantorEmployerName", employerName)
-              country && setValue("guarantorCountry", setRecord(country, country))
               relationship && setValue("guarantorRelationship", setRecord(relationship, relationship))
             }
 
@@ -341,7 +346,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedPronouns } = pronouns || {};
       const { id: selectedFacility } = facilityId || {};
       const { id: selectedEthnicity } = ethnicity || {};
-      const { id: selectedCountry } = basicCountry || {};
       const { id: selectedSexAtBirth } = sexAtBirth || {};
       const { id: selectedBasicState } = basicState || {};
       const { id: selectedEmployerState } = employerState || {};
@@ -350,7 +354,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const { id: selectedGuarantorState } = guarantorState || {};
       const { id: selectedUsualProvider } = usualProviderId || {};
       const { id: selectedKinRelationship } = kinRelationship || {};
-      const { id: selectedGuarantorCountry } = guarantorCountry || {};
       const { id: selectedSexualOrientation } = sexualOrientation || {};
       const { id: selectedGuarantorRelationship } = guarantorRelationship || {};
       const { id: selectedEmergencyRelationship } = emergencyRelationship || {};
@@ -378,7 +381,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       };
 
       const contactInput = {
-        contactType: ContactType.Self, country: selectedCountry, primaryContact: true,
+        contactType: ContactType.Self, country: basicCountry || USA, primaryContact: true,
         email: basicEmail, city: basicCity, zipCode: basicZipCode,
         state: selectedBasicState, facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: basicAddress2, address: basicAddress,
@@ -396,7 +399,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
-        phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
+        phone: guarantorPhone, suffix: guarantorSuffix, country: guarantorCountry || USA,
         userId: userId, ssn: guarantorSsn || SSN_FORMAT, primaryContact: false, address: guarantorAddress,
       };
 
