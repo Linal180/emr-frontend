@@ -69,8 +69,7 @@ export const formatServiceCode = (value: string) => {
     }
   }
 
-  formatted = `${formatted} - ${parts[parts.length - 1]}`;
-  
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;  
   return formatted.trim();
 };
 
