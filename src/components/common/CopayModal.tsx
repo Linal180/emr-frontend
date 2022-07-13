@@ -12,7 +12,7 @@ import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
 import { createCopaySchema } from "../../validationSchemas";
 import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
-import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
+import { CopayType, useCreateCopayMutation } from "../../generated/graphql";
 import {
   ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE
@@ -27,8 +27,7 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   const { amount: copayAmount } = childWatch()
 
   const { watch, setValue } = useFormContext<CreateBillingProps>()
-  const { amount, billingStatus } = watch()
-  const { id: billingStatusId } = billingStatus ?? {}
+  const { amount } = watch()
 
   const handleClose = useCallback(() => {
     reset();
@@ -53,26 +52,26 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   });
 
   const onSubmit: SubmitHandler<CopayFields> = async (inputs) => {
-    if (billingStatusId === PatientBillingStatus.BillInsurance) {
-      if (insuranceId) {
-        createCopay({
-          variables: {
-            createCopayInput: {
-              policyId: insuranceId, amount: inputs.amount,
-              type: inputs.copayType?.id as CopayType ?? ''
-            }
+    // if (billingStatusId === PatientBillingStatus.BillInsurance) {
+    if (insuranceId) {
+      createCopay({
+        variables: {
+          createCopayInput: {
+            policyId: insuranceId, amount: String(inputs.amount),
+            type: inputs.copayType?.id as CopayType ?? ''
           }
-        })
-        return
-      }
-
-      setValue('amount', String(Number(amount) + Number(inputs.amount)))
-      setIsOpen(false)
+        }
+      })
       return
     }
+
     setValue('amount', String(Number(amount) + Number(inputs.amount)))
     setIsOpen(false)
-  };
+    return
+  }
+  //   setValue('amount', String(Number(amount) + Number(inputs.amount)))
+  //   setIsOpen(false)
+  // };
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}
@@ -83,8 +82,8 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
       </DialogTitle>
 
       <FormProvider {...methods}>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent>
             <Grid container spacing={3}>
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
@@ -104,25 +103,25 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
                 />
               </Grid>
             </Grid>
-          </form>
-        </DialogContent>
+          </DialogContent>
 
-        <DialogActions>
-          <Box display='flex' justifyContent='flex-end' alignItems='center'>
-            <Button onClick={handleClose} color="default">
-              {CANCEL}
-            </Button>
+          <DialogActions>
+            <Box display='flex' justifyContent='flex-end' alignItems='center'>
+              <Button onClick={handleClose} color="default">
+                {CANCEL}
+              </Button>
 
-            <Box p={1} />
+              <Box p={1} />
 
-            <Button type="submit" variant="contained" color="primary" disabled={createCopayLoading}>
-              {CREATE_COPAY}
-              {createCopayLoading && <CircularProgress size={20} color="inherit" />}
-            </Button>
-          </Box>
-        </DialogActions>
+              <Button type="submit" variant="contained" color="primary" disabled={createCopayLoading}>
+                {CREATE_COPAY}
+                {createCopayLoading && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            </Box>
+          </DialogActions>
+        </form>
       </FormProvider>
-    </Dialog>
+    </Dialog >
   );
 };
 
