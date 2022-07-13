@@ -25,19 +25,19 @@ import {
   DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
-  FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
-  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR, EMPTY_OPTION,
+  FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION, ADDRESS_TWO,
+  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER,
-  DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS_ONE, ADDRESS_TWO,
+  DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS_ONE,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES,
-  SETTINGS_ROUTE, EDIT_DOCTOR, CONFLICT_EXCEPTION,
+  MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO,
+  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
+  SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR, CONFLICT_EXCEPTION, EMPTY_OPTION, TAX_ID_INFO, USA,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -120,7 +120,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const primaryContact = contacts.filter(contact => contact.primaryContact)[0]
 
               if (primaryContact) {
-                const { id, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
+                const {
+                  id, phone, zipCode, mobile, fax, address, address2, city, state, country, pager
+                } = primaryContact
 
                 dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
                 fax && setValue('fax', fax)
@@ -147,8 +149,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue('billingAddress', address)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
+              country && setValue('billingCountry', country || USA)
               state && setValue('billingState', setRecord(state, state))
-              country && setValue('billingCountry', setRecord(country, country))
             }
           }
         }
@@ -230,7 +232,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedSpecialty } = speciality;
       const { id: selectedCountry } = country || {};
       const { id: selectedBillingState } = billingState;
-      const { id: selectedBillingCountry } = billingCountry;
 
       const doctorItemInput = {
         firstName, middleName, lastName, prefix, suffix, facilityId: selectedFacility,
@@ -256,7 +257,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         email: billingEmail || "", phone: billingPhone || "",
         fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "",
         zipCode: billingZipCode || "", city: billingCity || "", state: selectedBillingState || "",
-        country: selectedBillingCountry || "", userId: billingUserId || "", facilityId: selectedFacility || ""
+        country: billingCountry || USA, userId: billingUserId || "", facilityId: selectedFacility || ""
       };
 
       if (isEdit) {

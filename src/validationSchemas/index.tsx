@@ -239,7 +239,6 @@ export const contactSchema = {
   ...emailSchema,
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
-  country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
   pager: notRequiredPhone(PAGER),
   mobile: notRequiredPhone(PHONE),
@@ -270,7 +269,6 @@ export const basicContactViaAppointmentSchema = {
 export const billingAddressSchema = {
   billingState: stateSchema(false),
   billingFax: notRequiredPhone(FAX),
-  billingCountry: countrySchema(false),
   billingPhone: notRequiredPhone(PHONE),
   billingCity: notRequiredStringOnly(CITY),
   billingEmail: yup.string().email(INVALID_EMAIL),

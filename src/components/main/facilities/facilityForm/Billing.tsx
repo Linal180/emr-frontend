@@ -2,11 +2,14 @@
 import { FC } from "react"
 import { useFormContext } from "react-hook-form"
 import { AddCircleOutline } from "@material-ui/icons"
-import { Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, FormGroup, Grid, Typography } from "@material-ui/core"
+import {
+  Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, FormGroup, Grid, Typography
+} from "@material-ui/core"
 // components block
 import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
 import CardComponent from "../../../common/CardComponent"
+import CountryController from "../../../../controller/CountryController"
 // constants, interface block
 import { setRecord } from "../../../../utils"
 import InputController from "../../../../controller"
@@ -14,18 +17,19 @@ import { ActionType } from "../../../../reducers/facilityReducer"
 import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
 import {
   SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP,
-  ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL, CITY, CLIA_ID_NUMBER,
-  MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_COUNTRIES, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
-  CLIA_ID_NUMBER_INFO, COUNTRY, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, MAMMOGRAPHY_CERTIFICATION_NUMBER
+  ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL,
+  MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
+  CLIA_ID_NUMBER_INFO, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, CITY,
+  CLIA_ID_NUMBER, MAMMOGRAPHY_CERTIFICATION_NUMBER, USA,
 } from "../../../../constants"
 
 const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch }) => {
   const { addBilling } = state || {}
   const methods = useFormContext<CustomFacilityInputProps>()
   const { sameAddress } = state || {}
+
   const { watch, setValue } = methods
   const { email, zipCode, phone, fax, address, address2, city, state: inputState, country } = watch()
-
 
   const cancelBilling = () => {
     dispatch && dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: false })
@@ -42,8 +46,8 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
     setValue("billingAddress", '')
     setValue("billingZipCode", '')
     setValue("billingAddress2", '')
+    setValue("billingCountry", USA)
     setValue("billingState", setRecord('', ''))
-    setValue("billingCountry", setRecord('', ''))
   };
 
   const copyAddress = () => {
@@ -51,11 +55,11 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
     city && setValue("billingCity", city)
     phone && setValue("billingPhone", phone)
     email && setValue("billingEmail", email)
-    inputState && setValue("billingState", inputState)
     zipCode && setValue("billingZipCode", zipCode)
     address && setValue("billingAddress", address)
-    country && setValue("billingCountry", country)
     address2 && setValue("billingAddress2", address2)
+    inputState && setValue("billingState", inputState)
+    country && setValue("billingCountry", country || USA)
   };
 
   const handleSameAddress = (checked: boolean) => {
@@ -65,7 +69,6 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
   }
 
   const setBillingValues = (checked: boolean) => checked ? copyAddress() : resetBillingAddress()
-
 
   return (
     <CardComponent cardTitle={BILLING_PROFILE}>
@@ -124,11 +127,11 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
 
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
-              <PhoneField name="billingPhone" label={PHONE}   loading={getFacilityLoading} />
+              <PhoneField name="billingPhone" label={PHONE} loading={getFacilityLoading} />
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
-              <PhoneField name="billingFax" label={FAX}   loading={getFacilityLoading} />
+              <PhoneField name="billingFax" label={FAX} loading={getFacilityLoading} />
             </Grid>
           </Grid>
 
@@ -167,13 +170,7 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
             </Grid>
 
             <Grid item md={4}>
-              <Selector
-                label={COUNTRY}
-                value={EMPTY_OPTION}
-                name="billingCountry"
-                options={MAPPED_COUNTRIES}
-                loading={getFacilityLoading}
-              />
+              <CountryController loading={getFacilityLoading} controllerName="billingCountry" />
             </Grid>
           </Grid>
 

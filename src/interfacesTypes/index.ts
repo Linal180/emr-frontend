@@ -590,26 +590,19 @@ interface CustomBillingAddressInputs {
   billingUserId: string;
   billingMobile: string;
   billingZipCode: string;
+  billingCountry: string;
   billingAddress: string;
   billingAddress2: string;
   billingFacility: string;
   billingState: SelectorOption;
-  billingCountry: SelectorOption;
 }
 
 export type CustomFacilityInputProps = Omit<
-  UpdateContactInput,
-  "serviceCode" | "state" | "country"
-> &
-  Omit<
-    UpdateFacilityItemInput,
-    "practiceType" | "serviceCode" | "timeZone" | "practiceId"
-  > &
-  CustomBillingAddressInputs & { serviceCode: SelectorOption } & {
-    practiceType: SelectorOption;
-  } & { timeZone: SelectorOption } & { state: SelectorOption } & {
-    country: SelectorOption;
-  } & { practice: SelectorOption };
+  UpdateContactInput, "serviceCode" | "state">
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId">
+  & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption; }
+  & { timeZone: SelectorOption } & { state: SelectorOption }
+  & { practice: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = "timeZone" | "facilityId";
 

@@ -423,7 +423,6 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
     for (let practice of practices) {
       if (practice) {
         const { id, name } = practice;
-
         data.push({ id, name: name.trim() })
       }
     }

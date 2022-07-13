@@ -10,12 +10,13 @@ import PhoneField from "../../../common/PhoneInput"
 import SmartyModal from "../../../common/SmartyModal"
 import CardComponent from "../../../common/CardComponent"
 import { verifyAddress } from "../../../common/smartyAddress"
+import CountryController from "../../../../controller/CountryController"
 // constants, interface block
 import InputController from "../../../../controller"
 import { ActionType } from "../../../../reducers/facilityReducer"
 import { CustomFacilityInputProps, FacilityCardsProps, SmartyUserData } from "../../../../interfacesTypes"
 import {
-  ADDRESS_ONE, ADDRESS_TWO, CITY, COUNTRY, EMAIL, EMPTY_OPTION, FACILITY_LOCATION, FAX, MAPPED_COUNTRIES,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_LOCATION, FAX,
   MAPPED_STATES, PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP, ZIP_CODE_AND_CITY
 } from "../../../../constants"
 
@@ -23,6 +24,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
   const methods = useFormContext<CustomFacilityInputProps>()
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const { isVerified, data, addressOpen } = state || {}
+
   const { setValue, watch } = methods
   const { zipCode, address, address2, city, state: inputState } = watch()
 
@@ -51,6 +53,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
     deliveryLine1 && setValue('address', deliveryLine1);
     zipCode && plus4Code && setValue('zipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('city', cityName);
+
     setTimeout(() => {
       dispatch && dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
     }, 0);
@@ -60,7 +63,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
     <>
       <CardComponent cardTitle={FACILITY_LOCATION}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid item xs={12} sm={12} md={6}>
             <InputController
               isRequired
               fieldType="text"
@@ -69,14 +72,12 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
               loading={getFacilityLoading}
             />
           </Grid>
-        </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={6} xs={6}>
             <PhoneField isRequired name="phone" label={PHONE} loading={getFacilityLoading} />
           </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
+          <Grid item md={3} sm={6} xs={6}>
             <PhoneField name="fax" label={FAX} loading={getFacilityLoading} />
           </Grid>
         </Grid>
@@ -128,6 +129,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={4}>
             <InputController
@@ -149,25 +151,20 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
-            <Selector
-              name="country"
-              label={COUNTRY}
-              value={EMPTY_OPTION}
-              options={MAPPED_COUNTRIES}
-              loading={getFacilityLoading}
-            />
+            <CountryController loading={getFacilityLoading} controllerName="country"  />
           </Grid>
         </Grid>
       </CardComponent>
 
       <SmartyModal
+        data={data ?? []}
+        userData={userData}
         isOpen={addressOpen || false}
+        verifiedAddressHandler={verifiedAddressHandler}
         setOpen={(open: boolean) =>
           dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
         }
-        data={data ?? []}
-        userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler} />
+      />
     </>
   )
 };
