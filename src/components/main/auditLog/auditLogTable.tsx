@@ -1,12 +1,15 @@
 // packages
+import { CSVLink } from "react-csv";
+import { Link } from 'react-router-dom'
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChangeEvent, Fragment, Reducer, useCallback, useReducer, useEffect } from "react";
+import { ChangeEvent, Fragment, Reducer, useCallback, useReducer, useEffect, useMemo } from "react";
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
 import Selector from "../../common/Selector";
 import DatePicker from "../../common/DatePicker";
 import TableLoader from "../../common/TableLoader";
+import { DownloadIconWhite } from '../../../assets/svgs';
 import UserSelector from "../../common/userLogs/UserSelector";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import LogsPatientSelector from "../../common/userLogs/PatientSelector";
@@ -19,10 +22,20 @@ import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated
 import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh } from "../../../utils";
 import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer'
 import {
-  ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT,
+  ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT, AUDIT_LOG_REPORT, EXPORT_TO_FILE,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT,
-  AUDIT_TIME_ENUMS, USER_LOG_PAGE_LIMIT, MODULE_LOGS_TYPES, PAGE_LIMIT
+  AUDIT_TIME_ENUMS, USER_LOG_PAGE_LIMIT, MODULE_LOGS_TYPES, PAGE_LIMIT, PATIENTS_ROUTE
 } from "../../../constants";
+import moment from "moment";
+
+const headers = [
+  { label: "Date", key: "date" },
+  { label: "Time", key: "time" },
+  { label: "Patient", key: "patient" },
+  { label: "User", key: "user" },
+  { label: "Type", key: "moduleType" },
+  { label: "Action", key: "operationType" }
+];
 
 const AuditLogTable = (): JSX.Element => {
   const moduleOptions = formatModuleTypes(MODULE_LOGS_TYPES)
@@ -36,7 +49,7 @@ const AuditLogTable = (): JSX.Element => {
   const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
 
-  const { timeDuration, page, totalPages, userLogs } = state
+  const { timeDuration, page, totalPages, userLogs, csvData } = state
   const { handleSubmit, getValues, setValue } = methods
   const { patient, module, user, startDate, endDate } = getValues()
 
@@ -128,8 +141,38 @@ const AuditLogTable = (): JSX.Element => {
     }
   }
 
+  useMemo(() => {
+    if (!!userLogs?.length) {
+      const arr = userLogs?.map((item) => {
+        const { createdAt, moduleType, user, patient, operationType } = item || {}
+        const { email } = user || {}
+        const { firstName, lastName } = patient || {}
+        return {
+          user: email || '',
+          moduleType: moduleType || "",
+          operationType: operationType || '',
+          date: getFormatLogsDate(createdAt),
+          time: getFormatLogsTime(createdAt),
+          patient: `${firstName || ''} ${lastName || ''}`
+        }
+      })
+      arr?.length && dispatch({ type: ActionType.SET_CSV_DATA, csvData: arr })
+    }
+  }, [userLogs])
+
   return (
     <Fragment>
+
+      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Typography variant="h4" color="textPrimary">{AUDIT_LOG_REPORT}</Typography>
+        <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
+          filename={`audit_log_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
+          <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary">
+            {EXPORT_TO_FILE}
+          </Button>
+        </CSVLink>
+      </Box>
+
       <Box mt={3} mb={1}>
         <FormProvider {...methods}>
           <Grid container spacing={3} direction='row'>
@@ -224,12 +267,15 @@ const AuditLogTable = (): JSX.Element => {
                   {userLogs?.map((item) => {
                     const { id, createdAt, ipAddress, moduleType, activityPayload, user, patient, operationType } = item || {}
                     const { email } = user || {}
-                    const { firstName, lastName } = patient || {}
+                    const { firstName, lastName, patientRecord, id: patientId } = patient || {}
                     return (
                       <TableRow key={id}>
                         <TableCell scope="row">{getFormatLogsDate(createdAt)}</TableCell>
                         <TableCell scope="row">{getFormatLogsTime(createdAt)}</TableCell>
-                        <TableCell scope="row">{`${firstName ?? ''} ${lastName ?? ''}`}</TableCell>
+                        <TableCell scope="row">{patientId && (<>
+                          <Link to={`${PATIENTS_ROUTE}/${patientId}`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {patientRecord ?? ''}
+                        </>)}
+                        </TableCell>
                         <TableCell scope="row">{email}</TableCell>
                         <TableCell scope="row">{moduleType}</TableCell>
                         <TableCell scope="row">{operationType}</TableCell>

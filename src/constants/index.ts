@@ -753,6 +753,7 @@ export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
+export const REMOTE_IP = "client_ip";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
 export const ALL_LOG_TYPES = "All Log Types";

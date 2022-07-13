@@ -1096,3 +1096,7 @@ input[type=number] {
     margin-bottom: 10px;
   }
 }
+
+.csvLink {
+  color: inherit;
+}
