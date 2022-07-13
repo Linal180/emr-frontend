@@ -160,6 +160,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             transformedCodes && setValue(ITEM_MODULE.icdCodes, transformedCodes?.ICD_10_CODE || [])
             return
           }
+
           if (key === CodeType.CptCode) {
             transformedCodes && setValue(ITEM_MODULE.cptCode, transformedCodes.CPT_CODE || [])
             return
