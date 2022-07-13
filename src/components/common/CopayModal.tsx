@@ -2,18 +2,19 @@
 import { FC, useCallback } from "react";
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, CircularProgress, Dialog, Grid } from "@material-ui/core";
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Selector from "./Selector";
-import CardComponent from "./CardComponent";
 import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
 import { createCopaySchema } from "../../validationSchemas";
 import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
-import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
+import { CopayType, useCreateCopayMutation } from "../../generated/graphql";
 import {
-  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, 
+  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE
 } from "../../constants";
 
@@ -26,8 +27,7 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   const { amount: copayAmount } = childWatch()
 
   const { watch, setValue } = useFormContext<CreateBillingProps>()
-  const { amount, billingStatus } = watch()
-  const { id: billingStatusId } = billingStatus ?? {}
+  const { amount } = watch()
 
   const handleClose = useCallback(() => {
     reset();
@@ -52,75 +52,72 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   });
 
   const onSubmit: SubmitHandler<CopayFields> = async (inputs) => {
-    if (billingStatusId === PatientBillingStatus.BillInsurance) {
-      if (insuranceId) {
-        createCopay({
-          variables: {
-            createCopayInput: {
-              policyId: insuranceId, amount: inputs.amount,
-              type: inputs.copayType?.id as CopayType ?? ''
-            }
+    // if (billingStatusId === PatientBillingStatus.BillInsurance) {
+    if (insuranceId) {
+      createCopay({
+        variables: {
+          createCopayInput: {
+            policyId: insuranceId, amount: String(inputs.amount),
+            type: inputs.copayType?.id as CopayType ?? ''
           }
-        })
-        return
-      }
-
-      setValue('amount', String(Number(amount) + Number(inputs.amount)))
-      setIsOpen(false)
+        }
+      })
       return
     }
+
     setValue('amount', String(Number(amount) + Number(inputs.amount)))
     setIsOpen(false)
-  };
+    return
+  }
+  //   setValue('amount', String(Number(amount) + Number(inputs.amount)))
+  //   setIsOpen(false)
+  // };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}
+      aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
     >
+      <DialogTitle>
+        <Typography variant="h4">{ADD_COPAY}</Typography>
+      </DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardComponent cardTitle={ADD_COPAY}>
-            <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  addEmpty
-                  name="copayType"
-                  label={COPAY_TYPE}
-                  options={MAPPED_COPAY_TYPE}
-                />
-              </Grid>
+          <DialogContent>
+            <Box className="dialogBg">
+              <Selector
+                isRequired
+                addEmpty
+                name="copayType"
+                label={COPAY_TYPE}
+                options={MAPPED_COPAY_TYPE}
+              />
 
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  fieldType="number"
-                  controllerName="amount"
-                  controllerLabel={AMOUNT_WITH_DOLLAR}
-                />
-              </Grid>
+              <InputController
+                fieldType="number"
+                controllerName="amount"
+                controllerLabel={AMOUNT_WITH_DOLLAR}
+              />
+            </Box>
+          </DialogContent>
 
-              <Grid item md={12} sm={12} xs={12}>
-                <Box pb={3} display='flex' justifyContent='flex-end' alignItems='center'>
-                  <Button onClick={handleClose} color="default">
-                    {CANCEL}
-                  </Button>
+          <DialogActions>
+            <Box display='flex' justifyContent='flex-end' alignItems='center'>
+              <Button onClick={handleClose} color="default">
+                {CANCEL}
+              </Button>
 
-                  <Box p={1} />
+              <Box p={1} />
 
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={createCopayLoading}
-                  >
-                    {CREATE_COPAY}
-
-                    {createCopayLoading && <CircularProgress size={20} color="inherit" />}
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </CardComponent>
+              <Button type="submit" variant="contained" color="primary" disabled={createCopayLoading}>
+                {CREATE_COPAY}
+                {createCopayLoading && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            </Box>
+          </DialogActions>
         </form>
       </FormProvider>
-    </Dialog>
+    </Dialog >
   );
 };
 
