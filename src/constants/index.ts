@@ -1864,6 +1864,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
+export const MAPPED_SPECIALTIES = sortingValue(mapEnum<typeof Speciality>(Speciality))
 export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
 
 export const TEMPORARY_CPT_CODES = [
@@ -1908,8 +1909,6 @@ export const TEMPORARY_CPT_CODES = [
     description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
   },
 ]
-
-export const MAPPED_SPECIALTIES = mapEnum<typeof Speciality>(Speciality)
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
