@@ -1057,6 +1057,17 @@ input[type=number] {
   background-color: #E5E7EB !important;
 }
 
+.header-selector .MuiSvgIcon-root path {
+  display: none !important;
+}
+
+.header-selector .MuiSvgIcon-root {
+  background-image: url(../assets/images/chevron-down.svg) !important;
+  background-size: auto !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {
@@ -1102,4 +1113,12 @@ input[type=number] {
   .breadcrumb-list {
     margin-bottom: 10px;
   }
+}
+
+.csvLink {
+  color: inherit;
+}
+
+.ck-content{
+  height: 320px;
 }

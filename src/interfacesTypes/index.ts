@@ -1628,8 +1628,9 @@ export interface DoctorProfileHeroProps {
 }
 
 export interface VitalListingTableProps {
-  patientStates: PatientState;
+  loading?: boolean;
   shouldDisableEdit?: boolean
+  patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
 }
 

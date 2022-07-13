@@ -3,16 +3,18 @@ import { UserLogsPayload, UsersPayload } from "../generated/graphql";
 
 export interface State {
   page: number;
+  csvData: object[];
   totalPages: number;
   searchQuery: string;
   timeDuration: string;
   users: UsersPayload['users'];
-  userLogs: UserLogsPayload['userLogs']
+  userLogs: UserLogsPayload['userLogs'];
 }
 
 export const initialState: State = {
   page: 1,
   users: [],
+  csvData: [],
   userLogs: [],
   totalPages: 0,
   searchQuery: "",
@@ -22,6 +24,7 @@ export const initialState: State = {
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_USERS = 'setUsers',
+  SET_CSV_DATA = 'setCsvData',
   SET_USER_LOGS = 'setUserLogs',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
@@ -30,6 +33,7 @@ export enum ActionType {
 
 export type Action =
   { type: ActionType.SET_PAGE; page: number } |
+  { type: ActionType.SET_CSV_DATA; csvData: object[] } |
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
   { type: ActionType.SET_SEARCH_QUERY; searchQuery: string } |
   { type: ActionType.SET_TIME_DURATION; timeDuration: string } |
@@ -75,6 +79,12 @@ export const userLogsReducer = (state: State, action: Action): State => {
       return {
         ...state,
         users: action.users
+      }
+
+    case ActionType.SET_CSV_DATA:
+      return {
+        ...state,
+        csvData: action.csvData
       }
   }
 }

@@ -31,7 +31,7 @@ import {
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
-export const TID_REGEX = /^9\d{8}$/;
+export const TID_REGEX = /^\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
@@ -597,8 +597,8 @@ export const SELECT = "Select";
 export const GENDER = "Gender";
 export const ENABLED = "Enabled";
 export const ADDRESS = "Address";
-export const ADDRESS_ONE = "Address One";
-export const ADDRESS_TWO = "Address Two";
+export const ADDRESS_ONE = "Address 1";
+export const ADDRESS_TWO = "Address 2";
 export const COUNTRY = "Country";
 export const RELATION = "Relation";
 export const ZIP_CODE = "Zip code";
@@ -765,6 +765,7 @@ export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
+export const REMOTE_IP = "client_ip";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
 export const ALL_LOG_TYPES = "All Log Types";
@@ -1425,9 +1426,10 @@ export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
-export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
+export const TID_VALIDATION_MESSAGE = "Tax id valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
+export const INVALID_END_TIME = "End time should be greater than start time";
 export const REACTIONS_VALIDATION_MESSAGE = "At least one reaction is required";
 export const DIAGNOSES_VALIDATION_MESSAGE = "At least one diagnose is required";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
@@ -1558,7 +1560,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
-export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient Can't be invited";
+export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
@@ -1911,7 +1913,7 @@ export const MAPPED_SPECIALTIES = mapEnum<typeof Speciality>(Speciality)
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
+  { id: Maritialstatus.Married, name: formatValue(Maritialstatus.Married) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
