@@ -1233,6 +1233,13 @@ export interface CopayModalProps {
   billingStatus?: string
 }
 
+export interface CheckoutModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  insuranceId?: string;
+  billingStatus?: string
+}
+
 export interface FacilityScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;

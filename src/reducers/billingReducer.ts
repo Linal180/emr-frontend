@@ -17,7 +17,7 @@ export const initialState: State = {
   isModalOpen: false,
   insuranceId: '',
   tableCodesData: {},
-  facilityId: ''
+  facilityId: '',
 }
 
 export enum ActionType {

@@ -10,6 +10,7 @@ import {
 import Selector from "../../../common/Selector";
 import CodesTable from "../../../common/CodesTable";
 import CopayModal from "../../../common/CopayModal";
+import CheckoutModal from "../../../common/CheckoutModal";
 import DatePicker from "../../../common/DatePicker";
 import InputController from "../../../../controller";
 import TableSelector from "../../../common/Selector/TableSelector";
@@ -26,8 +27,9 @@ import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS, COPAY_AMOUNT,
-  CPT_CODES, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES,
-  NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, POS, RENDERING, SERVICE_DATE, SERVICING_PROVIDER, YES
+  CPT_CODES, CREATE_CLAIM, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE, 
+  MAPPED_SERVICE_CODES, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, POS, RENDERING, SERVICE_DATE, 
+  SERVICING_PROVIDER, YES
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = (
@@ -70,7 +72,7 @@ const BillingForm: FC<BillingFormProps> = (
                 color="secondary"
                 onClick={() => createClaimCallback()}
               >
-                Create Claim
+                {CREATE_CLAIM}
               </Button>
 
               <Box p={1} />
@@ -85,7 +87,10 @@ const BillingForm: FC<BillingFormProps> = (
 
               <Box p={1} />
 
-              {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
+              {!shouldDisableEdit && <Button
+                variant="contained" color="primary" type="submit" disabled={createBillingLoading}
+                onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
+              >
                 {submitButtonText ?? CHECKOUT}
                 {createBillingLoading && <CircularProgress size={20} color="inherit" />}
                 <ChevronRight />
@@ -371,9 +376,19 @@ const BillingForm: FC<BillingFormProps> = (
           </TabContext>
         </Box>
       </form>
-      {
+
+      {/* {
         isModalOpen &&
         <CopayModal
+          isOpen={isModalOpen}
+          setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
+          insuranceId={insuranceId}
+        />
+      } */}
+
+      {
+        isModalOpen &&
+        <CheckoutModal
           isOpen={isModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
           insuranceId={insuranceId}

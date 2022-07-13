@@ -3,7 +3,7 @@ import { FC, useCallback } from "react";
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
@@ -84,25 +84,21 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
-            <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  addEmpty
-                  name="copayType"
-                  label={COPAY_TYPE}
-                  options={MAPPED_COPAY_TYPE}
-                />
-              </Grid>
+            <Box className="dialogBg">
+              <Selector
+                isRequired
+                addEmpty
+                name="copayType"
+                label={COPAY_TYPE}
+                options={MAPPED_COPAY_TYPE}
+              />
 
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  fieldType="number"
-                  controllerName="amount"
-                  controllerLabel={AMOUNT_WITH_DOLLAR}
-                />
-              </Grid>
-            </Grid>
+              <InputController
+                fieldType="number"
+                controllerName="amount"
+                controllerLabel={AMOUNT_WITH_DOLLAR}
+              />
+            </Box>
           </DialogContent>
 
           <DialogActions>
