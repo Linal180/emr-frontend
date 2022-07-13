@@ -29,7 +29,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE
+  SYSTEM_ROLES, ITEM_MODULE, ICD_CODE
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
 
@@ -1039,7 +1039,7 @@ export const createBillingSchema = yup.object({
   amount: yup.string(),
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
-  ).test('', requiredMessage(ITEM_MODULE.icdCodes), (value: any) => !!value && value.length > 0 ),
+  ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0 ),
   [ITEM_MODULE.cptCode]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0 ),

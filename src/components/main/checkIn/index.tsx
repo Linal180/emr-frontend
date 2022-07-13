@@ -11,7 +11,7 @@ import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
 import PatientForm from "../patients/patientForm";
-import BillingComponent from "./BillingComponent";
+import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
 // constants, interfaces, utils block
 import {
@@ -202,6 +202,7 @@ const CheckInComponent = (): JSX.Element => {
       case 3:
         return <LabOrders appointmentInfo={appointmentInfo} handleStep={()=> handleStep(4)} />
       case 4:
+      case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return <CircularProgress />;

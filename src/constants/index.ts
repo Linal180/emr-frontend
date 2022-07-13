@@ -26,7 +26,7 @@ import {
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord, sortingValue
 } from "../utils";
 
 // regex
@@ -1857,7 +1857,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SERVICE_CODES = mapServiceEnum<typeof ServiceCode>(ServiceCode)
+export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
 
 export const TEMPORARY_CPT_CODES = [
   {

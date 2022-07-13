@@ -14,7 +14,7 @@ import { createCopaySchema } from "../../validationSchemas";
 import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
 import { CopayType, PatientBillingStatus, useCreateCopayMutation } from "../../generated/graphql";
 import {
-  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS, 
+  ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE
 } from "../../constants";
 
@@ -115,11 +115,8 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
 
             <Box p={1} />
 
-            <Button type="submit" variant="contained" color="primary"
-              disabled={createCopayLoading}
-            >
+            <Button type="submit" variant="contained" color="primary" disabled={createCopayLoading}>
               {CREATE_COPAY}
-
               {createCopayLoading && <CircularProgress size={20} color="inherit" />}
             </Button>
           </Box>
