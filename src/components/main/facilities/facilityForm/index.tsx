@@ -19,7 +19,7 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
+  formatEnumMember, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
 } from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -92,7 +92,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
             startTime && setValue('startTime', getTimeString(startTime))
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatServiceCode(serviceCode)))
+            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatEnumMember(serviceCode)))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
             if (contacts && contacts.length > 0) {
