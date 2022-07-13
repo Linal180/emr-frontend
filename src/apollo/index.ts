@@ -5,31 +5,29 @@
 
 // packages block
 import dotenv from 'dotenv';
-import { useContext } from 'react';
 import { onError } from "@apollo/client/link/error";
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions, Operation, NextLink } from "@apollo/client";
 // components block
 import Alert from "../components/common/Alert";
 // utils and constants block
 import history from '../history';
-import { ApiContext } from '../context'
 import { handleLogout } from "../utils";
 import {
   FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE,
   NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
-  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION,
+  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION, REMOTE_IP,
 } from "../constants";
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) => {
   const token = localStorage.getItem(TOKEN) || localStorage.getItem(FA_TOKEN);
   const pathname = window.location.pathname;
-  const { clientRemote } = useContext(ApiContext)
+  const clientRemote = sessionStorage.getItem(REMOTE_IP) || ''
 
   operation.setContext({
     headers: {
       authorization: `Bearer ${token}`,
-      pathname, clientRemote
+      pathname, clientRemote: clientRemote
     },
   });
 
