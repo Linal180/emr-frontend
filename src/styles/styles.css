@@ -1100,3 +1100,7 @@ input[type=number] {
 .csvLink {
   color: inherit;
 }
+
+.ck-content{
+  height: 320px;
+}
