@@ -280,8 +280,8 @@ export const theme = createTheme({
 
       outlined: {
         borderRadius: 6,
-        maxHeight: 40,
-        height: 40,
+        // maxHeight: 40,
+        // height: 40,
         boxShadow: 'none',
         color: BLACK,
 
