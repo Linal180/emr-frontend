@@ -1,32 +1,31 @@
 // packages block
-import { yupResolver } from "@hookform/resolvers/yup";
-import moment from "moment";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
-import { SubmitHandler, useForm } from 'react-hook-form';
+import moment from "moment";
 import { useParams } from "react-router";
-import { EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, VIEW_APPOINTMENTS_ROUTE } from "../../../../constants";
-import {
-  CodeType,
-  DoctorPatientRelationType,
-  OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
-  PatientPaymentType, useCreateBillingMutation, useCreateClaimLazyQuery, useFetchBillingDetailsByAppointmentIdLazyQuery,
-  useFetchPatientInsurancesLazyQuery,
-  useGetAppointmentLazyQuery,
-  useGetClaimFileLazyQuery,
-  useGetFacilityLazyQuery,
-  useGetPatientProvidersLazyQuery
-} from "../../../../generated/graphql";
-//constants block
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SubmitHandler, useForm } from 'react-hook-form';
+// components block
+import Alert from "../../../common/Alert";
+import BillingForm from "./BillingForm";
+// constants block
 import history from "../../../../history";
+import { createBillingSchema } from "../../../../validationSchemas";
+import { convertDateFromUnix, formatEnumMember, setRecord } from "../../../../utils";
+import {
+  Action, ActionType, billingReducer, initialState, State
+} from "../../../../reducers/billingReducer";
 import {
   BillingComponentProps, CodeTablesData, CreateBillingProps, ParamsType
 } from "../../../../interfacesTypes";
-import { Action, ActionType, billingReducer, initialState, State } from "../../../../reducers/billingReducer";
-import { convertDateFromUnix, formatServiceCode, setRecord } from "../../../../utils";
-import { createBillingSchema } from "../../../../validationSchemas";
-//components block
-import Alert from "../../../common/Alert";
-import BillingForm from "./BillingForm";
+import {
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, VIEW_APPOINTMENTS_ROUTE
+} from "../../../../constants";
+import {
+  CodeType, DoctorPatientRelationType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
+  PatientPaymentType, useCreateBillingMutation, useCreateClaimLazyQuery, useGetPatientProvidersLazyQuery,
+  useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
+  useFetchBillingDetailsByAppointmentIdLazyQuery,
+} from "../../../../generated/graphql";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
@@ -182,7 +181,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('amount', amount ?? '')
         setValue('claimDate', claimDate ?? '')
         setValue('serviceDate', serviceDate ?? '')
-        pos && setValue('pos', setRecord(pos, formatServiceCode(pos)))
+        pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
         facility?.id && setValue('facility', setRecord(facility.id, facility.name))
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
@@ -342,7 +341,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       const { serviceCode, id, name } = facility || {}
 
       id && name && setValue('facility', setRecord(id, name))
-      serviceCode && setValue('pos', setRecord(serviceCode, formatServiceCode(serviceCode)))
+      serviceCode && setValue('pos', setRecord(serviceCode, formatEnumMember(serviceCode)))
     }
   });
 
