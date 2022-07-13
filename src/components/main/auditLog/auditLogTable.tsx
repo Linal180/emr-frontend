@@ -273,7 +273,7 @@ const AuditLogTable = (): JSX.Element => {
                         <TableCell scope="row">{getFormatLogsDate(createdAt)}</TableCell>
                         <TableCell scope="row">{getFormatLogsTime(createdAt)}</TableCell>
                         <TableCell scope="row">{patientId && (<>
-                          <Link to={`${PATIENTS_ROUTE}/${patientId}`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {patientRecord ?? ''}
+                          <Link to={`${PATIENTS_ROUTE}/${patientId}/details`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {patientRecord ?? ''}
                         </>)}
                         </TableCell>
                         <TableCell scope="row">{email}</TableCell>
