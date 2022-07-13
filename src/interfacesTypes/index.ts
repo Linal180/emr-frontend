@@ -1899,6 +1899,7 @@ export interface ScheduleFormProps {
   doctorFacilityId?: string;
   scheduleDispatch?: Dispatch<ScheduleAction>;
   reload: Function;
+  doctorId?: string;
 }
 
 export interface ScheduleListingProps {

@@ -128,8 +128,8 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
   }, [doctorId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
 
   useEffect(() => {
-    (id || doctorId) && fetchSchedules()
-  }, [doctorId, fetchSchedules, id])
+    fetchSchedules()
+  }, [fetchSchedules])
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
 
@@ -172,6 +172,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
       </CardComponent>
 
       <ScheduleModal
+        doctorId={doctorId}
         id={scheduleId}
         isEdit={isEdit}
         isOpen={openModal}

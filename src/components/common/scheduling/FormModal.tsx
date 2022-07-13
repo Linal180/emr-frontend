@@ -31,7 +31,7 @@ import {
   InputLabel, Typography
 } from "@material-ui/core";
 import {
-  APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
+  APPOINTMENT_TYPE, CANCEL, CREATE_SCHEDULE, DAY,
   DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
@@ -39,7 +39,7 @@ import {
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
-  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit
+  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit, doctorId
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
@@ -50,7 +50,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
   });
-  const { reset, handleSubmit, setValue, control } = methods;
+  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
 
   const handleClose = useCallback(() => {
@@ -177,7 +177,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: typeId } : { facilityId: typeId }
+      const recordId = isDoctor ? { doctorId: doctorId ? doctorId : typeId } : { facilityId: doctorFacilityId ? doctorFacilityId : typeId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
@@ -185,23 +185,22 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
         recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
       }
     })
-
-    if (typeId) {
-      if (isEdit) {
-        id ?
-          await updateSchedule({
-            variables: {
-              updateScheduleInput: { id, ...scheduleInput[0] }
-            }
-          }) : Alert.error(SCHEDULE_NOT_FOUND)
-      } else {
-        await createSchedule({
+    // if (typeId) {
+    if (isEdit) {
+      id ?
+        await updateSchedule({
           variables: {
-            createScheduleInput: scheduleInput
+            updateScheduleInput: { id, ...scheduleInput[0] }
           }
-        })
-      }
-    } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
+        }) : Alert.error(SCHEDULE_NOT_FOUND)
+    } else {
+      await createSchedule({
+        variables: {
+          createScheduleInput: scheduleInput
+        }
+      })
+    }
+    // } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
   const handleChangeForCheckBox = (id: string) => {
@@ -218,6 +217,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
+        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={isDoctor ? DOCTOR_SCHEDULE : FACILITY_SCHEDULE}>
             <Box px={1}>
