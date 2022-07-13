@@ -23,8 +23,7 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
     mode: "all",
     resolver: yupResolver(createCopaySchema)
   });
-  const { reset, handleSubmit, watch: childWatch, formState } = methods;
-  console.log('formState', formState.errors)
+  const { reset, handleSubmit, watch: childWatch } = methods;
   const { amount: copayAmount } = childWatch()
 
   const { watch, setValue } = useFormContext<CreateBillingProps>()
@@ -53,7 +52,6 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
   });
 
   const onSubmit: SubmitHandler<CopayFields> = async (inputs) => {
-    console.log('inusranceId', insuranceId)
     // if (billingStatusId === PatientBillingStatus.BillInsurance) {
     if (insuranceId) {
       createCopay({
