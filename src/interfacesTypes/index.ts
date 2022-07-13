@@ -310,8 +310,8 @@ interface TextLoaderRow {
 
 export interface TextLoaderInterface {
   rows: TextLoaderRow[]
-  height? : number 
-  width? : string;
+  height?: number
+  width?: string;
 }
 
 export interface DataLoaderInterface {
@@ -1246,8 +1246,8 @@ export interface AppointmentDatePickerProps {
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput &
-  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email">
-  & { facilityName: string } & { roleType: SelectorOption } & { country: SelectorOption }
+  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode"
+    | "email" | "country"> & { facilityName: string } & { roleType: SelectorOption }
   & { state: SelectorOption } & { isAdmin: boolean };
 
 export interface PaymentProps {

@@ -29,7 +29,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, DESCRIPTION
+  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, DESCRIPTION, TAX_ID, NPI
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
 
@@ -580,7 +580,6 @@ const practiceFacilitySchema = {
   ...upinSchema,
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
-  country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
   name: nameSchema(PRACTICE_NAME),
   city: notRequiredStringOnly(CITY),
@@ -593,8 +592,8 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   facilityName: nameSchema(FACILITY_NAME),
   address: addressValidation(ADDRESS, true),
-  npi: yup.string().required(),
-  taxId: yup.string().required()
+  npi: requiredMatches(NPI, NPI_VALIDATION_MESSAGE, NPI_REGEX),
+  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX)
 })
 
 export const updatePracticeSchema = yup.object({

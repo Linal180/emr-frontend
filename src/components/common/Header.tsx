@@ -238,8 +238,7 @@ const Header: FC = (): JSX.Element => {
                         <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
                     </Box>
-                  )
-                }
+                  )}
               </Box>
 
               <ProfileDropdownMenu />
