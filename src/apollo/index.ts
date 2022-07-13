@@ -27,7 +27,7 @@ const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) 
   operation.setContext({
     headers: {
       authorization: `Bearer ${token}`,
-      pathname, clientRemote: clientRemote
+      pathname, clientRemote
     },
   });
 
@@ -35,8 +35,7 @@ const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) 
 });
 
 const httpLink = new HttpLink({
-  uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`,
-
+  uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`
 });
 
 const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
@@ -115,6 +114,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     addTypename: false
   }),
+  
   connectToDevTools: true,
   link: from([authMiddleware, errorLink, httpLink]),
   defaultOptions: defaultOptions
