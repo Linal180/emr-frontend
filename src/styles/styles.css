@@ -1039,6 +1039,24 @@ input[type=number] {
   border: 10px solid red;
 }
 
+.billing-selector .MuiFormControl-root .MuiAutocomplete-inputRoot {
+  height: auto !important;
+  min-height: auto !important;
+}
+
+.billing-selector .MuiFormControl-marginNormal {
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+}
+
+.billing-tabs .MuiTabPanel-root {
+  padding-top: 0 !important;
+}
+
+.claim-box .MuiOutlinedInput-root {
+  background-color: #E5E7EB !important;
+}
+
 .header-selector .MuiSvgIcon-root path {
   display: none !important;
 }

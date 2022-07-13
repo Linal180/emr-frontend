@@ -384,9 +384,13 @@ export type Billing = {
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
+  claimDate?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<Code>>;
   createdAt?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
+  facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
@@ -398,6 +402,12 @@ export type Billing = {
   patientBillingStatus: PatientBillingStatus;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType: PatientPaymentType;
+  pos?: Maybe<Scalars['String']>;
+  renderingProvider?: Maybe<Doctor>;
+  renderingProviderId?: Maybe<Scalars['String']>;
+  serviceDate?: Maybe<Scalars['String']>;
+  servicingProvider?: Maybe<Doctor>;
+  servicingProviderId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -429,8 +439,11 @@ export type BillingInput = {
   amount?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
+  claimDate?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
+  facilityId?: Maybe<Scalars['String']>;
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
@@ -440,6 +453,10 @@ export type BillingInput = {
   patientBillingStatus?: Maybe<PatientBillingStatus>;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType?: Maybe<PatientPaymentType>;
+  pos?: Maybe<Scalars['String']>;
+  renderingProviderId?: Maybe<Scalars['String']>;
+  serviceDate?: Maybe<Scalars['String']>;
+  servicingProviderId?: Maybe<Scalars['String']>;
 };
 
 export type BillingPayload = {
@@ -1253,9 +1270,11 @@ export type Doctor = {
   practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  primaryProviderBillings?: Maybe<Array<Billing>>;
   primaryProviderLabTests?: Maybe<Array<LabTests>>;
   providerIntials?: Maybe<Scalars['String']>;
   referringProviderLabTests?: Maybe<Array<LabTests>>;
+  renderingProviderBillings?: Maybe<Array<Billing>>;
   schedule?: Maybe<Array<Schedule>>;
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -1457,6 +1476,7 @@ export type Facility = {
   agreements?: Maybe<Array<Agreement>>;
   appointments?: Maybe<Array<Appointment>>;
   billingAddress?: Maybe<Array<BillingAddress>>;
+  billings?: Maybe<Array<Billing>>;
   cliaIdNumber?: Maybe<Scalars['String']>;
   color?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
@@ -5816,7 +5836,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
 
 export type CreateClaimQueryVariables = Exact<{
   claimInput: ClaimInput;
@@ -8576,6 +8596,24 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       otherAccident
       otherDate
       amount
+      serviceDate
+      claimDate
+      claimNo
+      facility {
+        id
+        name
+      }
+      pos
+      servicingProvider {
+        id
+        firstName
+        lastName
+      }
+      renderingProvider {
+        id
+        firstName
+        lastName
+      }
       codes {
         id
         code

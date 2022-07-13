@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn, UseFormSetValue, ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
@@ -26,6 +26,9 @@ import {
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
 } from "../reducers/externalFormBuilderReducer";
+import {
+  Action as BillingAction, State as BillingState
+} from "../reducers/billingReducer";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
   Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput,
@@ -310,8 +313,8 @@ interface TextLoaderRow {
 
 export interface TextLoaderInterface {
   rows: TextLoaderRow[]
-  height? : number 
-  width? : string;
+  height?: number
+  width?: string;
 }
 
 export interface DataLoaderInterface {
@@ -908,6 +911,12 @@ export interface CreateBillingProps {
   otherDate?: string
   [ITEM_MODULE.icdCodes]: TableCodesProps[]
   [ITEM_MODULE.cptCode]: TableCodesProps[]
+  serviceDate: string
+  claimDate: string
+  servicingProvider: SelectorOption
+  renderingProvider: SelectorOption
+  facility: SelectorOption
+  pos: SelectorOption
 }
 
 export interface CreateLabTestProviderProps {
@@ -1222,6 +1231,14 @@ export interface CopayModalProps {
   setIsOpen: Function;
   insuranceId?: string;
   billingStatus?: string
+}
+
+export interface CheckoutModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  insuranceId?: string;
+  billingStatus?: string
+  handleSubmit: Function
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
@@ -1829,6 +1846,16 @@ export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   submitButtonText?: string
   labOrderNumber?: string
+}
+
+export interface BillingFormProps extends BillingComponentProps{
+  methods: UseFormReturn<CreateBillingProps, any>,
+  onSubmit: (values: CreateBillingProps) => void
+  createBillingLoading: boolean
+  createClaimCallback: Function
+  dispatch: Dispatch<BillingAction>
+  state: BillingState
+  claimNumber: string
 }
 
 export interface CodeTypeInterface {

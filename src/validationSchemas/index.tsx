@@ -22,13 +22,13 @@ import {
   COPAY_TYPE, AMOUNT, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE,
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, LEGAL_SEX, BANK_ACCOUNT, US_BANK_ACCOUNT_REGEX,
   ROUTING_NUMBER, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE, ACCOUNT_TYPE, STREET_ADDRESS,
-  BILLING_STATUS, PATIENT_PAYMENT_TYPE, DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER,
+  DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER,
   INVALID_EMAIL, EMAIL, NPI_VALIDATION_MESSAGE, NPI_REGEX, CLIA_VALIDATION_MESSAGE, CLIA_REGEX,
   LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
   PRICE, DURATION, NUMBER, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
+  NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME, ICD_CODE,
   SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, DESCRIPTION
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
@@ -1033,16 +1033,16 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
-  amount: yup.string()
+  amount: yup.number()
 })
 
 export const createBillingSchema = yup.object({
-  billingStatus: selectorSchema(BILLING_STATUS),
-  paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
+  // billingStatus: selectorSchema(BILLING_STATUS),
+  // paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
   amount: yup.string(),
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
-  ).test('', requiredMessage(ITEM_MODULE.icdCodes), (value: any) => !!value && value.length > 0),
+  ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0 ),
   [ITEM_MODULE.cptCode]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
