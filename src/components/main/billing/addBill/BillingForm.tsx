@@ -1,33 +1,34 @@
 //packages block
-import { ChangeEvent, FC, useState } from "react"
-import { Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Tab, Typography } from "@material-ui/core"
-import { TabContext, TabList, TabPanel } from "@material-ui/lab"
-import { AddCircleOutline, ChevronRight } from "@material-ui/icons"
-import { Controller, FormProvider } from "react-hook-form"
+import { ChangeEvent, FC, useState } from "react";
+import { Controller, FormProvider } from "react-hook-form";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
+import {
+  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Tab, Typography
+} from "@material-ui/core";
 //components block
-import InputController from "../../../../controller"
-import CodesTable from "../../../common/CodesTable"
-import CopayModal from "../../../common/CopayModal"
-import DatePicker from "../../../common/DatePicker"
-import Selector from "../../../common/Selector"
-import DoctorSelector from "../../../common/Selector/DoctorSelector"
-import FacilitySelector from "../../../common/Selector/FacilitySelector"
-import TableSelector from "../../../common/Selector/TableSelector"
-import InsuranceComponent from "../../patients/patientDetail/insurance"
+import Selector from "../../../common/Selector";
+import CodesTable from "../../../common/CodesTable";
+import CopayModal from "../../../common/CopayModal";
+import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
+import TableSelector from "../../../common/Selector/TableSelector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
+import InsuranceComponent from "../../patients/patientDetail/insurance";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
+import { CodeType } from "../../../../generated/graphql";
+import { BillingFormProps } from "../../../../interfacesTypes";
+import { ActionType } from "../../../../reducers/billingReducer";
+import { GREY_SEVEN, GREY_THREE, WHITE } from "../../../../theme";
+import { formatValue, generateString, renderItem } from "../../../../utils";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS, COPAY_AMOUNT,
-  CPT_CODES, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE,
-  MAPPED_SERVICE_CODES, NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, POS, RENDERING, SERVICE_DATE, SERVICING_PROVIDER, YES
-} from "../../../../constants"
-import { CodeType } from "../../../../generated/graphql"
-import { BillingFormProps } from "../../../../interfacesTypes"
-import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
-import { GREY_SEVEN, WHITE } from "../../../../theme"
-import { formatValue, generateString, renderItem } from "../../../../utils"
-import { ActionType } from "../../../../reducers/billingReducer"
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles"
-
+  CPT_CODES, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE, MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES,
+  NO, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, POS, RENDERING, SERVICE_DATE, SERVICING_PROVIDER, YES
+} from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
@@ -63,28 +64,32 @@ const BillingForm: FC<BillingFormProps> = (
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            <Box>
+            <Box display="flex" alignItems="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => createClaimCallback()}
+              >
+                Create Claim
+              </Button>
+
+              <Box p={1} />
+
+              <Button
+                variant="outlined"
+                color="default"
+                onClick={() => createClaimCallback(true)}
+              >
+                HCFA - 1500 Form
+              </Button>
+
+              <Box p={1} />
+
               {!shouldDisableEdit && <Button variant="contained" color="primary" type="submit" disabled={createBillingLoading}>
                 {submitButtonText ?? CHECKOUT}
                 {createBillingLoading && <CircularProgress size={20} color="inherit" />}
                 <ChevronRight />
               </Button>}
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: 20 }}
-                onClick={() => createClaimCallback()}
-              >
-                Create Claim
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: 20 }}
-                onClick={() => createClaimCallback(true)}
-              >
-                HCFA - 1500 Form
-              </Button>
             </Box>
           </Box>
 
@@ -150,7 +155,7 @@ const BillingForm: FC<BillingFormProps> = (
             />
           </Grid> */}
 
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item md={2} sm={12} xs={12}>
                 <InputController
                   fieldType="text"
                   controllerName="amount"
@@ -159,6 +164,25 @@ const BillingForm: FC<BillingFormProps> = (
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}>
+                <DoctorSelector
+                  label={RENDERING}
+                  name="renderingProvider"
+                  shouldOmitFacilityId
+                  addEmpty
+                  disabled
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
+                <Selector
+                  name="claimStatus"
+                  label={CLAIM_STATUS}
+                  addEmpty
+                  options={[]}
+                />
+              </Grid>
+
+              <Grid item md={2} sm={12} xs={12}>
                 <Box pt={3.7}
                   onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
                   className="billing-box" display="flex" alignItems="center"
@@ -180,16 +204,6 @@ const BillingForm: FC<BillingFormProps> = (
             />
           </Grid> */}
 
-              <Grid item md={3} sm={12} xs={12}>
-                <DoctorSelector
-                  label={RENDERING}
-                  name="renderingProvider"
-                  shouldOmitFacilityId
-                  addEmpty
-                  disabled
-                />
-              </Grid>
-
               {/* <Grid item md={3} sm={12} xs={12}>
             <Selector
               name="supervisor"
@@ -198,18 +212,11 @@ const BillingForm: FC<BillingFormProps> = (
               options={[]}
             />
           </Grid> */}
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Selector
-                  name="claimStatus"
-                  label={CLAIM_STATUS}
-                  addEmpty
-                  options={[]}
-                />
-              </Grid>
             </Grid>
 
-            <Typography variant="body2">{HCFA_DESC}</Typography>
+            <Box py={1} color={GREY_THREE}>
+              <Typography variant="body1" color="inherit">{HCFA_DESC}</Typography>
+            </Box>
 
             <Box p={2} />
 
@@ -323,13 +330,13 @@ const BillingForm: FC<BillingFormProps> = (
             <Box mt={2} className="billing-tabs">
               <TabPanel value="1">
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     {
                       shouldDisableEdit ?
                         <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
                         <TableSelector moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
                     }
-                    <Box p={2} />
+                    <Box p={1} />
                     {/* {
                       shouldDisableEdit ?
                         <CodesTable title={formatValue(CodeType.HcpcsCode)} shouldShowPrice tableData={tableCodesData.HCPCS_CODE} /> :
@@ -337,13 +344,13 @@ const BillingForm: FC<BillingFormProps> = (
                     } */}
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     {
                       shouldDisableEdit ?
                         <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
                         <TableSelector moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
                     }
-                    <Box p={2} />
+                    <Box p={1} />
                     {/* {
                     shouldDisableEdit ?
                       <CodesTable title={formatValue(CodeType.CustomCode)} shouldShowPrice tableData={tableCodesData.CUSTOM_CODE} /> :
@@ -376,4 +383,4 @@ const BillingForm: FC<BillingFormProps> = (
   )
 }
 
-export default BillingForm
+export default BillingForm;

@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 //constants, interfaces, utils
 import { ClearIcon } from "../../../assets/svgs";
-import { ACTIONS, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, PRICE_WITH_DOLLAR } from "../../../constants";
+import { ACTIONS, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, } from "../../../constants";
 import { CodeType } from "../../../generated/graphql";
 import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
 import { renderTh } from "../../../utils";
@@ -93,7 +93,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                   <TableRow>
                     {renderTh(CODE)}
                     {renderTh(DESCRIPTION)}
-                    {shouldShowPrice && renderTh(PRICE_WITH_DOLLAR)}
+                    {shouldShowPrice && renderTh(BUILD_FEE_DOLLAR)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -105,7 +105,11 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                     return (
                       <TableRow key={id}>
                         <TableCell scope="row">{code}</TableCell>
-                        <TableCell scope="row">{description}</TableCell>
+                        <TableCell scope="row">
+                          <Box maxWidth={500}>
+                            <Typography noWrap>{description}</Typography>
+                          </Box>
+                        </TableCell>
                         {shouldShowPrice && (
                           <TableCell scope="row">
                             {valueToEdit === id ? <TextField
