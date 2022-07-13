@@ -22,6 +22,7 @@ const EncounterList: FC<EncounterPros> = ({ appointments }) => {
           const { id, appointmentType, scheduleStartDateTime, provider, facility, patient } = encounter || {};
           const { name } = facility || {}
           const { id: patientId } = patient || {}
+
           const { firstName, lastName } = provider || {}
           const { name: serviceName, duration } = appointmentType || {}
 

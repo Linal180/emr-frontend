@@ -26,21 +26,21 @@ import {
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord, sortingValue
 } from "../utils";
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
-export const TID_REGEX = /^\d{8}$/;
+export const TID_REGEX = /^\d{9}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
-export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
+export const ZIP_REGEX = /^[0-9]{5}(?:-[0-9]{4})?$/;
 export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
@@ -365,23 +365,25 @@ export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_COPAY = "Add Copay";
+export const ARE_YOU_SURE = "Are you sure?";
 export const ADD_PRACTICE = "Add practice";
 export const EDIT_PRACTICE = "Edit practice";
-export const ADD_PATIENT_MODAL = "Add New Patient";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
+export const CREATE_COPAY = "Create Copay";
 export const SET_TIME_ZONE = "Set Time Zone";
 export const UPDATE_DOCTOR = "Update Doctor";
 export const UPDATE_PATIENT = "Update Patient";
 export const CREATE_PATIENT = "Create Patient";
-export const CREATE_COPAY = "Create Copay";
+export const CREATE_INVOICE = "Create Invoice";
 export const UPDATE_FACILITY = "Update Facility";
 export const ADD_APPOINTMENT = "Add Appointment";
+export const ADD_PATIENT_MODAL = "Add New Patient";
 export const EDIT_APPOINTMENT = "Edit Appointment";
-export const CREATE_INVOICE = "Create Invoice";
-export const PRACTICE_SETTINGS = "Practice Settings";
 export const USERS_MANAGEMENT = "Users Management";
+export const UNCOVERED_AMOUNT = "Pt. Uncovered Amt";
+export const PRACTICE_SETTINGS = "Practice Settings";
 export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
@@ -391,7 +393,15 @@ export const REACTION = "Reaction";
 export const PROVIDER = "Provider";
 export const SEVERITY = "Severity";
 export const INVENTORY = "Inventory";
+export const RESOURCE = "Resource";
+export const RENDERING = "Rendering";
 export const ONSET_DATE = "Onset Date";
+export const ADD_ANOTHER = "ADD ANOTHER";
+export const SERVICE_DATE = "Service Date";
+export const COPAY_AMOUNT = "Copay Amount";
+export const CLAIM_STATUS = "Claim Status";
+export const CLAIM_DATE = "Claim Date";
+export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
@@ -411,7 +421,9 @@ export const PRIMARY_PROVIDER = "Primary Provider";
 export const FACILITY_INFO = "Facility Information";
 export const ONSET_DATE_TYPE = "Onset Date Type";
 export const OTHER_DATE_TYPE = "Other Date Type";
+export const SERVICING_PROVIDER = "Servicing Provider";
 export const ASSOCIATED_FACILITY = "Associated Facility";
+export const APPOINTMENT_FACILITY = "Appointment Facility";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
@@ -753,6 +765,7 @@ export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
+export const REMOTE_IP = "client_ip";
 export const USER_NAME = "Username";
 export const PRACTICES = "Practices";
 export const ALL_LOG_TYPES = "All Log Types";
@@ -789,6 +802,7 @@ export const RECURRING = "Recurring";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
 export const LAST_FIVE_RESULTS = "Last 5 Results";
+export const BILLING_AND_INSURANCE = "Billing & Insurance";
 export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const NEW_STAFF = "New Staff";
 export const LAST_NAME = "Last Name";
@@ -991,6 +1005,7 @@ export const ADDED_BY = "Added by";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
+export const CLAIM_NO = "Claim No";
 export const ADD_NUM = "Add Number";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
@@ -1043,6 +1058,7 @@ export const ASSIGN_TO_ME = "Assign To Me";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
+export const CREATE_CLAIM = "Create Claim";
 export const SEX_AT_BIRTH = "Sex At Birth";
 export const PAY_VIA_CARD = "Pay via Card";
 export const RELATIONSHIP = "Relationship";
@@ -1058,6 +1074,7 @@ export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
 export const DOCUMENT_TYPE = "Document Type";
 export const CANCEL_RECORD = "Cancel record";
+export const YES_CHECKOUT = "Yes, Check Out";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
@@ -1106,6 +1123,7 @@ export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
+export const BUILD_FEE_DOLLAR = "Build Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
@@ -1299,6 +1317,7 @@ export const INSURANCE_SEARCH_DESCRIPTION = "Add more names for better search re
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
+export const CHECKOUT_MODAL_DESCRIPTION = "After checking out, you will not be able to edit it again. Do you still want to check out?";
 export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
@@ -1541,7 +1560,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
-export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient Can't be invited";
+export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
@@ -1845,7 +1864,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SERVICE_CODES = mapServiceEnum<typeof ServiceCode>(ServiceCode)
+export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
 
 export const TEMPORARY_CPT_CODES = [
   {
@@ -1894,7 +1913,7 @@ export const MAPPED_SPECIALTIES = mapEnum<typeof Speciality>(Speciality)
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
+  { id: Maritialstatus.Married, name: formatValue(Maritialstatus.Married) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
@@ -2240,6 +2259,17 @@ export const DOCTOR_TOP_TABS = [
   {
     title: "Doctors Appointments",
     value: "3",
+  },
+];
+
+export const BILLING_TABS = [
+  {
+    title: "ICD & CPT",
+    value: "1",
+  },
+  {
+    title: "Insurance",
+    value: "2",
   },
 ];
 
@@ -3000,11 +3030,9 @@ export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
-  INSURANCE,
   CHART_TEXT,
-  // VITALS_TEXT,
   LAB_ORDERS,
-  BILLING_TEXT,
+  BILLING_AND_INSURANCE,
 ];
 
 export const ADD_INSURANCE_STEPS = [

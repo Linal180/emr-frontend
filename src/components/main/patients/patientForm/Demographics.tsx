@@ -1,8 +1,11 @@
-//packages import
-import { Box, FormControl, Grid, InputLabel } from "@material-ui/core"
+// packages import
 import { ChangeEvent, FC } from "react"
+import { Box, FormControl, Grid, InputLabel } from "@material-ui/core"
 import { Controller, useFormContext } from "react-hook-form"
-//interfaces, styles, constants block
+// components import
+import Selector from "../../../common/Selector"
+import CardComponent from "../../../common/CardComponent"
+// interfaces, styles, constants block
 import InputController from "../../../../controller"
 import { GREY_SEVEN, WHITE } from "../../../../theme"
 import { PatientCardsProps } from "../../../../interfacesTypes"
@@ -10,14 +13,14 @@ import { ActionType } from "../../../../reducers/patientReducer"
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles"
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
 import {
-  DEMOGRAPHICS, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, LEGAL_SEX, MAPPED_ETHNICITY, MAPPED_GENDER_IDENTITY,
-  MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS, RACE, SEXUAL_ORIENTATION
+  DEMOGRAPHICS, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, LEGAL_SEX, MAPPED_ETHNICITY,
+  MAPPED_GENDER_IDENTITY, MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS,
+  RACE, SEXUAL_ORIENTATION
 } from "../../../../constants"
-//components import
-import Selector from "../../../common/Selector"
-import CardComponent from "../../../common/CardComponent"
 
-const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit }) => {
+const DemographicsCard: FC<PatientCardsProps> = ({
+  getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
+}) => {
   const { control, setValue } = useFormContext()
   const classes = usePublicAppointmentStyles();
   const { isChecked } = state || {}
@@ -29,7 +32,13 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
   };
 
   return (
-    <CardComponent cardTitle={DEMOGRAPHICS} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+    <CardComponent
+      saveBtn
+      state={state}
+      isEdit={isEdit}
+      cardTitle={DEMOGRAPHICS}
+      disableSubmit={disableSubmit}
+    >
       <Grid container spacing={3}>
         <Grid item md={3} sm={12} xs={12}>
           <InputController
@@ -121,17 +130,15 @@ const DemographicsCard: FC<PatientCardsProps> = ({ getPatientLoading, state, dis
 
                 <label className="toggle-main">
                   <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
-                  <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
+                  <AntSwitch checked={isChecked}
+                    onChange={(event) => { toggleHandleChange(event) }} name='homeBound'
+                  />
                   <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
                 </label>
               </FormControl>
             )}
           />
         </Grid>
-      </Grid>
-
-      <Grid container spacing={3}>
-
       </Grid>
     </CardComponent>
   )

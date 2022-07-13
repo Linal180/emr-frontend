@@ -250,12 +250,14 @@ const PatientsTable: FC = (): JSX.Element => {
                 }
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <DoctorSelector
-                    label={PROVIDER}
-                    name="provider"
-                    shouldOmitFacilityId
-                    addEmpty
-                  />
+                  {!(isDoctor || isRegularUser) &&
+                    <DoctorSelector
+                      label={PROVIDER}
+                      name="provider"
+                      shouldOmitFacilityId
+                      addEmpty
+                    />
+                  }
                 </Grid>
 
                 <Grid item md={(isSuper || isPracticeUser) ? 12 : 3} sm={12} xs={12}>
