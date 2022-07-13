@@ -31,7 +31,7 @@ import {
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
-export const TID_REGEX = /^9\d{8}$/;
+export const TID_REGEX = /^\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
@@ -585,8 +585,8 @@ export const SELECT = "Select";
 export const GENDER = "Gender";
 export const ENABLED = "Enabled";
 export const ADDRESS = "Address";
-export const ADDRESS_ONE = "Address One";
-export const ADDRESS_TWO = "Address Two";
+export const ADDRESS_ONE = "Address 1";
+export const ADDRESS_TWO = "Address 2";
 export const COUNTRY = "Country";
 export const RELATION = "Relation";
 export const ZIP_CODE = "Zip code";
@@ -1407,9 +1407,10 @@ export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
-export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
+export const TID_VALIDATION_MESSAGE = "Tax id valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
+export const INVALID_END_TIME = "End time should be greater than start time";
 export const REACTIONS_VALIDATION_MESSAGE = "At least one reaction is required";
 export const DIAGNOSES_VALIDATION_MESSAGE = "At least one diagnose is required";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";

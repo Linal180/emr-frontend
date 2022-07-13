@@ -1039,6 +1039,17 @@ input[type=number] {
   border: 10px solid red;
 }
 
+.header-selector .MuiSvgIcon-root path {
+  display: none !important;
+}
+
+.header-selector .MuiSvgIcon-root {
+  background-image: url(../assets/images/chevron-down.svg) !important;
+  background-size: auto !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {

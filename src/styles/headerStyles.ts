@@ -130,8 +130,6 @@ export const useHeaderStyles = makeStyles((theme) => ({
   profileItemName: {
     "& .MuiTypography-root": {
       minWidth: 30,
-      margin: 0,
-      color: BLACK,
     },
   },
 

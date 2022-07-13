@@ -17,7 +17,7 @@ import { handleLogout } from "../utils";
 import {
   FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE,
   NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
-  UNAUTHORIZED, FA_TOKEN,
+  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION,
 } from "../constants";
 dotenv.config()
 
@@ -64,7 +64,11 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
               if (errorResponse) {
                 const { error: responseError, message } = errorResponse;
 
-                if (message && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
+                if (
+                  message && message !== NOT_FOUND_EXCEPTION
+                  && message !== FORBIDDEN_EXCEPTION
+                  && message !== CONFLICT_EXCEPTION
+                ) {
                   Alert.error(message)
                 } else if (
                   responseError

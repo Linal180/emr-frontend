@@ -11,13 +11,13 @@ export interface State {
   openDelete: boolean
   providerName: string
   documentTab: boolean
+  isSignedTab: boolean
   preSignedUrl: string
   attachmentId: string
   attachmentUrl: string
   isEditModalOpen: boolean
   attachments: Attachment[]
   signedByProvider: boolean
-  isSignedTab: boolean
   deleteAttachmentId: string
   attachment: Attachment | undefined
   insuranceCard1: Attachment | undefined
@@ -43,6 +43,7 @@ export const initialState: State = {
   providerName: '',
   openDelete: false,
   attachmentUrl: '',
+  isSignedTab: false,
   documentTab: false,
   attachmentsData: [],
   mediaData: undefined,
@@ -51,7 +52,6 @@ export const initialState: State = {
   isEditModalOpen: false,
   deleteAttachmentId: '',
   signedByProvider: false,
-  isSignedTab: true,
   insuranceCard1: undefined,
   insuranceCard2: undefined,
   drivingLicense1: undefined,
@@ -70,6 +70,7 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_ATTACHMENTS = 'setAttachments',
   SET_DOCUMENT_TAB = 'setDocumentTab',
+  SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_PRE_SIGNED_URL = 'setPreSignedUrl',
@@ -81,7 +82,6 @@ export enum ActionType {
   SET_DRIVING_LICENSE_1 = 'setDrivingLicense1',
   SET_DRIVING_LICENSE_2 = 'setDrivingLicense2',
   SET_SIGNED_BY_PROVIDER = 'setSignedByProvider',
-  SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
 }
@@ -96,13 +96,13 @@ export type Action =
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_DOCUMENT_TAB, documentTab: boolean }
+  | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
   | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
   | { type: ActionType.SET_SIGNED_BY_PROVIDER, signedByProvider: boolean }
-  | { type: ActionType.SET_IS_SIGNED_TAB }
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
   | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN; isEditModalOpen: boolean }
   | { type: ActionType.SET_INSURANCE_CARD_1; insuranceCard1: Attachment | undefined }
@@ -256,7 +256,7 @@ export const mediaReducer = (state: State, action: Action): State => {
     case ActionType.SET_IS_SIGNED_TAB:
       return {
         ...state,
-        isSignedTab: !state.isSignedTab
+        isSignedTab: action.isSignedTab
       }
 
     case ActionType.SET_FILES:

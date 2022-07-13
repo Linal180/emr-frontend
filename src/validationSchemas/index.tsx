@@ -29,7 +29,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE
+  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, DESCRIPTION
 } from "../constants";
 import { SelectorOption } from "../interfacesTypes";
 
@@ -128,7 +128,7 @@ const dobSchema = {
 //       value => moment().diff(moment(value), 'years') < 100)
 // }
 
-const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
+export const selectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   name: yup.string(),
   id: yup.string()
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
@@ -193,7 +193,7 @@ const scheduleTimeSchema = {
 
 const facilityTimeSchema = {
   startTime: yup.string().test('', invalidMessage(START_TIME), value => !!value),
-  endTime: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startTime } }) =>
+  endTime: yup.string().test('', INVALID_END_TIME, (value, { parent: { startTime } }) =>
     !value ? !!value : timeValidation(value, startTime))
 }
 
@@ -509,13 +509,13 @@ export const appointmentSchema = (adminUser: boolean) => yup.object({
 
 export const scheduleSchema = (isDoctor: boolean, shouldHaveRecursion: boolean) => yup.object({
   ...scheduleTimeSchema,
-  recurringEndDate: !shouldHaveRecursion ? yup.string().required(requiredMessage(DATE)): yup.string().optional(),
+  recurringEndDate: !shouldHaveRecursion ? yup.string().required(requiredMessage(DATE)) : yup.string().optional(),
   serviceId: yup.array().of(
     multiOptionSchema(APPOINTMENT)
   ).test('', requiredMessage(APPOINTMENT), (value: any) => isDoctor ? !!value && value.length > 0 : true)
 })
 
-export const providerAppointmentSchema = (onlyDoctor : boolean) => yup.object({
+export const providerAppointmentSchema = (onlyDoctor: boolean) => yup.object({
   serviceId: multiOptionSchema(APPOINTMENT),
   notes: yup.string(),
   patientId: selectorSchema(PATIENT),
@@ -611,6 +611,9 @@ export const updatePasswordSchema = yup.object({
 export const roleSchema = yup.object({
   role: yup.string()
     .required(requiredMessage(ROLE_NAME))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+  description: yup.string()
+    .required(requiredMessage(DESCRIPTION))
     .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
@@ -1039,18 +1042,20 @@ export const createBillingSchema = yup.object({
   amount: yup.string(),
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
-  ).test('', requiredMessage(ITEM_MODULE.icdCodes), (value: any) => !!value && value.length > 0 ),
+  ).test('', requiredMessage(ITEM_MODULE.icdCodes), (value: any) => !!value && value.length > 0),
   [ITEM_MODULE.cptCode]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
-  ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0 ),
+  ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
 export const addDocumentSchema = yup.object({
+  attachmentName: yup.string()
+    .required(requiredMessage(DOCUMENT_NAME))
+    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   comments: yup.string(),
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
   date: yup.string().required(requiredMessage(DATE)),
-  attachmentName: yup.string().required(requiredMessage(DOCUMENT_NAME)),
 })
 
 export const addLabProviderDetailsSchema = yup.object({
