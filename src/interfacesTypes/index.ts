@@ -615,14 +615,9 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<
   "timeZone"
 > & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<
-  CreateDoctorItemInput,
-  "facilityId" | "speciality"
-> &
-  Omit<CreateContactInput, "facilityId" | "state" | "country"> &
-  CustomBillingAddressInputs & { facilityId: SelectorOption } & {
-    country: SelectorOption;
-  } & { speciality: SelectorOption } & { state: SelectorOption };
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
+  & Omit<CreateContactInput, "facilityId" | "state" > & CustomBillingAddressInputs
+  & { facilityId: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & {
   facilityId: SelectorOption;
