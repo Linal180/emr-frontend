@@ -800,9 +800,7 @@ export type ExtendedExternalAppointmentInputProps = Pick<
   "firstName" | "lastName" | "email" | "dob"
 > & { phone: string } & { sexAtBirth: SelectorOption } & { signature: File | null };
 
-export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & {
-  facilityId: SelectorOption;
-};
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">;
 
 export interface ServiceTableProps {
   serviceDispatch: Dispatch<serviceAction>;
@@ -1714,6 +1712,7 @@ export interface ACHPaymentComponentProps {
 export interface CheckboxControllerProps extends IControlLabel {
   title?: string;
   loading?: boolean
+  defaultValue?: boolean;
   autoFocus?: boolean;
   isHelperText?: boolean;
   controllerName: string;

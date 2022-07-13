@@ -100,14 +100,12 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
     onCompleted(data) {
       if (data) {
-        console.log('data', data)
         const { getClaimFile } = data
         const { claimFile } = getClaimFile || {}
 
         const buffer = Buffer.from(claimFile || [])
         const blob = new Blob([new Uint8Array(buffer)], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob)
-        console.log("blob", blob, url)
         // setFileBuffer(URL.createObjectURL())
         // console.log("buffer", new Blob([buffer], {
         //   type: 'application/pdf'

@@ -365,7 +365,6 @@ export const doctorSchema = yup.object({
 })
 
 export const facilityServicesSchema = {
-  facilityId: selectorSchema(FACILITY),
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
   price: yup.string()
     .test('', requiredMessage(PRICE), value => !!value)
