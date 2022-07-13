@@ -100,6 +100,7 @@ const BillingForm: FC<BillingFormProps> = (
                 <DatePicker
                   name="serviceDate"
                   label={SERVICE_DATE}
+                  disabled
                 />
               </Grid>
 
@@ -115,6 +116,7 @@ const BillingForm: FC<BillingFormProps> = (
                   addEmpty
                   label={APPOINTMENT_FACILITY}
                   name="facility"
+                  disabled
                 />
               </Grid>
 
@@ -135,6 +137,7 @@ const BillingForm: FC<BillingFormProps> = (
                   name="servicingProvider"
                   shouldOmitFacilityId
                   addEmpty
+                  disabled
                 />
               </Grid>
 
@@ -183,6 +186,7 @@ const BillingForm: FC<BillingFormProps> = (
                   name="renderingProvider"
                   shouldOmitFacilityId
                   addEmpty
+                  disabled
                 />
               </Grid>
 
