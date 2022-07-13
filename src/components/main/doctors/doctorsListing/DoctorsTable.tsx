@@ -20,7 +20,7 @@ import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DoctorSearchInputProps } from "../../../../interfacesTypes";
 import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import {
-  checkPermission, formatPhone, formatServiceCode, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  checkPermission, formatPhone, formatEnumMember, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
 import {
   AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
@@ -229,7 +229,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{speciality ? formatServiceCode(speciality as string) : ''}</TableCell>
+                      <TableCell scope="row">{speciality ? formatEnumMember(speciality as string) : ''}</TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

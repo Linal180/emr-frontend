@@ -84,8 +84,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title"
-      aria-describedby="image-dialog-description" maxWidth="sm" fullWidth
-    >
+      aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="image-dialog-title">{ADD_MEDIA}</DialogTitle>
 
       <FormProvider {...methods}>

@@ -144,8 +144,8 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
                 <TextField
                   {...params}
-                  variant="outlined"
                   error={invalid}
+                  variant="outlined"
                   placeholder={placeholder ? label : ''}
                   className={`selectorClass ${styles}`}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
@@ -154,6 +154,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
+
             onChange={(_, data) => field.onChange(data)}
           />
         );

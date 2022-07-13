@@ -28,6 +28,7 @@ query findAllUserLogs($userLogsInput: UserLogsInput!) {
       }
 
       patient {
+        id
         lastName
         firstName
         patientRecord

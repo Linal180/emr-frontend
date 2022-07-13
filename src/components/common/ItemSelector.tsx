@@ -167,9 +167,13 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     }
   }, [isEdit, modalName, setValue, value])
 
-  // useEffect(() => {
-  //   shouldFilter && filteredOptions?.length && setOptions(options?.filter((option) => !filteredOptions?.find(filteredOption => filteredOption.id === option.id)))
-  // }, [filteredOptions, options, shouldFilter, value])
+  const filterOptions = (options: SelectorOption[]) => {
+    if (filteredOptions) {
+      return options.filter((value) => !filteredOptions.some(option => option.id === value.id))
+    }
+
+    return options
+  }
 
   return (
     <Controller
@@ -180,6 +184,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
+            filterOptions={filterOptions}
             options={options.length ? options : []}
             disableClearable
             value={field.value ?? EMPTY_OPTION}

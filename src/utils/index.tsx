@@ -59,7 +59,7 @@ export const formatValue = (value: string) => {
   return formatted.trim();
 };
 
-export const formatServiceCode = (value: string) => {
+export const formatEnumMember = (value: string) => {
   const parts = value.split("_");
   let formatted = `${parts[parts.length - 1]} - `;
 
@@ -423,7 +423,6 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
     for (let practice of practices) {
       if (practice) {
         const { id, name } = practice;
-
         data.push({ id, name: name.trim() })
       }
     }
@@ -1693,7 +1692,7 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatValue(member).trim()
+        name: formatEnumMember(member).trim()
       }
     });
   } else return [EMPTY_OPTION]
@@ -1706,7 +1705,7 @@ export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[]
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatServiceCode(member)
+        name: formatEnumMember(member)
       }
     });
   } else return [EMPTY_OPTION]

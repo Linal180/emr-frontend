@@ -23,7 +23,7 @@ import {
   getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh
 } from "../../../../../utils";
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, PAGE_LIMIT,
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, EIGHT_PAGE_LIMIT,
   PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE
 } from "../../../../../constants";
 import {
@@ -34,22 +34,17 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const { id } = useParams<ParamsType>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
 
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(0)
+
   const [patientProblems, setPatientProblems] = useState<PatientProblemsPayload['patientProblems']>([])
   const [{ isSubModalOpen, selectedItem, itemId, problemDeleteId }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
-
-  const handleModalClose = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
-    setPage(page)
-  }
+  const handleModalClose = () => setIsOpen(!isOpen)
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => setPage(page)
 
   const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -73,7 +68,6 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               setPatientProblems(patientProblems as PatientProblemsPayload['patientProblems'])
             }
           }
-
           if (pagination) {
             const { totalPages } = pagination
             typeof totalPages === 'number' && setTotalPages(totalPages)
@@ -87,7 +81,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientProblems({
         variables: {
-          patientProblemInput: { patientId: id, paginationOptions: { page, limit: PAGE_LIMIT } }
+          patientProblemInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         },
       })
     } catch (error) { }
@@ -95,7 +89,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
   useEffect(() => {
     id && fetchProblems()
-  }, [fetchProblems, id])
+  }, [fetchProblems, id, page])
 
   const handleEditModalClose = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -150,13 +144,13 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
-                {
-                  !shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                {!shouldDisableEdit &&
+                  <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
                     <AddWhiteIcon />
                     <Box p={0.5} />
+
                     {ADD_NEW_TEXT}
-                  </Button>
-                }
+                  </Button>}
               </Box>
 
               <Box className={classes.tableBox}>
@@ -176,7 +170,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                   {loading ? (
                     <TableRow>
                       <TableCell colSpan={8}>
-                        <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
+                        <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
                       </TableCell>
                     </TableRow>
                   ) : <TableBody>
@@ -193,7 +187,9 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Typography>{problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY') : ''}</Typography>
+                            <Typography>
+                              {problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY') : ''}
+                            </Typography>
                           </TableCell>
 
                           <TableCell scope="row">
@@ -207,7 +203,9 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Box className={classes.activeBox} bgcolor={problemSeverity && getProblemSeverityColor(problemSeverity)}>
+                            <Box className={classes.activeBox}
+                              bgcolor={problemSeverity && getProblemSeverityColor(problemSeverity)}
+                            >
                               {problemSeverity}
                             </Box>
                           </TableCell>
@@ -261,6 +259,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         />
         }
       </Grid>
+
       {isOpen &&
         <AddProblem isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
 

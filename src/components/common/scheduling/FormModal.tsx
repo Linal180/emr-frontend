@@ -36,16 +36,22 @@ import {
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
   SELECT_DAY_MESSAGE,
+  CANT_UPDATE_SCHEDULE,
+  CANT_CREATE_SCHEDULE,
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
-  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit, doctorId
+  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
+  const { currentUser } = useContext(AuthContext)
   const [ids, setIds] = useState<string[]>([])
+
+  const { id: currentDoctor } = currentUser || {}
   const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
   const { userPermissions } = useContext(AuthContext)
+
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
@@ -177,7 +183,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: doctorId ? doctorId : typeId } : { facilityId: doctorFacilityId ? doctorFacilityId : typeId }
+      const recordId = isDoctor ? { doctorId: typeId || currentDoctor } : { facilityId: typeId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
@@ -185,22 +191,23 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
         recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
       }
     })
-    // if (typeId) {
-    if (isEdit) {
-      id ?
-        await updateSchedule({
+
+    if (typeId || (isDoctor && currentDoctor)) {
+      if (isEdit) {
+        id ?
+          await updateSchedule({
+            variables: {
+              updateScheduleInput: { id, ...scheduleInput[0] }
+            }
+          }) : Alert.error(SCHEDULE_NOT_FOUND)
+      } else {
+        await createSchedule({
           variables: {
-            updateScheduleInput: { id, ...scheduleInput[0] }
+            createScheduleInput: scheduleInput
           }
-        }) : Alert.error(SCHEDULE_NOT_FOUND)
-    } else {
-      await createSchedule({
-        variables: {
-          createScheduleInput: scheduleInput
-        }
-      })
-    }
-    // } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
+        })
+      }
+    } else Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
   const handleChangeForCheckBox = (id: string) => {

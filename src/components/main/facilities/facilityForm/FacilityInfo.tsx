@@ -29,6 +29,7 @@ const FacilityInfoCard: FC<FacilityCardsProps> = ({ getFacilityLoading, isSuper 
       {isSuper &&
         <Grid xs={12} sm={12} item md={6}>
           <PracticeSelector
+            addEmpty
             isRequired
             label={PRACTICE}
             name="practice"

@@ -99,6 +99,7 @@ query GetFacility($getFacility: GetFacility!){
     }
   }
 }
+
 mutation RemoveFacility($removeFacility: RemoveFacility!){
   removeFacility(removeFacility: $removeFacility){
     response{
