@@ -1000,16 +1000,6 @@ input[type=number] {
   align-items: center;
 }
 
-.text-overflow {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.max-width-200 {
-  max-width: 200px !important;
-}
-
 .schedule-modal .MuiDialog-paper {
   overflow-y: inherit;
 }
