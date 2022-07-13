@@ -1238,6 +1238,7 @@ export interface CheckoutModalProps {
   setIsOpen: Function;
   insuranceId?: string;
   billingStatus?: string
+  handleSubmit: Function
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
@@ -1853,6 +1854,7 @@ export interface BillingFormProps extends BillingComponentProps{
   createClaimCallback: Function
   dispatch: Dispatch<BillingAction>
   state: BillingState
+  claimNumber: string
 }
 
 export interface CodeTypeInterface {

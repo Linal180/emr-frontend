@@ -36,7 +36,7 @@ const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { handleSubmit, control } = methods
-  const { isModalOpen, employment, autoAccident, otherAccident, tableCodesData, insuranceId } = state
+  const { isModalOpen, employment, autoAccident, otherAccident, tableCodesData, insuranceId, isCheckoutModalOpen } = state
 
   const [selectedTab, setSelectedTab] = useState<string>('1')
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -88,8 +88,8 @@ const BillingForm: FC<BillingFormProps> = (
               <Box p={1} />
 
               {!shouldDisableEdit && <Button
-                variant="contained" color="primary" type="submit" disabled={createBillingLoading}
-                onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
+                variant="contained" color="primary" disabled={createBillingLoading}
+                onClick={() => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })}
               >
                 {submitButtonText ?? CHECKOUT}
                 {createBillingLoading && <CircularProgress size={20} color="inherit" />}
@@ -377,21 +377,21 @@ const BillingForm: FC<BillingFormProps> = (
         </Box>
       </form>
 
-      {/* {
+      {
         isModalOpen &&
         <CopayModal
           isOpen={isModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
           insuranceId={insuranceId}
         />
-      } */}
+      }
 
       {
-        isModalOpen &&
+        isCheckoutModalOpen &&
         <CheckoutModal
-          isOpen={isModalOpen}
-          setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
-          insuranceId={insuranceId}
+          isOpen={isCheckoutModalOpen}
+          setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: isOpen })}
+          handleSubmit={handleSubmit(onSubmit)}
         />
       }
     </FormProvider >

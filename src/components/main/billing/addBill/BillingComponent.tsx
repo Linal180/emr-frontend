@@ -4,8 +4,9 @@ import moment from "moment";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from "react-router";
-import { EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, VIEW_APPOINTMENTS_ROUTE } from "../../../../constants";
+import { EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, VIEW_APPOINTMENTS_ROUTE } from "../../../../constants";
 import {
+  CodeType,
   DoctorPatientRelationType,
   OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
   PatientPaymentType, useCreateBillingMutation, useCreateClaimLazyQuery, useFetchBillingDetailsByAppointmentIdLazyQuery,
@@ -30,7 +31,7 @@ import BillingForm from "./BillingForm";
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
-  const { employment, autoAccident, otherAccident, facilityId } = state
+  const { employment, autoAccident, otherAccident, facilityId, claimNumber } = state
 
   const methods = useForm<CreateBillingProps>({
     mode: "all",
@@ -102,10 +103,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       const { id: otherDateTypeId } = otherDateType ?? {}
 
       const billingCodes = [...CPTCode, ...IcdCodes]
-      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
+      const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
         const { id, ...billingCodeToCreate } = billingCode
         return billingCodeToCreate
-      })
+      }) : []
 
       const claimInput = {
         appointmentId,
@@ -131,7 +132,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { fetchBillingDetailsByAppointmentId } = data ?? {}
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
         const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
-          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount } = billing ?? {}
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo } = billing ?? {}
+
+
 
         const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
           const codeType = codeValues.codeType
@@ -139,7 +143,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             id: codeValues.id,
             code: codeValues.code ?? '',
             description: codeValues.description ?? '',
-            price: codeValues.price ?? ''
+            price: codeValues.price ?? '',
+            codeType,
           }
 
           if (acc[codeType]) {
@@ -151,11 +156,22 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           return acc
         }, {})
 
+        transformedCodes && Object.keys(transformedCodes).forEach((key) => {
+          if (key === CodeType.Icd_10Code) {
+            transformedCodes && setValue(ITEM_MODULE.icdCodes, transformedCodes?.ICD_10_CODE || [])
+            return
+          }
+          if (key === CodeType.CptCode) {
+            transformedCodes && setValue(ITEM_MODULE.cptCode, transformedCodes.CPT_CODE || [])
+            return
+          }
+        })
         transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
 
         otherAccident && dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: otherAccident })
         autoAccident && dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: autoAccident })
         employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
+        claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
 
         setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
         setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
@@ -164,6 +180,12 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('otherDate', otherDate ?? '')
         setValue('onsetDate', onsetDate ?? '')
         setValue('amount', amount ?? '')
+        setValue('claimDate', claimDate ?? '')
+        setValue('serviceDate', serviceDate ?? '')
+        pos && setValue('pos', setRecord(pos, formatServiceCode(pos)))
+        facility?.id && setValue('facility', setRecord(facility.id, facility.name))
+        servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
+        renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
       }
     }
   })
@@ -178,19 +200,20 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     } catch (error) { }
   }, [appointmentId, fetchBillingDetailsByAppointmentId])
 
-  useEffect(() => {
-    shouldDisableEdit && fetchBillingDetails();
-  }, [fetchBillingDetails, shouldDisableEdit]);
-
   const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
-      const { amount, billingStatus, paymentType, onsetDate, onsetDateType, otherDate, otherDateType, CPTCode, IcdCodes } = values
+      const { amount, billingStatus, paymentType, onsetDate, onsetDateType, otherDate,
+        otherDateType, CPTCode, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider, servicingProvider } = values
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
       const { id: billingStatusId } = billingStatus ?? {}
       const { id: paymentTypeId } = paymentType ?? {}
+      const { id: facilityId } = facility ?? {}
+      const { id: renderingProviderId } = renderingProvider ?? {}
+      const { id: servicingProviderId } = servicingProvider ?? {}
+      const { id: posId } = pos ?? {}
 
       const billingCodes = [...CPTCode, ...IcdCodes]
       const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
@@ -200,19 +223,26 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
       const createBillingInput = {
         ...(appointmentId && { appointmentId: appointmentId || '' }),
+        ...(facilityId && { facilityId: facilityId || '' }),
+        ...(renderingProviderId && { renderingProviderId: renderingProviderId || '' }),
+        ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
         autoAccident: autoAccident,
         employment: employment,
         otherAccident: otherAccident,
         onsetDate: onsetDate,
         otherDate: otherDate,
+        claimDate,
+        pos: posId,
+        serviceDate,
         ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
         ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
         amount: amount,
-        patientBillingStatus: billingStatusId as PatientBillingStatus,
-        patientPaymentType: paymentTypeId as PatientPaymentType,
+        ...(billingStatusId && { patientBillingStatus: billingStatusId as PatientBillingStatus }),
+        ...(paymentTypeId && { patientPaymentType: paymentTypeId as PatientPaymentType }),
         patientId: id ?? '',
         codes: transformedBillingCodes,
-        ...(labOrderNumber && { labOrderNumber: labOrderNumber })
+        ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
+        claimNo: claimNumber
       }
 
       createBilling({
@@ -343,11 +373,15 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   }, [id, getPatientProviders])
 
   useEffect(() => {
-    fetchPatientInsurances()
-    fetchAppointment()
-    fetchAllPatientsProviders()
-    fetchFacility()
-  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility])
+    if (shouldDisableEdit) {
+      fetchBillingDetails()
+    } else {
+      fetchPatientInsurances()
+      fetchAppointment()
+      fetchAllPatientsProviders()
+      fetchFacility()
+    }
+  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails])
 
   return (
     <BillingForm
@@ -359,6 +393,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       shouldDisableEdit={shouldDisableEdit}
       submitButtonText={submitButtonText}
       createClaimCallback={createClaimCallback}
+      claimNumber={claimNumber}
     />
   )
 }

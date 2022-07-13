@@ -9,7 +9,7 @@ import { createCopaySchema } from "../../validationSchemas";
 import { CheckoutModalProps, CopayFields, } from "../../interfacesTypes";
 import { ARE_YOU_SURE, CANCEL, CHECKOUT_MODAL_DESCRIPTION, YES_CHECKOUT } from "../../constants";
 
-const CheckoutModal: FC<CheckoutModalProps> = ({ isOpen, setIsOpen, }): JSX.Element => {
+const CheckoutModal: FC<CheckoutModalProps> = ({ isOpen, setIsOpen, handleSubmit }): JSX.Element => {
   const methods = useForm<CopayFields>({
     mode: "all",
     resolver: yupResolver(createCopaySchema)
@@ -44,7 +44,7 @@ const CheckoutModal: FC<CheckoutModalProps> = ({ isOpen, setIsOpen, }): JSX.Elem
               {CANCEL}
             </Button>
 
-            <Button type="submit" variant="outlined" color="primary">
+            <Button variant="outlined" color="primary" onClick={()=>handleSubmit()}>
               {YES_CHECKOUT}
             </Button>
           </DialogActions>
