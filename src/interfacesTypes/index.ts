@@ -882,6 +882,8 @@ export interface CheckInComponentProps {
 export interface PolicyAttachmentProps {
   policyId?: string
   handleReload: Function
+  dispatch?: Dispatch<Action>
+  state?: MediaState
 }
 
 export interface LabOrderCreateProps {

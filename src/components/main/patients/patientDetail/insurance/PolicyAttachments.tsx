@@ -13,15 +13,17 @@ import { TrashOutlinedIcon } from "../../../../../assets/svgs";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
 import {
   ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
-  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE, 
+  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, PLEASE_SELECT_MEDIA, TAKE_A_PICTURE_OF_INSURANCE,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
 import {
   AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery,
   useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation
 } from "../../../../../generated/graphql";
+import { ActionType } from "../../../../../reducers/mediaReducer";
 
-const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId }, ref) => {
+
+const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, state }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
   const dropZoneRef = useRef<FormForwardRef>(null);
@@ -30,7 +32,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
   const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const [attachments, setAttachments] =
     useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
-
+  const { files } = state || {}
   const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -65,7 +67,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
     },
 
     onError() {
-      return null;
+      return null
     },
 
     async onCompleted(data) {
@@ -171,7 +173,12 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
               handleClose={() => { }}
               setAttachments={() => { }}
               acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
+              setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
             />
+
+            {!!!files?.length &&
+              <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
+            }
 
             <ConfirmationModal
               title={INSURANCE_CARD}

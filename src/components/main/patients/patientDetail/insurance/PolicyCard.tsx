@@ -1,5 +1,5 @@
 //packages import
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import clsx from 'clsx';
 import { useParams } from "react-router";
 import { Check } from '@material-ui/icons';
@@ -19,6 +19,7 @@ import { GREY_SIXTEEN } from "../../../../../theme";
 import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
+import { mediaReducer, Action, initialState, State } from "../../../../../reducers/mediaReducer";
 import {
   CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles
 } from '../../../../../styles/checkInStyles';
@@ -59,7 +60,8 @@ const PolicyCard: FC<PolicyCardProps> = ({
   const [policyHolderId, setPolicyHolderId] = useState<string>('')
   const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
-
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const { files } = state
   const [activeStep, setActiveStep] = useState(0);
   const [isFormLoaded, setIsFormLoaded] = useState<boolean>(true)
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
@@ -349,13 +351,13 @@ const PolicyCard: FC<PolicyCardProps> = ({
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} />
+          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} state={state} />
         </Box>
       default:
         return 'Unknown step';
     }
   }
-
+  console.log('files?.length === 0', files?.length === 0)
   return (
     <Box maxWidth={480}>
       <FormProvider {...methods}>
@@ -378,7 +380,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 type={'button'}
                 onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
                 variant="contained" color="primary"
-                disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
+                disabled={isLastStep ? files?.length === 0 || createPolicyLoading || updatePolicyLoading : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
             </Box>
