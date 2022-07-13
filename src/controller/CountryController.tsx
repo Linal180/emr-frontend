@@ -9,8 +9,7 @@ import { CustomInputControlProps } from "../interfacesTypes";
 import { COUNTRY, USA } from "../constants";
 
 const CountryController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, error, className,
-  margin, isHelperText, loading
+  isRequired, controllerName, error, className, margin, isHelperText, loading
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();

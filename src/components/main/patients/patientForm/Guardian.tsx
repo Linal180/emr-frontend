@@ -1,9 +1,9 @@
-//packages import
-import { Grid } from "@material-ui/core"
+// packages block
 import { FC } from "react"
-//components import
+import { Grid } from "@material-ui/core"
+// components block
 import CardComponent from "../../../common/CardComponent"
-//types and constants import
+// types and constants block
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { FIRST_NAME, GUARDIAN, LAST_NAME, MIDDLE_NAME, SUFFIX } from "../../../../constants"

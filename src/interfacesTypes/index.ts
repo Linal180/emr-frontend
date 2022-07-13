@@ -616,7 +616,7 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<
 > & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
-  & Omit<CreateContactInput, "facilityId" | "state" > & CustomBillingAddressInputs
+  & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs
   & { facilityId: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & {
@@ -649,9 +649,9 @@ interface BasicContactControlInputs {
   basicPhone: string;
   basicMobile: string;
   basicAddress: string;
-  basicAddress2: string;
+  basicCountry: string;
   basicZipCode: string;
-  basicCountry: SelectorOption;
+  basicAddress2: string;
   basicState: SelectorOption;
 }
 
@@ -662,25 +662,25 @@ interface EmergencyContactControlInputs {
   emergencyMobile: string;
   emergencyAddress?: string;
   emergencyZipCode?: string;
+  emergencyCountry?: string;
   emergencyAddress2?: string;
   emergencyState?: SelectorOption;
-  emergencyCountry?: SelectorOption;
   emergencyRelationship: SelectorOption;
 }
 
 interface KinContactControlInputs {
   kinName: string;
-  kinRelationship: SelectorOption;
   kinPhone: string;
   kinMobile: string;
+  kinRelationship: SelectorOption;
 }
 
 interface GuardianContactControlInputs {
+  guardianName: string;
+  guardianSuffix: string;
+  guardianLastName: string;
   guardianFirstName: string;
   guardianMiddleName: string;
-  guardianLastName: string;
-  guardianSuffix: string;
-  guardianName: string;
   guardianRelationship: SelectorOption;
 }
 
@@ -691,6 +691,7 @@ interface GuarantorContactControlInputs {
   guarantorEmail: string;
   guarantorPhone: string;
   guarantorSuffix: string;
+  guarantorCountry: string;
   guarantorAddress: string;
   guarantorZipCode: string;
   guarantorLastName: string;
@@ -699,29 +700,28 @@ interface GuarantorContactControlInputs {
   guarantorMiddleName: string;
   guarantorEmployerName: string;
   guarantorState: SelectorOption;
-  guarantorCountry: SelectorOption;
   guarantorRelationship: SelectorOption;
 }
 
 interface EmployerControlInputs {
+  employerCity: string;
   employerName: string;
   employerEmail: string;
   employerPhone: string;
-  employerIndustry: string;
-  employerUsualOccupation: string;
-  employerCity: string;
-  employerState: SelectorOption;
   employerZipCode: string;
   employerAddress: string;
+  employerIndustry: string;
+  employerState: SelectorOption;
+  employerUsualOccupation: string;
 }
 
 interface RegisterUserInputs {
-  userFirstName: string;
-  userLastName: string;
-  userPassword: string;
   userEmail: string;
   userPhone: string;
   userZipCode: string;
+  userLastName: string;
+  userPassword: string;
+  userFirstName: string;
 }
 
 export type PatientInputProps = BasicContactControlInputs &
@@ -731,30 +731,16 @@ export type PatientInputProps = BasicContactControlInputs &
   GuarantorContactControlInputs &
   EmployerControlInputs &
   RegisterUserInputs &
-  Omit<
-    CreatePatientItemInput,
-    | "gender"
-    | "race"
-    | "genderIdentity"
-    | "maritialStatus"
-    | "sexAtBirth"
-    | "pronouns"
-    | "ethnicity"
-    | "sexualOrientation"
-    | "facilityId"
-    | "usualProviderId"
-    | "sexualOrientation"
-    | "genderIdentity"
-    | "homeBound"
-  > & { usualProviderId: SelectorOption } & { gender: SelectorOption } & {
-    race: SelectorOption;
-  } & { sexualOrientation: SelectorOption } & {
-    sexualOrientation: SelectorOption;
-  } & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & {
-    facilityId: SelectorOption;
-  } & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & {
-    homeBound: boolean;
-  } & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption };
+  Omit<CreatePatientItemInput, | "gender" | "race" | "genderIdentity"
+    | "maritialStatus" | "sexAtBirth" | "pronouns" | "ethnicity" | "sexualOrientation"
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption }
+  & { race: SelectorOption; } & { sexualOrientation: SelectorOption }
+  & { sexualOrientation: SelectorOption; } & { pronouns: SelectorOption }
+  & { ethnicity: SelectorOption } & { facilityId: SelectorOption; }
+  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption }
+  & { homeBound: boolean; } & { genderIdentity: SelectorOption }
+  & { maritialStatus: SelectorOption };
 
 export type ExternalPatientInputProps = {
   preferredCommunicationMethod: SelectorOption;

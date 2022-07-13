@@ -426,7 +426,6 @@ export const guardianPatientSchema = {
 export const guarantorPatientSchema = {
   guarantorCity: citySchema(),
   guarantorState: stateSchema(false),
-  guarantorCountry: countrySchema(false),
   guarantorSuffix: notRequiredStringOnly(SUFFIX),
   guarantorPhone: notRequiredPhone(MOBILE_NUMBER),
   guarantorEmail: yup.string().email(INVALID_EMAIL),
