@@ -1020,6 +1020,10 @@ input[type=number] {
   text-decoration: underline !important;
 }
 
+.border-bottom {
+  border-bottom: 1px solid #F3F6F9;
+}
+
 /* media queries */
 
 @media(max-width : 1260px) {

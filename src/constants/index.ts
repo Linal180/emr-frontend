@@ -867,14 +867,21 @@ export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
 export const TOTAL_NUMBER_OF_USERS = "Total Number of Users";
 export const SUBSCRIBER_INFORMATION = "Subscriber Information";
 export const PLAN_DETAIL_INFORMATION = "Plan Detail Information";
+export const PROFESSIONAL_OFFICE_VISIT = "Professional Office Visit";
+export const HEALTH_PLAN_BENEFITS = "Health Plan Benefits";
 export const PRIMARY_CARE_PROVIDER_INFO = "Primary Care Provider Info";
 export const DETAILED_COVERAGE_INFORMATION = "Detailed Coverage Information";
+export const PROFESSIONAL_PHYSICIAN_DATA = "Professional (Physician) Visit - Office";
 export const ADD_VITALS = "Add Vitals";
 export const REMAINING = "Remaining";
 export const MESSAGE = "Message";
 export const IN_NETWORK = "In Network";
+export const COVERAGE_SUMMARY = "Coverage Summary";
+export const URGENT = "Urgent Care";
 export const AUTH_CERT_REQUIRED = "Auth/Cert Required";
 export const TIME_PERIOD = "Time Period";
+export const URGENT_CARE = "Urgent Care";
+export const CHIROPRACTIC = "Chiropractic";
 export const SERVICE_TYPE = "Service Type";
 export const COVERAGE_LEVEL = "Coverage Level";
 export const UPDATE_VITALS = "Update Vitals";
@@ -4349,7 +4356,7 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   },
 ]
 
-export const DETAILED_COVERAGE_DUMMY_DATA = [
+export const URGENT_CARE_DUMMY_DATA = [
   {
     service: 'Coinsurance',
     coverage: 'Employee and Spouse',
@@ -4405,6 +4412,9 @@ export const DETAILED_COVERAGE_DUMMY_DATA = [
     auth: '-',
     time: 'Calendar Year',
   },
+]
+
+export const PROFESSIONAL_VISIT_DUMMY_DATA = [
   {
     service: 'Coinsurance',
     coverage: 'Employee and Spouse',
@@ -4427,6 +4437,9 @@ export const DETAILED_COVERAGE_DUMMY_DATA = [
     auth: 'Yes',
     time: 'Calendar Year',
   },
+]
+
+export const CHIROPRACTIC_DUMMY_DATA = [
   {
     service: 'Coinsurance',
     coverage: 'Employee and Spouse',
