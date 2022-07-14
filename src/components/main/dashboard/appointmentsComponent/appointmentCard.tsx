@@ -10,7 +10,7 @@ import {
 // component block
 import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import BackdropLoader from '../../../common/Backdrop';
+import Loader from '../../../common/Loader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 // constant, assets and styles block
 import { AuthContext } from '../../../../context';
@@ -19,11 +19,15 @@ import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
-import { appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
-import { CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon, } from '../../../../assets/svgs';
+import { 
+  appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime 
+} from '../../../../utils';
+import { 
+  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon, 
+} from '../../../../assets/svgs';
 import {
-  useGetTokenLazyQuery, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation,
-  BillingStatus, AppointmentCreateType
+  useGetTokenLazyQuery, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, 
+  useCancelAppointmentMutation, BillingStatus, AppointmentCreateType
 } from '../../../../generated/graphql';
 import {
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, PAY_AMOUNT,
@@ -347,9 +351,9 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                     <DeleteAppointmentIcon />
                   </IconButton>}
 
-                  {isEditableAppointment && <IconButton aria-label="edit" onClick={handleEdit}>
+                  {isEditableAppointment ? (appStatus !== "DISCHARGED" && <IconButton aria-label="edit" onClick={handleEdit}>
                     <EditAppointmentIcon />
-                  </IconButton>}
+                  </IconButton>) : ""}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
@@ -655,7 +659,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                     </Grid>
                   </Box>
                 ) : (
-                  <BackdropLoader loading={true} />
+                  <Loader loading={true} />
                 )}
               </Box>
             </Box>

@@ -1,5 +1,5 @@
 //packages import
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
 import { useParams } from "react-router";
 import { Check } from '@material-ui/icons';
@@ -19,12 +19,9 @@ import { GREY_SIXTEEN } from "../../../../../theme";
 import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
-import {
-  CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles
-} from '../../../../../styles/checkInStyles';
-import {
-  FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption
-} from "../../../../../interfacesTypes";
+import { mediaReducer, Action, initialState, State, ActionType } from "../../../../../reducers/mediaReducer";
+import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
+import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps } from "../../../../../interfacesTypes";
 import {
   ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
   INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
@@ -54,14 +51,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
 }) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
-  const [policyId, setPolicyId] = useState<string>('')
-
-  const [policyHolderId, setPolicyHolderId] = useState<string>('')
-  const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
-
-  const [activeStep, setActiveStep] = useState(0);
-  const [isFormLoaded, setIsFormLoaded] = useState<boolean>(true)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const { files, activeStep, isFormLoaded, insuranceId, policyHolderId, policyId } = state
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
@@ -87,7 +79,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         const { status } = response
 
         if (status && status === 200) {
-          setPolicyId(policy.id ?? '')
+          dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
           policyAttachmentRef.current?.submit()
           handleReload && handleReload()
         }
@@ -110,7 +102,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         if (status && status === 200) {
           policyAttachmentRef.current?.submit()
-          setPolicyId(policy.id ?? '')
+          dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
           handleReload && handleReload()
         }
       }
@@ -157,7 +149,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         if (insurance) {
           const insuranceInfo = { id: insurance.id, name: `${insurance.payerId} | ${insurance.payerName}` }
-          setInsuranceId(insuranceInfo)
+          dispatch && dispatch({ type: ActionType.SET_INSURANCE_ID, insuranceId: insuranceInfo })
           setValue('insuranceId', insuranceInfo)
         }
 
@@ -185,10 +177,10 @@ const PolicyCard: FC<PolicyCardProps> = ({
         certificationNumber && setValue('policyHolderId', certificationNumber)
         pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
 
-        setPolicyId(id ?? '')
-        setPolicyHolderId(policyHolderIdToUpdate ?? '')
+        dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
+        dispatch && dispatch({ type: ActionType.SET_POLICY_HOLDER_ID, policyHolderId: policyHolderIdToUpdate ?? '' })
         trigger()
-        setIsFormLoaded(false)
+        dispatch && dispatch({ type: ActionType.SET_IS_FORM_LOADED, isFormLoaded: false })
       }
     }
   });
@@ -225,17 +217,17 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const handleStep = async (step: number) => {
     const shouldProceed = await handleStepsValidation(step)
-    shouldProceed && setActiveStep(step);
+    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step });
   };
 
   const handleBack = async () => {
     const shouldProceed = await handleStepsValidation(activeStep - 1)
-    shouldProceed && setActiveStep(activeStep - 1);
+    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 });
   };
 
   const handleForward = async () => {
     const shouldProceed = await handleStepsValidation(activeStep + 1)
-    shouldProceed && setActiveStep(activeStep + 1);
+    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 });
   };
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
@@ -349,7 +341,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} />
+          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} state={state} />
         </Box>
       default:
         return 'Unknown step';
@@ -378,7 +370,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 type={'button'}
                 onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
                 variant="contained" color="primary"
-                disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
+                disabled={isLastStep ? files?.length === 0 || createPolicyLoading || updatePolicyLoading : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
             </Box>

@@ -1543,6 +1543,7 @@ export type FieldsInputs = {
   name: Scalars['String'];
   options: Array<FieldOptionsInputType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
@@ -1564,6 +1565,7 @@ export type FieldsTypes = {
   name: Scalars['String'];
   options: Array<FieldOptionsType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
@@ -2107,7 +2109,7 @@ export type LoincCodesPayload = {
 /** The patient's maritial status type assigned */
 export enum Maritialstatus {
   Divorced = 'DIVORCED',
-  Maried = 'MARIED',
+  Married = 'MARRIED',
   Separated = 'SEPARATED',
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
@@ -2156,6 +2158,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   getAllTransactions: TransactionsPayload;
+  getEligibilityAndCoverage: PolicyEligibilityPayload;
   getFormPublicMediaUrl: FormMediaPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
@@ -2428,6 +2431,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationGetAllTransactionsArgs = {
   transactionInputs: GetAllTransactionsInputs;
+};
+
+
+export type MutationGetEligibilityAndCoverageArgs = {
+  policyId: Scalars['String'];
 };
 
 
@@ -3242,6 +3250,7 @@ export type Policy = {
   orderOfBenefit?: Maybe<OrderOfBenefitType>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  policyEligibilities?: Maybe<Array<PolicyEligibility>>;
   policyHolder?: Maybe<PolicyHolder>;
   policyHolderId?: Maybe<Scalars['String']>;
   policyHolderRelationship?: Maybe<PolicyHolderRelationshipType>;
@@ -3251,6 +3260,61 @@ export type Policy = {
   referringProvider?: Maybe<Doctor>;
   referringProviderId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
+};
+
+export type PolicyCoverage = {
+  __typename?: 'PolicyCoverage';
+  benefitAmount?: Maybe<Scalars['String']>;
+  benefitCode?: Maybe<Scalars['String']>;
+  benefitCoverageCode?: Maybe<Scalars['String']>;
+  benefitCoverageDescription?: Maybe<Scalars['String']>;
+  benefitDescription?: Maybe<Scalars['String']>;
+  benefitLevelCode?: Maybe<Scalars['String']>;
+  benefitLevelCodeDescription?: Maybe<Scalars['String']>;
+  benefitNotes?: Maybe<Scalars['String']>;
+  benefitPercent?: Maybe<Scalars['String']>;
+  benefitPeriodCode?: Maybe<Scalars['String']>;
+  benefitPeriodCodeDescription?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  dateOfLastUpdated?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  inPlanNetwork?: Maybe<Scalars['String']>;
+  insuranceTypeCode?: Maybe<Scalars['String']>;
+  insuranceTypeCodeDescription?: Maybe<Scalars['String']>;
+  policyEligibility?: Maybe<PolicyEligibility>;
+  policyEligibilityId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibility = {
+  __typename?: 'PolicyEligibility';
+  createdAt?: Maybe<Scalars['String']>;
+  eligibilityId?: Maybe<Scalars['String']>;
+  eligibilityResultDate?: Maybe<Scalars['String']>;
+  eligibilityResultTime?: Maybe<Scalars['String']>;
+  groupNumber?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  insAddress1?: Maybe<Scalars['String']>;
+  insCity?: Maybe<Scalars['String']>;
+  insDob?: Maybe<Scalars['String']>;
+  insFirstName?: Maybe<Scalars['String']>;
+  insLastName?: Maybe<Scalars['String']>;
+  insSex?: Maybe<Scalars['String']>;
+  insState?: Maybe<Scalars['String']>;
+  insZip?: Maybe<Scalars['String']>;
+  planBeginDate?: Maybe<Scalars['String']>;
+  planNumber?: Maybe<Scalars['String']>;
+  policy?: Maybe<Policy>;
+  policyCoverages?: Maybe<Array<PolicyCoverage>>;
+  policyId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilityPayload = {
+  __typename?: 'PolicyEligibilityPayload';
+  pagination?: Maybe<PaginationPayload>;
+  policyEligibility: PolicyEligibility;
+  response?: Maybe<Response>;
 };
 
 export type PolicyHolder = {

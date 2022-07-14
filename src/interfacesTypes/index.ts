@@ -857,6 +857,8 @@ export interface CheckInComponentProps {
 export interface PolicyAttachmentProps {
   policyId?: string
   handleReload: Function
+  dispatch?: Dispatch<Action>
+  state?: MediaState
 }
 
 export interface LabOrderCreateProps {
@@ -1223,10 +1225,6 @@ export interface FacilityScheduleModalProps extends GeneralFormProps {
 export interface DaySchedule {
   day: Days;
   slots: Schedule[];
-}
-
-export interface AppointmentsTableProps {
-  doctorId?: string;
 }
 
 export interface AppointmentDatePickerProps {

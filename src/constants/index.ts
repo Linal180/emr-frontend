@@ -997,9 +997,11 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
+export const TODAY = "Today";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
+export const MARRIED = "MARRIED";
 export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
 export const VISITS = "Visits";
@@ -1074,7 +1076,7 @@ export const ELIGIBILITY = "Eligibility";
 export const SELECT_DATE = "Select Date";
 export const SUB_TOTAL_TEXT = "Sub-Total";
 export const EFFECTIVE_TEXT = "EFFECTIVE";
-export const ICD_TEN_CODE = "ICD-10 Code"; 
+export const ICD_TEN_CODE = "ICD-10 Code";
 export const SNO_MED_CODE = "SnoMed Code";
 export const SIGNATURE_TEXT = "Signature";
 export const PAY_VIA_CASH = "Pay via Cash";
@@ -1890,7 +1892,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SPECIALTIES = sortingValue(mapEnum<typeof Speciality>(Speciality))
+export const MAPPED_SPECIALTIES = sortingValue(mapServiceEnum<typeof Speciality>(Speciality))
 export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
 
 export const TEMPORARY_CPT_CODES = [
@@ -1938,7 +1940,7 @@ export const TEMPORARY_CPT_CODES = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Maried, name: formatValue(Maritialstatus.Maried) },
+  { id: Maritialstatus.Married, name: formatValue(MARRIED) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
@@ -4297,40 +4299,40 @@ export const COVERAGE_SUMMARY_DUMMY_DATA = [
 ]
 
 export const MODULE_LOGS_TYPES = [
-	"Agreement",
-	"Appointment",
-	"Attachments",
-	"DocumentTypes",
-	"Billing",
-	"Dashboard",
-	"Facility",
-	"Service",
-	"Element",
-	"Form",
-	"UserForm",
-	"Copay",
-	"Insurance",
-	"PolicyHolder",
-	"Policy",
-	"LabTestObservation",
-	"LabTests",
-	"LoincCodes",
-	"TestSpecimen",
-	"PatientAllergies",
-	"Problem",
-	"Vitals",
-	"DoctorPatient",
-	"Patient",
-	"PatientConsent",
-	"Invoice",
-	"Payment",
-	"Practice",
-	"Staff",
-	"Role",
-	"Users",
-	"Doctor",
-	"Contact",
-	"Schedule",
-	"Permission",
-	"RolePermission",
+  "Agreement",
+  "Appointment",
+  "Attachments",
+  "DocumentTypes",
+  "Billing",
+  "Dashboard",
+  "Facility",
+  "Service",
+  "Element",
+  "Form",
+  "UserForm",
+  "Copay",
+  "Insurance",
+  "PolicyHolder",
+  "Policy",
+  "LabTestObservation",
+  "LabTests",
+  "LoincCodes",
+  "TestSpecimen",
+  "PatientAllergies",
+  "Problem",
+  "Vitals",
+  "DoctorPatient",
+  "Patient",
+  "PatientConsent",
+  "Invoice",
+  "Payment",
+  "Practice",
+  "Staff",
+  "Role",
+  "Users",
+  "Doctor",
+  "Contact",
+  "Schedule",
+  "Permission",
+  "RolePermission",
 ]
