@@ -115,7 +115,10 @@ const SignatureComponent = (): JSX.Element => {
         `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
       formData,
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          pathname: window.location.pathname
+        }
       }
     ).then(response => {
       const { status } = response

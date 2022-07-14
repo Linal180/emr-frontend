@@ -54,7 +54,7 @@ import {
   CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
   APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
   FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
-  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, ADD_APPOINTMENT,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -146,7 +146,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status, appointmentCreateType
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status,
+            appointmentCreateType
           } = appointment || {}
 
           if (status === AppointmentStatus.Cancelled) {
@@ -429,7 +430,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
               <Box ml={2}>
                 <PageHeader
-                  title={EDIT_APPOINTMENT}
+                  title={isEdit ? EDIT_APPOINTMENT : ADD_APPOINTMENT}
                   path={[DASHBOARD_BREAD, VIEW_APPOINTMENTS_BREAD,
                     isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD
                   ]}
@@ -520,7 +521,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
                           : <PatientSelector
                             isModal
+                            styles='log-class'
                             isRequired
+                            // placeholder
                             label={PATIENT}
                             name="patientId"
                             setValue={setValue}
@@ -599,7 +602,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
                                 className={classes.timeSlot}
                                 onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '} 
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
                                 {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </Box>
                             </li>

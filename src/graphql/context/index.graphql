@@ -94,3 +94,17 @@ query FindAllServiceList($serviceInput: ServiceInput!) {
     }
   }
 }
+
+query GetCurrentFacility($getFacility: GetFacility!){
+  getFacility(getFacility: $getFacility){
+    facility {
+      id
+      name
+    }
+
+    response{
+      status
+      message
+    }
+  }
+}

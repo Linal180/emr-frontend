@@ -14,7 +14,7 @@ import {
 } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect, filteredOptions, shouldFilter
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
@@ -167,6 +167,14 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     }
   }, [isEdit, modalName, setValue, value])
 
+  const filterOptions = (options: SelectorOption[]) => {
+    if (filteredOptions) {
+      return options.filter((value) => !filteredOptions.some(option => option.id === value.id))
+    }
+
+    return options
+  }
+
   return (
     <Controller
       rules={{ required: true }}
@@ -176,6 +184,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
+            filterOptions={filterOptions}
             options={options.length ? options : []}
             disableClearable
             value={field.value ?? EMPTY_OPTION}

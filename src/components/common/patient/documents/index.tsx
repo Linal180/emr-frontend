@@ -86,7 +86,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     },
   });
 
-  const [getAttachments, { loading, error }] = useGetAttachmentsLazyQuery({
+  const [getAttachments, { loading }] = useGetAttachmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -385,7 +385,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           </form>
         </FormProvider>
 
-        {((!loading && attachmentsData?.length === 0) || error) &&
+        {(!loading && attachmentsData?.length === 0) &&
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

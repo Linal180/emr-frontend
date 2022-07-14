@@ -33,7 +33,7 @@ import {
 import {
   APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
   DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, 
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
   SELECT_DAY_MESSAGE,
 } from "../../../constants";
@@ -43,15 +43,19 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
+  const { currentUser } = useContext(AuthContext)
   const [ids, setIds] = useState<string[]>([])
+
+  const { id: currentDoctor } = currentUser || {}
+  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
   const { userPermissions } = useContext(AuthContext)
+
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(scheduleSchema(isDoctor || false))
+    resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
   });
   const { reset, handleSubmit, setValue, control } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
-  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
 
   const handleClose = useCallback(() => {
     reset();
@@ -177,7 +181,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: typeId } : { facilityId: typeId }
+      const recordId = isDoctor ? { doctorId: typeId || currentDoctor } : { facilityId: typeId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
@@ -186,7 +190,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       }
     })
 
-    if (typeId) {
+    if (typeId || (isDoctor && currentDoctor)) {
       if (isEdit) {
         id ?
           await updateSchedule({
@@ -295,6 +299,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
                           {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
                             <DatePicker
+                              isRequired={!shouldHaveRecursion}
                               name="recurringEndDate"
                               label={END_DATE}
                               disableFuture={false}

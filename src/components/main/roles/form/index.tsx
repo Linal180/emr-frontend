@@ -25,7 +25,7 @@ import {
 import {
   DESCRIPTION, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET, ROLES_ROUTE,
   ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED, SAVE_TEXT, SET_PERMISSIONS, ROLES_TEXT,
-  ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED,
+  ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED, SYSTEM_ROLES,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -34,7 +34,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [ids, setIds] = useState<string[]>([])
 
   const [modules, setModules] = useState<string[]>([])
-  const [custom, setCustom] = useState<boolean>(true)
+  const [custom, setCustom] = useState<boolean>(false)
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
 
@@ -42,7 +42,8 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
   });
-  const { handleSubmit, reset, setValue } = methods;
+  const { handleSubmit, reset, setValue, watch } = methods;
+  const { role } = watch()
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
@@ -215,7 +216,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
 
-              {(custom || isSuper) &&
+              {custom &&
                 <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
                   {SAVE_TEXT}
                 </Button>
@@ -224,25 +225,25 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <Box p={2} />
 
-            {loading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="role"
-                    controllerLabel={ROLE_NAME}
-                  />
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="description"
-                    controllerLabel={DESCRIPTION}
-                  />
-                </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12}>
+                <InputController
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="role"
+                  controllerLabel={ROLE_NAME}
+                />
               </Grid>
-            )}
+
+              <Grid item md={6} sm={12}>
+                <InputController
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="description"
+                  controllerLabel={DESCRIPTION}
+                />
+              </Grid>
+            </Grid>
           </Box>
         </Card>
 
@@ -285,11 +286,14 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </FormGroup>
                     </Grid>
 
-
                     {index === 0 && (custom || isSuper) &&
-                      <Button onClick={setPermissions} variant='contained' color='secondary' disabled={assignPermissionLoading}
-                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
-                    }
+                      <Button onClick={setPermissions}
+                        variant='contained' color='secondary'
+                        disabled={assignPermissionLoading}
+                        className='blue-button-new'
+                      >
+                        {SET_PERMISSIONS}
+                      </Button>}
                   </Box>
 
                   <Box p={2} />
@@ -305,9 +309,12 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               <FormControlLabel
                                 control={
                                   <Box>
-                                    <Checkbox disabled={!(custom || isSuper)} color="primary"
+                                    <Checkbox
+                                      color="primary"
                                       checked={ids.includes(id || '')}
-                                      onChange={() => handleChangeForCheckBox(id || '')} />
+                                      disabled={!(custom || isSuper) || role === SYSTEM_ROLES.SuperAdmin}
+                                      onChange={() => handleChangeForCheckBox(id || '')}
+                                    />
                                   </Box>
                                 }
                                 label={formatPermissionName(name || '')}

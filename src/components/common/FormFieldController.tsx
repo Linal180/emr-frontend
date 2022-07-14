@@ -129,8 +129,6 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     }
   }
 
-
-
   return (
     <Controller
       rules={{ required: required }}

@@ -1,23 +1,26 @@
-//packages import
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography } from "@material-ui/core"
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
+// packages import
 import { FC, useState } from "react"
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { useFormContext } from "react-hook-form"
 import {
-  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
-  VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
-} from "../../../../constants"
-import InputController from "../../../../controller"
-import { PatientCardsProps, SmartyUserData } from "../../../../interfacesTypes"
-//constants, interfaces and utils import
-import { ActionType } from "../../../../reducers/patientReducer"
-//components import
+  Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography
+} from "@material-ui/core"
+// components import
 import Alert from "../../../common/Alert"
-import CardComponent from "../../../common/CardComponent"
-import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
+import PhoneField from "../../../common/PhoneInput"
+import InputController from "../../../../controller"
+import SmartyModal from "../../../common/SmartyModal"
+import CardComponent from "../../../common/CardComponent"
 import { verifyAddress } from "../../../common/smartyAddress"
-import SmartyModal from "../../../common/SmartyModal";
+import CountryController from "../../../../controller/CountryController"
+// constants, interfaces and utils import
+import { ActionType } from "../../../../reducers/patientReducer"
+import { PatientCardsProps, SmartyUserData } from "../../../../interfacesTypes"
+import {
+  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE,
+  MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
+} from "../../../../constants"
 
 const ContactInfoCard: FC<PatientCardsProps> = ({
   getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
@@ -61,7 +64,13 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
   return (
     <>
-      <CardComponent cardTitle={CONTACT_INFORMATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+      <CardComponent
+        saveBtn
+        state={state}
+        isEdit={isEdit}
+        disableSubmit={disableSubmit}
+        cardTitle={CONTACT_INFORMATION}
+      >
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
@@ -138,13 +147,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
           </Grid>
 
           <Grid item lg={2} md={4}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="basicCountry"
-              label={COUNTRY}
-              options={MAPPED_COUNTRIES}
-              loading={getPatientLoading}
-            />
+            <CountryController loading={getPatientLoading} controllerName="basicCountry" />
           </Grid>
         </Grid>
 
@@ -167,6 +170,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                 </Box>
               </FormGroup>
             </FormControl>
+
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
 
@@ -179,6 +183,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                   loading={getPatientLoading}
                 />
               </Grid>
+
               <Grid item md={3} sm={12} xs={12}>
                 <PhoneField
                   name="basicPhone"
@@ -198,23 +203,18 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
               </Grid>
             </Grid>
           </Grid>
-
-
-        </Grid>
-
-        <Grid container spacing={3}>
-
         </Grid>
       </CardComponent>
 
       <SmartyModal
         isOpen={addressOpen || false}
+        data={data ?? []}
+        userData={userData}
+        verifiedAddressHandler={verifiedAddressHandler}
         setOpen={(open: boolean) =>
           dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
         }
-        data={data ?? []}
-        userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler} />
+      />
     </>
   )
 }

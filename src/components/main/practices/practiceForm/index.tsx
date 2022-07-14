@@ -1,38 +1,40 @@
 // packages block
 import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import history from '../../../../history';
 import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
-import PhoneField from '../../../common/PhoneInput';
-import PageHeader from '../../../common/PageHeader';
 import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
+import CountryController from '../../../../controller/CountryController';
 // interfaces, graphql, constants block /styles
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
+import { createPracticeSchema, updatePracticeSchema } from '../../../../validationSchemas';
 import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
-  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT,
-  COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
+  PRACTICE_MANAGEMENT_TEXT, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT, GROUP_NPI, USA,
+  PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
   ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_NEW_BREAD, PRACTICE_NAME,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, TAX_ID, NPI_INFO, 
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext)
   const { id: adminId } = user || {}
+
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
@@ -59,13 +61,15 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           const { status } = response
 
           if (practice && status && status === 200) {
-            const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
+            const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice
 
             fax && setValue('fax', fax)
             ein && setValue('ein', ein)
+            npi && setValue('npi', npi)
             upin && setValue('upin', upin)
             name && setValue('name', name)
             phone && setValue('phone', phone)
+            taxId && setValue('taxId', taxId)
             champus && setValue('champus', champus)
             medicare && setValue('medicare', medicare)
             medicaid && setValue('medicaid', medicaid)
@@ -134,11 +138,11 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const {
       name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
       userFirstName, userLastName, userEmail, email,
-      userPhone, address, address2, city, state, country, zipCode
+      userPhone, address, address2, city, state, country, zipCode, npi, taxId
     } = inputs;
 
     const practiceInput = {
-      name, champus, ein, fax, medicaid, medicare, phone, upin
+      name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId
     }
 
     if (isEdit) {
@@ -150,7 +154,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         Alert.error(PRACTICE_NOT_FOUND)
     } else {
       const { id: selectedState } = state;
-      const { id: selectedCountry } = country;
 
       await createPractice({
         variables: {
@@ -170,7 +173,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             createFacilityContactInput: {
               primaryContact: true, email, address, address2, city, state: selectedState,
-              country: selectedCountry, zipCode,
+              country: country || USA, zipCode,
             }
           }
         }
@@ -233,6 +236,36 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             name="fax"
                             loading={getPracticeLoading}
                             label={FAX} />
+                        </Grid>
+                      </Grid>
+                    </CardComponent>
+                  </Grid>
+
+                  <Box p={3} />
+
+                  <Grid md={12} item>
+                    <CardComponent cardTitle={TAX_ID_DETAILS}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            info={TAX_ID_INFO}
+                            controllerName="taxId"
+                            controllerLabel={TAX_ID}
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            info={NPI_INFO}
+                            fieldType="text"
+                            controllerName="npi"
+                            controllerLabel={GROUP_NPI}
+                            loading={getPracticeLoading}
+                          />
                         </Grid>
                       </Grid>
 
@@ -392,12 +425,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <Selector
-                              value={EMPTY_OPTION}
-                              label={COUNTRY}
-                              name="country"
-                              options={MAPPED_COUNTRIES}
-                            />
+                            <CountryController  controllerName="country" />
                           </Grid>
                         </Grid>
                       </CardComponent>

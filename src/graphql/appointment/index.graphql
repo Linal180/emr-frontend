@@ -45,6 +45,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         name
         price
         color
+        duration
       }
     }
   }

@@ -20,7 +20,7 @@ import {
 } from "../../../reducers/patientReducer";
 
 const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue
+  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user, currentUser } = useContext(AuthContext)
@@ -34,8 +34,8 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   const { id: facilityId, practiceId } = facility || {}
   const [{ page, searchQuery, patients }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-
-  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
+    sortingValue(renderPatient(patients))
+  const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), DUMMY_OPTION]
 
   const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -79,7 +79,10 @@ const PatientSelector: FC<PatientSelectorProps> = ({
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery, onlyDoctor, currentDoctor])
+  }, [
+    page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery,
+    onlyDoctor, currentDoctor
+  ])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
@@ -90,17 +93,16 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   }, [isOpen, setValue])
 
   const defaultFilterOptions = createFilterOptions();
-
   return (
     <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={updatedOptions[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={sortingValue(updatedOptions) ?? []}
+    rules={{ required: true }}
+    name={name}
+    control={control}
+    defaultValue={updatedOptions[0]}
+    render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+      return (
+        <Autocomplete
+        options={updatedOptions ?? []}
             value={field.value}
             loading={loading}
             disableClearable
@@ -116,7 +118,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
               return results;
             }}
-
+            
             renderOption={(option) => {
               if (option.id === ADD_PATIENT_MODAL) {
                 return (
@@ -130,26 +132,29 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
               return option.name
             }}
-
+            
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+                {!!!placeholder &&
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>}
 
                 <TextField
                   {...params}
-                  variant="outlined"
                   error={invalid}
-                  className="selectorClass"
+                  variant="outlined"
+                  placeholder={placeholder ? label : ''}
+                  className={`selectorClass ${styles}`}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
 
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
+
             onChange={(_, data) => field.onChange(data)}
           />
         );

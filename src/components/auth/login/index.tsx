@@ -17,7 +17,7 @@ import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE, SYSTEM_ROLES, FA_TOKEN,
+  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE, SYSTEM_ROLES, FA_TOKEN, NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE,
 } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
@@ -38,8 +38,10 @@ const LoginComponent = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION || message === EXCEPTION)
-        return Alert.error(EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE)
+        Alert.error(message === FORBIDDEN_EXCEPTION || message === EXCEPTION 
+          ? EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE : message === NOT_FOUND_EXCEPTION 
+            ? USER_NOT_FOUND_EXCEPTION_MESSAGE : message
+          )
     },
 
     onCompleted(data) {

@@ -1,14 +1,15 @@
 // packages block
 import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, Avatar, } from '@material-ui/core';
+import {
+  Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, Avatar,
+} from '@material-ui/core';
 // utils and header styles block
+import { AuthContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
-import { AuthContext, ListContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { handleLogout, isOnlyDoctor, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
+import { isOnlyDoctor, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
-
 import {
   EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
   PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER_ADMIN_TEXT,
@@ -17,10 +18,9 @@ import {
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const {
-    user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl
+    user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl, logoutUser
   } = useContext(AuthContext);
-  const { setFacilityList, setRoleList } = useContext(ListContext)
-
+  
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
@@ -41,15 +41,6 @@ const ProfileDropdownMenu = (): JSX.Element => {
     setCurrentUser(null)
     setIsLoggedIn(false)
   }
-
-  const logout = () => {
-    setIsLoggedIn(false)
-    setUser(null)
-    setCurrentUser(null)
-    handleLogout();
-    setFacilityList([]);
-    setRoleList([])
-  };
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
@@ -79,7 +70,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Box px={2} pt={1} minWidth={360} maxWidth={360} overflow={'auto'}>
+        <Box px={2} pt={1} minWidth={360} maxWidth={360}>
           <Box p={1} mb={2} display="flex" justifyContent="space-between"
             alignItems="center" className={classes.dropdownMenuBar}
           >
@@ -161,7 +152,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Grid>
           </Grid>
 
-          <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
+          <Box mt={2} pt={2} pb={1} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3} alignItems="center">
               <Grid item md={8}>
                 <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>
@@ -170,7 +161,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               </Grid>
 
               <Grid item md={4}>
-                <Button onClick={() => logout()} variant="outlined" color="inherit" size="small" className="danger">
+                <Button onClick={() => logoutUser()} variant="outlined" color="inherit" size="small" className="danger">
                   {LOGOUT_TEXT}
                 </Button>
               </Grid>

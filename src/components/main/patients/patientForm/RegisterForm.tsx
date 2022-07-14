@@ -48,42 +48,42 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
       case 1:
         return (
           <PatientDemographicsCard
-            getPatientLoading={getPatientLoading}
-            state={state} dispatch={dispatch}
-            shouldDisableEdit={shouldDisableEdit}
-            disableSubmit={disableSubmit}
             isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
+            getPatientLoading={getPatientLoading}
+            shouldDisableEdit={shouldDisableEdit}
           />)
 
       case 2:
         return (
           <ContactInfoCard
-            getPatientLoading={getPatientLoading}
+            isEdit={isEdit}
+            disableSubmit={disableSubmit}
             state={state} dispatch={dispatch}
             shouldDisableEdit={shouldDisableEdit}
-            disableSubmit={disableSubmit}
-            isEdit={isEdit}
+            getPatientLoading={getPatientLoading}
           />)
 
       case 3:
         return (
           <PatientPrivacyCard
-            getPatientLoading={getPatientLoading}
-            state={state} dispatch={dispatch}
-            shouldDisableEdit={shouldDisableEdit}
-            disableSubmit={disableSubmit}
             isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
+            getPatientLoading={getPatientLoading}
+            shouldDisableEdit={shouldDisableEdit}
           />)
       default:
         return (
           <>
             <Box mb={3}>
               <EmergencyContactCard
+                isEdit={isEdit}
+                disableSubmit={disableSubmit}
+                state={state} dispatch={dispatch}
                 getPatientLoading={getPatientLoading}
                 shouldDisableEdit={shouldDisableEdit}
-                state={state} dispatch={dispatch}
-                disableSubmit={disableSubmit}
-                isEdit={isEdit}
               />
             </Box>
 
@@ -97,10 +97,10 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
             <Box mb={3}>
               <GuarantorCard
-                getPatientLoading={getPatientLoading}
+                isEdit={isEdit}
                 state={state} dispatch={dispatch}
                 shouldDisableEdit={shouldDisableEdit}
-                isEdit={isEdit}
+                getPatientLoading={getPatientLoading}
               />
             </Box>
 
@@ -111,10 +111,14 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   }
 
   return (
-    <Box className='patient-add-form' display="flex" flexWrap="wrap" gridGap={20}>
+    <Box display="flex" flexWrap="wrap" gridGap={20}>
       <Box className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
-          <StepperCard stepperData={RegisterPatientMenuNav} activeStep={activeStep as number} dispatch={dispatch} />
+          <StepperCard
+            stepperData={RegisterPatientMenuNav}
+            activeStep={activeStep as number}
+            dispatch={dispatch}
+          />
         </Card>
       </Box>
 

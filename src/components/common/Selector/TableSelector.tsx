@@ -1,121 +1,146 @@
 //packages block
 import { Box, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
-import { FC, useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FC, useState } from "react";
+import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 //constants, interfaces, utils
 import { ClearIcon } from "../../../assets/svgs";
-import { ACTIONS, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, PRICE_WITH_DOLLAR } from "../../../constants";
+import { ACTIONS, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, } from "../../../constants";
+import { CodeType } from "../../../generated/graphql";
 import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
-import { useTableStyles } from "../../../styles/tableStyles";
 import { renderTh } from "../../../utils";
-//components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
 
-
-const TableSelector: FC<TableSelectorProps> = ({ handleCodes, title, moduleName, shouldShowPrice }) => {
-  const classes = useTableStyles();
-  const [tableData, setTableData] = useState<TableCodesProps[]>([])
+const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice }) => {
   const [valueToEdit, setValueToEdit] = useState<string>('')
   const methods = useForm<any>({
     mode: "all",
   });
+  const { control, watch, setValue: setFormValue } = useFormContext();
+  const { [moduleName as string]: moduleData } = watch()
 
   const { setValue } = methods
 
   const saveHandler = (value: string, id: string) => {
-    const index = tableData.findIndex((data) => data?.id === id)
-    let newArr = [...tableData]; // copying the old datas array
+    const index = (moduleData as TableCodesProps[]).findIndex((data) => data?.id === id)
+    let newArr = [...(moduleData as TableCodesProps[])]; // copying the old datas array
     newArr[index].price = value; // replace e.target.value with whatever you want to change it to
 
-    setTableData(newArr);
+    setFormValue(moduleName, newArr);
     setValueToEdit('')
   }
 
-  useEffect(() => {
-    handleCodes(moduleName, tableData)
-  }, [handleCodes, moduleName, tableData])
+  const getCodeType = (codeName: ITEM_MODULE) => {
+    switch (codeName) {
+      case ITEM_MODULE.icdCodes:
+        return CodeType.Icd_10Code
+      case ITEM_MODULE.cptCode:
+        return CodeType.CptCode
+      default:
+        break;
+    }
+  }
 
   const handleTableCodes = (data: SelectorOption) => {
     setValue(moduleName, EMPTY_OPTION)
-    const valueAlreadyExist = tableData.find((tableDataValues) => tableDataValues.id === data.id)
+    const valueAlreadyExist = (moduleData as TableCodesProps[])?.find((tableDataValues) => tableDataValues.id === data.id)
     if (valueAlreadyExist) {
       return
     }
 
-    setTableData(prevState => [...prevState, {
+    setFormValue(moduleName, [...moduleData, {
       id: data.id,
       code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data.id || '',
       description: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[1] || '' : data?.name || '',
+      codeType: getCodeType(moduleName) as CodeType
     }])
   }
 
   return (
-    <Card>
-      <Box p={2} className={classes.mainTableContainer}>
-        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-          <Typography variant="h4">{title}</Typography>
+    <Controller
+      name={moduleName}
+      control={control}
+      defaultValue={[]}
+      render={({ field, fieldState: { error: { message } = {} } }) => {
+        return (
+          <Card>
+            <Box px={2} pt={2} mb={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+              <Typography variant="h4">{title}</Typography>
 
-          <Box minWidth={400}>
-            <FormProvider {...methods}>
-              <ItemSelector
-                label={''}
-                name={moduleName}
-                modalName={moduleName}
-                onSelect={(data: SelectorOption) => handleTableCodes(data)}
-              />
-            </FormProvider>
-          </Box>
-        </Box>
-
-        <Box className="table-overflow">
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {renderTh(CODE)}
-                {renderTh(DESCRIPTION)}
-                {shouldShowPrice && renderTh(PRICE_WITH_DOLLAR)}
-                {renderTh(ACTIONS)}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {tableData.map(({
-                code, description, id, price
-              }) => {
-                return (
-                  <TableRow>
-                    <TableCell scope="row">{code}</TableCell>
-                    <TableCell scope="row">{description}</TableCell>
-                    {shouldShowPrice && (
-                      <TableCell scope="row">
-                        {valueToEdit === id ? <TextField
-                          id={id}
-                          type="number"
-                          variant={'outlined'}
-                          onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
-                      </TableCell>
-                    )}
-                    <TableCell scope="row">
-                      <IconButton onClick={() => setTableData(tableData?.filter((data => data?.id !== id)))}>
-                        <ClearIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                )
-              }
-              )}
-            </TableBody>
-          </Table>
-
-          {(!tableData?.length) && (
-            <Box display="flex" justifyContent="center" pb={12} pt={5}>
-              <NoDataComponent />
+              <Box minWidth={400}>
+                <FormProvider {...methods}>
+                  <ItemSelector
+                    label={''}
+                    name={moduleName}
+                    addEmpty
+                    modalName={moduleName}
+                    filteredOptions={(moduleData as TableCodesProps[])?.map((value) => {
+                      return {
+                        id: value.id,
+                        name: `${value.code} | ${value.description}`
+                      }
+                    })}
+                    onSelect={(data: SelectorOption) => handleTableCodes(data)}
+                  />
+                </FormProvider>
+                {field.value?.length ? '' : <Typography className='danger' variant="caption">{message}</Typography>}
+              </Box>
             </Box>
-          )}
-        </Box>
-      </Box>
-    </Card>
+
+            <Box className="table-overflow">
+              <Table aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {renderTh(CODE)}
+                    {renderTh(DESCRIPTION)}
+                    {shouldShowPrice && renderTh(BUILD_FEE_DOLLAR)}
+                    {renderTh(ACTIONS)}
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {(moduleData as TableCodesProps[])?.map(({
+                    code, description, id, price
+                  }) => {
+                    return (
+                      <TableRow key={id}>
+                        <TableCell scope="row">{code}</TableCell>
+                        <TableCell scope="row">
+                          <Box maxWidth={500}>
+                            <Typography noWrap>{description}</Typography>
+                          </Box>
+                        </TableCell>
+                        {shouldShowPrice && (
+                          <TableCell scope="row">
+                            {valueToEdit === id ? <TextField
+                              id={id}
+                              type="number"
+                              variant={'outlined'}
+                              onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
+                          </TableCell>
+                        )}
+                        <TableCell scope="row">
+                          <IconButton onClick={() => setFormValue(moduleName, (moduleData as TableCodesProps[])?.filter((data => data?.id !== id)))}>
+                            <ClearIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  }
+                  )}
+                </TableBody>
+              </Table>
+
+              {(!(moduleData as TableCodesProps[])?.length) && (
+                <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                  <NoDataComponent />
+                </Box>
+              )}
+            </Box>
+          </Card>
+        )
+      }}
+    />
   )
 }
 

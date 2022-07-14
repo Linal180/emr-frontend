@@ -1,7 +1,8 @@
 // packages
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CKEditor, CKEditorEventPayload } from 'ckeditor4-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
 import {
@@ -194,7 +195,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
     });
   };
 
-  const onEditorChange = ({ editor }: CKEditorEventPayload<"change">) =>
+  const onEditorChange = (editor: ClassicEditor) =>
     dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: editor.getData() });
 
   return (
@@ -254,9 +255,10 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         {descriptionTypes.map(type =>
                           <Box
                             className={type === descriptionType ? 'selectedBox selectBox' : 'selectBox'}
-                            onClick={() =>
+                            onClick={() => {
                               dispatch({ type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: type })
-                            }
+                              type === descriptionTypes[1] && dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: '' })
+                            }}
                           >
                             <Typography variant='h6'>{type}</Typography>
                           </Box>
@@ -269,18 +271,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                     <Typography>{AGREEMENT_BODY}</Typography>
                     <Box p={0.5} />
 
-                    {id && agreementBody?.length &&
-                      <CKEditor
-                        name="agreementBody"
-                        initData={agreementBody}
-                        onChange={onEditorChange}
-                      />}
-
-                    {!id && <CKEditor
-                      name="agreementBody"
-                      initData={agreementBody}
-                      onChange={onEditorChange}
-                    />}
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={agreementBody}
+                      onChange={(_: any, editor: ClassicEditor) => onEditorChange(editor)}
+                    />
 
                     {!agreementBody.length &&
                       <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography>}

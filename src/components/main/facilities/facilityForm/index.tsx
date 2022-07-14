@@ -1,5 +1,7 @@
 // packages block
-import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
+import {
+  FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback
+} from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -16,7 +18,9 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
+import {
+  formatEnumMember, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
+} from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -28,21 +32,26 @@ import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
   FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
+  INVALID_END_TIME,
+  USA,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
   const { facility, roles } = user || {};
+
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
   const { addFacilityList, updateFacilityList } = useContext(ListContext)
+
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(facilitySchema(isSuper))
   });
-  const { reset, handleSubmit, setValue, watch } = methods;
-  const { zipCode } = watch()
+  const { reset, handleSubmit, setValue, watch, setError, clearErrors } = methods;
+
+  const { zipCode, startTime, endTime } = watch()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { billingId, contactId } = state
   const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
@@ -77,21 +86,22 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             npi && setValue('npi', npi)
             name && setValue('name', name)
-            startTime && setValue('startTime', getTimeString(startTime))
             endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
+            startTime && setValue('startTime', getTimeString(startTime))
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatServiceCode(serviceCode)))
-            practiceId && practiceName && setValue('practice', setRecord(practiceId, practiceName))
+            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatEnumMember(serviceCode)))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
             if (contacts && contacts.length > 0) {
               const primaryContact = contacts.filter(item => item.primaryContact)[0]
-              const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country } = primaryContact || {}
-              dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
+              const {
+                id, email, phone, zipCode, mobile, fax, address, address2, city, state, country
+              } = primaryContact || {}
 
+              dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
               fax && setValue('fax', fax)
               city && setValue('city', city)
               email && setValue('email', email)
@@ -100,14 +110,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
               address2 && setValue('address2', address2)
+              country && setValue('country', country || USA)
               state && setValue('state', setRecord(state, state))
-              country && setValue('country', setRecord(country, country))
             }
 
             if (billingAddress && billingAddress.length > 0) {
               const { id, email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+              
               dispatch({ type: ActionType.SET_BILLING_ID, billingId: id })
-
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
@@ -115,8 +125,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue('billingAddress', address)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
+              country && setValue('billingCountry', country || USA)
               state && setValue('billingState', setRecord(state, state))
-              country && setValue('billingCountry', setRecord(country, country))
+            }
+
+            if (practiceId && practiceName){
+              setValue('practice', setRecord(practiceId, practiceName, false))
             }
           }
         }
@@ -181,6 +195,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }, [getFacility, isEdit, id])
 
+  useEffect(() => {
+    if (startTime) {
+      timeValidation(endTime || '', startTime)
+        ? clearErrors('endTime') : setError('endTime', { message: INVALID_END_TIME })
+    }
+  }, [clearErrors, endTime, setError, startTime])
+
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
       name, cliaIdNumber, federalTaxId, npi, tamxonomyCode, practice,
@@ -192,28 +213,27 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const { id: selectedState } = state;
     const { name: timeZoneName } = timeZone;
-    const { id: selectedCountry } = country;
     const { id: selectedPractice } = practice || {};
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedBillingState } = billingState;
-    const { id: selectedBillingCountry } = billingCountry;
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode, practiceId: facilityPractice,
-      mammographyCertificationNumber, serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
-      startTime: startTime && setTime(startTime), endTime: endTime && setTime(endTime),
+      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode,
+      practiceId: facilityPractice, mammographyCertificationNumber, endTime: endTime && setTime(endTime),
+      serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
+      startTime: startTime && setTime(startTime),
     }
 
     const contactInput = {
-      phone, email, fax, city, state: selectedState, country: selectedCountry, zipCode, address,
+      phone, email, fax, city, state: selectedState, country: country || USA, zipCode, address,
       address2, primaryContact: true
     }
 
     const billingAddressInput = {
       phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
-      country: selectedBillingCountry || '', zipCode: billingZipCode || '',
+      country: billingCountry || USA, zipCode: billingZipCode || '',
     }
 
     if (isEdit && id) {
@@ -246,19 +266,16 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     setTabValue(newValue)
 
   const getAddressHandler = useCallback(async () => {
-
     if (zipCode) {
       const data = await getAddressByZipcode(zipCode);
       const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
+
       if (status) {
         setValue('city', defaultCity)
         setValue('state', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-    }
-    else {
-      Alert.error(ZIP_CODE_ENTER)
-    }
+    } else Alert.error(ZIP_CODE_ENTER)
   }, [zipCode, setValue])
 
   useEffect(() => {
@@ -294,10 +311,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             </Box>
 
             <RegisterFormComponent
-              dispatch={dispatch}
               state={state}
-              getFacilityLoading={getFacilityLoading}
               isSuper={isSuper}
+              dispatch={dispatch}
+              getFacilityLoading={getFacilityLoading}
             />
           </form>
         </FormProvider>

@@ -39,6 +39,8 @@ query GetPractice($getPractice: GetPractice!){
       medicare
       medicaid
       champus
+      taxId
+      npi
       createdAt
       updatedAt
 

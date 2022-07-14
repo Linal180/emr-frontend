@@ -30,6 +30,24 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       otherAccident
       otherDate
       amount
+      serviceDate,
+      claimDate,
+      claimNo,
+      facility {
+       id
+       name
+      },
+      pos,
+      servicingProvider {
+        id
+        firstName
+        lastName
+      },
+      renderingProvider {
+        id
+        firstName
+        lastName
+      },
       codes {
         id
         code
@@ -38,5 +56,25 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
         codeType
       }
     }
+  }
+}
+
+query CreateClaim($claimInput: ClaimInput!) {
+  createClaim(claimInput: $claimInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+query GetClaimFile($claimInput: ClaimInput!) {
+  getClaimFile(claimInput: $claimInput){
+    response {
+      status
+      message
+    }
+
+    claimFile
   }
 }
