@@ -1865,7 +1865,7 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SPECIALTIES = sortingValue(mapEnum<typeof Speciality>(Speciality))
+export const MAPPED_SPECIALTIES = sortingValue(mapServiceEnum<typeof Speciality>(Speciality))
 export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
 
 export const TEMPORARY_CPT_CODES = [
