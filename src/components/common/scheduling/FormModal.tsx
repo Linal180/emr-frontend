@@ -3,6 +3,10 @@ import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
+  InputLabel, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import DatePicker from "../DatePicker";
@@ -27,17 +31,11 @@ import {
   checkPermission, getDayFromTimestamps, getTimeString, renderItem, setTimeDay
 } from "../../../utils";
 import {
-  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
-  InputLabel, Typography
-} from "@material-ui/core";
-import {
   APPOINTMENT_TYPE, CANCEL, CREATE_SCHEDULE, DAY,
-  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
+  SELECT_DAY_MESSAGE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
-  SELECT_DAY_MESSAGE,
-  CANT_UPDATE_SCHEDULE,
-  CANT_CREATE_SCHEDULE,
+  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
@@ -56,7 +54,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
   });
-  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue, control } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
 
   const handleClose = useCallback(() => {
@@ -224,7 +222,6 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
-        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={isDoctor ? DOCTOR_SCHEDULE : FACILITY_SCHEDULE}>
             <Box px={1}>

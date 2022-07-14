@@ -22,7 +22,6 @@ import {
 } from "../../../../../generated/graphql";
 import { ActionType } from "../../../../../reducers/mediaReducer";
 
-
 const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, state }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
