@@ -197,6 +197,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
           scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
           appointmentCreateType && setAppointmentType(appointmentCreateType)
+          
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
@@ -236,10 +237,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const [createAppointment, { loading: CreateAppointmentLoading }] = useCreateAppointmentMutation({
     onError({ message }) {
-      if (message === CONFLICT_EXCEPTION) {
+      message === CONFLICT_EXCEPTION ?
         Alert.error(SLOT_ALREADY_BOOKED)
-      } else
-        Alert.error(message || CANT_BOOK_APPOINTMENT)
+        : Alert.error(message || CANT_BOOK_APPOINTMENT)
     },
 
     onCompleted(data) {

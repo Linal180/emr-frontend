@@ -1692,7 +1692,7 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatEnumMember(member).trim()
+        name: formatValue(member).trim()
       }
     });
   } else return [EMPTY_OPTION]
@@ -1930,5 +1930,12 @@ export const isValidDate = (date: Date) => {
   return date instanceof Date && !isNaN(date.getTime());
 }
 
-export const excludeLeadingZero = (value: string) =>  parseInt(value).toString()
+export const hasEncounter = (status: AppointmentStatus) => {
+  return status !== AppointmentStatus.Cancelled
+    && status !== AppointmentStatus.NoShow
+    && status !== AppointmentStatus.Scheduled
+    && status !== AppointmentStatus.Discharged
+}
+
+export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))

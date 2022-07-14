@@ -6,7 +6,7 @@ import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "@material-ui/styles";
 // components block
 import AppContainer from './AppContainer'
-import BackdropLoader from './components/common/Backdrop';
+import Loader from './components/common/Loader';
 import { SnackbarUtilsConfigrator, CloseButton } from "./components/common/Alert";
 // graphql, constants, context, apollo, and theme block
 import './styles/styles.css'
@@ -15,8 +15,8 @@ import { theme } from "./theme/theme";
 import { REMOTE_IP } from './constants';
 import 'rc-time-picker/assets/index.css';
 import {
-  AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, PermissionContextProvider,
-  ChartContextProvider
+  AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, 
+  PermissionContextProvider, ChartContextProvider
 } from './context'
 
 const App = () => {
@@ -43,7 +43,7 @@ const App = () => {
     <SnackbarProvider maxSnack={5} autoHideDuration={3000} action={key => <CloseButton id={key} />}
       preventDuplicate={true} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
       <SnackbarUtilsConfigrator />
-      {loader ? <BackdropLoader loading={true} /> :
+      {loader ? <Loader loading={true} /> :
         <ApolloProvider client={client}>
           <ThemeProvider theme={theme}>
             <AuthContextProvider>
