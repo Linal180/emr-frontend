@@ -1543,6 +1543,7 @@ export type FieldsInputs = {
   name: Scalars['String'];
   options: Array<FieldOptionsInputType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
@@ -1564,6 +1565,7 @@ export type FieldsTypes = {
   name: Scalars['String'];
   options: Array<FieldOptionsType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
@@ -2107,7 +2109,7 @@ export type LoincCodesPayload = {
 /** The patient's maritial status type assigned */
 export enum Maritialstatus {
   Divorced = 'DIVORCED',
-  Maried = 'MARIED',
+  Married = 'MARRIED',
   Separated = 'SEPARATED',
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
@@ -6154,7 +6156,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, createdAt?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalCount?: number | null, totalPages?: number | null } | null } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, createdAt?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalCount?: number | null, totalPages?: number | null } | null } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -6168,7 +6170,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -6182,7 +6184,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -6196,7 +6198,7 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string, patientId?: string | null } | null } };
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string, form?: { __typename?: 'Form', type: FormType } | null } | null, appointment?: { __typename?: 'Appointment', id: string, patientId?: string | null } | null } };
 
 export type GetFormPublicMediaUrlMutationVariables = Exact<{
   getPublicMediaInput: GetPublicMediaInput;
@@ -10857,6 +10859,7 @@ export const FindAllFormsDocument = gql`
               isMultiSelect
               apiCall
               tableContactType
+              regex
               options {
                 name
                 value
@@ -10978,6 +10981,7 @@ export const GetFormDocument = gql`
               isMultiSelect
               tableContactType
               apiCall
+              regex
               options {
                 name
                 value
@@ -11096,6 +11100,7 @@ export const GetPublicFormDocument = gql`
               isMultiSelect
               apiCall
               tableContactType
+              regex
               options {
                 name
                 value
@@ -11221,6 +11226,9 @@ export const SaveUserFormValuesDocument = gql`
     }
     userForm {
       id
+      form {
+        type
+      }
     }
     appointment {
       id
