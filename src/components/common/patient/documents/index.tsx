@@ -59,7 +59,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    documentTab, openSign, providerName, attachmentData
+    openSign, providerName, attachmentData
   } = state
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
@@ -317,7 +317,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                   {renderTh(TITLE)}
                   {renderTh(TYPE)}
                   {/* {renderTh(ADDED_BY)} */}
-                  {documentTab &&
+                  {isSignedTab &&
                     <>
                       {renderTh(SIGNED_BY)}
                       {renderTh(SIGNED_AT)}
@@ -355,7 +355,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                         </TableCell>
                         <TableCell scope="row">{type}</TableCell>
                         {/* <TableCell scope="row">{addedBy}</TableCell> */}
-                        {documentTab &&
+                        {isSignedTab &&
                           <>
                             <TableCell scope="row">{signedBy}</TableCell>
                             {signedAt &&
@@ -365,7 +365,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                         <TableCell scope="row">{getDocumentDate(documentDate || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                            {!documentTab &&
+                            {!isSignedTab &&
                               <Box className={classes.iconsBackground}
                                 onClick={() => handleSignDocument(id)}
                               >
