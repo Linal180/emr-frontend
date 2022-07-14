@@ -9,7 +9,7 @@ import {
 // components block
 import Alert from '../../../common/Alert';
 import ACHPaymentComponent from '../achPayment'
-import BackdropLoader from '../../../common/Backdrop';
+import Loader from '../../../common/Loader';
 // constants and types block
 import { GREY, WHITE } from '../../../../theme';
 import history from '../../../../history';
@@ -24,9 +24,8 @@ import {
   useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus,
 } from '../../../../generated/graphql';
 import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, PAY_VIA_ACH,
   PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER,
-  PAY_VIA_ACH,
 } from '../../../../constants';
 
 const ExternalPaymentComponent = (): JSX.Element => {
@@ -277,7 +276,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                     token={appointmentPaymentToken}
                     dispatcher={dispatch} states={state} moveNext={moveNext} />}
                 </Box>
-              ) : <BackdropLoader loading={true} />}
+              ) : <Loader loading={true} />}
             </Box>
           </Grid>
         </Grid>
