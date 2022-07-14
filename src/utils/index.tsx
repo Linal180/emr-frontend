@@ -1692,7 +1692,7 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatEnumMember(member).trim()
+        name: formatValue(member).trim()
       }
     });
   } else return [EMPTY_OPTION]
