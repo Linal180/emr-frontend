@@ -1249,6 +1249,8 @@ export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolea
       return value || ''
     case ElementType.Select:
       return isMultiSelect ? [] : value || ''
+    case ElementType.Dropdown:
+      return value || ''
     case ElementType.Radio:
       return value || ''
     case ElementType.Checkbox:

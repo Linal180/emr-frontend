@@ -97,11 +97,11 @@ export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentT
               break;
 
             case FormBuilderApiSelector.PRACTICE_FACILITIES:
-              validation[fieldId] = yup.string().required(requiredMessage(label))
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
               break;
 
             case FormBuilderApiSelector.SERVICE_SELECT:
-              validation[fieldId] = yup.string().required(requiredMessage(label))
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
               break;
 
             case FormBuilderApiSelector.SERVICE_SLOT:
