@@ -26,6 +26,7 @@ import {
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
   useFetchBillingDetailsByAppointmentIdLazyQuery,
 } from "../../../../generated/graphql";
+import Loader from "../../../common/Loader";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
@@ -73,7 +74,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
-  const [getClaimFile] = useGetClaimFileLazyQuery({
+  const [getClaimFile, { loading: getClaimFileLoading }] = useGetClaimFileLazyQuery({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -125,7 +126,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     } catch (error) { }
   }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
 
-  const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
+  const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
     onCompleted(data) {
       if (data) {
         const { fetchBillingDetailsByAppointmentId } = data ?? {}
@@ -253,7 +254,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   }
 
-  const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
+  const [fetchPatientInsurances, { loading: fetchPatientInsurancesLoading }] = useFetchPatientInsurancesLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -280,7 +281,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
-  const [getAppointment] = useGetAppointmentLazyQuery({
+  const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -306,7 +307,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
-  const [getPatientProviders] = useGetPatientProvidersLazyQuery({
+  const [getPatientProviders, { loading: getPatientProvidersLoading }] = useGetPatientProvidersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -329,7 +330,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     },
   });
 
-  const [getFacility] = useGetFacilityLazyQuery({
+  const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -382,6 +383,21 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       fetchFacility()
     }
   }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails])
+
+  const isLoading = shouldDisableEdit ? fetchBillingDetailsLoading
+    : fetchPatientInsurancesLoading || getAppointmentLoading || getPatientProvidersLoading || getFacilityLoading
+
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Billing Details...' />
+  }
+
+  if (createBillingLoading) {
+    return <Loader loading loaderText='Creating Billing Details...' />
+  }
+
+  if (getClaimFileLoading) {
+    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
+  }
 
   return (
     <BillingForm
