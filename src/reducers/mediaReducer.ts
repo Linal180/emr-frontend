@@ -1,4 +1,5 @@
 import { Attachment, AttachmentPayload, AttachmentsPayload, CreateAttachmentInput } from "../generated/graphql";
+import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
   meta: string
@@ -7,18 +8,23 @@ export interface State {
   isOpen: boolean
   isEdit: boolean
   fileUrl: string
+  policyId: string
   openSign: boolean
+  activeStep: number
   openDelete: boolean
   providerName: string
   documentTab: boolean
   isSignedTab: boolean
   preSignedUrl: string
   attachmentId: string
+  isFormLoaded: boolean
   attachmentUrl: string
+  policyHolderId: string
   isEditModalOpen: boolean
   attachments: Attachment[]
   signedByProvider: boolean
   deleteAttachmentId: string
+  insuranceId: SelectorOption
   attachment: Attachment | undefined
   insuranceCard1: Attachment | undefined
   insuranceCard2: Attachment | undefined
@@ -34,13 +40,17 @@ export const initialState: State = {
   files: [],
   action: '',
   fileUrl: '',
+  policyId: '',
+  activeStep: 0,
   isOpen: false,
   isEdit: false,
   openSign: false,
   attachments: [],
   attachmentId: '',
-  preSignedUrl: '',
   providerName: '',
+  preSignedUrl: '',
+  policyHolderId: '',
+  isFormLoaded: true,
   openDelete: false,
   attachmentUrl: '',
   isSignedTab: false,
@@ -56,6 +66,7 @@ export const initialState: State = {
   insuranceCard2: undefined,
   drivingLicense1: undefined,
   drivingLicense2: undefined,
+  insuranceId: { id: "", name: "" },
 }
 
 export enum ActionType {
@@ -65,18 +76,23 @@ export enum ActionType {
   SET_IS_EDIT = 'setIsEdit',
   SET_FILE_URL = 'setFileUrl',
   SET_OPEN_SIGN = 'setOpenSign',
+  SET_POLICY_ID = 'setPolicyId',
   SET_MEDIA_DATA = 'setMediaData',
   SET_ATTACHMENT = 'setAttachment',
   SET_OPEN_DELETE = 'setOpenDelete',
+  SET_ACTIVE_STEP = 'setActiveStep',
   SET_ATTACHMENTS = 'setAttachments',
   SET_DOCUMENT_TAB = 'setDocumentTab',
+  SET_INSURANCE_ID = 'setInsuranceId',
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_PRE_SIGNED_URL = 'setPreSignedUrl',
+  SET_IS_FORM_LOADED = 'setIsFormLoaded',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_INSURANCE_CARD_1 = 'setInsuranceCard1',
+  SET_POLICY_HOLDER_ID = 'setPolicyHolderId',
   SET_INSURANCE_CARD_2 = 'setInsuranceCard2',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
   SET_DRIVING_LICENSE_1 = 'setDrivingLicense1',
@@ -92,7 +108,9 @@ export type Action =
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
+  | { type: ActionType.SET_POLICY_ID; policyId: string }
   | { type: ActionType.SET_OPEN_SIGN; openSign: boolean }
+  | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_DOCUMENT_TAB, documentTab: boolean }
@@ -101,7 +119,10 @@ export type Action =
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
   | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_IS_FORM_LOADED; isFormLoaded: boolean }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
+  | { type: ActionType.SET_POLICY_HOLDER_ID; policyHolderId: string }
+  | { type: ActionType.SET_INSURANCE_ID; insuranceId: SelectorOption }
   | { type: ActionType.SET_SIGNED_BY_PROVIDER, signedByProvider: boolean }
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
   | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN; isEditModalOpen: boolean }
@@ -263,6 +284,36 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         files: action.files
+      }
+
+    case ActionType.SET_POLICY_ID:
+      return {
+        ...state,
+        policyId: action.policyId
+      }
+
+    case ActionType.SET_POLICY_HOLDER_ID:
+      return {
+        ...state,
+        policyHolderId: action.policyHolderId
+      }
+
+    case ActionType.SET_INSURANCE_ID:
+      return {
+        ...state,
+        insuranceId: action.insuranceId
+      }
+
+    case ActionType.SET_ACTIVE_STEP:
+      return {
+        ...state,
+        activeStep: action.activeStep
+      }
+
+    case ActionType.SET_IS_FORM_LOADED:
+      return {
+        ...state,
+        isFormLoaded: action.isFormLoaded
       }
   }
 }
