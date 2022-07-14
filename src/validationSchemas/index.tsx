@@ -26,7 +26,7 @@ import {
   DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, DESCRIPTION, TAX_ID, NPI, ICD_CODE,
   INVALID_EMAIL, EMAIL, NPI_VALIDATION_MESSAGE, NPI_REGEX, CLIA_VALIDATION_MESSAGE, CLIA_REGEX,
   LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
-  PRICE, DURATION, NUMBER, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
+  PRICE, DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
@@ -368,10 +368,12 @@ export const facilityServicesSchema = {
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
   price: yup.string()
     .test('', requiredMessage(PRICE), value => !!value)
-    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0),
+    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
+    .matches(NUMBER_REGEX, ValidMessage(PRICE)),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
-    .matches(NUMBER_REGEX, ValidMessage(NUMBER))
+    .test('', requiredMessage(DURATION), value => parseInt(value || '') > 0)
+    .matches(NUMBER_REGEX, ValidMessage(DURATION))
     .test('', invalidMessage(DURATION), value => !(parseInt(value || '') < 0))
     .test('', tooShort(DURATION), value => !(parseInt(value || '') < 5))
     .test('', tooLong(DURATION), value => !(parseInt(value || '') >= 300))
