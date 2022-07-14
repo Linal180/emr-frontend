@@ -191,6 +191,7 @@ query getPublicForm($getForm: GetForm!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
 
               options {
                 name
