@@ -2107,7 +2107,7 @@ export type LoincCodesPayload = {
 /** The patient's maritial status type assigned */
 export enum Maritialstatus {
   Divorced = 'DIVORCED',
-  Married = 'MARRIED',
+  Maried = 'MARIED',
   Separated = 'SEPARATED',
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
@@ -4279,7 +4279,7 @@ export type RoleInput = {
 };
 
 export type RoleItemInput = {
-  customRole?: Maybe<Scalars['Boolean']>;
+  customRole: Scalars['Boolean'];
   description?: Maybe<Scalars['String']>;
   role: Scalars['String'];
 };
