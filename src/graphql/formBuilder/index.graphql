@@ -53,6 +53,7 @@ query findAllForms($formInput: FormInput!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
 
               options {
                 name
@@ -123,6 +124,7 @@ query getForm($getForm: GetForm!) {
               isMultiSelect
               tableContactType
               apiCall
+              regex
 
               options {
                 name
