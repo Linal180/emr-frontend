@@ -267,6 +267,10 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 
     userForm {
       id
+
+      form {
+        type
+      }
     }
 
     appointment {
