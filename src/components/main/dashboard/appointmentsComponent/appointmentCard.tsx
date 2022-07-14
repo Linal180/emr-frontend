@@ -347,9 +347,9 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                     <DeleteAppointmentIcon />
                   </IconButton>}
 
-                  {isEditableAppointment && <IconButton aria-label="edit" onClick={handleEdit}>
+                  {isEditableAppointment ? (appStatus !== "DISCHARGED" && <IconButton aria-label="edit" onClick={handleEdit}>
                     <EditAppointmentIcon />
-                  </IconButton>}
+                  </IconButton>) : ""}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />

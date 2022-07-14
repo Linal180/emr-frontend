@@ -30,6 +30,24 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       otherAccident
       otherDate
       amount
+      serviceDate,
+      claimDate,
+      claimNo,
+      facility {
+       id
+       name
+      },
+      pos,
+      servicingProvider {
+        id
+        firstName
+        lastName
+      },
+      renderingProvider {
+        id
+        firstName
+        lastName
+      },
       codes {
         id
         code

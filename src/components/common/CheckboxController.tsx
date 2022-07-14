@@ -8,7 +8,7 @@ import TextLoader from "./TextLoader";
 import { CheckboxControllerProps } from "../../interfacesTypes";
 
 const CheckboxController: FC<CheckboxControllerProps> = ({
-  controllerName, controllerLabel, error, margin, isHelperText, title, loading
+  controllerName, controllerLabel, error, margin, isHelperText, title, loading, defaultValue
 }): JSX.Element => {
   const { control } = useFormContext();
 
@@ -16,7 +16,7 @@ const CheckboxController: FC<CheckboxControllerProps> = ({
     <Controller
       name={controllerName}
       control={control}
-      defaultValue={false}
+      defaultValue={!!defaultValue ? defaultValue : false}
       render={({ field: { value, onChange, onBlur, ref }, fieldState: { invalid, error: { message } = {} } }) =>
       (
         <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>

@@ -13,7 +13,13 @@ import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, S
 const IdentificationCard: FC<PatientCardsProps> = ({
   getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
 }) =>
-  <CardComponent cardTitle={IDENTIFICATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+  <CardComponent
+    saveBtn
+    state={state}
+    isEdit={isEdit}
+    cardTitle={IDENTIFICATION}
+    disableSubmit={disableSubmit}
+  >
     <Grid container spacing={3}>
       <Grid item md={4} sm={12} xs={12}>
         <InputController
