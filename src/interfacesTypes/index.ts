@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormSetValue, ValidationRule
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn, UseFormSetValue, ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
 import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
@@ -26,6 +26,9 @@ import {
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
 } from "../reducers/externalFormBuilderReducer";
+import {
+  Action as BillingAction, State as BillingState
+} from "../reducers/billingReducer";
 import {
   AllDoctorPayload, Allergies, AllergiesPayload, AppointmentsPayload, AppointmentStatus,
   Attachment, AttachmentPayload, AttachmentType, Code, CodeType, CreateAppointmentInput,
@@ -310,8 +313,8 @@ interface TextLoaderRow {
 
 export interface TextLoaderInterface {
   rows: TextLoaderRow[]
-  height? : number 
-  width? : string;
+  height?: number
+  width?: string;
 }
 
 export interface DataLoaderInterface {
@@ -590,26 +593,19 @@ interface CustomBillingAddressInputs {
   billingUserId: string;
   billingMobile: string;
   billingZipCode: string;
+  billingCountry: string;
   billingAddress: string;
   billingAddress2: string;
   billingFacility: string;
   billingState: SelectorOption;
-  billingCountry: SelectorOption;
 }
 
 export type CustomFacilityInputProps = Omit<
-  UpdateContactInput,
-  "serviceCode" | "state" | "country"
-> &
-  Omit<
-    UpdateFacilityItemInput,
-    "practiceType" | "serviceCode" | "timeZone" | "practiceId"
-  > &
-  CustomBillingAddressInputs & { serviceCode: SelectorOption } & {
-    practiceType: SelectorOption;
-  } & { timeZone: SelectorOption } & { state: SelectorOption } & {
-    country: SelectorOption;
-  } & { practice: SelectorOption };
+  UpdateContactInput, "serviceCode" | "state">
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId">
+  & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption; }
+  & { timeZone: SelectorOption } & { state: SelectorOption }
+  & { practice: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = "timeZone" | "facilityId";
 
@@ -622,14 +618,9 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<
   "timeZone"
 > & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<
-  CreateDoctorItemInput,
-  "facilityId" | "speciality"
-> &
-  Omit<CreateContactInput, "facilityId" | "state" | "country"> &
-  CustomBillingAddressInputs & { facilityId: SelectorOption } & {
-    country: SelectorOption;
-  } & { speciality: SelectorOption } & { state: SelectorOption };
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
+  & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs
+  & { facilityId: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & {
   facilityId: SelectorOption;
@@ -661,9 +652,9 @@ interface BasicContactControlInputs {
   basicPhone: string;
   basicMobile: string;
   basicAddress: string;
-  basicAddress2: string;
+  basicCountry: string;
   basicZipCode: string;
-  basicCountry: SelectorOption;
+  basicAddress2: string;
   basicState: SelectorOption;
 }
 
@@ -674,25 +665,25 @@ interface EmergencyContactControlInputs {
   emergencyMobile: string;
   emergencyAddress?: string;
   emergencyZipCode?: string;
+  emergencyCountry?: string;
   emergencyAddress2?: string;
   emergencyState?: SelectorOption;
-  emergencyCountry?: SelectorOption;
   emergencyRelationship: SelectorOption;
 }
 
 interface KinContactControlInputs {
   kinName: string;
-  kinRelationship: SelectorOption;
   kinPhone: string;
   kinMobile: string;
+  kinRelationship: SelectorOption;
 }
 
 interface GuardianContactControlInputs {
+  guardianName: string;
+  guardianSuffix: string;
+  guardianLastName: string;
   guardianFirstName: string;
   guardianMiddleName: string;
-  guardianLastName: string;
-  guardianSuffix: string;
-  guardianName: string;
   guardianRelationship: SelectorOption;
 }
 
@@ -703,6 +694,7 @@ interface GuarantorContactControlInputs {
   guarantorEmail: string;
   guarantorPhone: string;
   guarantorSuffix: string;
+  guarantorCountry: string;
   guarantorAddress: string;
   guarantorZipCode: string;
   guarantorLastName: string;
@@ -711,29 +703,28 @@ interface GuarantorContactControlInputs {
   guarantorMiddleName: string;
   guarantorEmployerName: string;
   guarantorState: SelectorOption;
-  guarantorCountry: SelectorOption;
   guarantorRelationship: SelectorOption;
 }
 
 interface EmployerControlInputs {
+  employerCity: string;
   employerName: string;
   employerEmail: string;
   employerPhone: string;
-  employerIndustry: string;
-  employerUsualOccupation: string;
-  employerCity: string;
-  employerState: SelectorOption;
   employerZipCode: string;
   employerAddress: string;
+  employerIndustry: string;
+  employerState: SelectorOption;
+  employerUsualOccupation: string;
 }
 
 interface RegisterUserInputs {
-  userFirstName: string;
-  userLastName: string;
-  userPassword: string;
   userEmail: string;
   userPhone: string;
   userZipCode: string;
+  userLastName: string;
+  userPassword: string;
+  userFirstName: string;
 }
 
 export type PatientInputProps = BasicContactControlInputs &
@@ -743,30 +734,16 @@ export type PatientInputProps = BasicContactControlInputs &
   GuarantorContactControlInputs &
   EmployerControlInputs &
   RegisterUserInputs &
-  Omit<
-    CreatePatientItemInput,
-    | "gender"
-    | "race"
-    | "genderIdentity"
-    | "maritialStatus"
-    | "sexAtBirth"
-    | "pronouns"
-    | "ethnicity"
-    | "sexualOrientation"
-    | "facilityId"
-    | "usualProviderId"
-    | "sexualOrientation"
-    | "genderIdentity"
-    | "homeBound"
-  > & { usualProviderId: SelectorOption } & { gender: SelectorOption } & {
-    race: SelectorOption;
-  } & { sexualOrientation: SelectorOption } & {
-    sexualOrientation: SelectorOption;
-  } & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & {
-    facilityId: SelectorOption;
-  } & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & {
-    homeBound: boolean;
-  } & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption };
+  Omit<CreatePatientItemInput, | "gender" | "race" | "genderIdentity"
+    | "maritialStatus" | "sexAtBirth" | "pronouns" | "ethnicity" | "sexualOrientation"
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption }
+  & { race: SelectorOption; } & { sexualOrientation: SelectorOption }
+  & { sexualOrientation: SelectorOption; } & { pronouns: SelectorOption }
+  & { ethnicity: SelectorOption } & { facilityId: SelectorOption; }
+  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption }
+  & { homeBound: boolean; } & { genderIdentity: SelectorOption }
+  & { maritialStatus: SelectorOption };
 
 export type ExternalPatientInputProps = {
   preferredCommunicationMethod: SelectorOption;
@@ -812,9 +789,7 @@ export type ExtendedExternalAppointmentInputProps = Pick<
   "firstName" | "lastName" | "email" | "dob"
 > & { phone: string } & { sexAtBirth: SelectorOption } & { signature: File | null };
 
-export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & {
-  facilityId: SelectorOption;
-};
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">;
 
 export interface ServiceTableProps {
   serviceDispatch: Dispatch<serviceAction>;
@@ -882,6 +857,8 @@ export interface CheckInComponentProps {
 export interface PolicyAttachmentProps {
   policyId?: string
   handleReload: Function
+  dispatch?: Dispatch<Action>
+  state?: MediaState
 }
 
 export interface LabOrderCreateProps {
@@ -908,6 +885,12 @@ export interface CreateBillingProps {
   otherDate?: string
   [ITEM_MODULE.icdCodes]: TableCodesProps[]
   [ITEM_MODULE.cptCode]: TableCodesProps[]
+  serviceDate: string
+  claimDate: string
+  servicingProvider: SelectorOption
+  renderingProvider: SelectorOption
+  facility: SelectorOption
+  pos: SelectorOption
 }
 
 export interface CreateLabTestProviderProps {
@@ -1224,6 +1207,14 @@ export interface CopayModalProps {
   billingStatus?: string
 }
 
+export interface CheckoutModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  insuranceId?: string;
+  billingStatus?: string
+  handleSubmit: Function
+}
+
 export interface FacilityScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;
@@ -1236,18 +1227,14 @@ export interface DaySchedule {
   slots: Schedule[];
 }
 
-export interface AppointmentsTableProps {
-  doctorId?: string;
-}
-
 export interface AppointmentDatePickerProps {
   date: MaterialUiPickersDate;
   setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>;
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput &
-  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email">
-  & { facilityName: string } & { roleType: SelectorOption } & { country: SelectorOption }
+  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode"
+    | "email" | "country"> & { facilityName: string } & { roleType: SelectorOption }
   & { state: SelectorOption } & { isAdmin: boolean };
 
 export interface PaymentProps {
@@ -1726,6 +1713,7 @@ export interface ACHPaymentComponentProps {
 export interface CheckboxControllerProps extends IControlLabel {
   title?: string;
   loading?: boolean
+  defaultValue?: boolean;
   autoFocus?: boolean;
   isHelperText?: boolean;
   controllerName: string;
@@ -1829,6 +1817,16 @@ export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   submitButtonText?: string
   labOrderNumber?: string
+}
+
+export interface BillingFormProps extends BillingComponentProps{
+  methods: UseFormReturn<CreateBillingProps, any>,
+  onSubmit: (values: CreateBillingProps) => void
+  createBillingLoading: boolean
+  createClaimCallback: Function
+  dispatch: Dispatch<BillingAction>
+  state: BillingState
+  claimNumber: string
 }
 
 export interface CodeTypeInterface {

@@ -59,8 +59,8 @@ export const formatValue = (value: string) => {
   return formatted?.trim();
 };
 
-export const formatServiceCode = (value: string) => {
-  const parts = value?.split("_");
+export const formatEnumMember = (value: string) => {
+  const parts = value.split("_");
   let formatted = `${parts[parts.length - 1]} - `;
 
   for (let index in parts) {
@@ -423,7 +423,6 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
     for (let practice of practices) {
       if (practice) {
         const { id, name } = practice;
-
         data.push({ id, name: name.trim() })
       }
     }
@@ -1708,7 +1707,7 @@ export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[]
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatServiceCode(member)
+        name: formatEnumMember(member)
       }
     });
   } else return [EMPTY_OPTION]
@@ -1933,4 +1932,12 @@ export const isValidDate = (date: Date) => {
   return date instanceof Date && !isNaN(date.getTime());
 }
 
+export const hasEncounter = (status: AppointmentStatus) => {
+  return status !== AppointmentStatus.Cancelled
+    && status !== AppointmentStatus.NoShow
+    && status !== AppointmentStatus.Scheduled
+    && status !== AppointmentStatus.Discharged
+}
+
+export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))

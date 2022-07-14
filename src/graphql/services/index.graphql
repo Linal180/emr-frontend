@@ -48,8 +48,6 @@ query getService($getService: GetService!) {
       facility {
         id
         name
-        createdAt
-        updatedAt
       }
     }
   }

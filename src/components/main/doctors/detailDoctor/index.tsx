@@ -74,7 +74,7 @@ const DoctorDetailComponent = (): JSX.Element => {
 
           <TabPanel value="3">
             <Grid>
-              <AppointmentsTable doctorId={id} />
+              <AppointmentsTable />
             </Grid>
           </TabPanel>
         </Box>

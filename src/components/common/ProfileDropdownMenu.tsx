@@ -70,7 +70,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Box px={2} pt={1} minWidth={360} maxWidth={360} overflow={'auto'}>
+        <Box px={2} pt={1} minWidth={360} maxWidth={360}>
           <Box p={1} mb={2} display="flex" justifyContent="space-between"
             alignItems="center" className={classes.dropdownMenuBar}
           >
@@ -152,7 +152,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Grid>
           </Grid>
 
-          <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
+          <Box mt={2} pt={2} pb={1} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3} alignItems="center">
               <Grid item md={8}>
                 <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>

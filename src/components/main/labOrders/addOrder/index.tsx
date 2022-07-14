@@ -8,7 +8,7 @@ import PageHeader from '../../../common/PageHeader';
 import LabOrdersCreateForm from './LabOrdersCreateForm';
 import LabOrdersProviderForm from './LabOrdersProviderForm';
 import { Check } from '@material-ui/icons';
-import BillingComponent from '../../checkIn/BillingComponent';
+import BillingComponent from '../../billing/addBill/BillingComponent';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();

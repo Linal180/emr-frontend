@@ -230,7 +230,7 @@ const Header: FC = (): JSX.Element => {
                 maxWidth='200px'
               >
                 {isSuper ?
-                  <Typography variant="h6" noWrap>{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6" color="textPrimary" noWrap>{SUPER_ADMIN}</Typography>
                   : (
                     <Box maxWidth="200px" textAlign="right">
                       <Box color={BLACK} minWidth='30px'>
@@ -238,8 +238,7 @@ const Header: FC = (): JSX.Element => {
                         <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
                     </Box>
-                  )
-                }
+                  )}
               </Box>
 
               <ProfileDropdownMenu />

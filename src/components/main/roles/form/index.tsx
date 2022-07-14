@@ -34,7 +34,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [ids, setIds] = useState<string[]>([])
 
   const [modules, setModules] = useState<string[]>([])
-  const [custom, setCustom] = useState<boolean>(true)
+  const [custom, setCustom] = useState<boolean>(false)
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
 
@@ -216,7 +216,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
 
-              {(custom || isSuper) &&
+              {custom &&
                 <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
                   {SAVE_TEXT}
                 </Button>
@@ -225,25 +225,25 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <Box p={2} />
 
-            {loading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="role"
-                    controllerLabel={ROLE_NAME}
-                  />
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="description"
-                    controllerLabel={DESCRIPTION}
-                  />
-                </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12}>
+                <InputController
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="role"
+                  controllerLabel={ROLE_NAME}
+                />
               </Grid>
-            )}
+
+              <Grid item md={6} sm={12}>
+                <InputController
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="description"
+                  controllerLabel={DESCRIPTION}
+                />
+              </Grid>
+            </Grid>
           </Box>
         </Card>
 

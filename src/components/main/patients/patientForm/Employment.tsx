@@ -2,13 +2,16 @@
 import { FC } from "react"
 import { Grid } from "@material-ui/core"
 // components block
-import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
 import InputController from "../../../../controller"
 import CardComponent from "../../../common/CardComponent"
+import CountryController from "../../../../controller/CountryController"
 // constants, interface block
 import { PatientCardsProps } from "../../../../interfacesTypes"
-import { ADDRESS, CITY, EMPLOYER_NAME, EMPLOYER_PHONE, EMPLOYMENT, MAPPED_STATES, STATE, USUAL_INDUSTRY, USUAL_OCCUPATION, ZIP_CODE } from "../../../../constants"
+import {
+  ADDRESS, CITY, EMPLOYER_NAME, EMPLOYER_PHONE, EMPLOYMENT, USUAL_INDUSTRY,
+  USUAL_OCCUPATION, ZIP_CODE
+} from "../../../../constants"
 
 const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) =>
   <CardComponent cardTitle={EMPLOYMENT}>
@@ -81,14 +84,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
       </Grid>
 
       <Grid item md={3}>
-        <Selector
-          disabled={shouldDisableEdit}
-          name="employerState"
-          label={STATE}
-          addEmpty
-          options={MAPPED_STATES}
-          loading={getPatientLoading}
-        />
+        <CountryController loading={getPatientLoading} controllerName="employerState" />
       </Grid>
     </Grid>
   </CardComponent>;
