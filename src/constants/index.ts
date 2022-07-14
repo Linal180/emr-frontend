@@ -973,6 +973,7 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
+export const TODAY = "Today";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
