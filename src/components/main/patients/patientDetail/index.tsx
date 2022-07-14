@@ -23,8 +23,8 @@ import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
 import history from "../../../../history";
-import { getFormattedDate } from '../../../../utils';
 import { ParamsType } from "../../../../interfacesTypes";
+import { getFormattedDate, hasEncounter } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -37,8 +37,8 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, State as appointmentState,
-  ActionType as appointmentActionType
+  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, 
+  State as appointmentState, ActionType as appointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
@@ -112,7 +112,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           appointmentDispatch({
             type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter(appointment => {
               const { status } = appointment || {}
-              return status === AppointmentStatus.Arrived
+              return hasEncounter(status as AppointmentStatus)
             }) as AppointmentsPayload['appointments']
           })
 
@@ -359,6 +359,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                   patientProvidersData={patientProvidersData}
                 />
               </Box>
+
               <Box className='masonry-box'>
                 <EncounterList appointments={encounters} />
               </Box>

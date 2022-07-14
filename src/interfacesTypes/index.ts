@@ -1227,10 +1227,6 @@ export interface DaySchedule {
   slots: Schedule[];
 }
 
-export interface AppointmentsTableProps {
-  doctorId?: string;
-}
-
 export interface AppointmentDatePickerProps {
   date: MaterialUiPickersDate;
   setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>;
