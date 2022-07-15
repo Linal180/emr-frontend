@@ -8,6 +8,8 @@ import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 import { Box, Button, CircularProgress, FormControl, Grid, IconButton, Typography, } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 // constants, history, styling block
 import { AuthContext } from '../../../context';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,6 +30,9 @@ const TwoFAComponent = (): JSX.Element => {
   const { user, currentDoctor, currentStaff, fetchUser } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
   const { contacts } = currentDoctor || {}
+
+  const theme = useTheme();
+  const mobileDevices = useMediaQuery(theme.breakpoints.down('xs'));
 
   const { phone: doctorPhone } = contacts?.find(({ primaryContact }) => primaryContact) || {}
   const { phone: staffPhone } = currentStaff || {}
@@ -93,10 +98,13 @@ const TwoFAComponent = (): JSX.Element => {
       <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
         <Box p={2} mb={2}>
           {!(phone || doctorPhone || staffPhone) &&
-            <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between'
+            <Box display="flex" flexDirection={`${mobileDevices ? 'column' : 'row'}`}
+              bgcolor={RED} color={WHITE} justifyContent='space-between'
               px={2} py={1} mb={1} borderRadius={5}
             >
-              <Box display="flex" alignItems='center'>
+              <Box display="flex" alignItems='center'
+                mb={`${mobileDevices ? 2 : 0}`}
+              >
                 <IconButton size="small" color='inherit' className={classes.iconPadding}>
                   <InfoSearchIcon />
                 </IconButton>
