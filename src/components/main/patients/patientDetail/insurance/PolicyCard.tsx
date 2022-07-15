@@ -53,7 +53,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
   const { id: patientId } = useParams<ParamsType>()
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
-  const { files, activeStep, isFormLoaded, insuranceId, policyHolderId, policyId } = state
+  const { files, activeStep, isFormLoaded, insuranceId, policyHolderId, policyId, policyAttachments } = state
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
@@ -341,7 +341,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} state={state} />
+          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} state={state} isEdit={isEdit}/>
         </Box>
       default:
         return 'Unknown step';
@@ -370,7 +370,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 type={'button'}
                 onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
                 variant="contained" color="primary"
-                disabled={isLastStep ? (files?.length === 0 || createPolicyLoading || updatePolicyLoading) : false} >
+                disabled={isLastStep ? ((isEdit ?  policyAttachments?.length === 0 && files?.length === 0 : files?.length === 0) || createPolicyLoading || updatePolicyLoading) : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
             </Box>
