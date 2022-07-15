@@ -859,6 +859,7 @@ export interface PolicyAttachmentProps {
   handleReload: Function
   dispatch?: Dispatch<Action>
   state?: MediaState
+  isEdit?: boolean
 }
 
 export interface LabOrderCreateProps {

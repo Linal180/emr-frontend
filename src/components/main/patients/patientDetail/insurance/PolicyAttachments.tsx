@@ -22,7 +22,7 @@ import {
 } from "../../../../../generated/graphql";
 import { ActionType } from "../../../../../reducers/mediaReducer";
 
-const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, state }, ref) => {
+const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, state, isEdit }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
   const dropZoneRef = useRef<FormForwardRef>(null);
@@ -31,7 +31,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
   const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const [attachments, setAttachments] =
     useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
-  const { files } = state || {}
+  const { files, policyAttachments } = state || {}
   const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -80,6 +80,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
             setAttachments(
               attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
             )
+          dispatch && dispatch({ type: ActionType.SET_POLICY_ATTACHMENTS, policyAttachments: attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] })
         }
       }
     },
@@ -128,7 +129,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
       dropZoneRef?.current?.submit()
     }
   }));
-
+  console.log('!!policyAttachments?.length || !!files?.length', !!policyAttachments?.length || !!files?.length)
   return (
     loading ? <ViewDataLoader columns={3} rows={4} /> :
       <Box minWidth="100%">
@@ -175,7 +176,9 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
               setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
             />
 
-            {!!!files?.length &&
+            {isEdit ? (!!!policyAttachments?.length && !!!files?.length)
+              && <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
+              : !!!files?.length &&
               <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
             }
 
