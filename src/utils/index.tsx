@@ -2,7 +2,7 @@
 import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
-import { pluck } from "underscore";
+import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
@@ -17,7 +17,7 @@ import {
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
   TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC,
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -1934,6 +1934,12 @@ export const hasEncounter = (status: AppointmentStatus) => {
     && status !== AppointmentStatus.NoShow
     && status !== AppointmentStatus.Scheduled
     && status !== AppointmentStatus.Discharged
+}
+
+export function sortingArray<arrayType>(array: arrayType, by: string, order: string): arrayType {
+  const sorted = sortBy(array as Collection<any>, 'scheduleStartDateTime')
+
+  return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
 }
 
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
