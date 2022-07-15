@@ -1,16 +1,21 @@
 // packages block
 import { FC, useState } from "react";
-import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
 import { CameraAlt } from "@material-ui/icons";
+import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
 // graphql, constants and interfaces/types block
 import { MediaCardComponentType } from "../../../interfacesTypes";
-import { DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT, UPLOAD } from "../../../constants";
-import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
-import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileUploadIcon, UploadIcon } from "../../../assets/svgs";
+import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
+import {
+  documentVerificationFormStyles
+} from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
+import {
+  DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT,
+  UPLOAD
+} from "../../../constants";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
@@ -132,14 +137,12 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
         </Grid>
       </Box>
 
-      {
-        isDeleteOpen && (
-          <ConfirmationModal
-            setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia}
-            isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION}
-          />
-        )
-      }
+      {isDeleteOpen && (
+        <ConfirmationModal
+          setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia}
+          isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION}
+        />
+      )}
     </>
   );
 };

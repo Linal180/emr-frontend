@@ -416,8 +416,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     setValue('patientId', setRecord(pId, pName))
   }, [pId, pName, setValue])
 
+  useEffect(() => {
+    setValue('scheduleEndDateTime', '')
+    setValue('scheduleStartDateTime', '')
+  }, [date, selectedService, selectedFacility, setValue, selectedProvider])
+  
   useEffect(() => { }, [date, appStartDate])
-
+  
   const handleAppointmentType = (type: string) => setAppointmentType(type)
 
   return (

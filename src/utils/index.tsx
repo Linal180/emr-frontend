@@ -1140,8 +1140,7 @@ export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-Y
 };
 
 export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
-  if (!date) return '';
-  return moment(date, 'x').format(format).toString()
+  return !date ? '' : moment(date, 'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {

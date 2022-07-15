@@ -1225,6 +1225,7 @@ export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
 export const POLICY_HOLDER_DETAILS = "Policy Holder Details";
 export const INSURANCE_AND_POLICIES = "Insurance & Policies";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
+export const LOADING_PLEASE_WAIT = "Loading, PLEASE WAIT...";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
 export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
