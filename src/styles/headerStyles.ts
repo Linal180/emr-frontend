@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE  } from "../theme";
+import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE, theme  } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -224,6 +224,15 @@ export const useHeaderStyles = makeStyles((theme) => ({
     "&:hover": {
       textDecoration: 'underline',
       color: BLUE,
+    }
+  },
+
+  factorAuthHeader :{
+    [theme.breakpoints.down("sm")]: {
+       flexDirection : 'column'
+    },
+    "& h4": {
+       marginTop : '10px'
     }
   }
 }));
