@@ -11,8 +11,6 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import {
   Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
 } from "@material-ui/core";
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
@@ -64,17 +62,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const chartingClasses = useChartingStyles()
   const classes = usePublicAppointmentStyles();
 
-
-
   const { facilityList } = useContext(ListContext)
   const params = new URLSearchParams(window.location.search);
 
   const { roles, facility, } = user || {}
   const { id: currentDoctor } = currentUser || {}
   const { id: userFacilityId, practiceId: userPracticeId } = facility || {}
-
-  const theme = useTheme();
-  const mobileDevices = useMediaQuery(theme.breakpoints.down('xs'));
 
   const isHigherAdmin = isUserAdmin(roles)
   const onlyDoctor = isOnlyDoctor(roles)
@@ -204,7 +197,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
           scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
           appointmentCreateType && setAppointmentType(appointmentCreateType)
-
+          
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
@@ -431,9 +424,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex"
-             flexDirection={`${!mobileDevices ? 'row' : 'column'}`}
-             justifyContent="space-between" alignItems={`${!mobileDevices ? 'flex-start' : 'center'}`}>
+          <Box display="flex" justifyContent="space-between" flexWrap="wrap" alignItems="flex-start">
             <Box display="flex">
               <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
 
