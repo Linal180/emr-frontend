@@ -191,7 +191,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
           :
           <Box flex={1}>
             <Box display="flex" flexWrap="wrap">
-              <Box flex={1} flexWrap="wrap" >
+              <Box flex={1} flexWrap="wrap">
                 <Box display="flex" alignItems="center" >
                   <Box className={classes.userName} mr={1}>
                     {`${firstName} ${lastName}`}
@@ -200,7 +200,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => (
-                    <Box display="flex" 
+                    <Box display="flex"
                       key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                       <Box>{item.icon}</Box>
                       <Typography variant="body1" >{item.description}</Typography>
