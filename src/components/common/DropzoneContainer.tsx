@@ -7,6 +7,7 @@ import { BLUE_ONE } from '../../theme';
 import { FileIcon } from "../../assets/svgs";
 import { FormVerification } from "../../interfacesTypes";
 import { documentVerificationFormStyles } from '../../styles/publicAppointmentStyles/documentVerificationStyles';
+import { ACCEPTABLE_FILES } from '../../constants';
 
 const DropzoneContainer: FC<FormVerification> = ({ imageSide }) => {
   const classes = documentVerificationFormStyles()
@@ -27,7 +28,7 @@ const DropzoneContainer: FC<FormVerification> = ({ imageSide }) => {
         <Typography component="h6" variant="body1">Supports: JPG,JPEG2000,PNG</Typography>
       </Box>
 
-      <DropzoneArea maxFileSize={1} />
+      <DropzoneArea maxFileSize={1} acceptedFiles={ACCEPTABLE_FILES} />
     </Box>
   );
 };

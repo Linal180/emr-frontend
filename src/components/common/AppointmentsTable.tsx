@@ -33,7 +33,7 @@ import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
   getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  isUserAdmin, renderTh, setRecord
+  isUserAdmin, renderTh, setRecord, sortingArray
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -127,37 +127,6 @@ const AppointmentsTable: FC = (): JSX.Element => {
     }
   });
 
-  // const [getAppointments, {
-  //   loading: getAppointmentsLoading, error: doctorAppointmentError
-  // }] = useGetAppointmentsLazyQuery({
-  //   fetchPolicy: "network-only",
-  //   nextFetchPolicy: 'no-cache',
-  //   notifyOnNetworkStatusChange: true,
-
-  //   onError() {
-  //     dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-  //   },
-
-  //   onCompleted(data) {
-  //     const { getAppointments } = data || {};
-
-  //     if (getAppointments) {
-  //       const { appointments, pagination } = getAppointments
-
-  //       if (pagination) {
-  //         const { totalPages } = pagination
-
-  //         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-  //       }
-
-  //       dispatch({
-  //         type: ActionType.SET_APPOINTMENTS,
-  //         appointments: appointments as AppointmentsPayload['appointments']
-  //       });
-  //     }
-  //   }
-  // });
-
   const [updateAppointment] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
 
@@ -218,7 +187,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
         variables: {
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery,
-            appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+            appointmentTypeId: appointmentTypeId,
             appointmentDate: moment(selectDate).format('YYYY-MM-DD')
           }
         },
@@ -226,7 +195,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
     } catch (error) { }
   }, [
     isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
-    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
+    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, selectDate
   ])
 
   useEffect(() => {
@@ -353,7 +322,13 @@ const AppointmentsTable: FC = (): JSX.Element => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
         : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-    }}>
+
+      dispatch({
+        type: ActionType.SET_APPOINTMENTS,
+        appointments: sortingArray<typeof appointments>(appointments, 'date', sortBy)
+      })
+    }}
+  >
 
     <Sort />
   </IconButton>;
@@ -390,7 +365,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
-                    <Typography variant="body1" color="textPrimary">Date</Typography>
+                    <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
                     <Box className="date-box" display="flex" alignItems="center">
                       <Button
