@@ -1,14 +1,16 @@
-// packages
+// packages block
 import { FC } from 'react';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { Box } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+// constants and styles block
 import { BLUE, GREEN, WHITE } from '../../theme';
+import { LOADING_PLEASE_WAIT } from '../../constants';
 
 interface PropsType {
   loading?: boolean;
   isSmallLoader?: boolean;
-  filerZindex?: boolean;
+  filerZIndex?: boolean;
   loaderText?: string;
 }
 
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Loader: FC<PropsType> = ({ isSmallLoader, filerZindex, loaderText }) => {
+const Loader: FC<PropsType> = ({ isSmallLoader, filerZIndex, loaderText }) => {
   const classes = useStyles();
 
   return (
@@ -52,7 +54,7 @@ const Loader: FC<PropsType> = ({ isSmallLoader, filerZindex, loaderText }) => {
       flexDirection="column"
       left={0}
       top={0}
-      zIndex={filerZindex ? 0 : 99}
+      zIndex={filerZIndex ? 0 : 99}
       className={classes.loaderContainer}
     >
       <CircularProgress className={classes.progress} />
@@ -66,7 +68,7 @@ const Loader: FC<PropsType> = ({ isSmallLoader, filerZindex, loaderText }) => {
         marginTop={1.5}
         className={classes.loaderText}
       >
-        {loaderText ? loaderText : 'Loading, PLEASE WAIT...'}
+        {loaderText ? loaderText : LOADING_PLEASE_WAIT}
       </Box>
     </Box>
   );
