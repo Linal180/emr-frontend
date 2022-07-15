@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import {
   Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography
 } from '@material-ui/core';
@@ -39,8 +39,11 @@ import {
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { id } = useParams<ParamsType>()
   const { user } = useContext(AuthContext)
+
   const chartingClasses = useChartingStyles()
-  const descriptionTypes = ['Text Editor', 'File Upload']
+  const descriptionTypes = ['Text Editor', 'File Upload'];
+  const [bodyStatus, setBodyStatus] = useState<boolean>(false)
+
 
   const { roles, facility } = user || {};
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
@@ -176,9 +179,12 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
         });
       }
     }
+    if ((descriptionType === descriptionTypes[0] && !agreementBody.length)) {
+      setBodyStatus(true)
+    }
 
-    if ((descriptionType === descriptionTypes[0] && !agreementBody.length)
-      || (descriptionType === descriptionTypes[1] && !files?.length)) {
+    if ((descriptionType === descriptionTypes[1] && !files?.length)) {
+      setBodyStatus(true)
       return Alert.error(PLEASE_SELECT_MEDIA)
     }
 
@@ -277,7 +283,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                       onChange={(_: any, editor: ClassicEditor) => onEditorChange(editor)}
                     />
 
-                    {!agreementBody.length &&
+                    {bodyStatus &&
                       <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography>}
                   </Grid>}
 

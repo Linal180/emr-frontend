@@ -14,7 +14,7 @@ import { ElementType } from '../../../../../generated/graphql';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import {
   ACTION, COLUMN_LENGTH, CSS_CLASSES, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT,
-  REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, SAVE_TEXT
+  REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, SAVE_TEXT, REGEX_LABEL
 } from '../../../../../constants';
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
@@ -30,7 +30,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
 
   //set form values
   const setFormInitialValues = useCallback(() => {
-    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea } = selected;
+    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea, regex } = selected;
     setValue("name", name)
     setValue("label", label)
     setValue("required", required)
@@ -44,6 +44,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
     setValue("defaultValue", defaultValue)
     setValue("options", options)
     setValue("textArea", textArea)
+    setValue("regex", regex)
     setIsChecked(required)
   }, [setValue, selected])
 
@@ -116,6 +117,15 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="label"
                 controllerLabel={LABEL}
+                key={'label'}
+              />
+            </Grid>
+
+            <Grid item md={12}>
+              <LabeledInputController
+                fieldType="text"
+                controllerName="regex"
+                controllerLabel={REGEX_LABEL}
                 key={'label'}
               />
             </Grid>

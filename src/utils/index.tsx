@@ -53,15 +53,15 @@ export const upperToNormal = (value: string) =>
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term =>
+  value?.split("_").map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted.trim();
+  return formatted?.trim();
 };
 
 export const formatEnumMember = (value: string) => {
   const parts = value.split("_");
-  let formatted = `${parts[parts.length - 1]} - `;
+  let formatted = ''
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
@@ -69,6 +69,7 @@ export const formatEnumMember = (value: string) => {
     }
   }
 
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;  
   return formatted.trim();
 };
 
@@ -1057,17 +1058,17 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
 };
 
 export const formatPermissionName = (name: string) => {
-  const [text, ...rest] = name.split(/(?=[A-Z])/)
+  const [text, ...rest] = name?.split(/(?=[A-Z])/)
   const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `
   return updateName.replaceAll(',', ' ');
 }
 
 export const formatRoleName = (name: string): string => {
   let formatted = ''
-  name.split(/[-_\s]+/).map(term =>
+  name?.split(/[-_\s]+/)?.map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted.trim();
+  return formatted?.trim();
 };
 
 export const parseColumnGrid = (col: number): GridSize => {
@@ -1247,6 +1248,8 @@ export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolea
       return value || ''
     case ElementType.Select:
       return isMultiSelect ? [] : value || ''
+    case ElementType.Dropdown:
+      return value || ''
     case ElementType.Radio:
       return value || ''
     case ElementType.Checkbox:
@@ -1350,7 +1353,7 @@ export const ounceToPounds = (o: number) => (o / 16)
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  let arr = url.split(','),
+  let arr = url?.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1360,7 +1363,7 @@ export const dataURLtoFile = (url: any, filename: string) => {
     u8arr[n] = bstr.charCodeAt(n);
   }
 
-  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+  return new File([u8arr], `${filename}.${mime?.split('/').pop()}`, { type: mime });
 }
 
 export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
@@ -1677,7 +1680,7 @@ export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => 
 
 export const getShortName = (name: string) => {
   let shortName = '';
-  const parts = name.split(' ')
+  const parts = name?.split(' ')
 
   parts.map(part => shortName = shortName.concat(part.charAt(0)))
 
@@ -1865,7 +1868,7 @@ export const appointmentChargesDescription = (amount: string) =>
   <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography>
 
 export const getFilteredSSN = (value: string) => {
-  const [, , last4] = value.split('-')
+  const [, , last4] = value?.split('-')
 
   return `***-**-${last4 || '0000'}`
 }

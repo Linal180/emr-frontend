@@ -1,9 +1,9 @@
 // packages block
-import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
+import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
-import { forwardRef, useContext, useImperativeHandle, useState } from "react";
+import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
@@ -173,12 +173,18 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
           }
         } else {
           Alert.error(SOMETHING_WENT_WRONG);
+          setLoading(false);
+          handleModalClose();
 
           if (status === 401) {
             logoutUser()
           }
         }
-      }).then(data => { }).catch(error => { });
+      }).then(data => { }).catch(error => {
+        setLoading(false);
+        handleModalClose();
+        Alert.error(SOMETHING_WENT_WRONG);
+      });
     }) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
