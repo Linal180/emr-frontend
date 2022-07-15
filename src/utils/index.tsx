@@ -61,7 +61,7 @@ export const formatValue = (value: string) => {
 
 export const formatEnumMember = (value: string) => {
   const parts = value.split("_");
-  let formatted = `${parts[parts.length - 1]} - `;
+  let formatted = ''
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
@@ -69,6 +69,7 @@ export const formatEnumMember = (value: string) => {
     }
   }
 
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;  
   return formatted.trim();
 };
 

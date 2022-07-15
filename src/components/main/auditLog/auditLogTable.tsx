@@ -23,7 +23,7 @@ import { Action, State, initialState, userLogsReducer, ActionType } from '../../
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT, AUDIT_LOG_REPORT, EXPORT_TO_FILE,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT, USER_LOG_PAGE_LIMIT,
-  MODULE_LOGS_TYPES, PAGE_LIMIT, PATIENTS_ROUTE, RESET
+  MODULE_LOGS_TYPES, PAGE_LIMIT, PATIENTS_ROUTE, CLEAR_TEXT
 } from "../../../constants";
 
 const headers = [
@@ -200,7 +200,7 @@ const AuditLogTable = (): JSX.Element => {
                     </Box>
 
                     <Box mt={2.5}>
-                      <Button variant="outlined" color="default" onClick={resetHandler}>{RESET}</Button>
+                      <Button variant="outlined" color="default" onClick={resetHandler}>{CLEAR_TEXT}</Button>
                     </Box>
                   </Box>
                 </Grid>
@@ -243,7 +243,7 @@ const AuditLogTable = (): JSX.Element => {
                         <TableCell scope="row">{getFormatLogsDate(createdAt)}</TableCell>
                         <TableCell scope="row">{getFormatLogsTime(createdAt)}</TableCell>
                         <TableCell scope="row">{patientId && (<>
-                          <Link to={`${PATIENTS_ROUTE}/${patientId}/details`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {patientRecord ?? ''}
+                          <Link to={`${PATIENTS_ROUTE}/${patientId}/details`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {(patientRecord )?? ''}
                         </>)}
                         </TableCell>
                         <TableCell scope="row">{email}</TableCell>

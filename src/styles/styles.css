@@ -1021,8 +1021,12 @@ input[type=number] {
   margin-bottom: 24px !important;
 }
 
-.rotate-180 {
-  transform: rotateX(180deg);
+.rotate-Icon {
+  transition: 0.9s linear !important;
+  transform: rotate(0deg);
+}
+.rotate-Icon.to-180 {
+  transform: rotate(180deg);
 }
 
 .log-class {
