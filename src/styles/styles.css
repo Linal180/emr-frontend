@@ -1029,6 +1029,11 @@ input[type=number] {
   border: 10px solid red;
 }
 
+.billing-inputs .MuiFormControl-marginNormal {
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
 .billing-selector .MuiFormControl-root .MuiAutocomplete-inputRoot {
   height: auto !important;
   min-height: auto !important;

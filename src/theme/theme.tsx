@@ -307,6 +307,7 @@ export const theme = createTheme({
       label: {
         fontSize: 16,
         fontWeight: 600,
+        flexWrap: 'wrap',
       },
 
       text: {

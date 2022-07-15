@@ -1,15 +1,19 @@
 //packages block
-import { Box, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
 import { FC, useState } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
-//constants, interfaces, utils
-import { ClearIcon } from "../../../assets/svgs";
-import { ACTIONS, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, EMPTY_OPTION, ITEM_MODULE, } from "../../../constants";
-import { CodeType } from "../../../generated/graphql";
-import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
-import { renderTh } from "../../../utils";
+import { Box, Card, Grid, IconButton, TextField, Typography } from "@material-ui/core";
+//components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
+//constants, interfaces, utils
+import { ClearIcon } from "../../../assets/svgs";
+import {
+  ACTIONS, BILLING_MODIFIERS_DATA, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS, 
+  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, UNIT,
+} from "../../../constants";
+import { CodeType } from "../../../generated/graphql";
+import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
+import { GRAY_SIX, GREY_NINE, } from "../../../theme";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice }) => {
   const [valueToEdit, setValueToEdit] = useState<string>('')
@@ -87,56 +91,118 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
               </Box>
             </Box>
 
-            <Box className="table-overflow">
-              <Table aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    {renderTh(CODE)}
-                    {renderTh(DESCRIPTION)}
-                    {shouldShowPrice && renderTh(BUILD_FEE_DOLLAR)}
-                    {renderTh(ACTIONS)}
-                  </TableRow>
-                </TableHead>
+            <Box pl={4} my={2} bgcolor={GREY_NINE}>
+              <Grid container spacing={3} direction="row">
+                <Grid item md={3} sm={3} xs={3}>
+                  <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                </Grid>
 
-                <TableBody>
-                  {(moduleData as TableCodesProps[])?.map(({
-                    code, description, id, price
-                  }) => {
-                    return (
-                      <TableRow key={id}>
-                        <TableCell scope="row">{code}</TableCell>
-                        <TableCell scope="row">
-                          <Box maxWidth={500}>
-                            <Typography noWrap>{description}</Typography>
-                          </Box>
-                        </TableCell>
+                <Grid item md={5} sm={5} xs={5}>
+                  <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
+                </Grid>
+
+                <Grid item md={2} sm={2} xs={2}>
+                  <Typography variant="h5" color="textPrimary">{BUILD_FEE_DOLLAR}</Typography>
+                </Grid>
+
+                <Grid item md={2} sm={2} xs={2}>
+                  <Typography variant="h5" color="textPrimary">{ACTIONS}</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+
+            {(moduleData as TableCodesProps[])?.map(({
+              code, description, id, price
+            }) => {
+              return (
+                <>
+                  <Box pl={4}>
+                    <Grid container spacing={3} direction="row">
+                      <Grid item md={3} sm={3} xs={3}>
+                        {code}
+                      </Grid>
+
+                      <Grid item md={5} sm={5} xs={5}>
+                        {description}
+                      </Grid>
+
+                      <Grid item md={2} sm={2} xs={2}>
                         {shouldShowPrice && (
-                          <TableCell scope="row">
+                          <Box>
                             {valueToEdit === id ? <TextField
                               id={id}
                               type="number"
                               variant={'outlined'}
                               onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
-                          </TableCell>
+                          </Box>
                         )}
-                        <TableCell scope="row">
-                          <IconButton onClick={() => setFormValue(moduleName, (moduleData as TableCodesProps[])?.filter((data => data?.id !== id)))}>
-                            <ClearIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  }
-                  )}
-                </TableBody>
-              </Table>
+                      </Grid>
 
-              {(!(moduleData as TableCodesProps[])?.length) && (
-                <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                  <NoDataComponent />
-                </Box>
-              )}
-            </Box>
+                      <Grid item md={2} sm={2} xs={2}>
+                        <IconButton onClick={() => setFormValue(moduleName, (moduleData as TableCodesProps[])?.filter((data => data?.id !== id)))}>
+                          <ClearIcon />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Box>
+
+                  <Box pl={4} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
+                    <Grid container spacing={3} direction="row">
+                      <Grid item md={5} sm={12} xs={12}>
+                        <Typography variant="h6" color="textPrimary">{MODIFIERS}</Typography>
+
+                        <Box mt={1} display='flex'>
+                          {BILLING_MODIFIERS_DATA.map(item => {
+                            return <Box mr={1}>
+                              <TextField
+                                type="number"
+                                placeholder={item}
+                                variant={'outlined'}
+                              />
+                            </Box>
+                          })}
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={5} sm={12} xs={12}>
+                        <Typography variant="h6" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
+
+                        <Box mt={1} display='flex'>
+                          {DIAGNOSIS_POINTERS_DATA.map(item => {
+                            return <Box mr={1}>
+                              <TextField
+                                type="number"
+                                placeholder={item}
+                                variant={'outlined'}
+                              />
+                            </Box>
+                          })}
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={1} sm={12} xs={12}>
+                        <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
+
+                        <Box mt={1}>
+                          <TextField
+                            type="number"
+                            variant={'outlined'}
+                          />
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </>
+
+              )
+            }
+            )}
+
+            {(!(moduleData as TableCodesProps[])?.length) && (
+              <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                <NoDataComponent />
+              </Box>
+            )}
           </Card>
         )
       }}
@@ -144,4 +210,4 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
   )
 }
 
-export default TableSelector
+export default TableSelector;
