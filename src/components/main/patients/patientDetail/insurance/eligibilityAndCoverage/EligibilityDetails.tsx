@@ -2,10 +2,10 @@
 import { ChangeEvent, FC, useState } from "react";
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from "@material-ui/core";
 //constants, interfaces, utils import
-import { GeneralFormProps } from "../../../../../interfacesTypes";
+import { GeneralFormProps } from "../../../../../../interfacesTypes";
 import {
   CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE, OVERRIDE_PAYER_RETURNED_RESULT
-} from "../../../../../constants";
+} from "../../../../../../constants";
 
 const EligibilityDetails: FC<GeneralFormProps> = () => {
   const [state, setState] = useState({ one: false, two: false, three: false })

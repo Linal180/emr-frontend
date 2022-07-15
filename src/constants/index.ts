@@ -498,6 +498,7 @@ export const ROLES_PERMISSIONS_DESCRIPTION =
   "Add or update staff roles and their permissions";
 export const EMERGENCY_ACCESS_DESCRIPTION =
   "View and manage the users with emergency access";
+export const INSURANCE_CARD_ERROR_MESSAGE = "Please upload insurance card pictures"
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
 export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
@@ -720,7 +721,7 @@ export const UPDATE_FILTER = "Update Filter";
 export const PRESCRIBED_BY = "Prescribed By";
 export const STARTING_TIME = "Starting time";
 export const RECEIVED_DATE = "Received Date";
-  export const TIME_OF_CHECK = "Time of Check";
+export const TIME_OF_CHECK = "Time of Check";
 export const COLLECTED_DATE = "Collected Date";
 export const DRUG = "Drug";
 export const FILE = "File";
@@ -1329,6 +1330,7 @@ export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement 
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
+export const ELIGIBILITY_ERROR_MESSAGE='Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
@@ -4165,103 +4167,6 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   {
     name: 'Provider Phone',
     value: '+1765345267542',
-  },
-]
-
-export const URGENT_CARE_DUMMY_DATA = [
-  {
-    service: 'Coinsurance',
-    coverage: 'Employee and Spouse',
-    amount: '0%',
-    remaining: '0%',
-    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE',
-    network: 'Yes',
-    facility: '-',
-    auth: 'No',
-    time: 'Calendar Year',
-  },
-  {
-    service: 'Copay',
-    coverage: 'Employee and Spouse',
-    amount: '$25.00',
-    remaining: '$10.00',
-    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE,COPAY INCLUDED IN OOP',
-    network: 'Yes',
-    facility: 'Inpatient Hopital',
-    auth: 'No',
-    time: 'Calendar Year',
-  },
-  {
-    service: 'Limitations',
-    coverage: 'Employee and Spouse',
-    amount: '-',
-    remaining: '-',
-    message: 'ALL OTHER IN-NETWORK PROVIDERS URGENT CARE/PLAN DED WAIVED',
-    network: 'Yes',
-    facility: '-',
-    auth: '-',
-    time: 'Calendar Year',
-  },
-  {
-    service: 'Coinsurance',
-    coverage: 'Employee and Spouse',
-    amount: '25%',
-    remaining: '25%',
-    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
-    network: 'No',
-    facility: 'Office',
-    auth: 'Yes',
-    time: 'Calendar Year',
-  },
-  {
-    service: 'Copay',
-    coverage: 'Employee and Spouse',
-    amount: '$0.00',
-    remaining: '$0.00',
-    message: 'URGENT CARE',
-    network: 'No',
-    facility: '-',
-    auth: '-',
-    time: 'Calendar Year',
-  },
-]
-
-export const PROFESSIONAL_VISIT_DUMMY_DATA = [
-  {
-    service: 'Coinsurance',
-    coverage: 'Employee and Spouse',
-    amount: '25%',
-    remaining: '25%',
-    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
-    network: 'No',
-    facility: 'Office',
-    auth: 'Yes',
-    time: 'Calendar Year',
-  },
-  {
-    service: 'Coinsurance',
-    coverage: 'Employee and Spouse',
-    amount: '25%',
-    remaining: '25%',
-    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
-    network: 'No',
-    facility: 'Office',
-    auth: 'Yes',
-    time: 'Calendar Year',
-  },
-]
-
-export const CHIROPRACTIC_DUMMY_DATA = [
-  {
-    service: 'Coinsurance',
-    coverage: 'Employee and Spouse',
-    amount: '25%',
-    remaining: '25%',
-    message: 'URGENT CARE,COINS APPLIES TO OUT OF POCKET',
-    network: 'No',
-    facility: 'Office',
-    auth: 'Yes',
-    time: 'Calendar Year',
   },
 ]
 

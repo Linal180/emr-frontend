@@ -191,8 +191,8 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/:templateId`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_RESPONSES}/:id`} component={FormBuilderResponses} />
-      <PrivateRoute exact path={ELIGIBILITY_ROUTE} component={EligibilityTable} />
-      <PrivateRoute exact path={COVERAGE_ROUTE} component={CoverageDetails} />
+      <PrivateRoute exact path={`${ELIGIBILITY_ROUTE}/:id`} component={EligibilityTable} />
+      <PrivateRoute exact path={`${COVERAGE_ROUTE}/:id/:patientId`} component={CoverageDetails} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 

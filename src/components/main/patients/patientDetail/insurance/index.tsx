@@ -1,7 +1,7 @@
 // packages block
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
-import { Box, Card, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, Card, IconButton, Typography } from "@material-ui/core";
 import { AddInsuranceIcon, EditNewIcon } from "../../../../../assets/svgs";
 // components
 import SideDrawer from "../../../../common/SideDrawer";
@@ -11,13 +11,15 @@ import PolicyCard from "./PolicyCard";
 import { getFormatDateString } from '../../../../../utils';
 import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery } from "../../../../../generated/graphql";
+import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation } from "../../../../../generated/graphql";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT,
+  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
-import { Link } from 'react-router-dom';
+import history from '../../../../../history';
+import Alert from '../../../../common/Alert';
+import Loader from '../../../../common/Loader';
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
@@ -37,6 +39,24 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         const { policies } = fetchAllPolicies
 
         setPolicies(policies as PoliciesPayload['policies'])
+      }
+    }
+  });
+
+  const [getEligibilityAndCoverage, { loading: getEligibilityAndCoverageLoading }] = useGetEligibilityAndCoverageMutation({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      Alert.error(ELIGIBILITY_ERROR_MESSAGE)
+      history.push(`${ELIGIBILITY_ROUTE}/${patientId}`)
+    },
+
+    onCompleted(data) {
+      const { getEligibilityAndCoverage } = data || {};
+
+      if (getEligibilityAndCoverage) {
+        history.push(`${ELIGIBILITY_ROUTE}/${patientId}`)
       }
     }
   });
@@ -109,7 +129,16 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     }
   }
 
+  const handleCheckEligibility = (policyId: string) => {
+    getEligibilityAndCoverage({
+      variables: {
+        policyId
+      }
+    })
+  }
+
   return (
+    getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility'/>:
     <Card>
       <Box p={3}>
         {fetchAllPoliciesLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={true} /> :
@@ -163,9 +192,11 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                     <Box minWidth={200} my={2}>
                       <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
-                      <Link to={ELIGIBILITY_ROUTE}>
+                      {/* <Link to={`${ELIGIBILITY_ROUTE}/${patientId}`}> */}
+                      <Button onClick={() => handleCheckEligibility(id)}>
                         <Typography variant="body2" color='secondary'>{CHECK_ELIGIBILITY_TODAY}</Typography>
-                      </Link>
+                      </Button>
+                      {/* </Link> */}
                     </Box>
                   </Box>
                 </Box>

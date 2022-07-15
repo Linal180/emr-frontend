@@ -23,7 +23,7 @@ import {
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles
+  setFiles: setAttachmentFiles, numberOfFiles
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -179,7 +179,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
           }
         }
       }).then(data => { }).catch(error => { });
-    }) : Alert.error(PLEASE_SELECT_MEDIA)
+    }) : numberOfFiles ? numberOfFiles===0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
   const handleUpdateImage = () => setImageEdit(true)
