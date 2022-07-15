@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE, theme  } from "../theme";
+import {
+  BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX, BLUE_ONE
+} from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -78,8 +80,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
     "& .MuiTypography-root": {
       justifyContent: 'flex-start !important',
-    textAlign: 'start !important',
-    margin: '0px !important',
+      textAlign: 'start !important',
+      margin: '0px !important',
     },
 
     "& .MuiIconButton-root": {
@@ -151,7 +153,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     },
   },
 
-  toggleContainer: {    
+  toggleContainer: {
     "& .toggle-main": {
       cursor: 'pointer',
       display: 'flex',
@@ -227,12 +229,12 @@ export const useHeaderStyles = makeStyles((theme) => ({
     }
   },
 
-  factorAuthHeader :{
+  factorAuthHeader: {
     [theme.breakpoints.down("sm")]: {
-       flexDirection : 'column'
+      flexDirection: 'column'
     },
     "& h4": {
-       marginTop : '10px'
+      marginTop: '10px'
     }
   }
 }));
