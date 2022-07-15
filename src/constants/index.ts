@@ -139,6 +139,7 @@ export const UPDATE_MEDIA = "Update media";
 export const EDIT_MEDIA = "Edit Media";
 export const ADVANCED_SEARCH = "Advanced Search";
 export const LABEL = "Label";
+export const REGEX_LABEL = "Regular Expression";
 export const FORMS = "Forms";
 export const ADD_FORM = "Add Form";
 export const EDIT_FORM = "Edit Form";
@@ -457,10 +458,10 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
-export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
 export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -1053,6 +1054,7 @@ export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
+export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
@@ -1250,6 +1252,7 @@ export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
 export const POLICY_HOLDER_DETAILS = "Policy Holder Details";
 export const INSURANCE_AND_POLICIES = "Insurance & Policies";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
+export const LOADING_PLEASE_WAIT = "Loading, PLEASE WAIT...";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
 export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
@@ -1456,7 +1459,7 @@ export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
-export const TID_VALIDATION_MESSAGE = "Tax id valid format is xxxxxxxxx";
+export const TID_VALIDATION_MESSAGE = "Tax ID valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const INVALID_END_TIME = "End time should be greater than start time";
@@ -1473,7 +1476,7 @@ export const DELETE_USER_INFO = "This will delete all the information associated
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
 export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
@@ -1942,7 +1945,7 @@ export const TEMPORARY_CPT_CODES = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Married, name: formatValue(MARRIED) },
+  { id: Maritialstatus.Married, name: formatValue(Maritialstatus.Married) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
@@ -2738,6 +2741,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     link: "/",
     desc: TIME_ZONE_DESCRIPTION,
   },
+  {
+    name: AGREEMENTS,
+    link: AGREEMENTS_ROUTE,
+    desc: AGREEMENTS_DESCRIPTION,
+  }
 ];
 
 export const COL_TYPES: ColumnTypes = {
@@ -3030,6 +3038,7 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
+  regex: ''
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {

@@ -259,7 +259,8 @@ const AddForm = () => {
               options: itemField?.options ?? [],
               textArea: itemField?.textArea ?? false,
               isMultiSelect: itemField?.isMultiSelect ?? false,
-              apiCall: itemField?.apiCall ?? ''
+              apiCall: itemField?.apiCall ?? '',
+              regex: itemField?.regex ?? ''
             };
 
             fields?.splice(destination.index, 0, newField);
@@ -466,12 +467,12 @@ const AddForm = () => {
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea } = item;
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea, regex } = item;
 
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg,
-        defaultValue, list: id, options, textArea
+        defaultValue, list: id, options, textArea, regex
       }
     })
   };
@@ -491,7 +492,8 @@ const AddForm = () => {
                 column: values?.column,
                 placeholder: values?.placeholder,
                 required: values?.required,
-                options: values?.options
+                options: values?.options,
+                regex: values?.regex
               }
               : field
           );
@@ -510,7 +512,7 @@ const AddForm = () => {
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId: '', label: "", type: ElementType.Text, name: "", css: "", column: 12, placeholder: "", required: false,
-        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false
+        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false, regex: ''
       }
     })
   }

@@ -1,4 +1,4 @@
-import { Attachment, AttachmentPayload, AttachmentsPayload, CreateAttachmentInput } from "../generated/graphql";
+import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSignedUrlPayload, CreateAttachmentInput } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -31,7 +31,8 @@ export interface State {
   drivingLicense2: Attachment | undefined
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
-  mediaData: Pick<CreateAttachmentInput, "title"> | undefined
+  mediaData: Pick<CreateAttachmentInput, "title"> | undefined;
+  policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
 }
 
 export const initialState: State = {
@@ -65,6 +66,7 @@ export const initialState: State = {
   drivingLicense1: undefined,
   drivingLicense2: undefined,
   insuranceId: { id: "", name: "" },
+  policyAttachments: [],
 }
 
 export enum ActionType {
@@ -97,6 +99,7 @@ export enum ActionType {
   SET_SIGNED_BY_PROVIDER = 'setSignedByProvider',
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
+  SET_POLICY_ATTACHMENTS = 'setPolicyAttachments'
 }
 
 export type Action =
@@ -129,6 +132,7 @@ export type Action =
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
+  | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
 
 export const mediaReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -304,6 +308,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isFormLoaded: action.isFormLoaded
+      }
+
+    case ActionType.SET_POLICY_ATTACHMENTS:
+      return {
+        ...state,
+        policyAttachments: action.policyAttachments
       }
   }
 }

@@ -7,11 +7,11 @@ import {
 // components block
 import DropzoneImage from "../DropZoneImage";
 // graphql and interfaces/types block
-import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
-import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
+import { mediaType } from "../../../utils";
 import { TrashNewIcon } from "../../../assets/svgs";
 import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
-import { mediaType } from "../../../utils";
+import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
+import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,

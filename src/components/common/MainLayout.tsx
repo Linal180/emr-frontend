@@ -11,7 +11,9 @@ import history from "../../history";
 import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
-import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE } from "../../constants";
+import {
+  EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE
+} from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)

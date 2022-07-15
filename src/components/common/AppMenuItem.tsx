@@ -12,7 +12,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const { name, link, Icon, items = [], sectionName } = props;
   const classes = useAppMenuStyles();
   const { location: { pathname } } = history
-  const activeSidebarClass = name.toLowerCase().replaceAll(" ", "").includes(pathname.substring(1).split("/", 1).toString().toLowerCase().replaceAll("-", "")) ? 'active' : ''
+  const activeSidebarClass = name.toLowerCase().replaceAll(" ", "").includes(pathname.substring(1)?.split("/", 1).toString().toLowerCase().replaceAll("-", "")) ? 'active' : ''
 
   const MenuItemRoot = (
     <AppMenuItemComponent className={classes.menuItem} link={link}>
@@ -29,7 +29,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const MenuItemChildren = (
     <List component="div" disablePadding>
       {items.map((childItem, index) => {
-        const childItemActiveClass = pathname.split("-").join(" ").includes(childItem.name.toLowerCase()) ? "child-item active-child" : 'child-item';
+        const childItemActiveClass = pathname?.split("-").join(" ").includes(childItem.name.toLowerCase()) ? "child-item active-child" : 'child-item';
 
         return (
           <AppMenuItemComponent link={childItem.link} key={index}>

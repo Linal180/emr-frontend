@@ -60,7 +60,6 @@ const PolicyCard: FC<PolicyCardProps> = ({
   const { policyId, activeStep, isFormLoaded, policyHolderId, insuranceId, numberOfFiles } = state
 
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
-
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({

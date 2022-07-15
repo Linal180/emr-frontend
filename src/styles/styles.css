@@ -1033,6 +1033,14 @@ input[type=number] {
   transform: rotateX(180deg);
 }
 
+.rotate-Icon {
+  transition: 0.9s linear !important;
+  transform: rotate(0deg);
+}
+.rotate-Icon.to-180 {
+  transform: rotate(180deg);
+}
+
 .log-class {
   border: 10px solid red;
 }
