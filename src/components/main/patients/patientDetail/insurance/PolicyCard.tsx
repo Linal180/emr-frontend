@@ -370,7 +370,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 type={'button'}
                 onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
                 variant="contained" color="primary"
-                disabled={isLastStep ? files?.length === 0 || createPolicyLoading || updatePolicyLoading : false} >
+                disabled={isLastStep ? (files?.length === 0 || createPolicyLoading || updatePolicyLoading) : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
             </Box>
