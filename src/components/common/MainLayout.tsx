@@ -5,7 +5,7 @@ import { Redirect, useLocation } from "react-router";
 import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
-import BackdropLoader from "./Backdrop";
+import Loader from "./Loader";
 // interfaces/types and main layout styles block
 import history from "../../history";
 import { getToken } from "../../utils";
@@ -51,7 +51,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
       {!getToken() && <Redirect to={{ pathname: LOGIN_ROUTE }} />}
 
       {isLoggedIn &&
-        ((!user || !userPermissions.length) ? <BackdropLoader loading={true} /> : <AppLayout />)
+        ((!user || !userPermissions.length) ? <Loader loading={true} /> : <AppLayout />)
       }
     </>
   )

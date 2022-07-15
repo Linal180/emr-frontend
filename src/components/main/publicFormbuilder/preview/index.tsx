@@ -89,27 +89,37 @@ const PublicFormPreview = () => {
       const { saveUserFormValues } = data;
       const { userForm, appointment, response } = saveUserFormValues;
       const { status } = response || {}
-      const { id } = userForm || {}
-      const { id: appointmentId, patientId } = appointment || {}
-      if (status === 200 && id && appointmentId) {
+      const { id, form } = userForm || {}
+      const { type } = form || {}
+      if (type === FormType.Appointment) {
+        const { id: appointmentId, patientId } = appointment || {}
+        if (status === 200 && id && appointmentId) {
+          if (isSubmit) {
+            Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
+            history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
+          } else {
+            setValue('appointmentId', appointmentId)
+            setValue('userFormId', id)
+            if (patientId) {
+              setValue('patientId', patientId)
+              dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
+            }
+            nextStepHandler()
+          }
+
+        }
+        else {
+          Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
+        }
+      }
+      else {
         if (isSubmit) {
           Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
           history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
         } else {
-          setValue('appointmentId', appointmentId)
-          setValue('userFormId', id)
-          if (patientId) {
-            setValue('patientId', patientId)
-            dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
-          }
           nextStepHandler()
         }
-
       }
-      else {
-        Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
-      }
-
     },
     onError: ({ message }) => {
       Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
@@ -273,32 +283,42 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
                   </Box>
+                  {formValues?.length > 1 ?
+                    <Grid container spacing={3}>
+                      <Grid item xs={2}>
+                        <Stepper activeStep={activeStep} orientation="vertical">
+                          {formValues?.map((tab, index) => {
+                            const { name, id } = tab || {}
+                            return <Step key={`${id}-${index}`}>
+                              <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
+                            </Step>
+                          }
+                          )}
+                        </Stepper>
+                      </Grid>
 
-                  <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                      <Stepper activeStep={activeStep} orientation="vertical">
+                      <Grid item xs={10}>
                         {formValues?.map((tab, index) => {
-                          const { name, id } = tab || {}
-                          return <Step key={`${id}-${index}`}>
-                            <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
-                          </Step>
+                          const { sections, name, id } = tab || {}
+                          return <Fragment key={`${id}-${name}`}>
+                            {activeStep === index &&
+                              <StepContext sections={sections} state={state} dispatch={dispatch} />
+                            }
+                          </Fragment>
                         }
                         )}
-                      </Stepper>
-                    </Grid>
-
-                    <Grid item xs={10}>
+                      </Grid>
+                    </Grid> :
+                    <Fragment>
                       {formValues?.map((tab, index) => {
                         const { sections, name, id } = tab || {}
                         return <Fragment key={`${id}-${name}`}>
-                          {activeStep === index &&
-                            <StepContext sections={sections} state={state} dispatch={dispatch} />
-                          }
+                          <StepContext sections={sections} state={state} dispatch={dispatch} />
                         </Fragment>
                       }
                       )}
-                    </Grid>
-                  </Grid>
+                    </Fragment>
+                  }
                 </form>
               </FormProvider>
             </Box>

@@ -3,7 +3,9 @@ import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState }
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
+import {
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button
+} from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
@@ -19,8 +21,12 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
 import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
-import { mediaReducer, Action, initialState, State, ActionType } from "../../../../reducers/mediaReducer";
-import { getDocumentDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime } from "../../../../utils";
+import {
+  mediaReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/mediaReducer";
+import {
+  getDocumentDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
+} from "../../../../utils";
 import {
   AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
@@ -35,11 +41,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
   const { roles } = user || {}
+  
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
-
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
   const { firstName: patientFirstName, lastName: patientLastName, facilityId } = patient || {}
+
   const patientName = `${patientFirstName || ''} ${patientLastName || ''}`.trim()
   const methods = useForm<DocumentInputProps>({
     mode: "all",
@@ -49,9 +56,10 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+
   const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    documentTab, openSign, providerName, attachmentData
+    openSign, providerName, attachmentData
   } = state
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
@@ -106,7 +114,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         if (attachments) {
           const documents = attachments.filter(
             attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
-              && !!attachment.attachmentMetadata?.signedBy === documentTab
+              && !!attachment.attachmentMetadata?.signedBy === isSignedTab
           )
 
           dispatch({
@@ -246,10 +254,10 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   useEffect(() => {
     reloadAttachments()
-  }, [reloadAttachments, documentTab])
+  }, [reloadAttachments, isSignedTab])
 
   useEffect(() => {
-    dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
+    dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'Admin' : `${firstName} ${lastName}` })
   }, [admin, firstName, lastName])
 
   return (
@@ -259,16 +267,15 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           <Search search={search} />
 
           <Box display='flex'
-            onClick={() => dispatch({ type: ActionType.SET_DOCUMENT_TAB, documentTab: !documentTab })}
             ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
           >
-            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'}
+            <Typography className={isSignedTab ? 'selectBox' : 'selectedBox  selectBox'}
               onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
             >
               {PENDING}
             </Typography>
 
-            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'}
+            <Typography className={isSignedTab ? 'selectedBox selectBox' : 'selectBox'}
               onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
             >
               {SIGNED}
@@ -310,7 +317,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                   {renderTh(TITLE)}
                   {renderTh(TYPE)}
                   {/* {renderTh(ADDED_BY)} */}
-                  {documentTab &&
+                  {isSignedTab &&
                     <>
                       {renderTh(SIGNED_BY)}
                       {renderTh(SIGNED_AT)}
@@ -348,7 +355,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                         </TableCell>
                         <TableCell scope="row">{type}</TableCell>
                         {/* <TableCell scope="row">{addedBy}</TableCell> */}
-                        {documentTab &&
+                        {isSignedTab &&
                           <>
                             <TableCell scope="row">{signedBy}</TableCell>
                             {signedAt &&
@@ -358,7 +365,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                         <TableCell scope="row">{getDocumentDate(documentDate || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                            {!documentTab &&
+                            {!isSignedTab &&
                               <Box className={classes.iconsBackground}
                                 onClick={() => handleSignDocument(id)}
                               >
@@ -367,7 +374,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                             }
 
                             <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
-                              {/* <DownloadIcon /> */}
                               <VisibilityOnIcon />
                             </Box>
 

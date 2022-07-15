@@ -1,5 +1,7 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -22,16 +24,16 @@ import FacilitySelector from "./Selector/FacilitySelector";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
+import { SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from "../../reducers/appointmentReducer";
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
-  getStandardTimeDuration, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh,
-  setRecord
+  getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
+  isUserAdmin, renderTh, setRecord
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -42,12 +44,12 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY
 } from "../../constants";
 
 dotenv.config()
 
-const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
+const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
   const [selectDate, setSelectDate] = useState(new Date().toDateString())
   const { user, currentUser, userPermissions } = useContext(AuthContext)
@@ -417,7 +419,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                       <Box ml={1} />
 
-                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>{TODAY}</Button>
                     </Box>
                   </Box>
                 </Grid>
@@ -485,7 +487,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           <Box display='flex' flexDirection='column'>
                             {getDateWithDay(scheduleStartDateTime || '')}
 
-                            {status === AppointmentStatus.Arrived &&
+                            {hasEncounter(status as AppointmentStatus) &&
                               <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
                                 {VIEW_ENCOUNTER}
                               </Link>}

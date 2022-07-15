@@ -13,8 +13,8 @@ import CardComponent from '../../../../common/CardComponent';
 import CheckboxController from '../../../../common/CheckboxController';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
-import { renderItem, renderLoading } from '../../../../../utils';
 import { serviceSchema } from '../../../../../validationSchemas';
+import { excludeLeadingZero, renderItem, renderLoading } from '../../../../../utils';
 import { extendedServiceInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
   useCreateServiceMutation, useGetCurrentFacilityLazyQuery, useGetServiceLazyQuery,
@@ -164,8 +164,8 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     duration, name, price, color, isActive
   }) => {
     const serviceInput = {
-      name: name || '', duration: duration || "", isActive: isActive,
-      price: price || "", facilityId: currentFacility || '', color: color || 'black'
+      name: name || '', duration: excludeLeadingZero(duration) || "", isActive: isActive,
+      price: excludeLeadingZero(price) || "", facilityId: currentFacility || '', color: color || 'black'
     };
 
     if (!!currentFacility) {

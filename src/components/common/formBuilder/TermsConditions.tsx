@@ -63,17 +63,19 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
           {body && <Typography variant="subtitle1" component="p" dangerouslySetInnerHTML={{ __html: body }} ></Typography>}
         </Box>)
       })}
-      {isSignature &&
-        <Box width="50%" pb={2}>
-          <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
-        </Box>
-      }
     </Box>
 
     <Grid container>
       <Grid item xs={12}>
         <CheckboxController controllerName={fieldId} controllerLabel={label} />
       </Grid>
+      {isSignature &&
+        <Grid item xs={12}>
+          <Box width="50%" pb={2}>
+            <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
+          </Box>
+        </Grid>
+      }
     </Grid>
   </Box>
 }

@@ -50,7 +50,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     switch (apiCall) {
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
-          isRequired={required || true}
+          isRequired={required}
           practiceId={practiceId || ''}
           dispatcher={dispatcher}
           name={fieldId}
@@ -61,7 +61,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
-          isRequired={required || true}
+          isRequired={required}
           facilityId={facilityField || facilityId || ''}
           name={fieldId}
           label={label}
@@ -75,7 +75,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       case FormBuilderApiSelector.FACILITY_PROVIDERS:
         return <ProviderSelector
           facilityId={facilityField || facilityId || ""}
-          isRequired={required || true}
+          isRequired={required}
           name={fieldId}
           label={label}
           formDispatch={dispatcher}
@@ -115,7 +115,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           name={fieldId}
           control={control}
           defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
-          render={({ field, fieldState }) => {
+          render={({ field }) => {
             return (
               <FormControl fullWidth margin="normal">
                 <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
@@ -134,7 +134,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       rules={{ required: required }}
       name={fieldId}
       control={control}
-      defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
+      defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
       render={({ field, fieldState }) => {
         const { invalid, error: { message } = {} } = fieldState
         return (

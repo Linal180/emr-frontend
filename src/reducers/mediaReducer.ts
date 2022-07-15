@@ -13,7 +13,6 @@ export interface State {
   activeStep: number
   openDelete: boolean
   providerName: string
-  documentTab: boolean
   isSignedTab: boolean
   preSignedUrl: string
   attachmentId: string
@@ -54,7 +53,6 @@ export const initialState: State = {
   openDelete: false,
   attachmentUrl: '',
   isSignedTab: false,
-  documentTab: false,
   attachmentsData: [],
   mediaData: undefined,
   attachmentData: null,
@@ -82,7 +80,6 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_ATTACHMENTS = 'setAttachments',
-  SET_DOCUMENT_TAB = 'setDocumentTab',
   SET_INSURANCE_ID = 'setInsuranceId',
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_ATTACHMENT_ID = 'setAttachmentId',
@@ -113,7 +110,6 @@ export type Action =
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
-  | { type: ActionType.SET_DOCUMENT_TAB, documentTab: boolean }
   | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
@@ -170,12 +166,6 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         preSignedUrl: action.preSignedUrl
-      }
-
-    case ActionType.SET_DOCUMENT_TAB:
-      return {
-        ...state,
-        documentTab: action.documentTab
       }
 
     case ActionType.SET_SIGNED_BY_PROVIDER:

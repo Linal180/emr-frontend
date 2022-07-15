@@ -12,7 +12,7 @@ import { DashboardIcon } from "../../assets/svgs";
 
 const AppMenu: FC = () => {
   const classes = useAppMenuStyles();
-  const activeSidebarClass = DASHBOARD_ROUTE.includes(history.location.pathname.substring(1).split("/", 1).toString().toLowerCase().replaceAll("-", "")) ? 'active' : ''
+  const activeSidebarClass = DASHBOARD_ROUTE.includes(history.location.pathname.substring(1)?.split("/", 1).toString().toLowerCase().replaceAll("-", "")) ? 'active' : ''
 
   return (
     <List component="nav" disablePadding>
