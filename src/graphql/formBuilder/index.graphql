@@ -53,6 +53,7 @@ query findAllForms($formInput: FormInput!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
 
               options {
                 name
@@ -123,6 +124,7 @@ query getForm($getForm: GetForm!) {
               isMultiSelect
               tableContactType
               apiCall
+              regex
 
               options {
                 name
@@ -191,6 +193,7 @@ query getPublicForm($getForm: GetForm!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
 
               options {
                 name
@@ -266,6 +269,10 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 
     userForm {
       id
+
+      form {
+        type
+      }
     }
 
     appointment {

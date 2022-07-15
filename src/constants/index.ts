@@ -139,6 +139,7 @@ export const UPDATE_MEDIA = "Update media";
 export const EDIT_MEDIA = "Edit Media";
 export const ADVANCED_SEARCH = "Advanced Search";
 export const LABEL = "Label";
+export const REGEX_LABEL = "Regular Expression";
 export const FORMS = "Forms";
 export const ADD_FORM = "Add Form";
 export const EDIT_FORM = "Edit Form";
@@ -457,10 +458,10 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
-export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
 export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -1028,6 +1029,7 @@ export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
+export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
@@ -1914,7 +1916,7 @@ export const TEMPORARY_CPT_CODES = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Maried, name: formatValue(MARRIED) },
+  { id: Maritialstatus.Married, name: formatValue(Maritialstatus.Married) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
@@ -2708,6 +2710,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     link: "/",
     desc: TIME_ZONE_DESCRIPTION,
   },
+  {
+    name: AGREEMENTS,
+    link: AGREEMENTS_ROUTE,
+    desc: AGREEMENTS_DESCRIPTION,
+  }
 ];
 
 export const COL_TYPES: ColumnTypes = {
@@ -3000,6 +3007,7 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
+  regex: ''
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {

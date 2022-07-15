@@ -13,9 +13,9 @@ import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
+  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, FACILITIES_ROUTE, ROOT_ROUTE,
+  PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE, SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE,
+  PATIENTS_TEXT,
 } from "../../constants";
 import { BLACK } from "../../theme";
 
@@ -116,13 +116,13 @@ const Header: FC = (): JSX.Element => {
             {REPORTS}
           </Typography> */}
 
-          <Typography
+          {/* <Typography
             component={Link}
             to={AGREEMENTS_ROUTE}
             className={currentRoute === 'isAgreement' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {AGREEMENTS}
-          </Typography>
+          </Typography> */}
         </Box>
       </MenuItem>
     </Menu>
@@ -201,13 +201,13 @@ const Header: FC = (): JSX.Element => {
                       {REPORTS}
                     </Typography> */}
 
-              <Typography
+              {/* <Typography
                 component={Link}
                 to={AGREEMENTS_ROUTE}
                 className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
               >
                 {AGREEMENTS}
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
 
