@@ -129,7 +129,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
       dropZoneRef?.current?.submit()
     }
   }));
-  console.log('!!policyAttachments?.length || !!files?.length', !!policyAttachments?.length || !!files?.length)
+
   return (
     loading ? <ViewDataLoader columns={3} rows={4} /> :
       <Box minWidth="100%">
