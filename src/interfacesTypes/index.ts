@@ -20,6 +20,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as InsuranceAction } from "../reducers/insuranceReducer";
 import {
   Action as ExternalPaymentAction, State as ExternalPaymentState
 } from "../reducers/externalPaymentReducer";
@@ -41,7 +42,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -823,6 +824,13 @@ export interface GeneralFormProps {
   isEdit?: boolean;
 }
 
+export interface CoverageDetailsHeaderProps {
+  patient: PolicyEligibilityWithPatientPayload['patient'] | undefined
+  policyHolder: PolicyEligibilityWithPatientPayload['policyHolder'] | undefined
+  primaryProvider: PolicyEligibilityWithPatientPayload['primaryProvider'] | undefined
+  policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
+}
+
 export interface DocViewerProps {
   title?: string
   isOpen: boolean
@@ -857,9 +865,8 @@ export interface CheckInComponentProps {
 export interface PolicyAttachmentProps {
   policyId?: string
   handleReload: Function
-  dispatch?: Dispatch<Action>
-  state?: MediaState
-  isEdit?: boolean
+  dispatch: Dispatch<InsuranceAction>
+  numberOfFiles: number
 }
 
 export interface LabOrderCreateProps {
@@ -941,6 +948,7 @@ export interface DropzoneImageType {
   setAttachments: Function;
   acceptableFilesType?: string[]
   setFiles?: Function
+  numberOfFiles?: number
 }
 
 interface Message {
@@ -1550,6 +1558,10 @@ export interface PatientSearchInputProps {
   provider: SelectorOption;
 }
 
+export interface EligibilitySearchInputProps {
+  insurance: SelectorOption
+}
+
 export interface DoctorSearchInputProps {
   speciality: SelectorOption
   facilityId: SelectorOption
@@ -1820,7 +1832,7 @@ export interface BillingComponentProps extends GeneralFormProps {
   labOrderNumber?: string
 }
 
-export interface BillingFormProps extends BillingComponentProps{
+export interface BillingFormProps extends BillingComponentProps {
   methods: UseFormReturn<CreateBillingProps, any>,
   onSubmit: (values: CreateBillingProps) => void
   createBillingLoading: boolean
