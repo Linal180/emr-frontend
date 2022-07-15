@@ -424,7 +424,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display="flex" justifyContent="space-between" flexWrap="wrap" alignItems="flex-start">
             <Box display="flex">
               <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
 
