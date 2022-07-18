@@ -92,7 +92,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         if (findAllAppointments) {
           const { appointments } = findAllAppointments
-          console.log(appointments, "appointments")
 
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
