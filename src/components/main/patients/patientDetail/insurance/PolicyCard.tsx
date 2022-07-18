@@ -408,7 +408,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 </Stepper>
               </Box>
 
-              <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto scrollbar-hover">
+              <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto">
                 <Box px={1}>
                   <Typography>{getStepContent(activeStep)}</Typography>
                 </Box>
