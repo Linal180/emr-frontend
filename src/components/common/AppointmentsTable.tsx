@@ -51,7 +51,7 @@ dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const [selectDate, setSelectDate] = useState(new Date().toDateString())
+  const [selectDate, setSelectDate] = useState(moment().format('MM-DD-YYYY'))
   const { user, currentUser, userPermissions } = useContext(AuthContext)
 
   const [filterFacilityId, setFilterFacilityId] = useState<string>('')
@@ -83,12 +83,12 @@ const AppointmentsTable: FC = (): JSX.Element => {
   };
 
   const getPreviousDate = () => {
-    const previousDate = moment(selectDate).subtract(1, 'day').format('MM-DD-YYYY')
+    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')
     setDate(previousDate)
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate).add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY')
     setDate(nextDate)
   }
 
@@ -126,37 +126,6 @@ const AppointmentsTable: FC = (): JSX.Element => {
       }
     }
   });
-
-  // const [getAppointments, {
-  //   loading: getAppointmentsLoading, error: doctorAppointmentError
-  // }] = useGetAppointmentsLazyQuery({
-  //   fetchPolicy: "network-only",
-  //   nextFetchPolicy: 'no-cache',
-  //   notifyOnNetworkStatusChange: true,
-
-  //   onError() {
-  //     dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-  //   },
-
-  //   onCompleted(data) {
-  //     const { getAppointments } = data || {};
-
-  //     if (getAppointments) {
-  //       const { appointments, pagination } = getAppointments
-
-  //       if (pagination) {
-  //         const { totalPages } = pagination
-
-  //         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-  //       }
-
-  //       dispatch({
-  //         type: ActionType.SET_APPOINTMENTS,
-  //         appointments: appointments as AppointmentsPayload['appointments']
-  //       });
-  //     }
-  //   }
-  // });
 
   const [updateAppointment] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
@@ -219,7 +188,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery,
             appointmentTypeId: appointmentTypeId, sortBy: sortBy,
-            appointmentDate: moment(selectDate).format('YYYY-MM-DD')
+            appointmentDate: moment(selectDate, 'MM-DD-YYYY').format('YYYY-MM-DD')
           }
         },
       })
@@ -232,10 +201,6 @@ const AppointmentsTable: FC = (): JSX.Element => {
   useEffect(() => {
     fetchAppointments();
   }, [page, searchQuery, fetchAppointments, filterFacilityId]);
-
-  useEffect(() => {
-    setDate(moment().format('MM-DD-YYYY'));
-  }, []);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -390,7 +355,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
-                    <Typography variant="body1" color="textPrimary">Date</Typography>
+                    <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
                     <Box className="date-box" display="flex" alignItems="center">
                       <Button
