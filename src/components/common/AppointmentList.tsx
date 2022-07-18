@@ -7,11 +7,12 @@ import Alert from "./Alert";
 // interfaces, constants, utils blocks
 import history from "../../history";
 import { WHITE_FOUR } from "../../theme";
-import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
-import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
+import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
+import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE, MINUTES
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
+  CHECK_IN_ROUTE, MINUTES
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
