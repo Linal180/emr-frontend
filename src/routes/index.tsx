@@ -84,7 +84,7 @@ import {
   CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE, CHECK_IN_ROUTE, CLAIMS_ROUTE,
   COVERAGE_ROUTE,
   CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE, DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ELIGIBILITY_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
-  FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FORGET_PASSWORD_ROUTE, FORM_BUILDER_COPY_TEMPLATE_ROUTE,
+  FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FEE_SCHEDULE_ROUTE, FORGET_PASSWORD_ROUTE, FORM_BUILDER_COPY_TEMPLATE_ROUTE,
   FORM_BUILDER_EDIT_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE, LOCK_ROUTE,
   LOGIN_ROUTE, MAINTENANCE_ROUTE, PATIENTS_ROUTE, PATIENT_APPOINTMENT_CANCEL, PATIENT_APPOINTMENT_FAIL,
   PATIENT_APPOINTMENT_SUCCESS, PATIENT_INFORMATION_ROUTE, PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE,
@@ -97,6 +97,7 @@ import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "..
 import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
 import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
 import AuditLogComponent from "../components/main/auditLog";
+import { FeeSchedule } from "../pages/main/feeSchedule";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -184,6 +185,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/new`} component={AddAgreement} />
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
+      <PrivateRoute exact path={FEE_SCHEDULE_ROUTE} component={FeeSchedule} />
       <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:id`} component={AddLabOrders} />
       <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
       <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />

@@ -144,7 +144,6 @@ const AuditLogTable = (): JSX.Element => {
 
   return (
     <Fragment>
-
       <Box display='flex' justifyContent='space-between' alignItems='center'>
         <Typography variant="h4" color="textPrimary">{AUDIT_LOG_REPORT}</Typography>
         <CSVLink data={csvData as object[]} headers={headers} className="csvLink"

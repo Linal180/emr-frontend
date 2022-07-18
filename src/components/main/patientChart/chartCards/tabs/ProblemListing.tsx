@@ -20,7 +20,7 @@ import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
 import {
-  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh
+  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber
 } from "../../../../../utils";
 import {
   ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, EIGHT_PAGE_LIMIT,
@@ -68,6 +68,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               setPatientProblems(patientProblems as PatientProblemsPayload['patientProblems'])
             }
           }
+
           if (pagination) {
             const { totalPages } = pagination
             typeof totalPages === 'number' && setTotalPages(totalPages)
@@ -113,10 +114,15 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         const { status } = response
 
         if (status && status === 200) {
-          await fetchProblems()
           Alert.success(PATIENT_PROBLEM_DELETED);
           dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: '' })
           setOpenDelete(false)
+
+          if(!!patientProblems && patientProblems.length > 1){
+            await fetchProblems()
+          } else {
+            setPage(getPageNumber(page, patientProblems?.length || 0))
+          }
         }
       }
     }
@@ -263,7 +269,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
       {isOpen &&
         <AddProblem isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
 
-      {totalPages > 1 && (
+      {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={totalPages}

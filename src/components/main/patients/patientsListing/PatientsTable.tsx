@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, dobDateFormat
+  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -73,6 +73,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -105,7 +106,7 @@ const PatientsTable: FC = (): JSX.Element => {
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
-            ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+            ...patientsInputs, searchString: searchQuery, dob: dob,
             doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
             ...(isSuper || isPracticeUser ? { facilityId: selectedLocationId } : {}),
@@ -135,7 +136,12 @@ const PatientsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          fetchAllPatients();
+
+          if(!!patients && patients.length > 1){
+            fetchAllPatients();
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0)})
+          }
         }
       }
     }
