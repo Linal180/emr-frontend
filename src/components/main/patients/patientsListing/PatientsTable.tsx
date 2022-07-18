@@ -73,6 +73,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {

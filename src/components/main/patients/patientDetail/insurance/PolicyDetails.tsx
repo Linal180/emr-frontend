@@ -42,7 +42,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <InputController
-            isRequired
             fieldType="text"
             controllerName="certificationNumber"
             info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
@@ -98,11 +97,9 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
                 <Grid item md={6} sm={12} xs={12}>
                   <Selector
-                    isRequired
                     addEmpty
                     name={`copayFields.${index}.copayType`}
                     label={COPAY_TYPE}
-                    // value={EMPTY_OPTION}
                     options={MAPPED_COPAY_TYPE}
                   />
                 </Grid>
@@ -110,7 +107,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 <Grid item md={6} sm={12} xs={12}>
                   <Box >
                     <InputController
-                      isRequired
                       fieldType="number"
                       controllerLabel={VALUE}
                       info={COPAY_AMOUNTS_TOOLTIP}
@@ -138,7 +134,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <InputController
-            isRequired
             fieldType="number"
             controllerName="coInsurancePercentage"
             controllerLabel={COINSURANCE_PERCENTAGE}
@@ -148,7 +143,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
-            isRequired
+            addEmpty
             label={REFERRING_PROVIDER}
             name="referringProvider"
             shouldOmitFacilityId
@@ -157,7 +152,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
-            isRequired
+            addEmpty
             label={PRIMARY_CARE_PROVIDER}
             name="primaryCareProvider"
             shouldOmitFacilityId
@@ -166,7 +161,6 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <Selector
-            isRequired
             addEmpty
             name="pricingProductType"
             label={PRICING_PRODUCT_TYPE}
