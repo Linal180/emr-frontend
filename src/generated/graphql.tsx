@@ -2158,6 +2158,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   getAllTransactions: TransactionsPayload;
+  getEligibilityAndCoverage: PolicyEligibilityPayload;
   getFormPublicMediaUrl: FormMediaPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
@@ -2430,6 +2431,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationGetAllTransactionsArgs = {
   transactionInputs: GetAllTransactionsInputs;
+};
+
+
+export type MutationGetEligibilityAndCoverageArgs = {
+  policyId: Scalars['String'];
 };
 
 
@@ -3244,6 +3250,7 @@ export type Policy = {
   orderOfBenefit?: Maybe<OrderOfBenefitType>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  policyEligibilities?: Maybe<Array<PolicyEligibility>>;
   policyHolder?: Maybe<PolicyHolder>;
   policyHolderId?: Maybe<Scalars['String']>;
   policyHolderRelationship?: Maybe<PolicyHolderRelationshipType>;
@@ -3253,6 +3260,86 @@ export type Policy = {
   referringProvider?: Maybe<Doctor>;
   referringProviderId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
+};
+
+export type PolicyCoverage = {
+  __typename?: 'PolicyCoverage';
+  benefitAmount?: Maybe<Scalars['String']>;
+  benefitCode?: Maybe<Scalars['String']>;
+  benefitCoverageCode?: Maybe<Scalars['String']>;
+  benefitCoverageDescription?: Maybe<Scalars['String']>;
+  benefitDescription?: Maybe<Scalars['String']>;
+  benefitLevelCode?: Maybe<Scalars['String']>;
+  benefitLevelCodeDescription?: Maybe<Scalars['String']>;
+  benefitNotes?: Maybe<Scalars['String']>;
+  benefitPercent?: Maybe<Scalars['String']>;
+  benefitPeriodCode?: Maybe<Scalars['String']>;
+  benefitPeriodCodeDescription?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  dateOfLastUpdated?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  inPlanNetwork?: Maybe<Scalars['String']>;
+  insuranceTypeCode?: Maybe<Scalars['String']>;
+  insuranceTypeCodeDescription?: Maybe<Scalars['String']>;
+  policyEligibility?: Maybe<PolicyEligibility>;
+  policyEligibilityId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilitiesPayload = {
+  __typename?: 'PolicyEligibilitiesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  policyEligibilities: Array<PolicyEligibility>;
+  response?: Maybe<Response>;
+};
+
+export type PolicyEligibility = {
+  __typename?: 'PolicyEligibility';
+  createdAt?: Maybe<Scalars['String']>;
+  eligibilityId?: Maybe<Scalars['String']>;
+  eligibilityResultDate?: Maybe<Scalars['String']>;
+  eligibilityResultTime?: Maybe<Scalars['String']>;
+  groupNumber?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  insAddress1?: Maybe<Scalars['String']>;
+  insCity?: Maybe<Scalars['String']>;
+  insDob?: Maybe<Scalars['String']>;
+  insFirstName?: Maybe<Scalars['String']>;
+  insLastName?: Maybe<Scalars['String']>;
+  insSex?: Maybe<Scalars['String']>;
+  insState?: Maybe<Scalars['String']>;
+  insZip?: Maybe<Scalars['String']>;
+  payerId?: Maybe<Scalars['String']>;
+  payerName?: Maybe<Scalars['String']>;
+  planBeginDate?: Maybe<Scalars['String']>;
+  planNumber?: Maybe<Scalars['String']>;
+  policy?: Maybe<Policy>;
+  policyCoverages?: Maybe<Array<PolicyCoverage>>;
+  policyId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilityPaginationInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  searchTerm?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilityPayload = {
+  __typename?: 'PolicyEligibilityPayload';
+  pagination?: Maybe<PaginationPayload>;
+  policyEligibility: PolicyEligibility;
+  response?: Maybe<Response>;
+};
+
+export type PolicyEligibilityWithPatientPayload = {
+  __typename?: 'PolicyEligibilityWithPatientPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patient: Patient;
+  policyEligibility: PolicyEligibility;
+  policyHolder: PolicyHolder;
+  primaryProvider: Doctor;
+  response?: Maybe<Response>;
 };
 
 export type PolicyHolder = {
@@ -3614,6 +3701,8 @@ export type Query = {
   getPatientProvider: PatientDoctorPayload;
   getPatientProviders: PatientProviderPayload;
   getPatientVital: PatientVitalPayload;
+  getPoliciesEligibilities: PolicyEligibilitiesPayload;
+  getPoliciesEligibility: PolicyEligibilityWithPatientPayload;
   getPractice: PracticePayload;
   getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
   getPracticeFacilityAppointments: PracticeFacilityAppointmentsPayload;
@@ -3995,6 +4084,16 @@ export type QueryGetPatientProvidersArgs = {
 
 export type QueryGetPatientVitalArgs = {
   getPatientVital: GetPatientVital;
+};
+
+
+export type QueryGetPoliciesEligibilitiesArgs = {
+  policyEligibilityInput: PolicyEligibilityPaginationInput;
+};
+
+
+export type QueryGetPoliciesEligibilityArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -6242,6 +6341,20 @@ export type FetchPatientInsurancesQueryVariables = Exact<{
 
 export type FetchPatientInsurancesQuery = { __typename?: 'Query', fetchPatientInsurances: { __typename?: 'PoliciesPayload', policies: Array<{ __typename?: 'Policy', id: string, policyHolderRelationship?: PolicyHolderRelationshipType | null, coinsurancePercentage?: string | null, expirationDate?: string | null, pricingProductType?: PricingProductType | null, issueDate?: string | null, memberId?: string | null, groupNumber?: string | null, notes?: string | null, orderOfBenefit?: OrderOfBenefitType | null, referringProvider?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, id: string } | null, primaryCareProvider?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, id: string } | null, copays?: Array<{ __typename?: 'Copay', id: string, type?: CopayType | null, amount?: string | null }> | null, policyHolder?: { __typename?: 'PolicyHolder', id: string, address?: string | null, addressCTD?: string | null, city?: string | null, dob?: string | null, employer?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, certificationNumber?: string | null, ssn?: string | null, state?: string | null, suffix?: string | null, zipCode?: string | null, sex?: Policy_Holder_Gender_Identity | null } | null, patient?: { __typename?: 'Patient', id: string } | null, insurance?: { __typename?: 'Insurance', payerName: string, payerId: string, id: string } | null }>, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
 
+export type GetPoliciesEligibilitiesQueryVariables = Exact<{
+  policyEligibilityInput: PolicyEligibilityPaginationInput;
+}>;
+
+
+export type GetPoliciesEligibilitiesQuery = { __typename?: 'Query', getPoliciesEligibilities: { __typename?: 'PolicyEligibilitiesPayload', policyEligibilities: Array<{ __typename?: 'PolicyEligibility', id: string, createdAt?: string | null, payerId?: string | null, payerName?: string | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
+
+export type GetPoliciesEligibilityQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetPoliciesEligibilityQuery = { __typename?: 'Query', getPoliciesEligibility: { __typename?: 'PolicyEligibilityWithPatientPayload', policyEligibility: { __typename?: 'PolicyEligibility', id: string, createdAt?: string | null, eligibilityResultDate?: string | null, eligibilityResultTime?: string | null, eligibilityId?: string | null, groupNumber?: string | null, insAddress1?: string | null, insCity?: string | null, insDob?: string | null, insFirstName?: string | null, insLastName?: string | null, insSex?: string | null, insState?: string | null, insZip?: string | null, planBeginDate?: string | null, planNumber?: string | null, payerId?: string | null, payerName?: string | null, policy?: { __typename?: 'Policy', id: string } | null, policyCoverages?: Array<{ __typename?: 'PolicyCoverage', id: string, benefitCode?: string | null, benefitCoverageCode?: string | null, benefitCoverageDescription?: string | null, benefitDescription?: string | null, benefitNotes?: string | null, dateOfLastUpdated?: string | null, benefitLevelCode?: string | null, benefitLevelCodeDescription?: string | null, benefitPeriodCode?: string | null, benefitPeriodCodeDescription?: string | null, inPlanNetwork?: string | null, benefitAmount?: string | null, insuranceTypeCode?: string | null, insuranceTypeCodeDescription?: string | null, benefitPercent?: string | null }> | null }, patient: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null }, policyHolder: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, sex?: Policy_Holder_Gender_Identity | null, address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }, primaryProvider: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null }> | null }, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
+
 export type CreatePolicyMutationVariables = Exact<{
   createPolicyInput: CreatePolicyInput;
 }>;
@@ -6262,6 +6375,13 @@ export type UpdatePolicyMutationVariables = Exact<{
 
 
 export type UpdatePolicyMutation = { __typename?: 'Mutation', updatePolicy: { __typename?: 'PolicyPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, policy: { __typename?: 'Policy', id: string } } };
+
+export type GetEligibilityAndCoverageMutationVariables = Exact<{
+  policyId: Scalars['String'];
+}>;
+
+
+export type GetEligibilityAndCoverageMutation = { __typename?: 'Mutation', getEligibilityAndCoverage: { __typename?: 'PolicyEligibilityPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, policyEligibility: { __typename?: 'PolicyEligibility', id: string } } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -11633,6 +11753,166 @@ export function useFetchPatientInsurancesLazyQuery(baseOptions?: Apollo.LazyQuer
 export type FetchPatientInsurancesQueryHookResult = ReturnType<typeof useFetchPatientInsurancesQuery>;
 export type FetchPatientInsurancesLazyQueryHookResult = ReturnType<typeof useFetchPatientInsurancesLazyQuery>;
 export type FetchPatientInsurancesQueryResult = Apollo.QueryResult<FetchPatientInsurancesQuery, FetchPatientInsurancesQueryVariables>;
+export const GetPoliciesEligibilitiesDocument = gql`
+    query GetPoliciesEligibilities($policyEligibilityInput: PolicyEligibilityPaginationInput!) {
+  getPoliciesEligibilities(policyEligibilityInput: $policyEligibilityInput) {
+    policyEligibilities {
+      id
+      createdAt
+      payerId
+      payerName
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoliciesEligibilitiesQuery__
+ *
+ * To run a query within a React component, call `useGetPoliciesEligibilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoliciesEligibilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoliciesEligibilitiesQuery({
+ *   variables: {
+ *      policyEligibilityInput: // value for 'policyEligibilityInput'
+ *   },
+ * });
+ */
+export function useGetPoliciesEligibilitiesQuery(baseOptions: Apollo.QueryHookOptions<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>(GetPoliciesEligibilitiesDocument, options);
+      }
+export function useGetPoliciesEligibilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>(GetPoliciesEligibilitiesDocument, options);
+        }
+export type GetPoliciesEligibilitiesQueryHookResult = ReturnType<typeof useGetPoliciesEligibilitiesQuery>;
+export type GetPoliciesEligibilitiesLazyQueryHookResult = ReturnType<typeof useGetPoliciesEligibilitiesLazyQuery>;
+export type GetPoliciesEligibilitiesQueryResult = Apollo.QueryResult<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>;
+export const GetPoliciesEligibilityDocument = gql`
+    query GetPoliciesEligibility($id: String!) {
+  getPoliciesEligibility(id: $id) {
+    policyEligibility {
+      id
+      createdAt
+      eligibilityResultDate
+      eligibilityResultTime
+      eligibilityId
+      groupNumber
+      insAddress1
+      insCity
+      insDob
+      insFirstName
+      insLastName
+      insSex
+      insState
+      insZip
+      planBeginDate
+      planNumber
+      payerId
+      payerName
+      policy {
+        id
+      }
+      policyCoverages {
+        id
+        benefitCode
+        benefitCoverageCode
+        benefitCoverageDescription
+        benefitDescription
+        benefitNotes
+        dateOfLastUpdated
+        benefitLevelCode
+        benefitLevelCodeDescription
+        benefitPeriodCode
+        benefitPeriodCodeDescription
+        inPlanNetwork
+        benefitAmount
+        insuranceTypeCode
+        insuranceTypeCodeDescription
+        benefitPercent
+      }
+    }
+    patient {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      gender
+      contacts {
+        address
+        city
+        state
+        zipCode
+      }
+    }
+    policyHolder {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      sex
+      address
+      city
+      state
+      zipCode
+    }
+    primaryProvider {
+      firstName
+      lastName
+      contacts {
+        phone
+      }
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoliciesEligibilityQuery__
+ *
+ * To run a query within a React component, call `useGetPoliciesEligibilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoliciesEligibilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoliciesEligibilityQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPoliciesEligibilityQuery(baseOptions: Apollo.QueryHookOptions<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>(GetPoliciesEligibilityDocument, options);
+      }
+export function useGetPoliciesEligibilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>(GetPoliciesEligibilityDocument, options);
+        }
+export type GetPoliciesEligibilityQueryHookResult = ReturnType<typeof useGetPoliciesEligibilityQuery>;
+export type GetPoliciesEligibilityLazyQueryHookResult = ReturnType<typeof useGetPoliciesEligibilityLazyQuery>;
+export type GetPoliciesEligibilityQueryResult = Apollo.QueryResult<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>;
 export const CreatePolicyDocument = gql`
     mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
   createPolicy(createPolicyInput: $createPolicyInput) {
@@ -11744,6 +12024,45 @@ export function useUpdatePolicyMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdatePolicyMutationHookResult = ReturnType<typeof useUpdatePolicyMutation>;
 export type UpdatePolicyMutationResult = Apollo.MutationResult<UpdatePolicyMutation>;
 export type UpdatePolicyMutationOptions = Apollo.BaseMutationOptions<UpdatePolicyMutation, UpdatePolicyMutationVariables>;
+export const GetEligibilityAndCoverageDocument = gql`
+    mutation GetEligibilityAndCoverage($policyId: String!) {
+  getEligibilityAndCoverage(policyId: $policyId) {
+    response {
+      status
+      message
+    }
+    policyEligibility {
+      id
+    }
+  }
+}
+    `;
+export type GetEligibilityAndCoverageMutationFn = Apollo.MutationFunction<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>;
+
+/**
+ * __useGetEligibilityAndCoverageMutation__
+ *
+ * To run a mutation, you first call `useGetEligibilityAndCoverageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetEligibilityAndCoverageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getEligibilityAndCoverageMutation, { data, loading, error }] = useGetEligibilityAndCoverageMutation({
+ *   variables: {
+ *      policyId: // value for 'policyId'
+ *   },
+ * });
+ */
+export function useGetEligibilityAndCoverageMutation(baseOptions?: Apollo.MutationHookOptions<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>(GetEligibilityAndCoverageDocument, options);
+      }
+export type GetEligibilityAndCoverageMutationHookResult = ReturnType<typeof useGetEligibilityAndCoverageMutation>;
+export type GetEligibilityAndCoverageMutationResult = Apollo.MutationResult<GetEligibilityAndCoverageMutation>;
+export type GetEligibilityAndCoverageMutationOptions = Apollo.BaseMutationOptions<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {
