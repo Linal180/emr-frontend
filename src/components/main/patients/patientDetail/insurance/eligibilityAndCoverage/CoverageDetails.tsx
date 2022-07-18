@@ -8,13 +8,13 @@ import Loader from '../../../../../common/Loader';
 import CoverageDetailsHeader from './CoverageDetailsHeader';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
-  AMOUNT, AUTH_CERT_REQUIRED, COVERAGE_LEVEL, COVERAGE_SUMMARY, DETAILED_COVERAGE_INFORMATION, ELIGIBILITY_ROUTE, FACILITY_TYPE,
+  AMOUNT, AUTH_CERT_REQUIRED, COVERAGE_LEVEL, COVERAGE_SUMMARY, COVERAGE_SUMMARY_COLUMNS, DETAILED_COVERAGE_INFORMATION, ELIGIBILITY_ROUTE, FACILITY_TYPE,
   IN_NETWORK, MESSAGE, REMAINING, SERVICE_TYPE, TIME_PERIOD
 } from '../../../../../../constants';
 import { PolicyCoverage, PolicyEligibilityWithPatientPayload, useGetPoliciesEligibilityLazyQuery } from '../../../../../../generated/graphql';
 import { ParamsType } from '../../../../../../interfacesTypes';
 import { useChartingStyles } from '../../../../../../styles/chartingStyles';
-import { getArrayOfObjSum, renderTh } from '../../../../../../utils';
+import { renderTh } from '../../../../../../utils';
 import BackButton from '../../../../../common/BackButton';
 
 const CoverageDetailsComponent = () => {
@@ -99,22 +99,28 @@ const CoverageDetailsComponent = () => {
     const transformedPlanSummaryData = getDetailCoverageInfo(planSummaryData, 'benefitDescription')
 
     return Object.keys(transformedPlanSummaryData).reduce<Record<string, any>>((acc, key) => {
-      const benefitData = transformedPlanSummaryData[key]
-      const amountValues = getDetailCoverageInfo(benefitData, 'benefitCoverageDescription')
-      const transformedAmountValues = Object.keys(amountValues).reduce<Record<string, any>>((acc, amountValueKey) => {
-        const amountValue = amountValues[amountValueKey]
-        if (amountValueKey === 'Co-Insurance') {
-          acc[amountValueKey] = getArrayOfObjSum(amountValue, 'benefitPercent')
+      if (COVERAGE_SUMMARY_COLUMNS.includes(key)) {
+        const benefitData = transformedPlanSummaryData[key]
+        const amountValues = getDetailCoverageInfo(benefitData, 'benefitCoverageDescription')
+        const transformedAmountValues = Object.keys(amountValues).reduce<Record<string, any>>((acc, amountValueKey) => {
+          const amountValue = amountValues[amountValueKey]
+          if (amountValueKey === 'Co-Insurance') {
+            acc[amountValueKey] = amountValue[0]?.benefitPercent || 0
+            return acc
+          }
+          acc[amountValueKey] = amountValue[0]?.benefitAmount || 0
           return acc
-        }
-        acc[amountValueKey] = getArrayOfObjSum(amountValue, 'benefitAmount')
-        return acc
-      }, {})
+        }, {})
 
-      acc[key] = transformedAmountValues
+        acc[key] = transformedAmountValues
+        return acc
+      }
+
       return acc
     }, {})
   }, [coverageSummary, coverageType, getDetailCoverageInfo])
+
+  console.log('coverageSummaryData', coverageSummaryData)
 
   const amountData = getDetailCoverageInfo(coverageSummary ? coverageSummary[coverageType] : [], 'benefitCoverageDescription')
 
