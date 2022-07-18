@@ -46,6 +46,7 @@ const PracticeTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
