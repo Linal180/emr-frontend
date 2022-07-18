@@ -1,38 +1,33 @@
 //packages block
-import { FC, useState } from "react";
-import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
-import { Box, Card, Grid, IconButton, TextField, Typography } from "@material-ui/core";
+import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
+import { FC } from "react";
+import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
 //components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
 //constants, interfaces, utils
 import { ClearIcon } from "../../../assets/svgs";
 import {
-  ACTIONS, BILLING_MODIFIERS_DATA, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS, 
-  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, UNIT,
+  ACTIONS, BILLING_MODIFIERS_DATA, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
+  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, UNIT
 } from "../../../constants";
+import InputController from "../../../controller";
 import { CodeType } from "../../../generated/graphql";
-import { SelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
-import { GRAY_SIX, GREY_NINE, } from "../../../theme";
+import { CreateBillingProps, SelectorOption, TableSelectorProps } from "../../../interfacesTypes";
+import { GRAY_SIX, GREY_NINE } from "../../../theme";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice }) => {
-  const [valueToEdit, setValueToEdit] = useState<string>('')
   const methods = useForm<any>({
     mode: "all",
   });
-  const { control, watch, setValue: setFormValue } = useFormContext();
-  const { [moduleName as string]: moduleData } = watch()
+  const parentMethods = useFormContext<CreateBillingProps>();
+  const { control, watch, setValue: setFormValue } = parentMethods
+
+  const { IcdCodes, [moduleName]: moduleData } = watch()
+
+  const { fields: tableCodeFields, append: appendTableCodeFields } = useFieldArray({ control: control, name: moduleName });
 
   const { setValue } = methods
-
-  const saveHandler = (value: string, id: string) => {
-    const index = (moduleData as TableCodesProps[]).findIndex((data) => data?.id === id)
-    let newArr = [...(moduleData as TableCodesProps[])]; // copying the old datas array
-    newArr[index].price = value; // replace e.target.value with whatever you want to change it to
-
-    setFormValue(moduleName, newArr);
-    setValueToEdit('')
-  }
 
   const getCodeType = (codeName: ITEM_MODULE) => {
     switch (codeName) {
@@ -47,17 +42,32 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
 
   const handleTableCodes = (data: SelectorOption) => {
     setValue(moduleName, EMPTY_OPTION)
-    const valueAlreadyExist = (moduleData as TableCodesProps[])?.find((tableDataValues) => tableDataValues.id === data.id)
+    const valueAlreadyExist = (tableCodeFields)?.find((tableDataValues) => tableDataValues.codeId === data.id)
     if (valueAlreadyExist) {
       return
     }
 
-    setFormValue(moduleName, [...moduleData, {
-      id: data.id,
+    const diagPointers = IcdCodes.reduce<Record<string, number>>((acc, _, index) => {
+      acc[`diag${index + 1}`] = index + 1
+      return acc
+    }, {})
+
+    appendTableCodeFields({
+      codeId: data.id,
       code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data.id || '',
       description: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[1] || '' : data?.name || '',
-      codeType: getCodeType(moduleName) as CodeType
-    }])
+      codeType: getCodeType(moduleName) as CodeType, price: '', m1: '', m2: '', m3: '', m4: '', unit: '', ...diagPointers
+    })
+
+    setFormValue(moduleName, [
+      ...moduleData,
+      {
+        codeId: data.id,
+        code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data.id || '',
+        description: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[1] || '' : data?.name || '',
+        codeType: getCodeType(moduleName) as CodeType, price: '', m1: '', m2: '', m3: '', m4: '', unit: '', ...diagPointers
+      }
+    ])
   }
 
   return (
@@ -78,9 +88,9 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                     name={moduleName}
                     addEmpty
                     modalName={moduleName}
-                    filteredOptions={(moduleData as TableCodesProps[])?.map((value) => {
+                    filteredOptions={(tableCodeFields)?.map((value) => {
                       return {
-                        id: value.id,
+                        id: value.codeId || '',
                         name: `${value.code} | ${value.description}`
                       }
                     })}
@@ -101,104 +111,110 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                   <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
                 </Grid>
 
-                <Grid item md={2} sm={2} xs={2}>
+                {shouldShowPrice && <Grid item md={2} sm={2} xs={2}>
                   <Typography variant="h5" color="textPrimary">{BUILD_FEE_DOLLAR}</Typography>
-                </Grid>
+                </Grid>}
 
                 <Grid item md={2} sm={2} xs={2}>
                   <Typography variant="h5" color="textPrimary">{ACTIONS}</Typography>
                 </Grid>
               </Grid>
             </Box>
+            <FormProvider {...parentMethods}>
+              {(tableCodeFields)?.map(({
+                code, description, codeId
+              }, index) => {
+                return (
+                  <>
+                    <Box pl={4}>
+                      <Grid container spacing={3} direction="row">
+                        <Grid item md={3} sm={3} xs={3}>
+                          {code}
+                        </Grid>
 
-            {(moduleData as TableCodesProps[])?.map(({
-              code, description, id, price
-            }) => {
-              return (
-                <>
-                  <Box pl={4}>
-                    <Grid container spacing={3} direction="row">
-                      <Grid item md={3} sm={3} xs={3}>
-                        {code}
+                        <Grid item md={5} sm={5} xs={5}>
+                          {description}
+                        </Grid>
+
+                        <Grid item md={2} sm={2} xs={2}>
+                          {shouldShowPrice && (
+                            <Box>
+                              <InputController
+                                fieldType="text"
+                                controllerName={`${moduleName}.${index}.price`}
+                                controllerLabel={""}
+                                margin={'none'}
+                              />
+                            </Box>
+                          )}
+                        </Grid>
+
+                        <Grid item md={2} sm={2} xs={2}>
+                          <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                            <ClearIcon />
+                          </IconButton>
+                        </Grid>
                       </Grid>
+                    </Box>
 
-                      <Grid item md={5} sm={5} xs={5}>
-                        {description}
-                      </Grid>
+                    {shouldShowPrice && <Box pl={4} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
+                      <Grid container spacing={3} direction="row">
+                        <Grid item md={5} sm={12} xs={12}>
+                          <Typography variant="h6" color="textPrimary">{MODIFIERS}</Typography>
 
-                      <Grid item md={2} sm={2} xs={2}>
-                        {shouldShowPrice && (
-                          <Box>
-                            {valueToEdit === id ? <TextField
-                              id={id}
-                              type="number"
-                              variant={'outlined'}
-                              onBlur={({ target: { value } }) => saveHandler(value, id)} /> : <span onClick={() => setValueToEdit(id)}>{price || 0}</span>}
+                          <Box mt={1} display='flex'>
+                            {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
+                              return <Box mr={1}>
+                                <InputController
+                                  placeholder={item}
+                                  fieldType="number"
+                                  controllerName={`${moduleName}.${index}.m${modIndex + 1}`}
+                                  controllerLabel={""}
+                                  margin={'none'}
+                                />
+                              </Box>
+                            })}
                           </Box>
-                        )}
+                        </Grid>
+
+                        <Grid item md={5} sm={12} xs={12}>
+                          <Typography variant="h6" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
+
+                          <Box mt={1} display='flex'>
+                            {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
+                              return <Box mr={1}>
+                                <InputController
+                                  placeholder={item}
+                                  fieldType="number"
+                                  controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
+                                  controllerLabel={""}
+                                  margin={'none'}
+                                />
+                              </Box>
+                            })}
+                          </Box>
+                        </Grid>
+
+                        <Grid item md={1} sm={12} xs={12}>
+                          <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
+
+                          <Box mt={1}>
+                            <InputController
+                              fieldType="number"
+                              controllerName={`${moduleName}.${index}.unit`}
+                              controllerLabel={""}
+                              margin={'none'}
+                            />
+                          </Box>
+                        </Grid>
                       </Grid>
-
-                      <Grid item md={2} sm={2} xs={2}>
-                        <IconButton onClick={() => setFormValue(moduleName, (moduleData as TableCodesProps[])?.filter((data => data?.id !== id)))}>
-                          <ClearIcon />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </Box>
-
-                  <Box pl={4} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
-                    <Grid container spacing={3} direction="row">
-                      <Grid item md={5} sm={12} xs={12}>
-                        <Typography variant="h6" color="textPrimary">{MODIFIERS}</Typography>
-
-                        <Box mt={1} display='flex'>
-                          {BILLING_MODIFIERS_DATA.map(item => {
-                            return <Box mr={1}>
-                              <TextField
-                                type="number"
-                                placeholder={item}
-                                variant={'outlined'}
-                              />
-                            </Box>
-                          })}
-                        </Box>
-                      </Grid>
-
-                      <Grid item md={5} sm={12} xs={12}>
-                        <Typography variant="h6" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
-
-                        <Box mt={1} display='flex'>
-                          {DIAGNOSIS_POINTERS_DATA.map(item => {
-                            return <Box mr={1}>
-                              <TextField
-                                type="number"
-                                placeholder={item}
-                                variant={'outlined'}
-                              />
-                            </Box>
-                          })}
-                        </Box>
-                      </Grid>
-
-                      <Grid item md={1} sm={12} xs={12}>
-                        <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
-
-                        <Box mt={1}>
-                          <TextField
-                            type="number"
-                            variant={'outlined'}
-                          />
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </>
-
-              )
-            }
-            )}
-
-            {(!(moduleData as TableCodesProps[])?.length) && (
+                    </Box>}
+                  </>
+                )
+              }
+              )}
+            </FormProvider>
+            {(!tableCodeFields?.length) && (
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
                 <NoDataComponent />
               </Box>

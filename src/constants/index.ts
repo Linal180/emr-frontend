@@ -15,7 +15,7 @@ import {
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
   Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus,
-  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType,
+  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientPaymentType, PaymentType,
   PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns, Race,
   RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
@@ -449,6 +449,7 @@ export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
+export const UPDATE_PROBLEM = "Update Problem"
 export const ALLERGIES_TEXT = "Allergies";
 export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
@@ -1865,8 +1866,6 @@ export const MAPPED_PRICING_PRODUCT_TYPE = mapEnum<typeof PricingProductType>(Pr
 export const MAPPED_COPAY_TYPE = mapEnum<typeof CopayType>(CopayType)
 
 export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
-
-export const MAPPED_PATIENT_BILLING_STATUS = mapEnum<typeof PatientBillingStatus>(PatientBillingStatus)
 
 export const MAPPED_PATIENT_PAYMENT_TYPE = mapEnum<typeof PatientPaymentType>(PatientPaymentType)
 

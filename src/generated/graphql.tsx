@@ -399,7 +399,6 @@ export type Billing = {
   otherDate?: Maybe<Scalars['String']>;
   otherDateType: OtherDateType;
   patient?: Maybe<Patient>;
-  patientBillingStatus: PatientBillingStatus;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType: PatientPaymentType;
   pos?: Maybe<Scalars['String']>;
@@ -408,6 +407,7 @@ export type Billing = {
   serviceDate?: Maybe<Scalars['String']>;
   servicingProvider?: Maybe<Doctor>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  uncoveredAmount?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -450,13 +450,13 @@ export type BillingInput = {
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
-  patientBillingStatus?: Maybe<PatientBillingStatus>;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType?: Maybe<PatientPaymentType>;
   pos?: Maybe<Scalars['String']>;
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  uncoveredAmount?: Maybe<Scalars['String']>;
 };
 
 export type BillingPayload = {
@@ -494,7 +494,7 @@ export type CancelAppointment = {
 export type Charge = {
   __typename?: 'Charge';
   charge?: Maybe<Scalars['Int']>;
-  diag_ref?: Maybe<Scalars['String']>;
+  diagPointer?: Maybe<Scalars['String']>;
   proc_code?: Maybe<Scalars['String']>;
   units?: Maybe<Scalars['String']>;
 };
@@ -561,6 +561,12 @@ export type ClaimInput = {
   patientId?: Maybe<Scalars['String']>;
 };
 
+export type ClaimNumberPayload = {
+  __typename?: 'ClaimNumberPayload';
+  claimNumber?: Maybe<Scalars['String']>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type ClaimPayload = {
   __typename?: 'ClaimPayload';
   claim: Claim;
@@ -575,8 +581,14 @@ export type Code = {
   codeType: CodeType;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  diagPointer?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -592,7 +604,13 @@ export type CodesInput = {
   code?: Maybe<Scalars['String']>;
   codeType?: Maybe<CodeType>;
   description?: Maybe<Scalars['String']>;
+  diagPointer?: Maybe<Scalars['String']>;
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
 };
 
 export type Contact = {
@@ -2960,19 +2978,6 @@ export type PatientAttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-/** The patient billing status assigned */
-export enum PatientBillingStatus {
-  AutoAccidentClaim = 'AUTO_ACCIDENT_CLAIM',
-  BalanceDue = 'BALANCE_DUE',
-  BillInsurance = 'BILL_INSURANCE',
-  BillSecondaryInsurance = 'BILL_SECONDARY_INSURANCE',
-  DurableMedicalEquipmentClaim = 'DURABLE_MEDICAL_EQUIPMENT_CLAIM',
-  InternalReview = 'INTERNAL_REVIEW',
-  PaidInFull = 'PAID_IN_FULL',
-  Settled = 'SETTLED',
-  WorkersCompClaim = 'WORKERS_COMP_CLAIM'
-}
-
 export type PatientConsent = {
   __typename?: 'PatientConsent';
   agreements?: Maybe<Array<Agreement>>;
@@ -3675,6 +3680,7 @@ export type Query = {
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
   findPatientConsent: PatientConsentPayload;
+  generateClaimNo: ClaimNumberPayload;
   getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
@@ -5937,7 +5943,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
 
 export type CreateClaimQueryVariables = Exact<{
   claimInput: ClaimInput;
@@ -5952,6 +5958,11 @@ export type GetClaimFileQueryVariables = Exact<{
 
 
 export type GetClaimFileQuery = { __typename?: 'Query', getClaimFile: { __typename?: 'ClaimFilePayload', claimFile?: Array<number> | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type GenerateClaimNoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateClaimNoQuery = { __typename?: 'Query', generateClaimNo: { __typename?: 'ClaimNumberPayload', claimNumber?: string | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -8717,7 +8728,6 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
     billing {
       id
       patientPaymentType
-      patientBillingStatus
       onsetDateType
       onsetDate
       otherDateType
@@ -8729,6 +8739,7 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       serviceDate
       claimDate
       claimNo
+      uncoveredAmount
       facility {
         id
         name
@@ -8750,6 +8761,12 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
         description
         price
         codeType
+        m1
+        m2
+        m3
+        m4
+        unit
+        diagPointer
       }
     }
   }
@@ -8860,6 +8877,44 @@ export function useGetClaimFileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetClaimFileQueryHookResult = ReturnType<typeof useGetClaimFileQuery>;
 export type GetClaimFileLazyQueryHookResult = ReturnType<typeof useGetClaimFileLazyQuery>;
 export type GetClaimFileQueryResult = Apollo.QueryResult<GetClaimFileQuery, GetClaimFileQueryVariables>;
+export const GenerateClaimNoDocument = gql`
+    query GenerateClaimNo {
+  generateClaimNo {
+    response {
+      status
+      message
+    }
+    claimNumber
+  }
+}
+    `;
+
+/**
+ * __useGenerateClaimNoQuery__
+ *
+ * To run a query within a React component, call `useGenerateClaimNoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateClaimNoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateClaimNoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateClaimNoQuery(baseOptions?: Apollo.QueryHookOptions<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>(GenerateClaimNoDocument, options);
+      }
+export function useGenerateClaimNoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>(GenerateClaimNoDocument, options);
+        }
+export type GenerateClaimNoQueryHookResult = ReturnType<typeof useGenerateClaimNoQuery>;
+export type GenerateClaimNoLazyQueryHookResult = ReturnType<typeof useGenerateClaimNoLazyQuery>;
+export type GenerateClaimNoQueryResult = Apollo.QueryResult<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {

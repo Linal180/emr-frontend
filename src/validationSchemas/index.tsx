@@ -134,9 +134,9 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
-  id: yup.string(),
+  codeId: yup.string(),
   code: yup.string()
-}).test('', requiredMessage(label), ({ id, code }) => isRequired ? !!id && !!code : true);
+}).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   label: yup.string().required(),

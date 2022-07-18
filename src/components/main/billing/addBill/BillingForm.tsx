@@ -22,42 +22,45 @@ import { CodeType } from "../../../../generated/graphql";
 import { BillingFormProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/billingReducer";
 import { GREY_THREE, } from "../../../../theme";
-import { formatValue, generateString, renderItem } from "../../../../utils";
+import { formatValue, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
   MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, UNCOVERED_AMT,
-  OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, RESOURCE, SERVICE_DATE, SERVICING_PROVIDER, BILLING_PROVIDER, RENDERING_PROVIDER,
-  BILLING_STATUS,
+  OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, SERVICE_DATE, SERVICING_PROVIDER, RENDERING_PROVIDER, MAPPED_PATIENT_PAYMENT_TYPE,
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
   const classesToggle = usePublicAppointmentStyles();
-  const { handleSubmit } = methods
-  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen } = state
-
+  const { handleSubmit, trigger } = methods
+  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber } = state
   const [selectedTab, setSelectedTab] = useState<string>('1')
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
     setSelectedTab(newValue)
   }
 
-  // const toggleHandleChange = ({ target: { checked } }: ChangeEvent<HTMLInputElement>, name: string) => {
-  //   switch (name) {
-  //     case 'employment':
-  //       dispatch({ type: ActionType.SET_EMPLOYMENT, employment: checked })
-  //       break;
-  //     case 'autoAccident':
-  //       dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: checked })
-  //       break;
-  //     case 'otherAccident':
-  //       dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: checked })
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+  const toggleHandleChange = ({ target: { checked } }: ChangeEvent<HTMLInputElement>, name: string) => {
+    switch (name) {
+      case 'employment':
+        dispatch({ type: ActionType.SET_EMPLOYMENT, employment: checked })
+        break;
+      case 'autoAccident':
+        dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: checked })
+        break;
+      case 'otherAccident':
+        dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: checked })
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleCheckout = async () => {
+    const isValid = await trigger()
+    isValid && dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+  }
 
   return (
     <FormProvider {...methods}>
@@ -66,7 +69,7 @@ const BillingForm: FC<BillingFormProps> = (
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            <Box display="flex" alignItems="center">
+            {!shouldDisableEdit && <Box display="flex" alignItems="center">
               <Button
                 variant="contained"
                 color="secondary"
@@ -87,15 +90,15 @@ const BillingForm: FC<BillingFormProps> = (
 
               <Box p={1} />
 
-              {!shouldDisableEdit && <Button
+              <Button
                 variant="contained" color="primary" disabled={createBillingLoading}
-                onClick={() => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })}
+                onClick={handleCheckout}
               >
                 {submitButtonText ?? CHECKOUT}
                 {createBillingLoading && <CircularProgress size={20} color="inherit" />}
                 <ChevronRight />
-              </Button>}
-            </Box>
+              </Button>
+            </Box>}
           </Box>
 
           <Box className="billing-inputs" mt={2} p={3}>
@@ -104,7 +107,7 @@ const BillingForm: FC<BillingFormProps> = (
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
                     <Box pl={1.8} mb={2.5} className="claim-box">
-                      {renderItem(CLAIM_NO, generateString(4))}
+                      {renderItem(CLAIM_NO, claimNumber)}
                     </Box>
 
                     <Grid item md={12} sm={12} xs={12}>
@@ -119,15 +122,17 @@ const BillingForm: FC<BillingFormProps> = (
                       <DatePicker
                         name="claimDate"
                         label={CLAIM_DATE}
+                        disabled={shouldDisableEdit}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         addEmpty
-                        name="patientPaymentType"
+                        name="paymentType"
                         label={PATIENT_PAYMENT_TYPE}
-                        options={[]}
+                        options={MAPPED_PATIENT_PAYMENT_TYPE}
+                        disabled={shouldDisableEdit}
                       />
                     </Grid>
                   </Grid>
@@ -137,26 +142,28 @@ const BillingForm: FC<BillingFormProps> = (
               <Grid item md={3} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-                    <Grid item md={12} sm={12} xs={12}>
+                    {/* <Grid item md={12} sm={12} xs={12}>
                       <Grid container spacing={3} direction="row">
-                        <Grid item md={8} sm={12} xs={12}>
-                          <FacilitySelector
-                            addEmpty
-                            label={APPOINTMENT_FACILITY}
-                            name="facility"
-                            disabled
-                          />
-                        </Grid>
-
-                        <Grid item md={4} sm={12} xs={12}>
-                          <Selector
-                            label={POS}
-                            name="pos"
-                            options={MAPPED_SERVICE_CODES}
-                            addEmpty
-                          />
-                        </Grid>
                       </Grid>
+                    </Grid> */}
+
+                    <Grid item md={12} sm={12} xs={12}>
+                      <FacilitySelector
+                        addEmpty
+                        label={APPOINTMENT_FACILITY}
+                        name="facility"
+                        disabled
+                      />
+                    </Grid>
+
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Selector
+                        label={POS}
+                        name="pos"
+                        options={MAPPED_SERVICE_CODES}
+                        addEmpty
+                        disabled={shouldDisableEdit}
+                      />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
@@ -169,14 +176,14 @@ const BillingForm: FC<BillingFormProps> = (
                       />
                     </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                    {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="resource"
                         label={RESOURCE}
                         options={[]}
                         addEmpty
                       />
-                    </Grid>
+                    </Grid> */}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Grid container spacing={3} direction="row">
@@ -185,27 +192,31 @@ const BillingForm: FC<BillingFormProps> = (
                             fieldType="text"
                             controllerName="amount"
                             controllerLabel={COPAY_AMOUNT}
+                            disabled={shouldDisableEdit}
                           />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
-                            fieldType="text"
+                            fieldType="number"
                             controllerName="uncoveredAmount"
                             controllerLabel={UNCOVERED_AMT}
+                            disabled={shouldDisableEdit}
                           />
                         </Grid>
                       </Grid>
                     </Grid>
 
-                    <Box pr={2} width="100%"
-                      onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
-                      className="billing-box" display="flex" justifyContent="flex-end"
-                    >
-                      <AddCircleOutline color='inherit' />
+                    {
+                      !shouldDisableEdit && <Box pr={2} width="100%"
+                        onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
+                        className="billing-box" display="flex" justifyContent="flex-end"
+                      >
+                        <AddCircleOutline color='inherit' />
 
-                      <Typography>{ADD_ANOTHER}</Typography>
-                    </Box>
+                        <Typography>{ADD_ANOTHER}</Typography>
+                      </Box>
+                    }
                   </Grid>
                 </Box>
               </Grid>
@@ -213,19 +224,20 @@ const BillingForm: FC<BillingFormProps> = (
               <Grid item md={3} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-                    <Grid item md={12} sm={12} xs={12}>
+                    {/* <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
                         label={BILLING_PROVIDER}
                         name="billingProvider"
                         addEmpty
                       />
-                    </Grid>
+                    </Grid> */}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
                         label={RENDERING_PROVIDER}
                         name="renderingProvider"
                         addEmpty
+                        disabled={shouldDisableEdit}
                       />
                     </Grid>
 
@@ -235,17 +247,18 @@ const BillingForm: FC<BillingFormProps> = (
                         label={CLAIM_STATUS}
                         addEmpty
                         options={[]}
+                        disabled={shouldDisableEdit}
                       />
                     </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                    {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="billingStatus"
                         label={BILLING_STATUS}
                         addEmpty
                         options={[]}
                       />
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
@@ -260,82 +273,20 @@ const BillingForm: FC<BillingFormProps> = (
                     <Box pl={1.8} mb={2}>
                       <FormGroup row>
                         <FormControlLabel
-                          control={<Checkbox checked name="checkedA" color="primary"
-                          />
-                          }
+                          control={<Checkbox checked={employment} name="checkedA" color="primary" onChange={(event) => { toggleHandleChange(event, 'employment') }} disabled={shouldDisableEdit} />}
                           label={EMPLOYMENT}
                         />
 
                         <FormControlLabel
-                          control={<Checkbox name="checkedB" color="primary"
-                          />
-                          }
+                          control={<Checkbox checked={autoAccident} name="checkedB" color="primary" onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} disabled={shouldDisableEdit} />}
                           label={AUTO_ACCIDENT}
                         />
 
                         <FormControlLabel
-                          control={<Checkbox name="checkedC" color="primary"
-                          />
-                          }
+                          control={<Checkbox checked={otherAccident} name="checkedC" color="primary" onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} disabled={shouldDisableEdit} />}
                           label={OTHER_ACCIDENT}
                         />
                       </FormGroup>
-
-                      {/* <Grid container spacing={3} direction="row">
-                        <Grid item md={4} sm={12} xs={12}>
-                          <Controller
-                            name='employment'
-                            control={control}
-                            render={() => (
-                              <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                <InputLabel shrink>{EMPLOYMENT}</InputLabel>
-
-                                <label className="toggle-main">
-                                  <Box color={employment ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                  <AntSwitch checked={employment} onChange={(event) => { toggleHandleChange(event, 'employment') }} name='employment' />
-                                  <Box color={employment ? GREY_SEVEN : WHITE}>{NO}</Box>
-                                </label>
-                              </FormControl>
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Controller
-                            name='autoAccident'
-                            control={control}
-                            render={() => (
-                              <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
-
-                                <label className="toggle-main">
-                                  <Box color={autoAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                  <AntSwitch checked={autoAccident} onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} name='autoAccident' />
-                                  <Box color={autoAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                                </label>
-                              </FormControl>
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Controller
-                            name='otherAccident'
-                            control={control}
-                            render={() => (
-                              <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
-
-                                <label className="toggle-main">
-                                  <Box color={otherAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                  <AntSwitch checked={otherAccident} onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} name='otherAccident' />
-                                  <Box color={otherAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                                </label>
-                              </FormControl>
-                            )}
-                          />
-                        </Grid>
-                      </Grid> */}
                     </Box>
 
                     <Grid item md={12} sm={12} xs={12}>

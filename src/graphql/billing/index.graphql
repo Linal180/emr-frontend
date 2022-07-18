@@ -21,7 +21,6 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
     billing {
       id
       patientPaymentType
-      patientBillingStatus
       onsetDateType
       onsetDate
       otherDateType
@@ -30,9 +29,10 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       otherAccident
       otherDate
       amount
-      serviceDate,
-      claimDate,
-      claimNo,
+      serviceDate
+      claimDate
+      claimNo
+      uncoveredAmount
       facility {
        id
        name
@@ -54,6 +54,12 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
         description
         price
         codeType
+        m1
+        m2
+        m3
+        m4
+        unit
+        diagPointer
       }
     }
   }
@@ -76,5 +82,16 @@ query GetClaimFile($claimInput: ClaimInput!) {
     }
 
     claimFile
+  }
+}
+
+query GenerateClaimNo {
+  generateClaimNo {
+    response {
+      status
+      message
+    }
+
+    claimNumber
   }
 }
