@@ -69,7 +69,7 @@ export const formatEnumMember = (value: string) => {
     }
   }
 
-  formatted = `${formatted} - ${parts[parts.length - 1]}`;  
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;
   return formatted.trim();
 };
 
@@ -1948,4 +1948,13 @@ export function sortingArray<arrayType>(array: arrayType, by: string, order: str
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
 
-export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+export const getArrayOfObjSum = (arr: any[], key: string) =>
+  arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
+
+export const getPageNumber = (page: number, pageRecords: number): number => {
+  if(page > 1){
+    return pageRecords > 1 ? page : page - 1 
+  } 
+
+  return 1;
+}

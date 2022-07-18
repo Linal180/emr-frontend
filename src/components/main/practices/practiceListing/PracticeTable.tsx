@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
-import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
+import { formatPhone, getFormattedDate, getPageNumber, renderTh } from "../../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -54,6 +54,7 @@ const PracticeTable: FC = (): JSX.Element => {
 
         if (findAllPractices) {
           const { pagination, practices } = findAllPractices
+
           practices && dispatch({
             type: ActionType.SET_PRACTICES,
             practices: practices as PracticesPayload['practices']
@@ -88,10 +89,15 @@ const PracticeTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-            await findAllPractices();
             setFacilityList([])
             setRoleList([])
             fetchAllFacilityList()
+
+            if(practices && practices.length > 1){
+              await findAllPractices();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, practices?.length || 0)})
+            }
           }
         }
       } catch (error) { }
