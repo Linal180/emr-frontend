@@ -8,17 +8,21 @@ import { Box, Table, TableBody, TableHead, TableRow, TableCell, } from "@materia
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
-import { convertDateFromUnix, formatValue, getFormatTime, renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { STATUS, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, YES, NO, N_A, PRIMARY_CARE_PROVIDER, ORDER_CREATED_AT, APPOINTMENT_DATE, TEST_DATE, } from "../../../../constants";
 import { BLUE } from "../../../../theme";
-import { LabTestsPayload, useFindLabTestsByOrderNumLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { convertDateFromUnix, formatValue, getFormatTime, renderTh } from "../../../../utils";
+import { LabTestsPayload, useFindLabTestsByOrderNumLazyQuery } from "../../../../generated/graphql";
+import {
+  STATUS, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, YES, NO, N_A,
+  PRIMARY_CARE_PROVIDER, ORDER_CREATED_AT, APPOINTMENT_DATE, TEST_DATE,
+} from "../../../../constants";
 
 const LabOrderListingTable = (): JSX.Element => {
   const classes = useTableStyles();
-  const [labOrders,setLabOrders]=useState<LabTestsPayload['labTests']>([])
+  const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>([])
   const [page, setPage] = useState<number>(1);
+
   const [pages, setPages] = useState<number>(0);
   const { orderNum } = useParams<ParamsType>()
 
@@ -45,14 +49,15 @@ const LabOrderListingTable = (): JSX.Element => {
     }
   });
 
-  const fetchlabTests = useCallback(async () => {
+  const fetchLabTests = useCallback(async () => {
     try {
-      const pageInputs= { page, limit: PAGE_LIMIT}
+      const pageInputs = { page, limit: PAGE_LIMIT }
+
       await findAllLabTest({
         variables: {
           labTestByOrderNumInput: {
             orderNumber: orderNum,
-            paginationOptions:{ ...pageInputs }
+            paginationOptions: { ...pageInputs }
           }
         }
       });
@@ -60,25 +65,24 @@ const LabOrderListingTable = (): JSX.Element => {
   }, [findAllLabTest, orderNum, page])
 
   useEffect(() => {
-    fetchlabTests()
-  }, [page, fetchlabTests])
+    fetchLabTests()
+  }, [page, fetchLabTests])
 
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
 
-  const getPerformedDate = (testDate:string, testTime:string) =>{
-    if(testDate && testTime){
+  const getPerformedDate = (testDate: string, testTime: string) => {
+    let performedDate = ''
+    if (testDate && testTime) {
       return `${testDate} ${getFormatTime(testTime)}`
     }
 
-    let performedDate=''
-
-    if(testDate){
-      performedDate+=testDate
+    if (testDate) {
+      performedDate += testDate
     }
 
-    if(testTime){
-      performedDate+=getFormatTime(testTime)
+    if (testTime) {
+      performedDate += getFormatTime(testTime)
     }
 
     return performedDate
@@ -105,49 +109,52 @@ const LabOrderListingTable = (): JSX.Element => {
               </TableRow>
             </TableHead>
 
-            
+
 
             <TableBody>
-            {loading ? (
+              {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
                     <TableLoader numberOfRows={10} numberOfColumns={2} />
                   </TableCell>
                 </TableRow>
               ) : (
-              labOrders?.map((labOrder) => {
-                const { appointment, patient, test, diagnoses, createdAt, 
-                labTestStatus, testDate, testTime, testNotes, testObservations } = labOrder || {}
-                const {doctorPatients} = patient || {}
-                const { doctor } = doctorPatients?.find((doctorPatient)=> doctorPatient.currentProvider) || {}
-                const { firstName, lastName } = doctor ?? {}
-                const { loincNum } = test ?? {}
-                const { scheduleStartDateTime : appointmentDate } = appointment ?? {}
-                const performed = getPerformedDate(testDate || '',testTime || '')
-                const { doctorsSignOff, attachments, resultValue, resultUnit} = testObservations?.[0] ?? {}
-                const { attachmentName } = attachments?.[0] ?? {}
-                const primaryProviderName = `${firstName} ${lastName}` === 'undefined undefined' ? N_A : `${firstName} ${lastName}`
+                labOrders?.map((labOrder) => {
+                  const { appointment, patient, test, diagnoses, createdAt,
+                    labTestStatus, testDate, testTime, testNotes, testObservations } = labOrder || {}
+                  const { doctorPatients } = patient || {}
+                  const { doctor } = doctorPatients?.find((doctorPatient) => doctorPatient.currentProvider) || {}
 
-                return (
-                  <TableRow>
-                  <TableCell scope="row">{primaryProviderName}</TableCell>
-                  <TableCell scope="row">{loincNum}</TableCell>
-                  <TableCell scope="row">{diagnoses?.map((diagnose)=>{
-                    return <li>{`${diagnose?.code} | ${diagnose?.description}`}</li>
-                  })}</TableCell>
-                  <TableCell scope="row">{convertDateFromUnix(appointmentDate, 'MM-DD-YYYY hh:mm a')}</TableCell>
-                  <TableCell scope="row">{performed}</TableCell>
-                  <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm a')}</TableCell>
-                  <TableCell scope="row">{doctorsSignOff? YES : NO}</TableCell>
-                  <TableCell scope="row">{formatValue(labTestStatus ?? N_A) || N_A}</TableCell>
-                  <TableCell scope="row">{resultValue ?`${resultValue} ${resultUnit}`: N_A}</TableCell>
-                  <TableCell scope="row">
-                    <Box color={BLUE}> {attachmentName || N_A} </Box>
-                  </TableCell>
-                  <TableCell scope="row">{testNotes || '- -'}</TableCell>
-                </TableRow>
-                )
-              }))}
+                  const { firstName, lastName } = doctor ?? {}
+                  const { loincNum } = test ?? {}
+                  const { scheduleStartDateTime: appointmentDate } = appointment ?? {}
+                  const performed = getPerformedDate(testDate || '', testTime || '')
+
+                  const { doctorsSignOff, attachments, resultValue, resultUnit } = testObservations?.[0] ?? {}
+                  const { attachmentName } = attachments?.[0] ?? {}
+                  const primaryProviderName =
+                    `${firstName} ${lastName}` === 'undefined undefined' ? N_A : `${firstName} ${lastName}`
+
+                  return (
+                    <TableRow>
+                      <TableCell scope="row">{primaryProviderName}</TableCell>
+                      <TableCell scope="row">{loincNum}</TableCell>
+                      <TableCell scope="row">{diagnoses?.map((diagnose) => {
+                        return <li>{`${diagnose?.code} | ${diagnose?.description}`}</li>
+                      })}</TableCell>
+                      <TableCell scope="row">{convertDateFromUnix(appointmentDate, 'MM-DD-YYYY hh:mm a')}</TableCell>
+                      <TableCell scope="row">{performed}</TableCell>
+                      <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm a')}</TableCell>
+                      <TableCell scope="row">{doctorsSignOff ? YES : NO}</TableCell>
+                      <TableCell scope="row">{formatValue(labTestStatus ?? N_A) || N_A}</TableCell>
+                      <TableCell scope="row">{resultValue ? `${resultValue} ${resultUnit}` : N_A}</TableCell>
+                      <TableCell scope="row">
+                        <Box color={BLUE}> {attachmentName || N_A} </Box>
+                      </TableCell>
+                      <TableCell scope="row">{testNotes || '- -'}</TableCell>
+                    </TableRow>
+                  )
+                }))}
             </TableBody>
           </Table>
         </Box>
