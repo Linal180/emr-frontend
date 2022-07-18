@@ -120,8 +120,6 @@ const CoverageDetailsComponent = () => {
     }, {})
   }, [coverageSummary, coverageType, getDetailCoverageInfo])
 
-  console.log('coverageSummaryData', coverageSummaryData)
-
   const amountData = getDetailCoverageInfo(coverageSummary ? coverageSummary[coverageType] : [], 'benefitCoverageDescription')
 
   return (
