@@ -1,9 +1,9 @@
 // packages block
-import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
+import { forwardRef, useContext, useImperativeHandle, useState } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
-import { forwardRef, useContext, useImperativeHandle, useState } from "react";
+import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
@@ -23,7 +23,7 @@ import {
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles
+  setFiles: setAttachmentFiles, numberOfFiles
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -173,13 +173,19 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
           }
         } else {
           Alert.error(SOMETHING_WENT_WRONG);
+          setLoading(false);
+          handleModalClose();
 
           if (status === 401) {
             logoutUser()
           }
         }
-      }).then(data => { }).catch(error => { });
-    }) : Alert.error(PLEASE_SELECT_MEDIA)
+      }).then(data => { }).catch(error => {
+        setLoading(false);
+        handleModalClose();
+        Alert.error(SOMETHING_WENT_WRONG);
+      });
+    }): numberOfFiles ? numberOfFiles===0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
   const handleUpdateImage = () => setImageEdit(true)

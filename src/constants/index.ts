@@ -139,6 +139,7 @@ export const UPDATE_MEDIA = "Update media";
 export const EDIT_MEDIA = "Edit Media";
 export const ADVANCED_SEARCH = "Advanced Search";
 export const LABEL = "Label";
+export const REGEX_LABEL = "Regular Expression";
 export const FORMS = "Forms";
 export const ADD_FORM = "Add Form";
 export const EDIT_FORM = "Edit Form";
@@ -460,10 +461,10 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
-export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
+export const ACCEPTABLE_ONLY_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".svg"];
 export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf", ".mp3", ".svg"];
+export const ACCEPTABLE_PDF_AND_IMAGES_FILES = [".jpg", ".jpeg", ".png", ".pdf", ".docx", ".doc", ".svg"];
 export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
@@ -501,6 +502,7 @@ export const ROLES_PERMISSIONS_DESCRIPTION =
   "Add or update staff roles and their permissions";
 export const EMERGENCY_ACCESS_DESCRIPTION =
   "View and manage the users with emergency access";
+export const INSURANCE_CARD_ERROR_MESSAGE = "Please upload insurance card pictures"
 export const TEMPORARY_EMERGENCY_ACCESS =
   "Temporary Emergency Administrator Access";
 export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
@@ -720,6 +722,7 @@ export const TEST_TAKEN = "Test Taken";
 export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
+export const TIME_OF_CHECK = "Time of Check";
 export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
@@ -887,7 +890,25 @@ export const UPDATE_SERVICE = "Update Service";
 export const DELETE_PATIENT = "Delete Patient";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
-export const UPDATE_PROBLEM = "Update Problem";
+export const PATIENT_INFORMATION = "Patient Information";
+export const SUBSCRIBER_INFORMATION = "Subscriber Information";
+export const PLAN_DETAIL_INFORMATION = "Plan Detail Information";
+export const PROFESSIONAL_OFFICE_VISIT = "Professional Office Visit";
+export const HEALTH_PLAN_BENEFITS = "Health Plan Benefits";
+export const PRIMARY_CARE_PROVIDER_INFO = "Primary Care Provider Info";
+export const DETAILED_COVERAGE_INFORMATION = "Detailed Coverage Information";
+export const PROFESSIONAL_PHYSICIAN_DATA = "Professional (Physician) Visit - Office";
+export const REMAINING = "Remaining";
+export const MESSAGE = "Message";
+export const IN_NETWORK = "In Network";
+export const COVERAGE_SUMMARY = "Coverage Summary";
+export const URGENT = "Urgent Care";
+export const AUTH_CERT_REQUIRED = "Auth/Cert Required";
+export const TIME_PERIOD = "Time Period";
+export const URGENT_CARE = "Urgent Care";
+export const CHIROPRACTIC = "Chiropractic";
+export const SERVICE_TYPE = "Service Type";
+export const COVERAGE_LEVEL = "Coverage Level";
 export const EXCEPTION = "Forbidden exception";
 export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
@@ -897,6 +918,7 @@ export const SEARCH_PATIENT = "Search Patient";
 export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
+export const ALL_INSURANCES = "All Insurances";
 export const DOCTOR_SIGNOFF = "Doctor Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
@@ -938,6 +960,9 @@ export const REGISTERED_PATIENTS = "Registered Patients";
 export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const ADD_ANOTHER_REACTION = "Add Another Reaction";
+export const CHECK_ELIGIBILITY = "Check Eligibility";
+export const COVERAGE_DETAILS = "Coverage Details";
+export const ELIGIBILITY_LISTING = "Eligibility Listing";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const BILLING_AND_INSURANCE = "Billing & Insurance";
 export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
@@ -979,6 +1004,7 @@ export const ID_TEXT = "ID";
 export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
+export const TODAY = "Today";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
@@ -1033,6 +1059,7 @@ export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
+export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
@@ -1231,6 +1258,7 @@ export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
 export const POLICY_HOLDER_DETAILS = "Policy Holder Details";
 export const INSURANCE_AND_POLICIES = "Insurance & Policies";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
+export const LOADING_PLEASE_WAIT = "Loading, PLEASE WAIT...";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
 export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
@@ -1310,6 +1338,7 @@ export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement 
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
+export const ELIGIBILITY_ERROR_MESSAGE='Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
@@ -1370,10 +1399,12 @@ export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
+export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
+export const ELIGIBILITY_ROUTE = "/check-eligibility";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
@@ -1433,7 +1464,7 @@ export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
-export const TID_VALIDATION_MESSAGE = "Tax id valid format is xxxxxxxxx";
+export const TID_VALIDATION_MESSAGE = "Tax ID valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const INVALID_END_TIME = "End time should be greater than start time";
@@ -1450,7 +1481,7 @@ export const DELETE_USER_INFO = "This will delete all the information associated
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
 export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
@@ -1919,7 +1950,7 @@ export const TEMPORARY_CPT_CODES = [
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
-  { id: Maritialstatus.Maried, name: formatValue(MARRIED) },
+  { id: Maritialstatus.Married, name: formatValue(Maritialstatus.Married) },
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
@@ -2129,6 +2160,8 @@ export const SERVICES_BREAD = (facilityId: string) => {
 }
 
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
+export const ELIGIBILITY_BREAD = { text: ELIGIBILITY_LISTING, link: ELIGIBILITY_ROUTE, };
+export const COVERAGE_BREAD = { text: COVERAGE_DETAILS, link: COVERAGE_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
@@ -2713,6 +2746,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     link: "/",
     desc: TIME_ZONE_DESCRIPTION,
   },
+  {
+    name: AGREEMENTS,
+    link: AGREEMENTS_ROUTE,
+    desc: AGREEMENTS_DESCRIPTION,
+  }
 ];
 
 export const COL_TYPES: ColumnTypes = {
@@ -3005,6 +3043,7 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
+  regex: ''
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
@@ -3953,6 +3992,221 @@ export const AUDIT_LOG_TABLE_DUMMY_DATA = [
   },
 ]
 
+export const ELIGIBILITY_TABLE_DUMMY_DATA = [
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '17 Oct, 2020, 08:00 AM',
+    status: 'Pending',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '24 May, 2020, 9:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '17 Oct, 2020, 08:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '1 Feb, 2020, 11:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '22 Oct, 2020, 09:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '8 Sep, 2020, 08:30 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'ACTNA',
+    time: '21 Sep, 2020 , 11:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '24 May, 2020 12:00 PM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'UNITED HEALTH CARE',
+    time: '21 Sep, 2020 , 11:00 AM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+  {
+    insurance: 'ACTNA',
+    time: '21 Sep, 2020, 04:00 PM',
+    status: 'Accepted',
+    action: 'Coverage Details',
+  },
+]
+
+export const PATIENT_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Relationship',
+    value: 'Self',
+  },
+  {
+    name: 'First Name',
+    value: 'Ariana',
+  },
+  {
+    name: 'Middle Name',
+    value: '-',
+  },
+  {
+    name: 'Last Name',
+    value: 'Cornwell',
+  },
+  {
+    name: 'SSN',
+    value: '-',
+  },
+  {
+    name: 'DOB',
+    value: '01/28/1978',
+  },
+  {
+    name: 'Sex',
+    value: 'F',
+  },
+  {
+    name: 'Street',
+    value: '7704 Suraci CT Apt 303',
+  },
+  {
+    name: 'City/State/Zip',
+    value: 'Annandale. VA 220023',
+  },
+]
+
+export const SUBSCRIBER_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'First Name',
+    value: 'Ariana',
+  },
+  {
+    name: 'Middle Name',
+    value: '-',
+  },
+  {
+    name: 'Last Name',
+    value: 'Cornwell',
+  },
+  {
+    name: 'Member ID',
+    value: '117185225',
+  },
+  {
+    name: 'SSN',
+    value: '-',
+  },
+  {
+    name: 'DOB',
+    value: '01/28/1978',
+  },
+  {
+    name: 'Sex',
+    value: 'F',
+  },
+  {
+    name: 'Street',
+    value: '7704 Suraci CT Apt 303',
+  },
+  {
+    name: 'City/State/Zip',
+    value: 'Annandale. VA 220023',
+  },
+]
+
+export const PLAN_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Payer Name',
+    value: 'United Health Care',
+  },
+  {
+    name: 'Plan Name',
+    value: 'VA Medicaid Expension Adults',
+  },
+  {
+    name: 'Plan Number',
+    value: 'AX63762',
+  },
+  {
+    name: 'Plan Begin Date',
+    value: '01/01/2022',
+  },
+  {
+    name: 'Plan End Date',
+    value: '12/31/2022',
+  },
+  {
+    name: 'Group Name',
+    value: 'Premium Plus',
+  },
+  {
+    name: 'Group Number',
+    value: 'VAMDN',
+  },
+]
+
+export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
+  {
+    name: 'Provider Name',
+    value: 'Dr. Mitchell Thomson',
+  },
+  {
+    name: 'Provider Phone',
+    value: '+1765345267542',
+  },
+]
+
+export const COVERAGE_SUMMARY_DUMMY_DATA = [
+  {
+    name: 'Copay',
+    urgentCare: '$25.00',
+    professionalOfficeVisit: '$15.00',
+    healthPlanBenefits: '-',
+  },
+  {
+    name: 'Deductible Remaining',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '-',
+  },
+  {
+    name: 'Individual',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '$564.17',
+  },
+  {
+    name: 'Family',
+    urgentCare: '-',
+    professionalOfficeVisit: '-',
+    healthPlanBenefits: '$1288.12',
+  },
+  {
+    name: 'Coinsurance',
+    urgentCare: '0%',
+    professionalOfficeVisit: '0%',
+    healthPlanBenefits: '-',
+  },
+]
 
 export const MODULE_LOGS_TYPES = [
   "Agreement",

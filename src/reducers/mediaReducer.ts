@@ -1,4 +1,4 @@
-import { Attachment, AttachmentPayload, AttachmentsPayload, CreateAttachmentInput } from "../generated/graphql";
+import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSignedUrlPayload, CreateAttachmentInput } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -13,7 +13,6 @@ export interface State {
   activeStep: number
   openDelete: boolean
   providerName: string
-  documentTab: boolean
   isSignedTab: boolean
   preSignedUrl: string
   attachmentId: string
@@ -32,7 +31,8 @@ export interface State {
   drivingLicense2: Attachment | undefined
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
-  mediaData: Pick<CreateAttachmentInput, "title"> | undefined
+  mediaData: Pick<CreateAttachmentInput, "title"> | undefined;
+  policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
 }
 
 export const initialState: State = {
@@ -54,7 +54,6 @@ export const initialState: State = {
   openDelete: false,
   attachmentUrl: '',
   isSignedTab: false,
-  documentTab: false,
   attachmentsData: [],
   mediaData: undefined,
   attachmentData: null,
@@ -67,6 +66,7 @@ export const initialState: State = {
   drivingLicense1: undefined,
   drivingLicense2: undefined,
   insuranceId: { id: "", name: "" },
+  policyAttachments: [],
 }
 
 export enum ActionType {
@@ -82,7 +82,6 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_ATTACHMENTS = 'setAttachments',
-  SET_DOCUMENT_TAB = 'setDocumentTab',
   SET_INSURANCE_ID = 'setInsuranceId',
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_ATTACHMENT_ID = 'setAttachmentId',
@@ -100,6 +99,7 @@ export enum ActionType {
   SET_SIGNED_BY_PROVIDER = 'setSignedByProvider',
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
+  SET_POLICY_ATTACHMENTS = 'setPolicyAttachments'
 }
 
 export type Action =
@@ -113,7 +113,6 @@ export type Action =
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
-  | { type: ActionType.SET_DOCUMENT_TAB, documentTab: boolean }
   | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
@@ -133,6 +132,7 @@ export type Action =
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
+  | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
 
 export const mediaReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -170,12 +170,6 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         preSignedUrl: action.preSignedUrl
-      }
-
-    case ActionType.SET_DOCUMENT_TAB:
-      return {
-        ...state,
-        documentTab: action.documentTab
       }
 
     case ActionType.SET_SIGNED_BY_PROVIDER:
@@ -314,6 +308,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isFormLoaded: action.isFormLoaded
+      }
+
+    case ActionType.SET_POLICY_ATTACHMENTS:
+      return {
+        ...state,
+        policyAttachments: action.policyAttachments
       }
   }
 }

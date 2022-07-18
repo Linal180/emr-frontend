@@ -1,5 +1,7 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -22,16 +24,16 @@ import FacilitySelector from "./Selector/FacilitySelector";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
+import { SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
-import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from "../../reducers/appointmentReducer";
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
-  getStandardTimeDuration, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUserAdmin, renderTh,
-  setRecord
+  getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
+  isUserAdmin, renderTh, setRecord, sortingArray
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -42,12 +44,12 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY
 } from "../../constants";
 
 dotenv.config()
 
-const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
+const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
   const [selectDate, setSelectDate] = useState(new Date().toDateString())
   const { user, currentUser, userPermissions } = useContext(AuthContext)
@@ -125,37 +127,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  // const [getAppointments, {
-  //   loading: getAppointmentsLoading, error: doctorAppointmentError
-  // }] = useGetAppointmentsLazyQuery({
-  //   fetchPolicy: "network-only",
-  //   nextFetchPolicy: 'no-cache',
-  //   notifyOnNetworkStatusChange: true,
-
-  //   onError() {
-  //     dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-  //   },
-
-  //   onCompleted(data) {
-  //     const { getAppointments } = data || {};
-
-  //     if (getAppointments) {
-  //       const { appointments, pagination } = getAppointments
-
-  //       if (pagination) {
-  //         const { totalPages } = pagination
-
-  //         totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-  //       }
-
-  //       dispatch({
-  //         type: ActionType.SET_APPOINTMENTS,
-  //         appointments: appointments as AppointmentsPayload['appointments']
-  //       });
-  //     }
-  //   }
-  // });
-
   const [updateAppointment] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
 
@@ -216,7 +187,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         variables: {
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery,
-            appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+            appointmentTypeId: appointmentTypeId,
             appointmentDate: moment(selectDate).format('YYYY-MM-DD')
           }
         },
@@ -224,7 +195,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     } catch (error) { }
   }, [
     isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
-    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
+    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, selectDate
   ])
 
   useEffect(() => {
@@ -346,19 +317,25 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
-  const renderIcon = () => <IconButton className={`py-0 ml-5 ${sortBy === ASC ? 'rotate-180' : ''}`}
+  const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === ASC ? 'to-180' : ''}`}
     onClick={() => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
         : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-    }}>
+
+      dispatch({
+        type: ActionType.SET_APPOINTMENTS,
+        appointments: sortingArray<typeof appointments>(appointments, 'date', sortBy)
+      })
+    }}
+  >
 
     <Sort />
   </IconButton>;
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
+      <Box>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
@@ -388,7 +365,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
-                    <Typography variant="body1" color="textPrimary">Date</Typography>
+                    <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
                     <Box className="date-box" display="flex" alignItems="center">
                       <Button
@@ -417,7 +394,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                       <Box ml={1} />
 
-                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>Today</Button>
+                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>{TODAY}</Button>
                     </Box>
                   </Box>
                 </Grid>
@@ -426,190 +403,192 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           </Grid>
         </Grid>
 
-        <Box className="table-overflow appointment-view-list">
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}
-                {renderTh(PATIENT)}
-                {renderTh(TYPE)}
-                {renderTh(DATE)}
-                {renderTh(FACILITY)}
-                {renderTh(ARRIVAL_STATUS)}
-                {renderTh(STAGE)}
-                {renderTh(ACTION, "center")}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {(loading) ? (
+        <Box className={classes.mainTableContainer}>
+          <Box className="table-overflow appointment-view-list">
+            <Table aria-label="customized table">
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
-                  </TableCell>
+                  {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}
+                  {renderTh(PATIENT)}
+                  {renderTh(TYPE)}
+                  {renderTh(DATE)}
+                  {renderTh(FACILITY)}
+                  {renderTh(ARRIVAL_STATUS)}
+                  {renderTh(STAGE)}
+                  {renderTh(ACTION, "center")}
                 </TableRow>
-              ) : (
-                appointments?.map((appointment: AppointmentPayload['appointment']) => {
-                  const {
-                    id, scheduleStartDateTime, facility, patient, appointmentType, status,
-                    scheduleEndDateTime, checkInActiveStep, appointmentCreateType
-                  } = appointment || {};
+              </TableHead>
 
-                  const { name } = facility || {};
-                  const { id: patientId, firstName, lastName } = patient || {};
-                  const { name: type } = appointmentType || {};
+              <TableBody>
+                {(loading) ? (
+                  <TableRow>
+                    <TableCell colSpan={10}>
+                      <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={8} />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  appointments?.map((appointment: AppointmentPayload['appointment']) => {
+                    const {
+                      id, scheduleStartDateTime, facility, patient, appointmentType, status,
+                      scheduleEndDateTime, checkInActiveStep, appointmentCreateType
+                    } = appointment || {};
 
-                  const { text, textColor, bgColor } = appointmentStatus(status || '')
-                  const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0),
-                    status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
+                    const { name } = facility || {};
+                    const { id: patientId, firstName, lastName } = patient || {};
+                    const { name: type } = appointmentType || {};
 
-                  return (
-                    <TableRow key={id}>
-                      <TableCell scope="row">
-                        <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
-                          className="custom-cell"
-                        >
-                          <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
-                          <Box px={0.5} />
+                    const { text, textColor, bgColor } = appointmentStatus(status || '')
+                    const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0),
+                      status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
 
-                          <Typography variant="body2">
-                            ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
-                          </Typography>
-                        </Box>
-                      </TableCell>
-
-                      <TableCell scope="row">{firstName} {lastName}</TableCell>
-                      <TableCell scope="row">{type}</TableCell>
-                      <TableCell scope="row">
-                        <Box display='flex' flexDirection='column'>
-                          {getDateWithDay(scheduleStartDateTime || '')}
-
-                          {status === AppointmentStatus.Arrived &&
-                            <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
-                              {VIEW_ENCOUNTER}
-                            </Link>}
-                        </Box>
-                      </TableCell>
-
-                      <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">
-                        {id && <>
-                          {isEdit && appointmentId === id ?
-                            <FormProvider {...methods}>
-                              <Selector
-                                label=""
-                                focus
-                                value={{ id, name: text }}
-                                name="status"
-                                options={AppointmentStatusStateMachine(
-                                  status || AppointmentStatus.Scheduled, id, appointmentCreateType
-                                )}
-                                onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
-                                onOutsideClick={clearEdit}
-                                isEdit={isEdit}
-                              />
-                            </FormProvider>
-                            : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
-                              handleStatusUpdate(id, text)}
-                              className={`${classes.status} pointer-cursor`}
-                              component='span' color={textColor}
-                              display="flex"
-                              flexDirection="column"
-                            >
-                              {text}
-                            </Box>}
-                        </>}
-                      </TableCell>
-
-                      <TableCell scope="row">
-                        {id && <Box className={classes.selectorBox}>
-                          <Box p={0} className={classes.status} component='span' color={textColor}
-                            display="flex" flexDirection="column"
+                    return (
+                      <TableRow key={id}>
+                        <TableCell scope="row">
+                          <Box display="flex" borderLeft={`4px solid ${textColor}`} bgcolor={bgColor}
+                            className="custom-cell"
                           >
-                            <Box display="flex" color={stageColor}>
-                              {stage}
-                            </Box>
+                            <Typography variant="h5">{getStandardTime(scheduleStartDateTime || '')}</Typography>
+                            <Box px={0.5} />
+
+                            <Typography variant="body2">
+                              ({getStandardTimeDuration(scheduleStartDateTime || '', scheduleEndDateTime || '')} {MINUTES})
+                            </Typography>
                           </Box>
-                        </Box>}
-                      </TableCell>
+                        </TableCell>
 
-                      <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {(appointmentCreateType === AppointmentCreateType.Telehealth &&
-                            status !== AppointmentStatus.Cancelled) ?
-                            <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
-                              <VideoIcon />
-                            </Box> :
-                            (status && !(status === AppointmentStatus.Cancelled)) &&
-                            <Box className={classes.iconsBackground}
-                              onClick={() => canUpdateAppointmentStatus(status) ?
-                                id && patientId && handleCheckIn(id, patientId)
-                                : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
-                              }>
-                              <CheckInTickIcon />
-                            </Box>
-                          }
+                        <TableCell scope="row">{firstName} {lastName}</TableCell>
+                        <TableCell scope="row">{type}</TableCell>
+                        <TableCell scope="row">
+                          <Box display='flex' flexDirection='column'>
+                            {getDateWithDay(scheduleStartDateTime || '')}
 
-                          {status === AppointmentStatus.Cancelled &&
-                            appointmentCreateType === AppointmentCreateType.Telehealth &&
-                            <Box className={classes.iconsBackgroundDisabled}>
-                              <IconButton onMouseEnter={() => {
-                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                              }}>
-                                <VideoIcon />
-                              </IconButton>
-                            </Box>
-                          }
-
-                          {status === AppointmentStatus.Cancelled &&
-                            appointmentCreateType === AppointmentCreateType.Appointment &&
-                            <Box className={classes.iconsBackgroundDisabled}>
-                              <IconButton onMouseEnter={() => {
-                                Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                              }}>
-                                <CheckInTickIcon />
-                              </IconButton>
-                            </Box>}
-
-                          <Box className={classes.iconsBackground}>
-                            <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                              <EditNewIcon />
-                            </Button>
+                            {hasEncounter(status as AppointmentStatus) &&
+                              <Link to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}>
+                                {VIEW_ENCOUNTER}
+                              </Link>}
                           </Box>
+                        </TableCell>
 
-                          <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
-                            <Button disableElevation onClick={() => scheduleStartDateTime && id
-                              && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
+                        <TableCell scope="row">{name}</TableCell>
+                        <TableCell scope="row">
+                          {id && <>
+                            {isEdit && appointmentId === id ?
+                              <FormProvider {...methods}>
+                                <Selector
+                                  label=""
+                                  focus
+                                  value={{ id, name: text }}
+                                  name="status"
+                                  options={AppointmentStatusStateMachine(
+                                    status || AppointmentStatus.Scheduled, id, appointmentCreateType
+                                  )}
+                                  onSelect={(({ name }: SelectorOption) => onSubmit({ id, name }))}
+                                  onOutsideClick={clearEdit}
+                                  isEdit={isEdit}
+                                />
+                              </FormProvider>
+                              : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
+                                handleStatusUpdate(id, text)}
+                                className={`${classes.status} pointer-cursor`}
+                                component='span' color={textColor}
+                                display="flex"
+                                flexDirection="column"
+                              >
+                                {text}
+                              </Box>}
+                          </>}
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          {id && <Box className={classes.selectorBox}>
+                            <Box p={0} className={classes.status} component='span' color={textColor}
+                              display="flex" flexDirection="column"
                             >
-                              <TrashNewIcon />
-                            </Button>
+                              <Box display="flex" color={stageColor}>
+                                {stage}
+                              </Box>
+                            </Box>
+                          </Box>}
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                            {(appointmentCreateType === AppointmentCreateType.Telehealth &&
+                              status !== AppointmentStatus.Cancelled) ?
+                              <Box className={classes.iconsBackground} onClick={() => window.open(TELEHEALTH_URL)}>
+                                <VideoIcon />
+                              </Box> :
+                              (status && !(status === AppointmentStatus.Cancelled)) &&
+                              <Box className={classes.iconsBackground}
+                                onClick={() => canUpdateAppointmentStatus(status) ?
+                                  id && patientId && handleCheckIn(id, patientId)
+                                  : history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)
+                                }>
+                                <CheckInTickIcon />
+                              </Box>
+                            }
+
+                            {status === AppointmentStatus.Cancelled &&
+                              appointmentCreateType === AppointmentCreateType.Telehealth &&
+                              <Box className={classes.iconsBackgroundDisabled}>
+                                <IconButton onMouseEnter={() => {
+                                  Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                                }}>
+                                  <VideoIcon />
+                                </IconButton>
+                              </Box>
+                            }
+
+                            {status === AppointmentStatus.Cancelled &&
+                              appointmentCreateType === AppointmentCreateType.Appointment &&
+                              <Box className={classes.iconsBackgroundDisabled}>
+                                <IconButton onMouseEnter={() => {
+                                  Alert.info(APPOINTMENT_CANCELLED_TEXT)
+                                }}>
+                                  <CheckInTickIcon />
+                                </IconButton>
+                              </Box>}
+
+                            <Box className={classes.iconsBackground}>
+                              <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
+                                <EditNewIcon />
+                              </Button>
+                            </Box>
+
+                            <Box className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}>
+                              <Button disableElevation onClick={() => scheduleStartDateTime && id
+                                && deleteAppointmentHandler(scheduleStartDateTime, id)} disabled={!canDelete}
+                              >
+                                <TrashNewIcon />
+                              </Button>
+                            </Box>
                           </Box>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              )}
-            </TableBody>
-          </Table>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
+                )}
+              </TableBody>
+            </Table>
 
-          {((!loading && appointments?.length === 0)
-            || error) &&
-            <Box display="flex" justifyContent="center" pb={12} pt={5}>
-              <NoDataFoundComponent />
-            </Box>
-          }
+            {((!loading && appointments?.length === 0)
+              || error) &&
+              <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                <NoDataFoundComponent />
+              </Box>
+            }
 
-          <ConfirmationModal
-            title={APPOINTMENT}
-            isOpen={openDelete}
-            isLoading={deleteAppointmentLoading}
-            description={DELETE_APPOINTMENT_DESCRIPTION}
-            handleDelete={handleCancelAppointment}
-            setOpen={(open: boolean) => dispatch({
-              type: ActionType.SET_OPEN_DELETE, openDelete: open
-            })}
-          />
+            <ConfirmationModal
+              title={APPOINTMENT}
+              isOpen={openDelete}
+              isLoading={deleteAppointmentLoading}
+              description={DELETE_APPOINTMENT_DESCRIPTION}
+              handleDelete={handleCancelAppointment}
+              setOpen={(open: boolean) => dispatch({
+                type: ActionType.SET_OPEN_DELETE, openDelete: open
+              })}
+            />
+          </Box>
         </Box>
       </Box>
 

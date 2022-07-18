@@ -5,13 +5,15 @@ import { Redirect, useLocation } from "react-router";
 import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
-import BackdropLoader from "./Backdrop";
+import Loader from "./Loader";
 // interfaces/types and main layout styles block
 import history from "../../history";
 import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
-import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE } from "../../constants";
+import {
+  EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE
+} from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)
@@ -51,7 +53,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
       {!getToken() && <Redirect to={{ pathname: LOGIN_ROUTE }} />}
 
       {isLoggedIn &&
-        ((!user || !userPermissions.length) ? <BackdropLoader loading={true} /> : <AppLayout />)
+        ((!user || !userPermissions.length) ? <Loader loading={true} /> : <AppLayout />)
       }
     </>
   )

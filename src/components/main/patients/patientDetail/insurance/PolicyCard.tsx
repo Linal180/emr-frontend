@@ -19,12 +19,16 @@ import { GREY_SIXTEEN } from "../../../../../theme";
 import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
-import { mediaReducer, Action, initialState, State, ActionType } from "../../../../../reducers/mediaReducer";
+import {
+  Action, ActionType, insuranceReducer, initialState, State
+} from "../../../../../reducers/insuranceReducer";
 import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
-import { FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps } from "../../../../../interfacesTypes";
+import {
+  FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps
+} from "../../../../../interfacesTypes";
 import {
   ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
-  INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
+  INITIAL_COPAY_VALUE, INSURANCE_CARD_ERROR_MESSAGE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
   CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
@@ -51,9 +55,11 @@ const PolicyCard: FC<PolicyCardProps> = ({
 }) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
+
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
+  const { policyId, activeStep, isFormLoaded, policyHolderId, insuranceId, numberOfFiles } = state
+
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
-  const { files, activeStep, isFormLoaded, insuranceId, policyHolderId, policyId } = state
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
@@ -79,7 +85,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         const { status } = response
 
         if (status && status === 200) {
-          dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
+          dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           policyAttachmentRef.current?.submit()
           handleReload && handleReload()
         }
@@ -102,7 +108,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         if (status && status === 200) {
           policyAttachmentRef.current?.submit()
-          dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
+          dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           handleReload && handleReload()
         }
       }
@@ -149,7 +155,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         if (insurance) {
           const insuranceInfo = { id: insurance.id, name: `${insurance.payerId} | ${insurance.payerName}` }
-          dispatch && dispatch({ type: ActionType.SET_INSURANCE_ID, insuranceId: insuranceInfo })
+          dispatch({ type: ActionType.SET_INSURANCE_ID, insuranceId: insuranceInfo })
           setValue('insuranceId', insuranceInfo)
         }
 
@@ -177,10 +183,10 @@ const PolicyCard: FC<PolicyCardProps> = ({
         certificationNumber && setValue('policyHolderId', certificationNumber)
         pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
 
-        dispatch && dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy.id ?? '' })
-        dispatch && dispatch({ type: ActionType.SET_POLICY_HOLDER_ID, policyHolderId: policyHolderIdToUpdate ?? '' })
+        dispatch({ type: ActionType.SET_POLICY_ID, policyId: id || '' })
+        dispatch({ type: ActionType.SET_POLICY_HOLDER_ID, policyHolderId: policyHolderIdToUpdate || '' })
         trigger()
-        dispatch && dispatch({ type: ActionType.SET_IS_FORM_LOADED, isFormLoaded: false })
+        dispatch({ type: ActionType.SET_IS_FORM_LOADED, isFormLoaded: false })
       }
     }
   });
@@ -217,92 +223,97 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const handleStep = async (step: number) => {
     const shouldProceed = await handleStepsValidation(step)
-    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step });
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
   };
 
   const handleBack = async () => {
     const shouldProceed = await handleStepsValidation(activeStep - 1)
-    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 });
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
   };
 
   const handleForward = async () => {
     const shouldProceed = await handleStepsValidation(activeStep + 1)
-    shouldProceed && dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 });
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
   };
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
-    const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
-      dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
-      notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
-      pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode
-    } = values ?? {}
+    if (numberOfFiles) {
+      const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
+        dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
+        notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
+        pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode
+      } = values ?? {}
 
-    const transformedCopays = copayFields?.map((copayField) => {
-      return {
-        amount: copayField.amount,
-        id: copayField.copayId ?? '',
-        ...(copayField.copayType?.id && { type: copayField.copayType?.id as CopayType })
+      const transformedCopays = copayFields?.map((copayField) => {
+        return {
+          amount: copayField.amount,
+          id: copayField.copayId ?? '',
+          ...(copayField.copayType?.id && { type: copayField.copayType?.id as CopayType })
+        }
+      }) ?? []
+
+      const policyHolderInfo = {
+        address, addressCTD, city, dob, employer, firstName, suffix, zipCode,
+        middleName, lastName, certificationNumber: inputPolicyHolderId, ssn, state: state?.id ?? '',
+        ...(sex?.id && { sex: sex?.id as Policy_Holder_Gender_Identity })
       }
-    }) ?? []
 
-    const policyHolderInfo = {
-      address, addressCTD, city, dob, employer, firstName, suffix, zipCode,
-      middleName, lastName, certificationNumber: inputPolicyHolderId, ssn, state: state?.id ?? '',
-      ...(sex?.id && { sex: sex?.id as Policy_Holder_Gender_Identity })
-    }
+      const { id: selectedInsurance } = insuranceId || {}
+      const { id: selectedReferringProvider } = referringProvider || {}
+      const { id: selectedPrimaryCareProvider } = primaryCareProvider || {}
 
-    const { id: selectedInsurance } = insuranceId || {}
-    const { id: selectedReferringProvider } = referringProvider || {}
-    const { id: selectedPrimaryCareProvider } = primaryCareProvider || {}
-
-    if (isEdit) {
-      policyId && await updatePolicy({
-        variables: {
-          updatePolicyInput: {
-            id: policyId, coinsurancePercentage: coInsurancePercentage,
-            expirationDate, insuranceId: selectedInsurance || '', issueDate,
-            memberId: certificationNumber, groupNumber: policyNumber, notes,
-            patientId: patientId,
-            referringProviderId: selectedReferringProvider || '',
-            primaryCareProviderId: selectedPrimaryCareProvider || '',
-            policyHolderInfo: { ...policyHolderInfo, id: policyHolderId },
-            ...(transformedCopays.length && { copays: transformedCopays }),
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
-            ...(patientRelationship?.id && {
-              policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
-            }),
-            ...(pricingProductType?.id && {
-              pricingProductType: pricingProductType?.id as PricingProductType
-            }),
+      if (isEdit) {
+        policyId && await updatePolicy({
+          variables: {
+            updatePolicyInput: {
+              id: policyId, coinsurancePercentage: coInsurancePercentage,
+              expirationDate, insuranceId: selectedInsurance || '', issueDate,
+              memberId: certificationNumber, groupNumber: policyNumber, notes,
+              patientId: patientId,
+              referringProviderId: selectedReferringProvider || '',
+              primaryCareProviderId: selectedPrimaryCareProvider || '',
+              policyHolderInfo: { ...policyHolderInfo, id: policyHolderId },
+              ...(transformedCopays.length && { copays: transformedCopays }),
+              ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+              ...(patientRelationship?.id && {
+                policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+              }),
+              ...(pricingProductType?.id && {
+                pricingProductType: pricingProductType?.id as PricingProductType
+              }),
+            }
           }
-        }
-      })
+        })
 
-      setPolicyToEdit && setPolicyToEdit('')
+        setPolicyToEdit && setPolicyToEdit('')
+      } else {
+        createPolicy({
+          variables: {
+            createPolicyInput: {
+              coinsurancePercentage: coInsurancePercentage, patientId: patientId,
+              expirationDate, insuranceId: selectedInsurance || '', issueDate,
+              memberId: certificationNumber, groupNumber: policyNumber, notes,
+              policyHolderInfo, referringProviderId: selectedReferringProvider || '',
+              primaryCareProviderId: selectedPrimaryCareProvider || '',
+              ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+              ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
+              ...(patientRelationship?.id && {
+                policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+              }),
+              ...(transformedCopays.length && {
+                copays: transformedCopays.map((copayValues) => {
+                  const { id: copayId, ...copayValue } = copayValues
+                  return copayValue
+                })
+              }),
+            }
+          }
+        })
+      }
     } else {
-      createPolicy({
-        variables: {
-          createPolicyInput: {
-            coinsurancePercentage: coInsurancePercentage, patientId: patientId,
-            expirationDate, insuranceId: selectedInsurance || '', issueDate,
-            memberId: certificationNumber, groupNumber: policyNumber, notes,
-            policyHolderInfo, referringProviderId: selectedReferringProvider || '',
-            primaryCareProviderId: selectedPrimaryCareProvider || '',
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
-            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
-            ...(patientRelationship?.id && {
-              policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
-            }),
-            ...(transformedCopays.length && {
-              copays: transformedCopays.map((copayValues) => {
-                const { id: copayId, ...copayValue } = copayValues
-                return copayValue
-              })
-            }),
-          }
-        }
-      })
+      Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
     }
+
   }
 
   const getStepContent = (step: number) => {
@@ -341,7 +352,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         return <PolicyHolderDetails isEdit={isEdit} />
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} state={state} />
+          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} numberOfFiles={numberOfFiles} />
         </Box>
       default:
         return 'Unknown step';
@@ -370,7 +381,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 type={'button'}
                 onClick={isLastStep ? handleSubmit(onSubmit) : handleForward}
                 variant="contained" color="primary"
-                disabled={isLastStep ? files?.length === 0 || createPolicyLoading || updatePolicyLoading : false} >
+                disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
             </Box>

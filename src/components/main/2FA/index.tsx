@@ -94,6 +94,7 @@ const TwoFAComponent = (): JSX.Element => {
         <Box p={2} mb={2}>
           {!(phone || doctorPhone || staffPhone) &&
             <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between'
+              className={classes.factorAuthHeader}
               px={2} py={1} mb={1} borderRadius={5}
             >
               <Box display="flex" alignItems='center'>
