@@ -26,7 +26,7 @@ import {
 } from "../../../../../generated/graphql";
 import {
   ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
-  INACTIVE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
+  EIGHT_PAGE_LIMIT, INACTIVE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
   STATUS
 } from "../../../../../constants";
 
@@ -82,7 +82,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientAllergies({
         variables: {
-          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: LIST_PAGE_LIMIT } }
+          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         },
       })
     } catch (error) { }
