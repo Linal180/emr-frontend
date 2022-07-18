@@ -150,13 +150,11 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                {
-                  !shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
-                    <AddWhiteIcon />
-                    <Box p={0.5} />
-                    {ADD_NEW_TEXT}
-                  </Button>
-                }
+                {!shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                  <AddWhiteIcon />
+                  <Box p={0.5} />
+                  {ADD_NEW_TEXT}
+                </Button>}
               </Box>
 
               <Box className={classes.tableBox}>
