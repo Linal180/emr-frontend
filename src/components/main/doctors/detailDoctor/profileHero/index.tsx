@@ -7,8 +7,6 @@ import MediaCards from "../../../../common/AddMedia/MediaCards";
 import TextLoader from "../../../../common/TextLoader";
 // interfaces, reducers, constants and styles block
 import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
 import { ATTACHMENT_TITLES, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
 import {
@@ -24,8 +22,6 @@ import { formatPhone, getFormattedDate, getTimestamps } from "../../../../../uti
 
 const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmentsData }) => {
   const classes = useProfileDetailsStyles();
-  const theme = useTheme();
-  const mobileDevices = useMediaQuery(theme.breakpoints.down('xs'));
   const { id } = useParams<ParamsType>();
   const [open, setOpen] = useState<boolean>(false)
   const [{ doctor }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
@@ -194,8 +190,8 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
           <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }, { column: 1, size: 3 }]} />
           :
           <Box flex={1}>
-            <Box display="flex" flexDirection={`${mobileDevices ? 'column' : 'row'}`}>
-              <Box flex={1} flexWrap="wrap" >
+            <Box display="flex" flexWrap="wrap">
+              <Box flex={1} flexWrap="wrap">
                 <Box display="flex" alignItems="center" >
                   <Box className={classes.userName} mr={1}>
                     {`${firstName} ${lastName}`}
@@ -204,7 +200,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap={`${ mobileDevices ? 'nowrap' :'wrap'}`} 
+                    <Box display="flex"
                       key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                       <Box>{item.icon}</Box>
                       <Typography variant="body1" >{item.description}</Typography>

@@ -82,7 +82,8 @@ import PublicRoute from "./PublicRoute";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE, AUTO_LOGOUT_ROUTE,
   CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE, CHECK_IN_ROUTE, CLAIMS_ROUTE,
-  CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE, DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
+  COVERAGE_ROUTE,
+  CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE, DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ELIGIBILITY_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
   FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FORGET_PASSWORD_ROUTE, FORM_BUILDER_COPY_TEMPLATE_ROUTE,
   FORM_BUILDER_EDIT_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE, LOCK_ROUTE,
   LOGIN_ROUTE, MAINTENANCE_ROUTE, PATIENTS_ROUTE, PATIENT_APPOINTMENT_CANCEL, PATIENT_APPOINTMENT_FAIL,
@@ -93,6 +94,8 @@ import {
 } from "../constants";
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
+import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
+import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
 import AuditLogComponent from "../components/main/auditLog";
 
 const Routes: FC = (): JSX.Element => {
@@ -188,6 +191,8 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/:templateId`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_RESPONSES}/:id`} component={FormBuilderResponses} />
+      <PrivateRoute exact path={`${ELIGIBILITY_ROUTE}/:id`} component={EligibilityTable} />
+      <PrivateRoute exact path={`${COVERAGE_ROUTE}/:id/:patientId`} component={CoverageDetails} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 

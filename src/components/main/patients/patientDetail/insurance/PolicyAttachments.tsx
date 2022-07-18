@@ -11,18 +11,18 @@ import ConfirmationModal from "../../../../common/ConfirmationModal";
 import { mediaType } from "../../../../../utils";
 import { TrashOutlinedIcon } from "../../../../../assets/svgs";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
+import { ActionType } from "../../../../../reducers/insuranceReducer";
 import {
   ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
-  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, PLEASE_SELECT_MEDIA, TAKE_A_PICTURE_OF_INSURANCE,
+  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
 import {
   AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery,
   useGetAttachmentsByPolicyIdLazyQuery, useRemoveAttachmentMediaMutation
 } from "../../../../../generated/graphql";
-import { ActionType } from "../../../../../reducers/mediaReducer";
 
-const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, state, isEdit }, ref) => {
+const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, numberOfFiles }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
   const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
   const dropZoneRef = useRef<FormForwardRef>(null);
@@ -31,7 +31,6 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
   const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const [attachments, setAttachments] =
     useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
-  const { files, policyAttachments } = state || {}
   const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -76,11 +75,11 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
         if (getAttachmentsByPolicyId) {
           const { attachmentsWithPreSignedUrl } = getAttachmentsByPolicyId
 
+          attachmentsWithPreSignedUrl && dispatch({ type: ActionType.SET_NUMBER_OF_FILES, numberOfFiles: attachmentsWithPreSignedUrl?.length })
           attachmentsWithPreSignedUrl &&
             setAttachments(
               attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
             )
-          dispatch && dispatch({ type: ActionType.SET_POLICY_ATTACHMENTS, policyAttachments: attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] })
         }
       }
     },
@@ -172,16 +171,11 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
               reload={() => { }}
               handleClose={() => { }}
               setAttachments={() => { }}
+              setFiles={(files: File[]) => numberOfFiles ? dispatch({ type: ActionType.SET_NUMBER_OF_FILES, numberOfFiles: numberOfFiles })
+                : dispatch({ type: ActionType.SET_NUMBER_OF_FILES, numberOfFiles: files.length })}
+              numberOfFiles={numberOfFiles}
               acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
-              setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
             />
-
-            {isEdit ? (!!!policyAttachments?.length && !!!files?.length)
-              && <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
-              : !!!files?.length &&
-              <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
-            }
-
             <ConfirmationModal
               title={INSURANCE_CARD}
               isOpen={openDelete}

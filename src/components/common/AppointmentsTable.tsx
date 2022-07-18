@@ -33,7 +33,7 @@ import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
   getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  isUserAdmin, renderTh, setRecord
+  isUserAdmin, renderTh, setRecord, sortingArray
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -187,7 +187,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
         variables: {
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery,
-            appointmentTypeId: appointmentTypeId, sortBy: sortBy,
+            appointmentTypeId: appointmentTypeId,
             appointmentDate: moment(selectDate, 'MM-DD-YYYY').format('YYYY-MM-DD')
           }
         },
@@ -195,7 +195,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
     } catch (error) { }
   }, [
     isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
-    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, sortBy, selectDate
+    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, selectDate
   ])
 
   useEffect(() => {
@@ -318,7 +318,13 @@ const AppointmentsTable: FC = (): JSX.Element => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
         : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-    }}>
+
+      dispatch({
+        type: ActionType.SET_APPOINTMENTS,
+        appointments: sortingArray<typeof appointments>(appointments, 'date', sortBy)
+      })
+    }}
+  >
 
     <Sort />
   </IconButton>;
