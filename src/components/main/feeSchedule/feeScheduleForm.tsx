@@ -1,26 +1,80 @@
 // packages block
+import { useContext, useMemo } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
-import { GREY_SIXTEEN } from '../../../theme';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 // component block
-import Selector from '../../common/Selector';
 import DatePicker from '../../common/DatePicker';
 import InputController from '../../../controller';
+import PracticeSelector from '../../common/Selector/PracticeSelector';
 // constants, history, styling block
+import { isSuperAdmin, setRecord } from '../../../utils';
+import { AuthContext } from '../../../context';
+import { GREY_SIXTEEN } from '../../../theme';
+import { CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
+import { feeScheduleSchema } from '../../../validationSchemas';
 import {
-  CPT_CODE_PROCEDURE_CODE, DESCRIPTION, EFFECTIVE_DATE, EMPTY_OPTION, EXPIRATION_DATE, FEE_SCHEDULE,
-  LONG_DESCRIPTION, MODIFIER, PRACTICE, PRICING, SAVE_TEXT, SERVICE_FEE_CHARGE, SHORT_DESCRIPTION
+  CPT_CODE_PROCEDURE_CODE, DESCRIPTION, EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE,
+  LONG_DESCRIPTION, MODIFIER, NAME, PRACTICE, SAVE_TEXT, SERVICE_FEE_CHARGE, SHORT_DESCRIPTION
 } from '../../../constants';
+import { useCreateFeeScheduleMutation } from '../../../generated/graphql';
+import Alert from '../../common/Alert';
+import { ActionType } from '../../../reducers/feeScheduleReducer';
 
-const FeeScheduleForm = () => {
-  const methods = useForm({
-    mode: "all",
-  });
+const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
+
+  const { user, } = useContext(AuthContext)
+  const methods = useForm<CreateFeeSchedule>({ mode: "all", resolver: yupResolver(feeScheduleSchema) });
+  const { setValue, handleSubmit } = methods
+
+  const { roles, facility } = user || {};
+  const { practice } = facility || {}
+  const { id, name } = practice || {}
+  const { drawerOpened } = state
+
+  const isSuper = isSuperAdmin(roles)
+
+  const [createFeeSchedule] = useCreateFeeScheduleMutation({
+    onCompleted: (data) => {
+      const { createFeeSchedule } = data || {}
+      const { response } = createFeeSchedule || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        dispatcher({ type: ActionType.SET_PAGE, page: 1 })
+        dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+      }
+    },
+    onError: (error) => {
+      const { message } = error
+      Alert.error(message)
+    },
+  })
+
+
+  useMemo(() => {
+    !isSuper && id && name && setValue('practiceId', setRecord(id, name))
+  }, [isSuper, setValue, id, name])
+
+  const submitHandler = async (values: CreateFeeSchedule) => {
+    const { practiceId, cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, shortDescription, serviceFee } = values;
+    const { id: practice } = practiceId
+    try {
+      await createFeeSchedule({
+        variables: {
+          createFeeScheduleInput: {
+            cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
+            shortDescription, serviceFee
+          }
+        }
+      })
+    } catch (error) { }
+  }
 
   return (
     <Box maxWidth={480}>
       <FormProvider {...methods}>
-        <form>
+        <form onSubmit={handleSubmit(submitHandler)}>
           <Box
             display="flex" justifyContent="space-between" alignItems="center"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
@@ -33,19 +87,20 @@ const FeeScheduleForm = () => {
           <Box p={2} mt={2} maxHeight="calc(100vh - 100px)" className="overflowY-auto">
             <Grid container spacing={3} direction="row">
               <Grid item md={12} sm={12} xs={12}>
-                <Selector
-                  name="practice"
+                <PracticeSelector
+                  isRequired
                   label={PRACTICE}
-                  value={EMPTY_OPTION}
-                  options={[]}
+                  name="practiceId"
+                  disabled={!isSuper}
                 />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
+                  isRequired
                   fieldType="text"
-                  controllerName="pricing"
-                  controllerLabel={PRICING}
+                  controllerName="name"
+                  controllerLabel={NAME}
                 />
               </Grid>
 
@@ -53,6 +108,7 @@ const FeeScheduleForm = () => {
                 <Grid container spacing={3} direction="row">
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
+                      isRequired
                       fieldType="text"
                       controllerName="cptCode"
                       controllerLabel={CPT_CODE_PROCEDURE_CODE}
@@ -80,7 +136,7 @@ const FeeScheduleForm = () => {
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
-                      name="expirationDate"
+                      name="expireDate"
                       label={EXPIRATION_DATE}
                     />
                   </Grid>
@@ -89,6 +145,7 @@ const FeeScheduleForm = () => {
 
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
+                  isRequired
                   fieldType="text"
                   controllerName="description"
                   controllerLabel={DESCRIPTION}
@@ -97,6 +154,7 @@ const FeeScheduleForm = () => {
 
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
+                  isRequired
                   fieldType="text"
                   controllerName="shortDescription"
                   controllerLabel={SHORT_DESCRIPTION}
@@ -116,7 +174,7 @@ const FeeScheduleForm = () => {
                 <InputController
                   isRequired
                   fieldType="number"
-                  controllerName="coInsurancePercentage"
+                  controllerName="serviceFee"
                   controllerLabel={SERVICE_FEE_CHARGE}
                   className="input-dollar-class custom-num-input"
                 />

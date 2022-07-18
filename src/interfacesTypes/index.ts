@@ -20,6 +20,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as FeeScheduleAction, State as FeeScheduleState } from '../reducers/feeScheduleReducer'
 import { Action as InsuranceAction } from "../reducers/insuranceReducer";
 import {
   Action as ExternalPaymentAction, State as ExternalPaymentState
@@ -42,7 +43,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1962,4 +1963,11 @@ export interface AuditSubmitInputs {
   userId?: string;
   patientId?: string;
   moduleType?: string;
+}
+
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+
+export interface FeeScheduleFormProps {
+  state: FeeScheduleState,
+  dispatcher: Dispatch<FeeScheduleAction>
 }
