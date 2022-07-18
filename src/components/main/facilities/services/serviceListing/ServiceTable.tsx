@@ -10,7 +10,7 @@ import TableLoader from "../../../../common/TableLoader";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../../utils";
+import { getPageNumber, renderTh } from "../../../../../utils";
 import { BLUE_FOUR, RED, } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
@@ -84,7 +84,12 @@ const ServicesTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          fetchServices();
+
+          if (!!services && services.length) {
+            fetchServices();
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, services?.length || 0) })
+          }
         }
       }
     }

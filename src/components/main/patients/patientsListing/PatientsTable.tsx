@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, dobDateFormat
+  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -135,7 +135,12 @@ const PatientsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          fetchAllPatients();
+
+          if(!!patients && patients.length > 1){
+            fetchAllPatients();
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0)})
+          }
         }
       }
     }

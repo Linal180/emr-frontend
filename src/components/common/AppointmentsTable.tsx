@@ -31,9 +31,9 @@ import {
 } from "../../reducers/appointmentReducer";
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
-  convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getStandardTime,
+  convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getPageNumber,
   getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  isUserAdmin, renderTh, setRecord, sortingArray
+  isUserAdmin, renderTh, setRecord, sortingArray, getStandardTime,
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -160,12 +160,17 @@ const AppointmentsTable: FC = (): JSX.Element => {
         const { removeAppointment: { response } } = data
 
         if (response) {
-          const { message } = response
-
-          message && Alert.success(message);
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           try {
-            await fetchAppointments()
+            const { message } = response
+
+            message && Alert.success(message);
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+            if (!!appointments && appointments.length > 1) {
+              await fetchAppointments()
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, appointments?.length || 0) })
+            }
           } catch (error) { }
         }
       }

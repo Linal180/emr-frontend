@@ -13,7 +13,9 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import {
+  formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+} from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -39,7 +41,7 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
-  
+
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -96,9 +98,14 @@ const FacilityTable: FC = (): JSX.Element => {
           try {
             const { message } = response
             message && Alert.success(message);
-            await fetchAllFacilities();
             deleteFacilityList(deleteFacilityId)
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+            if (!!facilities && facilities.length > 1) {
+              await fetchAllFacilities();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, facilities?.length || 0) })
+            }
           } catch (error) { }
         }
       }
