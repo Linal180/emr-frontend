@@ -11,15 +11,18 @@ import PolicyCard from "./PolicyCard";
 import { getFormatDateString } from '../../../../../utils';
 import { ParamsType } from "../../../../../interfacesTypes";
 import { BLUE, GRAY_TEN, PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation } from "../../../../../generated/graphql";
+import { 
+  OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation 
+} from "../../../../../generated/graphql";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT,
-  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
-  SECONDARY_INSURANCE, TERTIARY_INSURANCE
+  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, EFFECTIVE_TEXT, 
+  ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT, ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, 
+  PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE, SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
 import history from '../../../../../history';
 import Alert from '../../../../common/Alert';
 import Loader from '../../../../common/Loader';
+import EligibilityTableComponent from './eligibilityAndCoverage/EligibilityTable';
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
@@ -53,11 +56,13 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     },
 
     onCompleted(data) {
-      const { getEligibilityAndCoverage } = data || {};
+      // const { getEligibilityAndCoverage } = data || {};
 
-      if (getEligibilityAndCoverage) {
-        history.push(`${ELIGIBILITY_ROUTE}/${patientId}`)
-      }
+      // if (getEligibilityAndCoverage) {
+      //   const { policyEligibility } = getEligibilityAndCoverage
+      //   const {  } = policyEligibility || {}
+      //   history.push(`${ELIGIBILITY_ROUTE}/${patientId}`)
+      // }
     }
   });
 
@@ -138,107 +143,111 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   }
 
   return (
-    getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility'/>:
-    <Card>
-      <Box p={3}>
-        {fetchAllPoliciesLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={true} /> :
-          <>
-            {policies.map((policy) => {
-              const { insurance, copays, expirationDate, issueDate, groupNumber, id, orderOfBenefit } = policy ?? {}
-              const { payerId, payerName } = insurance ?? {}
-              const { amount } = copays?.[0] ?? {}
+    getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility' /> :
+      <>
+        <Card>
+          <Box p={3}>
+            {fetchAllPoliciesLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={true} /> :
+              <>
+                {policies.map((policy) => {
+                  const { insurance, copays, expirationDate, issueDate, groupNumber, id, orderOfBenefit } = policy ?? {}
+                  const { payerId, payerName } = insurance ?? {}
+                  const { amount } = copays?.[0] ?? {}
 
-              return (
-                <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
-                  <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
-                    <Box display='flex' alignItems='center'>
-                      <Typography variant="h4">{payerName}</Typography>
+                  return (
+                    <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
+                      <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+                        <Box display='flex' alignItems='center'>
+                          <Typography variant="h4">{payerName}</Typography>
 
-                      <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
-                        <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
+                          <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
+                            <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
+                          </Box>
+                        </Box>
+
+                        {!shouldDisableEdit && <IconButton onClick={() => {
+                          setPolicyToEdit(id)
+                          toggleSideDrawer()
+                        }}>
+                          <EditNewIcon />
+                        </IconButton>}
+                      </Box>
+
+                      <Box display='flex' alignItems='center' flexWrap='wrap'>
+                        <Box minWidth={200} mr={10} my={2}>
+                          <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
+                          <Typography variant="body2">{payerId}</Typography>
+                        </Box>
+
+                        <Box minWidth={200} mr={10} my={2}>
+                          <Typography variant="h6">{ID_TEXT}</Typography>
+                          <Typography variant="body2">{groupNumber}</Typography>
+                        </Box>
+
+                        <Box minWidth={200} mr={10} my={2}>
+                          <Typography variant="h6">{COPAY_TEXT}</Typography>
+                          <Typography variant="body2">${amount}</Typography>
+                        </Box>
+
+                        <Box minWidth={200} mr={10} my={2}>
+                          <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
+                          <Typography variant="body2">
+                            {`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}
+                          </Typography>
+                        </Box>
+
+                        <Box minWidth={200} my={2}>
+                          <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
+                          {/* <Link to={`${ELIGIBILITY_ROUTE}/${patientId}`}> */}
+                          <Button onClick={() => handleCheckEligibility(id)}>
+                            <Typography variant="body2" color='secondary'>{CHECK_ELIGIBILITY_TODAY}</Typography>
+                          </Button>
+                          {/* </Link> */}
+                        </Box>
                       </Box>
                     </Box>
+                  )
+                })}
 
-                    {!shouldDisableEdit && <IconButton onClick={() => {
-                      setPolicyToEdit(id)
+                {!!filteredOrderOfBenefitOptions.length &&
+                  !shouldDisableEdit && <>
+                    <Box onClick={() => {
                       toggleSideDrawer()
+                      setPolicyToEdit('')
                     }}>
-                      <EditNewIcon />
-                    </IconButton>}
-                  </Box>
+                      <Box
+                        className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
+                        borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
+                      >
+                        <AddInsuranceIcon />
 
-                  <Box display='flex' alignItems='center' flexWrap='wrap'>
-                    <Box minWidth={200} mr={10} my={2}>
-                      <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
-                      <Typography variant="body2">{payerId}</Typography>
+                        <Box pl={2}>
+                          <Typography component="h4" variant="h5">{ADD_INSURANCE}</Typography>
+                          <Typography component="h5" variant="body2">{ADD_INSURANCE_INFORMATION}</Typography>
+                        </Box>
+                      </Box>
                     </Box>
-
-                    <Box minWidth={200} mr={10} my={2}>
-                      <Typography variant="h6">{ID_TEXT}</Typography>
-                      <Typography variant="body2">{groupNumber}</Typography>
-                    </Box>
-
-                    <Box minWidth={200} mr={10} my={2}>
-                      <Typography variant="h6">{COPAY_TEXT}</Typography>
-                      <Typography variant="body2">${amount}</Typography>
-                    </Box>
-
-                    <Box minWidth={200} mr={10} my={2}>
-                      <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
-                      <Typography variant="body2">
-                        {`${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`}
-                      </Typography>
-                    </Box>
-
-                    <Box minWidth={200} my={2}>
-                      <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
-                      {/* <Link to={`${ELIGIBILITY_ROUTE}/${patientId}`}> */}
-                      <Button onClick={() => handleCheckEligibility(id)}>
-                        <Typography variant="body2" color='secondary'>{CHECK_ELIGIBILITY_TODAY}</Typography>
-                      </Button>
-                      {/* </Link> */}
-                    </Box>
-                  </Box>
-                </Box>
-              )
-            })}
-
-            {!!filteredOrderOfBenefitOptions.length &&
-              !shouldDisableEdit && <>
-                <Box onClick={() => {
-                  toggleSideDrawer()
-                  setPolicyToEdit('')
-                }}>
-                  <Box
-                    className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
-                    borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
-                  >
-                    <AddInsuranceIcon />
-
-                    <Box pl={2}>
-                      <Typography component="h4" variant="h5">{ADD_INSURANCE}</Typography>
-                      <Typography component="h5" variant="body2">{ADD_INSURANCE_INFORMATION}</Typography>
-                    </Box>
-                  </Box>
-                </Box>
+                  </>
+                }
+                <SideDrawer
+                  drawerOpened={drawerOpened}
+                  toggleSideDrawer={toggleSideDrawer}
+                >
+                  <PolicyCard
+                    id={policyToEdit}
+                    isEdit={!!policyToEdit}
+                    handleReload={handleReload}
+                    setPolicyToEdit={setPolicyToEdit}
+                    filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
+                  />
+                </SideDrawer>
               </>
             }
-            <SideDrawer
-              drawerOpened={drawerOpened}
-              toggleSideDrawer={toggleSideDrawer}
-            >
-              <PolicyCard
-                id={policyToEdit}
-                isEdit={!!policyToEdit}
-                handleReload={handleReload}
-                setPolicyToEdit={setPolicyToEdit}
-                filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
-              />
-            </SideDrawer>
-          </>
-        }
-      </Box>
-    </Card>
+          </Box>
+        </Card>
+
+        <EligibilityTableComponent id={patientId} />
+      </>
   );
 };
 
