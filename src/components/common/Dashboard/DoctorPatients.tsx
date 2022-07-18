@@ -5,6 +5,7 @@ import { Box, Typography } from "@material-ui/core";
 import Avatar from "../Avatar";
 import ViewDataLoader from "../ViewDataLoader";
 // history, constant and styles block
+import { dobDateFormat } from "../../../utils";
 import { NoDataIcon } from "../../../assets/svgs";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
 import { DoctorPatientsProps } from '../../../interfacesTypes'
@@ -69,7 +70,7 @@ const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element =>
                       </Box>
 
                       <Box color={GRAY_SEVEN}>
-                        <Typography variant="body1">{DOB_TEXT} {dob}</Typography>
+                        <Typography variant="body1">{DOB_TEXT} {!!dob && dobDateFormat(dob)}</Typography>
                       </Box>
                     </Box>
                   </Box>

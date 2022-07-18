@@ -51,7 +51,7 @@ dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const [selectDate, setSelectDate] = useState(new Date().toDateString())
+  const [selectDate, setSelectDate] = useState(moment().format('MM-DD-YYYY'))
   const { user, currentUser, userPermissions } = useContext(AuthContext)
 
   const [filterFacilityId, setFilterFacilityId] = useState<string>('')
@@ -83,12 +83,12 @@ const AppointmentsTable: FC = (): JSX.Element => {
   };
 
   const getPreviousDate = () => {
-    const previousDate = moment(selectDate).subtract(1, 'day').format('MM-DD-YYYY')
+    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')
     setDate(previousDate)
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate).add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY')
     setDate(nextDate)
   }
 
@@ -193,7 +193,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery,
             appointmentTypeId: appointmentTypeId,
-            appointmentDate: moment(selectDate).format('YYYY-MM-DD')
+            appointmentDate: moment(selectDate, 'MM-DD-YYYY').format('YYYY-MM-DD')
           }
         },
       })
@@ -206,10 +206,6 @@ const AppointmentsTable: FC = (): JSX.Element => {
   useEffect(() => {
     fetchAppointments();
   }, [page, searchQuery, fetchAppointments, filterFacilityId]);
-
-  useEffect(() => {
-    setDate(moment().format('MM-DD-YYYY'));
-  }, []);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value

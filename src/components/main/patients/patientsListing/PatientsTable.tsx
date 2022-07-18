@@ -105,7 +105,7 @@ const PatientsTable: FC = (): JSX.Element => {
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
-            ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+            ...patientsInputs, searchString: searchQuery, dob: dob,
             doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
             ...(isSuper || isPracticeUser ? { facilityId: selectedLocationId } : {}),
