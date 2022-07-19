@@ -5,11 +5,11 @@ import { Grid, Typography } from "@material-ui/core";
 import { renderItem } from "../../../../utils";
 import { PracticeDataProps } from "../../../../interfacesTypes";
 import {
-  PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS
+  PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS, TAX_ID, GROUP_NPI
 } from "../../../../constants";
 
 const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
-  const { name, phone, ein, champus, fax, medicaid, medicare, upin } = practiceData || {};
+  const { name, phone, ein, champus, fax, medicaid, medicare, upin, npi, taxId } = practiceData || {};
   
   return (
     <>
@@ -62,10 +62,18 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={6} sm={12}>
+        <Grid item md={9} sm={12}>
           <Grid container spacing={3}>
-            <Grid item md={6} sm={12}>
+            <Grid item md={4} sm={12}>
               {renderItem(CHAMPUS, champus, undefined, loading)}
+            </Grid>
+
+            <Grid item md={4} sm={12}>
+              {renderItem(TAX_ID, taxId, undefined, loading)}
+            </Grid>
+
+            <Grid item md={4} sm={12}>
+              {renderItem(GROUP_NPI, npi, undefined, loading)}
             </Grid>
           </Grid>
         </Grid>
