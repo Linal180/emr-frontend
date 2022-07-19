@@ -180,5 +180,13 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         height: 16,
       }
     },
+
+    billingCard: {
+      [theme.breakpoints.up("md")]: {
+        borderRight: `1px solid ${GRAY_SIX}`,
+        minHeight: 354,
+        paddingRight: theme.spacing(3),
+      },
+    }
   })
 );

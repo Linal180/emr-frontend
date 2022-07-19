@@ -60,6 +60,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_AGREEMENTS, agreements: [] })
+      dispatch({ type: ActionType.SET_PAGES, pages: 0 })
     },
 
     onCompleted(data) {

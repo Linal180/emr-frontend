@@ -111,7 +111,7 @@ const ProfileComponent = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
-    const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
+    const { firstName, lastName, addressNumber, city, phone, country, state, zipCode, email } = values || {}
     const { id: stateId } = state;
     const { id: countryId } = country
 
@@ -121,7 +121,7 @@ const ProfileComponent = (): JSX.Element => {
           updateDoctorInput: {
             updateDoctorItemInput: { id: userId, firstName, lastName },
             updateContactInput: {
-              id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
+              id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '', email,
               zipCode, country: countryId, phone
             },
             updateBillingAddressInput: {}
