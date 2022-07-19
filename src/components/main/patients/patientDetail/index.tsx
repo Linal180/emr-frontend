@@ -24,7 +24,7 @@ import Insurance from './insurance';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import {
   areaChartOne, areaChartTwo, BLOOD_PRESSURE_LAST_READ, BLOOD_PRESSURE_RANGES, BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT,
-  BLOOD_PRESSURE_VALUE, CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, HEART_RATE_LAST_READ,
+  BLOOD_PRESSURE_VALUE, CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, HEART_RATE_LAST_READ,
   Heart_RATE_RANGES, HEART_RATE_TEXT, HEART_RATE_UNIT, HEART_RATE_VALUE, LAST_READING_TEXT, LIST_PAGE_LIMIT, PAST_APPOINTMENTS, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, VIEW_CHART_TEXT, VISITS
 } from "../../../../constants";
@@ -32,7 +32,6 @@ import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
   useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
-import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import {
   Action as appointmentAction, ActionType as appointmentActionType, appointmentReducer, initialState as appointmentInitialState,
@@ -175,7 +174,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+        <Box display="flex" justifyContent="space-between" flexWrap="wrap" maxWidth="100%">
           <TabList onChange={handleChange}
             variant="scrollable"
             aria-label="Profile top tabs">
@@ -185,6 +184,10 @@ const PatientDetailsComponent = (): JSX.Element => {
               />
             ))}
           </TabList>
+
+          <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+            <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+          </Link>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -196,20 +199,6 @@ const PatientDetailsComponent = (): JSX.Element => {
               mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
             }
           />
-
-          <Box pt={1.5} pb={1.5} />
-
-          <Box display="flex" alignItems="center">
-            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-              {EDIT_PATIENT}
-            </Button>
-
-            <Box p={1} />
-
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
 
           <TabPanel value="1">
             <Box mb={2} pb={4} className='masonry-container'>
