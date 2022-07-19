@@ -190,5 +190,9 @@ export const useProfileDetailsStyles = makeStyles(() =>
         minWidth: 14
       }
     },
+
+    tab: {
+      flexDirection: "row-reverse"
+    }
   })
 );
