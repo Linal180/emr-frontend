@@ -2234,6 +2234,7 @@ export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
 
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
+export const CHECK_ELIGIBILITY_BREAD = { text: CHECK_ELIGIBILITY, link: "" };
 export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };

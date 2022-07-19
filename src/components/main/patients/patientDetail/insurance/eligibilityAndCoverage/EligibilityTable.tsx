@@ -71,7 +71,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
 
   return (
     <>
-      <Box mt={2} className={classes.mainTableContainer}>
+      <Box className={classes.mainTableContainer}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
@@ -101,7 +101,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
                     <TableCell scope="row">{'Accepted'}</TableCell>
                     <TableCell scope="row">
                       <Link to={`${COVERAGE_ROUTE}/${eligibilityId}/${id}`}>
-                        <Typography color="textSecondary" className="text-underline">{COVERAGE_DETAILS}</Typography>
+                        <Typography color="secondary" className="text-underline">{COVERAGE_DETAILS}</Typography>
                       </Link>
                     </TableCell>
                   </TableRow>
