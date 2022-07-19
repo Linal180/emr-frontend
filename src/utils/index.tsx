@@ -25,7 +25,7 @@ import {
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload,
+  AttachmentType, AttachmentsPayload, UsersPayload, ClaimStatus,
 } from "../generated/graphql";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
@@ -1483,6 +1483,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
         default:
           break;
       }
@@ -1948,8 +1953,12 @@ export function sortingArray<arrayType>(array: arrayType, by: string, order: str
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
 
-export const getArrayOfObjSum = (arr: any[], key: string) =>
-  arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
+export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+
+export const getCharFromNumber = (num: number, isUpper = true) => {
+  const caseNumber = isUpper ? 65 : 97
+  return String.fromCharCode(caseNumber + num)
+}
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
   if(page > 1){

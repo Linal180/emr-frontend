@@ -30,7 +30,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME,
+  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, CLAIM_STATUS,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -134,9 +134,9 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
-  id: yup.string(),
+  codeId: yup.string(),
   code: yup.string()
-}).test('', requiredMessage(label), ({ id, code }) => isRequired ? !!id && !!code : true);
+}).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   label: yup.string().required(),
@@ -1076,4 +1076,9 @@ export const labOrdersResultAttachmentSchema = yup.object({
   attachmentName: yup.string()
     .required(requiredMessage(ATTACHMENT_NAME))
     .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+})
+
+export const createClaimStatusSchema = yup.object({
+  statusName: yup.string()
+    .required(requiredMessage(CLAIM_STATUS))
 })
