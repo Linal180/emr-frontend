@@ -1,17 +1,20 @@
 import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link } from "@material-ui/core";
+import { 
+  Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link, IconButton 
+} from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
+import history from "../../../../history";
 import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT
+  ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT, PATIENTS_ROUTE
 } from "../../../../constants";
 import {
   formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
@@ -21,7 +24,7 @@ import {
   useGetPatientNearestAppointmentsLazyQuery, DoctorPatientRelationType
 } from "../../../../generated/graphql";
 import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon, EditNewIcon
 } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
@@ -339,7 +342,13 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
           <Box flex={1}>
             <Box display='flex' className="profile-hero-patient">
               <Box flex={1} flexWrap="wrap">
-                {renderName()}
+                <Box display='flex' alignItems='baseline'>
+                  {renderName()}
+
+                  <IconButton onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                    <EditNewIcon />
+                  </IconButton>
+                </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
                   {renderAge()}

@@ -22,7 +22,6 @@ import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
-import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import { getFormattedDate, hasEncounter } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
@@ -47,7 +46,7 @@ import {
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE, VISITS, EDIT_PATIENT, LIST_PAGE_LIMIT,
+  HEART_RATE_VALUE, VISITS, LIST_PAGE_LIMIT,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -181,7 +180,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+        <Box display="flex" justifyContent="space-between" flexWrap="wrap" maxWidth="100%">
           <TabList onChange={handleChange}
             variant="scrollable"
             aria-label="Profile top tabs">
@@ -189,6 +188,10 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
             ))}
           </TabList>
+
+          <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+            <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+          </Link>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -200,20 +203,6 @@ const PatientDetailsComponent = (): JSX.Element => {
               mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
             }
           />
-
-          <Box pt={1.5} pb={1.5} />
-
-          <Box display="flex" alignItems="center">
-            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-              {EDIT_PATIENT}
-            </Button>
-
-            <Box p={1} />
-
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
 
           <TabPanel value="1">
             <Box mb={2} pb={4} className='masonry-container'>
