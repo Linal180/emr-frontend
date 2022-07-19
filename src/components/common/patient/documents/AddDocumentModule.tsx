@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -15,11 +15,9 @@ import { mediaType, setRecord } from "../../../../utils";
 import { AttachmentType } from "../../../../generated/graphql";
 import { ActionType } from "../../../../reducers/mediaReducer";
 import { addDocumentSchema } from "../../../../validationSchemas";
+import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../../../interfacesTypes";
 import {
-  AddDocumentModalProps, DocumentInputProps, FormForwardRef, SelectorOption
-} from "../../../../interfacesTypes";
-import {
-  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, EMPTY_OPTION, ITEM_MODULE,
+  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, ITEM_MODULE,
   PATIENT_NAME, SAVE_TEXT, ATTACHMENT_TITLES, PLEASE_SELECT_MEDIA,
 } from "../../../../constants";
 
@@ -28,7 +26,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   state, dispatch
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
-  const { files } = state || {}
+  const { files, documentTypeId } = state || {}
   const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(addDocumentSchema)
@@ -40,8 +38,6 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
 
   const validated = !!Object.keys(errors).length
   const { name: documentMeta, id: documentMetaId } = documentType || {}
-
-  const [documentTypeId, setDocumentTypeId] = useState<SelectorOption>(EMPTY_OPTION)
 
   const handleClose = useCallback(() => {
     reset();
@@ -67,10 +63,10 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
     attachmentName && setValue('attachmentName', attachmentName)
 
     if (id && type) {
-      setDocumentTypeId(setRecord(id, type))
+      dispatch && dispatch({ type: ActionType.SET_DOCUMENT_TYPE_ID, documentTypeId: setRecord(id, type) })
       setValue('documentType', setRecord(id, type))
     }
-  }, [attachment, setValue])
+  }, [attachment, setValue, dispatch])
 
   useEffect(() => {
     attachmentId && setPreview()
@@ -118,7 +114,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                {attachmentId ? documentTypeId.id && <ItemSelector
+                {attachmentId ? documentTypeId?.id && <ItemSelector
                   isRequired
                   isEdit={!!attachmentId}
                   label={DOCUMENT_TYPE}

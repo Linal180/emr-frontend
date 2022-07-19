@@ -24,7 +24,7 @@ import {
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
   PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
-  ATTACHMENT_TITLES, TAX_ID_INFO, TAX_ID, NPI_INFO, GROUP_NPI,
+  ATTACHMENT_TITLES, TAX_ID_INFO, GROUP_TAX_ID, NPI_INFO, GROUP_NPI,
 } from '../../../../constants';
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
@@ -38,9 +38,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   const { practice } = facility || {};
 
   const { id: practiceId } = practice || {};
-  const [edit, setEdit] = useState<boolean>(false);
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData } = mediaState
+  const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
 
   const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
   const methods = useForm<CustomPracticeInputProps>({
@@ -148,7 +147,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
           name && setPracticeName(name)
           Alert.success(message);
-          setEdit(!edit)
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
           fetchPractice()
         }
       }
@@ -217,8 +216,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   };
 
   const editHandler = () => {
-    setEdit(!edit)
-    edit && setEditData(practiceData)
+    mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+    isEdit && setEditData(practiceData)
   }
 
   const isLoading = loading || updatePracticeLoading
@@ -263,7 +262,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                       <Box mb={3} display="flex" justifyContent="flex-end">
                         <Box display='flex'>
-                          {edit ?
+                          {isEdit ?
                             <>
                               <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
@@ -285,11 +284,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                         </Box>
                       </Box>
 
-                      <Collapse in={!edit} mountOnEnter unmountOnExit>
+                      <Collapse in={!isEdit} mountOnEnter unmountOnExit>
                         <PracticeData practiceData={practiceData} loading={isLoading} />
                       </Collapse>
 
-                      <Collapse in={edit} mountOnEnter unmountOnExit>
+                      <Collapse in={isEdit} mountOnEnter unmountOnExit>
                         <Grid container spacing={3}>
                           <Grid item md={12} sm={12}>
                             <InputController
@@ -374,7 +373,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                               fieldType="text"
                               info={TAX_ID_INFO}
                               controllerName="taxId"
-                              controllerLabel={TAX_ID}
+                              controllerLabel={GROUP_TAX_ID}
                             />
                           </Grid>
 

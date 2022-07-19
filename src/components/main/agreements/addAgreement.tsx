@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
 import {
   Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography
 } from '@material-ui/core';
@@ -23,9 +23,7 @@ import { createAgreementSchema } from '../../../validationSchemas';
 import { useChartingStyles } from '../../../styles/chartingStyles';
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
-import {
-  CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType
-} from '../../../interfacesTypes';
+import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
 import {
   AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation
 } from '../../../generated/graphql';
@@ -42,13 +40,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
   const chartingClasses = useChartingStyles()
   const descriptionTypes = ['Text Editor', 'File Upload'];
-  const [bodyStatus, setBodyStatus] = useState<boolean>(false)
-
 
   const { roles, facility } = user || {};
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
-    descriptionType, isLoaded, withFile, files
+    descriptionType, isLoaded, withFile, files, bodyStatus
   } = state
 
   const { id: facilityId, practice } = facility || {};
@@ -180,11 +176,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
       }
     }
     if ((descriptionType === descriptionTypes[0] && !agreementBody.length)) {
-      setBodyStatus(true)
+      dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
     }
 
     if ((descriptionType === descriptionTypes[1] && !files?.length)) {
-      setBodyStatus(true)
+      dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
       return Alert.error(PLEASE_SELECT_MEDIA)
     }
 

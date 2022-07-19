@@ -13,8 +13,7 @@ import {
   documentVerificationFormStyles
 } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import {
-  DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT,
-  UPLOAD
+  DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT, UPLOAD
 } from "../../../constants";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({

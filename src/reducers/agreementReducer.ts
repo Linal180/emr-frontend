@@ -7,6 +7,7 @@ export interface State {
   agreementUrl: string
   pages: number
   page: number
+  bodyStatus: boolean
   openDelete: boolean
   agreementToRemove: string
   searchQuery: string
@@ -26,6 +27,7 @@ export const initialState: State = {
   agreementUrl: '',
   pages: 0,
   page: 1,
+  bodyStatus: false,
   openDelete: false,
   agreementToRemove: '',
   searchQuery: '',
@@ -41,22 +43,23 @@ export const initialState: State = {
 }
 
 export enum ActionType {
-  SET_AGREEMENTS = 'SET_AGREEMENTS',
-  SET_AGREEMENT_URL = 'SET_AGREEMENT_URL',
-  SET_PAGES = 'SET_PAGES',
-  SET_PAGE = 'SET_PAGE',
-  SET_OPEN_DELETE = 'SET_OPEN_DELETE',
-  SET_AGREEMENT_TO_REMOVE = 'SET_AGREEMENT_TO_REMOVE',
-  SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
-  SET_IS_FILE_MODAL_OPEN = 'SET_IS_FILE_MODAL_OPEN',
-  SET_FILES = 'SET_FILES',
-  SET_SIGNATURE_REQUIRED = 'SET_SIGNATURE_REQUIRED',
-  SET_VIEW_AGREEMENT_BEFORE_AGREEING = 'SET_VIEW_AGREEMENT_BEFORE_AGREEING',
-  SET_AGREEMENT_BODY = 'SET_AGREEMENT_BODY',
-  SET_AGREEMENT_ID = 'SET_AGREEMENT_ID',
-  SET_DESCRIPTION_TYPE = 'SET_DESCRIPTION_TYPE',
-  SET_IS_LOADED = 'SET_IS_LOADED',
-  SET_WITH_FILE = 'SET_WITH_FILE'
+  SET_AGREEMENTS = 'setAgreements',
+  SET_AGREEMENT_URL = 'setAgreementUrl',
+  SET_PAGES = 'setPages',
+  SET_PAGE = 'setPage',
+  SET_BODY_STATUS = 'setBodyStatus',
+  SET_OPEN_DELETE = 'setOpenDelete',
+  SET_AGREEMENT_TO_REMOVE = 'setAgreementToRemove',
+  SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_IS_FILE_MODAL_OPEN = 'setIsFileModalOpen',
+  SET_FILES = 'setFiles',
+  SET_SIGNATURE_REQUIRED = 'setSignatureRequired',
+  SET_VIEW_AGREEMENT_BEFORE_AGREEING = 'setViewAgreementBeforeAgreeing',
+  SET_AGREEMENT_BODY = 'setAgreementBody',
+  SET_AGREEMENT_ID = 'setAgreementId',
+  SET_DESCRIPTION_TYPE = 'setDescriptionType',
+  SET_IS_LOADED = 'setIsLoaded',
+  SET_WITH_FILE = 'setWithFile'
 }
 
 export type Action =
@@ -65,6 +68,7 @@ export type Action =
   | { type: ActionType.SET_PAGES, pages: number }
   | { type: ActionType.SET_PAGE, page: number }
   | { type: ActionType.SET_OPEN_DELETE, openDelete: boolean }
+  | { type: ActionType.SET_BODY_STATUS, bodyStatus: boolean }
   | { type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: string }
   | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
   | { type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: boolean }
@@ -173,6 +177,12 @@ export const agreementReducer = (state: State, action: Action): State => {
       return {
         ...state,
         withFile: action.withFile
+      }
+
+    case ActionType.SET_BODY_STATUS:
+      return {
+        ...state,
+        bodyStatus: action.bodyStatus
       }
   }
 };

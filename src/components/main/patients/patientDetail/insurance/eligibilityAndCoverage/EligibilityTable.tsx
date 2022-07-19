@@ -16,8 +16,7 @@ import Alert from "../../../../../common/Alert";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
   ACTION, ALL_INSURANCES, CHECK_ELIGIBILITY, COVERAGE_DETAILS, COVERAGE_ROUTE, ELIGIBILITY_BREAD, ELIGIBILITY_ERROR_MESSAGE, EMPTY_OPTION, INSURANCE,
-  PAGE_LIMIT,
-  PATIENTS_ROUTE, STATUS, TIME_OF_CHECK
+  PAGE_LIMIT, PATIENTS_ROUTE, STATUS, TIME_OF_CHECK
 } from "../../../../../../constants";
 import {
   PoliciesPayload, PolicyEligibilitiesPayload, useFetchPatientInsurancesLazyQuery, useGetEligibilityAndCoverageMutation,

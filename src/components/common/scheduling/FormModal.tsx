@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -39,27 +39,24 @@ import {
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
-  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit
+  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit, state
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
   const { currentUser } = useContext(AuthContext)
-  const [ids, setIds] = useState<string[]>([])
-
+  const { scheduleIds, scheduleRecursion, serviceIds } = state || {}
   const { id: currentDoctor } = currentUser || {}
-  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
   const { userPermissions } = useContext(AuthContext)
 
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
+    resolver: yupResolver(scheduleSchema(isDoctor || false, scheduleRecursion))
   });
   const { reset, handleSubmit, setValue, control } = methods;
-  const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
 
   const handleClose = useCallback(() => {
     reset();
-    setIds([])
+    scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [] })
 
     if (scheduleDispatch) {
       scheduleDispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
@@ -103,7 +100,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
               }
             }) || []
 
-            setServiceIds(transformedScheduleServices)
+            scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SERVICE_IDS, serviceIds: transformedScheduleServices })
             setValue('serviceId', transformedScheduleServices)
           }
 
@@ -111,8 +108,8 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
 
-          setShouldHaveRecursion(!!!recurringEndDate)
-          setIds([...ids, getDayFromTimestamps(startAt)])
+          scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULE_RECURSION, scheduleRecursion: !!!recurringEndDate })
+          scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [...scheduleIds, getDayFromTimestamps(startAt)] })
         }
       }
     }
@@ -175,9 +172,9 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({
     endAt, serviceId, startAt, recurringEndDate
   }) => {
-    if (!!!ids.length) return Alert.error(SELECT_DAY_MESSAGE)
+    if (!!!scheduleIds.length) return Alert.error(SELECT_DAY_MESSAGE)
 
-    const scheduleInput = ids.map((dayValue) => {
+    const scheduleInput = scheduleIds.map((dayValue) => {
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
@@ -186,7 +183,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
         startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
-        recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
+        recurringEndDate: !scheduleRecursion ? recurringEndDate : null
       }
     })
 
@@ -210,8 +207,12 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
-      if (ids.includes(id)) setIds(ids.filter(permission => permission !== id))
-      else setIds([...ids, id])
+      if (scheduleIds.includes(id)) {
+        scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: scheduleIds.filter(permission => permission !== id) })
+      }
+      else {
+        scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [...scheduleIds, id] })
+      }
     }
   };
 
@@ -233,7 +234,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                         <Grid container spacing={3}>
                           <Grid item md={12} sm={12} xs={12}>
                             {isEdit ? (
-                              ids.map(day => renderItem(DAY, day))
+                              scheduleIds.map(day => renderItem(DAY, day))
                             ) : (
                               <>
                                 <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
@@ -243,7 +244,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                                   >
                                     {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
                                       control={
-                                        <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
+                                        <Checkbox disabled={isEdit} color="primary" checked={scheduleIds.includes(id || '')}
                                           onChange={() => handleChangeForCheckBox(id || '')}
                                         />
                                       }
@@ -285,21 +286,21 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                                   <InputLabel shrink>{WANT_RECURRING}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                    <AntSwitch checked={shouldHaveRecursion}
-                                      onChange={({ target: { checked } }) =>
-                                        setShouldHaveRecursion(checked)} name='shouldHaveRecursion'
+                                    <Box color={scheduleRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                    <AntSwitch checked={scheduleRecursion}
+                                      onChange={({ target: { checked } }) => scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULE_RECURSION, scheduleRecursion: checked })}
+                                      name='shouldHaveRecursion'
                                     />
-                                    <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                                    <Box color={scheduleRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
                                   </label>
                                 </FormControl>
                               )}
                             />
                           </Grid>
 
-                          {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                          {!scheduleRecursion && <Grid item md={6} sm={12} xs={12}>
                             <DatePicker
-                              isRequired={!shouldHaveRecursion}
+                              isRequired={!scheduleRecursion}
                               name="recurringEndDate"
                               label={END_DATE}
                               disableFuture={false}

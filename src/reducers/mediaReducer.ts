@@ -4,6 +4,7 @@ import { SelectorOption } from "../interfacesTypes";
 export interface State {
   meta: string
   files: File[]
+  loading: boolean
   action: string
   isOpen: boolean
   isEdit: boolean
@@ -12,18 +13,22 @@ export interface State {
   openSign: boolean
   activeStep: number
   openDelete: boolean
+  labResultId: string
   providerName: string
   isSignedTab: boolean
   preSignedUrl: string
   attachmentId: string
+  drawerOpened: boolean
   isFormLoaded: boolean
   attachmentUrl: string
   policyHolderId: string
   isEditModalOpen: boolean
+  labDocumentTypeId: string
   attachments: Attachment[]
   signedByProvider: boolean
   deleteAttachmentId: string
   insuranceId: SelectorOption
+  documentTypeId: SelectorOption
   attachment: Attachment | undefined
   insuranceCard1: Attachment | undefined
   insuranceCard2: Attachment | undefined
@@ -31,6 +36,7 @@ export interface State {
   drivingLicense2: Attachment | undefined
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
+  labOrderAttachments: AttachmentsPayload['attachments']
   mediaData: Pick<CreateAttachmentInput, "title"> | undefined;
   policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
 }
@@ -44,8 +50,10 @@ export const initialState: State = {
   activeStep: 0,
   isOpen: false,
   isEdit: false,
+  loading: false,
   openSign: false,
   attachments: [],
+  labResultId: '',
   attachmentId: '',
   providerName: '',
   preSignedUrl: '',
@@ -54,18 +62,22 @@ export const initialState: State = {
   openDelete: false,
   attachmentUrl: '',
   isSignedTab: false,
+  drawerOpened: false,
   attachmentsData: [],
+  labDocumentTypeId: "",
   mediaData: undefined,
   attachmentData: null,
   attachment: undefined,
   isEditModalOpen: false,
   deleteAttachmentId: '',
   signedByProvider: false,
+  labOrderAttachments: [],
   insuranceCard1: undefined,
   insuranceCard2: undefined,
   drivingLicense1: undefined,
   drivingLicense2: undefined,
   insuranceId: { id: "", name: "" },
+  documentTypeId: { id: "", name: "" },
   policyAttachments: [],
 }
 
@@ -74,6 +86,7 @@ export enum ActionType {
   SET_FILES = 'SET_FILES',
   SET_IS_OPEN = 'setIsOpen',
   SET_IS_EDIT = 'setIsEdit',
+  SET_LOADING = 'setLoading',
   SET_FILE_URL = 'setFileUrl',
   SET_OPEN_SIGN = 'setOpenSign',
   SET_POLICY_ID = 'setPolicyId',
@@ -83,7 +96,9 @@ export enum ActionType {
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_ATTACHMENTS = 'setAttachments',
   SET_INSURANCE_ID = 'setInsuranceId',
+  SET_LAB_RESULT_ID = 'setLabResultId',
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
+  SET_DRAWER_OPENED = 'setDrawerOpened',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_PRE_SIGNED_URL = 'setPreSignedUrl',
@@ -91,13 +106,16 @@ export enum ActionType {
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_INSURANCE_CARD_1 = 'setInsuranceCard1',
+  SET_DOCUMENT_TYPE_ID = 'setDocumentTypeId',
   SET_POLICY_HOLDER_ID = 'setPolicyHolderId',
   SET_INSURANCE_CARD_2 = 'setInsuranceCard2',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
   SET_DRIVING_LICENSE_1 = 'setDrivingLicense1',
   SET_DRIVING_LICENSE_2 = 'setDrivingLicense2',
   SET_SIGNED_BY_PROVIDER = 'setSignedByProvider',
+  SET_LAB_DOCUMENT_TYPE_ID = 'setLabDocumentTypeId',
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
+  SET_LAB_ORDER_ATTACHMENTS = 'setLabOrderAttachments',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
   SET_POLICY_ATTACHMENTS = 'setPolicyAttachments'
 }
@@ -107,15 +125,18 @@ export type Action =
   | { type: ActionType.SET_FILES, files: File[] }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
+  | { type: ActionType.SET_LOADING; loading: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
   | { type: ActionType.SET_POLICY_ID; policyId: string }
   | { type: ActionType.SET_OPEN_SIGN; openSign: boolean }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
+  | { type: ActionType.SET_LAB_RESULT_ID; labResultId: string }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
+  | { type: ActionType.SET_DRAWER_OPENED; drawerOpened: boolean }
   | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_IS_FORM_LOADED; isFormLoaded: boolean }
@@ -123,6 +144,8 @@ export type Action =
   | { type: ActionType.SET_POLICY_HOLDER_ID; policyHolderId: string }
   | { type: ActionType.SET_INSURANCE_ID; insuranceId: SelectorOption }
   | { type: ActionType.SET_SIGNED_BY_PROVIDER, signedByProvider: boolean }
+  | { type: ActionType.SET_LAB_DOCUMENT_TYPE_ID; labDocumentTypeId: string }
+  | { type: ActionType.SET_DOCUMENT_TYPE_ID; documentTypeId: SelectorOption }
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
   | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN; isEditModalOpen: boolean }
   | { type: ActionType.SET_INSURANCE_CARD_1; insuranceCard1: Attachment | undefined }
@@ -131,6 +154,7 @@ export type Action =
   | { type: ActionType.SET_DRIVING_LICENSE_2; drivingLicense2: Attachment | undefined }
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
+  | { type: ActionType.SET_LAB_ORDER_ATTACHMENTS; labOrderAttachments: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
   | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
 
@@ -314,6 +338,42 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         policyAttachments: action.policyAttachments
+      }
+
+    case ActionType.SET_LOADING:
+      return {
+        ...state,
+        loading: action.loading
+      }
+
+    case ActionType.SET_DOCUMENT_TYPE_ID:
+      return {
+        ...state,
+        documentTypeId: action.documentTypeId
+      }
+
+    case ActionType.SET_DRAWER_OPENED:
+      return {
+        ...state,
+        drawerOpened: action.drawerOpened
+      }
+
+    case ActionType.SET_LAB_ORDER_ATTACHMENTS:
+      return {
+        ...state,
+        labOrderAttachments: action.labOrderAttachments
+      }
+
+    case ActionType.SET_LAB_DOCUMENT_TYPE_ID:
+      return {
+        ...state,
+        labDocumentTypeId: action.labDocumentTypeId
+      }
+
+    case ActionType.SET_LAB_RESULT_ID:
+      return {
+        ...state,
+        labResultId: action.labResultId
       }
   }
 }

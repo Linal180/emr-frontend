@@ -27,6 +27,7 @@ export interface State {
   sameAddress: boolean;
   paymentMethod: string;
   attachmentUrl: string;
+  openMoreInfo: boolean;
   basicContactId: string;
   consentAgreed: boolean;
   isAppointment: boolean;
@@ -119,6 +120,7 @@ export const initialState: State = {
   sameAddress: false,
   attachmentsData: [],
   deletePatientId: '',
+  openMoreInfo: false,
   consentAgreed: false,
   optionalEmail: true,
   isAppointment: false,
@@ -189,6 +191,7 @@ export enum ActionType {
   SET_PRIVACY_NOTICE = 'setPrivacyNote',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
+  SET_OPEN_MORE_INFO = 'setOpenMoreInfo',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_SMS_PERMISSION = 'setSmsPermission',
   SET_IS_APPOINTMENT = 'setIsAppointment',
@@ -285,6 +288,7 @@ export type Action =
   | { type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT; headCircumferenceUnit: { id: HeadCircumferenceType, name: string } }
   | { type: ActionType.SET_OPEN_VITAL; openVital: boolean }
   | { type: ActionType.SET_VITAL_PAGE; vitalPage: number }
+  | { type: ActionType.SET_OPEN_MORE_INFO; openMoreInfo: boolean }
   | { type: ActionType.SET_VITAL_TOTAL_PAGES; vitalTotalPages: number }
   | { type: ActionType.SET_VITAL_TO_EDIT; vitalToEdit: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_VITALS; patientVitals: PatientVitalsPayload['patientVitals'] }
@@ -690,6 +694,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientVitals: action.patientVitals
+      }
+
+    case ActionType.SET_OPEN_MORE_INFO:
+      return {
+        ...state,
+        openMoreInfo: action.openMoreInfo
       }
   }
 };

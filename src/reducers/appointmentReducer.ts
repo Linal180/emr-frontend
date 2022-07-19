@@ -23,6 +23,9 @@ export interface State {
   providerId: string;
   appDetail: boolean;
   pageComing: number;
+  selectDate: string;
+  activeStep: number;
+  calendarData: any[];
   currentDate: string;
   openDelete: boolean;
   searchQuery: string;
@@ -40,12 +43,15 @@ export interface State {
   appShowPayBtn: boolean;
   isAutoAccident: boolean;
   appInvoiceNumber: string;
+  filterFacilityId: string;
+  calendarCurrentDate: Date;
   isInvoiceNumber: boolean;
   cancelAppStatus: boolean;
   isOtherAccident: boolean;
   appBillingStatus: string;
   totalPagesComing: number;
   openPatientModal: boolean;
+  calendarCurrentView: string;
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
   totalPagesCompleted: number;
@@ -79,6 +85,7 @@ export const initialState: State = {
   serviceId: '',
   appStatus: '',
   doctor: null,
+  activeStep: 0,
   totalPages: 0,
   copied: false,
   isEdit: false,
@@ -97,6 +104,8 @@ export const initialState: State = {
   serviceName: '',
   patientName: '',
   searchQuery: '',
+  calendarData: [],
+  calendarCurrentDate: new Date(),
   appointments: [],
   providerName: '',
   facilityName: '',
@@ -110,6 +119,7 @@ export const initialState: State = {
   isInsurance: false,
   availableSlots: [],
   totalPagesComing: 0,
+  filterFacilityId: '',
   isEmployment: false,
   appBillingStatus: '',
   appShowPayBtn: false,
@@ -122,9 +132,11 @@ export const initialState: State = {
   deleteAppointmentId: '',
   openPatientModal: false,
   appointmentPaymentToken: "",
+  calendarCurrentView: "Month",
   offset: moment.tz().utcOffset(),
   currentDate: new Date().toDateString(),
   date: new Date() as MaterialUiPickersDate,
+  selectDate: moment().format('MM-DD-YYYY'),
   externalAppointment: {
     id: '',
     price: "",
@@ -161,6 +173,8 @@ export enum ActionType {
   SET_APP_STATUS = 'setAppStatus',
   SET_SERVICE_ID = 'setServiceId',
   SET_ENCOUNTERS = 'setEncounters',
+  SET_SELECT_DATE = 'setSelectDate',
+  SET_ACTIVE_STEP = 'setActiveStep',
   SET_PAGE_COMING = 'setPageComing',
   SET_AGREEMENTS = 'setAgreements',
   SET_PROVIDER_ID = 'setProviderId',
@@ -176,6 +190,7 @@ export enum ActionType {
   SET_PATIENT_NAME = 'setPatientName',
   SET_IS_INSURANCE = 'setIsInsurance',
   SET_APPOINTMENTS = 'setAppointments',
+  SET_CALENDAR_DATA = 'setCalendarData',
   SET_IS_EMPLOYMENT = 'setIsEmployment',
   SET_FACILITY_NAME = 'setFacilityName',
   SET_PROVIDER_NAME = 'setProviderName',
@@ -189,11 +204,14 @@ export enum ActionType {
   SET_PRIMARY_INSURANCE = 'setPrimaryInsurance',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
+  SET_FILTER_FACILITY_ID = 'setFilterFacilityId',
   SET_TOTAL_PAGES_COMING = 'setTotalPagesComing',
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
   SET_OPEN_PATIENT_MODAL = 'setOpenPatientModal',
   SET_APP_BILLING_STATUS = 'setAppBillingStatus',
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
+  SET_CALENDAR_CURRENT_VIEW = 'setCalendarCurrentView',
+  SET_CALENDAR_CURRENT_DATE = 'setCalendarCurrentDate',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
@@ -203,6 +221,9 @@ export enum ActionType {
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
   | { type: ActionType.SET_SORT_BY; sortBy: string }
+  | { type: ActionType.SET_CALENDAR_DATA; calendarData: any[] }
+  | { type: ActionType.SET_CALENDAR_CURRENT_DATE; calendarCurrentDate: Date }
+  | { type: ActionType.SET_CALENDAR_CURRENT_VIEW; calendarCurrentView: string }
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }
@@ -214,6 +235,8 @@ export type Action =
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
+  | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
+  | { type: ActionType.SET_SELECT_DATE; selectDate: string }
   | { type: ActionType.SET_PAGE_COMING; pageComing: number }
   | { type: ActionType.SET_FACILITY_ID; facilityId: string }
   | { type: ActionType.SET_SIGNATURE; isSignature: boolean }
@@ -241,6 +264,7 @@ export type Action =
   | { type: ActionType.SET_CANCEL_APP_STATUS; cancelAppStatus: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
+  | { type: ActionType.SET_FILTER_FACILITY_ID; filterFacilityId: string }
   | { type: ActionType.SET_TOTAL_PAGES_COMING; totalPagesComing: number }
   | { type: ActionType.SET_APP_BILLING_STATUS; appBillingStatus: string }
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
@@ -588,6 +612,42 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isSignature: action.isSignature
+      }
+
+    case ActionType.SET_SELECT_DATE:
+      return {
+        ...state,
+        selectDate: action.selectDate
+      }
+
+    case ActionType.SET_FILTER_FACILITY_ID:
+      return {
+        ...state,
+        filterFacilityId: action.filterFacilityId
+      }
+
+    case ActionType.SET_ACTIVE_STEP:
+      return {
+        ...state,
+        activeStep: action.activeStep
+      }
+
+    case ActionType.SET_CALENDAR_DATA:
+      return {
+        ...state,
+        calendarData: action.calendarData
+      }
+
+    case ActionType.SET_CALENDAR_CURRENT_DATE:
+      return {
+        ...state,
+        calendarCurrentDate: action.calendarCurrentDate
+      }
+
+    case ActionType.SET_CALENDAR_CURRENT_VIEW:
+      return {
+        ...state,
+        calendarCurrentView: action.calendarCurrentView
       }
   }
 };

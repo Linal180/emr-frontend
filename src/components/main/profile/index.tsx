@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, useState, useContext, Fragment, useEffect, useCallback } from 'react';
+import { Reducer, useReducer, useContext, Fragment, useEffect, useCallback } from 'react';
 import { Edit } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, CircularProgress, Collapse, Grid, } from "@material-ui/core";
@@ -45,8 +45,7 @@ const ProfileComponent = (): JSX.Element => {
   const isSuper = isSuperAdmin(roles)
 
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData } = mediaState
-  const [edit, setEdit] = useState<boolean>(false)
+  const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
 
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
@@ -81,7 +80,7 @@ const ProfileComponent = (): JSX.Element => {
           fetchUser()
           Alert.success(PROFILE_UPDATE);
           reset()
-          setEdit(!edit)
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
         }
       }
     }
@@ -104,7 +103,7 @@ const ProfileComponent = (): JSX.Element => {
           fetchUser()
           Alert.success(PROFILE_UPDATE);
           reset()
-          setEdit(!edit)
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
         }
       }
     }
@@ -158,8 +157,7 @@ const ProfileComponent = (): JSX.Element => {
 
     userType === SYSTEM_ROLES.Doctor ?
       doctorPreview() : staffPreview()
-
-    setEdit(!edit)
+      mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
   }
 
   const setAttachment = useCallback(async () => {
@@ -215,7 +213,7 @@ const ProfileComponent = (): JSX.Element => {
                     {userType !== SYSTEM_ROLES.SuperAdmin &&
                       <Box mb={3} display="flex" justifyContent="flex-end">
                         <Box display={'flex'}>
-                          {edit ?
+                          {isEdit ?
                             <>
                               <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
@@ -237,7 +235,7 @@ const ProfileComponent = (): JSX.Element => {
                       </Box>
                     }
 
-                    <Collapse in={!edit} mountOnEnter unmountOnExit>
+                    <Collapse in={!isEdit} mountOnEnter unmountOnExit>
                       {email ?
                         <Box py={2}>
                           <Grid container spacing={5}>
@@ -304,7 +302,7 @@ const ProfileComponent = (): JSX.Element => {
                         </Box>}
                     </Collapse>
 
-                    <Collapse in={edit} mountOnEnter unmountOnExit>
+                    <Collapse in={isEdit} mountOnEnter unmountOnExit>
                       <Box py={2}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
