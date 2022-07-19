@@ -14,7 +14,7 @@ import {
 import client from "../apollo";
 import history from "../history";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
   SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
@@ -37,7 +37,7 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus,
+  WeightType, ClaimStatus, AllCptCodePayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -279,6 +279,7 @@ export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+export const getFeeScheduleDate = (date: string) => moment(new Date(date)).format(`DD-MM-YY`)
 
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
@@ -618,6 +619,27 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
   return data;
 }
 
+export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
+  const data: CptCodeSelectorOption[] = [];
+
+  if (!!cptCodes) {
+    for (let cptCode of cptCodes) {
+      if (cptCode) {
+        const { code, description, longDescription, shortDescription } = cptCode;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
+          longDescription,
+          shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
@@ -706,6 +728,15 @@ export const setRecord = (id: string, name: string, format = true): SelectorOpti
   }
 
   return { id, name: value };
+};
+
+export const setCTPCode = (id: string, name: string, description: string, longDescription: string, shortDescription: string): CptCodeSelectorOption => {
+  let value = ''
+  if (name) {
+    value = name
+  }
+
+  return { id, name: value, description, longDescription, shortDescription };
 };
 
 export const formatPhone = (phone: string): string =>

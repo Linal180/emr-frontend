@@ -1,0 +1,102 @@
+query FindAllFeeSchedules($findAllFeeScheduleInput: FindAllFeeScheduleInput!) {
+  findAllFeeSchedules(findAllFeeScheduleInput: $findAllFeeScheduleInput) {
+    feeSchedules {
+      id
+      name
+      cptCode
+      modifier
+      expireDate
+      serviceFee
+      description
+      revenueCode
+      effectiveDate
+      longDescription
+      shortDescription
+
+      practice {
+        id
+        name
+      }
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetFeeSchedule($getFeeScheduleInput: GetFeeScheduleInput!) {
+  getFeeSchedule(getFeeScheduleInput: $getFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    feeSchedule {
+      id
+      name
+      cptCode
+      modifier
+      expireDate
+      serviceFee
+      description
+      revenueCode
+      effectiveDate
+      longDescription
+      shortDescription
+
+      practice {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation RemoveFeeSchedule($removeFeeScheduleInput: RemoveFeeScheduleInput!){
+  removeFeeSchedule(removeFeeScheduleInput: $removeFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateFeeSchedule($updateFeeScheduleInput: UpdateFeeScheduleInput!) {
+  updateFeeSchedule(updateFeeScheduleInput: $updateFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    feeSchedule {
+      id
+      name
+    }
+  }
+}
+
+mutation CreateFeeSchedule($createFeeScheduleInput: CreateFeeScheduleInput!) {
+  createFeeSchedule(createFeeScheduleInput: $createFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    feeSchedule {
+      id
+      name
+    }
+  }
+}
