@@ -325,6 +325,17 @@ export const dateDifference = (startingDate: string) => {
   return `${ageString} old`
 }
 
+export const timeDifference = (time: string) => {
+  const startTime = moment(time, "x")
+  const now = moment()
+
+  const days = now.diff(startTime, 'days')
+  const hours = now.diff(startTime, 'hours')
+  const minutes = now.diff(startTime, 'minutes')
+
+  return days > 1 ? `${days} days ago` : hours > 1 ? `${hours} hours ago` : `${minutes} minutes ago`
+}
+
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
 

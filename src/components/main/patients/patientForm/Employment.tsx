@@ -16,7 +16,7 @@ import {
 const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) =>
   <CardComponent cardTitle={EMPLOYMENT}>
     <Grid container spacing={3}>
-      <Grid item md={3} sm={12} xs={12}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -26,11 +26,11 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid item md={3} sm={12} xs={12}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <PhoneField name="employerPhone" label={EMPLOYER_PHONE} disabled={shouldDisableEdit} />
       </Grid>
 
-      <Grid item md={3} sm={12} xs={12}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -40,7 +40,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid item md={3} sm={12} xs={12}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -52,7 +52,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
     </Grid>
 
     <Grid container spacing={3} alignItems={'center'}>
-      <Grid item md={3} sm={12} xs={12}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -63,7 +63,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
 
       </Grid>
 
-      <Grid item md={3} sm={10} xs={10}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -73,7 +73,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid item md={3}>
+      <Grid item lg={3} md={6} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
