@@ -133,7 +133,6 @@ export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const NO_WHITE_SPACE_ALLOWED = "No white space allowed at beginning of file";
-export const NO_WHITE_SPACE_ALLOWED_FOR_INPUT = "No white space allowed at beginning of input";
 export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const UPDATE_MEDIA = "Update media";

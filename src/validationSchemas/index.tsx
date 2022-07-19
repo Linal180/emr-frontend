@@ -29,7 +29,7 @@ import {
   PRICE, DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE,
+  CONTACT_NUMBER, TITLE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -321,7 +321,7 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
   practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()
     .required(requiredMessage(NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const basicDoctorSchema = {
@@ -607,10 +607,10 @@ export const updatePasswordSchema = yup.object({
 export const roleSchema = yup.object({
   role: yup.string()
     .required(requiredMessage(ROLE_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+    .test('', invalidMessage(ROLE_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   description: yup.string()
     .required(requiredMessage(DESCRIPTION))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(DESCRIPTION), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({
@@ -1047,7 +1047,7 @@ export const createBillingSchema = yup.object({
 export const addDocumentSchema = yup.object({
   attachmentName: yup.string()
     .required(requiredMessage(DOCUMENT_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+    .test('', invalidMessage(DOCUMENT_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   comments: yup.string(),
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
@@ -1063,7 +1063,7 @@ export const addLabProviderDetailsSchema = yup.object({
 export const createAgreementSchema = yup.object({
   title: yup.string()
     .required(requiredMessage(TITLE))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(TITLE), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const profileSchema = yup.object({
@@ -1074,7 +1074,7 @@ export const profileSchema = yup.object({
 export const labOrdersResultAttachmentSchema = yup.object({
   attachmentName: yup.string()
     .required(requiredMessage(ATTACHMENT_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(ATTACHMENT_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createClaimStatusSchema = yup.object({
