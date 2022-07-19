@@ -18,8 +18,8 @@ import LogsPatientSelector from "../../common/userLogs/PatientSelector";
 import { AuditLogsInputs } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated/graphql";
+import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer';
 import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh, setRecord } from "../../../utils";
-import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer'
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT, AUDIT_LOG_REPORT, EXPORT_TO_FILE,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT, USER_LOG_PAGE_LIMIT,
@@ -77,15 +77,16 @@ const AuditLogTable = (): JSX.Element => {
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const fetchAllUserLogs = useCallback(async () => {
-    const { id: userId } = user || {}
-    const { id: moduleType } = module || {}
-    const { id: patientId } = patient || {}
-
     try {
+      const { id: userId } = user || {}
+      const { id: moduleType } = module || {}
+      const { id: patientId } = patient || {}
       const pageInputs = {
-        paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT }, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
-        patientId: patientId ? patientId : null, startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
+        paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT }, userId: userId ? userId : null,
+        moduleType: moduleType ? moduleType : null, patientId: patientId ? patientId : null,
+        startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
       }
+
       await findAllUserLogs({ variables: { userLogsInput: { ...pageInputs } } })
     } catch (error) { }
   }, [page, findAllUserLogs, user, module, patient, startDate, endDate])
@@ -234,15 +235,18 @@ const AuditLogTable = (): JSX.Element => {
                 </TableRow> :
                 <Fragment>
                   {userLogs?.map((item) => {
-                    const { id, createdAt, ipAddress, moduleType, activityPayload, user, patient, operationType } = item || {}
+                    const {
+                      id, createdAt, ipAddress, moduleType, activityPayload, user, patient, operationType
+                    } = item || {}
                     const { email } = user || {}
                     const { firstName, lastName, patientRecord, id: patientId } = patient || {}
+
                     return (
                       <TableRow key={id}>
                         <TableCell scope="row">{getFormatLogsDate(createdAt)}</TableCell>
                         <TableCell scope="row">{getFormatLogsTime(createdAt)}</TableCell>
                         <TableCell scope="row">{patientId && (<>
-                          <Link to={`${PATIENTS_ROUTE}/${patientId}/details`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {(patientRecord )?? ''}
+                          <Link to={`${PATIENTS_ROUTE}/${patientId}/details`} >{`${firstName ?? ''} ${lastName ?? ''}`}</Link> {(patientRecord) ?? ''}
                         </>)}
                         </TableCell>
                         <TableCell scope="row">{email}</TableCell>

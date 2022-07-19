@@ -1,36 +1,37 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 import {
-  Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
-} from '@material-ui/lab';
+  Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography
+} from "@material-ui/core";
 // components block
 import Search from "../../common/Search";
-import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
+import RecentActivities from "../../common/RecentActivities";
+// import PracticeUserRoles from "../../common/charts/PracticeUserRoles";
 import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
-import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
+// import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
 // svgs block, style
 import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, WHITE, PURPLE_TWO, BLUE_TEN, PINK_TWO } from "../../../theme";
+import { BLUE, WHITE, PINK_TWO } from "../../../theme";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 // constant
 import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE,
-  FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, TOTAL_USERS_PER_FACILITY,
-  TOTAL_USERS_PER_ROLE, APPOINTMENTS_PER_FACILITY, SEARCH_PATIENT_NAME_ID, ADD_FACILITY,
+  FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE, APPOINTMENTS_PER_FACILITY,
+  SEARCH_PATIENT_NAME_ID, ADD_FACILITY,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
   const { user } = useContext(AuthContext)
   const { facility } = user || {};
+
   const { practice } = facility || {};
   const { id: practiceId } = practice || {};
   const [facilities, setFacilities] = useState<FacilitiesPayload['facilities']>([])
@@ -222,23 +223,23 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
           <Box p={2} />
 
-          <Card>
+          {/* <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
             </Box>
 
             <FacilityUsersWithRole practiceId={practiceId || ''} />
-          </Card>
+          </Card> */}
 
           <Box p={2} />
 
-          <Card>
+          {/* <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
               <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
             </Box>
 
             <PracticeUserRoles practiceId={practiceId || ''} />
-          </Card>
+          </Card> */}
         </Grid>
 
         <Grid item md={4}>
@@ -285,7 +286,9 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           {/* <Box p={2} /> */}
 
           <Card>
-            <Box px={2} mb={2} fontWeight="bold" display='flex' justifyContent='space-between' alignItems='center'>
+            <Box px={2} mb={2} fontWeight="bold" display='flex'
+              justifyContent='space-between' alignItems='center'
+            >
               <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
 
               <IconButton>
@@ -293,115 +296,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <Box className="recent-activity-timeline">
-              <Timeline>
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      53 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      Reports received from imaging lab for <strong>“John Doe” </strong>
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      10 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      <strong>“June Liam”</strong> self checked in at 10:42AM
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      5 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      5 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-
-                    <TimelineConnector />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      Reports received from imaging lab for <strong>“John Doe” </strong>
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      10 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-
-                <TimelineItem>
-                  <TimelineSeparator>
-                    <TimelineDot variant="outlined" color="secondary" />
-                  </TimelineSeparator>
-
-                  <TimelineContent className="pt-0">
-                    <Typography variant="body1">
-                      <strong>“June Liam”</strong> self checked in at 10:42AM
-                    </Typography>
-
-                    <Typography variant="body2" style={{ color: BLUE }}>
-                      5 minutes ago
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-              </Timeline>
-            </Box>
+            <RecentActivities />
           </Card>
         </Grid>
       </Grid>
