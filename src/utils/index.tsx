@@ -25,7 +25,7 @@ import {
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload,
+  AttachmentType, AttachmentsPayload, UsersPayload, ClaimStatus,
 } from "../generated/graphql";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
@@ -69,7 +69,7 @@ export const formatEnumMember = (value: string) => {
     }
   }
 
-  formatted = `${formatted} - ${parts[parts.length - 1]}`;  
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;
   return formatted.trim();
 };
 
@@ -1483,6 +1483,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
         default:
           break;
       }
@@ -1950,7 +1955,7 @@ export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.m
 
 export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
 
-export const getCharFromNumber  = (num: number, isUpper= true) => {
+export const getCharFromNumber = (num: number, isUpper = true) => {
   const caseNumber = isUpper ? 65 : 97
   return String.fromCharCode(caseNumber + num)
 }

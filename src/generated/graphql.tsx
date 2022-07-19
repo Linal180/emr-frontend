@@ -386,6 +386,8 @@ export type Billing = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   claimDate?: Maybe<Scalars['String']>;
   claimNo?: Maybe<Scalars['String']>;
+  claimStatus?: Maybe<ClaimStatus>;
+  claimStatusId?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<Code>>;
   createdAt?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
@@ -441,6 +443,7 @@ export type BillingInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   claimDate?: Maybe<Scalars['String']>;
   claimNo?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -571,6 +574,40 @@ export type ClaimPayload = {
   __typename?: 'ClaimPayload';
   claim: Claim;
   response?: Maybe<ResponsePayload>;
+};
+
+export type ClaimStatus = {
+  __typename?: 'ClaimStatus';
+  billings?: Maybe<Array<Billing>>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusInput = {
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusPaginationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusPayload = {
+  __typename?: 'ClaimStatusPayload';
+  claimStatus: ClaimStatus;
+  response?: Maybe<Response>;
+};
+
+export type ClaimStatusesPayload = {
+  __typename?: 'ClaimStatusesPayload';
+  claimStatuses: Array<ClaimStatus>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
 };
 
 export type Code = {
@@ -2148,6 +2185,7 @@ export type Mutation = {
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
+  createClaimStatus: ClaimStatusPayload;
   createContact: ContactPayload;
   createCopay: Copay;
   createDoctor: DoctorPayload;
@@ -2185,6 +2223,7 @@ export type Mutation = {
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
+  removeClaimStatus: ClaimStatusPayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
@@ -2214,6 +2253,7 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
@@ -2309,6 +2349,11 @@ export type MutationCreateAttachmentDataArgs = {
 
 export type MutationCreateBillingArgs = {
   createBillingInput: BillingInput;
+};
+
+
+export type MutationCreateClaimStatusArgs = {
+  createClaimStatusInput: ClaimStatusInput;
 };
 
 
@@ -2497,6 +2542,11 @@ export type MutationRemoveAttachmentMediaArgs = {
 };
 
 
+export type MutationRemoveClaimStatusArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
 };
@@ -2634,6 +2684,11 @@ export type MutationUpdateAttachmentDataArgs = {
 
 export type MutationUpdateAutoLogoutTimeArgs = {
   userInfoInput: UserInfoInput;
+};
+
+
+export type MutationUpdateClaimStatusArgs = {
+  updateClaimStatusInput: UpdateClaimStatusInput;
 };
 
 
@@ -3635,6 +3690,7 @@ export type Query = {
   createClaim: ClaimPayload;
   fetchAgreement: AgreementPayload;
   fetchAllAgreements: AgreementsPayload;
+  fetchAllClaimStatuses: ClaimStatusesPayload;
   fetchAllInsurances: InsurancesPayload;
   fetchAllPatients: PatientsPayload;
   fetchAllPolicies: PoliciesPayload;
@@ -3676,6 +3732,7 @@ export type Query = {
   findAllUpcomingAppointments: AppointmentsPayload;
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
+  findClaimStatus: ClaimStatusPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
@@ -3750,6 +3807,11 @@ export type QueryFetchAgreementArgs = {
 
 export type QueryFetchAllAgreementsArgs = {
   agreementPaginationInput: AgreementPaginationInput;
+};
+
+
+export type QueryFetchAllClaimStatusesArgs = {
+  claimStatusPaginationInput: ClaimStatusPaginationInput;
 };
 
 
@@ -3945,6 +4007,11 @@ export type QueryFindAllUserLogsArgs = {
 
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindClaimStatusArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -5015,6 +5082,12 @@ export type UpdateBillingAddressInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type UpdateClaimStatusInput = {
+  id?: Maybe<Scalars['String']>;
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
 export type UpdateContactInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
@@ -5943,7 +6016,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
 
 export type CreateClaimQueryVariables = Exact<{
   claimInput: ClaimInput;
@@ -5963,6 +6036,41 @@ export type GenerateClaimNoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GenerateClaimNoQuery = { __typename?: 'Query', generateClaimNo: { __typename?: 'ClaimNumberPayload', claimNumber?: string | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type FetchAllClaimStatusesQueryVariables = Exact<{
+  claimStatusPaginationInput: ClaimStatusPaginationInput;
+}>;
+
+
+export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null }> } };
+
+export type FindClaimStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type FindClaimStatusQuery = { __typename?: 'Query', findClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null } } };
+
+export type CreateClaimStatusMutationVariables = Exact<{
+  createClaimStatusInput: ClaimStatusInput;
+}>;
+
+
+export type CreateClaimStatusMutation = { __typename?: 'Mutation', createClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type UpdateClaimStatusMutationVariables = Exact<{
+  updateClaimStatusInput: UpdateClaimStatusInput;
+}>;
+
+
+export type UpdateClaimStatusMutation = { __typename?: 'Mutation', updateClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type RemoveClaimStatusMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveClaimStatusMutation = { __typename?: 'Mutation', removeClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -8744,6 +8852,10 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
         id
         name
       }
+      claimStatus {
+        id
+        statusName
+      }
       pos
       servicingProvider {
         id
@@ -8915,6 +9027,214 @@ export function useGenerateClaimNoLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GenerateClaimNoQueryHookResult = ReturnType<typeof useGenerateClaimNoQuery>;
 export type GenerateClaimNoLazyQueryHookResult = ReturnType<typeof useGenerateClaimNoLazyQuery>;
 export type GenerateClaimNoQueryResult = Apollo.QueryResult<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>;
+export const FetchAllClaimStatusesDocument = gql`
+    query FetchAllClaimStatuses($claimStatusPaginationInput: ClaimStatusPaginationInput!) {
+  fetchAllClaimStatuses(claimStatusPaginationInput: $claimStatusPaginationInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      status
+      message
+    }
+    claimStatuses {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllClaimStatusesQuery__
+ *
+ * To run a query within a React component, call `useFetchAllClaimStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllClaimStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllClaimStatusesQuery({
+ *   variables: {
+ *      claimStatusPaginationInput: // value for 'claimStatusPaginationInput'
+ *   },
+ * });
+ */
+export function useFetchAllClaimStatusesQuery(baseOptions: Apollo.QueryHookOptions<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>(FetchAllClaimStatusesDocument, options);
+      }
+export function useFetchAllClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>(FetchAllClaimStatusesDocument, options);
+        }
+export type FetchAllClaimStatusesQueryHookResult = ReturnType<typeof useFetchAllClaimStatusesQuery>;
+export type FetchAllClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchAllClaimStatusesLazyQuery>;
+export type FetchAllClaimStatusesQueryResult = Apollo.QueryResult<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>;
+export const FindClaimStatusDocument = gql`
+    query FindClaimStatus($id: String!) {
+  findClaimStatus(id: $id) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindClaimStatusQuery__
+ *
+ * To run a query within a React component, call `useFindClaimStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindClaimStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindClaimStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFindClaimStatusQuery(baseOptions: Apollo.QueryHookOptions<FindClaimStatusQuery, FindClaimStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindClaimStatusQuery, FindClaimStatusQueryVariables>(FindClaimStatusDocument, options);
+      }
+export function useFindClaimStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindClaimStatusQuery, FindClaimStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindClaimStatusQuery, FindClaimStatusQueryVariables>(FindClaimStatusDocument, options);
+        }
+export type FindClaimStatusQueryHookResult = ReturnType<typeof useFindClaimStatusQuery>;
+export type FindClaimStatusLazyQueryHookResult = ReturnType<typeof useFindClaimStatusLazyQuery>;
+export type FindClaimStatusQueryResult = Apollo.QueryResult<FindClaimStatusQuery, FindClaimStatusQueryVariables>;
+export const CreateClaimStatusDocument = gql`
+    mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
+  createClaimStatus(createClaimStatusInput: $createClaimStatusInput) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type CreateClaimStatusMutationFn = Apollo.MutationFunction<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>;
+
+/**
+ * __useCreateClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useCreateClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClaimStatusMutation, { data, loading, error }] = useCreateClaimStatusMutation({
+ *   variables: {
+ *      createClaimStatusInput: // value for 'createClaimStatusInput'
+ *   },
+ * });
+ */
+export function useCreateClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>(CreateClaimStatusDocument, options);
+      }
+export type CreateClaimStatusMutationHookResult = ReturnType<typeof useCreateClaimStatusMutation>;
+export type CreateClaimStatusMutationResult = Apollo.MutationResult<CreateClaimStatusMutation>;
+export type CreateClaimStatusMutationOptions = Apollo.BaseMutationOptions<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>;
+export const UpdateClaimStatusDocument = gql`
+    mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
+  updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type UpdateClaimStatusMutationFn = Apollo.MutationFunction<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>;
+
+/**
+ * __useUpdateClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClaimStatusMutation, { data, loading, error }] = useUpdateClaimStatusMutation({
+ *   variables: {
+ *      updateClaimStatusInput: // value for 'updateClaimStatusInput'
+ *   },
+ * });
+ */
+export function useUpdateClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>(UpdateClaimStatusDocument, options);
+      }
+export type UpdateClaimStatusMutationHookResult = ReturnType<typeof useUpdateClaimStatusMutation>;
+export type UpdateClaimStatusMutationResult = Apollo.MutationResult<UpdateClaimStatusMutation>;
+export type UpdateClaimStatusMutationOptions = Apollo.BaseMutationOptions<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>;
+export const RemoveClaimStatusDocument = gql`
+    mutation RemoveClaimStatus($id: String!) {
+  removeClaimStatus(id: $id) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type RemoveClaimStatusMutationFn = Apollo.MutationFunction<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
+
+/**
+ * __useRemoveClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useRemoveClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeClaimStatusMutation, { data, loading, error }] = useRemoveClaimStatusMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>(RemoveClaimStatusDocument, options);
+      }
+export type RemoveClaimStatusMutationHookResult = ReturnType<typeof useRemoveClaimStatusMutation>;
+export type RemoveClaimStatusMutationResult = Apollo.MutationResult<RemoveClaimStatusMutation>;
+export type RemoveClaimStatusMutationOptions = Apollo.BaseMutationOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {

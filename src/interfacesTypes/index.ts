@@ -909,6 +909,7 @@ export interface CreateBillingProps {
   claimDate: string
   servicingProvider: SelectorOption
   renderingProvider: SelectorOption
+  claimStatus: SelectorOption
   facility: SelectorOption
   pos: SelectorOption
   uncoveredAmount: string
@@ -1057,6 +1058,10 @@ export interface CopayFields {
   copayId?: string
   copayType?: SelectorOption
   amount?: string
+}
+
+export interface ClaimStatusFields {
+  statusName?: string
 }
 
 export interface InsuranceCreateInput {
@@ -1227,6 +1232,13 @@ export interface CopayModalProps {
   setIsOpen: Function;
   insuranceId?: string;
   billingStatus?: string
+}
+
+export interface ClaimStatusModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  setEditId: Function;
+  refetch: Function
 }
 
 export interface CheckoutModalProps {

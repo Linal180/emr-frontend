@@ -30,6 +30,7 @@ import {
   MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, UNCOVERED_AMT,
   OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, SERVICE_DATE, SERVICING_PROVIDER, RENDERING_PROVIDER, MAPPED_PATIENT_PAYMENT_TYPE,
 } from "../../../../constants";
+import ItemSelector from "../../../common/ItemSelector";
 
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
@@ -237,16 +238,17 @@ const BillingForm: FC<BillingFormProps> = (
                         label={RENDERING_PROVIDER}
                         name="renderingProvider"
                         addEmpty
-                        disabled={shouldDisableEdit}
+                        shouldOmitFacilityId
+                        disabled
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        name="claimStatus"
+                      <ItemSelector
+                        isEdit
                         label={CLAIM_STATUS}
-                        addEmpty
-                        options={[]}
+                        name="claimStatus"
+                        modalName={ITEM_MODULE.claimStatus}
                         disabled={shouldDisableEdit}
                       />
                     </Grid>

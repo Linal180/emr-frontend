@@ -84,6 +84,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
+export const STATUS_NAME = 'Status Name'
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
@@ -167,9 +168,12 @@ export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
+export const CREATE_CLAIM_STATUS = "Create Claim Status";
+export const UPDATE_CLAIM_STATUS = "Update Claim Status";
 export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form";
 export const DELETE_AGREEMENT_DESCRIPTION = "Confirm to delete agreement";
+export const DELETE_CLAIM_STATUS_DESCRIPTION = "Confirm to delete claim status";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
@@ -1060,7 +1064,9 @@ export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
+export const CLAIM_STATUSES = "Claim Statuses";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
+export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
@@ -1119,6 +1125,7 @@ export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
 export const ADD_AGREEMENT = "Add Agreement";
+export const ADD_CLAIM_STATUS = "Add Claim Status";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
@@ -1339,7 +1346,7 @@ export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement 
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
-export const ELIGIBILITY_ERROR_MESSAGE='Realtime Eligibility is not supported by this insurance'
+export const ELIGIBILITY_ERROR_MESSAGE = 'Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
@@ -1393,6 +1400,7 @@ export const MAINTENANCE_ROUTE = "/maintenance";
 export const PAST_APPOINTMENTS = "Past Appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const AGREEMENTS_ROUTE = "/agreements";
+export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const CANCELLATION_ROUTE = "/cancellation";
@@ -1561,6 +1569,7 @@ export const CANT_DELETE_SELF_STAFF = "Staff can't delete itself";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const PERMISSIONS_SET = "Role Permissions set successfully";
 export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
+export const CANT_DELETE_CLAIM_STATUS = "Claim Status can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -2226,6 +2235,7 @@ export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 export const AGREEMENTS_BREAD = { text: AGREEMENTS, link: AGREEMENTS_ROUTE, };
 export const AUDIT_LOG_BREAD = { text: AUDIT_LOG, link: AUDIT_LOG_ROUTE, };
 export const AGREEMENTS_NEW_BREAD = { text: ADD_AGREEMENT, link: `${AGREEMENTS_ROUTE}/new`, };
+export const CLAIM_STATUS_NEW_BREAD = { text: CLAIM_STATUSES, link: '', };
 export const AGREEMENTS_EDIT_BREAD = { text: EDIT_AGREEMENT, link: "", };
 
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
@@ -2544,7 +2554,7 @@ export enum ITEM_MODULE {
   documentTypes = 'documentTypes',
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
-
+  claimStatus = 'claimStatus',
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -2749,6 +2759,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: AGREEMENTS,
     link: AGREEMENTS_ROUTE,
     desc: AGREEMENTS_DESCRIPTION,
+  },
+  {
+    name: CLAIM_STATUSES,
+    link: CLAIM_STATUSES_ROUTE,
+    desc: CLAIM_STATUSES_DESCRIPTION,
   }
 ];
 

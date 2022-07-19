@@ -37,6 +37,10 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
        id
        name
       },
+      claimStatus {
+       id
+       statusName
+      },
       pos,
       servicingProvider {
         id
@@ -93,5 +97,80 @@ query GenerateClaimNo {
     }
 
     claimNumber
+  }
+}
+
+query FetchAllClaimStatuses($claimStatusPaginationInput: ClaimStatusPaginationInput!) {
+  fetchAllClaimStatuses(claimStatusPaginationInput: $claimStatusPaginationInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+
+    response {
+      status
+      message
+    }
+
+    claimStatuses {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+
+query FindClaimStatus($id: String!) {
+  findClaimStatus(id: $id) {
+    response {
+      status
+      message
+    }
+
+    claimStatus {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+
+mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
+  createClaimStatus(createClaimStatusInput: $createClaimStatusInput){
+    response {
+      status
+      message
+    }
+
+    claimStatus {
+      id
+    }
+  }
+}
+
+mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
+  updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput){
+    response {
+      status
+      message
+    }
+
+    claimStatus {
+      id
+    }
+  }
+}
+
+mutation RemoveClaimStatus($id: String!) {
+  removeClaimStatus(id: $id){
+    response {
+      status
+      message
+    }
+
+    claimStatus {
+      id
+    }
   }
 }

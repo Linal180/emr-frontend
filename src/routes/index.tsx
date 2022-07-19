@@ -82,6 +82,7 @@ import PublicRoute from "./PublicRoute";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE, AUTO_LOGOUT_ROUTE,
   CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE, CHECK_IN_ROUTE, CLAIMS_ROUTE,
+  CLAIM_STATUSES_ROUTE,
   COVERAGE_ROUTE,
   CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE, DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ELIGIBILITY_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
   FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FORGET_PASSWORD_ROUTE, FORM_BUILDER_COPY_TEMPLATE_ROUTE,
@@ -97,6 +98,7 @@ import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "..
 import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
 import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
 import AuditLogComponent from "../components/main/auditLog";
+import { ClaimStatuses } from "../pages/main/claimStatuses";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -180,6 +182,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={AGREEMENTS_ROUTE} component={Agreements} />
+      <PrivateRoute exact path={CLAIM_STATUSES_ROUTE} component={ClaimStatuses} />
       <PrivateRoute exact path={AUDIT_LOG_ROUTE} component={AuditLogComponent} />
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/new`} component={AddAgreement} />
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />

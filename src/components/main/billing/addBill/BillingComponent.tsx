@@ -145,7 +145,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
         const { onsetDateType, otherDateType, patientPaymentType,
           autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
-          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount } = billing ?? {}
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus } = billing ?? {}
         const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
           const { codeType, code, diagPointer, m1, m2, m3, m4, price, unit, description } = codeValues
           const codeData = {
@@ -155,7 +155,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             price: price ?? '',
             codeType,
             m1: m1 ?? '',
-            m2: m2 ?? '',  
+            m2: m2 ?? '',
             m3: m3 ?? '',
             m4: m4 ?? '',
             unit: unit ?? '',
@@ -199,6 +199,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('claimDate', claimDate ?? '')
         setValue('serviceDate', serviceDate ?? '')
         pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
+        claimStatus?.id && setValue('claimStatus', setRecord(claimStatus.id, claimStatus?.statusName || ''))
         facility?.id && setValue('facility', setRecord(facility.id, facility.name))
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
@@ -221,7 +222,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
       const { amount, paymentType, onsetDate, onsetDateType, otherDate,
-        otherDateType, CPTCode, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider, servicingProvider, uncoveredAmount } = values
+        otherDateType, CPTCode, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider, servicingProvider, uncoveredAmount, claimStatus } = values
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
       const { id: paymentTypeId } = paymentType ?? {}
@@ -229,6 +230,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       const { id: renderingProviderId } = renderingProvider ?? {}
       const { id: servicingProviderId } = servicingProvider ?? {}
       const { id: posId } = pos ?? {}
+      const { id: claimStatusId } = claimStatus ?? {}
 
       const billingCodes = [...CPTCode, ...IcdCodes]
       const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
@@ -252,6 +254,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(facilityId && { facilityId: facilityId || '' }),
         ...(renderingProviderId && { renderingProviderId: renderingProviderId || '' }),
         ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
+        ...(claimStatusId && { claimStatusId: claimStatusId || '' }),
         autoAccident: autoAccident,
         employment: employment,
         otherAccident: otherAccident,
