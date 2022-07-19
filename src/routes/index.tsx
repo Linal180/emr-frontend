@@ -91,6 +91,7 @@ import {
   PATIENT_APPOINTMENT_SUCCESS, PATIENT_INFORMATION_ROUTE, PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE,
   PROVIDER_PUBLIC_APPOINTMENT_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE,
   RESET_PASSWORD_ROUTE, ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
+  SUPER_BILL_ROUTE,
   TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE, VITALS_ROUTE
 } from "../constants";
 import { AuthContext } from "../context";
@@ -100,6 +101,7 @@ import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDe
 import AuditLogComponent from "../components/main/auditLog";
 import { ClaimStatuses } from "../pages/main/claimStatuses";
 import { FeeSchedule } from "../pages/main/feeSchedule";
+import { SuperBill } from "../pages/main/superBill";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -189,6 +191,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={FEE_SCHEDULE_ROUTE} component={FeeSchedule} />
+      <PrivateRoute exact path={SUPER_BILL_ROUTE} component={SuperBill} />
       <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:id`} component={AddLabOrders} />
       <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
       <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />
