@@ -11,7 +11,7 @@ import RecentActivities from "../../common/RecentActivities";
 import FacilityAppointments from "../../common/charts/FacilityAppointments";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 // import FacilityUsersWithRole from "../../common/charts/FacilityUsersWithRole";
-// svgs block, style
+// svgs block, style, and constant block
 import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
@@ -19,7 +19,6 @@ import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, WHITE, PINK_TWO } from "../../../theme";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
-// constant
 import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT,
   SEARCH_PLACEHOLDER, VIEW_FACILITIES, VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE,

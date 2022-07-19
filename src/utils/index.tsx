@@ -335,7 +335,6 @@ export const timeDifference = (time: string) => {
   return days > 1 ? `${days} days ago` : hours > 1 ? `${hours} hours ago` : `${minutes} minutes ago`
 }
 
-
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
 
