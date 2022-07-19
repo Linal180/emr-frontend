@@ -1959,3 +1959,11 @@ export const getCharFromNumber = (num: number, isUpper = true) => {
   const caseNumber = isUpper ? 65 : 97
   return String.fromCharCode(caseNumber + num)
 }
+
+export const getPageNumber = (page: number, pageRecords: number): number => {
+  if(page > 1){
+    return pageRecords > 1 ? page : page - 1 
+  } 
+
+  return 1;
+}

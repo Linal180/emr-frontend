@@ -20,7 +20,8 @@ import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DoctorSearchInputProps } from "../../../../interfacesTypes";
 import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import {
-  checkPermission, formatPhone, formatEnumMember, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  checkPermission, formatPhone, formatEnumMember, isFacilityAdmin, isPracticeAdmin, isSuperAdmin,
+  isUser, renderTh, getPageNumber
 } from "../../../../utils";
 import {
   AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
@@ -61,6 +62,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -115,8 +117,13 @@ const DoctorsTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          fetchAllDoctors()
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+          if (!!doctors && doctors.length > 1) {
+            fetchAllDoctors()
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, doctors?.length || 0) })
+          }
         }
       }
     }

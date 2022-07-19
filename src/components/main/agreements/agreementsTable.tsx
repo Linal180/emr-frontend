@@ -11,15 +11,15 @@ import TableLoader from '../../common/TableLoader';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 //constants, types, interfaces, utils block
-import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
 import { AuthContext } from '../../../context';
 import { GeneralFormProps } from '../../../interfacesTypes';
 import { useTableStyles } from '../../../styles/tableStyles';
+import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
 import {
   Action, ActionType, agreementReducer, initialState, State
 } from '../../../reducers/agreementReducer';
 import {
-  convertDateFromUnix, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  convertDateFromUnix, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
 } from '../../../utils';
 import {
   useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation
@@ -31,11 +31,12 @@ import {
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const {
     agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery
   } = state
-  const { user } = useContext(AuthContext)
+
   const { roles, facility } = user || {};
   const { id: facilityId, practice } = facility || {};
   const { id: practiceId } = practice || {}
@@ -59,6 +60,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_AGREEMENTS, agreements: [] })
+      dispatch({ type: ActionType.SET_PAGES, pages: 0 })
     },
 
     onCompleted(data) {
@@ -113,7 +115,12 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
           try {
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-            await fetchAgreements()
+
+            if (!!agreements && agreements.length > 1) {
+              await fetchAgreements()
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, agreements?.length || 0) })
+            }
           } catch (error) { }
         }
       }

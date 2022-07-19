@@ -581,6 +581,7 @@ export const TAKE_A_PICTURE_OF_INSURANCE =
 export const DOB = "Date of Birth";
 export const DOB_TIME = "Date/Time";
 export const SPECIALTY = "Specialty";
+export const PRICING = "Pricing";
 export const DOCTOR_ID = "doctor id";
 export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
@@ -594,6 +595,7 @@ export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
+export const CPT_CODE_PROCEDURE_CODE = "CPT Code / Procedure Code";
 export const FAX = "Fax";
 export const CITY = "City";
 export const SUPER = "Super";
@@ -693,6 +695,9 @@ export const ROLES = "Roles";
 export const ERROR = "error";
 export const UNITS = "Units";
 export const RESET = "Reset";
+export const MODIFIER = "Modifier";
+export const EFFECTIVE_DATE = "Effective Date";
+export const CHARGE_DOLLAR = "Charge ($)";
 export const SSN_INPUT = "ssn";
 export const REASON = "Reason";
 export const MOBILE = "Mobile";
@@ -861,6 +866,7 @@ export const DELETE_STAFF = "Delete Staff";
 export const ADD_FACILITY = "Add Facility";
 export const EDIT_SERVICE = "Edit Service";
 export const ADD_LOCATION = "Add Location";
+export const FEE_SCHEDULE = "Fee Schedule";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
 export const OLD_PASSWORD = "Old password";
@@ -895,6 +901,9 @@ export const UPDATE_SERVICE = "Update Service";
 export const DELETE_PATIENT = "Delete Patient";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
+export const LONG_DESCRIPTION = "Long Description";
+export const SHORT_DESCRIPTION = "Short Description";
+export const SERVICE_FEE_CHARGE = "Service Fee (Charge)";
 export const PATIENT_INFORMATION = "Patient Information";
 export const SUBSCRIBER_INFORMATION = "Subscriber Information";
 export const PLAN_DETAIL_INFORMATION = "Plan Detail Information";
@@ -1099,6 +1108,7 @@ export const ASSIGN_TO_ME = "Assign To Me";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
+export const FFE_SCHEDULE = "Fee Schedule";
 export const CREATE_CLAIM = "Create Claim";
 export const SEX_AT_BIRTH = "Sex At Birth";
 export const PAY_VIA_CARD = "Pay via Card";
@@ -1322,6 +1332,7 @@ export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const MEMBER_ID_CERTIFICATE_NUMBER = "Member ID/Certification Number";
+export const FEE_SCHEDULE_DESCRIPTION = "Manage fee schedule for procedures";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
@@ -1408,6 +1419,7 @@ export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
+export const FEE_SCHEDULE_ROUTE = "/fee-schedule";
 export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
@@ -1696,6 +1708,7 @@ export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022]
+export const COVERAGE_SUMMARY_COLUMNS = ['Health Benefit Plan Coverage', 'Professional (Physician) Visit - Office', 'Urgent Care']
 export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
@@ -2764,6 +2777,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
+  },
+  {
+    name: FFE_SCHEDULE,
+    link: FEE_SCHEDULE_ROUTE,
+    desc: FEE_SCHEDULE_DESCRIPTION,
   }
 ];
 
@@ -3859,6 +3877,81 @@ export enum FormBuilderApiSelector {
   FACILITY_PROVIDERS = 'facilityProviders',
   PRACTICE_FACILITIES = 'practiceFacilities',
 }
+
+export const FEE_SCHEDULE_DUMMY_DATA = [
+  {
+    code: "35180",
+    modifier: "AB",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
+    effectiveDate: "5/27/15",
+    expiryDate: "6/21/19",
+    charge: "24.19",
+  },
+  {
+    code: "67080",
+    modifier: "-",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
+    effectiveDate: "7/18/17",
+    expiryDate: "5/7/16",
+    charge: "41.02",
+  },
+  {
+    code: "58862",
+    modifier: "-",
+    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
+    effectiveDate: "8/15/17",
+    expiryDate: "8/16/13",
+    charge: "67.23",
+  },
+  {
+    code: "35180",
+    modifier: "AB",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
+    effectiveDate: "5/27/15",
+    expiryDate: "6/21/19",
+    charge: "24.19",
+  },
+  {
+    code: "67080",
+    modifier: "-",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
+    effectiveDate: "7/18/17",
+    expiryDate: "5/7/16",
+    charge: "41.02",
+  },
+  {
+    code: "58862",
+    modifier: "-",
+    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
+    effectiveDate: "8/15/17",
+    expiryDate: "8/16/13",
+    charge: "67.23",
+  },
+  {
+    code: "35180",
+    modifier: "AB",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
+    effectiveDate: "5/27/15",
+    expiryDate: "6/21/19",
+    charge: "24.19",
+  },
+  {
+    code: "67080",
+    modifier: "-",
+    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
+    effectiveDate: "7/18/17",
+    expiryDate: "5/7/16",
+    charge: "41.02",
+  },
+  {
+    code: "58862",
+    modifier: "-",
+    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
+    effectiveDate: "8/15/17",
+    expiryDate: "8/16/13",
+    charge: "67.23",
+  },
+]
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',

@@ -17,14 +17,16 @@ import { GREEN, RED, WHITE } from "../../../../../theme";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { formatValue, getFormatDateString, getSeverityColor, renderTh } from "../../../../../utils";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import {
+  formatValue, getFormatDateString, getSeverityColor, renderTh, getPageNumber
+} from "../../../../../utils";
 import {
   Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
 } from "../../../../../generated/graphql";
 import {
   ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
-  INACTIVE, LIST_PAGE_LIMIT, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
+  EIGHT_PAGE_LIMIT, INACTIVE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
   STATUS
 } from "../../../../../constants";
 
@@ -75,11 +77,12 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
       }
     }
   });
+
   const fetchAllergies = useCallback(async () => {
     try {
       await findAllPatientAllergies({
         variables: {
-          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: LIST_PAGE_LIMIT } }
+          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
         },
       })
     } catch (error) { }
@@ -111,10 +114,15 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         const { status } = response
 
         if (status && status === 200) {
-          await fetchAllergies()
+          setOpenDelete(false)
           Alert.success(PATIENT_ALLERGY_DELETED);
           dispatch({ type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: '' })
-          setOpenDelete(false)
+
+          if (!!patientAllergies && patientAllergies.length > 1) {
+            await fetchAllergies()
+          } else {
+            setPage(getPageNumber(page, patientAllergies?.length || 0))
+          }
         }
       }
     }
@@ -142,13 +150,11 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                {
-                  !shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
-                    <AddWhiteIcon />
-                    <Box p={0.5} />
-                    {ADD_NEW_TEXT}
-                  </Button>
-                }
+                {!shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                  <AddWhiteIcon />
+                  <Box p={0.5} />
+                  {ADD_NEW_TEXT}
+                </Button>}
               </Box>
 
               <Box className={classes.tableBox}>
@@ -172,7 +178,9 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                     </TableRow>
                   ) : <TableBody>
                     {patientAllergies?.map((patientAllergy) => {
-                      const { allergySeverity, allergyStartDate, allergy, comments, isActive, id } = patientAllergy ?? {}
+                      const {
+                        allergySeverity, allergyStartDate, allergy, comments, isActive, id
+                      } = patientAllergy ?? {}
                       const ActiveStatus = isActive ? ACTIVE : INACTIVE;
                       const StatusColor = isActive ? GREEN : RED
 
@@ -183,11 +191,15 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Typography>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : DASHES}</Typography>
+                            <Typography>
+                              {allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : DASHES}
+                            </Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Box className={classes.activeBox} bgcolor={allergySeverity && getSeverityColor(allergySeverity)}>
+                            <Box className={classes.activeBox}
+                              bgcolor={allergySeverity && getSeverityColor(allergySeverity)}
+                            >
                               {allergySeverity ? formatValue(allergySeverity) : DASHES}
                             </Box>
                           </TableCell>
@@ -202,19 +214,17 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                             </Box>
                           </TableCell>
 
-                          {
-                            !shouldDisableEdit && <TableCell scope="row">
-                              <Box display='flex' alignItems='center'>
-                                <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
-                                  <EditOutlinedIcon />
-                                </IconButton>
+                          {!shouldDisableEdit && <TableCell scope="row">
+                            <Box display='flex' alignItems='center'>
+                              <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
+                                <EditOutlinedIcon />
+                              </IconButton>
 
-                                <IconButton onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
-                          }
+                              <IconButton onClick={() => id && onDeleteClick(id)}>
+                                <TrashOutlinedSmallIcon />
+                              </IconButton>
+                            </Box>
+                          </TableCell>}
                         </TableRow>
                       )
                     })}
