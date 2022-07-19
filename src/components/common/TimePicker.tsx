@@ -1,39 +1,43 @@
 import 'date-fns';
 import { FC } from 'react';
-import { FormControl, InputLabel, OutlinedInput, FormHelperText } from '@material-ui/core';
 import { Controller, useFormContext } from "react-hook-form";
+import { FormControl, InputLabel, OutlinedInput, FormHelperText } from '@material-ui/core';
 // interfaces constants and utils block
-import { requiredLabel } from '../../utils';
 import { PickerProps } from "../../interfacesTypes";
+import { renderLoading, requiredLabel } from '../../utils';
 
-const TimePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element => {
+const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.Element => {
   const { control } = useFormContext()
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=''
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
-          <InputLabel shrink htmlFor={`${name}-dialog`}>
-            {isRequired ? requiredLabel(label) : label}
-          </InputLabel>
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          name={name}
+          control={control}
+          defaultValue=''
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
+            <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
+              <InputLabel shrink htmlFor={`${name}-dialog`}>
+                {inputLabel}
+              </InputLabel>
 
-          <OutlinedInput
-            id={`${name}-dialog`}
-            {...field}
-            className="timePickerIcon"
-            type="time"
-            defaultValue="07:30"
-            error={invalid}
-            inputProps={{ step: 300, }}
-          />
+              <OutlinedInput
+                id={`${name}-dialog`}
+                {...field}
+                className="timePickerIcon"
+                type="time"
+                defaultValue="07:30"
+                error={invalid}
+                inputProps={{ step: 300, }}
+              />
 
-          <FormHelperText>{message}</FormHelperText>
-        </FormControl>
-      )}
-    />
+              <FormHelperText>{message}</FormHelperText>
+            </FormControl>
+          )}
+        />}
+    </>
   );
 }
 

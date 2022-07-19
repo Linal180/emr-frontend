@@ -4,15 +4,14 @@ import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
-  InputLabel, Typography
+  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup,
+  Grid, InputLabel, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
 import CardComponent from "../CardComponent";
-import ViewDataLoader from "../ViewDataLoader";
 import ServiceSelector from "../Selector/ServiceSelector";
 // interfaces/types block, theme, svgs and constants
 import { AuthContext } from '../../../context';
@@ -28,14 +27,15 @@ import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
 } from "../../../interfacesTypes";
 import {
-  checkPermission, getDayFromTimestamps, getTimeString, renderItem, setTimeDay
+  checkPermission, getDayFromTimestamps, getTimeString, invalidMessage, renderItem,
+  renderLoading, setTimeDay, timeValidation
 } from "../../../utils";
 import {
-  APPOINTMENT_TYPE, CANCEL, CREATE_SCHEDULE, DAY,
-  SELECT_DAY_MESSAGE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
+  APPOINTMENT_TYPE, CANCEL, CREATE_SCHEDULE, DAY, END_DATE, WEEK_DAYS, YES, END_TIME,
+  SELECT_DAY_MESSAGE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, PICK_DAY_TEXT, NO,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
-  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES
+  DOCTOR_SCHEDULE, PERMISSION_DENIED,
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
@@ -54,8 +54,9 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, shouldHaveRecursion))
   });
-  const { reset, handleSubmit, setValue, control } = methods;
+  const { reset, handleSubmit, setValue, control, watch, setError, clearErrors } = methods;
   const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
+  const { startAt, endAt } = watch()
 
   const handleClose = useCallback(() => {
     reset();
@@ -215,11 +216,18 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     }
   };
 
+  useEffect(() => {
+    !!startAt && timeValidation(endAt, startAt) ?
+      clearErrors("endAt")
+      : setError("endAt", { message: invalidMessage(END_TIME) })
+  }, [clearErrors, endAt, setError, startAt])
+
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
   return (
-    <Dialog className="schedule-modal" open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
+    <Dialog className="schedule-modal" open={isOpen} onClose={handleClose}
+      aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
+      maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -227,100 +235,100 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
             <Box px={1}>
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                  {getScheduleLoading ?
-                    <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
-                      <>
-                        <Grid container spacing={3}>
-                          <Grid item md={12} sm={12} xs={12}>
-                            {isEdit ? (
-                              ids.map(day => renderItem(DAY, day))
-                            ) : (
-                              <>
-                                <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
-                                <FormGroup>
-                                  <Box mt={1} mb={2} className={classesToggle.daysBox}
-                                    display="flex" alignItems="center" flexWrap="wrap"
-                                  >
-                                    {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
-                                      control={
-                                        <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
-                                          onChange={() => handleChangeForCheckBox(id || '')}
-                                        />
-                                      }
-                                      label={name}
-                                    />
-                                    )}
-                                  </Box>
-                                </FormGroup>
-                              </>
-                            )}
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={START_TIME}
-                              name="startAt"
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={END_TIME}
-                              name="endAt"
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Controller
-                              name='shouldHaveRecursion'
-                              control={control}
-                              render={() => (
-                                <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                  <InputLabel shrink>{WANT_RECURRING}</InputLabel>
-
-                                  <label className="toggle-main">
-                                    <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                    <AntSwitch checked={shouldHaveRecursion}
-                                      onChange={({ target: { checked } }) =>
-                                        setShouldHaveRecursion(checked)} name='shouldHaveRecursion'
-                                    />
-                                    <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
-                                  </label>
-                                </FormControl>
+                  <Grid container spacing={3}>
+                    <Grid item md={12} sm={12} xs={12}>
+                      {isEdit ?
+                        getScheduleLoading ? renderLoading(DAY)
+                          : ids.map(day => renderItem(DAY, day))
+                        : <>
+                          <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
+                          <FormGroup>
+                            <Box mt={1} mb={2} className={classesToggle.daysBox}
+                              display="flex" alignItems="center" flexWrap="wrap"
+                            >
+                              {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
+                                control={
+                                  <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
+                                    onChange={() => handleChangeForCheckBox(id || '')}
+                                  />
+                                }
+                                label={name}
+                              />
                               )}
-                            />
-                          </Grid>
+                            </Box>
+                          </FormGroup>
+                        </>}
+                    </Grid>
+                  </Grid>
 
-                          {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
-                            <DatePicker
-                              isRequired={!shouldHaveRecursion}
-                              name="recurringEndDate"
-                              label={END_DATE}
-                              disableFuture={false}
-                              disablePast={true}
-                            />
-                          </Grid>}
-                        </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <TimePicker
+                        isRequired
+                        name="startAt"
+                        label={START_TIME}
+                        loading={getScheduleLoading}
+                      />
+                    </Grid>
 
-                        {isDoctor &&
-                          <ServiceSelector
-                            isRequired
-                            name="serviceId"
-                            label={APPOINTMENT_TYPE}
-                            facilityId={doctorFacilityId}
-                            isEdit={isEdit}
-                            defaultValues={serviceIds}
-                            isMulti={true}
-                          />
-                        }
-                      </>
-                    )}
+                    <Grid item md={6} sm={12} xs={12}>
+                      <TimePicker
+                        isRequired
+                        name="endAt"
+                        label={END_TIME}
+                        loading={getScheduleLoading}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      {getScheduleLoading ? renderLoading(WANT_RECURRING) :
+                        <Controller
+                          name='shouldHaveRecursion'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>{WANT_RECURRING}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={shouldHaveRecursion}
+                                  onChange={({ target: { checked } }) =>
+                                    setShouldHaveRecursion(checked)} name='shouldHaveRecursion'
+                                />
+                                <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      }
+                    </Grid>
+
+                    {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker
+                        disablePast
+                        label={END_DATE}
+                        disableFuture={false}
+                        name="recurringEndDate"
+                        loading={getScheduleLoading}
+                        isRequired={!shouldHaveRecursion}
+                      />
+                    </Grid>}
+                  </Grid>
+
+                  {isDoctor &&
+                    <ServiceSelector
+                      isMulti
+                      isRequired
+                      isEdit={isEdit}
+                      name="serviceId"
+                      label={APPOINTMENT_TYPE}
+                      defaultValues={serviceIds}
+                      loading={getScheduleLoading}
+                      facilityId={doctorFacilityId}
+                    />
+                  }
 
                   <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center'>
                     <Button onClick={handleClose} color="default">
