@@ -136,18 +136,18 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
   return (
     <>
       <CardComponent cardTitle={AVAILABILITY_TEXT}>
-        {getLoading ?
-          <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
-            <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                  <AddSlotIcon />
+        <Grid container spacing={3}>
+          <Grid item md={12} sm={12} xs={12}>
+            <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+              <AddSlotIcon />
 
-                  <Typography>
-                    {ADD_MORE_RECORDS_TEXT}
-                  </Typography>
-                </Box>
+              <Typography>
+                {ADD_MORE_RECORDS_TEXT}
+              </Typography>
+            </Box>
 
+            {getLoading ?
+              <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
                 <Box>
                   {byDaySchedules?.map((schedule: DaySchedule) => {
                     const { day, slots } = schedule || {}
@@ -166,9 +166,9 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
                       )
                   })}
                 </Box>
-              </Grid>
-            </Grid>
-          )}
+              )}
+          </Grid>
+        </Grid>
       </CardComponent>
 
       <ScheduleModal

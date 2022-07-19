@@ -2,8 +2,8 @@
 import { ChangeEvent, Reducer, useReducer, useEffect, useCallback, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
-import { Pagination, TabContext, TabList, TabPanel } from "@material-ui/lab";
 //components block
 import Insurance from './insurance';
 import AreaChartComponent from './charts';
@@ -22,12 +22,13 @@ import PatientProfileHero from '../../../common/patient/profileHero';
 import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
 import { WHITE } from '../../../../theme';
-import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import { getFormattedDate, hasEncounter } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  patientReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/patientReducer";
 import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
   useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
@@ -37,15 +38,15 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, 
+  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState,
   State as appointmentState, ActionType as appointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
-  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo, PAGE_LIMIT,
+  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo,
   BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
   HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE, VISITS, EDIT_PATIENT,
+  HEART_RATE_VALUE, VISITS, LIST_PAGE_LIMIT,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -56,12 +57,8 @@ const PatientDetailsComponent = (): JSX.Element => {
     openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const [state, appointmentDispatch] =
+  const [{ pageComing, upComing, completed, encounters }, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
-
-  const {
-    pageComing, pageCompleted, totalPagesComing, totalPagesCompleted, upComing, completed, encounters
-  } = state
 
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -73,9 +70,8 @@ const PatientDetailsComponent = (): JSX.Element => {
   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
 
   useEffect(() => {
-    if (routeParamValue) {
+    routeParamValue &&
       dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: routeParamValue })
-    }
   }, [routeParamValue])
 
   const [findUpComingAppointments, { loading: upComingLoading, error: upComingError }] =
@@ -86,32 +82,27 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       onError() {
         appointmentDispatch({ type: appointmentActionType.SET_UP_COMING, upComing: [] });
+        appointmentDispatch({ type: appointmentActionType.SET_COMPLETED, completed: [] });
+        appointmentDispatch({ type: appointmentActionType.SET_ENCOUNTERS, encounters: [] });
       },
 
       onCompleted(data) {
         const { findAllAppointments } = data || {};
 
         if (findAllAppointments) {
-          const { appointments, pagination } = findAllAppointments
-
-          if (pagination) {
-            const { totalPages } = pagination
-
-            totalPages && appointmentDispatch({
-              type: appointmentActionType.SET_TOTAL_PAGES_COMING, totalPagesComing: totalPages
-            })
-          }
+          const { appointments } = findAllAppointments
 
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
             upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || ''))>
+              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
               new Date() && appointment?.status === AppointmentStatus.Scheduled) as AppointmentsPayload['appointments']
           });
 
           appointmentDispatch({
             type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter(appointment => {
               const { status } = appointment || {}
+
               return hasEncounter(status as AppointmentStatus)
             }) as AppointmentsPayload['appointments']
           })
@@ -132,23 +123,14 @@ const PatientDetailsComponent = (): JSX.Element => {
         variables: {
           appointmentInput: {
             patientId: id,
-            // appointmentStatus: AppointmentStatus.Scheduled.toLocaleLowerCase(),
             paginationOptions: {
-              limit: PAGE_LIMIT, page: pageComing
+              limit: LIST_PAGE_LIMIT, page: pageComing
             },
           }
         }
       })
     } catch (error) { }
   }, [findUpComingAppointments, pageComing, id])
-
-  const handleComingChange = (_: ChangeEvent<unknown>, value: number) => appointmentDispatch({
-    type: appointmentActionType.SET_PAGE_COMING, pageComing: value
-  });
-
-  const handleCompletedChange = (_: ChangeEvent<unknown>, value: number) => appointmentDispatch({
-    type: appointmentActionType.SET_PAGE_COMPLETED, pageCompleted: value
-  });
 
   const handleProviderEdit = (id: string, providerId: string) => {
     dispatch({ type: ActionType.SET_DOCTOR_PATIENT_ID, doctorPatientId: id })
@@ -198,7 +180,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={tabValue}>
-        <Box display="flex" flexWrap="wrap" maxWidth="100%">
+        <Box display="flex" justifyContent="space-between" flexWrap="wrap" maxWidth="100%">
           <TabList onChange={handleChange}
             variant="scrollable"
             aria-label="Profile top tabs">
@@ -206,6 +188,10 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
             ))}
           </TabList>
+
+          <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+            <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+          </Link>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -218,28 +204,15 @@ const PatientDetailsComponent = (): JSX.Element => {
             }
           />
 
-          <Box pt={1.5} pb={1.5} />
-
-          <Box display="flex" alignItems="center">
-            <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-              {EDIT_PATIENT}
-            </Button>
-
-            <Box p={1} />
-
-            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
-          </Box>
-
           <TabPanel value="1">
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <Box width="100%" className='card-chart'>
-                      <Box display="flex" justifyContent="space-between" p={3} >
+                      <Box display="flex" justifyContent="space-between" p={3}>
                         <BloodPressureIcon />
+
                         <Box>
                           <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
                           <Typography component="span" align='right'>
@@ -272,7 +245,9 @@ const PatientDetailsComponent = (): JSX.Element => {
                         <Box>
                           <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
 
-                          <Typography component="span" align='right'>{LAST_READING_TEXT}: {HEART_RATE_LAST_READ}</Typography>
+                          <Typography component="span" align='right'>
+                            {LAST_READING_TEXT}: {HEART_RATE_LAST_READ}
+                          </Typography>
                         </Box>
                       </Box>
 
@@ -281,7 +256,9 @@ const PatientDetailsComponent = (): JSX.Element => {
                           <span className='measure-unit'>{HEART_RATE_UNIT}</span>
                         </Typography>
 
-                        <Typography className='measure-frequency danger-bg' component="span">{Heart_RATE_RANGES.Abnormal}</Typography>
+                        <Typography className='measure-frequency danger-bg' component="span">
+                          {Heart_RATE_RANGES.Abnormal}
+                        </Typography>
                       </Box>
 
                       <Box className='areaBloodPressureChart areaChartContainer'>
@@ -303,18 +280,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                       <NoDataComponent />
                     </Box>
                   )}
-
-                  {totalPagesComing > 1 &&
-                    <Box my={2} display="flex" justifyContent="flex-end">
-                      <Pagination
-                        count={totalPagesComing}
-                        shape="rounded"
-                        variant="outlined"
-                        page={pageCompleted}
-                        onChange={handleComingChange}
-                      />
-                    </Box>
-                  }
                 </CardComponent>
               </Box>
 
@@ -329,18 +294,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                       <NoDataComponent />
                     </Box>
                   )}
-
-                  {totalPagesCompleted > 1 &&
-                    <Box my={2} display="flex" justifyContent="flex-end">
-                      <Pagination
-                        count={totalPagesCompleted}
-                        shape="rounded"
-                        variant="outlined"
-                        page={pageCompleted}
-                        onChange={handleCompletedChange}
-                      />
-                    </Box>
-                  }
                 </CardComponent>
               </Box>
 

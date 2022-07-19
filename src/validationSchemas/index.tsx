@@ -19,8 +19,8 @@ import {
   OLD_PASSWORD, ROLE_NAME, FORM_TYPE, FORM_NAME, OTP_CODE, DATE_VALIDATION_MESSAGE, PULSE_TEXT,
   RESPIRATORY_RATE_TEXT, OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE,
   NO_WHITE_SPACE_ALLOWED, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, PHONE_NUMBER,
-  INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, MEMBER_ID_CERTIFICATE_NUMBER,
-  COPAY_TYPE, AMOUNT, COINSURANCE_PERCENTAGE, REFERRING_PROVIDER, PRIMARY_CARE_PROVIDER, PRICING_PRODUCT_TYPE,
+  INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, SYSTEM_ROLES,
+  COPAY_TYPE, REFERRING_PROVIDER, ITEM_MODULE, INVALID_END_TIME, CLAIM_STATUS, ATTACHMENT_NAME,
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, LEGAL_SEX, BANK_ACCOUNT, US_BANK_ACCOUNT_REGEX,
   ROUTING_NUMBER, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE, ACCOUNT_TYPE, STREET_ADDRESS,
   DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, DESCRIPTION, TAX_ID, NPI, ICD_CODE,
@@ -29,8 +29,7 @@ import {
   PRICE, DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
+  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -134,9 +133,9 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 }).test('', requiredMessage(label), ({ id, name }) => isRequired ? !!id && !!name : true);
 
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
-  id: yup.string(),
+  codeId: yup.string(),
   code: yup.string()
-}).test('', requiredMessage(label), ({ id, code }) => isRequired ? !!id && !!code : true);
+}).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   label: yup.string().required(),
@@ -322,7 +321,7 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
   practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()
     .required(requiredMessage(NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const basicDoctorSchema = {
@@ -608,10 +607,10 @@ export const updatePasswordSchema = yup.object({
 export const roleSchema = yup.object({
   role: yup.string()
     .required(requiredMessage(ROLE_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+    .test('', invalidMessage(ROLE_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   description: yup.string()
     .required(requiredMessage(DESCRIPTION))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(DESCRIPTION), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({
@@ -913,30 +912,30 @@ export const createInsuranceSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(PATIENT_RELATIONSHIP_TO_POLICY_HOLDER), ({ id }) => !!id),
-  certificationNumber: yup.string().required(requiredMessage(MEMBER_ID_CERTIFICATE_NUMBER)),
+  certificationNumber: yup.string(),
   policyNumber: yup.string().required(requiredMessage(POLICY_GROUP_NUMBER)),
   copayFields: yup.array().of(
     yup.object().shape({
       copayType: yup.object().shape({
-        name: yup.string().required(),
-        id: yup.string().required()
-      }).test('', requiredMessage(COPAY_TYPE), ({ id }) => !!id),
-      amount: yup.string().required(requiredMessage(AMOUNT))
+        name: yup.string(),
+        id: yup.string()
+      }),
+      amount: yup.string()
     })
   ),
-  coInsurancePercentage: yup.string().required(requiredMessage(COINSURANCE_PERCENTAGE)),
+  coInsurancePercentage: yup.string(),
   referringProvider: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', requiredMessage(REFERRING_PROVIDER), ({ id }) => !!id),
+    name: yup.string(),
+    id: yup.string()
+  }),
   primaryCareProvider: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', requiredMessage(PRIMARY_CARE_PROVIDER), ({ id }) => !!id),
+    name: yup.string(),
+    id: yup.string()
+  }),
   pricingProductType: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', requiredMessage(PRICING_PRODUCT_TYPE), ({ id }) => !!id),
+    name: yup.string(),
+    id: yup.string()
+  }),
   notes: yup.string(),
   policyHolderId: yup.string().required(requiredMessage(POLICY_HOLDER_ID_CERTIFICATION_NUMBER)),
   employer: yup.string().required(requiredMessage(EMPLOYER)),
@@ -1048,7 +1047,7 @@ export const createBillingSchema = yup.object({
 export const addDocumentSchema = yup.object({
   attachmentName: yup.string()
     .required(requiredMessage(DOCUMENT_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+    .test('', invalidMessage(DOCUMENT_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   comments: yup.string(),
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
@@ -1064,7 +1063,7 @@ export const addLabProviderDetailsSchema = yup.object({
 export const createAgreementSchema = yup.object({
   title: yup.string()
     .required(requiredMessage(TITLE))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(TITLE), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const profileSchema = yup.object({
@@ -1075,7 +1074,12 @@ export const profileSchema = yup.object({
 export const labOrdersResultAttachmentSchema = yup.object({
   attachmentName: yup.string()
     .required(requiredMessage(ATTACHMENT_NAME))
-    .test('', NO_WHITE_SPACE_ALLOWED_FOR_INPUT, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', invalidMessage(ATTACHMENT_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+})
+
+export const createClaimStatusSchema = yup.object({
+  statusName: yup.string()
+    .required(requiredMessage(CLAIM_STATUS))
 })
 
 

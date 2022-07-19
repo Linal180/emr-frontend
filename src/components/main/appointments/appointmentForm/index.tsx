@@ -40,7 +40,7 @@ import {
 } from '../../../../reducers/appointmentReducer';
 import {
   filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
-  isOnlyDoctor, isUserAdmin, renderItem, renderLoading, setRecord
+  isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
 import {
   AppointmentCreateType, AppointmentStatus, BillingStatus,
@@ -54,7 +54,7 @@ import {
   CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
   APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
   FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
-  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, ADD_APPOINTMENT,
+  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, ADD_APPOINTMENT, YES, NO,
 } from '../../../../constants';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -88,7 +88,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
-    facilityName, cancelAppStatus, patientName, openPatientModal
+    facilityName, cancelAppStatus, patientName, openPatientModal, providerName, serviceName
   } = state
 
   const methods = useForm<ExtendedAppointmentInputProps>({
@@ -197,7 +197,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
           scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
           appointmentCreateType && setAppointmentType(appointmentCreateType)
-          
+
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
@@ -420,9 +420,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     setValue('scheduleEndDateTime', '')
     setValue('scheduleStartDateTime', '')
   }, [date, selectedService, selectedFacility, setValue, selectedProvider])
-  
+
   useEffect(() => { }, [date, appStartDate])
-  
+
   const handleAppointmentType = (type: string) => setAppointmentType(type)
 
   return (
@@ -483,7 +483,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>
 
                       {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? getAppointmentLoading ? renderLoading(FACILITY || '') : renderItem(FACILITY, facilityName)
+                        {isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
                           : <FacilitySelector
                             isRequired
                             label={FACILITY}
@@ -493,15 +493,17 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>}
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <ServiceSelector
-                          isRequired
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          isEdit={isEdit}
-                          defaultValues={serviceIds}
-                          facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
-                          loading={getAppointmentLoading}
-                        />
+                        {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName, false, getAppointmentLoading) :
+                          <ServiceSelector
+                            isRequired
+                            name="serviceId"
+                            isEdit={isEdit}
+                            label={APPOINTMENT_TYPE}
+                            defaultValues={serviceIds}
+                            loading={getAppointmentLoading}
+                            facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          />
+                        }
                       </Grid>
                     </Grid>
                   </Box>
@@ -513,24 +515,26 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid container spacing={3}>
                       {!onlyDoctor &&
                         <Grid item md={6} sm={12} xs={12}>
-                          <DoctorSelector
-                            label={PROVIDER}
-                            name="providerId"
-                            facilityId={selectedFacility}
-                            addEmpty
-                            loading={getAppointmentLoading}
-                          />
-                        </Grid>}
+                          {isEdit ? renderItem(PROVIDER, providerName, false, getAppointmentLoading) :
+                            <DoctorSelector
+                              addEmpty
+                              label={PROVIDER}
+                              name="providerId"
+                              facilityId={selectedFacility}
+                              loading={getAppointmentLoading}
+                            />
+                          }
+                        </Grid>
+                      }
 
                       <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? getAppointmentLoading ? renderLoading(PATIENT || '') : renderItem(PATIENT, patientName)
-                          : <PatientSelector
+                        {isEdit ? renderItem(PATIENT, patientName, false, getAppointmentLoading) :
+                          <PatientSelector
                             isModal
-                            styles='log-class'
                             isRequired
-                            // placeholder
                             label={PATIENT}
                             name="patientId"
+                            styles='log-class'
                             setValue={setValue}
                             isOpen={openPatientModal}
                             handlePatientModal={handlePatientModal}
@@ -635,9 +639,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 <InputLabel shrink>{EMPLOYMENT}</InputLabel>
 
                                 <label className="toggle-main">
-                                  <Box color={isEmployment ? WHITE : GREY_TWO}>Yes</Box>
-                                  <AntSwitch checked={isEmployment} onChange={(event) => { handleChange(event) }} name='employment' />
-                                  <Box color={isEmployment ? GREY_TWO : WHITE}>No</Box>
+                                  <Box color={isEmployment ? WHITE : GREY_TWO}>{YES}</Box>
+                                  <AntSwitch
+                                    name='employment'
+                                    checked={isEmployment}
+                                    onChange={(event) => { handleChange(event) }}
+                                  />
+
+                                  <Box color={isEmployment ? GREY_TWO : WHITE}>{NO}</Box>
                                 </label>
                               </FormControl>
                             )}
@@ -653,9 +662,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
 
                                 <label className="toggle-main">
-                                  <Box color={isAutoAccident ? WHITE : GREY_TWO}>Yes</Box>
-                                  <AntSwitch checked={isAutoAccident} onChange={(event) => { handleChange(event) }} name='autoAccident' />
-                                  <Box color={isAutoAccident ? GREY_TWO : WHITE}>No</Box>
+                                  <Box color={isAutoAccident ? WHITE : GREY_TWO}>{YES}</Box>
+                                  <AntSwitch
+                                    name='autoAccident'
+                                    checked={isAutoAccident}
+                                    onChange={(event) => { handleChange(event) }}
+                                  />
+
+                                  <Box color={isAutoAccident ? GREY_TWO : WHITE}>{NO}</Box>
                                 </label>
                               </FormControl>
                             )}
