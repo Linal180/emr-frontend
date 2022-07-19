@@ -1,53 +1,47 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useEffect, useCallback, useState } from 'react';
-import { Link } from "react-router-dom";
-import { useParams } from 'react-router';
+import { Box, Button, Card, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { Box, Button, Tab, Typography, Grid, Card } from "@material-ui/core";
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { useParams } from 'react-router';
+import { Link } from "react-router-dom";
 //components block
-import Insurance from './insurance';
-import AreaChartComponent from './charts';
-import CareTeamComponent from './careTeam';
-import SideDrawer from '../../../common/SideDrawer';
-import CareTeamProvider from './careTeam/sideDrawer';
-import PortalTable from '../../../common/patient/portal';
-import CardComponent from '../../../common/CardComponent';
-import NoDataComponent from '../../../common/NoDataComponent';
 import AppointmentList from '../../../common/AppointmentList';
+import CardComponent from '../../../common/CardComponent';
+import PracticesByYear from '../../../common/charts/PracticesByYear';
+import ConfirmationModal from "../../../common/ConfirmationModal";
+import NoDataComponent from '../../../common/NoDataComponent';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import EncounterList from '../../patients/patientDetail/encounters';
+import PortalTable from '../../../common/patient/portal';
 import PatientProfileHero from '../../../common/patient/profileHero';
-import PracticesByYear from '../../../common/charts/PracticesByYear';
+import SideDrawer from '../../../common/SideDrawer';
+import EncounterList from '../../patients/patientDetail/encounters';
+import CareTeamComponent from './careTeam';
+import CareTeamProvider from './careTeam/sideDrawer';
+import AreaChartComponent from './charts';
+import Insurance from './insurance';
 // constants, history, styling block
-import { WHITE } from '../../../../theme';
-import { ParamsType } from "../../../../interfacesTypes";
-import { getFormattedDate, hasEncounter } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/patientReducer";
+  areaChartOne, areaChartTwo, BLOOD_PRESSURE_LAST_READ, BLOOD_PRESSURE_RANGES, BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT,
+  BLOOD_PRESSURE_VALUE, CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, HEART_RATE_LAST_READ,
+  Heart_RATE_RANGES, HEART_RATE_TEXT, HEART_RATE_UNIT, HEART_RATE_VALUE, LAST_READING_TEXT, LIST_PAGE_LIMIT, PAST_APPOINTMENTS, PATIENTS_ROUTE,
+  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, VIEW_CHART_TEXT, VISITS
+} from "../../../../constants";
 import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
   useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
+import { ParamsType } from "../../../../interfacesTypes";
 import {
-  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
-  ActionType as mediaActionType
-} from "../../../../reducers/mediaReducer";
-import {
-  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState,
-  State as appointmentState, ActionType as appointmentActionType
+  Action as appointmentAction, ActionType as appointmentActionType, appointmentReducer, initialState as appointmentInitialState,
+  State as appointmentState
 } from "../../../../reducers/appointmentReducer";
-import {
-  DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
-  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo,
-  BLOOD_PRESSURE_TEXT, HEART_RATE_TEXT, BLOOD_PRESSURE_LAST_READ, LAST_READING_TEXT, BLOOD_PRESSURE_UNIT,
-  HEART_RATE_UNIT, HEART_RATE_LAST_READ, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, BLOOD_PRESSURE_VALUE,
-  HEART_RATE_VALUE, VISITS, LIST_PAGE_LIMIT,
-} from "../../../../constants";
+import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../../reducers/mediaReducer";
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { WHITE } from '../../../../theme';
+import { getFormattedDate, hasEncounter } from '../../../../utils';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -185,7 +179,9 @@ const PatientDetailsComponent = (): JSX.Element => {
             variant="scrollable"
             aria-label="Profile top tabs">
             {PROFILE_TOP_TABS.map(item => (
-              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+              <Tab
+                classes={{ wrapper: classes.tab }} key={`${item.title}-${item.value}`} label={item.title} value={item.value}
+              />
             ))}
           </TabList>
 

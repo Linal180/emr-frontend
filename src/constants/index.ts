@@ -429,6 +429,8 @@ export const OTHER_DATE_TYPE = "Other Date Type";
 export const BILLING_PROVIDER = "Billing Provider";
 export const RENDERING_PROVIDER = "Rendering Provider";
 export const SERVICING_PROVIDER = "Servicing Provider";
+export const INSURANCE_DETAILS = "Insurance Details";
+export const ELIGIBILITY_CHECK = "Eligibility Check";
 export const ASSOCIATED_FACILITY = "Associated Facility";
 export const APPOINTMENT_FACILITY = "Appointment Facility";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
@@ -1317,6 +1319,7 @@ export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
+export const DELETE_FEE_SCHEDULE_DESCRIPTION = "Confirm to delete fee schedule";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
@@ -1572,6 +1575,7 @@ export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
+export const CANT_DELETE_FEE_SCHEDULE = "Fee Schedule can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -2231,6 +2235,7 @@ export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
 
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
+export const CHECK_ELIGIBILITY_BREAD = { text: CHECK_ELIGIBILITY, link: "" };
 export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
@@ -3876,81 +3881,6 @@ export enum FormBuilderApiSelector {
   FACILITY_PROVIDERS = 'facilityProviders',
   PRACTICE_FACILITIES = 'practiceFacilities',
 }
-
-export const FEE_SCHEDULE_DUMMY_DATA = [
-  {
-    code: "35180",
-    modifier: "AB",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
-    effectiveDate: "5/27/15",
-    expiryDate: "6/21/19",
-    charge: "24.19",
-  },
-  {
-    code: "67080",
-    modifier: "-",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
-    effectiveDate: "7/18/17",
-    expiryDate: "5/7/16",
-    charge: "41.02",
-  },
-  {
-    code: "58862",
-    modifier: "-",
-    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
-    effectiveDate: "8/15/17",
-    expiryDate: "8/16/13",
-    charge: "67.23",
-  },
-  {
-    code: "35180",
-    modifier: "AB",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
-    effectiveDate: "5/27/15",
-    expiryDate: "6/21/19",
-    charge: "24.19",
-  },
-  {
-    code: "67080",
-    modifier: "-",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
-    effectiveDate: "7/18/17",
-    expiryDate: "5/7/16",
-    charge: "41.02",
-  },
-  {
-    code: "58862",
-    modifier: "-",
-    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
-    effectiveDate: "8/15/17",
-    expiryDate: "8/16/13",
-    charge: "67.23",
-  },
-  {
-    code: "35180",
-    modifier: "AB",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 1ST DOSE",
-    effectiveDate: "5/27/15",
-    expiryDate: "6/21/19",
-    charge: "24.19",
-  },
-  {
-    code: "67080",
-    modifier: "-",
-    description: "IMM ADMN SARSCOV2 100 MCG/0.5 ML 2ND DOSE",
-    effectiveDate: "7/18/17",
-    expiryDate: "5/7/16",
-    charge: "41.02",
-  },
-  {
-    code: "58862",
-    modifier: "-",
-    description: "NFCT DS RNA 4 TARGETS UPPER RESPIRATORY SPECIMEN",
-    effectiveDate: "8/15/17",
-    expiryDate: "8/16/13",
-    charge: "67.23",
-  },
-]
 
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',

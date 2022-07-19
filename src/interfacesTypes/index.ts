@@ -20,6 +20,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as FeeScheduleAction, State as FeeScheduleState } from '../reducers/feeScheduleReducer'
 import { Action as InsuranceAction } from "../reducers/insuranceReducer";
 import {
   Action as ExternalPaymentAction, State as ExternalPaymentState
@@ -42,7 +43,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -342,6 +343,12 @@ export interface SelectorOption {
   name: string | undefined | null;
 }
 
+export interface CptCodeSelectorOption extends SelectorOption {
+  description: string | undefined | null;
+  shortDescription: string | undefined | null;
+  longDescription: string | undefined | null;
+}
+
 export interface AsyncSelectorOption {
   value: string
   label: string | undefined | null
@@ -401,6 +408,10 @@ export interface SelectorProps {
   onBlur?: Function;
   onSelect?: Function;
   onOutsideClick?: Function;
+}
+
+export interface CPTCodesSelectorProps extends SelectorProps {
+  valueSetter?: (inputs: CptCodeSelectorOption) => void
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -1988,4 +1999,11 @@ export interface AuditSubmitInputs {
   userId?: string;
   patientId?: string;
   moduleType?: string;
+}
+
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'> & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
+
+export interface FeeScheduleFormProps {
+  state: FeeScheduleState,
+  dispatcher: Dispatch<FeeScheduleAction>
 }
