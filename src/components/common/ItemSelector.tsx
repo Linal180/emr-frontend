@@ -8,7 +8,8 @@ import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE, TEMPORARY_CPT_CODES } fr
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import {
-  DocumentType, IcdCodes, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
+  ClaimStatus,
+  DocumentType, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
   useFetchIcdCodesLazyQuery,
   useSearchSnoMedCodesLazyQuery
 } from "../../generated/graphql";
@@ -41,6 +42,32 @@ const ItemSelector: FC<ItemSelectorProps> = ({
 
           !!snoMedCodes &&
             setOptions(renderListOptions<SnoMedCodes>(snoMedCodes as SnoMedCodes[], modalName))
+        }
+      }
+    },
+  })
+
+  const [getClaimStatuses] = useFetchAllClaimStatusesLazyQuery({
+    variables: {
+      claimStatusPaginationInput: {
+        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        searchString: searchQuery ? searchQuery : query ? query : ''
+      }
+    },
+
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchAllClaimStatuses } = data
+
+        if (fetchAllClaimStatuses) {
+          const { claimStatuses } = fetchAllClaimStatuses
+
+          !!claimStatuses &&
+            setOptions(renderListOptions<ClaimStatus>(claimStatuses as ClaimStatus[], modalName))
         }
       }
     },
@@ -149,8 +176,9 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       if (modalName === ITEM_MODULE.documentTypes) await fetchDocumentTypes();
       if (modalName === ITEM_MODULE.icdCodes) await searchIcdCodes();
       if (modalName === ITEM_MODULE.cptCode) await getTempCptCode();
+      if(modalName === ITEM_MODULE.claimStatus) await getClaimStatuses()
     } catch (error) { }
-  }, [fetchDocumentTypes, getInsurances, getSnoMedCodes, getTempCptCode, modalName, searchIcdCodes])
+  }, [fetchDocumentTypes, getClaimStatuses, getInsurances, getSnoMedCodes, getTempCptCode, modalName, searchIcdCodes])
 
   useEffect(() => {
     (!query.length || query.length > 2) && fetchList()

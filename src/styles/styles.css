@@ -1038,11 +1038,16 @@ input[type=number] {
   transform: rotate(0deg);
 }
 .rotate-Icon.to-180 {
-  transform: rotate(180deg);
+  transform: rotateX(180deg);
 }
 
 .log-class {
   border: 10px solid red;
+}
+
+.billing-inputs .MuiFormControl-marginNormal {
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
 }
 
 .billing-selector .MuiFormControl-root .MuiAutocomplete-inputRoot {

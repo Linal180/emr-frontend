@@ -2,34 +2,20 @@
 import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
+import { Skeleton } from "@material-ui/lab";
 import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip, Typography,
-  withStyles
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
+  Typography, withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE,
-  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
-  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC,
-} from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
-  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload,
-} from "../generated/graphql";
-import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -37,7 +23,22 @@ import {
   ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
   RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
-import { Skeleton } from "@material-ui/lab";
+import {
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
+  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
+  AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
+  WeightType, ClaimStatus,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -81,7 +82,12 @@ export const renderLoading = (label: string | JSX.Element) => (
       </InputLabel>
     </Box>
 
-    <Box display="flex" justifyContent="space-between" alignItems="center" borderRadius={4} className="skelton-input">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius={4} className="skelton-input"
+    >
       <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
     </Box>
   </>
@@ -1483,6 +1489,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
         default:
           break;
       }
@@ -1939,8 +1950,8 @@ export const hasEncounter = (status: AppointmentStatus) => {
     && status !== AppointmentStatus.Discharged
 }
 
-export function sortingArray<arrayType>(array: arrayType, by: string, order: string): arrayType {
-  const sorted = sortBy(array as Collection<any>, 'scheduleStartDateTime')
+export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {
+  const sorted = sortBy(array as Collection<any>, by)
 
   return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
 }
@@ -1948,13 +1959,17 @@ export function sortingArray<arrayType>(array: arrayType, by: string, order: str
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
 
-export const getArrayOfObjSum = (arr: any[], key: string) =>
-  arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
+export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+
+export const getCharFromNumber = (num: number, isUpper = true) => {
+  const caseNumber = isUpper ? 65 : 97
+  return String.fromCharCode(caseNumber + num)
+}
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
-  if(page > 1){
-    return pageRecords > 1 ? page : page - 1 
-  } 
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
 
   return 1;
 }

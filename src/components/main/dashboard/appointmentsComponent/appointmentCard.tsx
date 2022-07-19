@@ -187,6 +187,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
     dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
     dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
+    fetchAppointment()
     onHide && onHide()
   }
 
