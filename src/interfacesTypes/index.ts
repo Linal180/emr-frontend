@@ -45,6 +45,7 @@ import {
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
 } from "../generated/graphql";
 
+export type Order = 'ASC' | 'DESC';
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
   permission?: string;

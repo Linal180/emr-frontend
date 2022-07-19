@@ -1,9 +1,10 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { DESC } from "../constants";
+import { Order } from "../interfacesTypes";
 import {
   AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload, AgreementsPayload
 } from "../generated/graphql"
-import { DESC } from "../constants";
 
 export interface State {
   page: number;
@@ -67,7 +68,7 @@ export interface State {
   };
   primaryInsurance: string
   appointmentCreateType: string
-  sortBy: string;
+  sortBy: Order;
   agreements: AgreementsPayload['agreements'];
   isSignature: boolean
 }
@@ -202,7 +203,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
-  | { type: ActionType.SET_SORT_BY; sortBy: string }
+  | { type: ActionType.SET_SORT_BY; sortBy: Order }
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }

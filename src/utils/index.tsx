@@ -6,30 +6,31 @@ import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip, Typography,
-  withStyles
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
+  Typography, withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE,
-  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
-  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC,
+  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
-  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
+  AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
+  WeightType,
 } from "../generated/graphql";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -1939,8 +1940,8 @@ export const hasEncounter = (status: AppointmentStatus) => {
     && status !== AppointmentStatus.Discharged
 }
 
-export function sortingArray<arrayType>(array: arrayType, by: string, order: string): arrayType {
-  const sorted = sortBy(array as Collection<any>, 'scheduleStartDateTime')
+export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {
+  const sorted = sortBy(array as Collection<any>, by)
 
   return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
 }
@@ -1952,9 +1953,9 @@ export const getArrayOfObjSum = (arr: any[], key: string) =>
   arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
-  if(page > 1){
-    return pageRecords > 1 ? page : page - 1 
-  } 
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
 
   return 1;
 }
