@@ -25,10 +25,10 @@ import {
   IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload,
+  AttachmentType, AttachmentsPayload, UsersPayload, AllCptCodePayload,
 } from "../generated/graphql";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
   StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
@@ -613,6 +613,27 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
   return data;
 }
 
+export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
+  const data: CptCodeSelectorOption[] = [];
+
+  if (!!cptCodes) {
+    for (let cptCode of cptCodes) {
+      if (cptCode) {
+        const { code, description, longDescription, shortDescription } = cptCode;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
+          longDescription,
+          shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
@@ -701,6 +722,15 @@ export const setRecord = (id: string, name: string, format = true): SelectorOpti
   }
 
   return { id, name: value };
+};
+
+export const setCTPCode = (id: string, name: string, description: string, longDescription: string, shortDescription: string): CptCodeSelectorOption => {
+  let value = ''
+  if (name) {
+    value = name
+  }
+
+  return { id, name: value, description, longDescription, shortDescription };
 };
 
 export const formatPhone = (phone: string): string =>
@@ -1953,9 +1983,9 @@ export const getArrayOfObjSum = (arr: any[], key: string) =>
   arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
-  if(page > 1){
-    return pageRecords > 1 ? page : page - 1 
-  } 
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
 
   return 1;
 }

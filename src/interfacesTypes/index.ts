@@ -342,6 +342,12 @@ export interface SelectorOption {
   name: string | undefined | null;
 }
 
+export interface CptCodeSelectorOption extends SelectorOption {
+  description: string | undefined | null;
+  shortDescription: string | undefined | null;
+  longDescription: string | undefined | null;
+}
+
 export interface AsyncSelectorOption {
   value: string
   label: string | undefined | null
@@ -389,6 +395,10 @@ export interface SelectorProps {
   onBlur?: Function;
   onSelect?: Function;
   onOutsideClick?: Function;
+}
+
+export interface CPTCodesSelectorProps extends SelectorProps {
+  valueSetter?: (inputs: CptCodeSelectorOption) => void
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -1965,7 +1975,7 @@ export interface AuditSubmitInputs {
   moduleType?: string;
 }
 
-export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'> & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
 
 export interface FeeScheduleFormProps {
   state: FeeScheduleState,

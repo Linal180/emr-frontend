@@ -30,7 +30,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   NO_WHITE_SPACE_ALLOWED_FOR_INPUT, CONTACT_NUMBER, TITLE, ATTACHMENT_NAME,
-  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, CPT_CODE_PROCEDURE_CODE, SHORT_DESCRIPTION,
+  SYSTEM_ROLES, ITEM_MODULE, INVALID_END_TIME, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1080,10 +1080,10 @@ export const labOrdersResultAttachmentSchema = yup.object({
 
 
 export const feeScheduleSchema = yup.object({
+  description: yup.string(),
+  shortDescription: yup.string(),
   practiceId: selectorSchema(PRACTICE),
+  cptCode: selectorSchema(CPT_CODE_PROCEDURE_CODE),
   name: yup.string().required(requiredMessage(NAME)),
-  description: yup.string().required(requiredMessage(DESCRIPTION)),
-  serviceFee: yup.string().required(requiredMessage(ATTACHMENT_NAME)),
-  cptCode: yup.string().required(requiredMessage(CPT_CODE_PROCEDURE_CODE)),
-  shortDescription: yup.string().required(requiredMessage(SHORT_DESCRIPTION)),
+  serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)),
 })

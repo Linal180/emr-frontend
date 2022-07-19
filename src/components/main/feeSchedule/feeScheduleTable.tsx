@@ -41,7 +41,7 @@ const FeeTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onCompleted: (data) => {
-      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
+      
       const { findAllFeeSchedules } = data || {}
       const { feeSchedules, pagination, response } = findAllFeeSchedules;
       const { status } = response || {}
@@ -56,9 +56,8 @@ const FeeTable: FC = (): JSX.Element => {
       }
     },
     onError: (error) => {
-      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
       dispatch({ type: ActionType.SET_PAGE, page: 1 })
-      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
       dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules: [] })
     }
   });
@@ -91,6 +90,7 @@ const FeeTable: FC = (): JSX.Element => {
   const fetchFeeSchedule = useCallback(async () => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
+      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
       const findAllFeeScheduleInput = isSuper ? { paginationOptions } : { paginationOptions, practiceId }
       await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
     } catch (error) { }
@@ -110,7 +110,11 @@ const FeeTable: FC = (): JSX.Element => {
     type: ActionType.SET_PAGE, page: value
   });
 
-  const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+  const toggleSideDrawer = () => {
+    dispatch({ type: ActionType.SET_EDIT, isEdit: false });
+    dispatch({ type: ActionType.SET_GET_FEE_ID, getFeeId: '' });
+    dispatch({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+  }
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -128,6 +132,12 @@ const FeeTable: FC = (): JSX.Element => {
       })
     }
   };
+
+  const editHandler = (id: string) => {
+    dispatch({ type: ActionType.SET_EDIT, isEdit: true })
+    dispatch({ type: ActionType.SET_GET_FEE_ID, getFeeId: id })
+    dispatch({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+  }
 
   return (
     <>
@@ -190,7 +200,7 @@ const FeeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{serviceFee}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Box className={classes.iconsBackground}>
+                        <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
                           <EditNewIcon />
                         </Box>
 

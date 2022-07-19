@@ -4,6 +4,7 @@ export interface State {
   page: number;
   isEdit: boolean;
   delFeeId: string;
+  getFeeId: string;
   openDel: boolean;
   totalPages: number;
   searchQuery: string;
@@ -14,6 +15,7 @@ export interface State {
 
 export const initialState: State = {
   page: 1,
+  getFeeId: '',
   delFeeId: '',
   totalPages: 0,
   isEdit: false,
@@ -29,6 +31,7 @@ export enum ActionType {
   SET_EDIT = 'setEdit',
   SET_DRAWER = 'setDrawer',
   SET_DEL_OPEN = 'setDelOpen',
+  SET_GET_FEE_ID = 'setGetFeeId',
   SET_DEL_FEE_ID = 'setDelFeeId',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
@@ -40,6 +43,7 @@ export type Action =
   | { type: ActionType.SET_PAGE; page: number }
   | { type: ActionType.SET_EDIT; isEdit: boolean }
   | { type: ActionType.SET_DEL_OPEN; openDel: boolean }
+  | { type: ActionType.SET_GET_FEE_ID; getFeeId: string }
   | { type: ActionType.SET_DEL_FEE_ID; delFeeId: string }
   | { type: ActionType.SET_DRAWER; drawerOpened: boolean }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
@@ -103,5 +107,12 @@ export const feeScheduleReducer = (state: State, action: Action): State => {
         ...state,
         openDel: action.openDel
       }
+
+    case ActionType.SET_GET_FEE_ID:
+      return {
+        ...state,
+        getFeeId: action.getFeeId
+      }
+
   }
 }

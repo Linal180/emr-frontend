@@ -1,25 +1,26 @@
 // packages block
-import { useContext, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 // component block
+import Alert from '../../common/Alert';
 import DatePicker from '../../common/DatePicker';
 import InputController from '../../../controller';
+import CPTCodesSelector from '../../common/Selector/CptCodeSelector';
 import PracticeSelector from '../../common/Selector/PracticeSelector';
 // constants, history, styling block
-import { isSuperAdmin, setRecord } from '../../../utils';
-import { AuthContext } from '../../../context';
 import { GREY_SIXTEEN } from '../../../theme';
-import { CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
+import { AuthContext } from '../../../context';
 import { feeScheduleSchema } from '../../../validationSchemas';
+import { ActionType } from '../../../reducers/feeScheduleReducer';
+import { isSuperAdmin, setCTPCode, setRecord } from '../../../utils';
+import { CptCodeSelectorOption, CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
+import { useCreateFeeScheduleMutation, useGetFeeScheduleLazyQuery, useUpdateFeeScheduleMutation } from '../../../generated/graphql';
 import {
   CPT_CODE_PROCEDURE_CODE, DESCRIPTION, EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE,
   LONG_DESCRIPTION, MODIFIER, NAME, PRACTICE, SAVE_TEXT, SERVICE_FEE_CHARGE, SHORT_DESCRIPTION
 } from '../../../constants';
-import { useCreateFeeScheduleMutation } from '../../../generated/graphql';
-import Alert from '../../common/Alert';
-import { ActionType } from '../../../reducers/feeScheduleReducer';
 
 const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
 
@@ -30,11 +31,32 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
   const { roles, facility } = user || {};
   const { practice } = facility || {}
   const { id, name } = practice || {}
-  const { drawerOpened } = state
+  const { drawerOpened, isEdit, getFeeId } = state
 
   const isSuper = isSuperAdmin(roles)
 
-  const [createFeeSchedule] = useCreateFeeScheduleMutation({
+  const [updateFeeSchedule, { loading: updateLoading }] = useUpdateFeeScheduleMutation({
+    onCompleted: (data) => {
+      const { updateFeeSchedule } = data || {}
+      const { response } = updateFeeSchedule || {}
+      const { status, message } = response || {}
+
+      if (status === 200) {
+        message && Alert.success(message)
+        dispatcher({ type: ActionType.SET_PAGE, page: 1 })
+        dispatcher({ type: ActionType.SET_EDIT, isEdit: false })
+        dispatcher({ type: ActionType.SET_GET_FEE_ID, getFeeId: '' })
+        dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
+      }
+    },
+    onError: (error) => {
+      const { message } = error
+      Alert.error(message)
+    },
+  })
+
+  const [createFeeSchedule, { loading }] = useCreateFeeScheduleMutation({
     onCompleted: (data) => {
       const { createFeeSchedule } = data || {}
       const { response } = createFeeSchedule || {}
@@ -53,25 +75,82 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
     },
   })
 
+  const [getFeeSchedule, { loading: getLoading }] = useGetFeeScheduleLazyQuery({
+    onCompleted: (data) => {
+      const { getFeeSchedule } = data || {}
+      const { feeSchedule, response } = getFeeSchedule || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, serviceFee,
+          shortDescription, practice } = feeSchedule || {}
+        const { id, name: practiceName } = practice || {}
+        name && setValue('name', name)
+        cptCode && setValue('cptCode', setCTPCode(cptCode, cptCode, description || '', shortDescription || '', longDescription || ''))
+        modifier && setValue('modifier', modifier)
+        expireDate && setValue('expireDate', expireDate)
+        serviceFee && setValue('serviceFee', serviceFee)
+        description && setValue('description', description)
+        effectiveDate && setValue('effectiveDate', effectiveDate)
+        longDescription && setValue('longDescription', longDescription)
+        shortDescription && setValue('shortDescription', shortDescription)
+        id && practiceName && setValue('practiceId', setRecord(id, practiceName))
+      }
+    },
+    onError: () => {
+
+    }
+  })
 
   useMemo(() => {
-    !isSuper && id && name && setValue('practiceId', setRecord(id, name))
-  }, [isSuper, setValue, id, name])
+    !isSuper && !isEdit && id && name && setValue('practiceId', setRecord(id, name))
+  }, [isSuper, setValue, id, name, isEdit])
 
   const submitHandler = async (values: CreateFeeSchedule) => {
     const { practiceId, cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, shortDescription, serviceFee } = values;
     const { id: practice } = practiceId
+    const { id } = cptCode
     try {
-      await createFeeSchedule({
-        variables: {
-          createFeeScheduleInput: {
-            cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
-            shortDescription, serviceFee
+      if (isEdit && getFeeId) {
+        updateFeeSchedule({
+          variables: {
+            updateFeeScheduleInput: {
+              cptCode: id, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
+              shortDescription, serviceFee, id: getFeeId
+            }
           }
-        }
-      })
+        })
+      }
+      else {
+        await createFeeSchedule({
+          variables: {
+            createFeeScheduleInput: {
+              cptCode: id, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
+              shortDescription, serviceFee
+            }
+          }
+        })
+      }
     } catch (error) { }
   }
+
+  const fetchFeeSchedule = useCallback(async () => {
+    try {
+      await getFeeSchedule({ variables: { getFeeScheduleInput: { id: getFeeId } } })
+    } catch (error) { }
+  }, [getFeeSchedule, getFeeId])
+
+  useEffect(() => {
+    isEdit && getFeeId && fetchFeeSchedule()
+  }, [isEdit, fetchFeeSchedule, getFeeId])
+
+
+  const valueSetter = (inputs: CptCodeSelectorOption) => {
+    const { description, longDescription, shortDescription } = inputs;
+    setValue('description', description || '');
+    setValue('longDescription', longDescription || '')
+    setValue('shortDescription', shortDescription || '')
+  }
+
 
   return (
     <Box maxWidth={480}>
@@ -82,14 +161,14 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
             <Typography variant='h3'>{FEE_SCHEDULE}</Typography>
-
-            <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading || updateLoading || getLoading}>{SAVE_TEXT}</Button>
           </Box>
 
           <Box p={2} mt={2} maxHeight="calc(100vh - 100px)" className="overflowY-auto">
             <Grid container spacing={3} direction="row">
               <Grid item md={12} sm={12} xs={12}>
                 <PracticeSelector
+                  addEmpty
                   isRequired
                   label={PRACTICE}
                   name="practiceId"
@@ -109,11 +188,12 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
               <Grid item md={12} sm={12} xs={12}>
                 <Grid container spacing={3} direction="row">
                   <Grid item md={6} sm={12} xs={12}>
-                    <InputController
+                    <CPTCodesSelector
+                      addEmpty
                       isRequired
-                      fieldType="text"
-                      controllerName="cptCode"
-                      controllerLabel={CPT_CODE_PROCEDURE_CODE}
+                      name="cptCode"
+                      label={CPT_CODE_PROCEDURE_CODE}
+                      valueSetter={valueSetter}
                     />
                   </Grid>
 
@@ -131,15 +211,19 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
                 <Grid container spacing={3} direction="row">
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
+                      disablePast
                       name="effectiveDate"
                       label={EFFECTIVE_DATE}
+                      disableFuture={false}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
+                      disablePast
                       name="expireDate"
                       label={EXPIRATION_DATE}
+                      disableFuture={false}
                     />
                   </Grid>
                 </Grid>
@@ -147,7 +231,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
 
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
-                  isRequired
                   fieldType="text"
                   controllerName="description"
                   controllerLabel={DESCRIPTION}
@@ -156,7 +239,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
 
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
-                  isRequired
                   fieldType="text"
                   controllerName="shortDescription"
                   controllerLabel={SHORT_DESCRIPTION}

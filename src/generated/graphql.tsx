@@ -116,6 +116,13 @@ export type AgreementsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type AllCptCodePayload = {
+  __typename?: 'AllCPTCodePayload';
+  cptCodes?: Maybe<Array<Maybe<CptCodes>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -493,6 +500,24 @@ export enum Communicationtype {
   VoiceMessage = 'VOICE_MESSAGE'
 }
 
+export type CptCodePayload = {
+  __typename?: 'CPTCodePayload';
+  cptCode?: Maybe<CptCodes>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type CptCodes = {
+  __typename?: 'CPTCodes';
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CancelAppointment = {
   reason: Scalars['String'];
   token: Scalars['String'];
@@ -799,6 +824,14 @@ export type CreateBillingAddressInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type CreateCptCodeInput = {
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
 };
 
 export type CreateContactInput = {
@@ -1620,6 +1653,11 @@ export type FieldsTypes = {
   type: ElementType;
 };
 
+export type FindAllCptCodesInput = {
+  code?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
 export type FindAllFeeScheduleInput = {
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
@@ -1768,6 +1806,10 @@ export type GetAttachmentsByLabOrder = {
 export type GetAttachmentsByPolicyId = {
   policyId: Scalars['String'];
   typeId: Scalars['String'];
+};
+
+export type GetCptCodeInput = {
+  id: Scalars['String'];
 };
 
 export type GetContact = {
@@ -2186,6 +2228,7 @@ export type Mutation = {
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
+  createCPTCode: CptCodePayload;
   createContact: ContactPayload;
   createCopay: Copay;
   createDoctor: DoctorPayload;
@@ -2224,6 +2267,7 @@ export type Mutation = {
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
+  removeCPTCode: CptCodePayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
@@ -2254,6 +2298,7 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateCPTCode: CptCodePayload;
   updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
@@ -2350,6 +2395,11 @@ export type MutationCreateAttachmentDataArgs = {
 
 export type MutationCreateBillingArgs = {
   createBillingInput: BillingInput;
+};
+
+
+export type MutationCreateCptCodeArgs = {
+  createCPTCodeInput: CreateCptCodeInput;
 };
 
 
@@ -2543,6 +2593,11 @@ export type MutationRemoveAttachmentMediaArgs = {
 };
 
 
+export type MutationRemoveCptCodeArgs = {
+  removeCPTCodeInput: RemoveCptCodeInput;
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
 };
@@ -2685,6 +2740,11 @@ export type MutationUpdateAttachmentDataArgs = {
 
 export type MutationUpdateAutoLogoutTimeArgs = {
   userInfoInput: UserInfoInput;
+};
+
+
+export type MutationUpdateCptCodeArgs = {
+  updateCPTCodeInput: UpdateCptCodeInput;
 };
 
 
@@ -3725,6 +3785,7 @@ export type Query = {
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
+  findAllCptCodes: AllCptCodePayload;
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
@@ -3761,6 +3822,7 @@ export type Query = {
   getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
+  getCPTCode: CptCodePayload;
   getClaimFile: ClaimFilePayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
@@ -3911,6 +3973,11 @@ export type QueryFindAllAppointmentsArgs = {
 
 export type QueryFindAllContactsArgs = {
   contactInput: ContactInput;
+};
+
+
+export type QueryFindAllCptCodesArgs = {
+  findAllCptCodesInput: FindAllCptCodesInput;
 };
 
 
@@ -4086,6 +4153,11 @@ export type QueryGetAttachmentsByLabOrderArgs = {
 
 export type QueryGetAttachmentsByPolicyIdArgs = {
   getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
+};
+
+
+export type QueryGetCptCodeArgs = {
+  getCPTCodeInput: GetCptCodeInput;
 };
 
 
@@ -4350,6 +4422,10 @@ export type RemoveAppointment = {
 
 export type RemoveAttachment = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveCptCodeInput = {
+  id: Scalars['String'];
 };
 
 export type RemoveContact = {
@@ -5098,6 +5174,15 @@ export type UpdateBillingAddressInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateCptCodeInput = {
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
 };
 
 export type UpdateContactInput = {
@@ -6227,6 +6312,13 @@ export type GetCurrentFacilityQueryVariables = Exact<{
 
 
 export type GetCurrentFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string } | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type FindAllCptCodesQueryVariables = Exact<{
+  findAllCptCodesInput: FindAllCptCodesInput;
+}>;
+
+
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllDoctorPatientQueryVariables = Exact<{
   doctorPatientsInput: DoctorPatientsInput;
@@ -10101,6 +10193,56 @@ export function useGetCurrentFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCurrentFacilityQueryHookResult = ReturnType<typeof useGetCurrentFacilityQuery>;
 export type GetCurrentFacilityLazyQueryHookResult = ReturnType<typeof useGetCurrentFacilityLazyQuery>;
 export type GetCurrentFacilityQueryResult = Apollo.QueryResult<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>;
+export const FindAllCptCodesDocument = gql`
+    query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
+  findAllCptCodes(findAllCptCodesInput: $findAllCptCodesInput) {
+    cptCodes {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCptCodesQuery__
+ *
+ * To run a query within a React component, call `useFindAllCptCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCptCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCptCodesQuery({
+ *   variables: {
+ *      findAllCptCodesInput: // value for 'findAllCptCodesInput'
+ *   },
+ * });
+ */
+export function useFindAllCptCodesQuery(baseOptions: Apollo.QueryHookOptions<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>(FindAllCptCodesDocument, options);
+      }
+export function useFindAllCptCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>(FindAllCptCodesDocument, options);
+        }
+export type FindAllCptCodesQueryHookResult = ReturnType<typeof useFindAllCptCodesQuery>;
+export type FindAllCptCodesLazyQueryHookResult = ReturnType<typeof useFindAllCptCodesLazyQuery>;
+export type FindAllCptCodesQueryResult = Apollo.QueryResult<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>;
 export const FindAllDoctorPatientDocument = gql`
     query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
