@@ -1,25 +1,27 @@
 // packages block
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, } from "react";
+import { Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography } from "@material-ui/core";
 // components block
+import Alert from "../../common/Alert";
 import Search from "../../common/Search";
 import FeeScheduleForm from './feeScheduleForm';
 import SideDrawer from '../../common/SideDrawer';
 import TableLoader from "../../common/TableLoader";
 import HeaderSelector from "../../common/HeaderSelector";
+import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../context";
-import { isSuperAdmin, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
-import { useFindAllFeeSchedulesLazyQuery } from "../../../generated/graphql";
+import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
+import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
 import {
   ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, EFFECTIVE_DATE, EXPIRY_DATE, MODIFIER, PAGE_LIMIT, PRICING,
-  FEE_SCHEDULE, ADD_NEW_TEXT
+  FEE_SCHEDULE, ADD_NEW_TEXT, DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE
 } from "../../../constants";
 
 const FeeTable: FC = (): JSX.Element => {
@@ -28,7 +30,7 @@ const FeeTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
 
-  const { page, totalPages, feeSchedules, drawerOpened } = state
+  const { page, totalPages, feeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel } = state
   const { roles, facility } = user || {}
   const { practiceId } = facility || {}
 
@@ -39,6 +41,7 @@ const FeeTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onCompleted: (data) => {
+      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
       const { findAllFeeSchedules } = data || {}
       const { feeSchedules, pagination, response } = findAllFeeSchedules;
       const { status } = response || {}
@@ -54,10 +57,36 @@ const FeeTable: FC = (): JSX.Element => {
     },
     onError: (error) => {
       dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
+      dispatch({ type: ActionType.SET_PAGE, page: 1 })
+      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
       dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules: [] })
     }
   });
 
+  const [removeFeeSchedule, { loading: delFeeLoading }] = useRemoveFeeScheduleMutation({
+    onCompleted: async (data) => {
+      if (data) {
+        const { removeFeeSchedule: { response } } = data
+
+        if (response) {
+          try {
+            const { message, status } = response;
+            if (status === 200) {
+              message && Alert.success(message);
+              dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
+              await fetchFeeSchedule();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
+            }
+          } catch (error) { }
+        }
+      }
+    },
+    onError: () => {
+      Alert.error(CANT_DELETE_FEE_SCHEDULE)
+      dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
+    },
+  })
 
   const fetchFeeSchedule = useCallback(async () => {
     try {
@@ -68,8 +97,8 @@ const FeeTable: FC = (): JSX.Element => {
   }, [page, practiceId, isSuper, findAllFeeSchedule])
 
   useEffect(() => {
-    fetchFeeSchedule()
-  }, [fetchFeeSchedule])
+    getFeeSchedule && fetchFeeSchedule()
+  }, [fetchFeeSchedule, getFeeSchedule])
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -82,6 +111,23 @@ const FeeTable: FC = (): JSX.Element => {
   });
 
   const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DEL_FEE_ID, delFeeId: id })
+      dispatch({ type: ActionType.SET_DEL_OPEN, openDel: true })
+    }
+  };
+
+  const handleDeleteFeeSchedule = async () => {
+    if (delFeeId) {
+      await removeFeeSchedule({
+        variables: {
+          removeFeeScheduleInput: { id: delFeeId }
+        }
+      })
+    }
+  };
 
   return (
     <>
@@ -139,8 +185,8 @@ const FeeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{cptCode}</TableCell>
                     <TableCell scope="row">{modifier}</TableCell>
                     <TableCell scope="row">{description}</TableCell>
-                    <TableCell scope="row">{effectiveDate}</TableCell>
-                    <TableCell scope="row">{expireDate}</TableCell>
+                    <TableCell scope="row">{effectiveDate ? getFeeScheduleDate(effectiveDate) : ''}</TableCell>
+                    <TableCell scope="row">{expireDate ? getFeeScheduleDate(expireDate) : ''}</TableCell>
                     <TableCell scope="row">{serviceFee}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -148,7 +194,7 @@ const FeeTable: FC = (): JSX.Element => {
                           <EditNewIcon />
                         </Box>
 
-                        <Box className={classes.iconsBackground}>
+                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashNewIcon />
                         </Box>
                       </Box>
@@ -183,6 +229,17 @@ const FeeTable: FC = (): JSX.Element => {
       <SideDrawer drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer}>
         <FeeScheduleForm dispatcher={dispatch} state={state} />
       </SideDrawer>
+
+      <ConfirmationModal
+        title={FEE_SCHEDULE}
+        isOpen={openDel}
+        isLoading={delFeeLoading}
+        description={DELETE_FEE_SCHEDULE_DESCRIPTION}
+        handleDelete={handleDeleteFeeSchedule}
+        setOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_DEL_OPEN, openDel: open })
+        }
+      />
     </>
   );
 };

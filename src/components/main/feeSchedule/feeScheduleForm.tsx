@@ -38,11 +38,13 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
     onCompleted: (data) => {
       const { createFeeSchedule } = data || {}
       const { response } = createFeeSchedule || {}
-      const { status } = response || {}
+      const { status, message } = response || {}
 
       if (status === 200) {
+        message && Alert.success(message)
         dispatcher({ type: ActionType.SET_PAGE, page: 1 })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
       }
     },
     onError: (error) => {
