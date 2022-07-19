@@ -8,8 +8,8 @@ import Loader from '../../../../../common/Loader';
 import CoverageDetailsHeader from './CoverageDetailsHeader';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
-  AMOUNT, AUTH_CERT_REQUIRED, COVERAGE_LEVEL, COVERAGE_SUMMARY, COVERAGE_SUMMARY_COLUMNS, DETAILED_COVERAGE_INFORMATION, ELIGIBILITY_ROUTE, FACILITY_TYPE,
-  IN_NETWORK, MESSAGE, REMAINING, SERVICE_TYPE, TIME_PERIOD
+  AMOUNT, AUTH_CERT_REQUIRED, COVERAGE_LEVEL, COVERAGE_SUMMARY, COVERAGE_SUMMARY_COLUMNS, DETAILED_COVERAGE_INFORMATION, FACILITY_TYPE,
+  IN_NETWORK, MESSAGE, PATIENTS_ROUTE, REMAINING, SERVICE_TYPE, TIME_PERIOD
 } from '../../../../../../constants';
 import { PolicyCoverage, PolicyEligibilityWithPatientPayload, useGetPoliciesEligibilityLazyQuery } from '../../../../../../generated/graphql';
 import { ParamsType } from '../../../../../../interfacesTypes';
@@ -126,7 +126,7 @@ const CoverageDetailsComponent = () => {
     getPolicyEligibilityLoading ? <Loader loading loaderText='Loading Coverage Details...' /> :
       <>
         <Box display='flex'>
-          <BackButton to={`${ELIGIBILITY_ROUTE}/${patientId}`} />
+          <BackButton to={`${PATIENTS_ROUTE}/${patientId}/details/2`} />
         </Box>
         <CoverageDetailsHeader
           patient={patient}
