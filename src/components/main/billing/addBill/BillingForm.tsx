@@ -336,6 +336,7 @@ const BillingForm: FC<BillingFormProps> = (
         </Card>
 
         <Box p={2} />
+
         <Box>
           <TabContext value={selectedTab}>
             <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>

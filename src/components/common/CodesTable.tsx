@@ -1,22 +1,21 @@
 //packages block
-import { Box, Card, Grid, Typography } from "@material-ui/core";
 import { FC } from "react";
+import { Box, Card, Grid, Typography } from "@material-ui/core";
 //components block
 //constants, interfaces, utils block
 import { BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS, MODIFIERS, UNIT } from "../../constants";
 import { CodesTableProps } from "../../interfacesTypes";
-import { useTableStyles } from "../../styles/tableStyles";
 import { GRAY_SIX, GREY_NINE } from "../../theme";
 
 const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) => {
-  const classes = useTableStyles();
 
   return (
     <Card>
-      <Box p={2} className={classes.mainTableContainer}>
+      <Box p={2}>
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">{title}</Typography>
         </Box>
+
         {/* <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>
@@ -71,11 +70,11 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
         </Box>
 
         {(tableData)?.map(({
-          code, description, codeId, diagPointer, m1, m2, m3, m4, price, unit
-        }, index) => {
+          code, description, diagPointer, m1, m2, m3, m4, price, unit
+        }) => {
           return (
             <>
-              <Box pl={4}>
+              <Box pl={4} mb={1}>
                 <Grid container spacing={3} direction="row">
                   <Grid item md={3} sm={3} xs={3}>
                     {code}
@@ -95,45 +94,55 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
                 </Grid>
               </Box>
 
-              {shouldShowPrice && <Box pl={4} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
-                <Grid container spacing={3} direction="row">
-                  <Grid item md={5} sm={12} xs={12}>
-                    <Typography variant="h6" color="textPrimary">{MODIFIERS}</Typography>
+              {shouldShowPrice && <Box pl={0} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
+                <Grid container spacing={0} direction="row">
+                  <Grid item md={3} sm={3} xs={4}>
+                    <Box py={1.6} pl={3} bgcolor={GREY_NINE}>
+                      <Box maxWidth={300}>
+                        <Typography variant="h5" color="textPrimary" noWrap>{MODIFIERS}</Typography>
+                      </Box>
+                    </Box>
 
-                    <Box mt={1} display='flex'>
-                      <Box mr={1}>
-                        <Typography variant="h5" color="textPrimary">{m1}</Typography>
+                    <Box pl={3} mt={1} display='flex' flexWrap='wrap'>
+                      <Box mr={1.5}>
+                        <Typography variant="body1" color="textPrimary">{m1}</Typography>
                       </Box>
 
-                      <Box mr={1}>
-                        <Typography variant="h5" color="textPrimary">{m2}</Typography>
+                      <Box mr={1.5}>
+                        <Typography variant="body1" color="textPrimary">{m2}</Typography>
                       </Box>
 
-                      <Box mr={1}>
-                        <Typography variant="h5" color="textPrimary">{m3}</Typography>
+                      <Box mr={1.5}>
+                        <Typography variant="body1" color="textPrimary">{m3}</Typography>
                       </Box>
 
-                      <Box mr={1}>
-                        <Typography variant="h5" color="textPrimary">{m4}</Typography>
+                      <Box>
+                        <Typography variant="body1" color="textPrimary">{m4}</Typography>
                       </Box>
                     </Box>
                   </Grid>
 
-                  <Grid item md={5} sm={12} xs={12}>
-                    <Typography variant="h6" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
+                  <Grid item md={5} sm={5} xs={4}>
+                    <Box py={1.6} pl={3} bgcolor={GREY_NINE}>
+                      <Box maxWidth={300}>
+                        <Typography variant="h5" color="textPrimary" noWrap>{DIAGNOSIS_POINTERS}</Typography>
+                      </Box>
+                    </Box>
 
                     <Box mt={1} display='flex'>
-                      <Box mr={1}>
-                        <Typography variant="h5" color="textPrimary">{diagPointer}</Typography>
+                      <Box pl={3} mr={1}>
+                        <Typography variant="body1" color="textPrimary">{diagPointer}</Typography>
                       </Box>
                     </Box>
                   </Grid>
 
-                  <Grid item md={1} sm={12} xs={12}>
-                    <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
+                  <Grid item md={4} sm={4} xs={4}>
+                    <Box py={1.6} pl={3} bgcolor={GREY_NINE}>
+                      <Typography variant="h5" color="textPrimary">{UNIT}</Typography>
+                    </Box>
 
-                    <Box mt={1}>
-                      <Typography variant="h5" color="textPrimary">{unit}</Typography>
+                    <Box pl={3} mt={1}>
+                      <Typography variant="body1" color="textPrimary">{unit}</Typography>
                     </Box>
                   </Grid>
                 </Grid>
@@ -143,8 +152,8 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
         }
         )}
       </Box>
-    </Card >
+    </Card>
   )
 }
 
-export default CodesTable
+export default CodesTable;
