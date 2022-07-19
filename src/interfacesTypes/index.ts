@@ -359,10 +359,22 @@ export interface CardChartingOption {
 }
 
 export interface TableCodesProps {
-  id: string;
+  id?: string
+  codeId?: string;
   code: string;
   description: string;
   price?: string;
+  codeType?: CodeType;
+  m1?: string;
+  m2?: string;
+  m3?: string;
+  m4?: string;
+  diag1?: string;
+  diag2?: string;
+  diag3?: string;
+  diag4?: string;
+  unit?: string
+  diagPointer?: string
 }
 
 export interface CodeTablesData {
@@ -848,7 +860,7 @@ export interface AddAllergyModalProps extends GeneralFormProps {
 export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
-  moduleName: ITEM_MODULE
+  moduleName: ITEM_MODULE.cptCode | ITEM_MODULE.icdCodes
 }
 
 export interface PolicyCardProps extends GeneralFormProps {
@@ -898,8 +910,10 @@ export interface CreateBillingProps {
   claimDate: string
   servicingProvider: SelectorOption
   renderingProvider: SelectorOption
+  claimStatus: SelectorOption
   facility: SelectorOption
   pos: SelectorOption
+  uncoveredAmount: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -1045,6 +1059,10 @@ export interface CopayFields {
   copayId?: string
   copayType?: SelectorOption
   amount?: string
+}
+
+export interface ClaimStatusFields {
+  statusName?: string
 }
 
 export interface InsuranceCreateInput {
@@ -1215,6 +1233,13 @@ export interface CopayModalProps {
   setIsOpen: Function;
   insuranceId?: string;
   billingStatus?: string
+}
+
+export interface ClaimStatusModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  setEditId: Function;
+  refetch: Function
 }
 
 export interface CheckoutModalProps {

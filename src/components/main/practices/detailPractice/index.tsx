@@ -24,7 +24,7 @@ import {
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
   PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
-  ATTACHMENT_TITLES,
+  ATTACHMENT_TITLES, TAX_ID_INFO, TAX_ID, NPI_INFO, GROUP_NPI,
 } from '../../../../constants';
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
@@ -89,7 +89,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   });
 
   const setEditData = (practice: PracticePayload['practice']) => {
-    const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice || {};
+    const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice || {};
 
     fax && setValue('fax', fax)
     ein && setValue('ein', ein)
@@ -99,6 +99,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     champus && setValue('champus', champus)
     medicare && setValue('medicare', medicare)
     medicaid && setValue('medicaid', medicaid)
+    taxId && setValue('taxId', taxId)
+    npi && setValue('npi', npi)
   }
 
   const [getAttachments, { loading: getAttachmentsLoading }] = useGetAttachmentsLazyQuery({
@@ -147,6 +149,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
           name && setPracticeName(name)
           Alert.success(message);
           setEdit(!edit)
+          fetchPractice()
         }
       }
     }
@@ -205,8 +208,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
-    const { name, phone, fax, upin, ein, medicaid, medicare, champus } = inputs;
-    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin }
+    const { name, phone, fax, upin, ein, medicaid, medicare, champus, npi, taxId } = inputs;
+    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId }
 
     practiceId && await updatePractice({
       variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }
@@ -358,18 +361,34 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={6} sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="champus"
-                                  controllerLabel={CHAMPUS}
-                                />
-                              </Grid>
-                            </Grid>
+                          <Grid item md={4} sm={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="champus"
+                              controllerLabel={CHAMPUS}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              info={TAX_ID_INFO}
+                              controllerName="taxId"
+                              controllerLabel={TAX_ID}
+                            />
+                          </Grid>
+
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              info={NPI_INFO}
+                              fieldType="text"
+                              controllerName="npi"
+                              controllerLabel={GROUP_NPI}
+                            />
                           </Grid>
                         </Grid>
+
                       </Collapse>
                     </form>
                   </FormProvider>

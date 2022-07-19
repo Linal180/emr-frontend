@@ -2,6 +2,7 @@
 import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
+import { Skeleton } from "@material-ui/lab";
 import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
@@ -12,6 +13,16 @@ import {
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
+import {
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
+} from "../interfacesTypes";
+import {
+  ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
+  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE,
+  ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
+  RED_THREE_RGBA, VERY_MILD, WHITE
+} from "../theme";
 import {
   ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
@@ -26,19 +37,8 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType,
+  WeightType, ClaimStatus,
 } from "../generated/graphql";
-import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
-  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
-} from "../interfacesTypes";
-import {
-  ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
-  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE,
-  ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
-  RED_THREE_RGBA, VERY_MILD, WHITE
-} from "../theme";
-import { Skeleton } from "@material-ui/lab";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -82,7 +82,12 @@ export const renderLoading = (label: string | JSX.Element) => (
       </InputLabel>
     </Box>
 
-    <Box display="flex" justifyContent="space-between" alignItems="center" borderRadius={4} className="skelton-input">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius={4} className="skelton-input"
+    >
       <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
     </Box>
   </>
@@ -1484,6 +1489,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
         default:
           break;
       }
@@ -1949,8 +1959,12 @@ export function sortingArray<arrayType>(array: arrayType, by: string, order: Ord
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
 
-export const getArrayOfObjSum = (arr: any[], key: string) =>
-  arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0);
+export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+
+export const getCharFromNumber = (num: number, isUpper = true) => {
+  const caseNumber = isUpper ? 65 : 97
+  return String.fromCharCode(caseNumber + num)
+}
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
   if (page > 1) {

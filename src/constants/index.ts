@@ -15,7 +15,7 @@ import {
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
   Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus,
-  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus, PatientPaymentType, PaymentType,
+  Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientPaymentType, PaymentType,
   PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns, Race,
   RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
@@ -84,6 +84,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
+export const STATUS_NAME = 'Status Name'
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
@@ -167,9 +168,12 @@ export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
+export const CREATE_CLAIM_STATUS = "Create Claim Status";
+export const UPDATE_CLAIM_STATUS = "Update Claim Status";
 export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form";
 export const DELETE_AGREEMENT_DESCRIPTION = "Confirm to delete agreement";
+export const DELETE_CLAIM_STATUS_DESCRIPTION = "Confirm to delete claim status";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
@@ -329,7 +333,7 @@ export const RECURRING_DATE = "Recurring Date";
 export const END_DATE = "End Date";
 export const WANT_RECURRING = "Recurring?";
 export const CONTACT_METHOD = "How we can contact you?";
-export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
+export const HCFA_DESC = "HCFA Box 10:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
 export const CONSENT_TO_MESSAGES = "Consent To messages";
 export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
@@ -360,10 +364,10 @@ export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
-export const ADD_DOCTOR = "Add Doctor";
+export const ADD_DOCTOR = "Add Provider";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
-export const EDIT_DOCTOR = "Edit Doctor";
+export const EDIT_DOCTOR = "Edit Provider";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_COPAY = "Add Copay";
 export const ARE_YOU_SURE = "Are you sure?";
@@ -374,7 +378,7 @@ export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
 export const CREATE_COPAY = "Create Copay";
 export const SET_TIME_ZONE = "Set Time Zone";
-export const UPDATE_DOCTOR = "Update Doctor";
+export const UPDATE_DOCTOR = "Update Provider";
 export const UPDATE_PATIENT = "Update Patient";
 export const CREATE_PATIENT = "Create Patient";
 export const CREATE_INVOICE = "Create Invoice";
@@ -400,6 +404,7 @@ export const ONSET_DATE = "Onset Date";
 export const ADD_ANOTHER = "ADD ANOTHER";
 export const SERVICE_DATE = "Service Date";
 export const COPAY_AMOUNT = "Copay Amount";
+export const UNCOVERED_AMT = "Uncovered Amt";
 export const CLAIM_STATUS = "Claim Status";
 export const CLAIM_DATE = "Claim Date";
 export const SUPERVISOR = "Supervisor";
@@ -422,6 +427,8 @@ export const PRIMARY_PROVIDER = "Primary Provider";
 export const FACILITY_INFO = "Facility Information";
 export const ONSET_DATE_TYPE = "Onset Date Type";
 export const OTHER_DATE_TYPE = "Other Date Type";
+export const BILLING_PROVIDER = "Billing Provider";
+export const RENDERING_PROVIDER = "Rendering Provider";
 export const SERVICING_PROVIDER = "Servicing Provider";
 export const ASSOCIATED_FACILITY = "Associated Facility";
 export const APPOINTMENT_FACILITY = "Appointment Facility";
@@ -446,6 +453,7 @@ export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
+export const UPDATE_PROBLEM = "Update Problem"
 export const ALLERGIES_TEXT = "Allergies";
 export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
@@ -574,7 +582,7 @@ export const DOB = "Date of Birth";
 export const DOB_TIME = "Date/Time";
 export const SPECIALTY = "Specialty";
 export const PRICING = "Pricing";
-export const DOCTOR_ID = "doctor id";
+export const DOCTOR_ID = "provider id";
 export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
 export const TAXONOMY_CODE = "Taxonomy Code";
@@ -589,10 +597,9 @@ export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const CPT_CODE_PROCEDURE_CODE = "CPT Code / Procedure Code";
 export const FAX = "Fax";
+export const CITY = "City";
 export const SUPER = "Super";
 export const ADMIN = "Admin";
-export const SLOTS_TEXT = "Slots";
-export const CITY = "City";
 export const EMAIL = "Email";
 export const PHONE = "Phone";
 export const STATE = "State";
@@ -600,14 +607,15 @@ export const PDF_TEXT = "PDF";
 export const SELECT = "Select";
 export const GENDER = "Gender";
 export const ENABLED = "Enabled";
-export const ADDRESS = "Address";
-export const ADDRESS_ONE = "Address 1";
-export const ADDRESS_TWO = "Address 2";
 export const COUNTRY = "Country";
+export const ADDRESS = "Address";
+export const SLOTS_TEXT = "Slots";
 export const RELATION = "Relation";
 export const ZIP_CODE = "Zip code";
 export const DISABLED = "Disabled";
 export const ADDRESS_2 = "Address 2";
+export const ADDRESS_ONE = "Address 1";
+export const ADDRESS_TWO = "Address 2";
 export const ENABLED_BY = "Enabled by";
 export const PICK_DAY_TEXT = "Pick Day";
 export const PICK_TIME_TEXT = "Pick Time";
@@ -619,11 +627,11 @@ export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const FACILITY_HOURS_END = "Facility hours end";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const FACILITY_HOURS_START = "Facility hours start";
-export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
+export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
-export const GROUP_NPI = "Group NPI";
+export const GROUP_NPI = "Group NPI ID";
 export const HASH = "#";
 export const N_A = "N/A";
 export const DAY = "Day";
@@ -631,7 +639,7 @@ export const PRN = "PRN";
 export const UPIN = "UPIN";
 export const PAGER = "Pager";
 export const TO_TEXT = "To:";
-export const TAX_ID = "Tax ID";
+export const TAX_ID = "Group Tax ID";
 export const GO_BACK = "Go Back";
 export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
@@ -679,9 +687,8 @@ export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
+export const UNIT = "Unit";
 export const PAGE_LIMIT = 9;
-export const USER_LOG_PAGE_LIMIT = 50;
-export const EIGHT_PAGE_LIMIT = 8;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -702,6 +709,7 @@ export const TO_DATE = "To Date";
 export const UNKNOWN = "Unknown";
 export const TIME_TO = "TIME:TO";
 export const SET = "Set Password";
+export const EIGHT_PAGE_LIMIT = 8;
 export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
@@ -711,31 +719,27 @@ export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
+export const MODIFIERS = "Modifiers";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
 export const FROM_DATE = "From Date";
 export const REACTION_PAGE_LIMIT = 50;
 export const DROPDOWN_PAGE_LIMIT = 10;
+export const USER_LOG_PAGE_LIMIT = 50;
 export const HISTORICAL = "Historical";
 export const TEST_TAKEN = "Test Taken";
 export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
-export const BILLING_TYPE = "Billing Type";
-export const UPDATE_FILTER = "Update Filter";
-export const PRESCRIBED_BY = "Prescribed By";
-export const STARTING_TIME = "Starting time";
-export const RECEIVED_DATE = "Received Date";
 export const TIME_OF_CHECK = "Time of Check";
-export const COLLECTED_DATE = "Collected Date";
 export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
 export const STAGE = "Stage";
 export const CANCEL = "Cancel";
-export const DOCTOR = "Doctor";
+export const DOCTOR = "Provider";
 export const BILLED = "Billed";
 export const RESULT = "Result";
 export const ACTIVE = "Active";
@@ -773,11 +777,9 @@ export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
 export const FA_TOKEN = "2fa_token";
-export const REMOTE_IP = "client_ip";
 export const USER_NAME = "Username";
+export const REMOTE_IP = "client_ip";
 export const PRACTICES = "Practices";
-export const ALL_LOG_TYPES = "All Log Types";
-export const RECENT_PRACTICES = "Recent Practices";
 export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
 export const VITAL_LIST_PAGE_LIMIT = 4;
@@ -789,29 +791,34 @@ export const LOCATION_ID = "Location ID";
 export const VENDOR_NAME = "Vendor Name";
 export const IN_PROGRESS = "In Progress";
 export const ADD_ALLERGY = "Add Allergy";
-export const UPDATE_ALLERGY = "Update Allergy";
 export const NEW_PROVIDER = "New Provider";
 export const REVENUE_CODE = "Revenue Code";
+export const BILLING_TYPE = "Billing Type";
 export const SERVICE_CODE = "Service Code";
+export const UPDATE_FILTER = "Update Filter";
+export const ALL_LOG_TYPES = "All Log Types";
 export const REGISTERED_ON = "Registered on";
+export const RECEIVED_DATE = "Received Date";
 export const VIEW_PATIENTS = "View Patients";
+export const STARTING_TIME = "Starting time";
+export const PRESCRIBED_BY = "Prescribed By";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
+export const UPDATE_ALLERGY = "Update Allergy";
 export const CLAIM_RECEIVED = "Claim Received";
+export const COLLECTED_DATE = "Collected Date";
 export const VIEW_FACILITIES = "View Facilities";
 export const NEW_APPOINTMENT = "New Appointment";
 export const MEDICAL_BILLING = "Medical Billing";
-export const POS = "Place of Service Code (POS)";
+export const POS = "POS";
 export const LAB_TEXT = "Lab";
 export const REVOKE = "REVOKE";
+export const NUMBER = "Number";
 export const OTP_CODE = "OTP Code";
 export const LOCATION = "Location";
 export const DURATION = "Duration";
 export const RECURRING = "Recurring";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
-export const LAST_FIVE_RESULTS = "Last 5 Results";
-export const BILLING_AND_INSURANCE = "Billing & Insurance";
-export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const NEW_STAFF = "New Staff";
 export const LAST_NAME = "Last Name";
 export const ACTIVATED = "Activated";
@@ -819,7 +826,7 @@ export const APPT_TYPE = "Appt Type:";
 export const ORDER_NUMBER = "Order #";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
-export const DOCTORS_TEXT = "Doctors";
+export const DOCTORS_TEXT = "Providers";
 export const TEST_NOTES = "Test Notes";
 export const INITIATED = "Initialized";
 export const UNVERIFIED = "Unverified";
@@ -829,6 +836,7 @@ export const START_TIME = "Start Time";
 export const START_DATE = "Start Date";
 export const SUPER_BILL = "Super Bill";
 export const DEACTIVATE = "DEACTIVATE";
+export const ADD_VITALS = "Add Vitals";
 export const SETTINGS_TEXT = "Settings";
 export const REQUESTS_TEXT = "Requests";
 export const INVOICES_TEXT = "Invoices";
@@ -836,7 +844,7 @@ export const PATIENTS_TEXT = "Patients";
 export const CARD_NUMBER = "Card Number";
 export const EXPIRY_DATE = "Expiry Date";
 export const RESEND_OTP = "Resend OTP ?";
-export const NUMBER = "Number";
+export const ADD_PROBLEM = "Add Problem";
 export const MY_PATIENTS = "My Patients";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
@@ -848,6 +856,9 @@ export const DELETE_USER = "Delete User";
 export const ADD_SERVICE = "Add Service";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
+export const ADD_PROBLEMS = "Add Problems";
+export const VIEW_BILLING = "View Billing";
+export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
 export const USER_ROLE = "boca_admin_role";
@@ -866,6 +877,8 @@ export const UNAUTHORIZED = "Unauthorized";
 export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const FACILITIES_TEXT = "Facilities";
+export const UPDATE_VITALS = "Update Vitals";
+export const EDIT_PROBLEMS = "Edit Problems";
 export const FACILITY_NAME = "Facility Name";
 export const PRACTICE_NAME = "Practice Name";
 export const SPECIMEN_TYPE = "Specimen Type";
@@ -888,16 +901,10 @@ export const UPDATE_SERVICE = "Update Service";
 export const DELETE_PATIENT = "Delete Patient";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
-export const RECENT_READINGS = "Recent Readings";
 export const LONG_DESCRIPTION = "Long Description";
 export const SHORT_DESCRIPTION = "Short Description";
-export const LAST_READING_DATE = "Last Reading Date: ";
 export const SERVICE_FEE_CHARGE = "Service Fee (Charge)";
 export const PATIENT_INFORMATION = "Patient Information";
-export const REGISTERED_PATIENTS = "Registered Patients";
-export const TODAYS_APPOINTMENTS = "Today’s Appointments";
-export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
-export const TOTAL_NUMBER_OF_USERS = "Total Number of Users";
 export const SUBSCRIBER_INFORMATION = "Subscriber Information";
 export const PLAN_DETAIL_INFORMATION = "Plan Detail Information";
 export const PROFESSIONAL_OFFICE_VISIT = "Professional Office Visit";
@@ -905,7 +912,6 @@ export const HEALTH_PLAN_BENEFITS = "Health Plan Benefits";
 export const PRIMARY_CARE_PROVIDER_INFO = "Primary Care Provider Info";
 export const DETAILED_COVERAGE_INFORMATION = "Detailed Coverage Information";
 export const PROFESSIONAL_PHYSICIAN_DATA = "Professional (Physician) Visit - Office";
-export const ADD_VITALS = "Add Vitals";
 export const REMAINING = "Remaining";
 export const MESSAGE = "Message";
 export const IN_NETWORK = "In Network";
@@ -917,13 +923,6 @@ export const URGENT_CARE = "Urgent Care";
 export const CHIROPRACTIC = "Chiropractic";
 export const SERVICE_TYPE = "Service Type";
 export const COVERAGE_LEVEL = "Coverage Level";
-export const UPDATE_VITALS = "Update Vitals";
-export const ADD_PROBLEM = "Add Problem";
-export const ADD_PROBLEMS = "Add Problems";
-export const VIEW_BILLING = "View Billing";
-export const US_DATE_FORMAT = "mm/dd/yyyy";
-export const EDIT_PROBLEMS = "Edit Problems";
-export const UPDATE_PROBLEM = "Update Problem";
 export const EXCEPTION = "Forbidden exception";
 export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
@@ -934,12 +933,12 @@ export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
 export const ALL_INSURANCES = "All Insurances";
-export const DOCTOR_SIGNOFF = "Doctor Signoff";
+export const DOCTOR_SIGNOFF = "Provider Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const ROLE_DETAILS_TEXT = "Role Details";
-export const DOCTOR_SCHEDULE = "Doctor Schedule";
+export const DOCTOR_SCHEDULE = "Provider Schedule";
 export const MY_APPOINTMENTS = "My Appointments";
 export const DELETE_FACILITY = "Delete Facility";
 export const UPDATE_LOCATION = "Update Location";
@@ -947,6 +946,8 @@ export const COLLECTION_DATE = "Collection Date";
 export const COLLECTION_TIME = "Collection Time";
 export const CREATE_PRACTICE = "Create Practice";
 export const SET_PERMISSIONS = "Set Permissions";
+export const RECENT_READINGS = "Recent Readings";
+export const LAST_FIVE_RESULTS = "Last 5 Results";
 export const ADD_FACILITY_SERVICE = "Add Service";
 export const LAB_ORDER_RESULT = "Lab Order Result";
 export const APPOINTMENT_INFO = "Appointment Info";
@@ -954,8 +955,10 @@ export const RESULT_FILE_NAME = "Result File Name";
 export const LAST_APPOINTMENT = "Last Appointment";
 export const ACCESSION_NUMBER = "Accession Number";
 export const ALL_APPOINTMENTS = "All Appointments";
+export const RECENT_PRACTICES = "Recent Practices";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const RESULTS_ENTERED = "Results Entered At";
+export const PATIENT_INSURANCE = "Patient Insurance";
 export const RECENT_ACTIVITIES = "Recent Activities";
 export const ASSIGNED_PROVIDER = "Assigned Provider";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
@@ -963,17 +966,24 @@ export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const TOTAL_APPOINTMENTS = "Total Appointments";
 export const PATIENT_DISCHARGED = "Patient Discharged";
 export const QUICK_APPOINTMENTS = "Quick Appointments";
+export const DIAGNOSIS_POINTERS = "Diagnosis Pointers";
+export const LAST_READING_DATE = "Last Reading Date: ";
 export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
+export const REGISTERED_PATIENTS = "Registered Patients";
+export const TODAYS_APPOINTMENTS = "Today’s Appointments";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
-export const PATIENT_INSURANCE = "Patient Insurance";
+export const ADD_ANOTHER_REACTION = "Add Another Reaction";
 export const CHECK_ELIGIBILITY = "Check Eligibility";
 export const COVERAGE_DETAILS = "Coverage Details";
 export const ELIGIBILITY_LISTING = "Eligibility Listing";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
+export const BILLING_AND_INSURANCE = "Billing & Insurance";
+export const TOTAL_USERS_PER_ROLE = "Total Users Per Role";
 export const ENTER_OTP_CODE = "Please enter your OTP Code";
 export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
 export const UPCOMING_APPOINTMENTS = "Upcoming Appointments";
+export const TOTAL_NUMBER_OF_USERS = "Total Number of Users";
 export const AVAILABILITY_SCHEDULE = "Availability Schedule";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
@@ -1012,7 +1022,6 @@ export const TODAY = "Today";
 export const PRICE = "Price";
 export const DOB_TEXT = "DOB";
 export const CREATE = "Create";
-export const MARRIED = "MARRIED";
 export const AMOUNT = "Amount";
 export const SUBMIT = "Submit";
 export const VISITS = "Visits";
@@ -1023,6 +1032,7 @@ export const UPLOAD = "Upload";
 export const DETAIL = "Detail";
 export const HOME_TEXT = "Home";
 export const DETAILS = "Details";
+export const MARRIED = "MARRIED";
 export const PENDING = "Pending";
 export const MISSING = "Missing";
 export const ACTIONS = "Actions";
@@ -1063,6 +1073,9 @@ export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
 export const AGREEMENTS = "Agreements";
+export const CLAIM_STATUSES = "Claim Statuses";
+export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
+export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const LAB_ORDERS = "Lab Orders";
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
@@ -1122,6 +1135,7 @@ export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
 export const ADD_AGREEMENT = "Add Agreement";
+export const ADD_CLAIM_STATUS = "Add Claim Status";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
@@ -1252,6 +1266,7 @@ export const INSURANCE_PAYER_NAME = "Insurance Payer Name";
 export const SEARCH_FOR_ALLERGIES = "Search for Allergies";
 export const SEARCH_FOR_ICD_CODES = "Search for ICD Codes";
 export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
+export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
@@ -1290,24 +1305,24 @@ export const APPOINTMENT_CANCELLED_TEXT = "Appointment cancelled";
 export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
-export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
-export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
+export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete provider";
 export const SIGN_DOCUMENT_DESCRIPTION = "Confirm to sign document";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
+export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
+export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
+export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
-export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
-export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
@@ -1323,13 +1338,11 @@ export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
-export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
-export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
 export const ADD_INSURANCE_INFORMATION = "Click here to add insurance information";
-export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete doctor schedule";
+export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete provider schedule";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const DELETE_FACILITY_SCHEDULE_DESCRIPTION = "Confirm to delete facility schedule";
@@ -1344,7 +1357,7 @@ export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement 
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
 export const DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION = "Confirm to delete Insurance card file";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits";
-export const ELIGIBILITY_ERROR_MESSAGE='Realtime Eligibility is not supported by this insurance'
+export const ELIGIBILITY_ERROR_MESSAGE = 'Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
@@ -1385,7 +1398,7 @@ export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PROFILE_ROUTE = "/profile";
-export const DOCTORS_ROUTE = "/doctors";
+export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
@@ -1398,6 +1411,7 @@ export const MAINTENANCE_ROUTE = "/maintenance";
 export const PAST_APPOINTMENTS = "Past Appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const AGREEMENTS_ROUTE = "/agreements";
+export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const CANCELLATION_ROUTE = "/cancellation";
@@ -1534,10 +1548,10 @@ export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
-export const SCHEDULE_WITH_DOCTOR = "Schedule with doctor: ";
-export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
-export const DOCTOR_CREATED = "Doctor created successfully!";
-export const DOCTOR_UPDATED = "Doctor updated successfully!";
+export const SCHEDULE_WITH_DOCTOR = "Schedule with provider: ";
+export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
+export const DOCTOR_CREATED = "Provider created successfully!";
+export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1567,6 +1581,7 @@ export const CANT_DELETE_SELF_STAFF = "Staff can't delete itself";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const PERMISSIONS_SET = "Role Permissions set successfully";
 export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
+export const CANT_DELETE_CLAIM_STATUS = "Claim Status can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -1688,7 +1703,7 @@ export const TAX_ID_INFO =
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO =
   "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
 export const UPIN_INFO =
-  "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+  "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify providers in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -1873,8 +1888,6 @@ export const MAPPED_PRICING_PRODUCT_TYPE = mapEnum<typeof PricingProductType>(Pr
 export const MAPPED_COPAY_TYPE = mapEnum<typeof CopayType>(CopayType)
 
 export const MAPPED_POLICY_GENDER = mapEnum<typeof Policy_Holder_Gender_Identity>(Policy_Holder_Gender_Identity)
-
-export const MAPPED_PATIENT_BILLING_STATUS = mapEnum<typeof PatientBillingStatus>(PatientBillingStatus)
 
 export const MAPPED_PATIENT_PAYMENT_TYPE = mapEnum<typeof PatientPaymentType>(PatientPaymentType)
 
@@ -2235,6 +2248,7 @@ export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 export const AGREEMENTS_BREAD = { text: AGREEMENTS, link: AGREEMENTS_ROUTE, };
 export const AUDIT_LOG_BREAD = { text: AUDIT_LOG, link: AUDIT_LOG_ROUTE, };
 export const AGREEMENTS_NEW_BREAD = { text: ADD_AGREEMENT, link: `${AGREEMENTS_ROUTE}/new`, };
+export const CLAIM_STATUS_NEW_BREAD = { text: CLAIM_STATUSES, link: '', };
 export const AGREEMENTS_EDIT_BREAD = { text: EDIT_AGREEMENT, link: "", };
 
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
@@ -2296,15 +2310,15 @@ export const PROFILE_TOP_TABS = [
 
 export const DOCTOR_TOP_TABS = [
   {
-    title: "Doctor Profile",
+    title: "Provider Profile",
     value: "1",
   },
   {
-    title: "Doctors Schedule",
+    title: "Providers Schedule",
     value: "2",
   },
   {
-    title: "Doctors Appointments",
+    title: "Providers Appointments",
     value: "3",
   },
 ];
@@ -2553,7 +2567,7 @@ export enum ITEM_MODULE {
   documentTypes = 'documentTypes',
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
-
+  claimStatus = 'claimStatus',
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -2650,7 +2664,7 @@ export const MAPPED_STATUS = [
   },
   {
     value: "withDoctor",
-    label: "With Doctor",
+    label: "With Provider",
   },
   {
     value: "noShow",
@@ -2758,6 +2772,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: AGREEMENTS,
     link: AGREEMENTS_ROUTE,
     desc: AGREEMENTS_DESCRIPTION,
+  },
+  {
+    name: CLAIM_STATUSES,
+    link: CLAIM_STATUSES_ROUTE,
+    desc: CLAIM_STATUSES_DESCRIPTION,
   },
   {
     name: FFE_SCHEDULE,
@@ -3847,19 +3866,6 @@ export const PATIENT_CHARTING_TABS = [
   }
 ]
 
-export const ALLERGIES_DUMMY_DATA = [
-  {
-    name: "peanut",
-    value: "Nausea, Mild",
-    status: "Active"
-  },
-  {
-    name: "Pollen",
-    value: "Breathing Problem, Mild",
-    status: "Active"
-  },
-]
-
 export enum FormBuilderApiSelector {
   PAYMENT_TYPE = 'paymentType',
   SERVICE_SLOT = 'serviceSlot',
@@ -3955,6 +3961,10 @@ export enum FormBuilderPaymentTypes {
 }
 
 export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
+
+export const BILLING_MODIFIERS_DATA = ['M1', 'M2', 'M3', 'M4']
+
+export const DIAGNOSIS_POINTERS_DATA = ['ICD-1', 'ICD-2', 'ICD-3', 'ICD-4']
 
 export const AUDIT_LOG_TABLE_DUMMY_DATA = [
   {

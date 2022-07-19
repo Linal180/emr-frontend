@@ -1,5 +1,4 @@
 import { CodeTablesData } from "../interfacesTypes";
-import { generateString } from "../utils";
 
 export interface State {
   employment: boolean;
@@ -21,7 +20,7 @@ export const initialState: State = {
   insuranceId: '',
   tableCodesData: {},
   facilityId: '',
-  claimNumber: generateString(4),
+  claimNumber: '',
   isCheckoutModalOpen: false
 }
 
