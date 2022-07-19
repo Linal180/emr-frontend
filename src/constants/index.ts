@@ -360,10 +360,10 @@ export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
-export const ADD_DOCTOR = "Add Doctor";
+export const ADD_DOCTOR = "Add Provider";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
-export const EDIT_DOCTOR = "Edit Doctor";
+export const EDIT_DOCTOR = "Edit Provider";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_COPAY = "Add Copay";
 export const ARE_YOU_SURE = "Are you sure?";
@@ -374,7 +374,7 @@ export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
 export const CREATE_COPAY = "Create Copay";
 export const SET_TIME_ZONE = "Set Time Zone";
-export const UPDATE_DOCTOR = "Update Doctor";
+export const UPDATE_DOCTOR = "Update Provider";
 export const UPDATE_PATIENT = "Update Patient";
 export const CREATE_PATIENT = "Create Patient";
 export const CREATE_INVOICE = "Create Invoice";
@@ -574,7 +574,7 @@ export const DOB = "Date of Birth";
 export const DOB_TIME = "Date/Time";
 export const SPECIALTY = "Specialty";
 export const PRICING = "Pricing";
-export const DOCTOR_ID = "doctor id";
+export const DOCTOR_ID = "provider id";
 export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
 export const TAXONOMY_CODE = "Taxonomy Code";
@@ -735,7 +735,7 @@ export const EDIT = "Edit";
 export const FOOD = "Food";
 export const STAGE = "Stage";
 export const CANCEL = "Cancel";
-export const DOCTOR = "Doctor";
+export const DOCTOR = "Provider";
 export const BILLED = "Billed";
 export const RESULT = "Result";
 export const ACTIVE = "Active";
@@ -819,7 +819,7 @@ export const APPT_TYPE = "Appt Type:";
 export const ORDER_NUMBER = "Order #";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
-export const DOCTORS_TEXT = "Doctors";
+export const DOCTORS_TEXT = "Providers";
 export const TEST_NOTES = "Test Notes";
 export const INITIATED = "Initialized";
 export const UNVERIFIED = "Unverified";
@@ -934,12 +934,12 @@ export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
 export const ALL_INSURANCES = "All Insurances";
-export const DOCTOR_SIGNOFF = "Doctor Signoff";
+export const DOCTOR_SIGNOFF = "Provider Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const ROLE_DETAILS_TEXT = "Role Details";
-export const DOCTOR_SCHEDULE = "Doctor Schedule";
+export const DOCTOR_SCHEDULE = "Provider Schedule";
 export const MY_APPOINTMENTS = "My Appointments";
 export const DELETE_FACILITY = "Delete Facility";
 export const UPDATE_LOCATION = "Update Location";
@@ -1292,7 +1292,7 @@ export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
-export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
+export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete provider";
 export const SIGN_DOCUMENT_DESCRIPTION = "Confirm to sign document";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
@@ -1329,7 +1329,7 @@ export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
 export const ADD_INSURANCE_INFORMATION = "Click here to add insurance information";
-export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete doctor schedule";
+export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete provider schedule";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const DELETE_FACILITY_SCHEDULE_DESCRIPTION = "Confirm to delete facility schedule";
@@ -1385,7 +1385,7 @@ export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PROFILE_ROUTE = "/profile";
-export const DOCTORS_ROUTE = "/doctors";
+export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
@@ -1534,10 +1534,10 @@ export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
-export const SCHEDULE_WITH_DOCTOR = "Schedule with doctor: ";
-export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
-export const DOCTOR_CREATED = "Doctor created successfully!";
-export const DOCTOR_UPDATED = "Doctor updated successfully!";
+export const SCHEDULE_WITH_DOCTOR = "Schedule with provider: ";
+export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
+export const DOCTOR_CREATED = "Provider created successfully!";
+export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -1688,7 +1688,7 @@ export const TAX_ID_INFO =
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO =
   "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
 export const UPIN_INFO =
-  "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+  "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify providers in the United States.";
 export const CLIA_ID_NUMBER_INFO =
   "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -2296,15 +2296,15 @@ export const PROFILE_TOP_TABS = [
 
 export const DOCTOR_TOP_TABS = [
   {
-    title: "Doctor Profile",
+    title: "Provider Profile",
     value: "1",
   },
   {
-    title: "Doctors Schedule",
+    title: "Providers Schedule",
     value: "2",
   },
   {
-    title: "Doctors Appointments",
+    title: "Providers Appointments",
     value: "3",
   },
 ];
@@ -2650,7 +2650,7 @@ export const MAPPED_STATUS = [
   },
   {
     value: "withDoctor",
-    label: "With Doctor",
+    label: "With Provider",
   },
   {
     value: "noShow",
