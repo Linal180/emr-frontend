@@ -1,8 +1,15 @@
 // packages block
 import React from 'react';
 import { Box, Card, colors, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
-import { ADDRESS, APPOINTMENT_DATE, BILLING_CODE, DATE_OF_BIRTH, DATE_OF_SERVICE, DATE_OF_VISIT, DIAGNOSIS, DIAGNOSIS_CODE, DIS, DX_PTRS, EMAIL, FEE, GROUP_NO, INSURER, MEMBER_NO, MODS, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_INFORMATION, PATIENT_NAME, PATIENT_PHONE, PATIENT_RECEIPT, PLACE_OF_SERVICE_CODE, PRACTICE_NAME, PROVIDER_INFORMATION, PROVIDER_NAME, QTY, SUBSCRIBER, TOTAL_TEXT, TREATMENT } from '../../../constants';
-import { GREY_NINE } from '../../../theme';
+import {
+  ADDRESS, APPOINTMENT_DATE, BILLING_CODE, DATE_OF_BIRTH, DATE_OF_SERVICE, DATE_OF_VISIT, DIAGNOSIS,
+  DIAGNOSIS_CODE, DIS, DX_PTRS, EMAIL, FEE, GROUP_NO, INSURANCE_BALANCE_DUE, INSURANCE_PAID, INSURER,
+  MEMBER_NO, MODS, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE,
+  PATIENT_INFORMATION, PATIENT_NAME, PATIENT_PAID, PATIENT_PHONE, PATIENT_RECEIPT,
+  PATIENT_RECEIPT_AUTHORIZE_TEXT, PATIENT_SIGNATURE, PLACE_OF_SERVICE_CODE, PRACTICE_NAME, PROVIDER_INFORMATION,
+  PROVIDER_NAME, PROVIDER_SIGNATURE, QTY, SIGNATURE_DATE, SUBSCRIBER, TOTAL_CHARGES, TOTAL_DISCOUNTS, TOTAL_TEXT, TREATMENT
+} from '../../../constants';
+import { BLACK_FOUR, GREY_NINE } from '../../../theme';
 import { renderTh } from '../../../utils';
 // component block
 // constants, history, styling block
@@ -270,6 +277,84 @@ const SuperBillComponent = (): JSX.Element => {
               </TableRow>
             </TableBody>
           </Table>
+
+          <Box mt={5} mb={3} p={2} bgcolor={GREY_NINE}>
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{TOTAL_CHARGES}</Typography>
+              <Typography variant="body1">$300.0</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{TOTAL_DISCOUNTS}</Typography>
+              <Typography variant="body1">$0</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{PATIENT_PAID}</Typography>
+              <Typography variant="body1">$0</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{INSURANCE_PAID}</Typography>
+              <Typography variant="body1">$0</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{PATIENT_BALANCE_DUE}</Typography>
+              <Typography variant="body1">$0</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" flexWrap="wrap"
+              pb={2} alignItems="center" maxWidth={600}>
+              <Typography variant="h4">{INSURANCE_BALANCE_DUE}</Typography>
+              <Typography variant="body1">$0</Typography>
+            </Box>
+          </Box>
+
+          <Box mt={3} mb={2} p={2}>
+            <Typography variant="body1">{PATIENT_RECEIPT_AUTHORIZE_TEXT}</Typography>
+          </Box>
+
+          <Box display="flex" mx={2} maxWidth={1000}>
+            <Box display="flex" flex="40%" mb={3} width="100%">
+              <Box alignSelf="end">
+                <Typography variant="body1">{SIGNATURE_DATE}</Typography>
+              </Box>
+
+              <Box flex={1} mx={1} borderBottom={`2px solid ${BLACK_FOUR}`}></Box>
+            </Box>
+
+            <Box display="flex" flex="60%" mb={3} width="100%">
+              <Box alignSelf="end">
+                <Typography variant="body1">{PATIENT_SIGNATURE}</Typography>
+              </Box>
+
+              <Box flex={1} mx={1} borderBottom={`2px solid ${BLACK_FOUR}`}></Box>
+            </Box>
+          </Box>
+
+          <Box display="flex" mx={2} maxWidth={1000}>
+            <Box display="flex" flex="40%" mb={3} width="100%">
+              <Box alignSelf="end">
+                <Typography variant="body1">{SIGNATURE_DATE}</Typography>
+              </Box>
+
+              <Box flex={1} mx={1} borderBottom={`2px solid ${BLACK_FOUR}`}></Box>
+            </Box>
+
+            <Box display="flex" flex="60%" mb={3} width="100%">
+              <Box alignSelf="end">
+                <Typography variant="body1">{PROVIDER_SIGNATURE}</Typography>
+              </Box>
+
+              <Box flex={1} mx={1} borderBottom={`2px solid ${BLACK_FOUR}`}></Box>
+            </Box>
+          </Box>        
         </Box>
       </Card>
     </>
