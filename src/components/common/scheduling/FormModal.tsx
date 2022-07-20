@@ -217,9 +217,11 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   };
 
   useEffect(() => {
-    !!startAt && timeValidation(endAt, startAt) ?
-      clearErrors("endAt")
-      : setError("endAt", { message: invalidMessage(END_TIME) })
+    if (!!startAt) {
+      timeValidation(endAt, startAt) ?
+        clearErrors("endAt")
+        : setError("endAt", { message: invalidMessage(END_TIME) })
+    }
   }, [clearErrors, endAt, setError, startAt])
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
