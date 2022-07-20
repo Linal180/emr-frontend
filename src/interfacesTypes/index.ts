@@ -1302,6 +1302,10 @@ export interface PortalTableProps {
   inviteAccepted: boolean;
 }
 
+export interface PortalCardProps {
+  inviteAccepted: boolean;
+}
+
 export type UpdateStatusInputProps = UpdateAppointmentInput & {
   appointmentStatus: SelectorOption;
 };
