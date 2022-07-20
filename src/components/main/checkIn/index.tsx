@@ -1,9 +1,9 @@
 // packages block
 import { useParams } from "react-router";
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
-import { 
-  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography 
+import {
+  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
 // component block
@@ -59,13 +59,12 @@ const CheckInComponent = (): JSX.Element => {
 
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-  const { appointment } = state
+  const { appointment, activeStep } = state
   const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
 
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
-  const [activeStep, setActiveStep] = useState<number>(0);
 
   const appointmentInfo = {
     name: `${appointmentType?.name ?? ''}  ${appointmentTime}`,
@@ -75,7 +74,7 @@ const CheckInComponent = (): JSX.Element => {
   const shouldDisableEdit = status === AppointmentStatus.Discharged
 
   useEffect(() => {
-    setActiveStep(Number(checkInActiveStep) ?? 0)
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
   }, [checkInActiveStep])
 
   const [getAppointment] = useGetAppointmentLazyQuery({
@@ -186,7 +185,7 @@ const CheckInComponent = (): JSX.Element => {
       }
     })
 
-    setActiveStep(step);
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
   };
 
   const getStepContent = (step: number) => {
@@ -200,7 +199,7 @@ const CheckInComponent = (): JSX.Element => {
       case 2:
         return <Chart />
       case 3:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={()=> handleStep(4)} />
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} />
       case 4:
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
@@ -304,7 +303,7 @@ const CheckInComponent = (): JSX.Element => {
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />
-                    {!(CHECK_IN_STEPS.length - 1 === index) ?  <ChevronRightIcon /> : '' }
+                    {!(CHECK_IN_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
                   </Box>
                 </StepLabel>
               </Step>

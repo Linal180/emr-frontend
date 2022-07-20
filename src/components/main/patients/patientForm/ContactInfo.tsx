@@ -1,5 +1,5 @@
 // packages import
-import { FC, useState } from "react"
+import { FC, Reducer, useReducer } from "react"
 import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { useFormContext } from "react-hook-form"
 import {
@@ -15,8 +15,8 @@ import CardComponent from "../../../common/CardComponent"
 import { verifyAddress } from "../../../common/smartyAddress"
 import CountryController from "../../../../controller/CountryController"
 // constants, interfaces and utils import
-import { ActionType } from "../../../../reducers/patientReducer"
-import { PatientCardsProps, SmartyUserData } from "../../../../interfacesTypes"
+import { Action, ActionType, patientReducer, initialState, State } from "../../../../reducers/patientReducer"
+import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
   ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE,
   MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
@@ -25,7 +25,8 @@ import {
 const ContactInfoCard: FC<PatientCardsProps> = ({
   getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
 }) => {
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
+  const [{ userData }, patientDispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const methods = useFormContext()
   const { watch, setValue } = methods;
 
@@ -38,8 +39,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) =>
-        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+      patientDispatch({ type: ActionType.SET_USER_DATA, userData: { ...userData, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` } })
       const { status, options } = data || {}
 
       dispatch && dispatch({ type: ActionType.SET_DATA, data: status ? options : [] })

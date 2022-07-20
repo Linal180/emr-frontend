@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { Pagination } from "@material-ui/lab";
 import {
@@ -33,25 +33,19 @@ import {
 const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()
   const { id } = useParams<ParamsType>()
-  const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [page, setPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
-
-  const [patientProblems, setPatientProblems] = useState<PatientProblemsPayload['patientProblems']>([])
-  const [{ isSubModalOpen, selectedItem, itemId, problemDeleteId }, dispatch] =
+  const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
-
-  const handleModalClose = () => setIsOpen(!isOpen)
-  const handleChange = (_: ChangeEvent<unknown>, page: number) => setPage(page)
+  const { isSubModalOpen, selectedItem, itemId, problemDeleteId, totalPages, page, isOpen, openDelete, patientProblems } = state || {}
+  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page: page })
 
   const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setPatientProblems([])
+      dispatch({ type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: [] })
     },
 
     onCompleted(data) {
@@ -65,13 +59,13 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             const { status } = response
 
             if (patientProblems && status && status === 200) {
-              setPatientProblems(patientProblems as PatientProblemsPayload['patientProblems'])
+              dispatch({ type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: patientProblems as PatientProblemsPayload['patientProblems'] })
             }
           }
 
           if (pagination) {
             const { totalPages } = pagination
-            typeof totalPages === 'number' && setTotalPages(totalPages)
+            typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages })
           }
         }
       }
@@ -116,12 +110,12 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         if (status && status === 200) {
           Alert.success(PATIENT_PROBLEM_DELETED);
           dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: '' })
-          setOpenDelete(false)
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if(!!patientProblems && patientProblems.length > 1){
+          if (!!patientProblems && patientProblems.length > 1) {
             await fetchProblems()
           } else {
-            setPage(getPageNumber(page, patientProblems?.length || 0))
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientProblems?.length || 0) })
           }
         }
       }
@@ -131,7 +125,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: id })
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -151,7 +145,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
                 {!shouldDisableEdit &&
-                  <Button variant='contained' color='primary' onClick={() => setIsOpen(true)}>
+                  <Button variant='contained' color='primary' onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                     <AddWhiteIcon />
                     <Box p={0.5} />
 
@@ -251,7 +245,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           isLoading={removeProblemLoading}
           description={DELETE_PROBLEM_DESCRIPTION}
           handleDelete={handleDelete}
-          setOpen={(open: boolean) => setOpenDelete(open)}
+          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
         />
 
         {isSubModalOpen && <ProblemModal

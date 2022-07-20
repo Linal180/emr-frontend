@@ -1,8 +1,6 @@
-import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { 
-  Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link, IconButton 
-} from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link, IconButton } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
@@ -30,21 +28,25 @@ import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
+import {
+  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, State as appointmentState,
+  ActionType as appointmentActionType
+} from "../../../../reducers/appointmentReducer";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   setPatient, setAttachmentsData, isCheckIn, isChart
 }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
-  const [open, setOpen] = useState<boolean>(false)
-
-  const [appointmentId, setAppointmentId] = useState<string>('')
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  
-  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
+
+  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment, openMoreInfo } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [{ appointmentId }, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -146,7 +148,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
           if (upcomingAppointment) {
             const { id: appointmentId } = upcomingAppointment
-            appointmentId && setAppointmentId(appointmentId)
+            appointmentId &&
+              appointmentDispatch({ type: appointmentActionType.SET_APPOINTMENT_ID, appointmentId: appointmentId })
           }
         }
       }
@@ -385,8 +388,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
-                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_MORE_INFO, openMoreInfo: !openMoreInfo })} variant="text" className="btn-focus">
+                  {openMoreInfo ? <Typography variant="body2">... {LESS_INFO}</Typography>
                     : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
 
@@ -400,7 +403,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         }
       </Box>
 
-      <Collapse in={open} mountOnEnter unmountOnExit>
+      <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">

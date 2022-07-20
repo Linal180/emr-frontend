@@ -1,6 +1,6 @@
 // packages block
 import {
-  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer
 } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
@@ -51,10 +51,8 @@ dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const [selectDate, setSelectDate] = useState(moment().format('MM-DD-YYYY'))
   const { user, currentUser, userPermissions } = useContext(AuthContext)
 
-  const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
   const isAdminUser = isUserAdmin(roles)
 
@@ -72,15 +70,14 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
   const { setValue, watch } = methods
   const {
-    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, 
-    appointments, sortBy
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, appointments, sortBy, selectDate, filterFacilityId
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
 
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
-    setSelectDate(date)
+    dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
   };
 
   const getPreviousDate = () => {
@@ -355,7 +352,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       addEmpty
                       label={FACILITY}
                       name="facilityId"
-                      onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                      onSelect={({ id }: SelectorOption) => dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
                     />
                   </Grid>}
 

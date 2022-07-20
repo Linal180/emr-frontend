@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -41,8 +41,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
   const { roles } = user || {}
-  
-  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
+
   const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
   const { firstName: patientFirstName, lastName: patientLastName, facilityId } = patient || {}
@@ -59,10 +58,10 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    openSign, providerName, attachmentData
+    openSign, providerName, attachmentData, drawerOpened
   } = state
 
-  const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
+  const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened })
 
   const handleUpload = () => {
     dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: '' })

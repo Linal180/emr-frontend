@@ -1,6 +1,7 @@
 // packages block
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // component block
 import Alert from '../../common/Alert';
@@ -10,7 +11,6 @@ import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 import { Box, Button, CircularProgress, FormControl, Grid, IconButton, Typography, } from '@material-ui/core';
 // constants, history, styling block
 import { AuthContext } from '../../../context';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { InfoSearchIcon } from '../../../assets/svgs';
 import { GRAY_THREE, RED, WHITE } from '../../../theme';
 import { TwoFactorInputProps } from '../../../interfacesTypes';
