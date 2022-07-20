@@ -2,34 +2,20 @@
 import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
+import { Skeleton } from "@material-ui/lab";
 import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip, Typography,
-  withStyles
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
+  Typography, withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE,
-  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
-  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC,
-} from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
-  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload, UsersPayload, ClaimStatus,
-} from "../generated/graphql";
-import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -37,7 +23,22 @@ import {
   ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
   RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
-import { Skeleton } from "@material-ui/lab";
+import {
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
+  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
+  AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
+  WeightType, ClaimStatus, AllCptCodePayload,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -81,7 +82,12 @@ export const renderLoading = (label: string | JSX.Element) => (
       </InputLabel>
     </Box>
 
-    <Box display="flex" justifyContent="space-between" alignItems="center" borderRadius={4} className="skelton-input">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius={4} className="skelton-input"
+    >
       <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
     </Box>
   </>
@@ -273,6 +279,7 @@ export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+export const getFeeScheduleDate = (date: string) => moment(new Date(date)).format(`DD-MM-YY`)
 
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
@@ -316,6 +323,17 @@ export const dateDifference = (startingDate: string) => {
   let ageString = newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
 
   return `${ageString} old`
+}
+
+export const timeDifference = (time: string) => {
+  const startTime = moment(time, "x")
+  const now = moment()
+
+  const days = now.diff(startTime, 'days')
+  const hours = now.diff(startTime, 'hours')
+  const minutes = now.diff(startTime, 'minutes')
+
+  return days > 1 ? `${days} days ago` : hours > 1 ? `${hours} hours ago` : `${minutes} minutes ago`
 }
 
 // export const calculateAge = (dateString: string) => {
@@ -612,6 +630,27 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
   return data;
 }
 
+export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
+  const data: CptCodeSelectorOption[] = [];
+
+  if (!!cptCodes) {
+    for (let cptCode of cptCodes) {
+      if (cptCode) {
+        const { code, description, longDescription, shortDescription } = cptCode;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
+          longDescription,
+          shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
@@ -700,6 +739,15 @@ export const setRecord = (id: string, name: string, format = true): SelectorOpti
   }
 
   return { id, name: value };
+};
+
+export const setCTPCode = (id: string, name: string, description: string, longDescription: string, shortDescription: string): CptCodeSelectorOption => {
+  let value = ''
+  if (name) {
+    value = name
+  }
+
+  return { id, name: value, description, longDescription, shortDescription };
 };
 
 export const formatPhone = (phone: string): string =>
@@ -1944,8 +1992,8 @@ export const hasEncounter = (status: AppointmentStatus) => {
     && status !== AppointmentStatus.Discharged
 }
 
-export function sortingArray<arrayType>(array: arrayType, by: string, order: string): arrayType {
-  const sorted = sortBy(array as Collection<any>, 'scheduleStartDateTime')
+export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {
+  const sorted = sortBy(array as Collection<any>, by)
 
   return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
 }
@@ -1961,9 +2009,9 @@ export const getCharFromNumber = (num: number, isUpper = true) => {
 }
 
 export const getPageNumber = (page: number, pageRecords: number): number => {
-  if(page > 1){
-    return pageRecords > 1 ? page : page - 1 
-  } 
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
 
   return 1;
 }

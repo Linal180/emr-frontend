@@ -19,7 +19,9 @@ import { profileSchema } from '../../../validationSchemas';
 import { ProfileEditFormType } from '../../../interfacesTypes';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { formatPhone, getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
-import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import {
+  AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation
+} from '../../../generated/graphql';
 import {
   ADDRESS, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
   FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
@@ -41,7 +43,9 @@ const ProfileComponent = (): JSX.Element => {
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
 
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
-  const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+  const {
+    address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId
+  } = primaryContact || {}
   const isSuper = isSuperAdmin(roles)
 
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
@@ -50,8 +54,8 @@ const ProfileComponent = (): JSX.Element => {
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
-      firstName: "Super",
-      lastName: "Admin",
+      firstName: FIRST_NAME,
+      lastName: LAST_NAME,
       email: "",
       phone: "",
       addressNumber: "",
@@ -100,10 +104,10 @@ const ProfileComponent = (): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          fetchUser()
-          Alert.success(PROFILE_UPDATE);
           reset()
           mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+          fetchUser()
+          Alert.success(PROFILE_UPDATE);
         }
       }
     }
@@ -119,11 +123,11 @@ const ProfileComponent = (): JSX.Element => {
         variables: {
           updateDoctorInput: {
             updateDoctorItemInput: { id: userId, firstName, lastName },
+            updateBillingAddressInput: {},
             updateContactInput: {
-              id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '', email,
-              zipCode, country: countryId, phone
+              id: contactId, primaryContact: true, address: addressNumber, city, email,
+              state: stateId || '', zipCode, country: countryId, phone
             },
-            updateBillingAddressInput: {}
           }
         }
       })
@@ -144,8 +148,8 @@ const ProfileComponent = (): JSX.Element => {
     setValue('addressNumber', address || '')
     setValue('phone', phone || doctorPhone || '')
     contactId && setValue('contactId', contactId)
-    doctorState && setValue('state', setRecord(doctorState, doctorState))
     country && setValue('country', setRecord(country, country))
+    doctorState && setValue('state', setRecord(doctorState, doctorState))
   }
 
   const staffPreview = () => setValue('phone', phone || userPhone || '')

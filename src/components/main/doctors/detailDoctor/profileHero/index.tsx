@@ -1,24 +1,27 @@
 // packages
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
-import MediaCards from "../../../../common/AddMedia/MediaCards";
 import TextLoader from "../../../../common/TextLoader";
+import MediaCards from "../../../../common/AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
-import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
+import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
+import { formatPhone, getFormattedDate, getTimestamps } from "../../../../../utils";
 import { ATTACHMENT_TITLES, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
+import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
 import {
   AttachmentType, Contact, Doctor, useGetAttachmentLazyQuery, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
 import { DoctorProfileHeroProps, ParamsType } from "../../../../../interfacesTypes";
-import { Action, ActionType, doctorReducer, initialState, State } from "../../../../../reducers/doctorReducer";
 import {
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState
+  Action, ActionType, doctorReducer, initialState, State
+} from "../../../../../reducers/doctorReducer";
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState,
+  mediaReducer, State as mediaState
 } from "../../../../../reducers/mediaReducer";
-import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
-import { formatPhone, getFormattedDate, getTimestamps } from "../../../../../utils";
 
 const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmentsData }) => {
   const classes = useProfileDetailsStyles();

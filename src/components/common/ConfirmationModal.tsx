@@ -45,17 +45,19 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
             <DeleteWarningIcon />
           </Box>
 
-          <CardContent>
-            <Typography variant="h5">
-              <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
-            </Typography>
+          <Box flex={1}>
+            <CardContent>
+              <Typography variant="h5">
+                <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
+              </Typography>
 
-            <Box p={0.5} />
+              <Box p={0.5} />
 
-            <Typography variant="body1">
-              {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
-            </Typography>
-          </CardContent>
+              <Typography variant="body1">
+                {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
+              </Typography>
+            </CardContent>
+          </Box>
         </Box>
       </DialogContent>
 

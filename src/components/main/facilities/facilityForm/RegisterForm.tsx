@@ -50,64 +50,66 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({
   }
 
   return (
-    <Box display='flex' position='relative'>
-      <Box mr={2} ml={2} p={1} display='flex'>
-        <List>
-          {FacilityMenuNav.map((item, index) => {
-            return (
-              <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
-                <Timeline>
-                  <TimelineItem>
-                    <TimelineSeparator>
-                      <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
+    <Box position="relative">
+      <Grid container spacing={3}>
+        <Grid item lg={2} md={3} sm={4} xs={12}>
+          <List>
+            {FacilityMenuNav.map((item, index) => {
+              return (
+                <Box display='flex' className={classes.patientTimeline} onClick={() => handleScroll(item.title)}>
+                  <Timeline>
+                    <TimelineItem>
+                      <TimelineSeparator>
+                        <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
 
-                      {(index + 1) !== FacilityMenuNav.length && <TimelineConnector />}
-                    </TimelineSeparator>
-                    <TimelineContent />
-                  </TimelineItem>
-                </Timeline>
+                        {(index + 1) !== FacilityMenuNav.length && <TimelineConnector />}
+                      </TimelineSeparator>
+                      <TimelineContent />
+                    </TimelineItem>
+                  </Timeline>
 
-                <ListItem button
-                  className={item.title === activeBlock ? 'active' : ''}
-                  style={{ display: 'flex', alignItems: 'baseline' }}
-                >
-                  <Typography variant='h5' className={item.title === activeBlock ? 'active' : ''}>
-                    {item.title}
-                  </Typography>
-                </ListItem>
-              </Box>
-            )
-          })}
-        </List>
-      </Box>
+                  <ListItem button
+                    className={item.title === activeBlock ? 'active' : ''}
+                    style={{ display: 'flex', alignItems: 'baseline' }}
+                  >
+                    <Typography variant='h5' className={item.title === activeBlock ? 'active' : ''}>
+                      {item.title}
+                    </Typography>
+                  </ListItem>
+                </Box>
+              )
+            })}
+          </List>
+        </Grid>
 
-      <Box width='100%'>
-        <Box {...patientCardBoxProps}>
-          <Grid spacing={3}>
-            <Grid md={12} id={FACILITY_INFO_ROUTE} ref={facilityInfoRef}>
-              <FacilityInfo getFacilityLoading={getFacilityLoading} isSuper={isSuper} />
+        <Grid item lg={10} md={9} sm={8} xs={12}>
+          <Box {...patientCardBoxProps} px={1}>
+            <Grid spacing={3}>
+              <Grid md={12} id={FACILITY_INFO_ROUTE} ref={facilityInfoRef}>
+                <FacilityInfo getFacilityLoading={getFacilityLoading} isSuper={isSuper} />
+              </Grid>
+
+              <Box pb={3} />
+
+              <Grid md={12} id={FACILITY_LOCATION_ROUTE} ref={facilityLocationRef}>
+                <Location getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
+              </Grid>
+
+              <Box pb={3} />
+
+              <Grid md={12} id={BILLING_PROFILE_ROUTE} ref={billingProfileRef}>
+                <Billing getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
+              </Grid>
+
+              <Box pb={3} />
+
+              <Grid md={12} id={FACILITY_SCHEDULE_ROUTE} ref={businessHoursRef}>
+                <BusinessHours getFacilityLoading={getFacilityLoading} />
+              </Grid>
             </Grid>
-
-            <Box pb={3} />
-
-            <Grid md={12} id={FACILITY_LOCATION_ROUTE} ref={facilityLocationRef}>
-              <Location getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
-            </Grid>
-
-            <Box pb={3} />
-
-            <Grid md={12} id={BILLING_PROFILE_ROUTE} ref={billingProfileRef}>
-              <Billing getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
-            </Grid>
-
-            <Box pb={3} />
-
-            <Grid md={12} id={FACILITY_SCHEDULE_ROUTE} ref={businessHoursRef}>
-              <BusinessHours getFacilityLoading={getFacilityLoading} />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   )
 }

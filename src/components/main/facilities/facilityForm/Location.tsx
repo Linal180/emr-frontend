@@ -72,11 +72,11 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
             />
           </Grid>
 
-          <Grid item md={3} sm={6} xs={6}>
+          <Grid item md={3} sm={6} xs={12}>
             <PhoneField isRequired name="phone" label={PHONE} loading={getFacilityLoading} />
           </Grid>
 
-          <Grid item md={3} sm={6} xs={6}>
+          <Grid item md={3} sm={6} xs={12}>
             <PhoneField name="fax" label={FAX} loading={getFacilityLoading} />
           </Grid>
         </Grid>
@@ -100,7 +100,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
 
           <Grid item xs={12} sm={12} md={6}>
             <Grid container spacing={1} alignItems={'center'}>
-              <Grid item md={10} sm={10} xs={10}>
+              <Grid item md={10} sm={10} xs={12}>
                 <InputController
                   fieldType="text"
                   controllerName="zipCode"

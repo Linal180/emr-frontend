@@ -177,6 +177,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
   const fetchAppointments = useCallback(async () => {
     try {
+      dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
       const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
       const inputs = isSuper
         ? { facilityId: filterFacilityId }
@@ -316,7 +317,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
     }
   }
 
-  const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === ASC ? 'to-180' : ''}`}
+  const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === DESC ? 'to-180' : ''}`}
     onClick={() => {
       sortBy === ASC ?
         dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
@@ -324,7 +325,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
       dispatch({
         type: ActionType.SET_APPOINTMENTS,
-        appointments: sortingArray<typeof appointments>(appointments, 'date', sortBy)
+        appointments: sortingArray<typeof appointments>(appointments, 'scheduleStartDateTime', sortBy)
       })
     }}
   >
