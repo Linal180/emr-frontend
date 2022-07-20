@@ -112,45 +112,34 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       </Box>
 
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={8}>
           <Card>
-            <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
-
-              <Link to={FACILITIES_ROUTE}>
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
-              </Link>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
+              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
             </Box>
 
-            {facilities?.map((facility) => {
-              const { name } = facility || {}
-
-              return name && (
-                <Box key={name} px={2} mb={3} display='flex' alignItems='center'>
-                  <Box
-                    bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
-                    justifyContent="center" alignItems="center"
-                  >
-                    <Typography variant="h6">{getShortName(name)}</Typography>
-                  </Box>
-
-                  <Typography variant="body1">{name}</Typography>
-                </Box>
-              )
-            })}
-
-            <Box width="100%" mb={2} display='flex' justifyContent='center'>
-              <Link to={`${FACILITIES_ROUTE}/new`}>
-                <Button variant="contained" color="primary" size="large">{ADD_FACILITY}</Button>
-              </Link>
-            </Box>
+            <FacilityAppointments practiceId={practiceId || ''} />
           </Card>
-        </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
-          <MedicalBillingComponent />
+          <Box p={2} />
+
+          {/* <Card>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
+              <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
+            </Box>
+
+            <FacilityUsersWithRole practiceId={practiceId || ''} />
+          </Card> */}
+
+          <Box p={2} />
+
+          {/* <Card>
+            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
+              <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
+            </Box>
+
+            <PracticeUserRoles practiceId={practiceId || ''} />
+          </Card> */}
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
@@ -211,79 +200,48 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Box p={2} />
 
       <Grid container spacing={3}>
-        <Grid item md={8}>
+        <Grid item md={4} sm={12} xs={12}>
           <Card>
-            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
-              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
-            </Box>
-
-            <FacilityAppointments practiceId={practiceId || ''} />
-          </Card>
-
-          <Box p={2} />
-
-          {/* <Card>
-            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
-              <Typography variant="h4">{TOTAL_USERS_PER_FACILITY}</Typography>
-            </Box>
-
-            <FacilityUsersWithRole practiceId={practiceId || ''} />
-          </Card> */}
-
-          <Box p={2} />
-
-          {/* <Card>
-            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
-              <Typography variant="h4">{TOTAL_USERS_PER_ROLE}</Typography>
-            </Box>
-
-            <PracticeUserRoles practiceId={practiceId || ''} />
-          </Card> */}
-        </Grid>
-
-        <Grid item md={4}>
-          {/* <Card>
             <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Typography variant="h5">{EMERGENCY_ACCESS_LOG}</Typography>
+              <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={FACILITIES_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
-            {EMERGENCY_LOG_LIST.map((item) => {
-              return (
-                <Box key={item.fullName} px={2} mb={3} display='flex' alignItems='start'>
+            {facilities?.map((facility) => {
+              const { name } = facility || {}
+
+              return name && (
+                <Box key={name} px={2} mb={3} display='flex' alignItems='center'>
                   <Box
-                    bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2}
-                    display="flex" justifyContent="center" alignItems="center"
+                    bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
+                    justifyContent="center" alignItems="center"
                   >
-                    {
-                      item.imageUrl ? <img src={item.imageUrl} alt={item.shortName} />
-                        : <Typography variant="h6">{item.shortName}</Typography>
-                    }
+                    <Typography variant="h6">{getShortName(name)}</Typography>
                   </Box>
 
-                  <Box>
-                    <Box>
-                      <Typography variant="body1">{item.fullName}</Typography>
-                    </Box>
-
-                    <Box color={GREY_THIRTEEN}>
-                      <Typography variant="body1">{item.hospitalName}</Typography>
-                    </Box>
-
-                    <Box color={GRAY_SEVEN}>
-                      <Typography variant="body1">{ACTIVATED}: {item.activatedDate}</Typography>
-                    </Box>
-                  </Box>
+                  <Typography variant="body1">{name}</Typography>
                 </Box>
               )
             })}
-          </Card> */}
 
-          {/* <Box p={2} /> */}
+            <Box width="100%" mb={2} display='flex' justifyContent='center'>
+              <Link to={`${FACILITIES_ROUTE}/new`}>
+                <Button variant="contained" color="primary" size="large">{ADD_FACILITY}</Button>
+              </Link>
+            </Box>
+          </Card>
+        </Grid>
 
+        <Grid item md={4} sm={12} xs={12}>
+          <MedicalBillingComponent />
+        </Grid>
+
+        <Grid item md={4}>
           <Card>
             <Box px={2} mb={2} fontWeight="bold" display='flex'
               justifyContent='space-between' alignItems='center'

@@ -57,8 +57,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
             if (patientVitals && status && status === 200) {
               const sortedVitals = patientVitals?.sort((a, b) => {
-                if (a?.createdAt && b?.createdAt) {
-                  return (a?.createdAt < b?.createdAt) ? 1 : ((b?.createdAt < a?.createdAt) ? -1 : 0)
+                if (a?.updatedAt && b?.updatedAt) {
+                  return (a?.updatedAt < b?.updatedAt) ? 1 : ((b?.updatedAt < a?.updatedAt) ? -1 : 0)
                 }
 
                 return 0

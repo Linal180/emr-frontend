@@ -26,7 +26,7 @@ import {
   DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, DESCRIPTION, TAX_ID, NPI, ICD_CODE,
   INVALID_EMAIL, EMAIL, NPI_VALIDATION_MESSAGE, NPI_REGEX, CLIA_VALIDATION_MESSAGE, CLIA_REGEX,
   LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
-  PRICE, DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
+  DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
@@ -365,10 +365,10 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
-  price: yup.string()
-    .test('', requiredMessage(PRICE), value => !!value)
-    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
-    .matches(NUMBER_REGEX, ValidMessage(PRICE)),
+  // price: yup.string()
+  //   .test('', requiredMessage(PRICE), value => !!value)
+  //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
+  //   .matches(NUMBER_REGEX, ValidMessage(PRICE)),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
     .test('', requiredMessage(DURATION), value => parseInt(value || '') > 0)
