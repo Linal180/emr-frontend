@@ -38,7 +38,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openShare, setOpenShare] = useState<boolean>(false);
@@ -107,15 +107,15 @@ const FormBuilderTable: FC = (): JSX.Element => {
         { practiceId, ...pageInputs, isSystemForm: false, } : { facilityId, ...pageInputs, isSystemForm: false, }
       await findAllForms({
         variables: {
-          formInput: { ...formInputs }
+          formInput: { ...formInputs, searchString: searchQuery }
         },
       })
     } catch (error) { }
-  }, [findAllForms, page, facilityId, isSuper, practiceId, isPracticeUser])
+  }, [page, isSuper, isPracticeUser, practiceId, facilityId, findAllForms, searchQuery])
 
 
   useEffect(() => {
-    !searchQuery && fetchAllForms()
+    fetchAllForms()
   }, [page, searchQuery, fetchAllForms]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
@@ -171,7 +171,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
     setOpenShare(true)
   }
 
-  const search = (query: string) => { }
+  const search = (query: string) => { 
+    setSearchQuery(query)
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
