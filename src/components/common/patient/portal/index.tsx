@@ -13,8 +13,8 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { ParamsType, PortalTableProps } from "../../../../interfacesTypes";
 import { useSendInviteToPatientMutation } from "../../../../generated/graphql";
 import {
-  EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED, ENABLE_ACCESS_PORTAL,
-  DISABLE_ACCESS_PORTAL, NOT_FOUND_EXCEPTION, PATIENT_CANT_BE_INVITED
+  EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED,  ENABLE_ACCESS_PORTAL,
+  DISABLE_ACCESS_PORTAL,NOT_FOUND_EXCEPTION,PATIENT_CANT_BE_INVITED
 } from "../../../../constants";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 
