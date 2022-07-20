@@ -74,6 +74,20 @@ export const formatEnumMember = (value: string) => {
   return formatted.trim();
 };
 
+export const formatServiceEnumMember = (value: string) => {
+  const parts = value.split("_");
+  const code = parts[parts.length - 1]
+  let formatted = ''
+
+  for (let index in parts) {
+    if (parseInt(index) < parts.length - 1) {
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
+    }
+  }
+
+  return `${code} - ${formatted}`.trim();
+};
+
 export const renderLoading = (label: string | JSX.Element) => (
   <>
     <Box position="relative">
@@ -1769,7 +1783,7 @@ export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[]
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatEnumMember(member)
+        name: formatServiceEnumMember(member)
       }
     });
   } else return [EMPTY_OPTION]
