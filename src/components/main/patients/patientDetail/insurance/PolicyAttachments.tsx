@@ -1,5 +1,5 @@
 //packages Import
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, Reducer, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 import { useParams } from "react-router";
 import { Box, Grid, IconButton, Typography } from "@material-ui/core";
 //components Import
@@ -11,7 +11,7 @@ import ConfirmationModal from "../../../../common/ConfirmationModal";
 import { mediaType } from "../../../../../utils";
 import { TrashOutlinedIcon } from "../../../../../assets/svgs";
 import { FormForwardRef, ParamsType, PolicyAttachmentProps } from "../../../../../interfacesTypes";
-import { ActionType } from "../../../../../reducers/insuranceReducer";
+import { Action, ActionType, insuranceReducer, initialState, State } from "../../../../../reducers/insuranceReducer";
 import {
   ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
   INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE,
@@ -24,13 +24,11 @@ import {
 
 const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ policyId, dispatch, numberOfFiles }, ref) => {
   const { id: patientId } = useParams<ParamsType>()
-  const [policyAttachmentId, setPolicyAttachmentId] = useState<string>('')
   const dropZoneRef = useRef<FormForwardRef>(null);
 
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [documentTypeId, setDocumentTypeId] = useState<string>('')
-  const [attachments, setAttachments] =
-    useState<AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']>([])
+  const [{ documentTypeId, openDelete, policyAttachmentId, attachments }, insuranceDispatch] =
+    useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
+
   const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -43,7 +41,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
         const { fetchDocumentTypeByName } = data ?? {}
         const { documentType } = fetchDocumentTypeByName ?? {}
         const { id } = documentType ?? {}
-        setDocumentTypeId(id || '')
+        insuranceDispatch({ type: ActionType.SET_DOCUMENT_TYPE_ID, documentTypeId: id || '' })
       }
     }
   })
@@ -77,9 +75,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
 
           attachmentsWithPreSignedUrl && dispatch({ type: ActionType.SET_NUMBER_OF_FILES, numberOfFiles: attachmentsWithPreSignedUrl?.length })
           attachmentsWithPreSignedUrl &&
-            setAttachments(
-              attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
-            )
+            insuranceDispatch({ type: ActionType.SET_ATTACHMENTS, attachments: attachmentsWithPreSignedUrl as AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] })
         }
       }
     },
@@ -110,8 +106,8 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setPolicyAttachmentId(id)
-      setOpenDelete(true)
+      insuranceDispatch({ type: ActionType.SET_POLICY_ATTACHMENT_ID, policyAttachmentId: id })
+      insuranceDispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -120,7 +116,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
       variables: { id: policyAttachmentId }
     })
 
-    setOpenDelete(false)
+    insuranceDispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
   }
 
   useImperativeHandle(ref, () => ({
@@ -182,7 +178,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(({ p
               isLoading={removeAttachmentLoading}
               description={DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION}
               handleDelete={handleFileDeletion}
-              setOpen={(openDelete: boolean) => setOpenDelete(openDelete)}
+              setOpen={(openDelete: boolean) => insuranceDispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: openDelete })}
             />
           </Grid>
         </Grid>

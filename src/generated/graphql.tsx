@@ -137,6 +137,13 @@ export type AllFeeSchedulesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type AllModifiersPayload = {
+  __typename?: 'AllModifiersPayload';
+  modifiers?: Maybe<Array<Maybe<Modifier>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllStaffPayload = {
   __typename?: 'AllStaffPayload';
   allstaff?: Maybe<Array<Maybe<Staff>>>;
@@ -515,6 +522,7 @@ export type CptCodes = {
   code?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  feeSchedules?: Maybe<Array<FeeSchedule>>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
@@ -1117,6 +1125,11 @@ export type CreateLabTestObservationItemInput = {
   resultValue: Scalars['String'];
 };
 
+export type CreateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
 export type CreatePatientAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   allergyName?: Maybe<Scalars['String']>;
@@ -1631,6 +1644,7 @@ export type FacilityPayload = {
 
 export type FeeSchedule = {
   __typename?: 'FeeSchedule';
+  CPTCodes?: Maybe<CptCodes>;
   cptCode?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1716,6 +1730,11 @@ export type FindAllCptCodesInput = {
 export type FindAllFeeScheduleInput = {
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+};
+
+export type FindAllModifierInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
 };
 
 export type ForgotPasswordInput = {
@@ -1901,6 +1920,10 @@ export type GetLabTest = {
 
 export type GetMedia = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type GetModifierInput = {
+  id: Scalars['String'];
 };
 
 export type GetPatient = {
@@ -2268,6 +2291,21 @@ export enum Maritialstatus {
   Widowed = 'WIDOWED'
 }
 
+export type Modifier = {
+  __typename?: 'Modifier';
+  code?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ModifierPayload = {
+  __typename?: 'ModifierPayload';
+  modifier?: Maybe<Modifier>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   achPayment: TransactionPayload;
@@ -2299,6 +2337,7 @@ export type Mutation = {
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
   createLoincCode: LoincCodePayload;
+  createModifier: ModifierPayload;
   createPatient: PatientPayload;
   createPatientConsent: PatientConsentPayload;
   createPermission: PermissionPayload;
@@ -2332,6 +2371,7 @@ export type Mutation = {
   removeForm: FormPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
+  removeModifier: ModifierPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -2368,6 +2408,7 @@ export type Mutation = {
   updateLabTestObservation: LabTestObservationPayload;
   updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
+  updateModifier: ModifierPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
@@ -2536,6 +2577,11 @@ export type MutationCreateLoincCodeArgs = {
 };
 
 
+export type MutationCreateModifierArgs = {
+  createModifierInput: CreateModifierInput;
+};
+
+
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
 };
@@ -2698,6 +2744,11 @@ export type MutationRemoveLabTestArgs = {
 
 export type MutationRemoveLabTestObservationArgs = {
   removeLabTestObservation: RemoveLabTestObservation;
+};
+
+
+export type MutationRemoveModifierArgs = {
+  removeModifierInput: RemoveModifierInput;
 };
 
 
@@ -2873,6 +2924,11 @@ export type MutationUpdateLabTestsByOrderNumArgs = {
 
 export type MutationUpdateLoincCodeArgs = {
   updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
+export type MutationUpdateModifierArgs = {
+  updateModifierInput: UpdateModifierInput;
 };
 
 
@@ -3854,6 +3910,7 @@ export type Query = {
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
   findAllLoincCodes: LoincCodesPayload;
+  findAllModifiers: AllModifiersPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
@@ -3895,6 +3952,7 @@ export type Query = {
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getLabTest: LabTestPayload;
+  getModifier: ModifierPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -4081,6 +4139,11 @@ export type QueryFindAllLabTestArgs = {
 
 export type QueryFindAllLoincCodesArgs = {
   searchLoincCodesInput: SearchLoincCodesInput;
+};
+
+
+export type QueryFindAllModifiersArgs = {
+  findAllModifierInput: FindAllModifierInput;
 };
 
 
@@ -4276,6 +4339,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetLabTestArgs = {
   getLabTest: GetLabTest;
+};
+
+
+export type QueryGetModifierArgs = {
+  getModifierInput: GetModifierInput;
 };
 
 
@@ -4526,6 +4594,10 @@ export type RemoveLabTest = {
 };
 
 export type RemoveLabTestObservation = {
+  id: Scalars['String'];
+};
+
+export type RemoveModifierInput = {
   id: Scalars['String'];
 };
 
@@ -5474,6 +5546,12 @@ export type UpdateLoincCodeInput = {
   component?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   loincNum?: Maybe<Scalars['String']>;
+};
+
+export type UpdateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePasswordInput = {

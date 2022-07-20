@@ -1,6 +1,6 @@
 // packages block
 import {
-  FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback
+  FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useCallback
 } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
@@ -38,7 +38,6 @@ import {
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext);
-  const [tabValue, setTabValue] = useState<string>('1')
   const { facility, roles } = user || {};
 
   const { practiceId } = facility || {};
@@ -53,7 +52,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const { zipCode, startTime, endTime } = watch()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
-  const { billingId, contactId } = state
+  const { billingId, contactId, tabValue } = state
   const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
@@ -116,7 +115,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             if (billingAddress && billingAddress.length > 0) {
               const { id, email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
-              
+
               dispatch({ type: ActionType.SET_BILLING_ID, billingId: id })
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
@@ -129,7 +128,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               state && setValue('billingState', setRecord(state, state))
             }
 
-            if (practiceId && practiceName){
+            if (practiceId && practiceName) {
               setValue('practice', setRecord(practiceId, practiceName, false))
             }
           }
@@ -262,8 +261,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
-    setTabValue(newValue)
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) => dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const getAddressHandler = useCallback(async () => {
     if (zipCode) {

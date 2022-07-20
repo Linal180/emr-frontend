@@ -1,5 +1,5 @@
 // packages block
-import { createContext, FC, useCallback, useReducer, Reducer, useState, useEffect, useContext } from "react";
+import { createContext, FC, useCallback, useReducer, Reducer, useEffect, useContext } from "react";
 import { pluck } from "underscore"
 // graphql, interfaces/types, reducer and constants block
 import { TOKEN } from "../constants";
@@ -18,9 +18,8 @@ export const ChartContext = createContext<ChartContextInterface>({
 export const ChartContextProvider: FC = ({ children }): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext);
   const hasToken = localStorage.getItem(TOKEN);
-  const [reactionPages, setReactionPages] = useState(1)
-  const [{ reactionList }, dispatch] = useReducer<Reducer<LocalState, Action>>(chartReducer, initialState)
-  
+  const [{ reactionList, reactionPages }, dispatch] = useReducer<Reducer<LocalState, Action>>(chartReducer, initialState)
+
   const [findAllReactions] = useFindAllReactionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -40,7 +39,7 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
           const { totalPages } = pagination
 
           if (totalPages ? reactionPages !== totalPages : false) {
-            setReactionPages(reactionPages + 1)
+            dispatch({ type: ActionType.SET_REACTION_PAGES, reactionPages: reactionPages + 1 });
           }
         }
       }
@@ -76,8 +75,9 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
     }
   }
 
-  useEffect(() => { 
-    hasToken && isLoggedIn && fetchAllReactionList('', reactionPages) }, [fetchAllReactionList, hasToken, isLoggedIn, reactionPages])
+  useEffect(() => {
+    hasToken && isLoggedIn && fetchAllReactionList('', reactionPages)
+  }, [fetchAllReactionList, hasToken, isLoggedIn, reactionPages])
 
   return (
     <ChartContext.Provider

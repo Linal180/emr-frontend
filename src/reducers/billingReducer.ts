@@ -1,38 +1,38 @@
 import { CodeTablesData } from "../interfacesTypes";
 
 export interface State {
+  facilityId: string;
+  insuranceId: string;
+  claimNumber: string;
   employment: boolean;
+  isModalOpen: boolean;
   autoAccident: boolean;
   otherAccident: boolean;
-  isModalOpen: boolean;
-  insuranceId: string;
-  tableCodesData: CodeTablesData;
-  facilityId: string;
-  claimNumber: string;
   isCheckoutModalOpen: boolean
+  tableCodesData: CodeTablesData;
 }
 
 export const initialState: State = {
-  employment: false,
-  autoAccident: false,
-  otherAccident: false,
-  isModalOpen: false,
-  insuranceId: '',
-  tableCodesData: {},
   facilityId: '',
   claimNumber: '',
+  insuranceId: '',
+  employment: false,
+  isModalOpen: false,
+  tableCodesData: {},
+  autoAccident: false,
+  otherAccident: false,
   isCheckoutModalOpen: false
 }
 
 export enum ActionType {
   SET_EMPLOYMENT = 'SET_EMPLOYMENT',
-  SET_AUTO_ACCIDENT = 'SET_AUTO_ACCIDENT',
-  SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
-  SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
-  SET_INSURANCE_ID = 'SET_INSURANCE_ID',
-  SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_FACILITY_ID = 'SET_FACILITY_ID',
+  SET_INSURANCE_ID = 'SET_INSURANCE_ID',
   SET_CLAIM_NUMBER = 'SET_CLAIM_NUMBER',
+  SET_AUTO_ACCIDENT = 'SET_AUTO_ACCIDENT',
+  SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
+  SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
+  SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN'
 }
 

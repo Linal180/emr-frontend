@@ -5,7 +5,7 @@ import { Grid, Typography } from "@material-ui/core";
 import { renderItem } from "../../../../utils";
 import { PracticeDataProps } from "../../../../interfacesTypes";
 import {
-  PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS, TAX_ID, GROUP_NPI
+  PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS, GROUP_TAX_ID, GROUP_NPI
 } from "../../../../constants";
 
 const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
@@ -69,7 +69,7 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
             </Grid>
 
             <Grid item md={4} sm={12}>
-              {renderItem(TAX_ID, taxId, undefined, loading)}
+              {renderItem(GROUP_TAX_ID, taxId, undefined, loading)}
             </Grid>
 
             <Grid item md={4} sm={12}>
