@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
+import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { FormProvider, useForm } from "react-hook-form";
@@ -52,12 +52,11 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
-  const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
-  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
+  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
 
   const { search: patientSearch } = useLocation()
@@ -137,10 +136,10 @@ const PatientsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if(!!patients && patients.length > 1){
+          if (!!patients && patients.length > 1) {
             fetchAllPatients();
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0)})
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0) })
           }
         }
       }
@@ -209,17 +208,17 @@ const PatientsTable: FC = (): JSX.Element => {
 
           <Grid item md={2} sm={12} xs={12}>
             <Box
-              onClick={() => setOpen(!open)} className='pointer-cursor'
+              onClick={() => dispatch({ type: ActionType.SET_OPEN_ADVANCED_SEARCH, openAdvancedSearch: !openAdvancedSearch })} className='pointer-cursor'
               border={`1px solid ${GREY_FIVE}`} borderRadius={4}
               color={BLACK_TWO} p={1.35} display='flex' width={186}
             >
               <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
-              {open ? <ExpandLess /> : <ExpandMore />}
+              {openAdvancedSearch ? <ExpandLess /> : <ExpandMore />}
             </Box>
           </Grid>
         </Grid>
 
-        <Collapse in={open} mountOnEnter unmountOnExit>
+        <Collapse in={openAdvancedSearch} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
             <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
               <Grid container spacing={3}>

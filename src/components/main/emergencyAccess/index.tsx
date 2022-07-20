@@ -1,9 +1,7 @@
 // packages block
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import { Pagination } from "@material-ui/lab";
-import {
-  Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell
-} from "@material-ui/core";
+import { Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // component block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
@@ -15,9 +13,7 @@ import { AuthContext } from "../../../context";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { RolePayloadInterface } from "../../../interfacesTypes";
 import { isFacilityAdmin, isPracticeAdmin, renderTh } from "../../../utils";
-import {
-  UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation
-} from "../../../generated/graphql";
+import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE,
   EMERGENCY_ACCESS, EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS,

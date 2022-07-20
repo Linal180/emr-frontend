@@ -24,7 +24,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
 
-  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData }, dispatch] =
+  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData,  }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const closeSearchMenu = () => {

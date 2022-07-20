@@ -1,5 +1,5 @@
 // packages
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 // components block
@@ -26,10 +26,8 @@ import {
 const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmentsData }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
-  const [open, setOpen] = useState<boolean>(false)
-
-  const [{ doctor }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+  const [{ doctor, openMoreInfo }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const [{ attachmentUrl, attachmentData, attachmentId, }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
@@ -214,8 +212,8 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
-                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_MORE_INFO, openMoreInfo: !openMoreInfo })} variant="text" className="btn-focus">
+                  {openMoreInfo ? <Typography variant="body2">... {LESS_INFO}</Typography>
                     : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
               </Box>
@@ -224,7 +222,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
         }
       </Box>
 
-      <Collapse in={open} mountOnEnter unmountOnExit>
+      <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">

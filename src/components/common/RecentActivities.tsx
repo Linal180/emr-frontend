@@ -31,7 +31,6 @@ const RecentActivities = () => {
       const { status } = response || {}
 
       if (status === 200) {
-        console.log(userLogs, "USER Logs")
         userLogs && dispatch({
           type: ActionType.SET_USER_LOGS,
           userLogs: userLogs as UserLogsPayload['userLogs']

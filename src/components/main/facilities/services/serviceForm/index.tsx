@@ -23,7 +23,7 @@ import {
 import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
-  PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
+  SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
   FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
   FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD,
   SERVICES_BREAD, SOMETHING_WENT_WRONG,
@@ -60,10 +60,10 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           const { status } = response
 
           if (service && status && status === 200) {
-            const { name, isActive, price, duration, color, facility } = service || {}
+            const { name, isActive, duration, color, facility } = service || {}
 
             name && setValue('name', name)
-            price && setValue('price', price)
+            // price && setValue('price', price)
             color && setValue('color', color)
             duration && setValue('duration', duration)
             isActive && setValue('isActive', isActive as boolean)
@@ -221,17 +221,23 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={SERVICE_INFO}>
-                {getServiceLoading ?
-                  renderLoading(FACILITY) : renderItem(FACILITY, facilityName)
-                }
+                <Grid container spacing={2}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    {getServiceLoading ?
+                      renderLoading(FACILITY) : renderItem(FACILITY, facilityName)
+                    }
+                  </Grid>
 
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="name"
-                  controllerLabel={SERVICE_NAME_TEXT}
-                  loading={getServiceLoading}
-                />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      isRequired
+                      fieldType="text"
+                      controllerName="name"
+                      controllerLabel={SERVICE_NAME_TEXT}
+                      loading={getServiceLoading}
+                    />
+                  </Grid>
+                </Grid>
 
                 <Grid container spacing={2}>
                   <Grid item md={6} sm={12} xs={12}>
@@ -244,7 +250,16 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={3} sm={12} xs={12}>
+                    <InputController
+                      fieldType="color"
+                      controllerName="color"
+                      loading={getServiceLoading}
+                      controllerLabel={SELECT_COLOR_TEXT}
+                    />
+                  </Grid>
+
+                  {/* <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       isRequired
                       fieldType="text"
@@ -252,21 +267,12 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       loading={getServiceLoading}
                       controllerLabel={PRICE_TEXT}
                     />
-                  </Grid>
+                  </Grid> */}
                 </Grid>
 
-                <Grid item md={3} sm={12} xs={12}>
-                  <InputController
-                    fieldType="color"
-                    controllerName="color"
-                    loading={getServiceLoading}
-                    controllerLabel={SELECT_COLOR_TEXT}
-                  />
-                </Grid>
 
                 <Grid md={12} item>
                   <CheckboxController
-                    margin="none"
                     controllerName="isActive"
                     controllerLabel={ACTIVE_TEXT}
                     defaultValue={isActive as boolean}

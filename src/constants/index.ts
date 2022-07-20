@@ -338,7 +338,7 @@ export const CONSENT_TO_MESSAGES = "Consent To messages";
 export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
-export const CREATE_DOCTOR = "Create Doctor";
+export const CREATE_DOCTOR = "Create Provider";
 export const USER_DETAILS_TEXT = "User Details";
 export const PRACTICE_ADMIN_DETAILS_TEXT = "Practice Admin Details";
 export const PRACTICE_USER_TEXT = "Practice User";
@@ -589,8 +589,10 @@ export const DEA_NUMBER = "DEA Number";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DECEASED_DATE = "Deceased Date";
 export const DEA_TERM_DATE = "DEA Term Date";
+export const PATIENT_RECEIPT = "Patient Receipt";
 export const DATE_OF_SERVICE = "Date of Service";
 export const DEA_ACTIVE_DATE = "DEA Active Date";
+export const PROVIDER_INFORMATION = "Provider Information";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
@@ -640,7 +642,8 @@ export const PRN = "PRN";
 export const UPIN = "UPIN";
 export const PAGER = "Pager";
 export const TO_TEXT = "To:";
-export const TAX_ID = "Group Tax ID";
+export const TAX_ID = "Tax ID";
+export const GROUP_TAX_ID = "Group Tax ID";
 export const GO_BACK = "Go Back";
 export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
@@ -1032,6 +1035,7 @@ export const DELETE = "Delete";
 export const UPLOAD = "Upload";
 export const DETAIL = "Detail";
 export const HOME_TEXT = "Home";
+export const INSURER = "Insurer";
 export const DETAILS = "Details";
 export const MARRIED = "MARRIED";
 export const PENDING = "Pending";
@@ -1040,6 +1044,7 @@ export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
 export const PAYMENT = "Payment";
+export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
@@ -1055,7 +1060,9 @@ export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
 export const CLAIM_NO = "Claim No";
 export const ADD_NUM = "Add Number";
+export const MEMBER_NO = "Member #";
 export const UNLOCK_TEXT = "Unlock";
+export const DIAGNOSIS = "Diagnosis";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
 export const LESS_INFO = "Less Info";
@@ -1073,15 +1080,35 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
+export const TOTAL_CHARGES = "Total Charges:";
+export const TOTAL_DISCOUNTS = "Total Discounts:";
+export const PATIENT_PAID = "Patient Paid:";
+export const INSURANCE_PAID = "Insurance Paid:";
+export const PATIENT_BALANCE_DUE = "Patient Balance Due:";
+export const INSURANCE_BALANCE_DUE = "Insurance Balance Due:";
+export const TREATMENT = "Treatment";
 export const AGREEMENTS = "Agreements";
+export const DATE_OF_VISIT = "Date of Visit";
+export const BILLING_CODE = "Billing Code";
+export const MODS = "Mods";
+export const DX_PTRS = "Dx Ptrs";
+export const QTY = "Qty";
+export const FEE = "Fee";
+export const DIS = "Dis";
+export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
+export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
 export const LAB_ORDERS = "Lab Orders";
+export const SIGNATURE_DATE = "DATE:"
+export const PATIENT_SIGNATURE = "Patient Signature:"
+export const PROVIDER_SIGNATURE = "Provider Signature:"
 export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
+export const SUBSCRIBER = "Subscriber";
 export const COPAY_TYPE = "Copay Type";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
@@ -1132,16 +1159,19 @@ export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
+export const PATIENT_PHONE = 'Patient Phone';
 export const DOCUMENT_NAME = "Document Name";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
 export const ADD_AGREEMENT = "Add Agreement";
-export const ADD_CLAIM_STATUS = "Add Claim Status";
 export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
+export const OFFICE_EIN = "Office EIN";
+export const OFFICE_PHONE = "Office Phone";
+export const DATE_OF_BIRTH = "Date of Birth";
 export const REVOKE_ACCESS = "Revoke Access";
 export const FORMER_SMOKER = "Former Smoker";
 export const PRICE_WITH_DOLLAR = "Price ($)";
@@ -1178,6 +1208,7 @@ export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
 export const BUILD_FEE_DOLLAR = "Build Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
+export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
 export const INSURANCE_NAMES = "Insurance Names";
 export const MEMBERSHIP_NAME = "Membership name";
@@ -1212,6 +1243,7 @@ export const CONFIRM_PASSWORD = "Confirm password";
 export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const SAVE_APPOINTMENT = "Save Appointment";
+export const ADD_CLAIM_STATUS = "Add Claim Status";
 export const UPDATE_SIGNATURE = "Update Signature";
 export const BOOK_APPOINTMENT = "Book Appointment";
 export const AUDIT_LOG_REPORT = "Audit Log Report";
@@ -1274,6 +1306,7 @@ export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const PRIMARY_CARE_PROVIDER = "Primary Care Provider";
 export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
+export const PLACE_OF_SERVICE_CODE = "Place of Service Code";
 export const POLICY_HOLDER_DETAILS = "Policy Holder Details";
 export const INSURANCE_AND_POLICIES = "Insurance & Policies";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
@@ -1422,6 +1455,7 @@ export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
 export const FEE_SCHEDULE_ROUTE = "/fee-schedule";
+export const SUPER_BILL_ROUTE = "/super-bill";
 export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
@@ -1821,11 +1855,7 @@ export const PROFILE_GENERAL_MENU_ITEMS = [
   {
     name: SIGNATURE_TEXT,
     link: SIGNATURE_ROUTE,
-  },
-  {
-    name: CANCELLATIONS,
-    link: CANCELLATION_ROUTE,
-  },
+  }
 ];
 
 export const PROFILE_SECURITY_MENU_ITEMS = [
@@ -2768,11 +2798,6 @@ export const CLINICAL_ITEMS = [
 
 export const MISCELLANEOUS_SETTINGS_ITEMS = [
   {
-    name: TIME_ZONE,
-    link: "/",
-    desc: TIME_ZONE_DESCRIPTION,
-  },
-  {
     name: AGREEMENTS,
     link: AGREEMENTS_ROUTE,
     desc: AGREEMENTS_DESCRIPTION,
@@ -2781,11 +2806,6 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
-  },
-  {
-    name: FFE_SCHEDULE,
-    link: FEE_SCHEDULE_ROUTE,
-    desc: FEE_SCHEDULE_DESCRIPTION,
   }
 ];
 
@@ -3385,6 +3405,12 @@ export const PRACTICE_SETTINGS_ITEMS = [
     desc: EMERGENCY_ACCESS_DESCRIPTION,
     permission: USER_PERMISSIONS.emergencyAccess,
   },
+  {
+    name: FFE_SCHEDULE,
+    link: FEE_SCHEDULE_ROUTE,
+    desc: FEE_SCHEDULE_DESCRIPTION,
+    permission: USER_PERMISSIONS.createStaff // NEED TO UPDATE THIS *****************************
+  }
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me'
