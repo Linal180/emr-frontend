@@ -1,4 +1,4 @@
-import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSignedUrlPayload, CreateAttachmentInput } from "../generated/graphql";
+import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSignedUrlPayload, CreateAttachmentInput, PracticePayload } from "../generated/graphql";
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
@@ -34,6 +34,7 @@ export interface State {
   insuranceCard2: Attachment | undefined
   drivingLicense1: Attachment | undefined
   drivingLicense2: Attachment | undefined
+  practiceData: PracticePayload['practice']
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
   labOrderAttachments: AttachmentsPayload['attachments']
@@ -57,6 +58,7 @@ export const initialState: State = {
   attachmentId: '',
   providerName: '',
   preSignedUrl: '',
+  practiceData: null,
   policyHolderId: '',
   isFormLoaded: true,
   openDelete: false,
@@ -98,6 +100,7 @@ export enum ActionType {
   SET_INSURANCE_ID = 'setInsuranceId',
   SET_LAB_RESULT_ID = 'setLabResultId',
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
+  SET_PRACTICE_DATA = 'setPracticeData',
   SET_DRAWER_OPENED = 'setDrawerOpened',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_PROVIDER_NAME = 'setProviderName',
@@ -154,6 +157,7 @@ export type Action =
   | { type: ActionType.SET_DRIVING_LICENSE_2; drivingLicense2: Attachment | undefined }
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
+  | { type: ActionType.SET_PRACTICE_DATA; practiceData: PracticePayload['practice'] }
   | { type: ActionType.SET_LAB_ORDER_ATTACHMENTS; labOrderAttachments: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
   | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
@@ -374,6 +378,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         labResultId: action.labResultId
+      }
+
+      case ActionType.SET_PRACTICE_DATA:
+      return {
+        ...state,
+        practiceData: action.practiceData
       }
   }
 }

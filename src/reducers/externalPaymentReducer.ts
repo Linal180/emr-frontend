@@ -3,7 +3,7 @@ import { AchAccountType } from "../interfacesTypes";
 
 export interface State {
   price: string;
-  appointmentPaymentToken: string;
+  loader: boolean
   patientId: string;
   facilityId: string;
   providerId: string;
@@ -11,33 +11,33 @@ export interface State {
   instance: Dropin | null;
   achPayment: boolean;
   ownershipType: AchAccountType;
-  loader: boolean
+  appointmentPaymentToken: string;
 }
 
 export const initialState: State = {
   price: '',
-  appointmentPaymentToken: '',
   patientId: '',
+  loader: false,
   facilityId: '',
   providerId: '',
   showPayBtn: false,
   instance: null,
   achPayment: false,
   ownershipType: 'personal',
-  loader: false
+  appointmentPaymentToken: '',
 }
 
 export enum ActionType {
   SET_PRICE = 'setPage',
-  SET_PAYMENT_TOKEN = 'setPaymentToken',
+  SET_LOADER = 'setLoader',
+  SET_INSTANCE = 'setInstance',
   SET_PATIENT_ID = 'setPatientId',
   SET_FACILITY_ID = 'setFacilityId',
   SET_PROVIDER_ID = 'setProviderId',
-  SET_SHOW_PAY_BUTTON = 'setShowPayBtn',
-  SET_INSTANCE = 'setInstance',
   SET_ACH_PAYMENT = 'setAchPayment',
+  SET_PAYMENT_TOKEN = 'setPaymentToken',
+  SET_SHOW_PAY_BUTTON = 'setShowPayBtn',
   SET_OWNERSHIP_TYPE = 'setOwnershipType',
-  SET_LOADER = 'setLoader'
 }
 
 export type Action = { type: ActionType.SET_PRICE; price: string } |

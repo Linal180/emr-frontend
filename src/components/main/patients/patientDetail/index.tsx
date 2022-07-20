@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useEffect, useCallback, useState } from 'react';
+import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
@@ -51,7 +51,6 @@ import {
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
-  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
   const [{
     openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
@@ -60,14 +59,14 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [{ pageComing, upComing, completed, encounters }, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
 
-  const [, mediaDispatcher] =
+  const [{drawerOpened}, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
-  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => { mediaDispatcher({ type: mediaActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened }) }
 
   useEffect(() => {
     routeParamValue &&

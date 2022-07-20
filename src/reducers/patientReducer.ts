@@ -5,6 +5,7 @@ import {
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
   PatientVitalPayload, PatientVitalsPayload, TempUnitType, UnitType, WeightType, AppointmentPayload
 } from "../generated/graphql"
+import { SmartyUserData } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -34,6 +35,7 @@ export interface State {
   optionalEmail: boolean;
   deletePatientId: string;
   guardianContactId: string;
+  openAdvancedSearch: boolean;
   guarantorContactId: string;
   emergencyContactId: string;
   anchorEl: HTMLElement | null;
@@ -75,6 +77,7 @@ export interface State {
   openVital: boolean,
   vitalPage: number,
   vitalTotalPages: number,
+  userData: SmartyUserData;
   vitalToEdit: PatientVitalPayload['patientVital'],
   patientVitals: PatientVitalsPayload['patientVitals'],
 }
@@ -138,6 +141,7 @@ export const initialState: State = {
   smsPermission: false,
   patientNoteOpen: false,
   patientProvidersData: [],
+  openAdvancedSearch: false,
   releaseOfInfoBill: false,
   nextAppointment: undefined,
   lastAppointment: undefined,
@@ -145,6 +149,7 @@ export const initialState: State = {
   prevWeightUnit: WeightType.Kg,
   prevFeverUnit: TempUnitType.DegF,
   medicationHistoryAuthority: false,
+  userData: { street: '', address: '' },
   prevHeadUnit: HeadCircumferenceType.Inch,
   heightUnit: { id: UnitType.Inch, name: IN_TEXT },
   weightUnit: { id: WeightType.Kg, name: KG_TEXT },
@@ -158,6 +163,7 @@ export enum ActionType {
   SET_IS_SMS = 'setIsSms',
   SET_IS_OPEN = "setIsOpen",
   SET_IS_EDIT = 'setIsEdit',
+  SET_USER_DATA = 'setUserData',
   SET_PATIENTS = 'setPatients',
   SET_EDIT_HEAD = 'setEditHead',
   SET_EDIT_TEMP = 'setEditTemp',
@@ -211,6 +217,7 @@ export enum ActionType {
   SET_PATIENT_PROVIDERS = 'setPatientProviders',
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
+  SET_OPEN_ADVANCED_SEARCH = 'setOpenAdvancedSearch',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
   SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
@@ -250,6 +257,7 @@ export type Action =
   | { type: ActionType.SET_ADDRESS_OPEN; addressOpen: boolean }
   | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
   | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
+  | { type: ActionType.SET_USER_DATA; userData: SmartyUserData }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
@@ -269,6 +277,7 @@ export type Action =
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
+  | { type: ActionType.SET_OPEN_ADVANCED_SEARCH; openAdvancedSearch: boolean }
   | { type: ActionType.SET_PATIENTS, patients: PatientsPayload['patients'] }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
@@ -700,6 +709,18 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         openMoreInfo: action.openMoreInfo
+      }
+
+    case ActionType.SET_USER_DATA:
+      return {
+        ...state,
+        userData: action.userData
+      }
+
+    case ActionType.SET_OPEN_ADVANCED_SEARCH:
+      return {
+        ...state,
+        openAdvancedSearch: action.openAdvancedSearch
       }
   }
 };

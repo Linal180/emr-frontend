@@ -222,8 +222,6 @@ export type Action =
   | { type: ActionType.SET_PAGE; page: number }
   | { type: ActionType.SET_SORT_BY; sortBy: string }
   | { type: ActionType.SET_CALENDAR_DATA; calendarData: any[] }
-  | { type: ActionType.SET_CALENDAR_CURRENT_DATE; calendarCurrentDate: Date }
-  | { type: ActionType.SET_CALENDAR_CURRENT_VIEW; calendarCurrentView: string }
   | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_INSTANCE; instance: any }
@@ -270,6 +268,8 @@ export type Action =
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
   | { type: ActionType.SET_OPEN_PATIENT_MODAL; openPatientModal: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
+  | { type: ActionType.SET_CALENDAR_CURRENT_DATE; calendarCurrentDate: Date }
+  | { type: ActionType.SET_CALENDAR_CURRENT_VIEW; calendarCurrentView: string }
   | { type: ActionType.SET_TOTAL_PAGES_COMPLETED; totalPagesCompleted: number }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }

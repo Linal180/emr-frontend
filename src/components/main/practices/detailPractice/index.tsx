@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, FC, useCallback, useContext, useEffect, useState } from 'react';
+import { Reducer, useReducer, FC, useCallback, useContext, useEffect } from 'react';
 import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -39,9 +39,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
   const { id: practiceId } = practice || {};
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
+  const { attachmentUrl, attachmentId, attachmentData, isEdit, practiceData } = mediaState
 
-  const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(updatePracticeSchema)
@@ -79,7 +78,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
               attachmentData: practiceAttachment
             })
 
-            setPracticeData(practice)
+            mediaDispatch({ type: mediaActionType.SET_PRACTICE_DATA, practiceData: practice })
             setEditData(practice);
           }
         }
