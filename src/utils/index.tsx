@@ -419,6 +419,15 @@ export const timeDifference = (time: string) => {
 export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
 
+export const isCurrentDay = (date: string) => {
+  if (!!!date) return false
+
+  const givenDate = moment(date, "x").format("ddd MMM. DD, YYYY");
+  const now = moment();
+
+  return now.diff(givenDate, 'days') === 0
+};
+
 export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
 export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
 export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;

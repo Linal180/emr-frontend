@@ -1858,11 +1858,7 @@ export const PROFILE_GENERAL_MENU_ITEMS = [
   {
     name: SIGNATURE_TEXT,
     link: SIGNATURE_ROUTE,
-  },
-  {
-    name: CANCELLATIONS,
-    link: CANCELLATION_ROUTE,
-  },
+  }
 ];
 
 export const PROFILE_SECURITY_MENU_ITEMS = [
@@ -2805,11 +2801,6 @@ export const CLINICAL_ITEMS = [
 
 export const MISCELLANEOUS_SETTINGS_ITEMS = [
   {
-    name: TIME_ZONE,
-    link: "/",
-    desc: TIME_ZONE_DESCRIPTION,
-  },
-  {
     name: AGREEMENTS,
     link: AGREEMENTS_ROUTE,
     desc: AGREEMENTS_DESCRIPTION,
@@ -2818,11 +2809,6 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
-  },
-  {
-    name: FFE_SCHEDULE,
-    link: FEE_SCHEDULE_ROUTE,
-    desc: FEE_SCHEDULE_DESCRIPTION,
   }
 ];
 
@@ -3422,6 +3408,12 @@ export const PRACTICE_SETTINGS_ITEMS = [
     desc: EMERGENCY_ACCESS_DESCRIPTION,
     permission: USER_PERMISSIONS.emergencyAccess,
   },
+  {
+    name: FFE_SCHEDULE,
+    link: FEE_SCHEDULE_ROUTE,
+    desc: FEE_SCHEDULE_DESCRIPTION,
+    permission: USER_PERMISSIONS.createStaff // NEED TO UPDATE THIS *****************************
+  }
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me'

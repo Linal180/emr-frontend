@@ -20,7 +20,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
   const {
     user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl, logoutUser
   } = useContext(AuthContext);
-  
+
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
@@ -111,6 +111,24 @@ const ProfileDropdownMenu = (): JSX.Element => {
           <Grid container spacing={3}>
             <Grid item md={6}>
               <Box display="flex" alignItems="center">
+                <MenuShieldIcon />
+
+                <Box ml={1}>
+                  <Typography variant="h5">{SECURITY}</Typography>
+                </Box>
+              </Box>
+
+              <Box mt={1}>
+                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) =>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem onClick={handleClose}>{name}</MenuItem>
+                  </Link>
+                )}
+              </Box>
+            </Grid>
+
+            <Grid item md={6}>
+              <Box display="flex" alignItems="center">
                 <MenuSettingIcon />
 
                 <Box ml={1}>
@@ -130,24 +148,6 @@ const ProfileDropdownMenu = (): JSX.Element => {
                     </Link>
                   }
                 })}
-              </Box>
-            </Grid>
-
-            <Grid item md={6}>
-              <Box display="flex" alignItems="center">
-                <MenuShieldIcon />
-
-                <Box ml={1}>
-                  <Typography variant="h5">{SECURITY}</Typography>
-                </Box>
-              </Box>
-
-              <Box mt={1}>
-                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) =>
-                  <Link key={`${link}-${name}`} to={link}>
-                    <MenuItem onClick={handleClose}>{name}</MenuItem>
-                  </Link>
-                )}
               </Box>
             </Grid>
           </Grid>

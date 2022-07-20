@@ -535,6 +535,7 @@ export interface SearchComponentProps {
   placeHolder?: string;
   tooltipData?: TooltipData[]
   search: Function;
+  submit?: Function;
 }
 
 export interface AppMenuItemTypes {
@@ -2006,7 +2007,13 @@ export interface AuditSubmitInputs {
   moduleType?: string;
 }
 
-export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'> & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'>
+  & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
+
+export interface DoctorAppointmentsAndPatientsProps {
+  patientId?: string;
+  providerId?: string;
+}
 
 export interface FeeScheduleFormProps {
   state: FeeScheduleState,

@@ -13,10 +13,10 @@ import {
   CALENDAR_SETTINGS_TEXT, FACILITY_SERVICES_DESCRIPTION, FACILITY_SERVICES_TEXT, PROVIDER_MANAGEMENT,
   PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS,
   PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, FACILITIES_ROUTE, SETTINGS_TEXT,
-  FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS,
+  FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, PROVIDER_PROFILE_DESCRIPTION, CLINICAL_TEXT,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, CLINICAL_TEXT, MISCELLANEOUS_SETTINGS,
-  PROVIDER_PROFILE_DESCRIPTION,
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS,
+
 } from "../../../constants";
 
 export const SettingsComponent = () => {
@@ -76,7 +76,7 @@ export const SettingsComponent = () => {
               const { name, link, desc, permission } = item || {}
               const practiceAdminRoute = isSuper && name === PRACTICE_DETAILS;
               const facilityAdminRoute = isFacility && name === FACILITY_MANAGEMENT;
-              
+
               const doctorAdminRoute = isDoctor && name === PROVIDER_MANAGEMENT;
               const facilityDetailRoute = `${FACILITIES_ROUTE}/${facilityId}`
               const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
@@ -132,8 +132,6 @@ export const SettingsComponent = () => {
           </Box>
         </CardComponent> */}
 
-        <Box p={2} />
-
         {isFacility && <CardComponent cardTitle={SERVICES}>
           <Box pb={3}>
             <Box display="flex" alignItems="center" flexWrap="wrap">
@@ -150,9 +148,7 @@ export const SettingsComponent = () => {
           </Box>
         </CardComponent>}
 
-        <Box p={2} />
-
-        <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
+        {/* <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
           <Box pb={3}>
             {APPOINTMENT_SETTINGS_ITEMS.map(({ name, link, desc }) => {
               return (
@@ -168,9 +164,7 @@ export const SettingsComponent = () => {
               )
             })}
           </Box>
-        </CardComponent>
-
-        <Box p={2} />
+        </CardComponent> */}
 
         {isFacility && <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
           <Box pb={3}>
@@ -185,8 +179,6 @@ export const SettingsComponent = () => {
             </Box>
           </Box>
         </CardComponent>}
-
-        <Box p={2} />
 
         <CardComponent cardTitle={CLINICAL_TEXT}>
           <Box pb={3}>
