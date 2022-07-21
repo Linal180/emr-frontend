@@ -414,6 +414,7 @@ export type Billing = {
   employment?: Maybe<Scalars['Boolean']>;
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
@@ -430,6 +431,7 @@ export type Billing = {
   serviceDate?: Maybe<Scalars['String']>;
   servicingProvider?: Maybe<Doctor>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
   uncoveredAmount?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -468,6 +470,7 @@ export type BillingInput = {
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
@@ -480,6 +483,7 @@ export type BillingInput = {
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
   uncoveredAmount?: Maybe<Scalars['String']>;
 };
 
@@ -596,12 +600,14 @@ export type ClaimInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
+  from?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
   patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
 };
 
 export type ClaimNumberPayload = {
@@ -3055,8 +3061,7 @@ export type Observations = {
 /** The patient billing status assigned */
 export enum OnsetDateType {
   DateOfAccident = 'DATE_OF_ACCIDENT',
-  LastMenstrualPeriod = 'LAST_MENSTRUAL_PERIOD',
-  OnsetOfCurrentSymptomsOrIllness = 'ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS'
+  DateOfHospitalization = 'DATE_OF_HOSPITALIZATION'
 }
 
 /** The order of benefit type */
@@ -6297,7 +6302,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, to?: string | null, from?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
 
 export type CreateClaimQueryVariables = Exact<{
   claimInput: ClaimInput;
@@ -9171,9 +9176,15 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       claimDate
       claimNo
       uncoveredAmount
+      to
+      from
       facility {
         id
         name
+        practice {
+          id
+          name
+        }
       }
       claimStatus {
         id
