@@ -21,15 +21,17 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError() {
+    onError: () => {
       dispatch({ type: ActionType.SET_CPT_CODES, cptCodes: [] })
     },
 
-    onCompleted(data) {
+    onCompleted: (data) => {
+      
       const { findAllCptCodes } = data || {};
+      const { cptCodes, pagination, response } = findAllCptCodes || {}
+      const { status } = response || {}
 
-      if (findAllCptCodes) {
-        const { pagination, cptCodes } = findAllCptCodes
+      if (status === 200) {
         cptCodes && dispatch({ type: ActionType.SET_CPT_CODES, cptCodes: cptCodes as AllCptCodePayload['cptCodes'] })
 
         if (pagination) {

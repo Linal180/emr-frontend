@@ -2,25 +2,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import DatePicker from '../../common/DatePicker';
 import InputController from '../../../controller';
-import CPTCodesSelector from '../../common/Selector/CptCodeSelector';
 import PracticeSelector from '../../common/Selector/PracticeSelector';
 // constants, history, styling block
 import { GREY_SIXTEEN } from '../../../theme';
 import { AuthContext } from '../../../context';
+import { isSuperAdmin, setRecord } from '../../../utils';
 import { feeScheduleSchema } from '../../../validationSchemas';
 import { ActionType } from '../../../reducers/feeScheduleReducer';
-import { isSuperAdmin, setCTPCode, setRecord } from '../../../utils';
-import { CptCodeSelectorOption, CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
+import { CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
+import { EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE, NAME, PRACTICE, SAVE_TEXT, UPDATE } from '../../../constants';
 import { useCreateFeeScheduleMutation, useGetFeeScheduleLazyQuery, useUpdateFeeScheduleMutation } from '../../../generated/graphql';
-import {
-  CPT_CODE_PROCEDURE_CODE, DESCRIPTION, EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE,
-  LONG_DESCRIPTION, MODIFIER, NAME, PRACTICE, SAVE_TEXT, SERVICE_FEE_CHARGE, SHORT_DESCRIPTION
-} from '../../../constants';
 
 const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
 
@@ -81,18 +77,11 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
       const { feeSchedule, response } = getFeeSchedule || {}
       const { status } = response || {}
       if (status === 200) {
-        const { cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, serviceFee,
-          shortDescription, practice } = feeSchedule || {}
+        const { effectiveDate, expiryDate, name, practice } = feeSchedule || {}
         const { id, name: practiceName } = practice || {}
         name && setValue('name', name)
-        cptCode && setValue('cptCode', setCTPCode(cptCode, cptCode, description || '', shortDescription || '', longDescription || ''))
-        modifier && setValue('modifier', modifier)
-        expireDate && setValue('expireDate', expireDate)
-        serviceFee && setValue('serviceFee', serviceFee)
-        description && setValue('description', description)
         effectiveDate && setValue('effectiveDate', effectiveDate)
-        longDescription && setValue('longDescription', longDescription)
-        shortDescription && setValue('shortDescription', shortDescription)
+        expiryDate && setValue('expiryDate', expiryDate)
         id && practiceName && setValue('practiceId', setRecord(id, practiceName))
       }
     },
@@ -106,16 +95,14 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
   }, [isSuper, setValue, id, name, isEdit])
 
   const submitHandler = async (values: CreateFeeSchedule) => {
-    const { practiceId, cptCode, description, effectiveDate, expireDate, longDescription, modifier, name, shortDescription, serviceFee } = values;
+    const { practiceId, effectiveDate, expiryDate, name } = values;
     const { id: practice } = practiceId
-    const { id } = cptCode
     try {
       if (isEdit && getFeeId) {
         updateFeeSchedule({
           variables: {
             updateFeeScheduleInput: {
-              cptCode: id, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
-              shortDescription, serviceFee, id: getFeeId
+              effectiveDate, expiryDate, name, practiceId: practice, id: getFeeId
             }
           }
         })
@@ -124,8 +111,7 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         await createFeeSchedule({
           variables: {
             createFeeScheduleInput: {
-              cptCode: id, description, effectiveDate, expireDate, longDescription, modifier, name, practiceId: practice,
-              shortDescription, serviceFee
+              cptCode: id, effectiveDate, expiryDate, name, practiceId: practice,
             }
           }
         })
@@ -143,15 +129,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
     isEdit && getFeeId && fetchFeeSchedule()
   }, [isEdit, fetchFeeSchedule, getFeeId])
 
-
-  const valueSetter = (inputs: CptCodeSelectorOption) => {
-    const { description, longDescription, shortDescription } = inputs;
-    setValue('description', description || '');
-    setValue('longDescription', longDescription || '')
-    setValue('shortDescription', shortDescription || '')
-  }
-
-
   return (
     <Box maxWidth={480}>
       <FormProvider {...methods}>
@@ -161,7 +138,13 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
             <Typography variant='h3'>{FEE_SCHEDULE}</Typography>
-            <Button type="submit" variant="contained" color="primary" disabled={loading || updateLoading || getLoading}>{SAVE_TEXT}</Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading || updateLoading || getLoading}>
+              {isEdit ? UPDATE : SAVE_TEXT}
+              
+              {(loading || updateLoading || getLoading) &&
+                <CircularProgress size={20} color="inherit" />
+              }
+            </Button>
           </Box>
 
           <Box p={2} mt={2} maxHeight="calc(100vh - 100px)" className="overflowY-auto">
@@ -185,27 +168,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
                 />
               </Grid>
 
-              <Grid item md={12} sm={12} xs={12}>
-                <Grid container spacing={3} direction="row">
-                  <Grid item md={6} sm={12} xs={12}>
-                    <CPTCodesSelector
-                      addEmpty
-                      isRequired
-                      name="cptCode"
-                      label={CPT_CODE_PROCEDURE_CODE}
-                      valueSetter={valueSetter}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="modifier"
-                      controllerLabel={MODIFIER}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
                 <Grid container spacing={3} direction="row">
@@ -221,49 +183,15 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
                       disablePast
-                      name="expireDate"
+                      name="expiryDate"
                       label={EXPIRATION_DATE}
                       disableFuture={false}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="description"
-                  controllerLabel={DESCRIPTION}
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="shortDescription"
-                  controllerLabel={SHORT_DESCRIPTION}
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  multiline
-                  fieldType="text"
-                  controllerName="longDescription"
-                  controllerLabel={LONG_DESCRIPTION}
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <InputController
-                  isRequired
-                  fieldType="number"
-                  controllerName="serviceFee"
-                  controllerLabel={SERVICE_FEE_CHARGE}
-                  className="input-dollar-class custom-num-input"
-                />
-              </Grid>
             </Grid>
+
           </Box>
         </form>
       </FormProvider>

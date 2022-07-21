@@ -1,4 +1,4 @@
-import { AllFeeSchedulesPayload } from "../generated/graphql";
+import { AllCptFeeSchedulesPayload, AllFeeSchedulesPayload } from "../generated/graphql";
 
 export interface State {
   page: number;
@@ -11,6 +11,7 @@ export interface State {
   drawerOpened: boolean;
   getFeeSchedule: boolean;
   feeSchedules: AllFeeSchedulesPayload['feeSchedules'];
+  cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules'];
 }
 
 export const initialState: State = {
@@ -23,6 +24,7 @@ export const initialState: State = {
   searchQuery: '',
   feeSchedules: [],
   drawerOpened: false,
+  cptFeeSchedules: [],
   getFeeSchedule: true,
 }
 
@@ -37,6 +39,7 @@ export enum ActionType {
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_FEE_SCHEDULES = 'setFeeSchedules',
   SET_FEE_SCHEDULE_GET = 'setGetFeeSchedule',
+  SET_CPT_FEE_SCHEDULES = 'setCptFeeSchedules',
 }
 
 export type Action =
@@ -50,6 +53,7 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_FEE_SCHEDULE_GET; getFeeSchedule: boolean }
   | { type: ActionType.SET_FEE_SCHEDULES; feeSchedules: AllFeeSchedulesPayload['feeSchedules']; }
+  | { type: ActionType.SET_CPT_FEE_SCHEDULES; cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules']; }
 
 export const feeScheduleReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -112,6 +116,12 @@ export const feeScheduleReducer = (state: State, action: Action): State => {
       return {
         ...state,
         getFeeId: action.getFeeId
+      }
+
+    case ActionType.SET_CPT_FEE_SCHEDULES:
+      return {
+        ...state,
+        cptFeeSchedules: action.cptFeeSchedules
       }
 
   }

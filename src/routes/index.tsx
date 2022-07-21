@@ -1,16 +1,15 @@
 import { FC, useContext } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 // components
+import Login from "../pages/auth/login";
+import { Lock } from "../pages/auth/lock";
 import { PageNotFound } from "../pages/404";
 import ForgetPassword from "../pages/auth/forgetPassword";
-import { Lock } from "../pages/auth/lock";
-import Login from "../pages/auth/login";
 import { ResetPassword } from "../pages/auth/resetPassword";
 import { SetPassword } from "../pages/auth/setPassword";
 import { TwoFA } from "../pages/main/2FA";
 import { TwoFaAuthentication } from "../pages/main/2FaAuth";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
-import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import { AutoLogout } from "../pages/main/autoLogout";
 import AddBill from "../pages/main/billing/addBill";
@@ -38,46 +37,53 @@ import { ViewService } from "../pages/main/facilities/services/viewService";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
-import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
-import { AddLabOrders } from "../pages/main/labOrders/addOrder";
-import { EditLabOrders } from "../pages/main/labOrders/editOrder";
-import { LabOrderResults } from "../pages/main/labOrders/orderResults";
-import { PatientChart } from "../pages/main/patientChart";
-import { PatientVitals } from "../pages/main/patientChart/patientVitals";
-import AddPatient from "../pages/main/patients/addPatient";
-import { PatientDetail } from "../pages/main/patients/patientDetail";
-import Patients from "../pages/main/patients/patientsListing";
-import ViewPatient from "../pages/main/patients/viewPatient";
-import { AddPractice } from "../pages/main/practices/addPractice";
-import { DetailPractice } from "../pages/main/practices/detailPractice";
-import { PracticeListing } from "../pages/main/practices/practiceListing";
-import { ViewPractice } from "../pages/main/practices/viewPractice";
-import { Profile } from "../pages/main/profile";
-import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
-import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
-import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
-import { DoctorPublicAppointment } from "../pages/main/publicAppointments/doctor";
-import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
-import { FacilityPublicAppointment } from "../pages/main/publicAppointments/facility";
-import { AppointmentFail } from "../pages/main/publicAppointments/fail";
-import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
-import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
-import { PublicFormFail, PublicFormPreview, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
-import AddResult from "../pages/main/reports/addResult";
-import { LabResults } from "../pages/main/reports/labResultsListing";
-import { AddRole } from "../pages/main/roles/addRole";
-import { Roles } from "../pages/main/roles/roleListing";
-import { EditRole } from "../pages/main/roles/viewRole";
+import PublicRoute from "./PublicRoute";
+import PrivateRoute from "./PrivateRoute";
 import Settings from "../pages/main/settings";
+import { Profile } from "../pages/main/profile";
+import { Maintenance } from "../pages/maintenance";
 import { Signature } from "../pages/main/signature";
 import AddStaff from "../pages/main/staff/addStaff";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
-import { Maintenance } from "../pages/maintenance";
 import { Agreements } from "../pages/main/agreements";
+import { AddRole } from "../pages/main/roles/addRole";
+import { Roles } from "../pages/main/roles/roleListing";
+import AddResult from "../pages/main/reports/addResult";
+import { EditRole } from "../pages/main/roles/viewRole";
+import { FeeSchedule } from "../pages/main/feeSchedule";
+import { PatientChart } from "../pages/main/patientChart";
+import AddPatient from "../pages/main/patients/addPatient";
+import AuditLogComponent from "../components/main/auditLog";
+import { ClaimStatuses } from "../pages/main/claimStatuses";
+import ViewPatient from "../pages/main/patients/viewPatient";
+import Patients from "../pages/main/patients/patientsListing";
+import { CptFeeSchedule } from "../pages/main/CptFeeSchedule";
+import { AddLabOrders } from "../pages/main/labOrders/addOrder";
 import AddAgreement from "../pages/main/agreements/addAgreement";
-import PrivateRoute from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
+import { EditLabOrders } from "../pages/main/labOrders/editOrder";
+import { AddPractice } from "../pages/main/practices/addPractice";
+import { ViewPractice } from "../pages/main/practices/viewPractice";
+import { PatientDetail } from "../pages/main/patients/patientDetail";
+import { LabResults } from "../pages/main/reports/labResultsListing";
+import { LabOrderResults } from "../pages/main/labOrders/orderResults";
+import { DetailPractice } from "../pages/main/practices/detailPractice";
+import { AppointmentFail } from "../pages/main/publicAppointments/fail";
+import { PatientVitals } from "../pages/main/patientChart/patientVitals";
+import { PracticeListing } from "../pages/main/practices/practiceListing";
+import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
+import { Appointments } from "../pages/main/appointments/appointmentsListing";
+import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
+import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
+import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
+import { DoctorPublicAppointment } from "../pages/main/publicAppointments/doctor";
+import { FacilityPublicAppointment } from "../pages/main/publicAppointments/facility";
+import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
+import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
+import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
+import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
+import { PublicFormFail, PublicFormPreview, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
 // constants, contexts and utils
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE, AUTO_LOGOUT_ROUTE,
@@ -95,11 +101,6 @@ import {
 } from "../constants";
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
-import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
-import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
-import AuditLogComponent from "../components/main/auditLog";
-import { ClaimStatuses } from "../pages/main/claimStatuses";
-import { FeeSchedule } from "../pages/main/feeSchedule";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -189,6 +190,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={FEE_SCHEDULE_ROUTE} component={FeeSchedule} />
+      <PrivateRoute exact path={`${FEE_SCHEDULE_ROUTE}/:id/details`} component={CptFeeSchedule} />
       <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:id`} component={AddLabOrders} />
       <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
       <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />

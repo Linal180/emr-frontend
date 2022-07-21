@@ -1,0 +1,86 @@
+query FindAllCptFeeSchedule($findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!) {
+  findAllCptFeeSchedule(findAllCptFeeScheduleInput: $findAllCptFeeScheduleInput) {
+    cptFeeSchedules {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetCptFeeSchedule($getCptFeeScheduleInput: GetCptFeeScheduleInput!) {
+  getCptFeeSchedule(getCptFeeScheduleInput: $getCptFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    cptFeeSchedule {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+    }
+  }
+}
+
+mutation RemoveCptFeeSchedule($removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!){
+  removeCptFeeSchedule(removeCptFeeScheduleInput: $removeCptFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateCptFeeSchedule($updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!) {
+  updateCptFeeSchedule(updateCptFeeScheduleInput: $updateCptFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}
+
+mutation CreateCptFeeSchedule($createCptFeeScheduleInput: CreateCptFeeScheduleInput!) {
+  createCptFeeSchedule(createCptFeeScheduleInput: $createCptFeeScheduleInput){
+    response{
+      name
+      status
+      message
+    }
+
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}

@@ -43,7 +43,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput, CreateCptFeeScheduleInput,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -424,7 +424,12 @@ export interface PatientSelectorProps extends SelectorProps {
 }
 
 export interface FacilitySelectorProps extends SelectorProps {
-  patientId?: string
+  patientId?: string;
+}
+
+export interface PracticeSelectorProps extends SelectorProps {
+  patientId?: string;
+  isLabelDisplay?: boolean;
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
@@ -2001,9 +2006,13 @@ export interface AuditSubmitInputs {
   moduleType?: string;
 }
 
-export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'> & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
-
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code'> & { code: CptCodeSelectorOption }
 export interface FeeScheduleFormProps {
   state: FeeScheduleState,
   dispatcher: Dispatch<FeeScheduleAction>
+}
+
+export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
+  id: string;
 }

@@ -123,6 +123,13 @@ export type AllCptCodePayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type AllCptFeeSchedulesPayload = {
+  __typename?: 'AllCPTFeeSchedulesPayload';
+  cptFeeSchedules?: Maybe<Array<Maybe<CptFeeSchedule>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
@@ -133,6 +140,13 @@ export type AllDoctorPayload = {
 export type AllFeeSchedulesPayload = {
   __typename?: 'AllFeeSchedulesPayload';
   feeSchedules?: Maybe<Array<Maybe<FeeSchedule>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type AllModifiersPayload = {
+  __typename?: 'AllModifiersPayload';
+  modifiers?: Maybe<Array<Maybe<Modifier>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayloadResponse>;
 };
@@ -513,12 +527,19 @@ export type CptCodes = {
   __typename?: 'CPTCodes';
   category?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
+  cptFeeSchedule?: Maybe<Array<CptFeeSchedule>>;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type CptFeeSchedulePayload = {
+  __typename?: 'CPTFeeSchedulePayload';
+  cptFeeSchedule?: Maybe<CptFeeSchedule>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type CancelAppointment = {
@@ -814,6 +835,24 @@ export enum CopayType {
   XrayImaging = 'XRAY_IMAGING'
 }
 
+export type CptFeeSchedule = {
+  __typename?: 'CptFeeSchedule';
+  code?: Maybe<Scalars['String']>;
+  cptCodes?: Maybe<CptCodes>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeSchedule?: Maybe<FeeSchedule>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CreateAppointmentInput = {
   appointmentCreateType?: Maybe<AppointmentCreateType>;
   appointmentTypeId: Scalars['String'];
@@ -921,6 +960,18 @@ export type CreateContactInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type CreateCptFeeScheduleInput = {
+  code?: Maybe<Scalars['String']>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
 export type CreateDoctorInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -972,6 +1023,7 @@ export type CreateDoctorItemInput = {
 export type CreateEmployerInput = {
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
@@ -1044,7 +1096,7 @@ export type CreateFeeScheduleInput = {
   cptCode?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   effectiveDate?: Maybe<Scalars['String']>;
-  expireDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
   longDescription?: Maybe<Scalars['String']>;
   modifier?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -1115,6 +1167,11 @@ export type CreateLabTestObservationItemInput = {
   normalRangeUnit: Scalars['String'];
   resultUnit: Scalars['String'];
   resultValue: Scalars['String'];
+};
+
+export type CreateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientAllergyInput = {
@@ -1545,6 +1602,7 @@ export type Employer = {
   __typename?: 'Employer';
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1631,20 +1689,15 @@ export type FacilityPayload = {
 
 export type FeeSchedule = {
   __typename?: 'FeeSchedule';
-  cptCode?: Maybe<Scalars['String']>;
+  cptFeeSchedule?: Maybe<Array<CptFeeSchedule>>;
+  cptFeeScheduleCount?: Maybe<Scalars['Float']>;
   createdAt?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
   effectiveDate?: Maybe<Scalars['String']>;
-  expireDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  longDescription?: Maybe<Scalars['String']>;
-  modifier?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
-  revenueCode?: Maybe<Scalars['String']>;
-  serviceFee?: Maybe<Scalars['String']>;
-  shortDescription?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -1713,9 +1766,27 @@ export type FindAllCptCodesInput = {
   paginationOptions: PaginationInput;
 };
 
+export type FindAllCptFeeScheduleInput = {
+  feeScheduleId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
 export type FindAllFeeScheduleInput = {
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type FindAllModifierInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindFeeScheduleCptCodesInput = {
+  paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type ForgotPasswordInput = {
@@ -1769,6 +1840,7 @@ export type FormInput = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type FormMediaPayload = {
@@ -1871,6 +1943,10 @@ export type GetContact = {
   id?: Maybe<Scalars['String']>;
 };
 
+export type GetCptFeeScheduleInput = {
+  id: Scalars['String'];
+};
+
 export type GetDoctor = {
   id: Scalars['String'];
 };
@@ -1901,6 +1977,10 @@ export type GetLabTest = {
 
 export type GetMedia = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type GetModifierInput = {
+  id: Scalars['String'];
 };
 
 export type GetPatient = {
@@ -2268,6 +2348,21 @@ export enum Maritialstatus {
   Widowed = 'WIDOWED'
 }
 
+export type Modifier = {
+  __typename?: 'Modifier';
+  code?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ModifierPayload = {
+  __typename?: 'ModifierPayload';
+  modifier?: Maybe<Modifier>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   achPayment: TransactionPayload;
@@ -2287,6 +2382,7 @@ export type Mutation = {
   createClaimStatus: ClaimStatusPayload;
   createContact: ContactPayload;
   createCopay: Copay;
+  createCptFeeSchedule: CptFeeSchedulePayload;
   createDoctor: DoctorPayload;
   createElement: Element;
   createExternalAppointment: AppointmentPayload;
@@ -2299,6 +2395,7 @@ export type Mutation = {
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
   createLoincCode: LoincCodePayload;
+  createModifier: ModifierPayload;
   createPatient: PatientPayload;
   createPatientConsent: PatientConsentPayload;
   createPermission: PermissionPayload;
@@ -2326,12 +2423,14 @@ export type Mutation = {
   removeCPTCode: CptCodePayload;
   removeClaimStatus: ClaimStatusPayload;
   removeContact: ContactPayload;
+  removeCptFeeSchedule: CptFeeSchedulePayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
+  removeModifier: ModifierPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -2358,6 +2457,7 @@ export type Mutation = {
   updateCPTCode: CptCodePayload;
   updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
+  updateCptFeeSchedule: CptFeeSchedulePayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
@@ -2368,6 +2468,7 @@ export type Mutation = {
   updateLabTestObservation: LabTestObservationPayload;
   updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
+  updateModifier: ModifierPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
@@ -2476,6 +2577,11 @@ export type MutationCreateCopayArgs = {
 };
 
 
+export type MutationCreateCptFeeScheduleArgs = {
+  createCptFeeScheduleInput: CreateCptFeeScheduleInput;
+};
+
+
 export type MutationCreateDoctorArgs = {
   createDoctorInput: CreateDoctorInput;
 };
@@ -2533,6 +2639,11 @@ export type MutationCreateLabTestObservationArgs = {
 
 export type MutationCreateLoincCodeArgs = {
   loincCodeInput: LoincCodeInput;
+};
+
+
+export type MutationCreateModifierArgs = {
+  createModifierInput: CreateModifierInput;
 };
 
 
@@ -2671,6 +2782,11 @@ export type MutationRemoveContactArgs = {
 };
 
 
+export type MutationRemoveCptFeeScheduleArgs = {
+  removeCptFeeScheduleInput: RemoveCptFeeScheduleInput;
+};
+
+
 export type MutationRemoveDoctorArgs = {
   removeDoctor: RemoveDoctor;
 };
@@ -2698,6 +2814,11 @@ export type MutationRemoveLabTestArgs = {
 
 export type MutationRemoveLabTestObservationArgs = {
   removeLabTestObservation: RemoveLabTestObservation;
+};
+
+
+export type MutationRemoveModifierArgs = {
+  removeModifierInput: RemoveModifierInput;
 };
 
 
@@ -2826,6 +2947,11 @@ export type MutationUpdateContactArgs = {
 };
 
 
+export type MutationUpdateCptFeeScheduleArgs = {
+  updateCptFeeScheduleInput: UpdateCptFeeScheduleInput;
+};
+
+
 export type MutationUpdateDoctorArgs = {
   updateDoctorInput: UpdateDoctorInput;
 };
@@ -2873,6 +2999,11 @@ export type MutationUpdateLabTestsByOrderNumArgs = {
 
 export type MutationUpdateLoincCodeArgs = {
   updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
+export type MutationUpdateModifierArgs = {
+  updateModifierInput: UpdateModifierInput;
 };
 
 
@@ -3700,6 +3831,7 @@ export type PracticeInput = {
 export type PracticePayload = {
   __typename?: 'PracticePayload';
   practice?: Maybe<Practice>;
+  practiceAdmin?: Maybe<Staff>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -3847,6 +3979,7 @@ export type Query = {
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllCptCodes: AllCptCodePayload;
+  findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
@@ -3854,6 +3987,7 @@ export type Query = {
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
   findAllLoincCodes: LoincCodesPayload;
+  findAllModifiers: AllModifiersPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
@@ -3870,6 +4004,7 @@ export type Query = {
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
   findClaimStatus: ClaimStatusPayload;
+  findFeeScheduleCPTCodes: AllFeeSchedulesPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
@@ -3888,6 +4023,7 @@ export type Query = {
   getCPTCode: CptCodePayload;
   getClaimFile: ClaimFilePayload;
   getContact: ContactPayload;
+  getCptFeeSchedule: CptFeeSchedulePayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
@@ -3895,6 +4031,7 @@ export type Query = {
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getLabTest: LabTestPayload;
+  getModifier: ModifierPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -4049,6 +4186,11 @@ export type QueryFindAllCptCodesArgs = {
 };
 
 
+export type QueryFindAllCptFeeScheduleArgs = {
+  findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
+};
+
+
 export type QueryFindAllDoctorArgs = {
   doctorInput: DoctorInput;
 };
@@ -4081,6 +4223,11 @@ export type QueryFindAllLabTestArgs = {
 
 export type QueryFindAllLoincCodesArgs = {
   searchLoincCodesInput: SearchLoincCodesInput;
+};
+
+
+export type QueryFindAllModifiersArgs = {
+  findAllModifierInput: FindAllModifierInput;
 };
 
 
@@ -4164,6 +4311,11 @@ export type QueryFindClaimStatusArgs = {
 };
 
 
+export type QueryFindFeeScheduleCptCodesArgs = {
+  findFeeScheduleCPTCodesInput: FindFeeScheduleCptCodesInput;
+};
+
+
 export type QueryFindLabTestsByOrderNumArgs = {
   labTestByOrderNumInput: LabTestByOrderNumInput;
 };
@@ -4244,6 +4396,11 @@ export type QueryGetContactArgs = {
 };
 
 
+export type QueryGetCptFeeScheduleArgs = {
+  getCptFeeScheduleInput: GetCptFeeScheduleInput;
+};
+
+
 export type QueryGetDoctorArgs = {
   getDoctor: GetDoctor;
 };
@@ -4276,6 +4433,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetLabTestArgs = {
   getLabTest: GetLabTest;
+};
+
+
+export type QueryGetModifierArgs = {
+  getModifierInput: GetModifierInput;
 };
 
 
@@ -4505,6 +4667,10 @@ export type RemoveContact = {
   id?: Maybe<Scalars['String']>;
 };
 
+export type RemoveCptFeeScheduleInput = {
+  id: Scalars['String'];
+};
+
 export type RemoveDoctor = {
   id: Scalars['String'];
 };
@@ -4526,6 +4692,10 @@ export type RemoveLabTest = {
 };
 
 export type RemoveLabTestObservation = {
+  id: Scalars['String'];
+};
+
+export type RemoveModifierInput = {
   id: Scalars['String'];
 };
 
@@ -5305,6 +5475,19 @@ export type UpdateCopayInput = {
   type?: Maybe<CopayType>;
 };
 
+export type UpdateCptFeeScheduleInput = {
+  code?: Maybe<Scalars['String']>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
 export type UpdateDoctorInput = {
   updateBillingAddressInput: UpdateBillingAddressInput;
   updateContactInput: UpdateContactInput;
@@ -5357,6 +5540,7 @@ export type UpdateDoctorItemInput = {
 export type UpdateEmployerItemInput = {
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
@@ -5404,7 +5588,7 @@ export type UpdateFeeScheduleInput = {
   cptCode?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   effectiveDate?: Maybe<Scalars['String']>;
-  expireDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
   modifier?: Maybe<Scalars['String']>;
@@ -5474,6 +5658,12 @@ export type UpdateLoincCodeInput = {
   component?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   loincNum?: Maybe<Scalars['String']>;
+};
+
+export type UpdateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePasswordInput = {
@@ -5625,6 +5815,11 @@ export type UpdatePolicyInput = {
 };
 
 export type UpdatePracticeInput = {
+  updatePracticeItemInput?: Maybe<UpdatePracticeItemInput>;
+  updateUserInput?: Maybe<UpdateUserInput>;
+};
+
+export type UpdatePracticeItemInput = {
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -5724,6 +5919,7 @@ export type UpdateUserInput = {
   isAdmin?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
 };
 
@@ -6439,6 +6635,41 @@ export type FindAllCptCodesQueryVariables = Exact<{
 
 export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type FindAllCptFeeScheduleQueryVariables = Exact<{
+  findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
+}>;
+
+
+export type FindAllCptFeeScheduleQuery = { __typename?: 'Query', findAllCptFeeSchedule: { __typename?: 'AllCPTFeeSchedulesPayload', cptFeeSchedules?: Array<{ __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetCptFeeScheduleQueryVariables = Exact<{
+  getCptFeeScheduleInput: GetCptFeeScheduleInput;
+}>;
+
+
+export type GetCptFeeScheduleQuery = { __typename?: 'Query', getCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null } | null } };
+
+export type RemoveCptFeeScheduleMutationVariables = Exact<{
+  removeCptFeeScheduleInput: RemoveCptFeeScheduleInput;
+}>;
+
+
+export type RemoveCptFeeScheduleMutation = { __typename?: 'Mutation', removeCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateCptFeeScheduleMutationVariables = Exact<{
+  updateCptFeeScheduleInput: UpdateCptFeeScheduleInput;
+}>;
+
+
+export type UpdateCptFeeScheduleMutation = { __typename?: 'Mutation', updateCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, code?: string | null } | null } };
+
+export type CreateCptFeeScheduleMutationVariables = Exact<{
+  createCptFeeScheduleInput: CreateCptFeeScheduleInput;
+}>;
+
+
+export type CreateCptFeeScheduleMutation = { __typename?: 'Mutation', createCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, code?: string | null } | null } };
+
 export type FindAllDoctorPatientQueryVariables = Exact<{
   doctorPatientsInput: DoctorPatientsInput;
 }>;
@@ -6566,14 +6797,14 @@ export type FindAllFeeSchedulesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFeeSchedulesQuery = { __typename?: 'Query', findAllFeeSchedules: { __typename?: 'AllFeeSchedulesPayload', feeSchedules?: Array<{ __typename?: 'FeeSchedule', id: string, name?: string | null, cptCode?: string | null, modifier?: string | null, expireDate?: string | null, serviceFee?: string | null, description?: string | null, revenueCode?: string | null, effectiveDate?: string | null, longDescription?: string | null, shortDescription?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllFeeSchedulesQuery = { __typename?: 'Query', findAllFeeSchedules: { __typename?: 'AllFeeSchedulesPayload', feeSchedules?: Array<{ __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type GetFeeScheduleQueryVariables = Exact<{
   getFeeScheduleInput: GetFeeScheduleInput;
 }>;
 
 
-export type GetFeeScheduleQuery = { __typename?: 'Query', getFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null, cptCode?: string | null, modifier?: string | null, expireDate?: string | null, serviceFee?: string | null, description?: string | null, revenueCode?: string | null, effectiveDate?: string | null, longDescription?: string | null, shortDescription?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null } };
+export type GetFeeScheduleQuery = { __typename?: 'Query', getFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null } };
 
 export type RemoveFeeScheduleMutationVariables = Exact<{
   removeFeeScheduleInput: RemoveFeeScheduleInput;
@@ -6819,6 +7050,13 @@ export type UpdateLabTestObservationMutationVariables = Exact<{
 
 
 export type UpdateLabTestObservationMutation = { __typename?: 'Mutation', updateLabTestObservation: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllModifiersQueryVariables = Exact<{
+  findAllModifierInput: FindAllModifierInput;
+}>;
+
+
+export type FindAllModifiersQuery = { __typename?: 'Query', findAllModifiers: { __typename?: 'AllModifiersPayload', modifiers?: Array<{ __typename?: 'Modifier', id: string, code?: string | null, description?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
@@ -10618,6 +10856,227 @@ export function useFindAllCptCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllCptCodesQueryHookResult = ReturnType<typeof useFindAllCptCodesQuery>;
 export type FindAllCptCodesLazyQueryHookResult = ReturnType<typeof useFindAllCptCodesLazyQuery>;
 export type FindAllCptCodesQueryResult = Apollo.QueryResult<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>;
+export const FindAllCptFeeScheduleDocument = gql`
+    query FindAllCptFeeSchedule($findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!) {
+  findAllCptFeeSchedule(findAllCptFeeScheduleInput: $findAllCptFeeScheduleInput) {
+    cptFeeSchedules {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCptFeeScheduleQuery__
+ *
+ * To run a query within a React component, call `useFindAllCptFeeScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCptFeeScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCptFeeScheduleQuery({
+ *   variables: {
+ *      findAllCptFeeScheduleInput: // value for 'findAllCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useFindAllCptFeeScheduleQuery(baseOptions: Apollo.QueryHookOptions<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>(FindAllCptFeeScheduleDocument, options);
+      }
+export function useFindAllCptFeeScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>(FindAllCptFeeScheduleDocument, options);
+        }
+export type FindAllCptFeeScheduleQueryHookResult = ReturnType<typeof useFindAllCptFeeScheduleQuery>;
+export type FindAllCptFeeScheduleLazyQueryHookResult = ReturnType<typeof useFindAllCptFeeScheduleLazyQuery>;
+export type FindAllCptFeeScheduleQueryResult = Apollo.QueryResult<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>;
+export const GetCptFeeScheduleDocument = gql`
+    query GetCptFeeSchedule($getCptFeeScheduleInput: GetCptFeeScheduleInput!) {
+  getCptFeeSchedule(getCptFeeScheduleInput: $getCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCptFeeScheduleQuery__
+ *
+ * To run a query within a React component, call `useGetCptFeeScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCptFeeScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCptFeeScheduleQuery({
+ *   variables: {
+ *      getCptFeeScheduleInput: // value for 'getCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useGetCptFeeScheduleQuery(baseOptions: Apollo.QueryHookOptions<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>(GetCptFeeScheduleDocument, options);
+      }
+export function useGetCptFeeScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>(GetCptFeeScheduleDocument, options);
+        }
+export type GetCptFeeScheduleQueryHookResult = ReturnType<typeof useGetCptFeeScheduleQuery>;
+export type GetCptFeeScheduleLazyQueryHookResult = ReturnType<typeof useGetCptFeeScheduleLazyQuery>;
+export type GetCptFeeScheduleQueryResult = Apollo.QueryResult<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>;
+export const RemoveCptFeeScheduleDocument = gql`
+    mutation RemoveCptFeeSchedule($removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!) {
+  removeCptFeeSchedule(removeCptFeeScheduleInput: $removeCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveCptFeeScheduleMutationFn = Apollo.MutationFunction<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>;
+
+/**
+ * __useRemoveCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useRemoveCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCptFeeScheduleMutation, { data, loading, error }] = useRemoveCptFeeScheduleMutation({
+ *   variables: {
+ *      removeCptFeeScheduleInput: // value for 'removeCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useRemoveCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>(RemoveCptFeeScheduleDocument, options);
+      }
+export type RemoveCptFeeScheduleMutationHookResult = ReturnType<typeof useRemoveCptFeeScheduleMutation>;
+export type RemoveCptFeeScheduleMutationResult = Apollo.MutationResult<RemoveCptFeeScheduleMutation>;
+export type RemoveCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>;
+export const UpdateCptFeeScheduleDocument = gql`
+    mutation UpdateCptFeeSchedule($updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!) {
+  updateCptFeeSchedule(updateCptFeeScheduleInput: $updateCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}
+    `;
+export type UpdateCptFeeScheduleMutationFn = Apollo.MutationFunction<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>;
+
+/**
+ * __useUpdateCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCptFeeScheduleMutation, { data, loading, error }] = useUpdateCptFeeScheduleMutation({
+ *   variables: {
+ *      updateCptFeeScheduleInput: // value for 'updateCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>(UpdateCptFeeScheduleDocument, options);
+      }
+export type UpdateCptFeeScheduleMutationHookResult = ReturnType<typeof useUpdateCptFeeScheduleMutation>;
+export type UpdateCptFeeScheduleMutationResult = Apollo.MutationResult<UpdateCptFeeScheduleMutation>;
+export type UpdateCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>;
+export const CreateCptFeeScheduleDocument = gql`
+    mutation CreateCptFeeSchedule($createCptFeeScheduleInput: CreateCptFeeScheduleInput!) {
+  createCptFeeSchedule(createCptFeeScheduleInput: $createCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}
+    `;
+export type CreateCptFeeScheduleMutationFn = Apollo.MutationFunction<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>;
+
+/**
+ * __useCreateCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useCreateCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCptFeeScheduleMutation, { data, loading, error }] = useCreateCptFeeScheduleMutation({
+ *   variables: {
+ *      createCptFeeScheduleInput: // value for 'createCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useCreateCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>(CreateCptFeeScheduleDocument, options);
+      }
+export type CreateCptFeeScheduleMutationHookResult = ReturnType<typeof useCreateCptFeeScheduleMutation>;
+export type CreateCptFeeScheduleMutationResult = Apollo.MutationResult<CreateCptFeeScheduleMutation>;
+export type CreateCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>;
 export const FindAllDoctorPatientDocument = gql`
     query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
@@ -11566,15 +12025,8 @@ export const FindAllFeeSchedulesDocument = gql`
     feeSchedules {
       id
       name
-      cptCode
-      modifier
-      expireDate
-      serviceFee
-      description
-      revenueCode
+      expiryDate
       effectiveDate
-      longDescription
-      shortDescription
       practice {
         id
         name
@@ -11631,15 +12083,8 @@ export const GetFeeScheduleDocument = gql`
     feeSchedule {
       id
       name
-      cptCode
-      modifier
-      expireDate
-      serviceFee
-      description
-      revenueCode
+      expiryDate
       effectiveDate
-      longDescription
-      shortDescription
       practice {
         id
         name
@@ -13559,6 +14004,54 @@ export function useUpdateLabTestObservationMutation(baseOptions?: Apollo.Mutatio
 export type UpdateLabTestObservationMutationHookResult = ReturnType<typeof useUpdateLabTestObservationMutation>;
 export type UpdateLabTestObservationMutationResult = Apollo.MutationResult<UpdateLabTestObservationMutation>;
 export type UpdateLabTestObservationMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>;
+export const FindAllModifiersDocument = gql`
+    query FindAllModifiers($findAllModifierInput: FindAllModifierInput!) {
+  findAllModifiers(findAllModifierInput: $findAllModifierInput) {
+    modifiers {
+      id
+      code
+      description
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllModifiersQuery__
+ *
+ * To run a query within a React component, call `useFindAllModifiersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllModifiersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllModifiersQuery({
+ *   variables: {
+ *      findAllModifierInput: // value for 'findAllModifierInput'
+ *   },
+ * });
+ */
+export function useFindAllModifiersQuery(baseOptions: Apollo.QueryHookOptions<FindAllModifiersQuery, FindAllModifiersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllModifiersQuery, FindAllModifiersQueryVariables>(FindAllModifiersDocument, options);
+      }
+export function useFindAllModifiersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllModifiersQuery, FindAllModifiersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllModifiersQuery, FindAllModifiersQueryVariables>(FindAllModifiersDocument, options);
+        }
+export type FindAllModifiersQueryHookResult = ReturnType<typeof useFindAllModifiersQuery>;
+export type FindAllModifiersLazyQueryHookResult = ReturnType<typeof useFindAllModifiersLazyQuery>;
+export type FindAllModifiersQueryResult = Apollo.QueryResult<FindAllModifiersQuery, FindAllModifiersQueryVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
