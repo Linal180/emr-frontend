@@ -290,21 +290,22 @@ const staffBasicSchema = {
   dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
+export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  facilityId: selectorSchema(FACILITY, false)
-    .when('roleType', {
-      is: (roleType: SelectorOption) => roleType?.id !== SYSTEM_ROLES.PracticeAdmin ? isUserAdmin : false,
-      then: selectorSchema(FACILITY, true),
-      otherwise: selectorSchema(FACILITY, false)
-    }),
+  roleType: selectorSchema(ROLE, !isEdit),
+  facilityId: selectorSchema(FACILITY, false).when('roleType', {
+    is: ({ id }: SelectorOption) =>
+      id !== SYSTEM_ROLES.PracticeAdmin ? (isSuper || isPractice) : false,
+    then: selectorSchema(FACILITY, true),
+    otherwise: selectorSchema(FACILITY, false)
+  }),
+
   practiceId: selectorSchema(PRACTICE, false).when('roleType', {
-    is: (roleType: SelectorOption) => roleType?.id === SYSTEM_ROLES.PracticeAdmin,
+    is: ({ id }: SelectorOption) => id === SYSTEM_ROLES.PracticeAdmin ? isSuper : false,
     then: selectorSchema(PRACTICE, true),
     otherwise: selectorSchema(PRACTICE, false)
   }),
-  roleType: selectorSchema(ROLE, !isEdit)
 })
 
 export const facilitySchema = (practiceRequired: boolean) => yup.object({
