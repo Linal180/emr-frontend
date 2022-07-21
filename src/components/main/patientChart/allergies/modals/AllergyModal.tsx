@@ -43,7 +43,6 @@ const AllergyModal: FC<AddModalProps> = ({
   const [onset, setOnset] = useState<string>(onsets[0])
   const [severityId, setSeverityId] = useState<string>(allergySeverity[0])
 
-  const [ids, setIds] = useState<string[]>([])
   const { reactionList } = useContext(ChartContext)
   const methods = useForm<CreatePatientAllergyProps>({
     mode: "all",
@@ -52,7 +51,7 @@ const AllergyModal: FC<AddModalProps> = ({
 
   const { handleSubmit, setValue, watch, reset } = methods;
   const { allergyStartDate } = watch()
-  const [{ selectedReactions }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [{ selectedReactions, allergyIds }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
     fetchPolicy: "network-only",
@@ -70,7 +69,7 @@ const AllergyModal: FC<AddModalProps> = ({
         const { allergyOnset, allergyStartDate, allergySeverity, reactions, comments, isActive } = patientAllergy
 
         if (!!reactions) {
-          setIds(reactions.map((reaction => reaction?.id || '') ?? []))
+          dispatch({ type: ActionType.SET_ALLERGY_IDS, allergyIds: reactions.map((reaction => reaction?.id || '') ?? []) })
         }
 
         if (allergyStartDate) {
@@ -159,8 +158,8 @@ const AllergyModal: FC<AddModalProps> = ({
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
     comments, isActive
   }) => {
-    if (ids.length) {
-      const selectedReactions = ids
+    if (allergyIds.length) {
+      const selectedReactions = allergyIds
       const allergyInput = !!item ? { allergyId: id }
         : {
           allergyName: newAllergy,
@@ -205,10 +204,10 @@ const AllergyModal: FC<AddModalProps> = ({
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
-      if (ids.includes(id)) {
-        setIds(ids.filter(reaction => reaction !== id))
+      if (allergyIds.includes(id)) {
+        dispatch({ type: ActionType.SET_ALLERGY_IDS, allergyIds: allergyIds.filter(reaction => reaction !== id) })
       } else {
-        setIds([...ids, id])
+        dispatch({ type: ActionType.SET_ALLERGY_IDS, allergyIds: [...allergyIds, id] })
       }
     }
   };
@@ -240,7 +239,7 @@ const AllergyModal: FC<AddModalProps> = ({
               <Typography variant="h6">{REACTION}</Typography>
 
               <Box color={GREY_THREE} ml={1}>
-                <Typography variant='h6'>{!ids.length ? REACTION_SELECTION_REQUIRED : ''} </Typography>
+                <Typography variant='h6'>{!allergyIds.length ? REACTION_SELECTION_REQUIRED : ''} </Typography>
               </Box>
             </Box>
 
@@ -254,7 +253,7 @@ const AllergyModal: FC<AddModalProps> = ({
                       <FormControlLabel
                         control={
                           <Box className='permissionDenied'>
-                            <Checkbox color="primary" checked={ids.includes(id || '')}
+                            <Checkbox color="primary" checked={allergyIds.includes(id || '')}
                               onChange={() => handleChangeForCheckBox(id || '')} />
                           </Box>
                         }

@@ -172,6 +172,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
       </CardComponent>
 
       <ScheduleModal
+        state={state}
         id={scheduleId}
         isEdit={isEdit}
         isOpen={openModal}

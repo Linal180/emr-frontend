@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Card, Table, TableBody, TableHead, TableRow, TableCell, Typography } from "@material-ui/core";
@@ -38,15 +38,10 @@ import { labOrdersResultAttachmentSchema } from '../../../../validationSchemas';
 const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
   const { orderNum, patientId } = useParams<ParamsType>();
-  const [openDelete, setOpenDelete] = useState<boolean>(false)
-
-  const [labOrderAttachments, setLabOrderAttachments] = useState<AttachmentsPayload['attachments']>([])
-  const [labResultId, setLabResultId] = useState<string>('')
-  const [documentTypeId, setDocumentTypeId] = useState<string>('')
   const methods = useForm<LabOrderResultsAttachmentInput>({ mode: "all", resolver: yupResolver(labOrdersResultAttachmentSchema) });
 
   const { handleSubmit, setValue } = methods
-  const [{ attachmentUrl, attachmentData, isEdit, attachmentId }, dispatch] =
+  const [{ attachmentUrl, attachmentData, isEdit, attachmentId, openDelete, labDocumentTypeId, labResultId, labOrderAttachments }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [removeAttachmentMedia, { loading: removeAttachmentLoading }] = useRemoveAttachmentMediaMutation({
@@ -106,7 +101,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
       if (getAttachmentsByLabOrder) {
         const { attachments } = getAttachmentsByLabOrder
 
-        setLabOrderAttachments(attachments as AttachmentsPayload['attachments'])
+        dispatch({ type: ActionType.SET_LAB_ORDER_ATTACHMENTS, labOrderAttachments: attachments as AttachmentsPayload['attachments'] })
       }
     }
   });
@@ -123,7 +118,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
         const { fetchDocumentTypeByName } = data ?? {}
         const { documentType } = fetchDocumentTypeByName ?? {}
         const { id } = documentType ?? {}
-        setDocumentTypeId(id || '')
+        dispatch({ type: ActionType.SET_LAB_DOCUMENT_TYPE_ID, labDocumentTypeId: id || '' })
       }
     }
   })
@@ -151,8 +146,8 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setLabResultId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_LAB_RESULT_ID, labResultId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -163,7 +158,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
       }
     })
 
-    setOpenDelete(false)
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
   }
 
   const handleEdit = (attachmentId: string, name: string) => {
@@ -289,7 +284,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
               attachmentData={attachmentData || undefined}
               filesLimit={LAB_RESULTS_LIMIT}
               reload={() => fetchAttachmentsByLabOrder()}
-              attachmentMetadata={{ documentTypeId, labOrderNum: orderNum }}
+              attachmentMetadata={{ labDocumentTypeId, labOrderNum: orderNum }}
             />
 
             <ConfirmationModal
@@ -298,7 +293,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
               isLoading={removeAttachmentLoading}
               description={DELETE_LAB_ORDER_RESULT_DESCRIPTION}
               handleDelete={handleFileDeletion}
-              setOpen={(openDelete: boolean) => setOpenDelete(openDelete)}
+              setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: openDelete })}
             />
           </Box>
         </form>

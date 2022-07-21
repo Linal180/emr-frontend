@@ -15,7 +15,7 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as ScheduleAction } from "../reducers/scheduleReducer";
+import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
@@ -540,6 +540,7 @@ export interface SearchComponentProps {
   placeHolder?: string;
   tooltipData?: TooltipData[]
   search: Function;
+  submit?: Function;
 }
 
 export interface AppMenuItemTypes {
@@ -571,10 +572,11 @@ export interface PickerProps {
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
+  defaultValue?: Date;
   isRequired?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
-  defaultValue?: Date
+  onSelect?: Function;
 }
 
 export interface TimePickerProps {
@@ -1306,6 +1308,10 @@ export interface PortalTableProps {
   inviteAccepted: boolean;
 }
 
+export interface PortalCardProps {
+  inviteAccepted: boolean;
+}
+
 export type UpdateStatusInputProps = UpdateAppointmentInput & {
   appointmentStatus: SelectorOption;
 };
@@ -1842,6 +1848,7 @@ export interface AppointmentSlotsProps {
 }
 
 export type StatusInputProps = {
+  appointmentDate : string
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType
@@ -1947,6 +1954,7 @@ export interface ScheduleFormProps {
   isOpen: boolean;
   isEdit?: boolean;
   isDoctor?: boolean;
+  state: ScheduleState;
   doctorFacilityId?: string;
   scheduleDispatch?: Dispatch<ScheduleAction>;
   reload: Function;
@@ -2008,6 +2016,12 @@ export interface AuditSubmitInputs {
 
 export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
 export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code'> & { code: CptCodeSelectorOption }
+
+export interface DoctorAppointmentsAndPatientsProps {
+  patientId?: string;
+  providerId?: string;
+}
+
 export interface FeeScheduleFormProps {
   state: FeeScheduleState,
   dispatcher: Dispatch<FeeScheduleAction>

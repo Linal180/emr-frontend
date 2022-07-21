@@ -7,7 +7,7 @@ import { SearchTooltip } from "../../styles/searchTooltip";
 import { SearchComponentProps } from "../../interfacesTypes";
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 
-const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder, submit }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
@@ -35,6 +35,7 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
         placeholder={placeHolder ? placeHolder : "Search here..."}
         className={classes.searchInput}
         value={query}
+        onKeyPress={({ key }) => key === 'Enter' && query.length > 2 && submit && submit()}
         onChange={({ target: { value } }) => {
           if (value.length > 2) {
             search(value)
@@ -54,6 +55,7 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
           <ClearIcon />
         </IconButton>
       }
+
       {info && <ClickAwayListener onClickAway={handleTooltipClose}>
         <SearchTooltip
           PopperProps={{

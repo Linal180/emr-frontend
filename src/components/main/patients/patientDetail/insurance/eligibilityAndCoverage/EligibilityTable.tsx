@@ -10,8 +10,7 @@ import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
 import Search from "../../../../../common/Search";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
-  ACTION, COVERAGE_DETAILS, COVERAGE_ROUTE, INSURANCE,
-  PAGE_LIMIT, STATUS, TIME_OF_CHECK
+  ACTION, COVERAGE_DETAILS, COVERAGE_ROUTE, INSURANCE, PAGE_LIMIT, STATUS, TIME_OF_CHECK
 } from "../../../../../../constants";
 import {
   PolicyEligibilitiesPayload, useGetPoliciesEligibilitiesLazyQuery

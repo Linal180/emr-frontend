@@ -28,9 +28,10 @@ import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
   MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, UNCOVERED_AMT,
-  OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, SERVICE_DATE, SERVICING_PROVIDER, RENDERING_PROVIDER, MAPPED_PATIENT_PAYMENT_TYPE,
+  OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, SERVICE_DATE, SERVICING_PROVIDER, RENDERING_PROVIDER, MAPPED_PATIENT_PAYMENT_TYPE, SUPER_BILL, SUPER_BILL_ROUTE,
 } from "../../../../constants";
 import ItemSelector from "../../../common/ItemSelector";
+import { Link } from "react-router-dom";
 
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
@@ -71,6 +72,17 @@ const BillingForm: FC<BillingFormProps> = (
             <Typography variant="h4">{BILLING}</Typography>
 
             {!shouldDisableEdit && <Box display="flex" alignItems="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to={SUPER_BILL_ROUTE}
+              >
+                {SUPER_BILL}
+              </Button>
+
+              <Box p={1} />
+
               <Button
                 variant="contained"
                 color="secondary"

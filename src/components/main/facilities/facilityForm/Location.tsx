@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState } from "react"
+import { FC } from "react"
 import { useFormContext } from "react-hook-form"
 import { Box, Button, Grid, Typography } from "@material-ui/core"
 import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
@@ -22,8 +22,7 @@ import {
 
 const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch }) => {
   const methods = useFormContext<CustomFacilityInputProps>()
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
-  const { isVerified, data, addressOpen } = state || {}
+  const { isVerified, data, addressOpen, userData } = state || {}
 
   const { setValue, watch } = methods
   const { zipCode, address, address2, city, state: inputState } = watch()
@@ -32,7 +31,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
     if (zipCode && city && address) {
       const { id } = inputState
       const data = await verifyAddress(zipCode, city, id, address, address2);
-      setUserData((prev) => ({ ...prev, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` }))
+      dispatch && dispatch({ type: ActionType.SET_USER_DATA, userData: ({ ...userData, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` }) })
       const { status, options } = data || {}
 
       if (status) {
@@ -151,14 +150,14 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
-            <CountryController loading={getFacilityLoading} controllerName="country"  />
+            <CountryController loading={getFacilityLoading} controllerName="country" />
           </Grid>
         </Grid>
       </CardComponent>
 
       <SmartyModal
         data={data ?? []}
-        userData={userData}
+        userData={userData as SmartyUserData}
         isOpen={addressOpen || false}
         verifiedAddressHandler={verifiedAddressHandler}
         setOpen={(open: boolean) =>

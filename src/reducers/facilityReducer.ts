@@ -1,9 +1,11 @@
 import { usStreet } from "smartystreets-javascript-sdk";
 import { FacilitiesPayload, FacilityPayload } from "../generated/graphql"
+import { SmartyUserData } from "../interfacesTypes";
 
 export interface State {
   page: number;
   isEdit: boolean;
+  tabValue: string;
   billingId: string;
   contactId: string;
   totalPages: number;
@@ -15,6 +17,7 @@ export interface State {
   isVerified: boolean;
   addressOpen: boolean;
   sameAddress: boolean;
+  userData: SmartyUserData;
   deleteFacilityId: string;
   data: usStreet.Candidate[];
   facility: FacilityPayload['facility'];
@@ -24,6 +27,7 @@ export interface State {
 export const initialState: State = {
   page: 1,
   data: [],
+  tabValue: '1',
   totalPages: 0,
   billingId: '',
   contactId: '',
@@ -39,6 +43,7 @@ export const initialState: State = {
   addressOpen: false,
   sameAddress: false,
   deleteFacilityId: '',
+  userData: { street: '', address: '' },
 }
 
 export enum ActionType {
@@ -46,6 +51,8 @@ export enum ActionType {
   SET_DATA = 'setData',
   SET_IS_EDIT = 'setIsEdit',
   SET_FACILITY = 'setFacility',
+  SET_TAB_VALUE = 'setTabValue',
+  SET_USER_DATA = 'setUserData',
   SET_CONTACT_ID = 'setContactId',
   SET_BILLING_ID = 'setBillingId',
   SET_OPEN_MODAL = 'setOpenModal',
@@ -65,6 +72,8 @@ export type Action =
   | { type: ActionType.SET_PAGE; page: number }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_BILLING_ID; billingId: string }
+  | { type: ActionType.SET_TAB_VALUE; tabValue: string }
+  | { type: ActionType.SET_USER_DATA; userData: SmartyUserData }
   | { type: ActionType.SET_CONTACT_ID; contactId: string }
   | { type: ActionType.SET_OPEN_MODAL; openModal: boolean }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
@@ -182,6 +191,18 @@ export const facilityReducer = (state: State, action: Action): State => {
       return {
         ...state,
         data: action.data
+      }
+
+    case ActionType.SET_TAB_VALUE:
+      return {
+        ...state,
+        tabValue: action.tabValue
+      }
+
+    case ActionType.SET_USER_DATA:
+      return {
+        ...state,
+        userData: action.userData
       }
   };
 }

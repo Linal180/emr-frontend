@@ -1,6 +1,6 @@
 // packages block
 import {
-  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer
 } from "react";
 import dotenv from 'dotenv';
 import moment from "moment";
@@ -15,6 +15,7 @@ import {
 import Alert from "./Alert";
 import Search from "./Search";
 import Selector from "./Selector";
+import DatePicker from "./DatePicker";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import ServicesSelector from "./Selector/ServiceSelector";
@@ -51,10 +52,8 @@ dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const [selectDate, setSelectDate] = useState(moment().format('MM-DD-YYYY'))
   const { user, currentUser, userPermissions } = useContext(AuthContext)
 
-  const [filterFacilityId, setFilterFacilityId] = useState<string>('')
   const { facility, roles } = user || {}
   const isAdminUser = isUserAdmin(roles)
 
@@ -72,15 +71,16 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
   const { setValue, watch } = methods
   const {
-    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery, 
-    appointments, sortBy
+    page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery,
+    appointments, sortBy, selectDate, filterFacilityId
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
 
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
-    setSelectDate(date)
+    setValue('appointmentDate', date)
+    dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
   };
 
   const getPreviousDate = () => {
@@ -89,7 +89,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
     setDate(nextDate)
   }
 
@@ -118,7 +118,8 @@ const AppointmentsTable: FC = (): JSX.Element => {
         if (!!appointments?.length) {
           dispatch({
             type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
+            appointments: sortingArray<typeof appointments>(appointments,
+              'scheduleStartDateTime', sortBy) as AppointmentsPayload['appointments']
           });
         } else {
           dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
@@ -318,21 +319,25 @@ const AppointmentsTable: FC = (): JSX.Element => {
           ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
           : onDeleteClick(id || '')
     }
-  }
+  };
 
-  const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === DESC ? 'to-180' : ''}`}
+  const canBeUpdated = (status: AppointmentStatus) => {
+    return status === AppointmentStatus.Cancelled
+      || status === AppointmentStatus.NoShow
+      || status === AppointmentStatus.Discharged
+  };
+
+  const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === ASC ? 'to-180' : ''}`}
     onClick={() => {
-      sortBy === ASC ?
-        dispatch({ type: ActionType.SET_SORT_BY, sortBy: DESC })
-        : dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
+      dispatch({ type: ActionType.SET_SORT_BY, sortBy: sortBy === ASC ? DESC : ASC })
 
       dispatch({
         type: ActionType.SET_APPOINTMENTS,
-        appointments: sortingArray<typeof appointments>(appointments, 'scheduleStartDateTime', sortBy)
+        appointments: sortingArray<typeof appointments>(appointments, 'scheduleStartDateTime',
+          sortBy === ASC ? DESC : ASC)
       })
     }}
   >
-
     <Sort />
   </IconButton>;
 
@@ -355,7 +360,8 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       addEmpty
                       label={FACILITY}
                       name="facilityId"
-                      onSelect={({ id }: SelectorOption) => setFilterFacilityId(id)}
+                      onSelect={({ id }: SelectorOption) =>
+                        dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
                     />
                   </Grid>}
 
@@ -366,6 +372,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
+
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
                     <Typography variant="body1" color="textPrimary">{DATE}</Typography>
@@ -382,7 +389,13 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       </Button>
 
                       <Box className="date-input-box" mx={1}>
-                        <Typography variant="h6">{selectDate}</Typography>
+                        <DatePicker
+                          label=""
+                          disableFuture={false}
+                          name="appointmentDate"
+                          defaultValue={new Date(selectDate)}
+                          onSelect={(date: string) => setDate(date)}
+                        />
                       </Box>
 
                       <Button
@@ -440,6 +453,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                     const { id: patientId, firstName, lastName } = patient || {};
                     const { name: type } = appointmentType || {};
 
+                    const cantUpdate = canBeUpdated(status as AppointmentStatus)
                     const { text, textColor, bgColor } = appointmentStatus(status || '')
                     const { stage, stageColor } = getCheckInStatus(Number(checkInActiveStep || 0),
                       status ?? '', (appointmentCreateType || '') as AppointmentCreateType)
@@ -545,15 +559,16 @@ const AppointmentsTable: FC = (): JSX.Element => {
                             {status === AppointmentStatus.Cancelled &&
                               appointmentCreateType === AppointmentCreateType.Appointment &&
                               <Box className={classes.iconsBackgroundDisabled}>
-                                <IconButton onMouseEnter={() => {
-                                  Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                                }}>
+                                <IconButton>
                                   <CheckInTickIcon />
                                 </IconButton>
-                              </Box>}
+                              </Box>
+                            }
 
-                            <Box className={classes.iconsBackground}>
-                              <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}>
+                            <Box className={cantUpdate ? classes.iconsBackgroundDisabled : classes.iconsBackground}>
+                              <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}
+                                disabled={cantUpdate}
+                              >
                                 <EditNewIcon />
                               </Button>
                             </Box>

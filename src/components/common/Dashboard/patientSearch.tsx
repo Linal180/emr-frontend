@@ -9,8 +9,7 @@ import Search from "../Search";
 import history from "../../../history";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import {
-  FACILITY_ADMIN_SEARCH_PLACEHOLDER, PATIENTS_ROUTE, REGISTERED_PATIENTS, SEARCH_PATIENT,
-  SEARCH_PLACEHOLDER,
+  FACILITY_ADMIN_SEARCH_PLACEHOLDER, PATIENTS_ROUTE, REGISTERED_PATIENTS, SEARCH_PATIENT, SEARCH_PLACEHOLDER,
 } from "../../../constants";
 
 const PatientSearchComponent: FC = (): JSX.Element => {
@@ -33,7 +32,7 @@ const PatientSearchComponent: FC = (): JSX.Element => {
             alignItems="center"
           >
             <Box className={classes.searchContainer} width="90%" maxWidth="90%">
-              <Search search={search} placeHolder={FACILITY_ADMIN_SEARCH_PLACEHOLDER} />
+              <Search search={search} submit={handleSearch} placeHolder={FACILITY_ADMIN_SEARCH_PLACEHOLDER} />
             </Box>
 
             <Button variant="contained" color="primary" size="large" onClick={handleSearch}>{SEARCH_PLACEHOLDER}</Button>
@@ -42,14 +41,14 @@ const PatientSearchComponent: FC = (): JSX.Element => {
 
         <Grid item md={2} sm={12} xs={12}>
           <Link to={PATIENTS_ROUTE}>
-          <Box
-            className='pointer-cursor'
-            border={`1px solid ${WHITE}`} borderRadius={4}
-            color={WHITE} p={1.5} display='flex' width={175}
+            <Box
+              className='pointer-cursor'
+              border={`1px solid ${WHITE}`} borderRadius={4}
+              color={WHITE} p={1.5} display='flex' width={175}
             >
-            <Typography variant="body1">{REGISTERED_PATIENTS}</Typography>
-          </Box>
-            </Link>
+              <Typography variant="body1">{REGISTERED_PATIENTS}</Typography>
+            </Box>
+          </Link>
         </Grid>
       </Grid>
     </Box>

@@ -1,9 +1,9 @@
 // packages block
+import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
+import { Link } from "react-router-dom";
+import { useParams } from 'react-router';
 import { Box, Button, Card, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer, useState } from 'react';
-import { useParams } from 'react-router';
-import { Link } from "react-router-dom";
 //components block
 import AppointmentList from '../../../common/AppointmentList';
 import CardComponent from '../../../common/CardComponent';
@@ -12,7 +12,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataComponent from '../../../common/NoDataComponent';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
-import PortalTable from '../../../common/patient/portal';
+// import PortalTable from '../../../common/patient/portal';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import SideDrawer from '../../../common/SideDrawer';
 import EncounterList from '../../patients/patientDetail/encounters';
@@ -42,10 +42,10 @@ import { Action, ActionType, initialState, patientReducer, State } from "../../.
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { WHITE } from '../../../../theme';
 import { getFormattedDate, hasEncounter } from '../../../../utils';
+import PortalAccessCard from './portalAccessCard';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
-  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const classes = useProfileDetailsStyles();
   const [{
     openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
@@ -54,14 +54,14 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [{ pageComing, upComing, completed, encounters }, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
 
-  const [, mediaDispatcher] =
+  const [{ drawerOpened }, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const handleDeleteWidget = () => { };
-  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => { mediaDispatcher({ type: mediaActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened }) }
 
   useEffect(() => {
     routeParamValue &&
@@ -201,6 +201,9 @@ const PatientDetailsComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1">
+
+            <PortalAccessCard inviteAccepted={Boolean(patientData?.inviteAccepted)}/>
+
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
                 <Grid container spacing={3}>
@@ -323,9 +326,9 @@ const PatientDetailsComponent = (): JSX.Element => {
             <DocumentsTable patient={patientData} />
           </TabPanel>
 
-          <TabPanel value="9">
+          {/* <TabPanel value="9">
             <PortalTable inviteAccepted={Boolean(patientData?.inviteAccepted)} />
-          </TabPanel>
+          </TabPanel> */}
 
           <TabPanel value="10">
             <LabOrdersTable />
