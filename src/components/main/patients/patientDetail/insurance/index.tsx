@@ -16,7 +16,7 @@ import {
 } from "../../../../../generated/graphql";
 import {
   ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, EFFECTIVE_TEXT,
-  ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_ROUTE, ELIGIBILITY_TEXT, ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT,
+  ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT, ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT,
   PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE, SECONDARY_INSURANCE, TERTIARY_INSURANCE
 } from "../../../../../constants";
 import history from '../../../../../history';
@@ -52,7 +52,6 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
     onError() {
       Alert.error(ELIGIBILITY_ERROR_MESSAGE)
-      history.push(`${ELIGIBILITY_ROUTE}/${patientId}`)
     },
 
     onCompleted(data) {
