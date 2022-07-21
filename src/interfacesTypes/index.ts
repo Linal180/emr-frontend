@@ -741,6 +741,7 @@ interface EmployerControlInputs {
   employerAddress: string;
   employerIndustry: string;
   employerState: SelectorOption;
+  employerCountry: string;
   employerUsualOccupation: string;
 }
 
