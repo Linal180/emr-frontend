@@ -11,7 +11,7 @@ import { renderLoading, requiredLabel } from '../../utils';
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
 const DatePicker: FC<PickerProps> = ({
-  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading, defaultValue
+  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading, defaultValue, onSelect
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -44,7 +44,10 @@ const DatePicker: FC<PickerProps> = ({
                   value={field.value}
                   onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
-                  onChange={field.onChange}
+                  onChange={(event)=>{
+                    onSelect && onSelect(event)
+                    return field.onChange
+                  }}
                   onKeyDown={(e) => e.preventDefault()}
                   error={invalid}
                   helperText={invalid && message}

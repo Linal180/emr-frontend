@@ -46,13 +46,14 @@ import {
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
   USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY
 } from "../../constants";
+import DatePicker from "./DatePicker";
 
 dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
   const { user, currentUser, userPermissions } = useContext(AuthContext)
-
+  
   const { facility, roles } = user || {}
   const isAdminUser = isUserAdmin(roles)
 
@@ -77,16 +78,17 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
+    setValue('appointmentDate', date)
     dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
   };
 
   const getPreviousDate = () => {
-    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')
+    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')   
     setDate(previousDate)
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
     setDate(nextDate)
   }
 
@@ -379,7 +381,13 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       </Button>
 
                       <Box className="date-input-box" mx={1}>
-                        <Typography variant="h6">{selectDate}</Typography>
+                        <DatePicker
+                          name="appointmentDate"
+                          label=""
+                          defaultValue={new Date(selectDate)}
+                          disableFuture={false}
+                          onSelect={(date: string)=>setDate(date)}
+                        />
                       </Box>
 
                       <Button
