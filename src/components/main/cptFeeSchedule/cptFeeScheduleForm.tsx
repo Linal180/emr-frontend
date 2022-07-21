@@ -30,7 +30,7 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
   const { drawerOpened, isEdit, getFeeId } = state
 
   const [updateCptFeeSchedule, { loading: updateLoading }] = useUpdateCptFeeScheduleMutation({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { updateCptFeeSchedule } = data || {}
       const { response } = updateCptFeeSchedule || {}
       const { status, message } = response || {}
@@ -44,14 +44,14 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
       }
     },
-    onError: (error) => {
+    onError(error) {
       const { message } = error
       Alert.error(message)
     },
   })
 
   const [createCptFeeSchedule, { loading }] = useCreateCptFeeScheduleMutation({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { createCptFeeSchedule } = data || {}
       const { response } = createCptFeeSchedule || {}
       const { status, message } = response || {}
@@ -63,7 +63,7 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
       }
     },
-    onError: (error) => {
+    onError(error) {
       const { message } = error
       Alert.error(message)
     },
@@ -87,9 +87,7 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         shortDescription && setValue('shortDescription', shortDescription)
       }
     },
-    onError: () => {
-
-    }
+    onError() { }
   })
 
   const submitHandler = async (values: CreateCptFeeSchedule) => {

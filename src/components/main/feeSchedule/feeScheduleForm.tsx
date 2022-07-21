@@ -32,7 +32,7 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
   const isSuper = isSuperAdmin(roles)
 
   const [updateFeeSchedule, { loading: updateLoading }] = useUpdateFeeScheduleMutation({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { updateFeeSchedule } = data || {}
       const { response } = updateFeeSchedule || {}
       const { status, message } = response || {}
@@ -46,14 +46,14 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
       }
     },
-    onError: (error) => {
+    onError(error) {
       const { message } = error
       Alert.error(message)
     },
   })
 
   const [createFeeSchedule, { loading }] = useCreateFeeScheduleMutation({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { createFeeSchedule } = data || {}
       const { response } = createFeeSchedule || {}
       const { status, message } = response || {}
@@ -65,14 +65,14 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
       }
     },
-    onError: (error) => {
+    onError(error) {
       const { message } = error
       Alert.error(message)
     },
   })
 
   const [getFeeSchedule, { loading: getLoading }] = useGetFeeScheduleLazyQuery({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { getFeeSchedule } = data || {}
       const { feeSchedule, response } = getFeeSchedule || {}
       const { status } = response || {}
@@ -85,9 +85,7 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         id && practiceName && setValue('practiceId', setRecord(id, practiceName))
       }
     },
-    onError: () => {
-
-    }
+    onError() { }
   })
 
   useMemo(() => {
@@ -140,7 +138,7 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
             <Typography variant='h3'>{FEE_SCHEDULE}</Typography>
             <Button type="submit" variant="contained" color="primary" disabled={loading || updateLoading || getLoading}>
               {isEdit ? UPDATE : SAVE_TEXT}
-              
+
               {(loading || updateLoading || getLoading) &&
                 <CircularProgress size={20} color="inherit" />
               }

@@ -36,7 +36,7 @@ const CptFeeTable: FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onCompleted: (data) => {
+    onCompleted(data) {
 
       const { findAllCptFeeSchedule } = data || {}
       const { cptFeeSchedules, pagination, response } = findAllCptFeeSchedule;
@@ -51,7 +51,7 @@ const CptFeeTable: FC = (): JSX.Element => {
         cptFeeSchedules && dispatch({ type: ActionType.SET_CPT_FEE_SCHEDULES, cptFeeSchedules })
       }
     },
-    onError: (error) => {
+    onError() {
       dispatch({ type: ActionType.SET_PAGE, page: 1 })
       dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
       dispatch({ type: ActionType.SET_CPT_FEE_SCHEDULES, cptFeeSchedules: [] })
@@ -59,7 +59,7 @@ const CptFeeTable: FC = (): JSX.Element => {
   });
 
   const [removeFeeSchedule, { loading: delFeeLoading }] = useRemoveFeeScheduleMutation({
-    onCompleted: async (data) => {
+    async onCompleted(data) {
       if (data) {
         const { removeFeeSchedule: { response } } = data
 
@@ -77,14 +77,14 @@ const CptFeeTable: FC = (): JSX.Element => {
         }
       }
     },
-    onError: () => {
+    onError() {
       Alert.error(CANT_DELETE_FEE_SCHEDULE)
       dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
     },
   })
 
   const [fetchFeeSchedule] = useGetFeeScheduleLazyQuery({
-    onCompleted: (data) => {
+    onCompleted(data) {
       const { getFeeSchedule } = data || {}
       const { feeSchedule, response } = getFeeSchedule || {}
       const { status } = response || {}
@@ -93,9 +93,7 @@ const CptFeeTable: FC = (): JSX.Element => {
         name && dispatch({ feeScheduleName: name, type: ActionType.SET_FEE_SCHEDULE_NAME })
       }
     },
-    onError: () => {
-
-    }
+    onError() { }
   })
 
   const fetchCptFeeSchedule = useCallback(async () => {

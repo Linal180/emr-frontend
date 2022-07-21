@@ -21,11 +21,11 @@ const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError: () => {
+    onError() {
       dispatch({ type: ActionType.SET_MODIFIERS, modifiers: [] })
     },
 
-    onCompleted: (data) => {
+    onCompleted(data) {
 
       const { findAllModifiers } = data || {};
       const { modifiers, pagination, response } = findAllModifiers || {}
@@ -52,7 +52,7 @@ const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
   }, [page, findAllModifiers, searchQuery])
 
   useEffect(() => {
-      fetchAllCptCodes()
+    fetchAllCptCodes()
   }, [page, searchQuery, fetchAllCptCodes]);
 
   return (

@@ -42,7 +42,7 @@ const FeeTable: FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onCompleted: (data) => {
+    onCompleted(data) {
 
       const { findAllFeeSchedules } = data || {}
       const { feeSchedules, pagination, response } = findAllFeeSchedules;
@@ -57,7 +57,7 @@ const FeeTable: FC = (): JSX.Element => {
         feeSchedules && dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules })
       }
     },
-    onError: (error) => {
+    onError(error) {
       dispatch({ type: ActionType.SET_PAGE, page: 1 })
       dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
       dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules: [] })
@@ -65,7 +65,7 @@ const FeeTable: FC = (): JSX.Element => {
   });
 
   const [removeFeeSchedule, { loading: delFeeLoading }] = useRemoveFeeScheduleMutation({
-    onCompleted: async (data) => {
+    async onCompleted(data) {
       if (data) {
         const { removeFeeSchedule: { response } } = data
 
@@ -83,7 +83,7 @@ const FeeTable: FC = (): JSX.Element => {
         }
       }
     },
-    onError: () => {
+    onError() {
       Alert.error(CANT_DELETE_FEE_SCHEDULE)
       dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
     },
