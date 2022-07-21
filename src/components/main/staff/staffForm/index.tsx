@@ -218,7 +218,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             createStaffInput: {
               staffInput: { password: SYSTEM_PASSWORD, roleType: role, ...staffInputs, adminId: id },
-              providers: selectedProvider ? [selectedProvider] : []
+              providers: needProvider && selectedProvider ? [selectedProvider] : []
             }
           }
         })
