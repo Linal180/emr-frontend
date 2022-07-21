@@ -3,15 +3,9 @@ query FindAllFeeSchedules($findAllFeeScheduleInput: FindAllFeeScheduleInput!) {
     feeSchedules {
       id
       name
-      cptCode
-      modifier
-      expireDate
-      serviceFee
-      description
-      revenueCode
+      expiryDate
       effectiveDate
-      longDescription
-      shortDescription
+      cptFeeScheduleCount
 
       practice {
         id
@@ -43,15 +37,8 @@ query GetFeeSchedule($getFeeScheduleInput: GetFeeScheduleInput!) {
     feeSchedule {
       id
       name
-      cptCode
-      modifier
-      expireDate
-      serviceFee
-      description
-      revenueCode
+      expiryDate
       effectiveDate
-      longDescription
-      shortDescription
 
       practice {
         id

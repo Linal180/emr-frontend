@@ -4,35 +4,35 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { CPTCodesSelectorProps } from "../../../interfacesTypes";
+import { ModifierSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { renderCPTCodes, requiredLabel, sortingValue } from "../../../utils";
-import { AllCptCodePayload, useFindAllCptCodesLazyQuery } from "../../../generated/graphql";
-import { cptCodesReducer, Action, initialState, State, ActionType } from "../../../reducers/cptCodesReducer";
+import { useFindAllModifiersLazyQuery } from "../../../generated/graphql";
+import { renderModifiers, requiredLabel, sortingValue } from "../../../utils";
+import { modifiersReducer, Action, initialState, State, ActionType } from "../../../reducers/modifiersReducer";
 
-const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, valueSetter }): JSX.Element => {
+const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, isRequired, addEmpty }): JSX.Element => {
 
   const { control } = useFormContext()
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(cptCodesReducer, initialState)
-  const { page, searchQuery, cptCodes } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderCPTCodes(cptCodes ?? [])] : [...renderCPTCodes(cptCodes ?? [])]
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(modifiersReducer, initialState)
+  const { page, searchQuery, modifiers } = state;
+  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderModifiers(modifiers ?? [])] : [...renderModifiers(modifiers ?? [])]
 
-  const [findAllCptCodes] = useFindAllCptCodesLazyQuery({
+  const [findAllModifiers] = useFindAllModifiersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_CPT_CODES, cptCodes: [] })
+      dispatch({ type: ActionType.SET_MODIFIERS, modifiers: [] })
     },
 
     onCompleted(data) {
 
-      const { findAllCptCodes } = data || {};
-      const { cptCodes, pagination, response } = findAllCptCodes || {}
+      const { findAllModifiers } = data || {};
+      const { modifiers, pagination, response } = findAllModifiers || {}
       const { status } = response || {}
 
       if (status === 200) {
-        cptCodes && dispatch({ type: ActionType.SET_CPT_CODES, cptCodes: cptCodes as AllCptCodePayload['cptCodes'] })
+        modifiers && dispatch({ type: ActionType.SET_MODIFIERS, modifiers })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -45,16 +45,14 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
   const fetchAllCptCodes = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
-      await findAllCptCodes({
-        variables: { findAllCptCodesInput: { ...pageInputs, code: searchQuery } }
+      await findAllModifiers({
+        variables: { findAllModifierInput: { ...pageInputs, searchQuery } }
       })
     } catch (error) { }
-  }, [page, findAllCptCodes, searchQuery])
+  }, [page, findAllModifiers, searchQuery])
 
   useEffect(() => {
-    if (!searchQuery.length || searchQuery.length > 2) {
-      fetchAllCptCodes()
-    }
+    fetchAllCptCodes()
   }, [page, searchQuery, fetchAllCptCodes]);
 
   return (
@@ -70,7 +68,7 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
             disableClearable
             disabled={disabled}
             value={field.value}
-            renderOption={(option) => `${option.name || ""} ${option.shortDescription || ''}`}
+            renderOption={(option) => `${option.name || ""} ${option.description || ''}`}
             getOptionLabel={(option) => option.name || ""}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
@@ -91,7 +89,6 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
               </FormControl>
             )}
             onChange={(_, data) => {
-              valueSetter && valueSetter(data)
               field.onChange(data)
             }}
           />
@@ -99,6 +96,7 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
       }}
     />
   );
+
 };
 
-export default CPTCodesSelector;
+export default ModifierSelector;

@@ -1085,10 +1085,13 @@ export const createClaimStatusSchema = yup.object({
 
 
 export const feeScheduleSchema = yup.object({
+  practiceId: selectorSchema(PRACTICE),
+  name: yup.string().required(requiredMessage(NAME)),
+})
+
+export const cptFeeScheduleSchema = yup.object({
   description: yup.string(),
   shortDescription: yup.string(),
-  practiceId: selectorSchema(PRACTICE),
-  cptCode: selectorSchema(CPT_CODE_PROCEDURE_CODE),
-  name: yup.string().required(requiredMessage(NAME)),
+  code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
   serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)),
 })

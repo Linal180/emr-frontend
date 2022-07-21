@@ -209,12 +209,12 @@ const PolicyCard: FC<PolicyCardProps> = ({
     if (step === 1) {
       const isValid = await trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
         "policyNumber", "issueDate", "expirationDate", "copayFields", "coInsurancePercentage",
-        "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
+        "referringProvider", "primaryCareProvider", "pricingProductType", "notes", 'suffix',])
       return isValid
     }
 
     if (step === 2) {
-      const isValid = await trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName',
+      const isValid = await trigger(['policyHolderId', 'employer', 'firstName', 'middleName', 'lastName',
         'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
       return isValid
     }

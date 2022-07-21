@@ -9,14 +9,17 @@ import NoDataComponent from "../NoDataComponent";
 import { ClearIcon } from "../../../assets/svgs";
 import {
   ACTIONS, BILLING_MODIFIERS_DATA, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
-  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, UNIT
+  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
 import InputController from "../../../controller";
 import { CodeType } from "../../../generated/graphql";
 import { CreateBillingProps, SelectorOption, TableSelectorProps } from "../../../interfacesTypes";
-import { GRAY_SIX, GREY_NINE } from "../../../theme";
+import { SearchTooltip } from "../../../styles/searchTooltip";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { GREY_NINE } from "../../../theme";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice }) => {
+  const classes = useTableStyles()
   const methods = useForm<any>({
     mode: "all",
   });
@@ -103,19 +106,46 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
 
             <Box pl={4} my={2} bgcolor={GREY_NINE}>
               <Grid container spacing={3} direction="row">
-                <Grid item md={3} sm={3} xs={3}>
-                  <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                <Grid item md={1} sm={1} xs={1}>
+                  <Typography variant="h5" color="textPrimary">{SR_NO}</Typography>
                 </Grid>
 
-                <Grid item md={5} sm={5} xs={5}>
-                  <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
-                </Grid>
 
-                {shouldShowPrice && <Grid item md={2} sm={2} xs={2}>
-                  <Typography variant="h5" color="textPrimary">{BUILD_FEE_DOLLAR}</Typography>
-                </Grid>}
 
-                <Grid item md={2} sm={2} xs={2}>
+                {shouldShowPrice ?
+                  <>
+                    <Grid item md={1} sm={1} xs={1}>
+                      <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                    </Grid>
+
+                    <Grid item md={1} sm={1} xs={1}>
+                      <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
+                    </Grid>
+
+                    <Grid item md={1} sm={1} xs={1}>
+                      <Typography variant="h5" color="textPrimary">{BUILD_FEE_DOLLAR}</Typography>
+                    </Grid>
+
+                    <Grid item md={3} sm={3} xs={3}>
+                      <Typography variant="h5" color="textPrimary">{MODIFIERS}</Typography>
+                    </Grid>
+
+                    <Grid item md={4} sm={4} xs={4}>
+                      <Typography variant="h5" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
+                    </Grid>
+                  </> :
+                  <>
+                    <Grid item md={3} sm={3} xs={3}>
+                      <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                    </Grid>
+
+                    <Grid item md={6} sm={6} xs={6}>
+                      <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
+                    </Grid>
+                  </>
+
+                }
+                <Grid item md={1} sm={1} xs={1}>
                   <Typography variant="h5" color="textPrimary">{ACTIONS}</Typography>
                 </Grid>
               </Grid>
@@ -125,19 +155,41 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                 code, description, codeId
               }, index) => {
                 return (
-                  <>
-                    <Box pl={4}>
-                      <Grid container spacing={3} direction="row">
-                        <Grid item md={3} sm={3} xs={3}>
-                          {code}
-                        </Grid>
+                  <Box pl={4} pb={1}>
+                    <Grid container spacing={3} direction="row">
+                      <Grid item md={1} sm={1} xs={1}>
+                        {index + 1}
+                      </Grid>
 
-                        <Grid item md={5} sm={5} xs={5}>
-                          {description}
-                        </Grid>
+                      <Grid item md={shouldShowPrice ? 1 : 3} sm={shouldShowPrice ? 1 : 3} xs={shouldShowPrice ? 1 : 3}>
+                        <SearchTooltip
+                          PopperProps={{
+                            disablePortal: true,
+                          }}
+                          arrow
+                          placement="bottom"
+                          className={classes.tooltipContainer}
+                          title={description}
+                        >
+                          <div>{code}</div>
+                        </SearchTooltip>
+                      </Grid>
 
-                        <Grid item md={2} sm={2} xs={2}>
-                          {shouldShowPrice && (
+                      {shouldShowPrice ? (
+                        <>
+                          <Grid item md={1} sm={1} xs={1}>
+                            <Box>
+                              <InputController
+                                fieldType="text"
+                                controllerName={`${moduleName}.${index}.unit`}
+                                controllerLabel={""}
+                                margin={'none'}
+                              />
+                            </Box>
+                          </Grid>
+
+
+                          <Grid item md={1} sm={1} xs={1}>
                             <Box>
                               <InputController
                                 fieldType="text"
@@ -146,70 +198,51 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                 margin={'none'}
                               />
                             </Box>
-                          )}
-                        </Grid>
+                          </Grid>
 
-                        <Grid item md={2} sm={2} xs={2}>
-                          <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
-                            <ClearIcon />
-                          </IconButton>
-                        </Grid>
+                          <Grid item md={3} sm={3} xs={3}>
+                            <Box display='flex'>
+                              {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
+                                return <Box mr={1}>
+                                  <InputController
+                                    placeholder={item}
+                                    fieldType="number"
+                                    controllerName={`${moduleName}.${index}.m${modIndex + 1}`}
+                                    controllerLabel={""}
+                                    margin={'none'}
+                                  />
+                                </Box>
+                              })}
+                            </Box>
+                          </Grid>
+
+                          <Grid item md={4} sm={4} xs={4}>
+                            <Box display='flex'>
+                              {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
+                                return <Box mr={1}>
+                                  <InputController
+                                    placeholder={item}
+                                    fieldType="number"
+                                    controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
+                                    controllerLabel={""}
+                                    margin={'none'}
+                                  />
+                                </Box>
+                              })}
+                            </Box>
+                          </Grid>
+                        </>
+                      ) : <Grid item md={6} sm={6} xs={6}>
+                        {description}
+                      </Grid>}
+
+                      <Grid item md={1} sm={1} xs={1}>
+                        <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                          <ClearIcon />
+                        </IconButton>
                       </Grid>
-                    </Box>
-
-                    {shouldShowPrice && <Box pl={4} pb={3} mb={3} borderBottom={`1px solid ${GRAY_SIX}`}>
-                      <Grid container spacing={3} direction="row">
-                        <Grid item md={5} sm={12} xs={12}>
-                          <Typography variant="h6" color="textPrimary">{MODIFIERS}</Typography>
-
-                          <Box mt={1} display='flex'>
-                            {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
-                              return <Box mr={1}>
-                                <InputController
-                                  placeholder={item}
-                                  fieldType="number"
-                                  controllerName={`${moduleName}.${index}.m${modIndex + 1}`}
-                                  controllerLabel={""}
-                                  margin={'none'}
-                                />
-                              </Box>
-                            })}
-                          </Box>
-                        </Grid>
-
-                        <Grid item md={5} sm={12} xs={12}>
-                          <Typography variant="h6" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
-
-                          <Box mt={1} display='flex'>
-                            {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
-                              return <Box mr={1}>
-                                <InputController
-                                  placeholder={item}
-                                  fieldType="number"
-                                  controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
-                                  controllerLabel={""}
-                                  margin={'none'}
-                                />
-                              </Box>
-                            })}
-                          </Box>
-                        </Grid>
-
-                        <Grid item md={1} sm={12} xs={12}>
-                          <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
-
-                          <Box mt={1}>
-                            <InputController
-                              fieldType="number"
-                              controllerName={`${moduleName}.${index}.unit`}
-                              controllerLabel={""}
-                              margin={'none'}
-                            />
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>}
-                  </>
+                    </Grid>
+                  </Box>
                 )
               }
               )}

@@ -23,7 +23,7 @@ import {
   TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS_IN_CURRENT_SHIFT, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
   AVAILABLE_USERS_IN_CURRENT_SHIFT, NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS,
   TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS,
-  RECENTLY_ADDED_PATIENTS, ADDED_PATIENTS_LIST, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE,
+  RECENTLY_ADDED_PATIENTS, ADDED_PATIENTS_LIST, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE,
 } from "../../../constants";
 
 const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
@@ -71,7 +71,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{UPCOMING_APPOINTMENTS}</Typography>
 
-                <IconButton>
+                <IconButton onClick={() => history.push(VIEW_APPOINTMENTS_ROUTE)}>
                   <RedirectIcon />
                 </IconButton>
               </Box>
@@ -89,7 +89,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                   <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                     <Typography variant="h5">{RECENTLY_ADDED_PATIENTS}</Typography>
 
-                    <IconButton>
+                    <IconButton onClick={() => history.push(PATIENTS_ROUTE)}>
                       <RedirectIcon />
                     </IconButton>
                   </Box>

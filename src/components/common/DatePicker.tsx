@@ -11,7 +11,8 @@ import { renderLoading, requiredLabel } from '../../utils';
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
 const DatePicker: FC<PickerProps> = ({
-  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast, loading, defaultValue
+  name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast,
+  loading, defaultValue, onSelect
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -44,7 +45,6 @@ const DatePicker: FC<PickerProps> = ({
                   value={field.value}
                   onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
-                  onChange={field.onChange}
                   onKeyDown={(e) => e.preventDefault()}
                   error={invalid}
                   helperText={invalid && message}
@@ -54,6 +54,12 @@ const DatePicker: FC<PickerProps> = ({
                   maxDate="2100-01-31"
                   minDate="1900-01-01"
                   keyboardIcon={<CalendarIcon />}
+                  onChange={(_, data) => {
+                    field.onChange(data)
+                    onSelect && onSelect(data)
+
+                    return data
+                  }}
                   InputProps={clearable ? {
                     startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>
                       <ClearIcon />

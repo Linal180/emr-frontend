@@ -1,27 +1,25 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
+import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isSuperAdmin, renderLoading, renderPractices, requiredLabel, sortingValue } from "../../../utils";
-import {
-  practiceReducer, Action, initialState, State, ActionType
-} from "../../../reducers/practiceReducer";
 import { AuthContext } from "../../../context";
+import { PracticeSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { PracticesPayload, useFindAllPracticeListLazyQuery } from "../../../generated/graphql";
+import { isSuperAdmin, renderLoading, renderPractices, requiredLabel, sortingValue } from "../../../utils";
+import { practiceReducer, Action, initialState, State, ActionType } from "../../../reducers/practiceReducer";
 
-const PracticeSelector: FC<FacilitySelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, loading
+const PracticeSelector: FC<PracticeSelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, loading, isLabelDisplay = true
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext)
   const { roles } = user || {};
 
   const isSuper = isSuperAdmin(roles);
-  const [state, dispatch,] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { page, searchQuery, practices } = state;
 
   const inputLabel = isRequired ? requiredLabel(label) : label
@@ -29,7 +27,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
     [EMPTY_OPTION, ...renderPractices(practices ?? [])]
     : [...renderPractices(practices ?? [])]
 
-  const [findAllPractice,] = useFindAllPracticeListLazyQuery({
+  const [findAllPractice] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -77,7 +75,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
     <>
       {loading ? renderLoading(inputLabel || '') :
         <Controller
-          rules={{ required: true }}
+          rules={{ required: isRequired }}
           name={name}
           control={control}
           defaultValue={updatedOptions[0]}
@@ -93,12 +91,12 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({
                 getOptionLabel={(option) => option.name || ""}
                 renderOption={(option) => option.name}
                 renderInput={(params) => (
-                  <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                    <Box position="relative">
+                  <FormControl fullWidth margin={isLabelDisplay ? 'normal' : 'none'} error={Boolean(invalid)}>
+                    {isLabelDisplay && <Box position="relative">
                       <InputLabel id={`${name}-autocomplete`} shrink>
                         {inputLabel}
                       </InputLabel>
-                    </Box>
+                    </Box>}
 
                     <TextField
                       {...params}

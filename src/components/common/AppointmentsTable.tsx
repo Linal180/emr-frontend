@@ -15,6 +15,7 @@ import {
 import Alert from "./Alert";
 import Search from "./Search";
 import Selector from "./Selector";
+import DatePicker from "./DatePicker";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import ServicesSelector from "./Selector/ServiceSelector";
@@ -78,6 +79,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
+    setValue('appointmentDate', date)
     dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
   };
 
@@ -87,7 +89,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY')
+    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
     setDate(nextDate)
   }
 
@@ -358,7 +360,8 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       addEmpty
                       label={FACILITY}
                       name="facilityId"
-                      onSelect={({ id }: SelectorOption) => dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+                      onSelect={({ id }: SelectorOption) =>
+                        dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
                     />
                   </Grid>}
 
@@ -369,6 +372,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
+
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
                     <Typography variant="body1" color="textPrimary">{DATE}</Typography>
@@ -385,7 +389,13 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       </Button>
 
                       <Box className="date-input-box" mx={1}>
-                        <Typography variant="h6">{selectDate}</Typography>
+                        <DatePicker
+                          label=""
+                          disableFuture={false}
+                          name="appointmentDate"
+                          defaultValue={new Date(selectDate)}
+                          onSelect={(date: string) => setDate(date)}
+                        />
                       </Box>
 
                       <Button

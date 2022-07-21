@@ -43,7 +43,7 @@ import {
   Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput, CreateCptFeeScheduleInput,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -349,6 +349,10 @@ export interface CptCodeSelectorOption extends SelectorOption {
   longDescription: string | undefined | null;
 }
 
+export interface ModifiersSelectorOption extends SelectorOption {
+  description: string | undefined | null;
+}
+
 export interface AsyncSelectorOption {
   value: string
   label: string | undefined | null
@@ -414,6 +418,10 @@ export interface CPTCodesSelectorProps extends SelectorProps {
   valueSetter?: (inputs: CptCodeSelectorOption) => void
 }
 
+export interface ModifierSelectorProps extends SelectorProps {
+
+}
+
 export interface PatientSelectorProps extends SelectorProps {
   styles?: string;
   isOpen?: boolean
@@ -424,7 +432,12 @@ export interface PatientSelectorProps extends SelectorProps {
 }
 
 export interface FacilitySelectorProps extends SelectorProps {
-  patientId?: string
+  patientId?: string;
+}
+
+export interface PracticeSelectorProps extends SelectorProps {
+  patientId?: string;
+  isLabelDisplay?: boolean;
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
@@ -567,10 +580,11 @@ export interface PickerProps {
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
+  defaultValue?: Date;
   isRequired?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
-  defaultValue?: Date
+  onSelect?: Function;
 }
 
 export interface TimePickerProps {
@@ -741,6 +755,7 @@ interface EmployerControlInputs {
   employerAddress: string;
   employerIndustry: string;
   employerState: SelectorOption;
+  employerCountry: string;
   employerUsualOccupation: string;
 }
 
@@ -926,6 +941,9 @@ export interface CreateBillingProps {
   facility: SelectorOption
   pos: SelectorOption
   uncoveredAmount: string
+  to?: string
+  from?: string
+  practice: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -1842,6 +1860,7 @@ export interface AppointmentSlotsProps {
 }
 
 export type StatusInputProps = {
+  appointmentDate: string
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType
@@ -2007,8 +2026,8 @@ export interface AuditSubmitInputs {
   moduleType?: string;
 }
 
-export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cptCode'>
-  & { practiceId: SelectorOption, cptCode: CptCodeSelectorOption }
+export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'modifier'> & { code: CptCodeSelectorOption, modifier: SelectorOption }
 
 export interface DoctorAppointmentsAndPatientsProps {
   patientId?: string;
@@ -2018,4 +2037,8 @@ export interface DoctorAppointmentsAndPatientsProps {
 export interface FeeScheduleFormProps {
   state: FeeScheduleState,
   dispatcher: Dispatch<FeeScheduleAction>
+}
+
+export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
+  id: string;
 }

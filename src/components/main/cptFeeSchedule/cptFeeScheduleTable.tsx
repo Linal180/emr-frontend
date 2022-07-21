@@ -1,51 +1,45 @@
 // packages block
+import { useParams } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { useHistory } from "react-router-dom";
-import { FormProvider, useForm } from "react-hook-form";
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, } from "react";
 import { Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
-import FeeScheduleForm from './feeScheduleForm';
 import SideDrawer from '../../common/SideDrawer';
 import TableLoader from "../../common/TableLoader";
+import CptFeeScheduleForm from './cptFeeScheduleForm';
 import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
-import PracticeSelector from "../../common/Selector/PracticeSelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../context";
+import { ParamsType } from "../../../interfacesTypes";
+import { getPageNumber, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
-import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
-import { EditNewIcon, TrashNewIcon, AddWhiteIcon, EyeIcon } from "../../../assets/svgs";
-import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
+import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
+import { useFindAllCptFeeScheduleLazyQuery, useGetFeeScheduleLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import {
-  ACTION, EFFECTIVE_DATE, EXPIRY_DATE, PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT, DELETE_FEE_SCHEDULE_DESCRIPTION,
-  CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE, TOTAL_CODES
+  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, MODIFIER, PAGE_LIMIT, FEE_SCHEDULE,
+  DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, REVENUE_CODE, ADD_NEW_TEXT
 } from "../../../constants";
 
-const FeeTable: FC = (): JSX.Element => {
+const CptFeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const methods = useForm({ mode: "all" });
-  const history = useHistory()
-  const { user } = useContext(AuthContext);
+  const { id: feeScheduleId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
 
-  const { page, totalPages, feeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel, searchQuery } = state
-  const { roles, facility } = user || {}
-  const { practiceId } = facility || {}
+  const {
+    page, totalPages, cptFeeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel, searchQuery, feeScheduleName
+  } = state
 
-  const isSuper = isSuperAdmin(roles)
-
-  const [findAllFeeSchedule, { loading, error }] = useFindAllFeeSchedulesLazyQuery({
+  const [findAllCptFeeSchedule, { loading, error }] = useFindAllCptFeeScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onCompleted(data) {
 
-      const { findAllFeeSchedules } = data || {}
-      const { feeSchedules, pagination, response } = findAllFeeSchedules;
+      const { findAllCptFeeSchedule } = data || {}
+      const { cptFeeSchedules, pagination, response } = findAllCptFeeSchedule;
       const { status } = response || {}
 
       if (status === 200) {
@@ -54,13 +48,13 @@ const FeeTable: FC = (): JSX.Element => {
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
 
-        feeSchedules && dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules })
+        cptFeeSchedules && dispatch({ type: ActionType.SET_CPT_FEE_SCHEDULES, cptFeeSchedules })
       }
     },
-    onError(error) {
+    onError() {
       dispatch({ type: ActionType.SET_PAGE, page: 1 })
       dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 1 })
-      dispatch({ type: ActionType.SET_FEE_SCHEDULES, feeSchedules: [] })
+      dispatch({ type: ActionType.SET_CPT_FEE_SCHEDULES, cptFeeSchedules: [] })
     }
   });
 
@@ -77,7 +71,7 @@ const FeeTable: FC = (): JSX.Element => {
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
               await fetchFeeSchedule();
             } else {
-              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, cptFeeSchedules?.length || 0) })
             }
           } catch (error) { }
         }
@@ -89,18 +83,49 @@ const FeeTable: FC = (): JSX.Element => {
     },
   })
 
-  const fetchFeeSchedule = useCallback(async () => {
+  const [fetchFeeSchedule] = useGetFeeScheduleLazyQuery({
+    onCompleted(data) {
+      const { getFeeSchedule } = data || {}
+      const { feeSchedule, response } = getFeeSchedule || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { name } = feeSchedule || {}
+        name && dispatch({ feeScheduleName: name, type: ActionType.SET_FEE_SCHEDULE_NAME })
+      }
+    },
+    onError() { }
+  })
+
+  const fetchCptFeeSchedule = useCallback(async () => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
       dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
-      const findAllFeeScheduleInput = isSuper ? { paginationOptions, searchString: searchQuery } : { paginationOptions, practiceId, searchString: searchQuery }
-      await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
+      const findAllCptFeeScheduleInput = { paginationOptions, searchString: searchQuery, feeScheduleId }
+      await findAllCptFeeSchedule({ variables: { findAllCptFeeScheduleInput } })
     } catch (error) { }
-  }, [page, practiceId, isSuper, findAllFeeSchedule, searchQuery])
+  }, [page, findAllCptFeeSchedule, searchQuery, feeScheduleId])
 
   useEffect(() => {
-    getFeeSchedule && fetchFeeSchedule()
-  }, [fetchFeeSchedule, getFeeSchedule])
+    feeScheduleId && getFeeSchedule && fetchCptFeeSchedule()
+  }, [fetchCptFeeSchedule, getFeeSchedule, feeScheduleId])
+
+
+  const fetchFeeScheduleDetail = useCallback(async () => {
+    try {
+      feeScheduleId && await fetchFeeSchedule({
+        variables: {
+          getFeeScheduleInput: { id: feeScheduleId }
+        }
+      })
+    } catch (error) {
+
+    }
+  }, [feeScheduleId, fetchFeeSchedule])
+
+  useEffect(() => {
+    feeScheduleId && fetchFeeScheduleDetail()
+  }, [feeScheduleId, fetchFeeScheduleDetail])
+
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -145,14 +170,10 @@ const FeeTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
   }
 
-  const viewDetailHandler = (id: string) => {
-    history.push(`${FEE_SCHEDULE_ROUTE}/${id}/details`)
-  }
-
   return (
     <>
       <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{FEE_SCHEDULE}</Typography>
+        <Typography variant="h4" color="textPrimary">{feeScheduleName}</Typography>
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >
@@ -165,17 +186,6 @@ const FeeTable: FC = (): JSX.Element => {
             <Grid item md={4} sm={12} xs={12}>
               <Search search={search} />
             </Grid>
-            {isSuper &&
-              <Grid item md={2} sm={12} xs={12}>
-                <FormProvider {...methods}>
-                  <PracticeSelector
-                    addEmpty
-                    label=""
-                    isLabelDisplay={false}
-                    name="practiceId"
-                  />
-                </FormProvider>
-              </Grid>}
           </Grid>
         </Box>
 
@@ -183,11 +193,11 @@ const FeeTable: FC = (): JSX.Element => {
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(NAME)}
-                {renderTh(PRACTICE)}
-                {renderTh(TOTAL_CODES)}
-                {renderTh(EFFECTIVE_DATE)}
-                {renderTh(EXPIRY_DATE)}
+                {renderTh(CODE)}
+                {renderTh(MODIFIER)}
+                {renderTh(DESCRIPTION)}
+                {renderTh(REVENUE_CODE)}
+                {renderTh(CHARGE_DOLLAR)}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
@@ -199,23 +209,17 @@ const FeeTable: FC = (): JSX.Element => {
                     <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
-              ) : feeSchedules?.map((item) => {
-
-                const { effectiveDate, expiryDate, id, name, practice, cptFeeScheduleCount } = item || {};
-                const { name: practiceName } = practice || {}
+              ) : cptFeeSchedules?.map((item) => {
+                const { modifier, description, serviceFee, code, id, revenueCode, } = item || {};
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{practiceName}</TableCell>
-                    <TableCell scope="row">{cptFeeScheduleCount}</TableCell>
-                    <TableCell scope="row">{effectiveDate ? getFeeScheduleDate(effectiveDate) : ''}</TableCell>
-                    <TableCell scope="row">{expiryDate ? getFeeScheduleDate(expiryDate) : ''}</TableCell>
+                    <TableCell scope="row">{code}</TableCell>
+                    <TableCell scope="row">{modifier}</TableCell>
+                    <TableCell scope="row">{description}</TableCell>
+                    <TableCell scope="row">{revenueCode}</TableCell>
+                    <TableCell scope="row">{serviceFee}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Box className={classes.iconsBackground} onClick={() => viewDetailHandler(id || '')}>
-                          <EyeIcon />
-                        </Box>
-
                         <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
                           <EditNewIcon />
                         </Box>
@@ -234,7 +238,7 @@ const FeeTable: FC = (): JSX.Element => {
         </Box>
       </Box>
 
-      {((!loading && feeSchedules?.length === 0) || error) && (
+      {((!loading && cptFeeSchedules?.length === 0) || error) && (
         <Box display="flex" justifyContent="center" pb={12} pt={5}>
           <NoDataFoundComponent />
         </Box>
@@ -253,7 +257,7 @@ const FeeTable: FC = (): JSX.Element => {
       )}
 
       <SideDrawer drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer}>
-        <FeeScheduleForm dispatcher={dispatch} state={state} />
+        <CptFeeScheduleForm dispatcher={dispatch} state={state} id={feeScheduleId} />
       </SideDrawer>
 
       <ConfirmationModal
@@ -270,4 +274,4 @@ const FeeTable: FC = (): JSX.Element => {
   );
 };
 
-export default FeeTable;
+export default CptFeeTable;

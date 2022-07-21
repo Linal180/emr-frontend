@@ -99,7 +99,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const createClaimCallback = useCallback((claimMethod?: boolean) => {
     try {
-      const { onsetDate, onsetDateType, otherDate, otherDateType, CPTCode, IcdCodes } = watch()
+      const { onsetDate, onsetDateType, otherDate, otherDateType, CPTCode, IcdCodes, from, to } = watch()
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
 
@@ -130,7 +130,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         otherAccident,
         otherDate,
         ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
-        patientId: id
+        patientId: id,
+        from,
+        to
       }
 
       !claimMethod ? createClaim({ variables: { claimInput } }) : getClaimFile({ variables: { claimInput } })
@@ -145,7 +147,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
         const { onsetDateType, otherDateType, patientPaymentType,
           autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
-          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus } = billing ?? {}
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from } = billing ?? {}
+        const { practice } = facility || {}
+        const { name: practiceName } = practice || {}
         const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
           const { codeType, code, diagPointer, m1, m2, m3, m4, price, unit, description } = codeValues
           const codeData = {
@@ -198,9 +202,12 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('uncoveredAmount', uncoveredAmount ?? '')
         setValue('claimDate', claimDate ?? '')
         setValue('serviceDate', serviceDate ?? '')
+        setValue('to', to ?? '')
+        setValue('from', from ?? '')
         pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
         claimStatus?.id && setValue('claimStatus', setRecord(claimStatus.id, claimStatus?.statusName || ''))
         facility?.id && setValue('facility', setRecord(facility.id, facility.name))
+        practiceName && setValue('practice', practiceName)
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
       }
@@ -222,7 +229,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
       const { amount, paymentType, onsetDate, onsetDateType, otherDate,
-        otherDateType, CPTCode, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider, servicingProvider, uncoveredAmount, claimStatus } = values
+        otherDateType, CPTCode, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider,
+        servicingProvider, uncoveredAmount, claimStatus, from, to } = values
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
       const { id: paymentTypeId } = paymentType ?? {}
@@ -271,7 +279,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         codes: transformedBillingCodes,
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
         claimNo: claimNumber,
-        uncoveredAmount
+        uncoveredAmount,
+        from,
+        to
       }
 
       createBilling({
@@ -368,9 +378,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     onCompleted(data) {
       const { getFacility } = data || {};
       const { facility } = getFacility || {}
-      const { serviceCode, id, name } = facility || {}
+      const { serviceCode, id, name, practice } = facility || {}
+      const { name: practiceName } = practice || {}
 
       id && name && setValue('facility', setRecord(id, name))
+      practiceName && setValue('practice', practiceName)
       serviceCode && setValue('pos', setRecord(serviceCode, formatEnumMember(serviceCode)))
     }
   });
