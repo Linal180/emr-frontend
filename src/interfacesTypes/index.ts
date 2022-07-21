@@ -927,6 +927,9 @@ export interface CreateBillingProps {
   facility: SelectorOption
   pos: SelectorOption
   uncoveredAmount: string
+  to?: string
+  from?: string
+  practice: string
 }
 
 export interface CreateLabTestProviderProps {

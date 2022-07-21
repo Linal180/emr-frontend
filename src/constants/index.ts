@@ -392,6 +392,7 @@ export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
 export const INVOICE = "Invoice";
+export const INVOICE_NO = "Invoice No";
 export const CONTACT = "Contact";
 export const REACTION = "Reaction";
 export const PROVIDER = "Provider";
@@ -647,6 +648,8 @@ export const GROUP_TAX_ID = "Group Tax ID";
 export const GO_BACK = "Go Back";
 export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
+export const FROM = "From";
+export const TO = "To";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
 export const ACTIVE_TEXT = "Active";
@@ -685,6 +688,7 @@ export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
 export const CODE = "Code";
+export const SR_NO = "SR #";
 export const TRUE = "TRUE";
 export const TEXT = "text";
 export const PLAN = "Plan";
@@ -1739,8 +1743,8 @@ export const TAX_ID_INFO =
   "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO =
   "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
-  export const PORTAL_ACCESS_TITLE = "AIMED Patient Portal Access";
-  export const PORTAL_ACCESS_DESCRIPTION =
+export const PORTAL_ACCESS_TITLE = "AIMED Patient Portal Access";
+export const PORTAL_ACCESS_DESCRIPTION =
   "AIMED Patient portal access allows patient to have access to his records, appointments and other utilties in one place. It helps user to stay connected to their facility in a better way."
 export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify providers in the United States.";
