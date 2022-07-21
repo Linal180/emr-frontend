@@ -1,5 +1,6 @@
 // packages block
 import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
+import { pluck } from "underscore"
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
@@ -9,7 +10,7 @@ import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 import {
-  isPracticeAdmin, isSuperAdmin, renderLoading, renderStaffRoles, requiredLabel, sortingValue
+  renderLoading, renderStaffRoles, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   roleReducer, Action, initialState, State, ActionType
@@ -24,10 +25,10 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const inputLabel = isRequired ? requiredLabel(label) : label
   const { user } = useContext(AuthContext)
   const { roles: userRoles } = user || {}
-  const isAdminUser = isSuperAdmin(userRoles) || isPracticeAdmin(userRoles)
+  const userRole = pluck(userRoles || [], 'role')
 
   const updatedOptions = addEmpty ?
-    [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], isAdminUser)] : [...renderStaffRoles(roles ?? [], isAdminUser)]
+    [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], userRole)] : [...renderStaffRoles(roles ?? [], userRole)]
 
   const [findAllRole] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
