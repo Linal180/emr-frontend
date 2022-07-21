@@ -567,10 +567,11 @@ export interface PickerProps {
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
+  defaultValue?: Date;
   isRequired?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
-  defaultValue?: Date
+  onSelect?: Function;
 }
 
 export interface TimePickerProps {
@@ -1843,6 +1844,7 @@ export interface AppointmentSlotsProps {
 }
 
 export type StatusInputProps = {
+  appointmentDate : string
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType

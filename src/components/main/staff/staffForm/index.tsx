@@ -50,12 +50,13 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser || isPractice))
+    resolver: yupResolver(staffSchema(!!isEdit, isAdminUser, isPractice))
   });
 
   const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
+  const { id: selectedRole } = roleType || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
     fetchPolicy: "network-only",
@@ -217,7 +218,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             createStaffInput: {
               staffInput: { password: SYSTEM_PASSWORD, roleType: role, ...staffInputs, adminId: id },
-              providers: selectedProvider ? [selectedProvider] : []
+              providers: needProvider && selectedProvider ? [selectedProvider] : []
             }
           }
         })
@@ -235,6 +236,11 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       } else setIsFacilityAdmin(false)
     }
   }, [watch, roleType, setValue])
+
+  const needProvider = selectedRole === SYSTEM_ROLES.Staff
+    || selectedRole === SYSTEM_ROLES.Nurse
+    || selectedRole === SYSTEM_ROLES.DoctorAssistant
+    || selectedRole === SYSTEM_ROLES.NursePractitioner
 
   return (
     <FormProvider {...methods}>
@@ -269,36 +275,36 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     {isEdit && roleType ?
                       getStaffLoading ? renderLoading(ROLE) : renderItem(ROLE, formatValue(roleType.name || ''))
                       : <RoleSelector
-                        loading={getStaffLoading}
                         addEmpty
                         isRequired
                         label={ROLE}
                         name="roleType"
+                        loading={getStaffLoading}
                       />
                     }
                   </Grid>
 
-                  {roleType?.id === SYSTEM_ROLES.PracticeAdmin ?
+                  {selectedRole === SYSTEM_ROLES.PracticeAdmin ?
                     <Grid item md={6}>
                       {isAdminUser ?
                         <PracticeSelector
-                          loading={getStaffLoading}
                           addEmpty
                           isRequired
                           label={PRACTICE}
                           name="practiceId"
+                          loading={getStaffLoading}
                         />
                         : renderItem(PRACTICE, currentPracticeName)
                       }
                     </Grid> :
                     <Grid item md={6}>
-                      {isAdminUser ?
+                      {isAdminUser || isPractice ?
                         <FacilitySelector
-                          loading={getStaffLoading}
                           addEmpty
                           isRequired
                           label={FACILITY}
                           name="facilityId"
+                          loading={getStaffLoading}
                         />
                         : renderItem(FACILITY, currentFacilityName)
                       }
@@ -309,20 +315,20 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
-                      loading={getStaffLoading}
                       isRequired
                       fieldType="text"
                       controllerName="firstName"
+                      loading={getStaffLoading}
                       controllerLabel={FIRST_NAME}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
-                      loading={getStaffLoading}
                       isRequired
                       fieldType="text"
                       controllerName="lastName"
+                      loading={getStaffLoading}
                       controllerLabel={LAST_NAME}
                     />
                   </Grid>
@@ -362,21 +368,21 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 <Grid container spacing={3}>
                   <Grid item md={isEdit ? 12 : 8} sm={6} xs={12}>
                     <InputController
-                      loading={getStaffLoading}
                       isRequired
                       fieldType="email"
                       controllerName="email"
                       controllerLabel={EMAIL}
+                      loading={getStaffLoading}
                     />
                   </Grid>
 
-                  {!isEdit &&
+                  {!isEdit && needProvider &&
                     <Grid item md={4} sm={12} xs={12}>
                       <DoctorSelector
                         addEmpty
-                        facilityId={selectedFacility}
                         label={PROVIDER}
                         name="providerIds"
+                        facilityId={selectedFacility}
                         disabled={isFacilityAdmin && true}
                       />
                     </Grid>
