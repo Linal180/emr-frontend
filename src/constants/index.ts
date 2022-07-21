@@ -1739,6 +1739,9 @@ export const TAX_ID_INFO =
   "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO =
   "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
+  export const PORTAL_ACCESS_TITLE = "AIMED Patient Portal Access";
+  export const PORTAL_ACCESS_DESCRIPTION =
+  "AIMED Patient portal access allows patient to have access to his records, appointments and other utilties in one place. It helps user to stay connected to their facility in a better way."
 export const UPIN_INFO =
   "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify providers in the United States.";
 export const CLIA_ID_NUMBER_INFO =
@@ -1855,11 +1858,7 @@ export const PROFILE_GENERAL_MENU_ITEMS = [
   {
     name: SIGNATURE_TEXT,
     link: SIGNATURE_ROUTE,
-  },
-  {
-    name: CANCELLATIONS,
-    link: CANCELLATION_ROUTE,
-  },
+  }
 ];
 
 export const PROFILE_SECURITY_MENU_ITEMS = [
@@ -2332,10 +2331,10 @@ export const PROFILE_TOP_TABS = [
     title: "Documents",
     value: "8",
   },
-  {
-    title: "Portal Access",
-    value: "9",
-  },
+  // {
+  //   title: "Portal Access",
+  //   value: "9",
+  // },
   {
     title: "Lab Orders",
     value: "10",
@@ -2802,11 +2801,6 @@ export const CLINICAL_ITEMS = [
 
 export const MISCELLANEOUS_SETTINGS_ITEMS = [
   {
-    name: TIME_ZONE,
-    link: "/",
-    desc: TIME_ZONE_DESCRIPTION,
-  },
-  {
     name: AGREEMENTS,
     link: AGREEMENTS_ROUTE,
     desc: AGREEMENTS_DESCRIPTION,
@@ -2815,11 +2809,6 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
-  },
-  {
-    name: FFE_SCHEDULE,
-    link: FEE_SCHEDULE_ROUTE,
-    desc: FEE_SCHEDULE_DESCRIPTION,
   }
 ];
 
@@ -3419,6 +3408,12 @@ export const PRACTICE_SETTINGS_ITEMS = [
     desc: EMERGENCY_ACCESS_DESCRIPTION,
     permission: USER_PERMISSIONS.emergencyAccess,
   },
+  {
+    name: FFE_SCHEDULE,
+    link: FEE_SCHEDULE_ROUTE,
+    desc: FEE_SCHEDULE_DESCRIPTION,
+    permission: USER_PERMISSIONS.createStaff // NEED TO UPDATE THIS *****************************
+  }
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me'

@@ -55,6 +55,14 @@ query GetPractice($getPractice: GetPractice!){
         updatedAt
       }
     }
+
+    practiceAdmin {
+      firstName
+      lastName
+      id
+      phone
+      email
+    }
   }
 }
 

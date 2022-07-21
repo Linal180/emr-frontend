@@ -12,7 +12,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataComponent from '../../../common/NoDataComponent';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
-import PortalTable from '../../../common/patient/portal';
+// import PortalTable from '../../../common/patient/portal';
 import PatientProfileHero from '../../../common/patient/profileHero';
 import SideDrawer from '../../../common/SideDrawer';
 import EncounterList from '../../patients/patientDetail/encounters';
@@ -42,6 +42,7 @@ import { Action, ActionType, initialState, patientReducer, State } from "../../.
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { WHITE } from '../../../../theme';
 import { getFormattedDate, hasEncounter } from '../../../../utils';
+import PortalAccessCard from './portalAccessCard';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -53,7 +54,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [{ pageComing, upComing, completed, encounters }, appointmentDispatch] =
     useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
 
-  const [{drawerOpened}, mediaDispatcher] =
+  const [{ drawerOpened }, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
@@ -200,6 +201,9 @@ const PatientDetailsComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1">
+
+            <PortalAccessCard inviteAccepted={Boolean(patientData?.inviteAccepted)}/>
+
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
                 <Grid container spacing={3}>
@@ -322,9 +326,9 @@ const PatientDetailsComponent = (): JSX.Element => {
             <DocumentsTable patient={patientData} />
           </TabPanel>
 
-          <TabPanel value="9">
+          {/* <TabPanel value="9">
             <PortalTable inviteAccepted={Boolean(patientData?.inviteAccepted)} />
-          </TabPanel>
+          </TabPanel> */}
 
           <TabPanel value="10">
             <LabOrdersTable />

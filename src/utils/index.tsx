@@ -74,6 +74,20 @@ export const formatEnumMember = (value: string) => {
   return formatted.trim();
 };
 
+export const formatServiceEnumMember = (value: string) => {
+  const parts = value.split("_");
+  const code = parts[parts.length - 1]
+  let formatted = ''
+
+  for (let index in parts) {
+    if (parseInt(index) < parts.length - 1) {
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
+    }
+  }
+
+  return `${code} - ${formatted}`.trim();
+};
+
 export const renderLoading = (label: string | JSX.Element) => (
   <>
     <Box position="relative">
@@ -419,6 +433,15 @@ export const timeDifference = (time: string) => {
 export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
 
+export const isCurrentDay = (date: string) => {
+  if (!!!date) return false
+
+  const givenDate = moment(date, "x").format("ddd MMM. DD, YYYY");
+  const now = moment();
+
+  return now.diff(givenDate, 'days') === 0
+};
+
 export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
 export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
 export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;
@@ -482,21 +505,28 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
   return data;
 }
 
-export const renderStaffRoles = (roles: RolesPayload['roles'], isAdminUser: boolean) => {
+export const renderStaffRoles = (roles: RolesPayload['roles'], userRoles: string[]) => {
   const data: SelectorOption[] = [];
-  const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
-  if (!isAdminUser) {
-    rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
-  }
 
   if (!!roles) {
+    const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
+
+    userRoles.includes(SYSTEM_ROLES.PracticeAdmin) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
+    userRoles.includes(SYSTEM_ROLES.FacilityAdmin
+      || SYSTEM_ROLES.Nurse
+      || SYSTEM_ROLES.Staff
+      || SYSTEM_ROLES.Doctor
+      || SYSTEM_ROLES.FrontDesk
+      || SYSTEM_ROLES.OfficeManager
+      || SYSTEM_ROLES.DoctorAssistant
+      || SYSTEM_ROLES.NursePractitioner
+    ) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin)
+
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        // && name !== SYSTEM_ROLES.FacilityAdmin
-        if (
-          !rolesToEmit.includes(name || '')
-        )
+
+        if (!rolesToEmit.includes(name || ''))
           name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
@@ -1760,7 +1790,7 @@ export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[]
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatEnumMember(member)
+        name: formatServiceEnumMember(member)
       }
     });
   } else return [EMPTY_OPTION]

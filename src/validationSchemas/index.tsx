@@ -26,7 +26,7 @@ import {
   DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, DESCRIPTION, TAX_ID, NPI, ICD_CODE,
   INVALID_EMAIL, EMAIL, NPI_VALIDATION_MESSAGE, NPI_REGEX, CLIA_VALIDATION_MESSAGE, CLIA_REGEX,
   LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
-  PRICE, DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
+  DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
@@ -290,21 +290,22 @@ const staffBasicSchema = {
   dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const staffSchema = (isEdit: boolean, isUserAdmin: boolean) => yup.object({
+export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boolean) => yup.object({
   ...emailSchema,
   ...staffBasicSchema,
-  facilityId: selectorSchema(FACILITY, false)
-    .when('roleType', {
-      is: (roleType: SelectorOption) => roleType?.id !== SYSTEM_ROLES.PracticeAdmin ? isUserAdmin : false,
-      then: selectorSchema(FACILITY, true),
-      otherwise: selectorSchema(FACILITY, false)
-    }),
+  roleType: selectorSchema(ROLE, !isEdit),
+  facilityId: selectorSchema(FACILITY, false).when('roleType', {
+    is: ({ id }: SelectorOption) =>
+      id !== SYSTEM_ROLES.PracticeAdmin ? (isSuper || isPractice) : false,
+    then: selectorSchema(FACILITY, true),
+    otherwise: selectorSchema(FACILITY, false)
+  }),
+
   practiceId: selectorSchema(PRACTICE, false).when('roleType', {
-    is: (roleType: SelectorOption) => roleType?.id === SYSTEM_ROLES.PracticeAdmin,
+    is: ({ id }: SelectorOption) => id === SYSTEM_ROLES.PracticeAdmin ? isSuper : false,
     then: selectorSchema(PRACTICE, true),
     otherwise: selectorSchema(PRACTICE, false)
   }),
-  roleType: selectorSchema(ROLE, !isEdit)
 })
 
 export const facilitySchema = (practiceRequired: boolean) => yup.object({
@@ -365,10 +366,10 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
-  price: yup.string()
-    .test('', requiredMessage(PRICE), value => !!value)
-    .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
-    .matches(NUMBER_REGEX, ValidMessage(PRICE)),
+  // price: yup.string()
+  //   .test('', requiredMessage(PRICE), value => !!value)
+  //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
+  //   .matches(NUMBER_REGEX, ValidMessage(PRICE)),
   duration: yup.string()
     .test('', requiredMessage(DURATION), value => !!value)
     .test('', requiredMessage(DURATION), value => parseInt(value || '') > 0)

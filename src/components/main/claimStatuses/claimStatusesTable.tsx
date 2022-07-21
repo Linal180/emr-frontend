@@ -1,38 +1,38 @@
 // packages block
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import { Pagination } from '@material-ui/lab';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 // components block
-import NoDataFoundComponent from '../../common/NoDataFoundComponent';
+import Alert from '../../common/Alert';
 import Search from '../../common/Search';
+import PageHeader from '../../common/PageHeader';
 import TableLoader from '../../common/TableLoader';
 import ClaimStatusModal from '../../common/ClaimStatusModal';
-import PageHeader from '../../common/PageHeader';
 import ConfirmationModal from '../../common/ConfirmationModal';
-import Alert from '../../common/Alert';
+import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 //constants, types, interfaces, utils block
+import { GeneralFormProps } from '../../../interfacesTypes';
+import { useTableStyles } from '../../../styles/tableStyles';
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
+import { convertDateFromUnix, renderTh, getPageNumber } from '../../../utils';
 import {
-  ACTIONS, ADD_CLAIM_STATUS, CANT_DELETE_CLAIM_STATUS, CLAIM_STATUSES, CLAIM_STATUS_NEW_BREAD, CREATED_ON, DASHBOARD_BREAD,
-  DELETE_CLAIM_STATUS_DESCRIPTION, NAME, PAGE_LIMIT
+  ACTIONS, ADD_CLAIM_STATUS, CANT_DELETE_CLAIM_STATUS, CLAIM_STATUSES, CLAIM_STATUS_NEW_BREAD,
+  CREATED_ON, DASHBOARD_BREAD, DELETE_CLAIM_STATUS_DESCRIPTION, NAME, PAGE_LIMIT
 } from '../../../constants';
 import {
   ClaimStatusesPayload, useFetchAllClaimStatusesLazyQuery, useRemoveClaimStatusMutation
 } from '../../../generated/graphql';
-import { GeneralFormProps } from '../../../interfacesTypes';
-import { useTableStyles } from '../../../styles/tableStyles';
-import {
-  convertDateFromUnix, renderTh
-} from '../../../utils';
 
 const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
   const [claimStatuses, setClaimStatuses] = useState<ClaimStatusesPayload['claimStatuses']>()
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(0)
+
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [claimStatusToRemove, setClaimStatusToRemove] = useState<string>('')
   const [openDelete, setOpenDelete] = useState<boolean>(false)
+  
   const [isClaimStatusModalOpen, setIsClaimStatusModalOpen] = useState(false)
   const [editId, setEditId] = useState<string>('')
 
@@ -47,6 +47,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError() {
       setClaimStatuses([])
+      setTotalPages(0)
     },
 
     onCompleted(data) {
@@ -83,6 +84,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
   const [removeClaimStatus, { loading: removeClaimStatusLoading }] = useRemoveClaimStatusMutation({
     onError() {
+      setOpenDelete(false)
       Alert.error(CANT_DELETE_CLAIM_STATUS)
     },
 
@@ -97,7 +99,11 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
           try {
             setOpenDelete(false)
-            await fetchClaimStatuses()
+            if(claimStatuses && claimStatuses.length > 1){
+              await fetchClaimStatuses()
+            } else {
+              setPage(getPageNumber(page, claimStatuses?.length || 0))
+            }
           } catch (error) { }
         }
       }
@@ -106,7 +112,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
   useEffect(() => {
     fetchClaimStatuses()
-  }, [fetchClaimStatuses, searchQuery])
+  }, [fetchClaimStatuses, searchQuery, page])
 
   const onDeleteClick = (id: string) => {
     if (id) {

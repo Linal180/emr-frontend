@@ -210,7 +210,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId }
 
     practiceId && await updatePractice({
-      variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }
+      variables: {
+        updatePracticeInput: {
+          updatePracticeItemInput: { id: practiceId, ...practiceInput }
+        }
+      }
     })
   };
 

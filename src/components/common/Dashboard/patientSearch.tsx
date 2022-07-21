@@ -32,7 +32,7 @@ const PatientSearchComponent: FC = (): JSX.Element => {
             alignItems="center"
           >
             <Box className={classes.searchContainer} width="90%" maxWidth="90%">
-              <Search search={search} placeHolder={FACILITY_ADMIN_SEARCH_PLACEHOLDER} />
+              <Search search={search} submit={handleSearch} placeHolder={FACILITY_ADMIN_SEARCH_PLACEHOLDER} />
             </Box>
 
             <Button variant="contained" color="primary" size="large" onClick={handleSearch}>{SEARCH_PLACEHOLDER}</Button>

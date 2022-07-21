@@ -1788,6 +1788,7 @@ export type FormInput = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type FormMediaPayload = {
@@ -3756,6 +3757,7 @@ export type PracticeInput = {
 export type PracticePayload = {
   __typename?: 'PracticePayload';
   practice?: Maybe<Practice>;
+  practiceAdmin?: Maybe<Staff>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -5703,6 +5705,11 @@ export type UpdatePolicyInput = {
 };
 
 export type UpdatePracticeInput = {
+  updatePracticeItemInput?: Maybe<UpdatePracticeItemInput>;
+  updateUserInput?: Maybe<UpdateUserInput>;
+};
+
+export type UpdatePracticeItemInput = {
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -5802,6 +5809,7 @@ export type UpdateUserInput = {
   isAdmin?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
 };
 
@@ -7041,7 +7049,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -14788,6 +14796,13 @@ export const GetPracticeDocument = gql`
         createdAt
         updatedAt
       }
+    }
+    practiceAdmin {
+      firstName
+      lastName
+      id
+      phone
+      email
     }
   }
 }

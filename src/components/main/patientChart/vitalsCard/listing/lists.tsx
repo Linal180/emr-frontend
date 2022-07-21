@@ -5,85 +5,38 @@ import {
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { FormEditNewIcon } from '../../../../../assets/svgs';
 import { DASHES, IN_TEXT, KG_TEXT } from '../../../../../constants';
-import { ActionType } from '../../../../../reducers/patientReducer';
-import { VitalListingTableProps } from '../../../../../interfacesTypes';
 import {
   HeadCircumferenceType, PatientVitalPayload, TempUnitType, UnitType, WeightType
 } from '../../../../../generated/graphql';
-import {
-  fahrenheitToCelsius, formatValue, getFormatDateString, inchesToCentimeter, kilogramToOunce,
-  kilogramToPounds, renderTh, roundOffUpto2Decimal
-} from '../../../../../utils';
+import { VitalListingTableProps } from '../../../../../interfacesTypes';
+import { ActionType } from '../../../../../reducers/patientReducer';
+import { formatValue, getFormatDateString, renderTh, roundOffUpto2Decimal } from '../../../../../utils';
 
 export const VitalListingTable = ({
   patientStates, shouldDisableEdit, dispatcher }: VitalListingTableProps) => {
-  const { heightUnit: { id: heightId }, weightUnit: { id: weightId }, headCircumferenceUnit: {
-    id: headCircumferenceId }, feverUnit: { id: feverId }, patientVitals } = patientStates;
+  const { patientVitals } = patientStates;
 
   const getWeightValue = (weight: string) => {
     if (weight) {
-      const patientWeight = parseFloat(weight);
-      switch (weightId) {
-        case WeightType.Kg:
-          return patientWeight;
-
-        case WeightType.Pound:
-          return kilogramToPounds(patientWeight);
-
-        case WeightType.PoundOunce:
-          return kilogramToOunce(patientWeight);
-
-        default:
-          return patientWeight;
-      }
+      return parseFloat(weight);
     }
   }
 
   const getHeightValue = (height: string) => {
     if (height) {
-      const patientHeight = parseFloat(height);
-      switch (heightId) {
-        case UnitType.Centimeter:
-          return inchesToCentimeter(patientHeight)
-
-        case UnitType.Inch:
-          return patientHeight
-
-        default:
-          return patientHeight
-      }
+      return parseFloat(height);
     }
   }
 
   const getHeadValue = (head: string) => {
     if (head) {
-      const patientHead = parseFloat(head);
-      switch (headCircumferenceId) {
-        case HeadCircumferenceType.Centimeter:
-          return inchesToCentimeter(patientHead)
-
-        case HeadCircumferenceType.Inch:
-          return patientHead
-
-        default:
-          return patientHead
-      }
+      return parseFloat(head);
     }
   }
 
   const getFeverValue = (fever: string) => {
     if (fever) {
-      const patientFever = parseFloat(fever);
-      switch (feverId) {
-        case TempUnitType.DegC:
-          return fahrenheitToCelsius(patientFever)
-
-        case TempUnitType.DegF:
-          return patientFever
-
-        default:
-          return patientFever
-      }
+      return parseFloat(fever);
     }
   }
 
@@ -174,7 +127,7 @@ export const VitalListingTable = ({
               {patientVitals?.map((item, i) => {
                 const { id, PatientHeight } = item || {};
                 const height = roundOffUpto2Decimal(getHeightValue(PatientHeight || ''))
-                
+
                 return <TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row">
                   <Typography variant='body1' className='h-24'>
                     {height || DASHES}

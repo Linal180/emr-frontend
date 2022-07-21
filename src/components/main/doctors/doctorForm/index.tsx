@@ -20,13 +20,17 @@ import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
-import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
-  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
+  doctorReducer, State, Action, initialState, ActionType
+} from '../../../../reducers/doctorReducer';
+import {
+  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery,
+  useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, NOT_FOUND_EXCEPTION, ADDRESS_TWO,
-  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR, DEGREE_CREDENTIALS,
+  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR,
+  DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, CONFLICT_EXCEPTION, EMPTY_OPTION,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS_ONE,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
@@ -36,7 +40,7 @@ import {
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO, USA,
   SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
-  SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR, CONFLICT_EXCEPTION, EMPTY_OPTION, DOB, SOCIAL_SECURITY_NUMBER,
+  SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -233,16 +237,16 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedBillingState } = billingState;
 
       const doctorItemInput = {
-        firstName, middleName, lastName, prefix: prefix || '', suffix: suffix || '', facilityId: selectedFacility,
-        degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
+        firstName, middleName, lastName, prefix: prefix || '', suffix: suffix || '',
+        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
         npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
-        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestampsForDob(dob) : '',
+        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId,
+        dob: dob ? getTimestampsForDob(dob) : '', deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology_10,
         deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
-        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
       };
 
       const contactInput = {
@@ -391,9 +395,37 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       loading={getDoctorLoading}
                     />
                   </Grid>
-                </Grid>
 
-              </CardComponent>
+                  {/* <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="prefix"
+                      controllerLabel={PREFIX}
+                      loading={getDoctorLoading}
+                    />
+                  </Grid> */}
+                </Grid >
+
+                {/* <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="suffix"
+                      controllerLabel={SUFFIX}
+                      loading={getDoctorLoading}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="providerIntials"
+                      controllerLabel={PROVIDER_INITIALS}
+                      loading={getDoctorLoading}
+                    />
+                  </Grid>
+                </Grid> */}
+              </CardComponent >
 
               <Box pb={3} />
 
@@ -524,7 +556,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   </Grid>
                 </Grid>
               </CardComponent>
-            </Grid>
+            </Grid >
 
             <Grid md={6} item>
               <CardComponent cardTitle={CONTACT_INFORMATION}>
@@ -778,10 +810,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
               </CardComponent>
             </Grid>
-          </Grid>
-        </Box>
-      </form>
-    </FormProvider>
+          </Grid >
+        </Box >
+      </form >
+    </FormProvider >
   );
 };
 
