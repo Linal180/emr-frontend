@@ -421,6 +421,7 @@ export type Billing = {
   employment?: Maybe<Scalars['Boolean']>;
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
@@ -437,6 +438,7 @@ export type Billing = {
   serviceDate?: Maybe<Scalars['String']>;
   servicingProvider?: Maybe<Doctor>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
   uncoveredAmount?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -475,6 +477,7 @@ export type BillingInput = {
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
@@ -487,6 +490,7 @@ export type BillingInput = {
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
   uncoveredAmount?: Maybe<Scalars['String']>;
 };
 
@@ -609,12 +613,14 @@ export type ClaimInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
+  from?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
   patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
 };
 
 export type ClaimNumberPayload = {
@@ -3127,8 +3133,7 @@ export type Observations = {
 /** The patient billing status assigned */
 export enum OnsetDateType {
   DateOfAccident = 'DATE_OF_ACCIDENT',
-  LastMenstrualPeriod = 'LAST_MENSTRUAL_PERIOD',
-  OnsetOfCurrentSymptomsOrIllness = 'ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS'
+  DateOfHospitalization = 'DATE_OF_HOSPITALIZATION'
 }
 
 /** The order of benefit type */
@@ -6404,7 +6409,7 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, to?: string | null, from?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null } } };
 
 export type CreateClaimQueryVariables = Exact<{
   claimInput: ClaimInput;
@@ -7077,7 +7082,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, country?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -9320,9 +9325,15 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       claimDate
       claimNo
       uncoveredAmount
+      to
+      from
       facility {
         id
         name
+        practice {
+          id
+          name
+        }
       }
       claimStatus {
         id
@@ -14291,6 +14302,7 @@ export const GetPatientDocument = gql`
         usualOccupation
         city
         state
+        country
         zipCode
         address
         createdAt

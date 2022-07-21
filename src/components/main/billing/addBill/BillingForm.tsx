@@ -1,42 +1,44 @@
 //packages block
-import { ChangeEvent, FC, useState } from "react";
-import { FormProvider } from "react-hook-form";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 import {
   Box, Button, Card, Checkbox, CircularProgress, colors, FormControlLabel, FormGroup, Grid, Tab, Typography
 } from "@material-ui/core";
+import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { ChangeEvent, FC, useState } from "react";
+import { FormProvider } from "react-hook-form";
 //components block
-import Selector from "../../../common/Selector";
+import InputController from "../../../../controller";
+import CheckoutModal from "../../../common/CheckoutModal";
 import CodesTable from "../../../common/CodesTable";
 import CopayModal from "../../../common/CopayModal";
-import CheckoutModal from "../../../common/CheckoutModal";
 import DatePicker from "../../../common/DatePicker";
-import InputController from "../../../../controller";
-import TableSelector from "../../../common/Selector/TableSelector";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import InsuranceComponent from "../../patients/patientDetail/insurance";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
-//constants, utils, interfaces block
-import { CodeType } from "../../../../generated/graphql";
-import { BillingFormProps } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/billingReducer";
-import { GREY_THREE, } from "../../../../theme";
-import { formatValue, renderItem } from "../../../../utils";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import {
-  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_NO, CLAIM_STATUS,
-  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
-  MAPPED_OTHER_DATE_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, UNCOVERED_AMT,
-  OTHER_DATE_TYPE, PATIENT_PAYMENT_TYPE, POS, SERVICE_DATE, SERVICING_PROVIDER, RENDERING_PROVIDER, MAPPED_PATIENT_PAYMENT_TYPE, SUPER_BILL, SUPER_BILL_ROUTE,
-} from "../../../../constants";
 import ItemSelector from "../../../common/ItemSelector";
+import Selector from "../../../common/Selector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import TableSelector from "../../../common/Selector/TableSelector";
+import InsuranceComponent from "../../patients/patientDetail/insurance";
+//constants, utils, interfaces block
 import { Link } from "react-router-dom";
+import {
+  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_STATUS,
+  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FROM, HCFA_DESC, ICD_TEN_CODES, INVOICE_NO, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
+  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, PATIENT_PAYMENT_TYPE,
+  POS, PRACTICE, RENDERING_PROVIDER, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
+} from "../../../../constants";
+import { CodeType, OnsetDateType } from "../../../../generated/graphql";
+import { BillingFormProps, SelectorOption } from "../../../../interfacesTypes";
+import { ActionType } from "../../../../reducers/billingReducer";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { GREY_THREE } from "../../../../theme";
+import { formatValue, renderItem } from "../../../../utils";
 
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
   const classesToggle = usePublicAppointmentStyles();
-  const { handleSubmit, trigger } = methods
+  const { handleSubmit, trigger, watch, setValue } = methods
+  const { onsetDateType, practice } = watch()
+  const { id: onsetDateTypeId } = onsetDateType || {}
   const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber } = state
   const [selectedTab, setSelectedTab] = useState<string>('1')
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -62,6 +64,16 @@ const BillingForm: FC<BillingFormProps> = (
   const handleCheckout = async () => {
     const isValid = await trigger()
     isValid && dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+  }
+
+  const handleOnSetDateChange = (data: SelectorOption) => {
+    const { id: onSetId } = data
+    if (onSetId === OnsetDateType.DateOfHospitalization) {
+      setValue('onsetDate', undefined)
+    } else {
+      setValue('to', undefined)
+      setValue('from', undefined)
+    }
   }
 
   return (
@@ -120,7 +132,7 @@ const BillingForm: FC<BillingFormProps> = (
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
                     <Box pl={1.8} mb={2.5} className="claim-box">
-                      {renderItem(CLAIM_NO, claimNumber)}
+                      {renderItem(INVOICE_NO, claimNumber)}
                     </Box>
 
                     <Grid item md={12} sm={12} xs={12}>
@@ -160,6 +172,10 @@ const BillingForm: FC<BillingFormProps> = (
                       </Grid>
                     </Grid> */}
 
+                    <Box pl={1.8} mb={2.5} className="claim-box">
+                      {renderItem(PRACTICE, practice)}
+                    </Box>
+
                     <Grid item md={12} sm={12} xs={12}>
                       <FacilitySelector
                         addEmpty
@@ -178,25 +194,6 @@ const BillingForm: FC<BillingFormProps> = (
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <DoctorSelector
-                        label={SERVICING_PROVIDER}
-                        name="servicingProvider"
-                        shouldOmitFacilityId
-                        addEmpty
-                        disabled
-                      />
-                    </Grid>
-
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        name="resource"
-                        label={RESOURCE}
-                        options={[]}
-                        addEmpty
-                      />
-                    </Grid> */}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Grid container spacing={3} direction="row">
@@ -219,7 +216,6 @@ const BillingForm: FC<BillingFormProps> = (
                         </Grid>
                       </Grid>
                     </Grid>
-
                     {
                       !shouldDisableEdit && <Box pr={2} width="100%"
                         onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
@@ -230,6 +226,17 @@ const BillingForm: FC<BillingFormProps> = (
                         <Typography>{ADD_ANOTHER}</Typography>
                       </Box>
                     }
+
+
+
+                    {/* <Grid item md={12} sm={12} xs={12}>
+                      <Selector
+                        name="resource"
+                        label={RESOURCE}
+                        options={[]}
+                        addEmpty
+                      />
+                    </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
@@ -265,12 +272,22 @@ const BillingForm: FC<BillingFormProps> = (
                       />
                     </Grid>
 
+                    <Grid item md={12} sm={12} xs={12}>
+                      <DoctorSelector
+                        label={SERVICING_PROVIDER}
+                        name="servicingProvider"
+                        shouldOmitFacilityId
+                        addEmpty
+                        disabled
+                      />
+                    </Grid>
+
                     {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
-                        name="billingStatus"
-                        label={BILLING_STATUS}
-                        addEmpty
+                        name="resource"
+                        label={RESOURCE}
                         options={[]}
+                        addEmpty
                       />
                     </Grid> */}
                   </Grid>
@@ -305,25 +322,44 @@ const BillingForm: FC<BillingFormProps> = (
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Grid container spacing={3} direction="row">
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item md={12} sm={12} xs={12}>
                           <Selector
                             disabled={shouldDisableEdit}
                             addEmpty
                             name="onsetDateType"
                             label={ONSET_DATE_TYPE}
                             options={MAPPED_ONSET_DATE_TYPE}
+                            onSelect={(data: SelectorOption) => handleOnSetDateChange(data)}
                           />
                         </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
-                          <DatePicker
-                            disabled={shouldDisableEdit}
-                            name="onsetDate"
-                            label={ONSET_DATE}
-                          />
-                        </Grid>
+                        {onsetDateTypeId === OnsetDateType.DateOfHospitalization ?
+                          <Grid item container spacing={3} direction="row">
+                            <Grid item md={6} sm={12} xs={12}>
+                              <DatePicker
+                                disabled={shouldDisableEdit}
+                                name="from"
+                                label={FROM}
+                              />
+                            </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              <DatePicker
+                                disabled={shouldDisableEdit}
+                                name="to"
+                                label={TO}
+                              />
+                            </Grid>
+                          </Grid> : <Grid item md={12} sm={12} xs={12}>
+                            <DatePicker
+                              disabled={shouldDisableEdit}
+                              name="onsetDate"
+                              label={ONSET_DATE}
+                            />
+                          </Grid>
+                        }
+
+                        {/* <Grid item md={6} sm={12} xs={12}>
                           <Selector
                             disabled={shouldDisableEdit}
                             addEmpty
@@ -331,9 +367,9 @@ const BillingForm: FC<BillingFormProps> = (
                             label={OTHER_DATE_TYPE}
                             options={MAPPED_OTHER_DATE_TYPE}
                           />
-                        </Grid>
+                        </Grid> */}
 
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item md={12} sm={12} xs={12}>
                           <DatePicker
                             disabled={shouldDisableEdit}
                             name="otherDate"

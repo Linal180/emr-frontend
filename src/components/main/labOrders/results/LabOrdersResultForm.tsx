@@ -72,7 +72,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
 
     if (resultsToRemove.length) {
       resultsToRemove.forEach(async (resultId) => {
-        await removeLabTestMutation({
+        resultId && await removeLabTestMutation({
           variables: {
             removeLabTestObservation: {
               id: resultId ?? ''

@@ -186,6 +186,7 @@ query GetPatient($getPatient: GetPatient!) {
         usualOccupation
         city
         state
+        country
         zipCode
         address
         createdAt

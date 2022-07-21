@@ -253,7 +253,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
           if (employer) {
             const {
-              id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode
+              id: employerId, name, email, phone, industry, usualOccupation, address, city, state, zipCode, country
             } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
@@ -266,6 +266,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             zipCode && setValue("employerZipCode", zipCode)
             industry && setValue('employerIndustry', industry)
             state && setValue("employerState", setRecord(state, state))
+            state && setValue("employerCountry", country || USA)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
           }
         }
@@ -336,7 +337,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
-      employerAddress, employerCity, employerState, employerZipCode
+      employerAddress, employerCity, employerState, employerZipCode, employerCountry
     } = inputs;
 
     if (user) {
@@ -417,7 +418,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const employerInput = {
         name: employerName, email: employerEmail, phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
-        address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState,
+        address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState, country: employerCountry
       };
 
       if (id || patientId) {

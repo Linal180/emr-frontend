@@ -17,7 +17,7 @@ import {
   EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
   MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER,
-  REFERRING_PROVIDER, REMOVE_COPAY_AMOUNT, VALUE
+  REFERRING_PROVIDER, REMOVE_COPAY_AMOUNT, SUFFIX, VALUE
 } from "../../../../../constants";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
@@ -37,6 +37,15 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             value={isEdit ? EMPTY_OPTION :
               setRecord(PolicyHolderRelationshipType.Self,
                 formatValue(PolicyHolderRelationshipType.Self))}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12} xs={12}>
+          <InputController
+            isRequired
+            fieldType="text"
+            controllerName="suffix"
+            controllerLabel={SUFFIX}
           />
         </Grid>
 
