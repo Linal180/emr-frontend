@@ -15,6 +15,7 @@ import {
 import Alert from "./Alert";
 import Search from "./Search";
 import Selector from "./Selector";
+import DatePicker from "./DatePicker";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import ServicesSelector from "./Selector/ServiceSelector";
@@ -46,14 +47,13 @@ import {
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
   USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY
 } from "../../constants";
-import DatePicker from "./DatePicker";
 
 dotenv.config()
 
 const AppointmentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
   const { user, currentUser, userPermissions } = useContext(AuthContext)
-  
+
   const { facility, roles } = user || {}
   const isAdminUser = isUserAdmin(roles)
 
@@ -84,7 +84,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   };
 
   const getPreviousDate = () => {
-    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')   
+    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')
     setDate(previousDate)
   }
 
@@ -360,7 +360,8 @@ const AppointmentsTable: FC = (): JSX.Element => {
                       addEmpty
                       label={FACILITY}
                       name="facilityId"
-                      onSelect={({ id }: SelectorOption) => dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+                      onSelect={({ id }: SelectorOption) =>
+                        dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
                     />
                   </Grid>}
 
@@ -371,6 +372,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                     shouldEmitFacilityId={isAdminUser}
                   />
                 </Grid>
+
                 <Grid item md={4} sm={12} xs={12}>
                   <Box className="date-box-wrap">
                     <Typography variant="body1" color="textPrimary">{DATE}</Typography>
@@ -388,11 +390,11 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
                       <Box className="date-input-box" mx={1}>
                         <DatePicker
-                          name="appointmentDate"
                           label=""
-                          defaultValue={new Date(selectDate)}
                           disableFuture={false}
-                          onSelect={(date: string)=>setDate(date)}
+                          name="appointmentDate"
+                          defaultValue={new Date(selectDate)}
+                          onSelect={(date: string) => setDate(date)}
                         />
                       </Box>
 

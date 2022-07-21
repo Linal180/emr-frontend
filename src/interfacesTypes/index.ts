@@ -567,11 +567,11 @@ export interface PickerProps {
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
+  defaultValue?: Date;
   isRequired?: boolean;
   disablePast?: boolean;
   disableFuture?: boolean;
-  defaultValue?: Date
-  onSelect?: Function
+  onSelect?: Function;
 }
 
 export interface TimePickerProps {
