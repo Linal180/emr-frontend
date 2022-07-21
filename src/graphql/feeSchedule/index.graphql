@@ -5,6 +5,7 @@ query FindAllFeeSchedules($findAllFeeScheduleInput: FindAllFeeScheduleInput!) {
       name
       expiryDate
       effectiveDate
+      cptFeeScheduleCount
 
       practice {
         id

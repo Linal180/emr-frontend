@@ -1,16 +1,14 @@
 // packages block
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { FormProvider, useForm } from "react-hook-form";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, } from "react";
 import { Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
-import CptFeeScheduleForm from './cptFeeScheduleForm';
 import SideDrawer from '../../common/SideDrawer';
 import TableLoader from "../../common/TableLoader";
-import HeaderSelector from "../../common/HeaderSelector";
+import CptFeeScheduleForm from './cptFeeScheduleForm';
 import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -18,20 +16,21 @@ import { ParamsType } from "../../../interfacesTypes";
 import { getPageNumber, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
-import { useFindAllCptFeeScheduleLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
+import { useFindAllCptFeeScheduleLazyQuery, useGetFeeScheduleLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import {
-  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, EFFECTIVE_DATE, EXPIRY_DATE, MODIFIER, PAGE_LIMIT, PRICING,
-  FEE_SCHEDULE, ADD_NEW_TEXT, DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE
+  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, MODIFIER, PAGE_LIMIT, FEE_SCHEDULE,
+  DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, REVENUE_CODE, ADD_NEW_TEXT
 } from "../../../constants";
 
 const CptFeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { id: feeScheduleId } = useParams<ParamsType>()
-  const methods = useForm({ mode: "all" });
   const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
 
-  const { page, totalPages, cptFeeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel, searchQuery } = state
+  const {
+    page, totalPages, cptFeeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel, searchQuery, feeScheduleName
+  } = state
 
   const [findAllCptFeeSchedule, { loading, error }] = useFindAllCptFeeScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -84,7 +83,22 @@ const CptFeeTable: FC = (): JSX.Element => {
     },
   })
 
-  const fetchFeeSchedule = useCallback(async () => {
+  const [fetchFeeSchedule] = useGetFeeScheduleLazyQuery({
+    onCompleted: (data) => {
+      const { getFeeSchedule } = data || {}
+      const { feeSchedule, response } = getFeeSchedule || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { name } = feeSchedule || {}
+        name && dispatch({ feeScheduleName: name, type: ActionType.SET_FEE_SCHEDULE_NAME })
+      }
+    },
+    onError: () => {
+
+    }
+  })
+
+  const fetchCptFeeSchedule = useCallback(async () => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
       dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
@@ -94,8 +108,26 @@ const CptFeeTable: FC = (): JSX.Element => {
   }, [page, findAllCptFeeSchedule, searchQuery, feeScheduleId])
 
   useEffect(() => {
-    feeScheduleId && getFeeSchedule && fetchFeeSchedule()
-  }, [fetchFeeSchedule, getFeeSchedule, feeScheduleId])
+    feeScheduleId && getFeeSchedule && fetchCptFeeSchedule()
+  }, [fetchCptFeeSchedule, getFeeSchedule, feeScheduleId])
+
+
+  const fetchFeeScheduleDetail = useCallback(async () => {
+    try {
+      feeScheduleId && await fetchFeeSchedule({
+        variables: {
+          getFeeScheduleInput: { id: feeScheduleId }
+        }
+      })
+    } catch (error) {
+
+    }
+  }, [feeScheduleId, fetchFeeSchedule])
+
+  useEffect(() => {
+    feeScheduleId && fetchFeeScheduleDetail()
+  }, [feeScheduleId, fetchFeeScheduleDetail])
+
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -143,7 +175,7 @@ const CptFeeTable: FC = (): JSX.Element => {
   return (
     <>
       <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{FEE_SCHEDULE}</Typography>
+        <Typography variant="h4" color="textPrimary">{feeScheduleName}</Typography>
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >
@@ -156,15 +188,6 @@ const CptFeeTable: FC = (): JSX.Element => {
             <Grid item md={4} sm={12} xs={12}>
               <Search search={search} />
             </Grid>
-
-            <Grid item md={1} sm={12} xs={12}>
-              <FormProvider {...methods}>
-                <HeaderSelector
-                  name="pricing"
-                  label={PRICING}
-                />
-              </FormProvider>
-            </Grid>
           </Grid>
         </Box>
 
@@ -175,8 +198,7 @@ const CptFeeTable: FC = (): JSX.Element => {
                 {renderTh(CODE)}
                 {renderTh(MODIFIER)}
                 {renderTh(DESCRIPTION)}
-                {renderTh(EFFECTIVE_DATE)}
-                {renderTh(EXPIRY_DATE)}
+                {renderTh(REVENUE_CODE)}
                 {renderTh(CHARGE_DOLLAR)}
                 {renderTh(ACTION, "center")}
               </TableRow>
@@ -190,12 +212,13 @@ const CptFeeTable: FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ) : cptFeeSchedules?.map((item) => {
-                const { modifier, description, serviceFee, code, id } = item || {};
+                const { modifier, description, serviceFee, code, id, revenueCode, } = item || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{code}</TableCell>
                     <TableCell scope="row">{modifier}</TableCell>
                     <TableCell scope="row">{description}</TableCell>
+                    <TableCell scope="row">{revenueCode}</TableCell>
                     <TableCell scope="row">{serviceFee}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

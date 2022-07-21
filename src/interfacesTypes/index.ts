@@ -349,6 +349,10 @@ export interface CptCodeSelectorOption extends SelectorOption {
   longDescription: string | undefined | null;
 }
 
+export interface ModifiersSelectorOption extends SelectorOption {
+  description: string | undefined | null;
+}
+
 export interface AsyncSelectorOption {
   value: string
   label: string | undefined | null
@@ -412,6 +416,10 @@ export interface SelectorProps {
 
 export interface CPTCodesSelectorProps extends SelectorProps {
   valueSetter?: (inputs: CptCodeSelectorOption) => void
+}
+
+export interface ModifierSelectorProps extends SelectorProps {
+
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -1848,7 +1856,7 @@ export interface AppointmentSlotsProps {
 }
 
 export type StatusInputProps = {
-  appointmentDate : string
+  appointmentDate: string
   status: SelectorOption
   facilityId?: string
   serviceId?: multiOptionType
@@ -2015,7 +2023,7 @@ export interface AuditSubmitInputs {
 }
 
 export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
-export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code'> & { code: CptCodeSelectorOption }
+export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'modifier'> & { code: CptCodeSelectorOption, modifier: SelectorOption }
 
 export interface DoctorAppointmentsAndPatientsProps {
   patientId?: string;

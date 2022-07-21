@@ -6647,7 +6647,7 @@ export type GetCptFeeScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetCptFeeScheduleQuery = { __typename?: 'Query', getCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null } | null } };
+export type GetCptFeeScheduleQuery = { __typename?: 'Query', getCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null, cptCodes?: { __typename?: 'CPTCodes', id: string } | null } | null } };
 
 export type RemoveCptFeeScheduleMutationVariables = Exact<{
   removeCptFeeScheduleInput: RemoveCptFeeScheduleInput;
@@ -6797,7 +6797,7 @@ export type FindAllFeeSchedulesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFeeSchedulesQuery = { __typename?: 'Query', findAllFeeSchedules: { __typename?: 'AllFeeSchedulesPayload', feeSchedules?: Array<{ __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllFeeSchedulesQuery = { __typename?: 'Query', findAllFeeSchedules: { __typename?: 'AllFeeSchedulesPayload', feeSchedules?: Array<{ __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, cptFeeScheduleCount?: number | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type GetFeeScheduleQueryVariables = Exact<{
   getFeeScheduleInput: GetFeeScheduleInput;
@@ -10926,6 +10926,9 @@ export const GetCptFeeScheduleDocument = gql`
       longDescription
       serviceFee
       revenueCode
+      cptCodes {
+        id
+      }
     }
   }
 }
@@ -12027,6 +12030,7 @@ export const FindAllFeeSchedulesDocument = gql`
       name
       expiryDate
       effectiveDate
+      cptFeeScheduleCount
       practice {
         id
         name

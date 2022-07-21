@@ -7,8 +7,9 @@ import { Box, Button, Grid, Typography } from '@material-ui/core';
 import Alert from '../../common/Alert';
 import InputController from '../../../controller';
 import CPTCodesSelector from '../../common/Selector/CptCodeSelector';
+import ModifierSelector from '../../common/Selector/ModifierSelector';
 // constants, history, styling block
-import { setCTPCode } from '../../../utils';
+import { setCTPCode, setRecord } from '../../../utils';
 import { GREY_SIXTEEN } from '../../../theme';
 import { cptFeeScheduleSchema } from '../../../validationSchemas';
 import { ActionType } from '../../../reducers/feeScheduleReducer';
@@ -74,13 +75,14 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
       const { cptFeeSchedule, response } = getCptFeeSchedule || {}
       const { status } = response || {}
       if (status === 200) {
-        const { code, description, longDescription, modifier, serviceFee,
-          shortDescription } = cptFeeSchedule || {}
+        const { code, description, longDescription, modifier, serviceFee, shortDescription, revenueCode, cptCodes } = cptFeeSchedule || {}
+        const { id } = cptCodes || {}
 
-        code && setValue('code', setCTPCode(code, code, description || '', shortDescription || '', longDescription || ''))
-        modifier && setValue('modifier', modifier)
+        code && id && setValue('code', setCTPCode(id, code, description || '', shortDescription || '', longDescription || ''))
+        modifier && setValue('modifier', setRecord(modifier, modifier))
         serviceFee && setValue('serviceFee', serviceFee)
         description && setValue('description', description)
+        revenueCode && setValue('revenueCode', revenueCode)
         longDescription && setValue('longDescription', longDescription)
         shortDescription && setValue('shortDescription', shortDescription)
       }
@@ -91,16 +93,17 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
   })
 
   const submitHandler = async (values: CreateCptFeeSchedule) => {
-    const { code, description, longDescription, modifier, shortDescription, serviceFee, revenueCode } = values;
-    const { id: cptCodesId, name } = code
+    const { code, description, longDescription, modifier: selectModifier, shortDescription, serviceFee, revenueCode } = values;
+    const { id: cptCodesId, name } = code;
+    const { id: modifier } = selectModifier || {}
 
     try {
       if (isEdit && getFeeId) {
         updateCptFeeSchedule({
           variables: {
             updateCptFeeScheduleInput: {
-              code: name, description, longDescription, modifier,
-              shortDescription, serviceFee, id: getFeeId, feeScheduleId, cptCodesId, revenueCode
+              code: name, description, longDescription, modifier, shortDescription, serviceFee, id: getFeeId,
+              feeScheduleId, cptCodesId, revenueCode
             }
           }
         })
@@ -109,8 +112,8 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         await createCptFeeSchedule({
           variables: {
             createCptFeeScheduleInput: {
-              cptCodesId, code: name, description, longDescription, modifier, shortDescription, serviceFee, feeScheduleId,
-              revenueCode
+              cptCodesId, code: name, description, longDescription, modifier, shortDescription, serviceFee,
+              feeScheduleId, revenueCode
             }
           }
         })
@@ -164,10 +167,10 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="modifier"
-                      controllerLabel={MODIFIER}
+                    <ModifierSelector
+                      addEmpty
+                      name="modifier"
+                      label={MODIFIER}
                     />
                   </Grid>
                 </Grid>

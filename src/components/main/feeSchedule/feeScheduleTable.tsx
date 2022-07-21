@@ -22,7 +22,7 @@ import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from ".
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
 import {
   ACTION, EFFECTIVE_DATE, EXPIRY_DATE, PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT, DELETE_FEE_SCHEDULE_DESCRIPTION,
-  CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE
+  CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE, TOTAL_CODES
 } from "../../../constants";
 
 const FeeTable: FC = (): JSX.Element => {
@@ -185,6 +185,7 @@ const FeeTable: FC = (): JSX.Element => {
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(PRACTICE)}
+                {renderTh(TOTAL_CODES)}
                 {renderTh(EFFECTIVE_DATE)}
                 {renderTh(EXPIRY_DATE)}
                 {renderTh(ACTION, "center")}
@@ -199,12 +200,14 @@ const FeeTable: FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ) : feeSchedules?.map((item) => {
-                const { effectiveDate, expiryDate, id, name, practice } = item || {};
+
+                const { effectiveDate, expiryDate, id, name, practice, cptFeeScheduleCount } = item || {};
                 const { name: practiceName } = practice || {}
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">{practiceName}</TableCell>
+                    <TableCell scope="row">{cptFeeScheduleCount}</TableCell>
                     <TableCell scope="row">{effectiveDate ? getFeeScheduleDate(effectiveDate) : ''}</TableCell>
                     <TableCell scope="row">{expiryDate ? getFeeScheduleDate(expiryDate) : ''}</TableCell>
                     <TableCell scope="row">

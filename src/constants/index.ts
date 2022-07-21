@@ -700,6 +700,7 @@ export const ERROR = "error";
 export const UNITS = "Units";
 export const RESET = "Reset";
 export const MODIFIER = "Modifier";
+export const TOTAL_CODES = "Total codes";
 export const EFFECTIVE_DATE = "Effective Date";
 export const CHARGE_DOLLAR = "Charge ($)";
 export const SSN_INPUT = "ssn";

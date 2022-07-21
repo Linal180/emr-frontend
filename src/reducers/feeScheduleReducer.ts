@@ -10,6 +10,7 @@ export interface State {
   searchQuery: string;
   drawerOpened: boolean;
   getFeeSchedule: boolean;
+  feeScheduleName: string;
   feeSchedules: AllFeeSchedulesPayload['feeSchedules'];
   cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules'];
 }
@@ -26,6 +27,7 @@ export const initialState: State = {
   drawerOpened: false,
   cptFeeSchedules: [],
   getFeeSchedule: true,
+  feeScheduleName: ''
 }
 
 export enum ActionType {
@@ -40,6 +42,7 @@ export enum ActionType {
   SET_FEE_SCHEDULES = 'setFeeSchedules',
   SET_FEE_SCHEDULE_GET = 'setGetFeeSchedule',
   SET_CPT_FEE_SCHEDULES = 'setCptFeeSchedules',
+  SET_FEE_SCHEDULE_NAME = 'setFeeScheduleName',
 }
 
 export type Action =
@@ -52,6 +55,7 @@ export type Action =
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_FEE_SCHEDULE_GET; getFeeSchedule: boolean }
+  | { type: ActionType.SET_FEE_SCHEDULE_NAME; feeScheduleName: string }
   | { type: ActionType.SET_FEE_SCHEDULES; feeSchedules: AllFeeSchedulesPayload['feeSchedules']; }
   | { type: ActionType.SET_CPT_FEE_SCHEDULES; cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules']; }
 
@@ -122,6 +126,12 @@ export const feeScheduleReducer = (state: State, action: Action): State => {
       return {
         ...state,
         cptFeeSchedules: action.cptFeeSchedules
+      }
+
+    case ActionType.SET_FEE_SCHEDULE_NAME:
+      return {
+        ...state,
+        feeScheduleName: action.feeScheduleName
       }
 
   }

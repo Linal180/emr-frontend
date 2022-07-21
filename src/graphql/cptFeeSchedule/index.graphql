@@ -41,6 +41,10 @@ query GetCptFeeSchedule($getCptFeeScheduleInput: GetCptFeeScheduleInput!) {
       longDescription
       serviceFee
       revenueCode
+
+      cptCodes {
+        id
+      }
     }
   }
 }
