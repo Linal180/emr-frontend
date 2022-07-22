@@ -1789,12 +1789,6 @@ export type FindAllModifierInput = {
   searchQuery?: Maybe<Scalars['String']>;
 };
 
-export type FindFeeScheduleCptCodesInput = {
-  paginationOptions: PaginationInput;
-  practiceId?: Maybe<Scalars['String']>;
-  searchString?: Maybe<Scalars['String']>;
-};
-
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -1963,6 +1957,11 @@ export type GetDoctorSchedule = {
 
 export type GetFacility = {
   id: Scalars['String'];
+};
+
+export type GetFacilityPatientsInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
 };
 
 export type GetFacilitySchedule = {
@@ -4009,7 +4008,6 @@ export type Query = {
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
   findClaimStatus: ClaimStatusPayload;
-  findFeeScheduleCPTCodes: AllFeeSchedulesPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
@@ -4032,6 +4030,7 @@ export type Query = {
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
+  getFacilityPatients: PatientsPayload;
   getFacilitySchedule: SchedulesPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
@@ -4316,11 +4315,6 @@ export type QueryFindClaimStatusArgs = {
 };
 
 
-export type QueryFindFeeScheduleCptCodesArgs = {
-  findFeeScheduleCPTCodesInput: FindFeeScheduleCptCodesInput;
-};
-
-
 export type QueryFindLabTestsByOrderNumArgs = {
   labTestByOrderNumInput: LabTestByOrderNumInput;
 };
@@ -4418,6 +4412,11 @@ export type QueryGetDoctorScheduleArgs = {
 
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
+};
+
+
+export type QueryGetFacilityPatientsArgs = {
+  getFacilityPatientsInput: GetFacilityPatientsInput;
 };
 
 
@@ -4631,27 +4630,32 @@ export enum RelationshipType {
   Child = 'CHILD',
   ChildFatherInsurance = 'CHILD_FATHER_INSURANCE',
   ChildMotherInsurance = 'CHILD_MOTHER_INSURANCE',
+  Cousin = 'COUSIN',
   DependentOfMinorDependent = 'DEPENDENT_OF_MINOR_DEPENDENT',
   EmancipatedMinor = 'EMANCIPATED_MINOR',
   Employee = 'EMPLOYEE',
   Father = 'FATHER',
-  FostherChild = 'FOSTHER_CHILD',
+  FosterChild = 'FOSTER_CHILD',
+  Friend = 'FRIEND',
   Grandchild = 'GRANDCHILD',
   Grandparent = 'GRANDPARENT',
+  Guardian = 'GUARDIAN',
   HandicappedDependent = 'HANDICAPPED_DEPENDENT',
-  InjuredPlaintiiff = 'INJURED_PLAINTIIFF',
+  InjuredPlaintiff = 'INJURED_PLAINTIFF',
   LifePartner = 'LIFE_PARTNER',
   Mother = 'MOTHER',
   NephewNiece = 'NEPHEW_NIECE',
   OrganDonor = 'ORGAN_DONOR',
   Other = 'OTHER',
+  Parent = 'PARENT',
   Self = 'SELF',
+  Sibling = 'SIBLING',
   SignificantOther = 'SIGNIFICANT_OTHER',
   SponsoredDependent = 'SPONSORED_DEPENDENT',
   Spouse = 'SPOUSE',
   StepsonStepdaughter = 'STEPSON_STEPDAUGHTER',
-  StepsonStepdaughterStepfatherInsrtance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE',
-  StepsonStepdaughterStepmotherInsrtance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE',
+  StepsonStepdaughterStepfatherInsurance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE',
+  StepsonStepdaughterStepmotherInsurance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE',
   Unknown = 'UNKNOWN',
   Ward = 'WARD'
 }
@@ -6605,13 +6609,6 @@ export type FindAllDoctorListQueryVariables = Exact<{
 
 export type FindAllDoctorListQuery = { __typename?: 'Query', findAllDoctor: { __typename?: 'AllDoctorPayload', doctors?: Array<{ __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null } };
 
-export type FetchAllPatientListQueryVariables = Exact<{
-  patientInput: PatientInput;
-}>;
-
-
-export type FetchAllPatientListQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, patients?: Array<{ __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null } | null> | null } };
-
 export type FindAllPatientListQueryVariables = Exact<{
   patientInput: PatientInput;
 }>;
@@ -6632,6 +6629,20 @@ export type GetCurrentFacilityQueryVariables = Exact<{
 
 
 export type GetCurrentFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string } | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type FindAllStaffListQueryVariables = Exact<{
+  staffInput: StaffInput;
+}>;
+
+
+export type FindAllStaffListQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null, response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
+
+export type FindAllAppointmentListQueryVariables = Exact<{
+  appointmentInput: AppointmentInput;
+}>;
+
+
+export type FindAllAppointmentListQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null } };
 
 export type FindAllCptCodesQueryVariables = Exact<{
   findAllCptCodesInput: FindAllCptCodesInput;
@@ -6680,7 +6691,7 @@ export type FindAllDoctorPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllDoctorPatientQuery = { __typename?: 'Query', findAllDoctorPatients: { __typename?: 'DoctorPatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, dob?: string | null, profileAttachment?: string | null } | null } | null> | null } };
+export type FindAllDoctorPatientQuery = { __typename?: 'Query', findAllDoctorPatients: { __typename?: 'DoctorPatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, totalCount?: number | null } | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, dob?: string | null, profileAttachment?: string | null } | null } | null> | null } };
 
 export type FindAllDoctorUpcomingAppointmentsQueryVariables = Exact<{
   upComingAppointmentsInput: UpComingAppointmentsInput;
@@ -10649,48 +10660,6 @@ export function useFindAllDoctorListLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindAllDoctorListQueryHookResult = ReturnType<typeof useFindAllDoctorListQuery>;
 export type FindAllDoctorListLazyQueryHookResult = ReturnType<typeof useFindAllDoctorListLazyQuery>;
 export type FindAllDoctorListQueryResult = Apollo.QueryResult<FindAllDoctorListQuery, FindAllDoctorListQueryVariables>;
-export const FetchAllPatientListDocument = gql`
-    query FetchAllPatientList($patientInput: PatientInput!) {
-  fetchAllPatients(patientInput: $patientInput) {
-    pagination {
-      totalPages
-    }
-    patients {
-      id
-      lastName
-      firstName
-    }
-  }
-}
-    `;
-
-/**
- * __useFetchAllPatientListQuery__
- *
- * To run a query within a React component, call `useFetchAllPatientListQuery` and pass it any options that fit your needs.
- * When your component renders, `useFetchAllPatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFetchAllPatientListQuery({
- *   variables: {
- *      patientInput: // value for 'patientInput'
- *   },
- * });
- */
-export function useFetchAllPatientListQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
-      }
-export function useFetchAllPatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
-        }
-export type FetchAllPatientListQueryHookResult = ReturnType<typeof useFetchAllPatientListQuery>;
-export type FetchAllPatientListLazyQueryHookResult = ReturnType<typeof useFetchAllPatientListLazyQuery>;
-export type FetchAllPatientListQueryResult = Apollo.QueryResult<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>;
 export const FindAllPatientListDocument = gql`
     query FindAllPatientList($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
@@ -10817,6 +10786,83 @@ export function useGetCurrentFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetCurrentFacilityQueryHookResult = ReturnType<typeof useGetCurrentFacilityQuery>;
 export type GetCurrentFacilityLazyQueryHookResult = ReturnType<typeof useGetCurrentFacilityLazyQuery>;
 export type GetCurrentFacilityQueryResult = Apollo.QueryResult<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>;
+export const FindAllStaffListDocument = gql`
+    query FindAllStaffList($staffInput: StaffInput!) {
+  findAllStaff(staffInput: $staffInput) {
+    pagination {
+      totalCount
+    }
+    response {
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllStaffListQuery__
+ *
+ * To run a query within a React component, call `useFindAllStaffListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllStaffListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllStaffListQuery({
+ *   variables: {
+ *      staffInput: // value for 'staffInput'
+ *   },
+ * });
+ */
+export function useFindAllStaffListQuery(baseOptions: Apollo.QueryHookOptions<FindAllStaffListQuery, FindAllStaffListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllStaffListQuery, FindAllStaffListQueryVariables>(FindAllStaffListDocument, options);
+      }
+export function useFindAllStaffListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllStaffListQuery, FindAllStaffListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllStaffListQuery, FindAllStaffListQueryVariables>(FindAllStaffListDocument, options);
+        }
+export type FindAllStaffListQueryHookResult = ReturnType<typeof useFindAllStaffListQuery>;
+export type FindAllStaffListLazyQueryHookResult = ReturnType<typeof useFindAllStaffListLazyQuery>;
+export type FindAllStaffListQueryResult = Apollo.QueryResult<FindAllStaffListQuery, FindAllStaffListQueryVariables>;
+export const FindAllAppointmentListDocument = gql`
+    query FindAllAppointmentList($appointmentInput: AppointmentInput!) {
+  findAllAppointments(appointmentInput: $appointmentInput) {
+    pagination {
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllAppointmentListQuery__
+ *
+ * To run a query within a React component, call `useFindAllAppointmentListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllAppointmentListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllAppointmentListQuery({
+ *   variables: {
+ *      appointmentInput: // value for 'appointmentInput'
+ *   },
+ * });
+ */
+export function useFindAllAppointmentListQuery(baseOptions: Apollo.QueryHookOptions<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>(FindAllAppointmentListDocument, options);
+      }
+export function useFindAllAppointmentListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>(FindAllAppointmentListDocument, options);
+        }
+export type FindAllAppointmentListQueryHookResult = ReturnType<typeof useFindAllAppointmentListQuery>;
+export type FindAllAppointmentListLazyQueryHookResult = ReturnType<typeof useFindAllAppointmentListLazyQuery>;
+export type FindAllAppointmentListQueryResult = Apollo.QueryResult<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>;
 export const FindAllCptCodesDocument = gql`
     query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
   findAllCptCodes(findAllCptCodesInput: $findAllCptCodesInput) {
@@ -11096,6 +11142,7 @@ export const FindAllDoctorPatientDocument = gql`
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
     pagination {
       totalPages
+      totalCount
     }
     doctorPatients {
       patient {

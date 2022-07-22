@@ -14,7 +14,7 @@ import {
   DoctorPatientsPayload, useFindAllDoctorPatientLazyQuery,
 } from "../../../generated/graphql";
 
-const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element => {
+const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId, setPatientCount }): JSX.Element => {
   const [doctorPatients, setDoctorPatients] = useState<DoctorPatientsPayload['doctorPatients']>([])
 
   const [fetchAllPatientsQuery, { loading }] = useFindAllDoctorPatientLazyQuery({
@@ -29,7 +29,13 @@ const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element =>
       const { findAllDoctorPatients } = data || {};
 
       if (findAllDoctorPatients) {
-        const { doctorPatients } = findAllDoctorPatients
+        const { doctorPatients, pagination } = findAllDoctorPatients
+
+        if(pagination){
+          const {totalCount} = pagination
+          setPatientCount && setPatientCount(totalCount || 0)
+        }
+
         doctorPatients && setDoctorPatients(doctorPatients as DoctorPatientsPayload['doctorPatients'])
       }
     }

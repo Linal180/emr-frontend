@@ -2,10 +2,10 @@ query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
     pagination {
       totalPages
+      totalCount
     }
 
     doctorPatients{
-
       patient {
         id
         lastName

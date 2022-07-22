@@ -16,18 +16,20 @@ import Alert from "../../common/Alert";
 import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE } from "../../../theme";
-import { useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
-  CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon, StaffWhiteIcon,
-  UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
+  AppointmentStatus, useFindAllAppointmentListLazyQuery, useFindAllDoctorListLazyQuery,
+  useFindAllStaffListLazyQuery
+} from "../../../generated/graphql";
+import {
+  CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon,
+  StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
 } from "../../../assets/svgs";
 import {
-  QUICK_ACTIONS, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE,
-  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
-  AVAILABLE_USERS_IN_CURRENT_SHIFT, NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS,
-  TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS,
-  RECENTLY_ADDED_PATIENTS, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
-  VIEW_APPOINTMENTS_ROUTE,
+  QUICK_ACTIONS, FACILITIES_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, ACTIVE_STAFF,
+  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, TOTAL_NUMBER_OF_USERS, NEW_APPOINTMENT, NEW_PROVIDER,
+  TOTAL_APPOINTMENTS, AVAILABLE_USERS, NEW_STAFF, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS,
+  AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS, RECENTLY_ADDED_PATIENTS,
+  DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
 
 const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
@@ -37,7 +39,14 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
 
   const { id: facilityId } = facility || {}
   const [appointmentCount, setAppointmentCount] = useState<number>(0)
+  const [todayAppointment, setTodayAppointment] = useState<number>(0)
+
+  const [dischargedAppointment, setDischargedAppointment] = useState<number>(0)
   const [providerCount, setProviderCount] = useState<number>(0)
+  const [staffCount, setStaffCount] = useState<number>(0)
+
+  const [patientCount, setPatientCount] = useState<number>(0)
+  const totalUsers = patientCount + staffCount + providerCount
 
   const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -57,6 +66,47 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
     }
   });
 
+  const [findAllStaff] = useFindAllStaffListLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      setStaffCount(0)
+    },
+
+    onCompleted(data) {
+      const { findAllStaff } = data || {};
+
+      if (findAllStaff) {
+        const { pagination } = findAllStaff
+
+        if (pagination) {
+          const { totalCount } = pagination
+          setStaffCount(totalCount || 0)
+        }
+      }
+    }
+  });
+
+  const [findAllAppointments] = useFindAllAppointmentListLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const fetchAllStaff = useCallback(async () => {
+    try {
+      const pageInputs = { paginationOptions: { page: 1, limit: 1 } }
+      const staffInputs = { ...pageInputs, facilityId }
+
+      staffInputs && await findAllStaff({
+        variables: {
+          staffInput: { ...staffInputs, searchString: '' }
+        }
+      })
+    } catch (error) { }
+  }, [facilityId, findAllStaff]);
+
   const fetchAllDoctors = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: 50 } }
@@ -71,9 +121,63 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
     } catch (error) { }
   }, [facilityId, findAllDoctor])
 
+  const fetchAppointments = useCallback(async () => {
+    try {
+      const pageInputs = { paginationOptions: { page: 1, limit: 1 } }
+
+      if (facilityId) {
+        const { data } = await findAllAppointments({
+          variables: {
+            appointmentInput: {
+              ...pageInputs, searchString: '', facilityId
+            }
+          },
+        })
+
+        if (data) {
+          const { findAllAppointments } = data || {};
+
+          if (findAllAppointments) {
+            const { pagination } = findAllAppointments
+
+            if (pagination) {
+              const { totalCount } = pagination
+
+              setAppointmentCount(totalCount || 0)
+            }
+          }
+        }
+
+        const { data: discharged } = await findAllAppointments({
+          variables: {
+            appointmentInput: {
+              ...pageInputs, searchString: '', facilityId, appointmentStatus: 'discharged' as AppointmentStatus
+            }
+          },
+        })
+
+        if (discharged) {
+          const { findAllAppointments } = discharged || {};
+
+          if (findAllAppointments) {
+            const { pagination } = findAllAppointments
+
+            if (pagination) {
+              const { totalCount } = pagination
+
+              setDischargedAppointment(totalCount || 0)
+            }
+          }
+        }
+      } else Alert.error(SOMETHING_WENT_WRONG)
+    } catch (error) { }
+  }, [facilityId, findAllAppointments])
+
   useEffect(() => {
-      fetchAllDoctors()
-  }, [fetchAllDoctors]);
+    fetchAllDoctors()
+    fetchAllStaff()
+    fetchAppointments()
+  }, [fetchAllDoctors, fetchAllStaff, fetchAppointments]);
 
   return (
     <>
@@ -86,7 +190,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box p={3} bgcolor={BLUE_SEVEN} borderRadius={8}>
                 <CalendarWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">{appointmentCount}</Typography>
+                <Typography variant="h3" className="whiteColor">{todayAppointment}</Typography>
                 <Typography variant="body2" className="whiteColor">{TODAYS_APPOINTMENTS}</Typography>
               </Box>
             </Grid>
@@ -104,8 +208,8 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box p={3} bgcolor={PURPLE_ONE} borderRadius={8}>
                 <StaffWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">40</Typography>
-                <Typography variant="body2" className="whiteColor">{ACTIVE_STAFF_IN_CURRENT_SHIFT}</Typography>
+                <Typography variant="h3" className="whiteColor">{staffCount}</Typography>
+                <Typography variant="body2" className="whiteColor">{ACTIVE_STAFF}</Typography>
               </Box>
             </Grid>
           </Grid>
@@ -124,7 +228,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                 </Link>
               </Box>
 
-              <UpcomingAppointments setCount={setAppointmentCount} />
+              <UpcomingAppointments setCount={setTodayAppointment} />
             </Box>
           </Card>
 
@@ -144,7 +248,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                     </Link>
                   </Box>
 
-                  <DoctorPatients />
+                  <DoctorPatients setPatientCount={setPatientCount} />
                 </Box>
               </Card>
             </Grid>
@@ -157,6 +261,53 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
 
         <Grid item md={4} sm={12} xs={12}>
           <Card>
+            <Box p={2} />
+            <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>
+              <Box>
+                <Typography variant="h5">{PATIENT_DISCHARGED}</Typography>
+
+                <Box p={0.5} />
+
+                <Typography variant="body2">{AGAINST_TOTAL_APPOINTMENTS}</Typography>
+              </Box>
+            </Box>
+
+            <PieChart4Component />
+
+            <Box px={4} pb={2} display='flex' alignItems='center'>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Box display='flex'>
+                    <CalendarBlackIcon />
+
+                    <Box ml={2}>
+                      <Typography variant="h5">{appointmentCount}</Typography>
+
+                      <Box mt={0.5} color={GREEN_ONE}>
+                        <Typography variant="inherit">{TOTAL_APPOINTMENTS}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <Box display='flex'>
+                    <UserBlackIconTwo />
+
+                    <Box ml={2}>
+                      <Typography variant="h5">{dischargedAppointment}</Typography>
+
+                      <Box mt={0.5} color={BLUE_SEVEN}>
+                        <Typography variant="inherit">{TOTAL_DISCHARGED_PATIENTS}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Card>
+
+          <Card>
             <Box p={3}>
               <Grid container spacing={3}>
                 <Grid item md={8} sm={12} xs={12}>
@@ -164,7 +315,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                     <UserOutlinedIcon />
 
                     <Box ml={2}>
-                      <Typography variant="h5">132</Typography>
+                      <Typography variant="h5">{totalUsers}</Typography>
 
                       <Box mt={0.5} color={GREEN_ONE}>
                         <Typography variant="inherit">{TOTAL_NUMBER_OF_USERS}</Typography>
@@ -176,10 +327,10 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                     <PracticeActiveIcon />
 
                     <Box ml={2}>
-                      <Typography variant="h5">70</Typography>
+                      <Typography variant="h5">{totalUsers - 1}</Typography>
 
                       <Box mt={0.5} color={BLUE_SEVEN}>
-                        <Typography variant="inherit">{AVAILABLE_USERS_IN_CURRENT_SHIFT}</Typography>
+                        <Typography variant="inherit">{AVAILABLE_USERS}</Typography>
                       </Box>
                     </Box>
                   </Box>
@@ -241,7 +392,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                   <Grid container spacing={3} justifyContent="center">
                     <Grid item md={4} sm={12} xs={12}>
                       <Link to={`${DOCTORS_ROUTE}/new`}>
-                        <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
+                        <Box className={classes.cardBox}>
                           <UserBlackIcon />
 
                           <Box p={0.7} />
@@ -255,7 +406,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
 
                     <Grid item md={4} sm={12} xs={12}>
                       <Link to={`${STAFF_ROUTE}/new`}>
-                        <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
+                        <Box className={classes.cardBox}>
                           <UserBlackIcon />
 
                           <Box p={0.2} />
@@ -265,54 +416,6 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                       </Link>
                     </Grid>
                   </Grid>
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-
-          <Box p={2} />
-
-          <Card>
-            <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Box>
-                <Typography variant="h5">{PATIENT_DISCHARGED}</Typography>
-
-                <Box p={0.5} />
-
-                <Typography variant="body2">{AGAINST_TOTAL_APPOINTMENTS}</Typography>
-              </Box>
-            </Box>
-
-            <PieChart4Component />
-
-            <Box px={4} pb={2} display='flex' alignItems='center'>
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <CalendarBlackIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">24</Typography>
-
-                      <Box mt={0.5} color={GREEN_ONE}>
-                        <Typography variant="inherit">{TOTAL_APPOINTMENTS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <UserBlackIconTwo />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">3</Typography>
-
-                      <Box mt={0.5} color={BLUE_SEVEN}>
-                        <Typography variant="inherit">{TOTAL_DISCHARGED_PATIENTS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
                 </Grid>
               </Grid>
             </Box>

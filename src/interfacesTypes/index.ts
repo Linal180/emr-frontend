@@ -1938,6 +1938,7 @@ export interface StepContextProps {
 export interface DoctorPatientsProps {
   providerId?: string;
   facilityId?: string;
+  setPatientCount?: Function;
 }
 
 export interface StageStatusType {
