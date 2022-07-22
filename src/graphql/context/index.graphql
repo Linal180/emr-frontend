@@ -108,3 +108,15 @@ query GetCurrentFacility($getFacility: GetFacility!){
     }
   }
 }
+
+query FindAllStaffList($staffInput: StaffInput!) {
+  findAllStaff(staffInput: $staffInput) {
+    pagination {
+      totalCount
+    }
+
+    response {
+      status
+    }
+  }
+}

@@ -2015,6 +2015,7 @@ export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId' | 'cpt
 export interface DoctorAppointmentsAndPatientsProps {
   patientId?: string;
   providerId?: string;
+  setCount?: Function;
 }
 
 export interface FeeScheduleFormProps {

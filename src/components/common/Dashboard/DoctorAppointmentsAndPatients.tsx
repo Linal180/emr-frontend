@@ -18,7 +18,7 @@ import {
 } from "../../../generated/graphql";
 
 const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
-  patientId, providerId
+  patientId, providerId, setCount
 }): JSX.Element => {
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
@@ -36,18 +36,20 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
 
       if (findAllUpcomingAppointments) {
         const { appointments } = findAllUpcomingAppointments
-
         const sorted = sortingArray<typeof appointments>(appointments,
           'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
 
+        const todayAppointments = sorted?.filter(appointment =>
+          appointment?.status !== AppointmentStatus.Cancelled
+          && appointment?.status !== AppointmentStatus.NoShow
+          && appointment?.status !== AppointmentStatus.Discharged
+          && isCurrentDay(appointment?.scheduleStartDateTime || '')
+        )
+
+        setCount && setCount(todayAppointments?.length || 0)
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: sorted?.filter(appointment =>
-            appointment?.status !== AppointmentStatus.Cancelled
-            && appointment?.status !== AppointmentStatus.NoShow
-            && appointment?.status !== AppointmentStatus.Discharged
-            && isCurrentDay(appointment?.scheduleStartDateTime || '')
-          ) as AppointmentsPayload['appointments']
+          appointments: todayAppointments as AppointmentsPayload['appointments']
         });
       } else {
         dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
@@ -74,12 +76,12 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
         <>
           {!!appointments && appointments.length > 0 ? (
             appointments.map((appointment) => {
-              const { scheduleStartDateTime, appointmentType, patient } = appointment || {}
+              const { id, scheduleStartDateTime, appointmentType, patient } = appointment || {}
               const { firstName, lastName, profileAttachment } = patient || {}
               const { name } = appointmentType || {}
 
               return (
-                <Box display='flex' justifyContent='space-between' alignItems='start' className="mb-3">
+                <Box key={id} display='flex' justifyContent='space-between' alignItems='start' className="mb-3">
                   <Box display='flex'>
                     <Avatar id={profileAttachment || ''} name={`${firstName} ${lastName}`} />
                     <Box>

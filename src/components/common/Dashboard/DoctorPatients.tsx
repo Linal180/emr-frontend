@@ -10,7 +10,9 @@ import { NoDataIcon } from "../../../assets/svgs";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
 import { DoctorPatientsProps } from '../../../interfacesTypes'
 import { DOB_TEXT, NO_RECORDS, PAGE_LIMIT } from "../../../constants";
-import { DoctorPatientsPayload, useFindAllDoctorPatientLazyQuery, } from "../../../generated/graphql";
+import {
+  DoctorPatientsPayload, useFindAllDoctorPatientLazyQuery,
+} from "../../../generated/graphql";
 
 const DoctorPatients: FC<DoctorPatientsProps> = ({ providerId }): JSX.Element => {
   const [doctorPatients, setDoctorPatients] = useState<DoctorPatientsPayload['doctorPatients']>([])

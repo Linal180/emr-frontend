@@ -1,18 +1,19 @@
 // packages block
-import { FC } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import ScheduleListing from "../../common/scheduling/Listing";
 import PieChart3Component from "../../common/charts/pieChart3";
 import PieChart4Component from "../../common/charts/pieChart4";
+import DoctorPatients from "../../common/Dashboard/DoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs block, styles, history
 import history from "../../../history";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE, GRAY_SEVEN, } from "../../../theme";
+import { BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE } from "../../../theme";
 import {
   CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon, StaffWhiteIcon,
   UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
@@ -20,14 +21,59 @@ import {
 // constant
 import {
   QUICK_ACTIONS, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE,
-  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS_IN_CURRENT_SHIFT, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
+  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
   AVAILABLE_USERS_IN_CURRENT_SHIFT, NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS,
   TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS,
-  RECENTLY_ADDED_PATIENTS, ADDED_PATIENTS_LIST, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE,
+  RECENTLY_ADDED_PATIENTS, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
+import { useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
+import { AuthContext } from "../../../context";
+import Alert from "../../common/Alert";
 
 const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {}
+
+  const { id: facilityId } = facility || {}
+  const [appointmentCount, setAppointmentCount] = useState<number>(0)
+  const [providerCount, setProviderCount] = useState<number>(0)
+
+  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      setProviderCount(0)
+    },
+
+    onCompleted(data) {
+      const { findAllDoctor } = data || {};
+
+      if (findAllDoctor) {
+        const { doctors } = findAllDoctor
+        setProviderCount(doctors?.length || 0)
+      }
+    }
+  });
+
+  const fetchAllDoctors = useCallback(async () => {
+    try {
+      const pageInputs = { paginationOptions: { page: 1, limit: 50 } }
+
+      facilityId ? await findAllDoctor({
+        variables: {
+          doctorInput: {
+            doctorFirstName: '', facilityId: facilityId, ...pageInputs
+          }
+        }
+      }) : Alert.error(SOMETHING_WENT_WRONG)
+    } catch (error) { }
+  }, [facilityId, findAllDoctor])
+
+  useEffect(() => {
+      fetchAllDoctors()
+  }, [fetchAllDoctors]);
 
   return (
     <>
@@ -40,7 +86,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box p={3} bgcolor={BLUE_SEVEN} borderRadius={8}>
                 <CalendarWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">33</Typography>
+                <Typography variant="h3" className="whiteColor">{appointmentCount}</Typography>
                 <Typography variant="body2" className="whiteColor">{TODAYS_APPOINTMENTS}</Typography>
               </Box>
             </Grid>
@@ -49,8 +95,8 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box p={3} bgcolor={GREEN} borderRadius={8}>
                 <ProviderWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">30</Typography>
-                <Typography variant="body2" className="whiteColor">{ACTIVE_PROVIDERS_IN_CURRENT_SHIFT}</Typography>
+                <Typography variant="h3" className="whiteColor">{providerCount}</Typography>
+                <Typography variant="body2" className="whiteColor">{ACTIVE_PROVIDERS}</Typography>
               </Box>
             </Grid>
 
@@ -71,12 +117,14 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{UPCOMING_APPOINTMENTS}</Typography>
 
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
+                <Link to={APPOINTMENTS_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
               </Box>
 
-              <UpcomingAppointments />
+              <UpcomingAppointments setCount={setAppointmentCount} />
             </Box>
           </Card>
 
@@ -89,38 +137,14 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                   <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                     <Typography variant="h5">{RECENTLY_ADDED_PATIENTS}</Typography>
 
-                    <IconButton>
-                      <RedirectIcon />
-                    </IconButton>
+                    <Link to={PATIENTS_ROUTE}>
+                      <IconButton>
+                        <RedirectIcon />
+                      </IconButton>
+                    </Link>
                   </Box>
 
-                  <Box>
-                    {ADDED_PATIENTS_LIST.map((item) => {
-                      return (
-                        <Box mb={3} display='flex' justifyContent='space-between' alignItems='start'>
-                          <Box display='flex'>
-                            <Box
-                              bgcolor={!item.imageUrl && BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2}
-                              display="flex" justifyContent="center" alignItems="center"
-                            >
-                              {
-                                item.imageUrl ? <img src={item.imageUrl} alt={item.shortName} />
-                                  : <Typography variant="h6">{item.shortName}</Typography>
-                              }
-                            </Box>
-
-                            <Box>
-                              <Typography variant="body1">{item.fullName}</Typography>
-
-                              <Box color={GRAY_SEVEN}>
-                                <Typography variant="body1">DOB: {item.dob}</Typography>
-                              </Box>
-                            </Box>
-                          </Box>
-                        </Box>
-                      )
-                    })}
-                  </Box>
+                  <DoctorPatients />
                 </Box>
               </Card>
             </Grid>
