@@ -6,6 +6,7 @@ import CardComponent from "../../../common/CardComponent"
 //constants, interfaces, reducer imports
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
+import { useExternalPatientStyles } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
 import {
   CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT,
   MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
@@ -15,14 +16,16 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
   state, dispatch, shouldDisableEdit, disableSubmit, isEdit
 }) => {
   const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
+  const classes = useExternalPatientStyles()
 
   return (
     <CardComponent cardTitle={PRIVACY} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
       <Grid item md={12} sm={12} xs={12}>
         <FormControl component="fieldset">
-          <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
-          <FormGroup>
+          <FormLabel className={classes.privacyLabelHeader} component="li">{NOTICE_ON_FILE}</FormLabel>
+          <FormGroup className={classes.privacyFormGroup}>
             <FormControlLabel
+              className={classes.privacyLabelDescription}
               control={
                 <Checkbox
                   disabled={shouldDisableEdit}
@@ -35,6 +38,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
             />
 
             <FormControlLabel
+              className={classes.privacyLabelDescription}
               control={
                 <Checkbox
                   disabled={shouldDisableEdit}
@@ -48,12 +52,13 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
           </FormGroup>
         </FormControl>
 
-        <Box display="flex" flexDirection="row">
+        <Box>
           <FormControl component="fieldset">
             <FormGroup>
               <Box mr={3} mb={2} mt={2}>
-                <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENT_TO_CALL}</FormLabel>
                 <FormControlLabel
+                  className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
@@ -67,12 +72,15 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
               </Box>
             </FormGroup>
           </FormControl>
+          </Box>
 
+          <Box>
           <FormControl component="fieldset">
             <FormGroup>
-              <Box ml={3} mt={2} mb={2}>
-                <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
+              <Box>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
                 <FormControlLabel
+                  className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
@@ -92,8 +100,9 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
           <FormControl component="fieldset">
             <FormGroup>
               <Box mr={3} mb={2} mt={2}>
-                <FormLabel component="legend">{CONSENT_TO_MESSAGES}</FormLabel>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENT_TO_MESSAGES}</FormLabel>
                 <FormControlLabel
+                  className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
