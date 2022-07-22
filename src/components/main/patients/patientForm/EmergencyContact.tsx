@@ -10,7 +10,7 @@ import ViewDataLoader from "../../../common/ViewDataLoader"
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  EMERGENCY_CONTACT, HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP
+  EMERGENCY_CONTACT, HOME_PHONE, MAPPED_CONTACT_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP
 } from "../../../../constants"
 
 const EmergencyContactCard: FC<PatientCardsProps> = ({
@@ -44,7 +44,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
                 disabled={shouldDisableEdit}
                 name="emergencyRelationship"
                 loading={getPatientLoading}
-                options={MAPPED_RELATIONSHIP_TYPE}
+                options={MAPPED_CONTACT_RELATIONSHIP_TYPE}
               />
             </Grid>
 

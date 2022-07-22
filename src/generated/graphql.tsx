@@ -1789,12 +1789,6 @@ export type FindAllModifierInput = {
   searchQuery?: Maybe<Scalars['String']>;
 };
 
-export type FindFeeScheduleCptCodesInput = {
-  paginationOptions: PaginationInput;
-  practiceId?: Maybe<Scalars['String']>;
-  searchString?: Maybe<Scalars['String']>;
-};
-
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -1963,6 +1957,11 @@ export type GetDoctorSchedule = {
 
 export type GetFacility = {
   id: Scalars['String'];
+};
+
+export type GetFacilityPatientsInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
 };
 
 export type GetFacilitySchedule = {
@@ -4009,7 +4008,6 @@ export type Query = {
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
   findClaimStatus: ClaimStatusPayload;
-  findFeeScheduleCPTCodes: AllFeeSchedulesPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
@@ -4032,6 +4030,7 @@ export type Query = {
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
+  getFacilityPatients: PatientsPayload;
   getFacilitySchedule: SchedulesPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
@@ -4316,11 +4315,6 @@ export type QueryFindClaimStatusArgs = {
 };
 
 
-export type QueryFindFeeScheduleCptCodesArgs = {
-  findFeeScheduleCPTCodesInput: FindFeeScheduleCptCodesInput;
-};
-
-
 export type QueryFindLabTestsByOrderNumArgs = {
   labTestByOrderNumInput: LabTestByOrderNumInput;
 };
@@ -4418,6 +4412,11 @@ export type QueryGetDoctorScheduleArgs = {
 
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
+};
+
+
+export type QueryGetFacilityPatientsArgs = {
+  getFacilityPatientsInput: GetFacilityPatientsInput;
 };
 
 
@@ -4631,27 +4630,32 @@ export enum RelationshipType {
   Child = 'CHILD',
   ChildFatherInsurance = 'CHILD_FATHER_INSURANCE',
   ChildMotherInsurance = 'CHILD_MOTHER_INSURANCE',
+  Cousin = 'COUSIN',
   DependentOfMinorDependent = 'DEPENDENT_OF_MINOR_DEPENDENT',
   EmancipatedMinor = 'EMANCIPATED_MINOR',
   Employee = 'EMPLOYEE',
   Father = 'FATHER',
-  FostherChild = 'FOSTHER_CHILD',
+  FosterChild = 'FOSTER_CHILD',
+  Friend = 'FRIEND',
   Grandchild = 'GRANDCHILD',
   Grandparent = 'GRANDPARENT',
+  Guardian = 'GUARDIAN',
   HandicappedDependent = 'HANDICAPPED_DEPENDENT',
-  InjuredPlaintiiff = 'INJURED_PLAINTIIFF',
+  InjuredPlaintiff = 'INJURED_PLAINTIFF',
   LifePartner = 'LIFE_PARTNER',
   Mother = 'MOTHER',
   NephewNiece = 'NEPHEW_NIECE',
   OrganDonor = 'ORGAN_DONOR',
   Other = 'OTHER',
+  Parent = 'PARENT',
   Self = 'SELF',
+  Sibling = 'SIBLING',
   SignificantOther = 'SIGNIFICANT_OTHER',
   SponsoredDependent = 'SPONSORED_DEPENDENT',
   Spouse = 'SPOUSE',
   StepsonStepdaughter = 'STEPSON_STEPDAUGHTER',
-  StepsonStepdaughterStepfatherInsrtance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE',
-  StepsonStepdaughterStepmotherInsrtance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE',
+  StepsonStepdaughterStepfatherInsurance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE',
+  StepsonStepdaughterStepmotherInsurance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE',
   Unknown = 'UNKNOWN',
   Ward = 'WARD'
 }

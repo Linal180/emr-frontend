@@ -9,7 +9,7 @@ import CardComponent from "../../../common/CardComponent"
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  HOME_PHONE, MAPPED_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP
+  HOME_PHONE, MAPPED_CONTACT_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, NEXT_OF_KIN, RELATIONSHIP
 } from "../../../../constants"
 
 const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
@@ -33,7 +33,7 @@ const PatientNextKinCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDi
             name="kinRelationship"
             label={RELATIONSHIP}
             // value={EMPTY_OPTION}
-            options={MAPPED_RELATIONSHIP_TYPE}
+            options={MAPPED_CONTACT_RELATIONSHIP_TYPE}
             loading={getPatientLoading}
           />
         </Grid>

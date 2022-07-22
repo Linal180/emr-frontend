@@ -2122,6 +2122,16 @@ export const MAPPED_COMMUNICATION_METHOD: SelectorOption[] = [
   },
 ];
 
+export const MAPPED_CONTACT_RELATIONSHIP_TYPE: SelectorOption[] = [
+  { id: RelationshipType.Spouse, name: formatValue(RelationshipType.Spouse) },
+  { id: RelationshipType.Parent, name: formatValue(RelationshipType.Parent) },
+  { id: RelationshipType.Child, name: formatValue(RelationshipType.Child) },
+  { id: RelationshipType.Sibling, name: formatValue(RelationshipType.Sibling) },
+  { id: RelationshipType.Friend, name: formatValue(RelationshipType.Friend) },
+  { id: RelationshipType.Cousin, name: formatValue(RelationshipType.Cousin) },
+  { id: RelationshipType.Guardian, name: formatValue(RelationshipType.Guardian) },
+  { id: RelationshipType.Other, name: formatValue(RelationshipType.Other) }]
+
 export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   { id: RelationshipType.Ward, name: formatValue(RelationshipType.Ward) },
   { id: RelationshipType.Self, name: formatValue(RelationshipType.Self) },
@@ -2156,8 +2166,8 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
     name: formatValue(RelationshipType.NephewNiece),
   },
   {
-    id: RelationshipType.FostherChild,
-    name: formatValue(RelationshipType.FostherChild),
+    id: RelationshipType.FosterChild,
+    name: formatValue(RelationshipType.FosterChild),
   },
   {
     id: RelationshipType.CadaverDonor,
@@ -2172,8 +2182,8 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
     name: formatValue(RelationshipType.EmancipatedMinor),
   },
   {
-    id: RelationshipType.InjuredPlaintiiff,
-    name: formatValue(RelationshipType.InjuredPlaintiiff),
+    id: RelationshipType.InjuredPlaintiff,
+    name: formatValue(RelationshipType.InjuredPlaintiff),
   },
   {
     id: RelationshipType.SponsoredDependent,
@@ -2200,12 +2210,12 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
     name: formatValue(RelationshipType.DependentOfMinorDependent),
   },
   {
-    id: RelationshipType.StepsonStepdaughterStepmotherInsrtance,
-    name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance),
+    id: RelationshipType.StepsonStepdaughterStepmotherInsurance,
+    name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsurance),
   },
   {
-    id: RelationshipType.StepsonStepdaughterStepfatherInsrtance,
-    name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance),
+    id: RelationshipType.StepsonStepdaughterStepfatherInsurance,
+    name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsurance),
   },
 ];
 
