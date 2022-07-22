@@ -14,7 +14,7 @@ import {
 import client from "../apollo";
 import history from "../history";
 import {
-  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, Order,
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, ModifiersSelectorOption, multiOptionType, Order,
   SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
@@ -37,7 +37,7 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus, AllCptCodePayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -663,13 +663,32 @@ export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
   if (!!cptCodes) {
     for (let cptCode of cptCodes) {
       if (cptCode) {
-        const { code, description, longDescription, shortDescription } = cptCode;
+        const { id, code, description, longDescription, shortDescription } = cptCode;
         data.push({
-          id: code || '',
+          id: id,
           name: code,
           description,
           longDescription,
           shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderModifiers = (modifiers: AllModifiersPayload['modifiers']) => {
+  const data: ModifiersSelectorOption[] = [];
+
+  if (!!modifiers) {
+    for (let modifier of modifiers) {
+      if (modifier) {
+        const { code, description } = modifier;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
         })
       }
     }

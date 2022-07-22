@@ -33,9 +33,16 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       claimDate
       claimNo
       uncoveredAmount
+      to 
+      from
       facility {
        id
        name
+       
+       practice {
+        id
+        name
+       }
       },
       claimStatus {
        id

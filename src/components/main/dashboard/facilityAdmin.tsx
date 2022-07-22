@@ -10,25 +10,25 @@ import DoctorPatients from "../../common/Dashboard/DoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
-// svgs block, styles, history
+// svgs, styles, nad constant block
 import history from "../../../history";
+import Alert from "../../common/Alert";
+import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE } from "../../../theme";
+import { useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
   CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon, StaffWhiteIcon,
   UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
 } from "../../../assets/svgs";
-// constant
 import {
   QUICK_ACTIONS, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE,
   TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, ACTIVE_STAFF_IN_CURRENT_SHIFT, TOTAL_NUMBER_OF_USERS,
   AVAILABLE_USERS_IN_CURRENT_SHIFT, NEW_STAFF, NEW_PROVIDER, NEW_PATIENT, NEW_APPOINTMENT, TOTAL_APPOINTMENTS,
   TOTAL_DISCHARGED_PATIENTS, AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS,
   RECENTLY_ADDED_PATIENTS, DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
+  VIEW_APPOINTMENTS_ROUTE,
 } from "../../../constants";
-import { useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
-import { AuthContext } from "../../../context";
-import Alert from "../../common/Alert";
 
 const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
@@ -117,7 +117,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{UPCOMING_APPOINTMENTS}</Typography>
 
-                <Link to={APPOINTMENTS_ROUTE}>
+                <Link to={VIEW_APPOINTMENTS_ROUTE}>
                   <IconButton>
                     <RedirectIcon />
                   </IconButton>
@@ -184,6 +184,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                     </Box>
                   </Box>
                 </Grid>
+
                 <Grid item md={4} sm={12} xs={12}>
                   <PieChart3Component />
                 </Grid>
@@ -221,7 +222,6 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                     <Grid item md={4} sm={12} xs={12}>
                       <Link to={`${PATIENTS_ROUTE}/new`}>
                         <Box className={classes.cardBox}>
-
                           <UserBlackIcon />
 
                           <Box p={0.7} />
