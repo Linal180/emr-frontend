@@ -266,8 +266,8 @@ export const getTimestamps = (date: string): string =>
   date ? moment(date).format().toString() : moment().format().toString();
 
 export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
-  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
-  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const currentDate = moment(newDate).format('MM-DD-YYYY')
+  const existingTime = moment(existingDate).format('hh:mm A')
   const date = moment(currentDate + ' ' + existingTime)
   const updateDate = moment(date).format().toString()
   return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
@@ -439,10 +439,7 @@ export const getDateWithDayAndTime = (date: string) =>
 export const isCurrentDay = (date: string) => {
   if (!!!date) return false
 
-  const givenDate = moment(date, "x").format("ddd MMM. DD, YYYY");
-  const now = moment();
-
-  return now.diff(givenDate, 'days') === 0
+  return new Date().getDate().toLocaleString() === new Date(parseInt(date)).getDate().toLocaleString()
 };
 
 export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;

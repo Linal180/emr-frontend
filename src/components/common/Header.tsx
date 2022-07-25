@@ -234,7 +234,9 @@ const Header: FC = (): JSX.Element => {
                   : (
                     <Box maxWidth="200px" textAlign="right">
                       <Box color={BLACK} minWidth='30px'>
-                        <Typography color="inherit" variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        <Box maxWidth={200}>
+                          <Typography variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        </Box>
                         <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
                     </Box>

@@ -527,6 +527,7 @@ export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
+export const CPT_CODE = "CPT Code";
 export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
@@ -1014,12 +1015,12 @@ export const AGAINST_TOTAL_APPOINTMENTS = "Against Total Appointments";
 export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
 export const QUICK_PATIENT_REGISTRATIONS = "Quick Patient Registrations";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
-export const ACTIVE_STAFF_IN_CURRENT_SHIFT = "Active Staff in Current Shift";
+export const ACTIVE_STAFF = "Active Staff";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
 export const REACTION_SELECTION_REQUIRED = "Please select at least one reaction";
-export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shift";
-export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
+export const AVAILABLE_USERS = "Available Users";
+export const ACTIVE_PROVIDERS = "Active Providers";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -3694,39 +3695,6 @@ export const UPCOMING_APPOINTMENT_LIST = [
     imageUrl: EMERGENCY_LOG_WILLIAMS,
     shortName: 'CW',
     appointmentTime: '12:30 PM'
-  },
-]
-
-export const ADDED_PATIENTS_LIST = [
-  {
-    fullName: 'Andrew Williams',
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    dob: '20/02/1995'
-  },
-  {
-    fullName: 'Arlene McCoy',
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'AW',
-    dob: '2/4/1992'
-  },
-  {
-    fullName: 'Marvin McKinney',
-    imageUrl: '',
-    shortName: 'AW',
-    dob: '16/05/1989'
-  },
-  {
-    fullName: 'Zayn Wyatt',
-    imageUrl: EMERGENCY_LOG_PHLEPS,
-    shortName: 'AW',
-    dob: '04/02/1966'
-  },
-  {
-    fullName: 'Bessie Cooper',
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    dob: '19/10/2001'
   },
 ]
 

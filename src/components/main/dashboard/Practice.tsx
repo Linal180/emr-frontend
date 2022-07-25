@@ -93,7 +93,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             <FacilityUsersWithRole practiceId={practiceId || ''} />
           </Card> */}
 
-          <Box p={2} />
+          {/* <Box p={2} /> */}
 
           {/* <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>

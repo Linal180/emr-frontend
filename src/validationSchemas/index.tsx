@@ -29,7 +29,7 @@ import {
   DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE,
+  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1030,7 +1030,7 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
-  amount: yup.number()
+  amount: yup.number().typeError(requiredMessage(AMOUNT))
 })
 
 export const createBillingSchema = yup.object({

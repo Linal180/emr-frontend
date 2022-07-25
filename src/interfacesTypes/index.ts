@@ -1949,6 +1949,7 @@ export interface StepContextProps {
 export interface DoctorPatientsProps {
   providerId?: string;
   facilityId?: string;
+  setPatientCount?: Function;
 }
 
 export interface StageStatusType {
@@ -2043,6 +2044,7 @@ export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'mod
 export interface DoctorAppointmentsAndPatientsProps {
   patientId?: string;
   providerId?: string;
+  setCount?: Function;
 }
 
 export interface FeeScheduleFormProps {

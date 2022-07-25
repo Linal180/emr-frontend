@@ -84,7 +84,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
                 {isSuper ?
                   <Typography variant="h6">{SUPER_ADMIN_TEXT}</Typography>
                   :
-                  <Typography variant="h6">{firstName} {lastName}</Typography>
+                  <Box maxWidth={200}>
+                    <Typography variant="h6" noWrap>{firstName} {lastName}</Typography>
+                  </Box>
                 }
               </Box>
             </Box>
@@ -96,7 +98,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
                 <Typography variant="body1">{PRACTICE} :</Typography>
               </Box>
 
-              <Typography variant="body1">{practiceName}</Typography>
+              <Box maxWidth={200}>
+                <Typography variant="body1" noWrap>{practiceName}</Typography>
+              </Box>
             </Box>}
 
           {!FacilityAdmin &&
@@ -104,8 +108,10 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Box pr={1} color={BLACK_TWO}>
                 <Typography variant="body1">{FACILITY} :</Typography>
               </Box>
-
-              <Typography variant="body1">{facilityName}</Typography>
+               
+              <Box maxWidth={200}>
+                <Typography variant="body1" noWrap>{facilityName}</Typography>
+              </Box>
             </Box>}
 
           <Grid container spacing={3}>

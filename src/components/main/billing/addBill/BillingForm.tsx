@@ -89,10 +89,10 @@ const BillingForm: FC<BillingFormProps> = (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
-          <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            {!shouldDisableEdit && <Box display="flex" alignItems="center">
+            {!shouldDisableEdit && <Box display="flex" alignItems="center"  flexWrap="wrap">
               <Button
                 variant="contained"
                 color="secondary"
@@ -147,7 +147,7 @@ const BillingForm: FC<BillingFormProps> = (
 
           <Box className="billing-inputs" mt={2} p={3}>
             <Grid container spacing={3} direction="row">
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
                     <Box pl={1.8} mb={2.5} className="claim-box">
@@ -183,7 +183,7 @@ const BillingForm: FC<BillingFormProps> = (
                 </Box>
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
                     {/* <Grid item md={12} sm={12} xs={12}>
@@ -216,7 +216,7 @@ const BillingForm: FC<BillingFormProps> = (
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Grid container spacing={3} direction="row">
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item lg={6} md={12} sm={12} xs={12}>
                           <InputController
                             fieldType="text"
                             controllerName="amount"
@@ -225,7 +225,7 @@ const BillingForm: FC<BillingFormProps> = (
                           />
                         </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
+                        <Grid item lg={6} md={12} sm={12} xs={12}>
                           <InputController
                             fieldType="number"
                             controllerName="uncoveredAmount"
@@ -260,7 +260,7 @@ const BillingForm: FC<BillingFormProps> = (
                 </Box>
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
                     {/* <Grid item md={12} sm={12} xs={12}>
@@ -324,7 +324,7 @@ const BillingForm: FC<BillingFormProps> = (
                 </Box>
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box>
                   <Grid container spacing={3} direction="row">
                     <Box pl={1.8} color={GREY_THREE}>
