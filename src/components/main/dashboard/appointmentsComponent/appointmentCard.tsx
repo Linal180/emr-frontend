@@ -12,13 +12,13 @@ import history from '../../../../history';
 import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { DeleteAppointmentIcon, EditAppointmentIcon } from '../../../../assets/svgs';
-import { useGetAppointmentLazyQuery, useCancelAppointmentMutation } from '../../../../generated/graphql';
+import { useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCreateType } from '../../../../generated/graphql';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
 import {
   REASON, FACILITY_NAME, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE,
   APPOINTMENT_CANCEL_REASON, CANCEL_TIME_PAST_MESSAGE, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS,
-  PRIMARY_INSURANCE, CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN, CHECK_IN_ROUTE,
+  PRIMARY_INSURANCE, CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN, CHECK_IN_ROUTE, START_TELEHEALTH, TELEHEALTH_URL,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
@@ -40,6 +40,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
   const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
+  const appointmentCreateType = appointmentMeta?.data?.appointmentCreateType
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -171,7 +172,12 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                 <Typography variant="body1">{appDate}</Typography>
                 <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
               </Box>
-              <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`} variant="contained" color="primary">{CHECK_IN}</Button>
+              {appointmentCreateType === AppointmentCreateType.Appointment
+                ? <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`} variant="contained" color="primary">{CHECK_IN}</Button>
+                : <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}>
+                  {START_TELEHEALTH}
+                </Button>
+              }
             </Box>
 
             <Box display='flex' justifyContent='space-between' pb={1}>
