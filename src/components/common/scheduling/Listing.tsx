@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 // components block
 import Alert from "../Alert";
 import ScheduleBox from "./ScheduleBox";
@@ -22,12 +22,17 @@ import {
 } from "../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
+  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_SCHEDULE, FACILITY_SCHEDULE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
+import { AuthContext } from "../../../context";
 
 const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId, doctorId }) => {
   const { id } = useParams<ParamsType>();
   const classes = useDoctorScheduleStyles();
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {}
+
+  const { id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(scheduleReducer, initialState)
   const { openModal, byDaySchedules, isEdit, scheduleId, openDelete } = state;
 
@@ -122,13 +127,26 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
 
   const fetchSchedules = useCallback(async () => {
     try {
-      isDoctor ? await getDoctorSchedule({ variables: { getDoctorSchedule: { id: doctorId ? doctorId : id } } })
-        : await getFacilitySchedule({ variables: { getFacilitySchedule: { id } } })
+      if (id || doctorId || facilityId) {
+        isDoctor ?
+          (id || doctorId) &&
+          await getDoctorSchedule({
+            variables: {
+              getDoctorSchedule: { id: doctorId ? doctorId : id }
+            }
+          })
+          : (id || facilityId) &&
+          await getFacilitySchedule({
+            variables: {
+              getFacilitySchedule: { id: id ? id : facilityId || '' }
+            }
+          })
+      } else Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [doctorId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
+  }, [doctorId, facilityId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
 
   useEffect(() => {
-    (id || doctorId) && fetchSchedules()
+    fetchSchedules()
   }, [doctorId, fetchSchedules, id])
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading

@@ -56,7 +56,9 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
-  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch } = state;
+  const {
+    page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch
+  } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
 
   const { search: patientSearch } = useLocation()

@@ -172,7 +172,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, sexAtBirth, dob, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt, genderIdentity
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -280,7 +280,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       <Box display="flex" flexWrap="wrap" alignItems="center">
         {!isCheckIn &&
           <Typography variant="body2">
-            {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+            {`(${patientRecord}) | ${formatValue(genderIdentity || '')} | ${getFormatDateString(dob || '')}`}
           </Typography>
         }
       </Box>
