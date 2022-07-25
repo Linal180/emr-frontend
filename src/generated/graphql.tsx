@@ -6700,6 +6700,13 @@ export type FindAllDoctorUpcomingAppointmentsQueryVariables = Exact<{
 
 export type FindAllDoctorUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, profileAttachment?: string | null } | null } | null> | null } };
 
+export type GetFacilityPatientsQueryVariables = Exact<{
+  getFacilityPatientsInput: GetFacilityPatientsInput;
+}>;
+
+
+export type GetFacilityPatientsQuery = { __typename?: 'Query', getFacilityPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null, patients?: Array<{ __typename?: 'Patient', id: string, dob?: string | null, lastName?: string | null, firstName?: string | null, profileAttachment?: string | null } | null> | null } };
+
 export type GetPracticeUsersWithRolesQueryVariables = Exact<{
   practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
 }>;
@@ -11245,6 +11252,50 @@ export function useFindAllDoctorUpcomingAppointmentsLazyQuery(baseOptions?: Apol
 export type FindAllDoctorUpcomingAppointmentsQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsQuery>;
 export type FindAllDoctorUpcomingAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsLazyQuery>;
 export type FindAllDoctorUpcomingAppointmentsQueryResult = Apollo.QueryResult<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>;
+export const GetFacilityPatientsDocument = gql`
+    query GetFacilityPatients($getFacilityPatientsInput: GetFacilityPatientsInput!) {
+  getFacilityPatients(getFacilityPatientsInput: $getFacilityPatientsInput) {
+    pagination {
+      totalCount
+    }
+    patients {
+      id
+      dob
+      lastName
+      firstName
+      profileAttachment
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFacilityPatientsQuery__
+ *
+ * To run a query within a React component, call `useGetFacilityPatientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFacilityPatientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFacilityPatientsQuery({
+ *   variables: {
+ *      getFacilityPatientsInput: // value for 'getFacilityPatientsInput'
+ *   },
+ * });
+ */
+export function useGetFacilityPatientsQuery(baseOptions: Apollo.QueryHookOptions<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>(GetFacilityPatientsDocument, options);
+      }
+export function useGetFacilityPatientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>(GetFacilityPatientsDocument, options);
+        }
+export type GetFacilityPatientsQueryHookResult = ReturnType<typeof useGetFacilityPatientsQuery>;
+export type GetFacilityPatientsLazyQueryHookResult = ReturnType<typeof useGetFacilityPatientsLazyQuery>;
+export type GetFacilityPatientsQueryResult = Apollo.QueryResult<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>;
 export const GetPracticeUsersWithRolesDocument = gql`
     query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!) {
   getPracticeFacilitiesUsersWithRoles(

@@ -36,20 +36,22 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
 
       if (findAllUpcomingAppointments) {
         const { appointments } = findAllUpcomingAppointments
-        const sorted = sortingArray<typeof appointments>(appointments,
-          'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
 
-        const todayAppointments = sorted?.filter(appointment =>
+
+        const todayAppointments = appointments?.filter(appointment =>
           appointment?.status !== AppointmentStatus.Cancelled
           && appointment?.status !== AppointmentStatus.NoShow
           && appointment?.status !== AppointmentStatus.Discharged
           && isCurrentDay(appointment?.scheduleStartDateTime || '')
         )
-
+        
         setCount && setCount(todayAppointments?.length || 0)
+        const sorted = sortingArray<typeof todayAppointments>(todayAppointments,
+          'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
+
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: todayAppointments as AppointmentsPayload['appointments']
+          appointments: sorted as AppointmentsPayload['appointments']
         });
       } else {
         dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });

@@ -127,9 +127,20 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
 
   const fetchSchedules = useCallback(async () => {
     try {
-      if(id || doctorId || facilityId){
-        isDoctor ? await getDoctorSchedule({ variables: { getDoctorSchedule: { id: doctorId ? doctorId : id } } })
-        : await getFacilitySchedule({ variables: { getFacilitySchedule: { id: id ? id : facilityId || '' } } })
+      if (id || doctorId || facilityId) {
+        isDoctor ?
+          (id || doctorId) &&
+          await getDoctorSchedule({
+            variables: {
+              getDoctorSchedule: { id: doctorId ? doctorId : id }
+            }
+          })
+          : (id || facilityId) &&
+          await getFacilitySchedule({
+            variables: {
+              getFacilitySchedule: { id: id ? id : facilityId || '' }
+            }
+          })
       } else Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
   }, [doctorId, facilityId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);

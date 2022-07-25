@@ -5,9 +5,9 @@ import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import ScheduleListing from "../../common/scheduling/Listing";
 import PercentagePie from "../../common/charts/PercentagePie";
-import DoctorPatients from "../../common/Dashboard/DoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
+import FacilityDoctorPatients from "../../common/Dashboard/FacilityDoctorPatients";
 import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs, styles, nad constant block
 import history from "../../../history";
@@ -20,15 +20,15 @@ import {
   useFindAllStaffListLazyQuery
 } from "../../../generated/graphql";
 import {
-  CalendarBlackIcon, CalendarWhiteIcon, PracticeActiveIcon, ProviderWhiteIcon, RedirectIcon,
-  StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo, UserOutlinedIcon,
+  CalendarBlackIcon, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
+  StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo,
 } from "../../../assets/svgs";
 import {
   QUICK_ACTIONS, FACILITIES_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, ACTIVE_STAFF,
-  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, TOTAL_NUMBER_OF_USERS, NEW_APPOINTMENT, NEW_PROVIDER,
-  TOTAL_APPOINTMENTS, AVAILABLE_USERS, NEW_STAFF, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS,
-  AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, UPCOMING_APPOINTMENTS, RECENTLY_ADDED_PATIENTS,
-  DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
+  TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, NEW_APPOINTMENT, NEW_PROVIDER, SOMETHING_WENT_WRONG,
+  TOTAL_APPOINTMENTS, NEW_STAFF, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS, APPOINTMENTS_ROUTE,
+  AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, RECENTLY_ADDED_PATIENTS, STAFF_ROUTE,
+  DOCTORS_ROUTE, 
 } from "../../../constants";
 
 const FacilityDashboardComponent: FC = (): JSX.Element => {
@@ -44,8 +44,8 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
   const [providerCount, setProviderCount] = useState<number>(0)
   const [staffCount, setStaffCount] = useState<number>(0)
 
-  const [patientCount, setPatientCount] = useState<number>(0)
-  const totalUsers = patientCount + staffCount + providerCount
+  const [,setPatientCount] = useState<number>(0)
+  // const totalUsers = patientCount + staffCount + providerCount
 
   const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -189,6 +189,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               <Box p={3} bgcolor={BLUE_SEVEN} borderRadius={8}>
                 <CalendarWhiteIcon />
                 <Box p={2} />
+
                 <Typography variant="h3" className="whiteColor">{todayAppointment}</Typography>
                 <Typography variant="body2" className="whiteColor">{TODAYS_APPOINTMENTS}</Typography>
               </Box>
@@ -218,7 +219,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
           <Card>
             <Box px={3} pb={2}>
               <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
-                <Typography variant="h5">{UPCOMING_APPOINTMENTS}</Typography>
+                <Typography variant="h5">{TODAYS_APPOINTMENTS}</Typography>
 
                 <Link to={VIEW_APPOINTMENTS_ROUTE}>
                   <IconButton>
@@ -247,7 +248,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                     </Link>
                   </Box>
 
-                  <DoctorPatients setPatientCount={setPatientCount} />
+                  <FacilityDoctorPatients setPatientCount={setPatientCount} facilityId={facilityId} />
                 </Box>
               </Card>
             </Grid>
@@ -313,7 +314,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Card>
+          {/* <Card>
             <Box p={3}>
               <Grid container spacing={3}>
                 <Grid item md={8} sm={12} xs={12}>
@@ -343,8 +344,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={4} sm={12} xs={12}>
-                  {/* <PieChart3Component  /> */}
-                  {!appointmentLoading &&
+                  {!staffLoading &&
                     <PercentagePie
                       completed={1}
                       total={totalUsers - 1}
@@ -354,7 +354,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                 </Grid>
               </Grid>
             </Box>
-          </Card>
+          </Card> */}
 
           <Box p={2} />
 

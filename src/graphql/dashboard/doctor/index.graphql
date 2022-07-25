@@ -17,7 +17,6 @@ query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   }
 }
 
-
 query FindAllDoctorUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
   findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
     response {
