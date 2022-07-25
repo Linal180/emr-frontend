@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import ScheduleListing from "../../common/scheduling/Listing";
-import PieChart3Component from "../../common/charts/pieChart3";
-import PieChart4Component from "../../common/charts/pieChart4";
+import PercentagePie from "../../common/charts/PercentagePie";
 import DoctorPatients from "../../common/Dashboard/DoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
@@ -32,7 +31,7 @@ import {
   DOCTORS_ROUTE, STAFF_ROUTE, APPOINTMENTS_ROUTE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
 
-const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
+const FacilityDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
   const { user } = useContext(AuthContext)
   const { facility } = user || {}
@@ -88,7 +87,7 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
     }
   });
 
-  const [findAllAppointments] = useFindAllAppointmentListLazyQuery({
+  const [findAllAppointments, { loading: appointmentLoading }] = useFindAllAppointmentListLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -272,7 +271,14 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <PieChart4Component />
+            {!appointmentLoading &&
+              <PercentagePie
+                showText
+                total={appointmentCount}
+                className='chartContainer'
+                completed={dischargedAppointment}
+              />
+            }
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
               <Grid container spacing={3}>
@@ -337,7 +343,14 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={4} sm={12} xs={12}>
-                  <PieChart3Component />
+                  {/* <PieChart3Component  /> */}
+                  {!appointmentLoading &&
+                    <PercentagePie
+                      completed={1}
+                      total={totalUsers - 1}
+                      className='chartContainerSmall'
+                    />
+                  }
                 </Grid>
               </Grid>
             </Box>
@@ -434,4 +447,4 @@ const FacilityAdminDashboardComponent: FC = (): JSX.Element => {
   )
 };
 
-export default FacilityAdminDashboardComponent;
+export default FacilityDashboardComponent;
