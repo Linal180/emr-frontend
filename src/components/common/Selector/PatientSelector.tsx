@@ -8,7 +8,7 @@ import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
 import { AddPatientIcon } from "../../../assets/svgs";
 import { PatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFetchAllPatientListLazyQuery } from "../../../generated/graphql";
+import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
 import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
@@ -37,7 +37,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     sortingValue(renderPatient(patients))
   const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), DUMMY_OPTION]
 
-  const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
+  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -46,10 +46,10 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     },
 
     onCompleted(data) {
-      const { fetchAllPatients } = data || {};
+      const { findAllPatient } = data || {};
 
-      if (fetchAllPatients) {
-        const { pagination, patients } = fetchAllPatients
+      if (findAllPatient) {
+        const { pagination, patients } = findAllPatient
         patients && dispatch({
           type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
         })

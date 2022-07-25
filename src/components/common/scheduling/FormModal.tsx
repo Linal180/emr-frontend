@@ -43,9 +43,12 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
-  const { currentUser } = useContext(AuthContext)
+  const { currentUser, user } = useContext(AuthContext)
+  const { facility } = user || {}
   const { scheduleIds, scheduleRecursion, serviceIds } = state || {}
+
   const { id: currentDoctor } = currentUser || {}
+  const { id: facilityId } = facility || {}
   const { userPermissions } = useContext(AuthContext)
 
   const methods = useForm<ScheduleInputProps>({
@@ -101,7 +104,10 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
               }
             }) || []
 
-            scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SERVICE_IDS, serviceIds: transformedScheduleServices })
+            scheduleDispatch && scheduleDispatch({
+              type: ActionType.SET_SERVICE_IDS,
+              serviceIds: transformedScheduleServices
+            })
             setValue('serviceId', transformedScheduleServices)
           }
 
@@ -109,8 +115,15 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
 
-          scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULE_RECURSION, scheduleRecursion: !!!recurringEndDate })
-          scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [...scheduleIds, getDayFromTimestamps(startAt)] })
+          scheduleDispatch && scheduleDispatch({
+            type: ActionType.SET_SCHEDULE_RECURSION,
+            scheduleRecursion: !!!recurringEndDate
+          })
+
+          scheduleDispatch && scheduleDispatch({
+            type: ActionType.SET_SCHEDULES_IDS,
+            scheduleIds: [...scheduleIds, getDayFromTimestamps(startAt)]
+          })
         }
       }
     }
@@ -179,7 +192,8 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: typeId || currentDoctor } : { facilityId: typeId }
+      const recordId = isDoctor ? { doctorId: typeId || currentDoctor }
+        : { facilityId: !!typeId ? typeId : facilityId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
@@ -188,7 +202,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       }
     })
 
-    if (typeId || (isDoctor && currentDoctor)) {
+    if (typeId || (!typeId && facilityId) || (isDoctor && currentDoctor)) {
       if (isEdit) {
         id ?
           await updateSchedule({
@@ -209,10 +223,17 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
       if (scheduleIds.includes(id)) {
-        scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: scheduleIds.filter(permission => permission !== id) })
+        scheduleDispatch &&
+          scheduleDispatch({
+            type: ActionType.SET_SCHEDULES_IDS,
+            scheduleIds: scheduleIds.filter(permission => permission !== id)
+          })
       }
       else {
-        scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [...scheduleIds, id] })
+        scheduleDispatch && scheduleDispatch({
+          type: ActionType.SET_SCHEDULES_IDS,
+          scheduleIds: [...scheduleIds, id]
+        })
       }
     }
   };
@@ -297,7 +318,12 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                               <label className="toggle-main">
                                 <Box color={scheduleRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
                                 <AntSwitch checked={scheduleRecursion}
-                                  onChange={({ target: { checked } }) => scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULE_RECURSION, scheduleRecursion: checked })} name='shouldHaveRecursion'
+                                  name='shouldHaveRecursion'
+                                  onChange={({ target: { checked } }) =>
+                                    scheduleDispatch && scheduleDispatch({
+                                      type: ActionType.SET_SCHEDULE_RECURSION,
+                                      scheduleRecursion: checked
+                                    })}
                                 />
                                 <Box color={scheduleRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
                               </label>
