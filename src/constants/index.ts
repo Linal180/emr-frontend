@@ -407,8 +407,10 @@ export const COPAY_AMOUNT = "Copay Amount";
 export const UNCOVERED_AMT = "Uncovered Amt";
 export const CLAIM_STATUS = "Claim Status";
 export const CLAIM_DATE = "Claim Date";
+export const INVOICE_DATE = "Invoice Date";
 export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
+export const LAST_VISITED = "Last Visited";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
@@ -1212,6 +1214,7 @@ export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
 export const BUILD_FEE_DOLLAR = "Build Fee ($)";
+export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
@@ -2620,6 +2623,8 @@ export enum ITEM_MODULE {
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
   claimStatus = 'claimStatus',
+  feeSchedule = 'feeSchedule',
+  cptFeeSchedule = 'cptFeeSchedule',
 }
 
 export enum TABLE_SELECTOR_MODULES {

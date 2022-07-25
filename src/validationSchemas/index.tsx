@@ -1040,8 +1040,8 @@ export const createBillingSchema = yup.object({
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0),
-  [ITEM_MODULE.cptCode]: yup.array().of(
-    tableSelectorSchema(ITEM_MODULE.icdCodes)
+  [ITEM_MODULE.cptFeeSchedule]: yup.array().of(
+    tableSelectorSchema(ITEM_MODULE.cptCode)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
