@@ -67,7 +67,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const { roles, facility, } = user || {}
   const { id: currentDoctor } = currentUser || {}
-  const { id: userFacilityId, practiceId: userPracticeId } = facility || {}
+  const { id: userFacilityId, name: userFacilityName, practiceId: userPracticeId } = facility || {}
 
   const isHigherAdmin = isUserAdmin(roles)
   const onlyDoctor = isOnlyDoctor(roles)
@@ -482,15 +482,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         </Box>
                       </Grid>
 
-                      {!onlyDoctor && <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
-                          : <FacilitySelector
-                            isRequired
-                            label={FACILITY}
-                            name="facilityId"
-                          />
-                        }
-                      </Grid>}
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isHigherAdmin ?
+                          isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
+                            : <FacilitySelector
+                              isRequired
+                              label={FACILITY}
+                              name="facilityId"
+                            />
+                          : renderItem(FACILITY, userFacilityName, false, getAppointmentLoading)}
+                      </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
                         {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName, false, getAppointmentLoading) :
