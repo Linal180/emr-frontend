@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { FormProvider, useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import history from "../../../../history";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
-import { DoctorSearchInputProps } from "../../../../interfacesTypes";
+import { DoctorSearchInputProps, FormForwardRef } from "../../../../interfacesTypes";
 import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import {
   checkPermission, formatPhone, formatEnumMember, isFacilityAdmin, isPracticeAdmin, isSuperAdmin,
@@ -40,6 +40,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
+  const searchRef = useRef<FormForwardRef>();
 
   const isFacAdmin = isFacilityAdmin(roles);
   const isRegularUser = isUser(roles)
@@ -158,6 +159,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       await removeDoctor({
         variables: { removeDoctor: { id: deleteDoctorId } }
       })
+      searchRef.current?.submit()
   };
 
   const search = (query: string) => {
@@ -172,7 +174,7 @@ const DoctorsTable: FC = (): JSX.Element => {
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
-              <Search search={search} />
+              <Search search={search} ref={searchRef}/>
             </Box>
           </Grid>
 
