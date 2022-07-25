@@ -1,6 +1,6 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
 import {
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE, GREEN_TWO, GREY_EIGHTEEN
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -190,4 +190,14 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 16,
     }
   },
+
+  firstRowBg: {
+    backgroundColor: GREEN_TWO,
+  },
+
+  tableRowRoot: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: GREY_EIGHTEEN,
+    },
+  }
 }))

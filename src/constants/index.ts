@@ -411,6 +411,7 @@ export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
+export const TOTALS = "Totals:";
 export const UPDATE_TIME = "Update Time";
 export const FACILITY_CONTACT = "Facility Contact";
 export const AMOUNT_DOLLAR = "Amount ($)";
@@ -653,6 +654,7 @@ export const TO = "To";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
 export const ACTIVE_TEXT = "Active";
+export const ADJUSTMENT = "Adjustment";
 export const MERCHANT_ID = "Merchant ID";
 export const BANK_ACCOUNT = "Bank Account";
 export const FACILITY_IDS = "Facility IDs";
@@ -666,6 +668,7 @@ export const SELECT_COLOR_TEXT = "Select Color";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
 export const CHECK_PAYABLE_TO = "Check Payable To";
 export const BILLING_FACILITY = "Billing Facility";
+export const PT_LINE_ITEM_BAL = "Pt Line Item Bal";
 export const DURATION_TEXT = "Duration (In Minutes)";
 export const LICENSE_TERM_DATE = "License Term Date";
 export const SPECIALTY_LICENSE = "Specialty License";
@@ -696,17 +699,21 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const UNIT = "Unit";
+export const INFO = "Info";
 export const PAGE_LIMIT = 9;
+export const INS_1 = "Ins 1";
 export const VALUE = "Value";
 export const VISIT = "Visit";
+export const ALLOWED = "Allowed";
+export const PT_PAID = "Pt Paid";
+export const INS_BAL = "Ins Bal";
+export const MODIFIER = "Modifier";
+export const INS_1_PAID = "Ins 1 Paid";
+export const INS_2_PAID = "Ins 2 Paid";
 export const ROLES = "Roles";
 export const ERROR = "error";
 export const UNITS = "Units";
 export const RESET = "Reset";
-export const MODIFIER = "Modifier";
-export const TOTAL_CODES = "Total codes";
-export const EFFECTIVE_DATE = "Effective Date";
-export const CHARGE_DOLLAR = "Charge ($)";
 export const SSN_INPUT = "ssn";
 export const REASON = "Reason";
 export const MOBILE = "Mobile";
@@ -724,6 +731,7 @@ export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
 export const SIGN_OFF = "Sign Off";
 export const ADD_BILL = "Add Bill";
+export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
@@ -732,6 +740,7 @@ export const MODIFIERS = "Modifiers";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
+export const CLAIM_BAL = "Claim Bal";
 export const FROM_DATE = "From Date";
 export const REACTION_PAGE_LIMIT = 50;
 export const DROPDOWN_PAGE_LIMIT = 10;
@@ -741,6 +750,8 @@ export const TEST_TAKEN = "Test Taken";
 export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
+export const TOTAL_CODES = "Total codes";
+export const CHARGE_DOLLAR = "Charge ($)";
 export const TIME_OF_CHECK = "Time of Check";
 export const DRUG = "Drug";
 export const FILE = "File";
@@ -758,6 +769,8 @@ export const TAGS_TEXT = "Tags";
 export const ACTION = "Action";
 export const USER_ID = "User ID";
 export const PATIENT = "Patient";
+export const PAYER = "Payer";
+export const PAYER_ID = "Payer ID";
 export const SUCCESS = "success";
 export const CLAIMED = "Claimed";
 export const SERVICE = "Service";
@@ -793,6 +806,7 @@ export const CANCELLED = "Cancelled";
 export const NO_RECORDS = "No Records";
 export const VITAL_LIST_PAGE_LIMIT = 4;
 export const ADD_RECORD = "Add Record";
+export const DR_CLAIM_NO = "Dr Claim #";
 export const PRINT_CHART = "Print Chart";
 export const NEW_PATIENT = "New Patient";
 export const FACILITY_ID = "Facility ID";
@@ -801,6 +815,7 @@ export const VENDOR_NAME = "Vendor Name";
 export const IN_PROGRESS = "In Progress";
 export const ADD_ALLERGY = "Add Allergy";
 export const NEW_PROVIDER = "New Provider";
+export const APPLY_FILTER = "Apply Filter";
 export const REVENUE_CODE = "Revenue Code";
 export const BILLING_TYPE = "Billing Type";
 export const SERVICE_CODE = "Service Code";
@@ -815,8 +830,10 @@ export const CLIA_ID_NUMBER = "CLIA ID Number";
 export const UPDATE_ALLERGY = "Update Allergy";
 export const CLAIM_RECEIVED = "Claim Received";
 export const COLLECTED_DATE = "Collected Date";
+export const EFFECTIVE_DATE = "Effective Date";
 export const VIEW_FACILITIES = "View Facilities";
 export const NEW_APPOINTMENT = "New Appointment";
+export const DISPLAY_COLUMNS = "Display Columns";
 export const MEDICAL_BILLING = "Medical Billing";
 export const POS = "POS";
 export const LAB_TEXT = "Lab";
@@ -912,6 +929,7 @@ export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
 export const LONG_DESCRIPTION = "Long Description";
 export const SHORT_DESCRIPTION = "Short Description";
+export const EXP_REIMBURSEMENT = "Exp Reimb";
 export const SERVICE_FEE_CHARGE = "Service Fee (Charge)";
 export const PATIENT_INFORMATION = "Patient Information";
 export const SUBSCRIBER_INFORMATION = "Subscriber Information";
@@ -1284,6 +1302,7 @@ export const NORMAL_RANGE_UNITS = "Normal Range Units";
 export const PRIMARY_DEPARTMENT = "Primary Department";
 export const PREVIOUS_LAST_NAME = "Previous Last Name";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
+export const LIVE_CLAIM_FEED = "Live Claim Feed";
 export const POLICY_GROUP_NUMBER = "Policy/group number";
 export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
@@ -1454,6 +1473,7 @@ export const AGREEMENTS_ROUTE = "/agreements";
 export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const CLAIM_FEED_ROUTE = "/claim-feed";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
@@ -1886,10 +1906,14 @@ export const BILLING_MENU_ITEMS = [
     name: INVOICES_TEXT,
     link: INVOICES_ROUTE,
   },
+  // {
+  //   name: INSURANCE_CLAIMS_TEXT,
+  //   link: CLAIMS_ROUTE,
+  // },
   {
-    name: INSURANCE_CLAIMS_TEXT,
-    link: CLAIMS_ROUTE,
-  },
+    name: LIVE_CLAIM_FEED,
+    link: CLAIM_FEED_ROUTE
+  }
 ];
 
 export const MAPPED_WIDGETS: SelectorOption[] = [
@@ -4255,36 +4279,150 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   },
 ]
 
-export const COVERAGE_SUMMARY_DUMMY_DATA = [
+export const CLAIM_FEED_DUMMY_DATA = [
   {
-    name: 'Copay',
-    urgentCare: '$25.00',
-    professionalOfficeVisit: '$15.00',
-    healthPlanBenefits: '-',
+    info: 'CPT',
+    id: '13671',
+    patient: 'Leslie Alexander',
+    dateOfService: '5/7/16',
+    facility: 'Crown Point',
+    billed: '$219.78',
+    allowed: '$943.65',
+    adjustment: '$202.87',
+    ins1Paid: '$854.08',
+    ins2Paid: '$710.68',
+    ptPaid: '$219.78',
+    insBal: '$782.01',
+    ptLineItemBal: '$219.78',
+    claimBal: '$576.28',
+    expReimbursement: '$576.28',
+    ins1: 'SEBACIC OMAN SAOC',
   },
   {
-    name: 'Deductible Remaining',
-    urgentCare: '-',
-    professionalOfficeVisit: '-',
-    healthPlanBenefits: '-',
+    info: 'ICD',
+    id: '61391',
+    patient: 'Darrell Steward',
+    dateOfService: '5/7/16',
+    facility: 'High Bank Gardens',
+    billed: '$169.43',
+    allowed: '$928.41',
+    adjustment: '$328.85',
+    ins1Paid: '$943.65',
+    ins2Paid: '$928.41',
+    ptPaid: '$293.01',
+    insBal: '$948.55',
+    ptLineItemBal: '$406.27',
+    claimBal: '$710.68',
+    expReimbursement: '$778.35',
+    ins1: 'Hawaii Employers Mutual Insurance',
   },
   {
-    name: 'Individual',
-    urgentCare: '-',
-    professionalOfficeVisit: '-',
-    healthPlanBenefits: '$564.17',
+    info: 'CPT',
+    id: '13671',
+    patient: 'Leslie Alexander',
+    dateOfService: '5/7/16',
+    facility: 'Crown Point',
+    billed: '$219.78',
+    allowed: '$943.65',
+    adjustment: '$202.87',
+    ins1Paid: '$854.08',
+    ins2Paid: '$710.68',
+    ptPaid: '$219.78',
+    insBal: '$782.01',
+    ptLineItemBal: '$219.78',
+    claimBal: '$576.28',
+    expReimbursement: '$576.28',
+    ins1: 'SEBACIC OMAN SAOC',
   },
   {
-    name: 'Family',
-    urgentCare: '-',
-    professionalOfficeVisit: '-',
-    healthPlanBenefits: '$1288.12',
+    info: 'ICD',
+    id: '61391',
+    patient: 'Darrell Steward',
+    dateOfService: '5/7/16',
+    facility: 'High Bank Gardens',
+    billed: '$169.43',
+    allowed: '$928.41',
+    adjustment: '$328.85',
+    ins1Paid: '$943.65',
+    ins2Paid: '$928.41',
+    ptPaid: '$293.01',
+    insBal: '$948.55',
+    ptLineItemBal: '$406.27',
+    claimBal: '$710.68',
+    expReimbursement: '$778.35',
+    ins1: 'Hawaii Employers Mutual Insurance',
   },
   {
-    name: 'Coinsurance',
-    urgentCare: '0%',
-    professionalOfficeVisit: '0%',
-    healthPlanBenefits: '-',
+    info: 'CPT',
+    id: '13671',
+    patient: 'Leslie Alexander',
+    dateOfService: '5/7/16',
+    facility: 'Crown Point',
+    billed: '$219.78',
+    allowed: '$943.65',
+    adjustment: '$202.87',
+    ins1Paid: '$854.08',
+    ins2Paid: '$710.68',
+    ptPaid: '$219.78',
+    insBal: '$782.01',
+    ptLineItemBal: '$219.78',
+    claimBal: '$576.28',
+    expReimbursement: '$576.28',
+    ins1: 'SEBACIC OMAN SAOC',
+  },
+  {
+    info: 'ICD',
+    id: '61391',
+    patient: 'Darrell Steward',
+    dateOfService: '5/7/16',
+    facility: 'High Bank Gardens',
+    billed: '$169.43',
+    allowed: '$928.41',
+    adjustment: '$328.85',
+    ins1Paid: '$943.65',
+    ins2Paid: '$928.41',
+    ptPaid: '$293.01',
+    insBal: '$948.55',
+    ptLineItemBal: '$406.27',
+    claimBal: '$710.68',
+    expReimbursement: '$778.35',
+    ins1: 'Hawaii Employers Mutual Insurance',
+  },
+  {
+    info: 'CPT',
+    id: '13671',
+    patient: 'Leslie Alexander',
+    dateOfService: '5/7/16',
+    facility: 'Crown Point',
+    billed: '$219.78',
+    allowed: '$943.65',
+    adjustment: '$202.87',
+    ins1Paid: '$854.08',
+    ins2Paid: '$710.68',
+    ptPaid: '$219.78',
+    insBal: '$782.01',
+    ptLineItemBal: '$219.78',
+    claimBal: '$576.28',
+    expReimbursement: '$576.28',
+    ins1: 'SEBACIC OMAN SAOC',
+  },
+  {
+    info: 'ICD',
+    id: '61391',
+    patient: 'Darrell Steward',
+    dateOfService: '5/7/16',
+    facility: 'High Bank Gardens',
+    billed: '$169.43',
+    allowed: '$928.41',
+    adjustment: '$328.85',
+    ins1Paid: '$943.65',
+    ins2Paid: '$928.41',
+    ptPaid: '$293.01',
+    insBal: '$948.55',
+    ptLineItemBal: '$406.27',
+    claimBal: '$710.68',
+    expReimbursement: '$778.35',
+    ins1: 'Hawaii Employers Mutual Insurance',
   },
 ]
 
