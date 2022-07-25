@@ -1,12 +1,12 @@
 //packages block
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 import { FC } from "react";
+import { Delete } from "@material-ui/icons";
 import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
 //components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
 //constants, interfaces, utils
-import { ClearIcon } from "../../../assets/svgs";
 import {
   ACTIONS, BILLING_MODIFIERS_DATA, BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
   DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIERS, SR_NO, UNIT
@@ -238,7 +238,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
 
                       <Grid item md={1} sm={1} xs={1}>
                         <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
-                          <ClearIcon />
+                          <Delete />
                         </IconButton>
                       </Grid>
                     </Grid>

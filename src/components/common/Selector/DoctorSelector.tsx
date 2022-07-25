@@ -36,7 +36,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
-  const [findAllDoctor,] = useFindAllDoctorListLazyQuery({
+  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 

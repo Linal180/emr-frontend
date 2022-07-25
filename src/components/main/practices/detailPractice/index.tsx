@@ -3,28 +3,22 @@ import { Reducer, useReducer, FC, useCallback, useContext, useEffect } from 'rea
 import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Avatar, Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
-import LogoIcon from "../../../../assets/images/logo.svg";
+import { Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
 import PracticeData from './practiceData';
 import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
-import MediaCards from '../../../common/AddMedia/MediaCards';
 // constants block
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
-import { useProfileStyles } from '../../../../styles/profileStyles';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
-import {
-  Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-  useGetPracticeLazyQuery, useUpdatePracticeMutation
-} from '../../../../generated/graphql';
+import { PracticePayload, useGetPracticeLazyQuery, useUpdatePracticeMutation } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
-  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
-  ATTACHMENT_TITLES, TAX_ID_INFO, GROUP_TAX_ID, NPI_INFO, GROUP_NPI,
+  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, NO_ASSOCIATED_PRACTICE,
+  ATTACHMENT_TITLES, TAX_ID_INFO, GROUP_TAX_ID, NPI_INFO, GROUP_NPI, PRACTICE_DETAILS,
 } from '../../../../constants';
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
@@ -33,13 +27,12 @@ import {
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
   const { user, setPracticeName } = useContext(AuthContext);
-  const classes = useProfileStyles()
   const { facility } = user || {};
   const { practice } = facility || {};
 
   const { id: practiceId } = practice || {};
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData, isEdit, practiceData } = mediaState
+  const { isEdit, practiceData } = mediaState
 
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
@@ -101,35 +94,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     npi && setValue('npi', npi)
   }
 
-  const [getAttachments, { loading: getAttachmentsLoading }] = useGetAttachmentsLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachments } = data || {};
-
-      if (getAttachments) {
-        const { attachments } = getAttachments
-
-        if (!!attachments) {
-          const practiceAttachment = attachments.find((attachment) => attachment?.title === ATTACHMENT_TITLES.PracticeLogo);
-          const { id } = practiceAttachment || {}
-
-          id &&
-            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
-
-          practiceAttachment &&
-            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: practiceAttachment as Attachment })
-        }
-      }
-    },
-  });
-
   const [updatePractice, { loading: updatePracticeLoading }] = useUpdatePracticeMutation({
     onError({ message }) {
       Alert.error(message)
@@ -161,12 +125,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     } catch (error) { }
   }, [getPractice, practiceId]);
 
-  const fetchAttachments = async () => {
-    practiceId && await getAttachments({
-      variables: { getAttachment: { typeId: practiceId, } }
-    })
-  }
-
   useEffect(() => {
     if (practiceId) {
       fetchPractice();
@@ -175,35 +133,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
       history.push(SETTINGS_ROUTE)
     }
   }, [practiceId, fetchPractice]);
-
-  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
-      }
-    }
-  });
-
-  const fetchAttachment = useCallback(async () => {
-    try {
-      attachmentId && await getAttachment({ variables: { getMedia: { id: attachmentId } } })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
-
-  useEffect(() => {
-    attachmentId && attachmentData && fetchAttachment()
-  }, [attachmentId, fetchAttachment, attachmentData])
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
     const { name, phone, fax, upin, ein, medicaid, medicare, champus, npi, taxId } = inputs;
@@ -224,7 +153,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   }
 
   const isLoading = loading || updatePracticeLoading
-  const attachmentLoading = loading || getAttachmentLoading || getAttachmentsLoading
 
   return (
     <Box p={4}>
@@ -233,7 +161,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
           <Card>
             <Box mt={5} p={5}>
               <Grid container spacing={3}>
-                <Grid item md={4} sm={12} xs={12}>
+                {/* <Grid item md={4} sm={12} xs={12}>
                   <Box className={`${attachmentLoading || attachmentId ? '' : 'logo-container'}`} ml={2}>
                     {attachmentLoading ?
                       <Avatar variant="square" className={classes.profileImage}>
@@ -258,12 +186,14 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                       reload={() => fetchAttachments()}
                     />
                   </Box>
-                </Grid>
+                </Grid> */}
 
-                <Grid item md={8} sm={12}>
+                <Grid item md={12} sm={12}>
                   <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                      <Box mb={3} display="flex" justifyContent="flex-end">
+                      <Box mb={3} display="flex" justifyContent="space-between">
+                        <Typography variant='h3'>{PRACTICE_DETAILS}</Typography>
+
                         <Box display='flex'>
                           {isEdit ?
                             <>
