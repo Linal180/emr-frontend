@@ -35,9 +35,8 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
-  US_DATE_FORMAT, RESET, USER_PERMISSIONS, ROOT_ROUTE, PERMISSION_DENIED
+  US_DATE_FORMAT, RESET, USER_PERMISSIONS, 
 } from "../../../../constants";
-import history from "../../../../history";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -149,12 +148,10 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)) {
-      history.push(ROOT_ROUTE)
-      Alert.error(PERMISSION_DENIED)
-    }
-
-    !!patientSearch && dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: patientSearch.replace('?', '') })
+    !!patientSearch && dispatch({
+      type: ActionType.SET_SEARCH_QUERY,
+      searchQuery: patientSearch.replace('?', '')
+    })
   }, [patientSearch, user, userPermissions]);
 
   useEffect(() => {
