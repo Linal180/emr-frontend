@@ -27,7 +27,7 @@ import {
 import {
   ACTION, EFFECTIVE_DATE, EXPIRY_DATE, EXTENDED_PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT,
   DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE,
-  TOTAL_CODES
+  TOTAL_CODES,
 } from "../../../constants";
 
 const FeeTable: FC = (): JSX.Element => {
@@ -176,7 +176,7 @@ const FeeTable: FC = (): JSX.Element => {
             </Grid>
 
             {isSuper &&
-              <Grid item md={2} sm={12} xs={12}>
+              <Grid item md={3} sm={12} xs={12}>
                 <FormProvider {...methods}>
                   <PracticeSelector
                     addEmpty
