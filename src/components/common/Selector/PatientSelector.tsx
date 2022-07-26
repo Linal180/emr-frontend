@@ -8,12 +8,12 @@ import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
 import { AddPatientIcon } from "../../../assets/svgs";
 import { PatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
+import { PatientsPayload, useFetchAllPatientLazyQuery } from "../../../generated/graphql";
 import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue
+  isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUser, renderPatient, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -26,39 +26,44 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   const { user, currentUser } = useContext(AuthContext)
   const { roles, facility } = user || {};
 
-  const { id: currentDoctor } = currentUser || {}
+  const { id: currentUserId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPractice = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles);
 
-  const onlyDoctor = isOnlyDoctor(roles)
+  const isDoctor = isOnlyDoctor(roles)
   const { id: facilityId, practiceId } = facility || {}
-  const [{ page, searchQuery, patients }, dispatch] =
+  const [{ page, searchQuery, patients, doctorId }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-    sortingValue(renderPatient(patients))
+  sortingValue(renderPatient(patients))
   const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), DUMMY_OPTION]
 
-  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
+  const [fetchAllPatientsQuery, { loading }] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
       dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
-      const { findAllPatient } = data || {};
+      const { fetchAllPatients } = data || {};
 
-      if (findAllPatient) {
-        const { pagination, patients } = findAllPatient
+      if (fetchAllPatients) {
+        const { pagination, patients } = fetchAllPatients
         patients && dispatch({
-          type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
+          type: ActionType.SET_PATIENTS,
+          patients: patients as PatientsPayload['patients']
         })
 
         if (pagination) {
           const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+      } else {
+        dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
       }
     }
   });
@@ -68,20 +73,22 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPractice ? { practiceId, ...pageInputs }
-          : { facilityId, ...pageInputs }
+          : isFacAdmin || isRegularUser
+            ? { facilityId, ...pageInputs }
+            : undefined
 
-      patientsInputs && await findAllPatient({
+      patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
             ...patientsInputs, searchString: searchQuery,
-            ...(onlyDoctor ? { doctorId: currentDoctor } : {})
+            ...(isDoctor ? { doctorId: doctorId } : {})
           }
         }
       })
     } catch (error) { }
   }, [
-    page, isSuper, isPractice, practiceId, facilityId, findAllPatient, searchQuery,
-    onlyDoctor, currentDoctor
+    page, isSuper, isPractice, practiceId, facilityId, fetchAllPatientsQuery, searchQuery,
+    isDoctor, doctorId, isFacAdmin, isRegularUser
   ])
 
   useEffect(() => {
@@ -92,17 +99,22 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     !isOpen && setValue('patientId', EMPTY_OPTION)
   }, [isOpen, setValue])
 
+  useEffect(() => {
+    isDoctor && currentUserId &&
+      dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
+  }, [currentUserId, doctorId, isDoctor])
+
   const defaultFilterOptions = createFilterOptions();
   return (
     <Controller
-    rules={{ required: true }}
-    name={name}
-    control={control}
-    defaultValue={updatedOptions[0]}
-    render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-      return (
-        <Autocomplete
-        options={updatedOptions ?? []}
+      rules={{ required: true }}
+      name={name}
+      control={control}
+      defaultValue={updatedOptions[0]}
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+        return (
+          <Autocomplete
+            options={updatedOptions ?? []}
             value={field.value}
             loading={loading}
             disableClearable
@@ -118,7 +130,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
               return results;
             }}
-            
+
             renderOption={(option) => {
               if (option.id === ADD_PATIENT_MODAL) {
                 return (
@@ -132,7 +144,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
               return option.name
             }}
-            
+
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 {!!!placeholder &&

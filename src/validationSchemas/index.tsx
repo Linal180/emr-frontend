@@ -365,7 +365,9 @@ export const doctorSchema = yup.object({
 })
 
 export const facilityServicesSchema = {
-  name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
+  name: yup.string()
+  .required(requiredMessage(SERVICE_NAME_TEXT))
+  .min(2, MinLength(SERVICE_NAME_TEXT, 3)).max(26, MaxLength(SERVICE_NAME_TEXT, 50)),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -488,6 +490,7 @@ export const extendedPatientAppointmentSchema = yup.object({
 export const extendedPatientAppointmentWithNonAdminSchema = yup.object({
   ...PatientSchema,
   facilityId: selectorSchema(FACILITY),
+  usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
   ...basicContactViaAppointmentSchema,
 })
 
