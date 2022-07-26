@@ -1,13 +1,13 @@
 // packages block
-import { FC, Fragment, useState } from "react";
+import { forwardRef, Fragment, useImperativeHandle, useState } from "react";
 import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchTooltip } from "../../styles/searchTooltip";
-import { SearchComponentProps } from "../../interfacesTypes";
+import { FormForwardRef, SearchComponentProps } from "../../interfacesTypes";
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 
-const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder, submit }): JSX.Element => {
+const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(({ search, info, tooltipData, placeHolder, submit }, searchRef): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
@@ -21,6 +21,12 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
       search('')
     } else setQuery('')
   }
+
+  useImperativeHandle(searchRef, () => ({
+    submit() {
+      handleClear()
+    }
+  }));
 
   return (
     <Box className={classes.searchBox}>
@@ -89,6 +95,6 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
       </ClickAwayListener>}
     </Box>
   );
-};
+});
 
 export default Search;

@@ -1017,7 +1017,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token, billingStatus
+      reason, primaryInsurance, status, token, billingStatus, appointmentCreateType
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -1044,6 +1044,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       billingStatus,
       appointmentName,
       appointmentStatus,
+      appointmentCreateType,
       scheduleStartDateTime,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,

@@ -10,7 +10,7 @@ import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 import ModifierSelector from "./ModifierSelector";
 //constants, interfaces, utils
 import {
-  ACTIONS, BILLING_MODIFIERS_DATA, BILL_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
+  ACTIONS, BILLED_FEE_DOLLAR, BILLING_MODIFIERS_DATA, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
   DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
 import InputController from "../../../controller";
@@ -143,7 +143,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                     </Grid>
 
                     <Grid item md={1} sm={1} xs={1}>
-                      <Typography variant="h5" color="textPrimary">{BILL_FEE_DOLLAR}</Typography>
+                      <Typography variant="h5" color="textPrimary">{BILLED_FEE_DOLLAR}</Typography>
                     </Grid>
 
                     <Grid item md={4} sm={4} xs={4}>
