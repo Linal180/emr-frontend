@@ -158,7 +158,10 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           variables: {
             updatePracticeInput: {
               updatePracticeItemInput: { id, ...practiceInput },
-              updateUserInput: { id: practiceAdminId, phone: userPhone, email: userEmail, firstName: userFirstName, lastName: userLastName }
+              updateUserInput: {
+                id: practiceAdminId, phone: userPhone, email: userEmail.toLowerCase(),
+                firstName: userFirstName, lastName: userLastName
+              }
             }
           }
         })
@@ -173,14 +176,14 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
             createContactInput: {
-              firstName: userFirstName, lastName: userLastName, email: userEmail,
+              firstName: userFirstName, lastName: userLastName, email: userEmail.toLowerCase(),
               primaryContact: true
             },
 
             registerUserInput: {
-              isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName, phone: userPhone || '', adminId: adminId || '',
-              roleType: SYSTEM_ROLES.PracticeAdmin,
+              isAdmin: true, email: userEmail.toLowerCase(), password: SYSTEM_PASSWORD, 
+              firstName: userFirstName || '', lastName: userLastName, phone: userPhone || '',
+               adminId: adminId || '', roleType: SYSTEM_ROLES.PracticeAdmin,
             },
 
             createFacilityContactInput: {

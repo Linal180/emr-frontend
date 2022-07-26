@@ -191,7 +191,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      firstName, lastName, email: email.toLowerCase(), phone, mobile, dob: getTimestamps(dob || ''),
       gender: staffGender as Gender, username: '',
       ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }

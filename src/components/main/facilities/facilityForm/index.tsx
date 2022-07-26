@@ -230,7 +230,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
 
     const billingAddressInput = {
-      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
+      phone: billingPhone || '', email: billingEmail.toLowerCase() || '', fax: billingFax || '', state: selectedBillingState || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
       country: billingCountry || USA, zipCode: billingZipCode || '',
     }

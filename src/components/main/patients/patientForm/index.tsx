@@ -362,7 +362,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        email: basicEmail.toLowerCase() || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -383,7 +383,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       const contactInput = {
         contactType: ContactType.Self, country: basicCountry || USA, primaryContact: true,
-        email: basicEmail, city: basicCity, zipCode: basicZipCode,
+        email: basicEmail.toLowerCase(), city: basicCity, zipCode: basicZipCode,
         state: selectedBasicState, facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: basicAddress2, address: basicAddress,
       };
@@ -396,7 +396,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       const guarantorContactInput = {
         firstName: guarantorFirstName, middleName: guarantorMiddleName,
-        lastName: guarantorLastName, email: guarantorEmail, contactType: ContactType.Guarandor,
+        lastName: guarantorLastName, email: guarantorEmail.toLowerCase(), contactType: ContactType.Guarandor,
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
@@ -416,7 +416,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       };
 
       const employerInput = {
-        name: employerName, email: employerEmail, phone: employerPhone,
+        name: employerName, email: employerEmail.toLowerCase(), phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
         address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState, country: employerCountry
       };
