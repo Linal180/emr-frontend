@@ -2096,3 +2096,9 @@ export const getPageNumber = (page: number, pageRecords: number): number => {
 
   return 1;
 }
+
+export const formatEmail = (email: string) => {
+  if(!!!email) return '';
+
+  return email.toLowerCase();
+}

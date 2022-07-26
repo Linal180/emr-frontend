@@ -14,6 +14,7 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import CountryController from '../../../../controller/CountryController';
 // interfaces, graphql, constants block /styles
+import { formatEmail } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { createPracticeSchema, updatePracticeSchema } from '../../../../validationSchemas';
@@ -159,7 +160,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             updatePracticeInput: {
               updatePracticeItemInput: { id, ...practiceInput },
               updateUserInput: {
-                id: practiceAdminId, phone: userPhone, email: userEmail.toLowerCase(),
+                id: practiceAdminId, phone: userPhone, email: formatEmail(userEmail),
                 firstName: userFirstName, lastName: userLastName
               }
             }
@@ -176,12 +177,12 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
             createContactInput: {
-              firstName: userFirstName, lastName: userLastName, email: userEmail.toLowerCase(),
+              firstName: userFirstName, lastName: userLastName, email: formatEmail(userEmail),
               primaryContact: true
             },
 
             registerUserInput: {
-              isAdmin: true, email: userEmail.toLowerCase(), password: SYSTEM_PASSWORD, 
+              isAdmin: true, email: formatEmail(userEmail), password: SYSTEM_PASSWORD, 
               firstName: userFirstName || '', lastName: userLastName, phone: userPhone || '',
                adminId: adminId || '', roleType: SYSTEM_ROLES.PracticeAdmin,
             },

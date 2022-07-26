@@ -1,7 +1,7 @@
 // packages import
 import { FC, Reducer, useReducer } from "react"
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { useFormContext } from "react-hook-form"
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import {
   Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography
 } from "@material-ui/core"
@@ -39,7 +39,14 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      patientDispatch({ type: ActionType.SET_USER_DATA, userData: { ...userData, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` } })
+
+      patientDispatch({
+        type: ActionType.SET_USER_DATA, userData:
+        {
+          ...userData,
+          address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}`
+        }
+      })
       const { status, options } = data || {}
 
       dispatch && dispatch({ type: ActionType.SET_DATA, data: status ? options : [] })
@@ -177,7 +184,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                 <InputController
                   disabled={shouldDisableEdit}
                   isRequired={!optionalEmail}
-                  fieldType="text"
+                  fieldType="email"
                   controllerName="basicEmail"
                   controllerLabel={EMAIL}
                   loading={getPatientLoading}
