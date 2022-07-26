@@ -355,7 +355,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             <FormProvider {...methods}>
               <Grid container spacing={3}>
                 {isAdminUser &&
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={3} sm={12} xs={12}>
                     <FacilitySelector
                       addEmpty
                       label={FACILITY}
@@ -373,7 +373,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                   />
                 </Grid>
 
-                <Grid item md={4} sm={12} xs={12}>
+                <Grid item md={5} sm={12} xs={12}>
                   <Box className="date-box-wrap">
                     <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
@@ -408,7 +408,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                         <ChevronRight />
                       </Button>
 
-                      <Box ml={1} />
+                      <Box ml={3} />
 
                       <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>{TODAY}</Button>
                     </Box>

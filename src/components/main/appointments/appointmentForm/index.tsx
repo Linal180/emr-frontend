@@ -9,7 +9,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  Box, Button, Card, CircularProgress, colors, FormControl, Grid, InputLabel, Typography
+  Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -456,60 +456,53 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
-              <Grid md={8} item>
-                <Card className='overflowVisible'>
-                  <Box p={3}>
-                    <Box py={2} mb={4} display='flex' justifyContent='space-between'
-                      alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
-                    >
-                      <Typography variant='h4'>{APPOINTMENT}</Typography>
-                    </Box>
+              <Grid item md={8} sm={12} xs={12}>
+                <CardComponent cardTitle={APPOINTMENT}>
+                  <Grid container spacing={3}>
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Typography variant='body1'>{TYPE}</Typography>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={12} sm={12} xs={12}>
-                        <Typography variant='body1'>{TYPE}</Typography>
-
-                        <Box className={chartingClasses.toggleProblem}>
-                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                            {appointmentTypes.map(type =>
-                              <Box onClick={() => handleAppointmentType(type)}
-                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
-                              >
-                                <Typography variant='h6'>{type}</Typography>
-                              </Box>
-                            )}
-                          </Box>
+                      <Box className={chartingClasses.toggleProblem}>
+                        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                          {appointmentTypes.map(type =>
+                            <Box onClick={() => handleAppointmentType(type)}
+                              className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
+                            >
+                              <Typography variant='h6'>{type}</Typography>
+                            </Box>
+                          )}
                         </Box>
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isHigherAdmin ?
-                          isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
-                            : <FacilitySelector
-                              isRequired
-                              label={FACILITY}
-                              name="facilityId"
-                            />
-                          : renderItem(FACILITY, userFacilityName, false, getAppointmentLoading)}
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName, false, getAppointmentLoading) :
-                          <ServiceSelector
-                            isRequired
-                            name="serviceId"
-                            isEdit={isEdit}
-                            label={APPOINTMENT_TYPE}
-                            defaultValues={serviceIds}
-                            loading={getAppointmentLoading}
-                            facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
-                          />
-                        }
-                      </Grid>
+                      </Box>
                     </Grid>
-                  </Box>
-                </Card>
-                <Box pb={3} />
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      {isHigherAdmin ?
+                        isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
+                          : <FacilitySelector
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
+                        : renderItem(FACILITY, userFacilityName, false, getAppointmentLoading)}
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName, false, getAppointmentLoading) :
+                        <ServiceSelector
+                          isRequired
+                          name="serviceId"
+                          isEdit={isEdit}
+                          label={APPOINTMENT_TYPE}
+                          defaultValues={serviceIds}
+                          loading={getAppointmentLoading}
+                          facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                        />
+                      }
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box p={2} />
 
                 <CardComponent cardTitle={INFORMATION}>
                   <>
@@ -580,52 +573,48 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 </CardComponent>
               </Grid>
 
-              <Grid md={4} item>
-                <Grid item md={12} sm={12} className="custom-calendar">
-                  <CardComponent cardTitle="Available Slots">
-                    <Box display="flex" justifyContent="center">
-                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <DatePicker
-                          variant="static"
-                          openTo="date"
-                          value={appStartDate ? appStartDate : date}
-                          autoOk
-                          disablePast
-                          fullWidth
-                          disableToolbar
-                          onChange={(currentDate) => { dateHandler(currentDate) }}
-                        />
+              <Grid item md={4} sm={12} xs={12}>
+                <CardComponent cardTitle="Available Slots">
+                  <Box display="flex" justifyContent="center">
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <DatePicker
+                        variant="static"
+                        openTo="date"
+                        value={appStartDate ? appStartDate : date}
+                        autoOk
+                        disablePast
+                        fullWidth
+                        disableToolbar
+                        onChange={(currentDate) => { dateHandler(currentDate) }}
+                      />
 
-                      </MuiPickersUtilsProvider>
-                    </Box>
+                    </MuiPickersUtilsProvider>
+                  </Box>
 
-                    {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-                      <ul className={classes.timeSlots}>
-                        {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-                          const { startTime, endTime } = slot || {}
-                          const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
+                  {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                    <ul className={classes.timeSlots}>
+                      {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+                        const { startTime, endTime } = slot || {}
+                        const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
 
-                          return (
-                            <li key={index}>
-                              <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
-                                bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
-                                color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
-                                className={classes.timeSlot}
-                                onClick={() => handleSlot(slot)}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
-                                {getStandardTime(new Date(endTime || '').getTime().toString())}
-                              </Box>
-                            </li>
-                          )
-                        }) : (
-                          <NoSlotsComponent />
-                        )}
-                      </ul>
-                    )}
-                  </CardComponent>
-                </Grid>
-
-                <Box pb={3} />
+                        return (
+                          <li key={index}>
+                            <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
+                              bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
+                              color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
+                              className={classes.timeSlot}
+                              onClick={() => handleSlot(slot)}>
+                              {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
+                              {getStandardTime(new Date(endTime || '').getTime().toString())}
+                            </Box>
+                          </li>
+                        )
+                      }) : (
+                        <NoSlotsComponent />
+                      )}
+                    </ul>
+                  )}
+                </CardComponent>
 
                 <CardComponent cardTitle={PATIENT_CONDITION}>
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (

@@ -20,7 +20,7 @@ import {
   useFindAllStaffListLazyQuery
 } from "../../../generated/graphql";
 import {
-  CalendarBlackIcon, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
+  CalendarBlackIcon, CalendarBlackIconTwo, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
   StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo,
 } from "../../../assets/svgs";
 import {
@@ -28,7 +28,7 @@ import {
   TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, NEW_APPOINTMENT, NEW_PROVIDER, SOMETHING_WENT_WRONG,
   TOTAL_APPOINTMENTS, NEW_STAFF, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS, APPOINTMENTS_ROUTE,
   AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, RECENTLY_ADDED_PATIENTS, STAFF_ROUTE,
-  DOCTORS_ROUTE, 
+  DOCTORS_ROUTE,
 } from "../../../constants";
 
 const FacilityDashboardComponent: FC = (): JSX.Element => {
@@ -44,7 +44,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
   const [providerCount, setProviderCount] = useState<number>(0)
   const [staffCount, setStaffCount] = useState<number>(0)
 
-  const [,setPatientCount] = useState<number>(0)
+  const [, setPatientCount] = useState<number>(0)
   // const totalUsers = patientCount + staffCount + providerCount
 
   const [findAllDoctor] = useFindAllDoctorListLazyQuery({
@@ -186,7 +186,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={8} sm={12} xs={12}>
           <Grid container spacing={3}>
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} bgcolor={BLUE_SEVEN} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={BLUE_SEVEN} borderRadius={8}>
                 <CalendarWhiteIcon />
                 <Box p={2} />
 
@@ -196,7 +196,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Grid>
 
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} bgcolor={GREEN} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={GREEN} borderRadius={8}>
                 <ProviderWhiteIcon />
                 <Box p={2} />
                 <Typography variant="h3" className="whiteColor">{providerCount}</Typography>
@@ -205,7 +205,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Grid>
 
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} bgcolor={PURPLE_ONE} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={PURPLE_ONE} borderRadius={8}>
                 <StaffWhiteIcon />
                 <Box p={2} />
                 <Typography variant="h3" className="whiteColor">{staffCount}</Typography>
@@ -285,7 +285,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex'>
-                    <CalendarBlackIcon />
+                    <CalendarBlackIconTwo />
 
                     <Box ml={2}>
                       <Typography variant="h5">{appointmentCount}</Typography>
@@ -366,71 +366,55 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box className={classes.cardContainer}>
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Link to={`${APPOINTMENTS_ROUTE}/new`}>
-                        <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
-                          <CalendarBlackIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Link to={`${APPOINTMENTS_ROUTE}/new`}>
+                  <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
+                    <CalendarBlackIcon />
 
-                          <Box p={0.7} />
+                    <Box p={0.7} />
 
-                          <Typography variant="h6">{NEW_APPOINTMENT}</Typography>
-                        </Box>
-                      </Link>
-                    </Grid>
+                    <Typography variant="h6">{NEW_APPOINTMENT}</Typography>
+                  </Box>
+                </Link>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Link to={`${PATIENTS_ROUTE}/new`}>
-                        <Box className={classes.cardBox}>
-                          <UserBlackIcon />
+                <Link to={`${PATIENTS_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
 
-                          <Box p={0.7} />
+                    <Box p={0.7} />
 
-                          <Typography variant="h6">{NEW_PATIENT}</Typography>
-                        </Box>
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                    <Typography variant="h6">{NEW_PATIENT}</Typography>
+                  </Box>
+                </Link>
+              </Box>
 
               <Box p={1} />
 
-              <Grid container justifyContent="center">
-                <Grid item md={9} sm={12} xs={12}>
-                  <Grid container spacing={3} justifyContent="center">
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Link to={`${DOCTORS_ROUTE}/new`}>
-                        <Box className={classes.cardBox}>
-                          <UserBlackIcon />
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Link to={`${DOCTORS_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
 
-                          <Box p={0.7} />
+                    <Box p={0.7} />
 
-                          <Typography variant="h6">{NEW_PROVIDER}</Typography>
-                        </Box>
-                      </Link>
-                    </Grid>
+                    <Typography variant="h6">{NEW_PROVIDER}</Typography>
+                  </Box>
+                </Link>
 
-                    <Box p={1} />
+                <Box p={1} />
 
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Link to={`${STAFF_ROUTE}/new`}>
-                        <Box className={classes.cardBox}>
-                          <UserBlackIcon />
+                <Link to={`${STAFF_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
 
-                          <Box p={0.2} />
+                    <Box p={0.2} />
 
-                          <Typography variant="h6">{NEW_STAFF}</Typography>
-                        </Box>
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+                    <Typography variant="h6">{NEW_STAFF}</Typography>
+                  </Box>
+                </Link>
+              </Box>
             </Box>
           </Card>
 

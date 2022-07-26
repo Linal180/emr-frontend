@@ -86,7 +86,7 @@ const Header: FC = (): JSX.Element => {
               component={Link}
               to={PATIENTS_ROUTE}
               className={currentRoute === 'inPatient' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
-              >
+            >
               {PATIENTS_TEXT}
             </Typography>
           }

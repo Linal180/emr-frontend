@@ -22,7 +22,7 @@ import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from ".
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
 import {
   ACTION, EFFECTIVE_DATE, EXPIRY_DATE, PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT, DELETE_FEE_SCHEDULE_DESCRIPTION,
-  CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE, TOTAL_CODES
+  CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE, TOTAL_CODES,
 } from "../../../constants";
 
 const FeeTable: FC = (): JSX.Element => {
@@ -93,7 +93,9 @@ const FeeTable: FC = (): JSX.Element => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
       dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
-      const findAllFeeScheduleInput = isSuper ? { paginationOptions, searchString: searchQuery } : { paginationOptions, practiceId, searchString: searchQuery }
+      const findAllFeeScheduleInput = isSuper ? { paginationOptions, searchString: searchQuery } 
+      : 
+      { paginationOptions, practiceId, searchString: searchQuery }
       await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
     } catch (error) { }
   }, [page, practiceId, isSuper, findAllFeeSchedule, searchQuery])
@@ -166,7 +168,7 @@ const FeeTable: FC = (): JSX.Element => {
               <Search search={search} />
             </Grid>
             {isSuper &&
-              <Grid item md={2} sm={12} xs={12}>
+              <Grid item md={3} sm={12} xs={12}>
                 <FormProvider {...methods}>
                   <PracticeSelector
                     addEmpty
