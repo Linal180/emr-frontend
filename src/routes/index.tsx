@@ -64,7 +64,6 @@ import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
-import { PatientVitals } from "../pages/main/patientChart/patientVitals";
 import { PracticeListing } from "../pages/main/practices/practiceListing";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
@@ -100,7 +99,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE, VITALS_ROUTE
+  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -163,7 +162,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} permission={USER_PERMISSIONS.updatePatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details/:tabValue?`} component={PatientDetail} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}`} component={PatientChart} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}${VITALS_ROUTE}`} component={PatientVitals} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
       <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} permission={USER_PERMISSIONS.findAllAppointments} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} permission={USER_PERMISSIONS.createAppointment} />

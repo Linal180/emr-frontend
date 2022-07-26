@@ -220,9 +220,9 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
-              <Grid item md={6}>
+              <Grid item md={6} sm={12} xs={12}>
                 <Grid container>
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
@@ -255,7 +255,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={TAX_ID_DETAILS}>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
@@ -334,7 +334,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={PRACTICE_ADMIN_DETAILS_TEXT}>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
@@ -354,9 +354,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             controllerLabel={LAST_NAME}
                           />
                         </Grid>
-                      </Grid>
 
-                      <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             isRequired
@@ -373,11 +371,13 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
                     </CardComponent>
                   </Grid>
+
+                  <Box p={1.5} />
                 </Grid>
               </Grid>
 
-              <Grid md={6} item>
-                <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Grid container>
                   {!isEdit &&
                     <Grid md={12} item>
                       <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
