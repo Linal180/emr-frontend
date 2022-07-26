@@ -14,8 +14,8 @@ import {
 import client from "../apollo";
 import history from "../history";
 import {
-  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, ModifiersSelectorOption, multiOptionType, Order,
-  SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption, LoaderProps, ModifiersSelectorOption,
+  multiOptionType, Order, SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -37,7 +37,7 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -433,6 +433,9 @@ export const timeDifference = (time: string) => {
 export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
 
+export const getDateWithDayAndTime = (date: string) =>
+  moment(date, "x").format("ddd MMM DD, YYYY hh:mm A");
+
 export const isCurrentDay = (date: string) => {
   if (!!!date) return false
 
@@ -670,6 +673,27 @@ export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
           description,
           longDescription,
           shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderFeeCPTCodes = (feeCptCodes: AllCptFeeSchedulesPayload['cptFeeSchedules']) => {
+  const data: ItemSelectorOption[] = [];
+
+  if (!!feeCptCodes) {
+    for (let feeCptCode of feeCptCodes) {
+      if (feeCptCode) {
+        const { id, code, shortDescription, serviceFee } = feeCptCode;
+        data.push({
+          id: id,
+          name: `${code} | ${shortDescription}`,
+          description: shortDescription || '',
+          code: code || '',
+          serviceFee: serviceFee || ''
         })
       }
     }
@@ -1548,7 +1572,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
 }
 
 export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
-  const data: SelectorOption[] = [];
+  const data: ItemSelectorOption[] = [];
 
   if (!!list) {
     for (let item of list) {
@@ -1562,11 +1586,6 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
           let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
 
           data.push({ id: icdCodesId, name: `${code} | ${description}` })
-          break;
-        case ITEM_MODULE.cptCode:
-          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
-
-          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
@@ -1582,6 +1601,16 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
           let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
 
           data.push({ id: claimStatusId, name: statusName })
+          break;
+        case ITEM_MODULE.feeSchedule:
+          let { id: feeScheduleId, name: feeScheduleName } = (item as unknown as FeeSchedule) || {};
+
+          data.push({ id: feeScheduleId, name: feeScheduleName })
+          break;
+        case ITEM_MODULE.cptFeeSchedule:
+          let { id: cptFeeScheduleId, serviceFee, code: cptCode, shortDescription } = (item as unknown as CptFeeSchedule) || {};
+
+          data.push({ id: cptFeeScheduleId, name: `${cptCode} | ${shortDescription}`, code: cptCode || '', serviceFee: serviceFee || '' })
           break;
         default:
           break;
@@ -2053,6 +2082,11 @@ export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => va
 export const getCharFromNumber = (num: number, isUpper = true) => {
   const caseNumber = isUpper ? 65 : 97
   return String.fromCharCode(caseNumber + num)
+}
+
+export const getNumberFromChar = (s: string, index: number) => {
+  const numb = s.charCodeAt(index) - 65 + 1
+  return isNaN(numb) ? '' : numb
 }
 
 export const getPageNumber = (page: number, pageRecords: number): number => {

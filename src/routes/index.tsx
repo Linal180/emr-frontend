@@ -192,7 +192,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={FEE_SCHEDULE_ROUTE} component={FeeSchedule} />
       <PrivateRoute exact path={`${FEE_SCHEDULE_ROUTE}/:id/details`} component={CptFeeSchedule} />
-      <PrivateRoute exact path={SUPER_BILL_ROUTE} component={SuperBill} />
+      <PrivateRoute exact path={`${SUPER_BILL_ROUTE}/:id`} component={SuperBill} />
       <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:id`} component={AddLabOrders} />
       <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
       <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />
