@@ -407,8 +407,10 @@ export const COPAY_AMOUNT = "Copay Amount";
 export const UNCOVERED_AMT = "Uncovered Amt";
 export const CLAIM_STATUS = "Claim Status";
 export const CLAIM_DATE = "Claim Date";
+export const INVOICE_DATE = "Invoice Date";
 export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
+export const LAST_VISITED = "Last Visited";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
@@ -441,6 +443,7 @@ export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
+export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
@@ -1212,6 +1215,8 @@ export const NOTICE_ON_FILE = "Notices on file";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
+export const BUILD_FEE_DOLLAR = "Build Fee ($)";
+export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
@@ -1401,7 +1406,7 @@ export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assig
 export const ELIGIBILITY_ERROR_MESSAGE = 'Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
-export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
+export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name or Patient ID etc...";
 export const APPOINTMENT_CONFIRM_HEADING = "We've sent you a confirmation message & email for your records.";
 export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout after a period of inactivity.";
@@ -2621,6 +2626,8 @@ export enum ITEM_MODULE {
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
   claimStatus = 'claimStatus',
+  feeSchedule = 'feeSchedule',
+  cptFeeSchedule = 'cptFeeSchedule',
 }
 
 export enum TABLE_SELECTOR_MODULES {

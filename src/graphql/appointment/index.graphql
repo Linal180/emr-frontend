@@ -302,3 +302,36 @@ query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmen
     }
   }
 }
+
+query FindPatientLastAppointment($lastVisitedAppointmentInput: LastVisitedAppointmentInput!){
+  findPatientLastAppointment(lastVisitedAppointmentInput: $lastVisitedAppointmentInput){
+    response {
+      status
+    }
+    
+		 appointment {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}

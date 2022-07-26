@@ -29,7 +29,7 @@ import {
   DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, CPT_CODE, AMOUNT,
+  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -365,7 +365,9 @@ export const doctorSchema = yup.object({
 })
 
 export const facilityServicesSchema = {
-  name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
+  name: yup.string()
+  .required(requiredMessage(SERVICE_NAME_TEXT))
+  .min(2, MinLength(SERVICE_NAME_TEXT, 3)).max(26, MaxLength(SERVICE_NAME_TEXT, 50)),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -488,6 +490,7 @@ export const extendedPatientAppointmentSchema = yup.object({
 export const extendedPatientAppointmentWithNonAdminSchema = yup.object({
   ...PatientSchema,
   facilityId: selectorSchema(FACILITY),
+  usualProviderId: selectorSchema(USUAL_PROVIDER_ID),
   ...basicContactViaAppointmentSchema,
 })
 
@@ -1040,9 +1043,9 @@ export const createBillingSchema = yup.object({
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0),
-  [ITEM_MODULE.cptCode]: yup.array().of(
-    tableSelectorSchema(ITEM_MODULE.icdCodes)
-  ).test('', requiredMessage(CPT_CODE), (value: any) => !!value && value.length > 0),
+  [ITEM_MODULE.cptFeeSchedule]: yup.array().of(
+    tableSelectorSchema(ITEM_MODULE.cptCode)
+  ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
 export const addDocumentSchema = yup.object({

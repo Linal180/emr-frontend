@@ -2,6 +2,7 @@
 import {
   Box, Button, Card, Checkbox, CircularProgress, colors, FormControlLabel, FormGroup, Grid, Tab, Typography
 } from "@material-ui/core";
+import { useParams } from "react-router";
 import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { ChangeEvent, FC, useState } from "react";
@@ -21,13 +22,13 @@ import InsuranceComponent from "../../patients/patientDetail/insurance";
 //constants, utils, interfaces block
 import { Link } from "react-router-dom";
 import {
-  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_DATE, CLAIM_STATUS,
-  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FROM, HCFA_DESC, ICD_TEN_CODES, INVOICE_NO, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
-  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, OTHER_DATE, PATIENT_PAYMENT_TYPE,
-  POS, PRACTICE, RENDERING_PROVIDER, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
+  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
+  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES, INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE,
+  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
+  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
 } from "../../../../constants";
 import { CodeType, OnsetDateType } from "../../../../generated/graphql";
-import { BillingFormProps, SelectorOption } from "../../../../interfacesTypes";
+import { BillingFormProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/billingReducer";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { GREY_THREE } from "../../../../theme";
@@ -36,10 +37,11 @@ import { formatValue, renderItem } from "../../../../utils";
 const BillingForm: FC<BillingFormProps> = (
   { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
   const classesToggle = usePublicAppointmentStyles();
+  const { appointmentId } = useParams<ParamsType>()
   const { handleSubmit, trigger, watch, setValue } = methods
-  const { onsetDateType, practice } = watch()
+  const { onsetDateType, practice, feeSchedule } = watch()
   const { id: onsetDateTypeId } = onsetDateType || {}
-  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber } = state
+  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber, practiceId } = state
   const [selectedTab, setSelectedTab] = useState<string>('1')
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
     setSelectedTab(newValue)
@@ -61,9 +63,16 @@ const BillingForm: FC<BillingFormProps> = (
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (shouldCheckout: boolean) => {
     const isValid = await trigger()
-    isValid && dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+    dispatch({ type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: shouldCheckout })
+    if (isValid) {
+      if (shouldCheckout) {
+        dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+      } else {
+        handleSubmit(onSubmit)()
+      }
+    }
   }
 
   const handleOnSetDateChange = (data: SelectorOption) => {
@@ -83,12 +92,12 @@ const BillingForm: FC<BillingFormProps> = (
           <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            {!shouldDisableEdit && <Box display="flex" alignItems="center"  flexWrap="wrap">
+            {!shouldDisableEdit && <Box display="flex" alignItems="center" flexWrap="wrap">
               <Button
                 variant="contained"
                 color="secondary"
                 component={Link}
-                to={SUPER_BILL_ROUTE}
+                to={`${SUPER_BILL_ROUTE}/${appointmentId}`}
               >
                 {SUPER_BILL}
               </Button>
@@ -110,14 +119,24 @@ const BillingForm: FC<BillingFormProps> = (
                 color="default"
                 onClick={() => createClaimCallback(true)}
               >
-                HCFA - 1500 Form
+                {HCFA_1500_FORM}
+              </Button>
+
+              <Box p={1} />
+
+              <Button
+                variant="outlined"
+                color="default"
+                onClick={() => handleCheckout(false)}
+              >
+                {SAVE_TEXT}
               </Button>
 
               <Box p={1} />
 
               <Button
                 variant="contained" color="primary" disabled={createBillingLoading}
-                onClick={handleCheckout}
+                onClick={() => handleCheckout(true)}
               >
                 {submitButtonText ?? CHECKOUT}
                 {createBillingLoading && <CircularProgress size={20} color="inherit" />}
@@ -146,7 +165,7 @@ const BillingForm: FC<BillingFormProps> = (
                     <Grid item md={12} sm={12} xs={12}>
                       <DatePicker
                         name="claimDate"
-                        label={CLAIM_DATE}
+                        label={INVOICE_DATE}
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
@@ -282,6 +301,17 @@ const BillingForm: FC<BillingFormProps> = (
                       />
                     </Grid>
 
+                    <Grid item md={12} sm={12} xs={12}>
+                      <ItemSelector
+                        isEdit
+                        label={FEE_SCHEDULE}
+                        name="feeSchedule"
+                        modalName={ITEM_MODULE.feeSchedule}
+                        disabled={shouldDisableEdit}
+                        practiceId={practiceId}
+                      />
+                    </Grid>
+
                     {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="resource"
@@ -371,9 +401,9 @@ const BillingForm: FC<BillingFormProps> = (
 
                         <Grid item md={12} sm={12} xs={12}>
                           <DatePicker
-                            disabled={shouldDisableEdit}
+                            disabled
                             name="otherDate"
-                            label={OTHER_DATE}
+                            label={LAST_VISITED}
                           />
                         </Grid>
                       </Grid>
@@ -418,7 +448,7 @@ const BillingForm: FC<BillingFormProps> = (
                     {
                       shouldDisableEdit ?
                         <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
-                        <TableSelector moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
+                        <TableSelector moduleName={ITEM_MODULE.cptFeeSchedule} title={CPT_CODES} shouldShowPrice feeScheduleId={feeSchedule?.id} />
                     }
                     <Box p={1} />
                     {/* {

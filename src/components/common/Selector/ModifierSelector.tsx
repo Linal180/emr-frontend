@@ -10,7 +10,7 @@ import { useFindAllModifiersLazyQuery } from "../../../generated/graphql";
 import { renderModifiers, requiredLabel, sortingValue } from "../../../utils";
 import { modifiersReducer, Action, initialState, State, ActionType } from "../../../reducers/modifiersReducer";
 
-const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, isRequired, addEmpty }): JSX.Element => {
+const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, shouldShowLabel = true }): JSX.Element => {
 
   const { control } = useFormContext()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(modifiersReducer, initialState)
@@ -71,11 +71,11 @@ const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
             renderOption={(option) => `${option.name || ""} ${option.description || ''}`}
             getOptionLabel={(option) => option.name || ""}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
+              <FormControl fullWidth margin='normal' style={!shouldShowLabel ? { marginTop: 0 } : {}} error={Boolean(invalid)}>
                 <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
+                  {shouldShowLabel && <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
+                  </InputLabel>}
                 </Box>
                 <TextField
                   {...params}
