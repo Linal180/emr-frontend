@@ -424,9 +424,9 @@ export const kinPatientSchema = {
 
 export const guardianPatientSchema = {
   guardianSuffix: yup.string(),
-  guardianLastName: yup.string(),
-  guardianFirstName: yup.string(),
-  guardianMiddleName: yup.string(),
+  guardianLastName: nameValidationSchema(LAST_NAME, false),
+  guardianFirstName: nameValidationSchema(FIRST_NAME, false),
+  guardianMiddleName: notRequiredStringOnly(MIDDLE_NAME),
 };
 
 export const guarantorPatientSchema = {
