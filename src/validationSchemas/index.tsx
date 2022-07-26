@@ -30,6 +30,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX,
+  DESCRIPTION_INVALID_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -373,8 +374,8 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   name: yup.string()
-  .required(requiredMessage(SERVICE_NAME_TEXT))
-  .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
+    .required(requiredMessage(SERVICE_NAME_TEXT))
+    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -621,7 +622,7 @@ export const roleSchema = yup.object({
     .test('', invalidMessage(ROLE_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   description: yup.string()
     .required(requiredMessage(DESCRIPTION))
-    .test('', invalidMessage(DESCRIPTION), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
+    .test('', DESCRIPTION_INVALID_MESSAGE, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({

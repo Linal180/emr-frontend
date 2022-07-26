@@ -1524,7 +1524,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
-export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
@@ -1552,6 +1552,7 @@ export const minDobValidMessage = (label: string) => `${label}'s age should be m
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
+export const DESCRIPTION_INVALID_MESSAGE = "White-spaces at start and special characters (!@#$%^&*) are not acceptable";
 export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
