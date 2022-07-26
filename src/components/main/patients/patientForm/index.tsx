@@ -20,15 +20,14 @@ import {
   Action, ActionType, initialState, patientReducer, State
 } from "../../../../reducers/patientReducer";
 import {
+  getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord,
   formatEmail,
-  getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord
 } from '../../../../utils';
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
-  CONFLICT_EXCEPTION,
-  USA,
+  CONFLICT_EXCEPTION, USA,
 } from "../../../../constants";
 import {
   ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,

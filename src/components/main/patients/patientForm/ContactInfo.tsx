@@ -134,22 +134,22 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
           <Grid item lg={2} md={4}>
             <InputController
-              disabled={shouldDisableEdit}
               fieldType="text"
-              controllerName="basicCity"
               controllerLabel={CITY}
+              controllerName="basicCity"
               loading={getPatientLoading}
+              disabled={shouldDisableEdit}
             />
           </Grid>
 
           <Grid item lg={2} md={4}>
             <Selector
-              disabled={shouldDisableEdit}
-              name="basicState"
-              label={STATE}
               addEmpty
+              label={STATE}
+              name="basicState"
               options={MAPPED_STATES}
               loading={getPatientLoading}
+              disabled={shouldDisableEdit}
             />
           </Grid>
 

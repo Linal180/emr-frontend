@@ -242,7 +242,7 @@ export const forgetPasswordValidationSchema = yup.object({
   ...emailSchema,
 });
 
-export const contactSchema = {
+const contactSchema = {
   ...emailSchema,
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
@@ -283,12 +283,6 @@ export const billingAddressSchema = {
   billingAddress2: addressValidation(ADDRESS, false),
   billingZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
-
-export const extendedContactSchema = yup.object({
-  ...contactSchema,
-  facilityId: selectorSchema(FACILITY),
-  serviceCode: selectorSchema(SERVICE_CODE),
-})
 
 const staffBasicSchema = {
   ...firstLastNameSchema,
@@ -393,7 +387,7 @@ export const serviceSchema = yup.object({
   ...facilityServicesSchema,
 })
 
-export const PatientSchema = {
+const PatientSchema = {
   ...ssnSchema,
   ...dobSchema,
   ...firstLastNameSchema,
@@ -473,21 +467,9 @@ export const extendedPatientSchema = (
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
+  basicZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...(isSuperAdminOrPracticeAdmin ? { facilityId: selectorSchema(FACILITY) } : {}),
   ...(isDoctor ? {} : { usualProviderId: selectorSchema(USUAL_PROVIDER_ID) }),
-})
-
-export const extendedEditPatientSchema = (isOptional: boolean) => yup.object({
-  ...PatientSchema,
-  ...kinPatientSchema,
-  ...basicContactSchema,
-  ...employerPatientSchema,
-  ...guardianPatientSchema,
-  ...emergencyPatientSchema,
-  ...guarantorPatientSchema,
-  gender: selectorSchema(GENDER),
-  basicPhone: notRequiredPhone(MOBILE_NUMBER),
-  basicEmail: optionalEmailSchema(isOptional)
 })
 
 export const extendedPatientAppointmentSchema = yup.object({
