@@ -113,7 +113,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           Alert.success(PATIENT_ALLERGY_DELETED);
           dispatch({ type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: '' })
 
-          if (!!patientAllergies && patientAllergies.length > 1) {
+          if (!!patientAllergies && patientAllergies.length) {
             await fetchAllergies()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientAllergies?.length || 0) })
@@ -145,11 +145,14 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                {!shouldDisableEdit && <Button variant='contained' color='primary' onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                  <AddWhiteIcon />
-                  <Box p={0.5} />
-                  {ADD_NEW_TEXT}
-                </Button>}
+                {!shouldDisableEdit &&
+                  <Button variant='contained' color='primary'
+                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
+                  >
+                    <AddWhiteIcon />
+                    <Box p={0.5} />
+                    {ADD_NEW_TEXT}
+                  </Button>}
               </Box>
 
               <Box className={classes.tableBox}>

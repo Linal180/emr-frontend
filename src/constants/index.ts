@@ -725,6 +725,7 @@ export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
 export const SIGN_OFF = "Sign Off";
+export const ROLES_PAGE_LIMIT = 12;
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
