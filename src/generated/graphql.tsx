@@ -421,6 +421,8 @@ export type Billing = {
   employment?: Maybe<Scalars['Boolean']>;
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
+  feeSchedule?: Maybe<FeeSchedule>;
+  feeScheduleId?: Maybe<Scalars['String']>;
   from?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNumber?: Maybe<Scalars['String']>;
@@ -477,6 +479,7 @@ export type BillingInput = {
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
   from?: Maybe<Scalars['String']>;
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
@@ -490,6 +493,7 @@ export type BillingInput = {
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
   servicingProviderId?: Maybe<Scalars['String']>;
+  shouldCheckout?: Maybe<Scalars['Boolean']>;
   to?: Maybe<Scalars['String']>;
   uncoveredAmount?: Maybe<Scalars['String']>;
 };
@@ -683,6 +687,10 @@ export type Code = {
   m2?: Maybe<Scalars['String']>;
   m3?: Maybe<Scalars['String']>;
   m4?: Maybe<Scalars['String']>;
+  modifier1?: Maybe<Modifier>;
+  modifier2?: Maybe<Modifier>;
+  modifier3?: Maybe<Modifier>;
+  modifier4?: Maybe<Modifier>;
   price?: Maybe<Scalars['String']>;
   unit?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -1695,6 +1703,7 @@ export type FacilityPayload = {
 
 export type FeeSchedule = {
   __typename?: 'FeeSchedule';
+  billing?: Maybe<Array<Billing>>;
   cptFeeSchedule?: Maybe<Array<CptFeeSchedule>>;
   cptFeeScheduleCount?: Maybe<Scalars['Float']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -2256,6 +2265,10 @@ export type LabTestsPayload = {
   labTests?: Maybe<Array<Maybe<LabTests>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type LastVisitedAppointmentInput = {
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type LayoutJsonInputType = {
@@ -4012,6 +4025,7 @@ export type Query = {
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
   findPatientConsent: PatientConsentPayload;
+  findPatientLastAppointment: AppointmentPayload;
   generateClaimNo: ClaimNumberPayload;
   getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
@@ -4059,6 +4073,7 @@ export type Query = {
   getSlots: SlotsPayload;
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
+  getSuperBillInfo: SuperBillPayload;
   getToken: BraintreePayload;
   getTransaction: TransactionPayload;
   getUser: UserPayload;
@@ -4335,6 +4350,11 @@ export type QueryFindPatientConsentArgs = {
 };
 
 
+export type QueryFindPatientLastAppointmentArgs = {
+  lastVisitedAppointmentInput: LastVisitedAppointmentInput;
+};
+
+
 export type QueryGetAllInvoicesArgs = {
   invoiceInput: InvoiceInputs;
 };
@@ -4547,6 +4567,11 @@ export type QueryGetSpecimenTypeByNameArgs = {
 
 export type QueryGetStaffArgs = {
   getStaff: GetStaff;
+};
+
+
+export type QueryGetSuperBillInfoArgs = {
+  superBillInput: SuperBillInput;
 };
 
 
@@ -5231,6 +5256,21 @@ export type StaffPayload = {
   __typename?: 'StaffPayload';
   response?: Maybe<ResponsePayload>;
   staff?: Maybe<Staff>;
+};
+
+export type SuperBillInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+};
+
+export type SuperBillPayload = {
+  __typename?: 'SuperBillPayload';
+  appointmentInfo?: Maybe<Appointment>;
+  billingInfo?: Maybe<Billing>;
+  insuranceDetail?: Maybe<Policy>;
+  patientInfo?: Maybe<Patient>;
+  policyHolderInfo?: Maybe<PolicyHolder>;
+  providerInfo?: Maybe<Doctor>;
+  response?: Maybe<ResponsePayload>;
 };
 
 /** The transaction payment status type assigned */
