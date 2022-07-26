@@ -135,7 +135,7 @@ const ProfileComponent = (): JSX.Element => {
       userId && await updateStaff({
         variables: {
           updateStaffInput: {
-            updateStaffItemInput: { id: userId, firstName, lastName, phone }
+            updateStaffItemInput: { id: userId, firstName, lastName, phone, email }
           }
         }
       })

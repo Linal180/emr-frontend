@@ -1,20 +1,74 @@
 // packages block
-import React from 'react';
 import { Box, Card, colors, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import { useCallback, useEffect, useState } from 'react';
+// component block
+import Loader from '../../common/Loader';
+// constants, history, styling block
+import { useParams } from 'react-router';
 import {
   ADDRESS, APPOINTMENT_DATE, BILLING_CODE, DATE_OF_BIRTH, DATE_OF_SERVICE, DATE_OF_VISIT, DIAGNOSIS,
   DIAGNOSIS_CODE, DIS, DX_PTRS, EMAIL, FEE, GROUP_NO, INSURANCE_BALANCE_DUE, INSURANCE_PAID, INSURER,
-  MEMBER_NO, MODS, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE,
+  MEMBER_NO, MODS, N_A, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE,
   PATIENT_INFORMATION, PATIENT_NAME, PATIENT_PAID, PATIENT_PHONE, PATIENT_RECEIPT,
   PATIENT_RECEIPT_AUTHORIZE_TEXT, PATIENT_SIGNATURE, PLACE_OF_SERVICE_CODE, PRACTICE_NAME, PROVIDER_INFORMATION,
   PROVIDER_NAME, PROVIDER_SIGNATURE, QTY, SIGNATURE_DATE, SUBSCRIBER, TOTAL_CHARGES, TOTAL_DISCOUNTS, TOTAL_TEXT, TREATMENT
 } from '../../../constants';
+import { CodeType, SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
+import { ParamsType } from '../../../interfacesTypes';
 import { BLACK_FOUR, GREY_NINE } from '../../../theme';
-import { renderTh } from '../../../utils';
-// component block
-// constants, history, styling block
+import { formatPhone, formatServiceEnumMember, getDateWithDayAndTime, getFormatDateString, getNumberFromChar, renderTh } from '../../../utils';
 
 const SuperBillComponent = (): JSX.Element => {
+  const { id: appointmentId } = useParams<ParamsType>()
+  const [superBillInfo, setSuperBillInfo] = useState<SuperBillPayload>()
+  const [getSuperBill, { loading: getSuperBillInfoLoading }] = useGetSuperBillInfoLazyQuery({
+    onCompleted(data) {
+      if (data) {
+        const { getSuperBillInfo } = data || {}
+        setSuperBillInfo(getSuperBillInfo as SuperBillPayload)
+      }
+    }
+  })
+
+  const fetchBillingDetails = useCallback(async () => {
+    try {
+      getSuperBill({
+        variables: {
+          superBillInput: {
+            appointmentId: appointmentId ?? ''
+          }
+        }
+      })
+    } catch (error) { }
+  }, [appointmentId, getSuperBill])
+
+  useEffect(() => {
+    appointmentId && fetchBillingDetails()
+  }, [appointmentId, fetchBillingDetails])
+
+  if (getSuperBillInfoLoading) {
+    return <Loader loading loaderText='Fetching Super Bill Info...' />
+  }
+
+  const { patientInfo, appointmentInfo, providerInfo, insuranceDetail, policyHolderInfo, billingInfo } = superBillInfo || {}
+  const { scheduleStartDateTime } = appointmentInfo || {}
+  const { facility, firstName: providerFirstName, lastName: providerLastName, npi, contacts: providerContacts } = providerInfo || {}
+  const { address: providerAddress, state: providerState, zipCode: providerZipCode, email: providerEmail, phone: providerPhone } = providerContacts?.find((providerContact) => providerContact?.primaryContact) || {}
+  const { practice, serviceCode } = facility || {}
+  const { name: practiceName } = practice || {}
+  const { firstName: patientFirstName, lastName: patientLastName, contacts: patientContacts, dob } = patientInfo || {}
+  const { address: patientAddress, state: patientState, zipCode: patientZipCode, phone: patientPhone } = patientContacts?.find((providerContact) => providerContact?.primaryContact) || {}
+  const { insurance, groupNumber, memberId } = insuranceDetail || {}
+  const { payerName } = insurance || {}
+  const { firstName: policyHolderFirst, lastName: policyHolderLast } = policyHolderInfo || {}
+  const { codes, claimDate } = billingInfo || {}
+  const diagnosesCodes = codes?.filter((code) => code.codeType === CodeType.Icd_10Code) ?? []
+  const treatmentCodes = codes?.filter((code) => code.codeType === CodeType.CptCode) ?? []
+
+  const totalCharges = codes?.reduce((acc, code) => {
+    return acc += Number(code?.price || 0)
+  }, 0)
+
   return (
     <>
       <Card>
@@ -26,7 +80,7 @@ const SuperBillComponent = (): JSX.Element => {
 
             <Box p={1} />
 
-            <Typography variant="body1">Mon May 16, 2022 12:00AM</Typography>
+            <Typography variant="body1">{getDateWithDayAndTime(scheduleStartDateTime || '')}</Typography>
           </Box>
 
           <Box my={3} p={2} bgcolor={GREY_NINE}>
@@ -39,19 +93,19 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PRACTICE_NAME} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>MedCity</Typography>
+                  <Typography>{practiceName}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PROVIDER_NAME} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>Ahmad Hassan</Typography>
+                  <Typography>{providerFirstName} {providerLastName}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{OFFICE_EIN} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>58356464664</Typography>
+                  <Typography>{npi}</Typography>
                 </Box>
               </Grid>
 
@@ -59,13 +113,13 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PLACE_OF_SERVICE_CODE} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>11</Typography>
+                  <Typography>{formatServiceEnumMember(serviceCode || '')}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{ADDRESS} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>lark field Road East North Port, NY 1173</Typography>
+                  <Typography>{providerAddress ? `${providerAddress}, ${providerState} ${providerZipCode}` : N_A}</Typography>
                 </Box>
               </Grid>
 
@@ -73,13 +127,13 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{OFFICE_PHONE} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>(413) 213-5672</Typography>
+                  <Typography>{formatPhone(providerPhone || '')}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{EMAIL} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>hiletep839@3dinews.com</Typography>
+                  <Typography>{providerEmail}</Typography>
                 </Box>
               </Grid>
             </Grid>
@@ -95,13 +149,13 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PATIENT_NAME} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>Chrissy Bright</Typography>
+                  <Typography>{patientFirstName} {patientLastName}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{DATE_OF_BIRTH} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>Sept. 10, 1971</Typography>
+                  <Typography>{getFormatDateString(dob, 'MMM DD, YYYY')}</Typography>
                 </Box>
               </Grid>
 
@@ -109,7 +163,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PATIENT_ADDRESS} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>1600 Amphitheatre Pkwy Mountain View, CA 94040</Typography>
+                  <Typography>{patientAddress ? `${patientAddress}, ${patientState} ${patientZipCode}` : N_A}</Typography>
                 </Box>
               </Grid>
 
@@ -117,7 +171,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PATIENT_PHONE} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>(844) 569-8628</Typography>
+                  <Typography>{formatPhone(patientPhone || '')}</Typography>
                 </Box>
               </Grid>
             </Grid>
@@ -129,7 +183,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{INSURER} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>CBA Blue</Typography>
+                  <Typography>{payerName}</Typography>
                 </Box>
               </Grid>
 
@@ -137,7 +191,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{SUBSCRIBER} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>Chrissy Bright</Typography>
+                  <Typography>{policyHolderFirst} {policyHolderLast}</Typography>
                 </Box>
               </Grid>
 
@@ -145,7 +199,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{GROUP_NO} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>54646466</Typography>
+                  <Typography>{groupNumber}</Typography>
                 </Box>
               </Grid>
 
@@ -153,7 +207,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{MEMBER_NO} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>45656222</Typography>
+                  <Typography>{memberId}</Typography>
                 </Box>
               </Grid>
             </Grid>
@@ -173,19 +227,23 @@ const SuperBillComponent = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              <TableRow>
-                <TableCell scope="row">
-                  <Typography variant="h6">1</Typography>
-                </TableCell>
+              {diagnosesCodes.map((diagnosesCode, index) => {
+                return (
+                  <TableRow>
+                    <TableCell scope="row">
+                      <Typography variant="h6">{index + 1}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>05/16/2022</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>{getFormatDateString(claimDate, 'MM/DD/YYYY')}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>U07.1: COVID-19</Typography>
-                </TableCell>
-              </TableRow>
+                    <TableCell scope="row">
+                      <Typography>{diagnosesCode?.code}: {diagnosesCode?.description}</Typography>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
 
@@ -208,73 +266,48 @@ const SuperBillComponent = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              <TableRow>
-                <TableCell scope="row">
-                  <Typography>05/16/2022</Typography>
-                </TableCell>
+              {treatmentCodes?.map((treatmentCode) => {
+                const { m1, m2, m3, m4, code, description, diagPointer, unit, price } = treatmentCode || {}
+                const diag1 = diagPointer ? String(getNumberFromChar(diagPointer, 0)) : ''
+                const diag2 = diagPointer ? String(getNumberFromChar(diagPointer, 1)) : ''
+                const diag3 = diagPointer ? String(getNumberFromChar(diagPointer, 3)) : ''
+                const diag4 = diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
+                return (
+                  <TableRow>
+                    <TableCell scope="row">
+                      <Typography>{getFormatDateString(claimDate, 'MM/DD/YYYY')}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>0064A: ADM SARSCOV2 50MCG/0.25MLBST</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>{code}: {description}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>W9:WP:XU:3P</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>{m1}:{m2}:{m3}:{m4}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>1:0:0:0</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>{diag1 || 0}:{diag2 || 0}:{diag3 || 0}:{diag4 || 0}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>1.00</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>{unit}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>$150.00</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>${Number(price) / Number(unit)}</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>$0.00</Typography>
-                </TableCell>
+                    <TableCell scope="row">
+                      <Typography>$0.00</Typography>
+                    </TableCell>
 
-                <TableCell scope="row">
-                  <Typography>$150.00</Typography>
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell scope="row">
-                  <Typography>05/16/2022</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>91307: SARSCOV2 VAC 10 MCG TRS-SUCR</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography></Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>1:0:0:0</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>1.00</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>$150.00</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>$0.00</Typography>
-                </TableCell>
-
-                <TableCell scope="row">
-                  <Typography>$150.00</Typography>
-                </TableCell>
-              </TableRow>
+                    <TableCell scope="row">
+                      <Typography>${price}</Typography>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
 
@@ -282,7 +315,7 @@ const SuperBillComponent = (): JSX.Element => {
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
               pb={2} alignItems="center" maxWidth={600}>
               <Typography variant="h4">{TOTAL_CHARGES}</Typography>
-              <Typography variant="body1">$300.0</Typography>
+              <Typography variant="body1">${totalCharges}</Typography>
             </Box>
 
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
@@ -306,7 +339,7 @@ const SuperBillComponent = (): JSX.Element => {
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
               pb={2} alignItems="center" maxWidth={600}>
               <Typography variant="h4">{PATIENT_BALANCE_DUE}</Typography>
-              <Typography variant="body1">$0</Typography>
+              <Typography variant="body1">${totalCharges}</Typography>
             </Box>
 
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
@@ -354,7 +387,7 @@ const SuperBillComponent = (): JSX.Element => {
 
               <Box flex={1} mx={1} borderBottom={`2px solid ${BLACK_FOUR}`}></Box>
             </Box>
-          </Box>        
+          </Box>
         </Box>
       </Card>
     </>

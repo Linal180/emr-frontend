@@ -59,6 +59,10 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
         firstName
         lastName
       },
+      feeSchedule {
+        id
+        name
+      }
       codes {
         id
         code
@@ -139,6 +143,72 @@ query FindClaimStatus($id: String!) {
       id
       createdAt
       statusName
+    }
+  }
+}
+
+query GetSuperBillInfo($superBillInput: SuperBillInput!) {
+  getSuperBillInfo(superBillInput: $superBillInput) {
+    response {
+      status
+      message
+    }
+
+    appointmentInfo {
+      scheduleStartDateTime
+    }
+
+    providerInfo {
+      facility {
+        practice {
+          name
+        }
+        serviceCode        
+      }
+      contacts {
+        phone
+        address
+        email
+      }
+      firstName
+      lastName
+      npi
+    }
+    insuranceDetail {
+      insurance {
+        payerId
+        payerName
+      }
+      memberId
+      groupNumber
+    }
+    policyHolderInfo {
+      firstName
+      lastName
+    }
+    billingInfo {
+      claimDate
+      codes {
+        code
+        codeType
+        description
+        price
+        diagPointer
+        m1
+        m2
+        m3
+        m4
+        unit
+      }
+    }
+    patientInfo {
+      firstName
+      lastName
+      contacts {
+        address
+        phone
+      }
+      dob
     }
   }
 }
