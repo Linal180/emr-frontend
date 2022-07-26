@@ -1,25 +1,25 @@
 // packages block
-import { FC, useContext, useState, MouseEvent } from "react";
+import {
+  AppBar, Box, Fade, IconButton, Menu, MenuItem, Toolbar, Typography
+} from '@material-ui/core';
+import { Menu as MenuIcon } from "@material-ui/icons";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { BLACK } from "../../theme";
-import { Menu as MenuIcon } from "@material-ui/icons";
-import { 
-  AppBar, Typography, Box, Toolbar, IconButton, Menu, MenuItem, Fade, 
-} from '@material-ui/core';
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
-import history from "../../history";
-import { AuthContext } from "../../context";
 import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
+import {
+  APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
+  PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT,
+  SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
+} from "../../constants";
+import { AuthContext } from "../../context";
+import history from "../../history";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
-import {
-  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, FACILITIES_ROUTE, ROOT_ROUTE,
-  PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE, SCHEDULE_TEXT, HOME_TEXT, 
-  PATIENTS_ROUTE, PATIENTS_TEXT, BILLING_TEXT, BILLING_MENU_ITEMS,
-} from "../../constants";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -58,7 +58,7 @@ const Header: FC = (): JSX.Element => {
           <Typography
             component={Link}
             to={ROOT_ROUTE}
-            className={currentRoute === 'inDashboard' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
+            className={currentRoute === 'inDashboard' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {HOME_TEXT}
           </Typography>
@@ -87,7 +87,7 @@ const Header: FC = (): JSX.Element => {
             <Typography
               component={Link}
               to={PATIENTS_ROUTE}
-              className={currentRoute === 'inPatient' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
+              className={currentRoute === 'inPatient' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
             >
               {PATIENTS_TEXT}
             </Typography>
@@ -172,17 +172,17 @@ const Header: FC = (): JSX.Element => {
                 <Typography
                   component={Link}
                   to={PATIENTS_ROUTE}
-                  className={currentRoute === 'inPatient' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+                  className={currentRoute === 'inPatient' ? `${classes.menuItem} active` : `${classes.menuItem}`}
                 >
                   {PATIENTS_TEXT}
                 </Typography>
               }
 
               <DropdownMenu
-                      itemName={BILLING_TEXT}
-                      menuItem={BILLING_MENU_ITEMS}
-                      current={currentRoute === 'inBilling'}
-                    />
+                itemName={BILLING_TEXT}
+                menuItem={BILLING_MENU_ITEMS}
+                current={currentRoute === 'inBilling'}
+              />
 
               {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
                 && showFacility &&
@@ -236,7 +236,9 @@ const Header: FC = (): JSX.Element => {
                   : (
                     <Box maxWidth="200px" textAlign="right">
                       <Box color={BLACK} minWidth='30px'>
-                        <Typography color="inherit" variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        <Box maxWidth={200}>
+                          <Typography variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        </Box>
                         <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
                     </Box>

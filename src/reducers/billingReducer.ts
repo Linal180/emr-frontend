@@ -2,6 +2,7 @@ import { CodeTablesData } from "../interfacesTypes";
 
 export interface State {
   facilityId: string;
+  practiceId: string;
   insuranceId: string;
   claimNumber: string;
   employment: boolean;
@@ -10,10 +11,12 @@ export interface State {
   otherAccident: boolean;
   isCheckoutModalOpen: boolean
   tableCodesData: CodeTablesData;
+  shouldCheckout: boolean;
 }
 
 export const initialState: State = {
   facilityId: '',
+  practiceId: '',
   claimNumber: '',
   insuranceId: '',
   employment: false,
@@ -21,7 +24,8 @@ export const initialState: State = {
   tableCodesData: {},
   autoAccident: false,
   otherAccident: false,
-  isCheckoutModalOpen: false
+  isCheckoutModalOpen: false,
+  shouldCheckout: false
 }
 
 export enum ActionType {
@@ -33,7 +37,9 @@ export enum ActionType {
   SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
   SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
-  SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN'
+  SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
+  SET_PRACTICE_ID = 'SET_PRACTICE_ID',
+  SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT'
 }
 
 export type Action =
@@ -46,6 +52,8 @@ export type Action =
   | { type: ActionType.SET_FACILITY_ID, facilityId: string }
   | { type: ActionType.SET_CLAIM_NUMBER, claimNumber: string }
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
+  | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
+  | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
 
 export const billingReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -101,6 +109,18 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isCheckoutModalOpen: action.isCheckoutModalOpen
+      }
+
+    case ActionType.SET_PRACTICE_ID:
+      return {
+        ...state,
+        practiceId: action.practiceId
+      }
+
+    case ActionType.SET_SHOULD_CHECKOUT:
+      return {
+        ...state,
+        shouldCheckout: action.shouldCheckout
       }
   }
 };

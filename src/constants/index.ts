@@ -407,8 +407,10 @@ export const COPAY_AMOUNT = "Copay Amount";
 export const UNCOVERED_AMT = "Uncovered Amt";
 export const CLAIM_STATUS = "Claim Status";
 export const CLAIM_DATE = "Claim Date";
+export const INVOICE_DATE = "Invoice Date";
 export const SUPERVISOR = "Supervisor";
 export const OTHER_DATE = "Other Date";
+export const LAST_VISITED = "Last Visited";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const TOTALS = "Totals:";
@@ -442,6 +444,7 @@ export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
+export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
@@ -526,6 +529,7 @@ export const SNOMED_CODE = "SnoMED Code:";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
+export const CPT_CODE = "CPT Code";
 export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
@@ -881,7 +885,7 @@ export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const ADD_SERVICE = "Add Service";
 export const LOCATIONS_TEXT = "Locations";
-export const DASHBOARD_TEXT = "Dashboard";
+export const DASHBOARD_TEXT = "Home";
 export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
@@ -1030,12 +1034,12 @@ export const AGAINST_TOTAL_APPOINTMENTS = "Against Total Appointments";
 export const BACKUP_PROVIDER_IN_PRACTICE = "Backup provider in practice";
 export const QUICK_PATIENT_REGISTRATIONS = "Quick Patient Registrations";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
-export const ACTIVE_STAFF_IN_CURRENT_SHIFT = "Active Staff in Current Shift";
+export const ACTIVE_STAFF = "Active Staff";
 export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const PREFERRED_PROVIDER_IN_PRACTICE = "Preferred provider in practice";
 export const REACTION_SELECTION_REQUIRED = "Please select at least one reaction";
-export const AVAILABLE_USERS_IN_CURRENT_SHIFT = "Available Users in Current Shift";
-export const ACTIVE_PROVIDERS_IN_CURRENT_SHIFT = "Active Providers in Current Shift";
+export const AVAILABLE_USERS = "Available Users";
+export const ACTIVE_PROVIDERS = "Active Providers";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -1230,6 +1234,7 @@ export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
 export const BUILD_FEE_DOLLAR = "Build Fee ($)";
+export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
@@ -1256,6 +1261,7 @@ export const USUAL_PROVIDER_ID = "Usual Provider";
 export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
+export const BILLED_FEE_DOLLAR = "Billed Fee ($)";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const DOCUMENT_DETAILS = "Document Details";
 export const TWO_FACTOR_LOGIN = "Two-Factor Login";
@@ -1419,7 +1425,7 @@ export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assig
 export const ELIGIBILITY_ERROR_MESSAGE = 'Realtime Eligibility is not supported by this insurance'
 export const PROVIDER_DETAILS_SUCCESS_DESCRIPTION = 'Provider Details has been added successfully.';
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
-export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name, Patient ID or Insurance Number etc...";
+export const FACILITY_ADMIN_SEARCH_PLACEHOLDER = "Patient Name or Patient ID etc...";
 export const APPOINTMENT_CONFIRM_HEADING = "We've sent you a confirmation message & email for your records.";
 export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout after a period of inactivity.";
@@ -1462,7 +1468,7 @@ export const CHECK_IN_ROUTE = "/check-in";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
-export const DASHBOARD_ROUTE = "/dashboard";
+export const DASHBOARD_ROUTE = "/home";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
@@ -2644,6 +2650,8 @@ export enum ITEM_MODULE {
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
   claimStatus = 'claimStatus',
+  feeSchedule = 'feeSchedule',
+  cptFeeSchedule = 'cptFeeSchedule',
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -3713,39 +3721,6 @@ export const UPCOMING_APPOINTMENT_LIST = [
     imageUrl: EMERGENCY_LOG_WILLIAMS,
     shortName: 'CW',
     appointmentTime: '12:30 PM'
-  },
-]
-
-export const ADDED_PATIENTS_LIST = [
-  {
-    fullName: 'Andrew Williams',
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    dob: '20/02/1995'
-  },
-  {
-    fullName: 'Arlene McCoy',
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'AW',
-    dob: '2/4/1992'
-  },
-  {
-    fullName: 'Marvin McKinney',
-    imageUrl: '',
-    shortName: 'AW',
-    dob: '16/05/1989'
-  },
-  {
-    fullName: 'Zayn Wyatt',
-    imageUrl: EMERGENCY_LOG_PHLEPS,
-    shortName: 'AW',
-    dob: '04/02/1966'
-  },
-  {
-    fullName: 'Bessie Cooper',
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    dob: '19/10/2001'
   },
 ]
 

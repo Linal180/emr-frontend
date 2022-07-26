@@ -343,6 +343,12 @@ export interface SelectorOption {
   name: string | undefined | null;
 }
 
+export interface ItemSelectorOption extends SelectorOption {
+  serviceFee?: string
+  code?: string
+  description?: string
+}
+
 export interface CptCodeSelectorOption extends SelectorOption {
   description: string | undefined | null;
   shortDescription: string | undefined | null;
@@ -376,10 +382,10 @@ export interface TableCodesProps {
   description: string;
   price?: string;
   codeType?: CodeType;
-  m1?: string;
-  m2?: string;
-  m3?: string;
-  m4?: string;
+  m1?: SelectorOption;
+  m2?: SelectorOption;
+  m3?: SelectorOption;
+  m4?: SelectorOption;
   diag1?: string;
   diag2?: string;
   diag3?: string;
@@ -419,7 +425,7 @@ export interface CPTCodesSelectorProps extends SelectorProps {
 }
 
 export interface ModifierSelectorProps extends SelectorProps {
-
+  shouldShowLabel?: boolean
 }
 
 export interface PatientSelectorProps extends SelectorProps {
@@ -522,6 +528,7 @@ export interface CustomInputControlProps extends IControlLabel {
   info?: string;
   isSSN?: boolean;
   onBlur?: Function;
+  onChange?: Function;
   notStep?: boolean;
   isSearch?: boolean;
   clearable?: boolean;
@@ -887,7 +894,8 @@ export interface AddAllergyModalProps extends GeneralFormProps {
 export interface TableSelectorProps {
   title: string
   shouldShowPrice?: boolean
-  moduleName: ITEM_MODULE.cptCode | ITEM_MODULE.icdCodes
+  moduleName: ITEM_MODULE.cptFeeSchedule | ITEM_MODULE.icdCodes
+  feeScheduleId?: string
 }
 
 export interface PolicyCardProps extends GeneralFormProps {
@@ -932,7 +940,7 @@ export interface CreateBillingProps {
   otherDateType?: SelectorOption
   otherDate?: string
   [ITEM_MODULE.icdCodes]: TableCodesProps[]
-  [ITEM_MODULE.cptCode]: TableCodesProps[]
+  [ITEM_MODULE.cptFeeSchedule]: TableCodesProps[]
   serviceDate: string
   claimDate: string
   servicingProvider: SelectorOption
@@ -944,6 +952,7 @@ export interface CreateBillingProps {
   to?: string
   from?: string
   practice: string
+  feeSchedule: SelectorOption
 }
 
 export interface CreateLabTestProviderProps {
@@ -1363,6 +1372,8 @@ export interface ItemSelectorProps extends SelectorProps {
   searchQuery?: string;
   filteredOptions?: SelectorOption[]
   shouldFilter?: boolean
+  practiceId?: string
+  feeScheduleId?: string
 }
 
 export interface FieldEditModalProps {
@@ -1938,6 +1949,7 @@ export interface StepContextProps {
 export interface DoctorPatientsProps {
   providerId?: string;
   facilityId?: string;
+  setPatientCount?: Function;
 }
 
 export interface StageStatusType {
@@ -2032,6 +2044,7 @@ export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'mod
 export interface DoctorAppointmentsAndPatientsProps {
   patientId?: string;
   providerId?: string;
+  setCount?: Function;
 }
 
 export interface FeeScheduleFormProps {

@@ -64,7 +64,7 @@ export const useTableStyles = makeStyles(() => ({
 
   selectorBox: {
     // maxWidth: 120,
-    
+
     "& .MuiFormControl-fullWidth": {
       // width: 120,
       borderRadius: 8,
@@ -199,5 +199,8 @@ export const useTableStyles = makeStyles(() => ({
     "&:nth-of-type(odd)": {
       backgroundColor: GREY_EIGHTEEN,
     },
+    fullFlex: {
+      flex: 1
+    }
   }
 }))

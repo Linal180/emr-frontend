@@ -135,7 +135,7 @@ const ProfileComponent = (): JSX.Element => {
       userId && await updateStaff({
         variables: {
           updateStaffInput: {
-            updateStaffItemInput: { id: userId, firstName, lastName, phone }
+            updateStaffItemInput: { id: userId, firstName, lastName, phone, email }
           }
         }
       })
@@ -186,7 +186,7 @@ const ProfileComponent = (): JSX.Element => {
       <CardComponent cardTitle={PROFILE_TEXT}>
         <Box className={classes.profileContainer}>
           <Grid container spacing={0}>
-            <Grid item md={4} sm={12} xs={12}>
+            <Grid item lg={4} md={5}  sm={12} xs={12}>
               <Box key={attachmentId} mx={3.5}>
                 <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
               </Box>
@@ -210,7 +210,7 @@ const ProfileComponent = (): JSX.Element => {
               </Box>
             </Grid>
 
-            <Grid item md={8} sm={12} xs={12}>
+            <Grid item lg={8} md={7}  sm={12} xs={12}>
               <Box mx={5}>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>

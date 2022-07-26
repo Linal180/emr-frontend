@@ -1,0 +1,15 @@
+query GetFacilityPatients($getFacilityPatientsInput: GetFacilityPatientsInput!) {
+  getFacilityPatients(getFacilityPatientsInput: $getFacilityPatientsInput) {
+    pagination {
+      totalCount
+    }
+
+    patients {
+      id
+      dob
+      lastName
+      firstName
+      profileAttachment
+    }
+  }
+}
