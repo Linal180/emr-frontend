@@ -456,7 +456,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
-              <Grid md={8} item>
+              <Grid md={8} sm={12} xs={12} item>
                 <Card className='overflowVisible'>
                   <Box p={3}>
                     <Box py={2} mb={4} display='flex' justifyContent='space-between'
@@ -579,7 +579,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 </CardComponent>
               </Grid>
 
-              <Grid md={4} item>
+              <Grid md={4} sm={12} xs={12} item>
                 <Grid item md={12} sm={12} className="custom-calendar">
                   <CardComponent cardTitle="Available Slots">
                     <Box display="flex" justifyContent="center">
