@@ -1077,7 +1077,8 @@ export const createClaimStatusSchema = yup.object({
 
 export const feeScheduleSchema = yup.object({
   practiceId: selectorSchema(PRACTICE),
-  name: yup.string().required(requiredMessage(NAME)),
+  name: yup.string().required(requiredMessage(NAME))
+  .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
 })
 
 export const cptFeeScheduleSchema = yup.object({

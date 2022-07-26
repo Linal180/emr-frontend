@@ -24,7 +24,7 @@ import {
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
 import {
   NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION,
-  SYSTEM_ROLES, ROLES_PAGE_LIMIT
+  SYSTEM_ROLES, EXTENDED_PAGE_LIMIT
 } from "../../../../constants";
 
 const RolesTable = ({ customRole = false }: RolesTableProps) => {
@@ -40,7 +40,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
       roleInput: {
-        paginationOptions: { page, limit: ROLES_PAGE_LIMIT },
+        paginationOptions: { page, limit: EXTENDED_PAGE_LIMIT },
         customRole, roleName: searchQuery
       }
     },
@@ -151,7 +151,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={ROLES_PAGE_LIMIT}
+                    <TableLoader numberOfRows={EXTENDED_PAGE_LIMIT}
                       numberOfColumns={customRole ? 3 : 2}
                     />
                   </TableCell>

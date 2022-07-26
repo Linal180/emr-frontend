@@ -1,7 +1,7 @@
 // packages block
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { Box, Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
@@ -15,12 +15,15 @@ import { isSuperAdmin, setRecord } from '../../../utils';
 import { feeScheduleSchema } from '../../../validationSchemas';
 import { ActionType } from '../../../reducers/feeScheduleReducer';
 import { CreateFeeSchedule, FeeScheduleFormProps } from '../../../interfacesTypes';
-import { EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE, NAME, PRACTICE, SAVE_TEXT, UPDATE } from '../../../constants';
-import { useCreateFeeScheduleMutation, useGetFeeScheduleLazyQuery, useUpdateFeeScheduleMutation } from '../../../generated/graphql';
+import {
+  EFFECTIVE_DATE, EXPIRATION_DATE, FEE_SCHEDULE, NAME, PRACTICE, SAVE_TEXT, UPDATE
+} from '../../../constants';
+import {
+  useCreateFeeScheduleMutation, useGetFeeScheduleLazyQuery, useUpdateFeeScheduleMutation
+} from '../../../generated/graphql';
 
 const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
-
-  const { user, } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const methods = useForm<CreateFeeSchedule>({ mode: "all", resolver: yupResolver(feeScheduleSchema) });
   const { setValue, handleSubmit } = methods
 
