@@ -68,7 +68,7 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
               <Grid container spacing={3} direction="row">
                 <Grid item md={1} sm={1} xs={1}>
                   <Box>
-                    <Typography variant="body1" color="textPrimary">{index+1}</Typography>
+                    <Typography variant="body1" color="textPrimary">{index + 1}</Typography>
                   </Box>
                 </Grid>
 
@@ -105,19 +105,19 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
                     <Grid item md={3} sm={3} xs={3}>
                       <Box pl={3} mt={1} display='flex' flexWrap='wrap'>
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m1}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m1?.id}</Typography>
                         </Box>
 
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m2}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m2?.id}</Typography>
                         </Box>
 
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m3}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m3?.id}</Typography>
                         </Box>
 
                         <Box>
-                          <Typography variant="body1" color="textPrimary">{m4}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m4?.id}</Typography>
                         </Box>
                       </Box>
                     </Grid>
