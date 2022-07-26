@@ -199,8 +199,10 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     setPracticeName('');
     setCurrentUser(null)
     setFacilityList([]);
-    setRoleList([])
+    setRoleList([]);
     handleLogout();
+    setCurrentDoctor(null);
+    setCurrentStaff(null)
   }
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
