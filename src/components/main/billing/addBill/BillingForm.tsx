@@ -23,9 +23,9 @@ import InsuranceComponent from "../../patients/patientDetail/insurance";
 import { Link } from "react-router-dom";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
-  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_DESC, ICD_TEN_CODES, INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE,
+  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES, INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
-  POS, PRACTICE, RENDERING_PROVIDER, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
+  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
 } from "../../../../constants";
 import { CodeType, OnsetDateType } from "../../../../generated/graphql";
 import { BillingFormProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
@@ -92,7 +92,7 @@ const BillingForm: FC<BillingFormProps> = (
           <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{BILLING}</Typography>
 
-            {!shouldDisableEdit && <Box display="flex" alignItems="center"  flexWrap="wrap">
+            {!shouldDisableEdit && <Box display="flex" alignItems="center" flexWrap="wrap">
               <Button
                 variant="contained"
                 color="secondary"
@@ -119,7 +119,7 @@ const BillingForm: FC<BillingFormProps> = (
                 color="default"
                 onClick={() => createClaimCallback(true)}
               >
-                HCFA - 1500 Form
+                {HCFA_1500_FORM}
               </Button>
 
               <Box p={1} />
@@ -129,7 +129,7 @@ const BillingForm: FC<BillingFormProps> = (
                 color="default"
                 onClick={() => handleCheckout(false)}
               >
-                Save
+                {SAVE_TEXT}
               </Button>
 
               <Box p={1} />

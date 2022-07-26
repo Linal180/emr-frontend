@@ -284,26 +284,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
         ...(claimStatusId && { claimStatusId: claimStatusId || '' }),
         ...(feeScheduleId && { feeScheduleId: feeScheduleId || '' }),
-        autoAccident: autoAccident,
-        employment: employment,
-        otherAccident: otherAccident,
-        onsetDate: onsetDate,
-        otherDate: otherDate,
-        claimDate,
-        pos: posId,
-        serviceDate,
         ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
         ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
-        amount: amount,
         ...(paymentTypeId && { patientPaymentType: paymentTypeId as PatientPaymentType }),
-        patientId: id ?? '',
-        codes: transformedBillingCodes,
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
-        claimNo: claimNumber,
-        uncoveredAmount,
-        from,
-        to,
-        shouldCheckout
+        autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
+        onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
+        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
       }
 
       createBilling({

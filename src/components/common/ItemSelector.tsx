@@ -8,13 +8,8 @@ import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants'
 import { requiredLabel, renderListOptions, setRecord } from "../../utils";
 import { ItemSelectorProps, ItemSelectorOption } from "../../interfacesTypes";
 import {
-  ClaimStatus,
-  CptFeeSchedule,
-  DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
-  useFetchIcdCodesLazyQuery,
-  useFindAllCptFeeScheduleLazyQuery,
-  useFindAllFeeSchedulesLazyQuery,
-  useSearchSnoMedCodesLazyQuery
+  ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, 
+  useFetchDocumentTypesLazyQuery, useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery, useSearchSnoMedCodesLazyQuery
 } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({

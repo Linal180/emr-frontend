@@ -443,6 +443,7 @@ export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
+export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
