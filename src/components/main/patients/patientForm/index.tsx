@@ -20,14 +20,14 @@ import {
   Action, ActionType, initialState, patientReducer, State
 } from "../../../../reducers/patientReducer";
 import {
-  getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord
+  getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord,
+  formatEmail,
 } from '../../../../utils';
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
   FAILED_TO_UPDATE_PATIENT, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PATIENTS_BREAD, PATIENTS_ROUTE,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, SSN_FORMAT, UPDATE_PATIENT, ZIP_CODE_ENTER, PATIENT_CREATED,
-  CONFLICT_EXCEPTION,
-  USA,
+  CONFLICT_EXCEPTION, USA,
 } from "../../../../constants";
 import {
   ContactType, DoctorPatientRelationType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
@@ -277,7 +277,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+        handleUserAlreadyExistedException();
       } else
         Alert.error(message)
     },
@@ -293,6 +293,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             Alert.success(PATIENT_CREATED)
             : Alert.success(CHANGES_SAVED)
 
+          dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
           const { id } = patient || {}
           id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
           activeStep === 4 && history.push(PATIENTS_ROUTE)
@@ -304,7 +305,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   const [updatePatient, { loading: updatePatientLoading }] = useUpdatePatientMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+        handleUserAlreadyExistedException();
       } else Alert.error(message)
     },
 
@@ -317,6 +318,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         if (status && status === 200) {
           activeStep && Alert.success(CHANGES_SAVED);
           activeStep === 4 && history.push(PATIENTS_ROUTE)
+          dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
         }
       }
     }
@@ -362,7 +364,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail || '', callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
+        email: formatEmail(basicEmail), callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -383,7 +385,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       const contactInput = {
         contactType: ContactType.Self, country: basicCountry || USA, primaryContact: true,
-        email: basicEmail, city: basicCity, zipCode: basicZipCode,
+        email: formatEmail(basicEmail), city: basicCity, zipCode: basicZipCode,
         state: selectedBasicState, facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: basicAddress2, address: basicAddress,
       };
@@ -396,7 +398,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       const guarantorContactInput = {
         firstName: guarantorFirstName, middleName: guarantorMiddleName,
-        lastName: guarantorLastName, email: guarantorEmail, contactType: ContactType.Guarandor,
+        lastName: guarantorLastName, email: formatEmail(guarantorEmail), contactType: ContactType.Guarandor,
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
@@ -416,7 +418,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       };
 
       const employerInput = {
-        name: employerName, email: employerEmail, phone: employerPhone,
+        name: employerName, email: formatEmail(employerEmail), phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
         address: employerAddress, zipCode: employerZipCode, city: employerCity, state: selectedEmployerState, country: employerCountry
       };
@@ -448,10 +450,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
-
-        dispatch({
-          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
-        })
       } else {
         const optionalInputs = {
           usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider || '', adminId: userId || '',
@@ -470,10 +468,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
         })
-
-        dispatch({
-          type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1
-        })
       }
     } else Alert.error(isEdit ? FAILED_TO_UPDATE_PATIENT : FAILED_TO_CREATE_PATIENT)
   };
@@ -486,6 +480,12 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
     patientId &&
       getPatient({ variables: { getPatient: { id: patientId } } })
   }, [getPatient, patientId])
+
+  const handleUserAlreadyExistedException = () => {
+    setValue("basicEmail", '')
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: 2 })
+    Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+  }
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 

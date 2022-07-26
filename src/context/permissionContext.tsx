@@ -18,7 +18,7 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const { user } = useContext(AuthContext)
   const [{ permissions, page }, dispatch] = useReducer<Reducer<State, Action>>(permissionContextReducer, initialState)
-  console.log("permissions", permissions, page)
+
   const [findAllPermissions, { loading: permissionLoading }] = useFindAllPermissionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
