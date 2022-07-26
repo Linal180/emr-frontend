@@ -29,7 +29,7 @@ import {
   DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, CPT_CODE, AMOUNT,
+  CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, CPT_CODE, AMOUNT, NO_SPACE_REGEX,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -86,6 +86,13 @@ const notRequiredOTP = (label: string, isRequired: boolean) => {
     .matches(NUMBER_REGEX, ValidOTP())
     .min(6, MinLength(label, 6)).max(6, MaxLength(label, 6))
     .required(requiredMessage(label))
+}
+
+const documentNameSchema = (label: string, isRequired: boolean) => {
+  return yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .min(6, MinLength(label, 6)).max(30, MaxLength(label, 30))
+    .test('', invalidMessage(label), value => value ? NO_SPACE_REGEX.test(value) : false)
 }
 
 const optionalEmailSchema = (isOptional: boolean) => {
@@ -1046,13 +1053,11 @@ export const createBillingSchema = yup.object({
 })
 
 export const addDocumentSchema = yup.object({
-  attachmentName: yup.string()
-    .required(requiredMessage(DOCUMENT_NAME))
-    .test('', invalidMessage(DOCUMENT_NAME), value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   comments: yup.string(),
   // provider: selectorSchema(PROVIDER),
   documentType: selectorSchema(DOCUMENT_TYPE),
   date: yup.string().required(requiredMessage(DATE)),
+  attachmentName: documentNameSchema(DOCUMENT_NAME, true),
 })
 
 export const addLabProviderDetailsSchema = yup.object({
