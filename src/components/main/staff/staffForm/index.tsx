@@ -14,6 +14,7 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import RoleSelector from '../../../common/Selector/RoleSelector';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import PracticeSelector from '../../../common/Selector/PracticeSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
@@ -21,7 +22,8 @@ import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin, isPracticeAdmin
+  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin, isPracticeAdmin, 
+  formatEmail
 } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
@@ -34,7 +36,6 @@ import {
   STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES, EDIT_STAFF,
   PRACTICE,
 } from "../../../../constants";
-import PracticeSelector from '../../../common/Selector/PracticeSelector';
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
@@ -191,7 +192,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      firstName, lastName, email: formatEmail(email), phone, mobile, dob: getTimestamps(dob || ''),
       gender: staffGender as Gender, username: '',
       ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }

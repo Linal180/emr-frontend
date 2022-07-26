@@ -23,8 +23,8 @@ import {
   getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber
 } from "../../../../../utils";
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, NOTES, ONSET_DATE, EIGHT_PAGE_LIMIT,
-  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, SEVERITY, TYPE
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, ONSET_DATE, EIGHT_PAGE_LIMIT,
+  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, COMMENTS
 } from "../../../../../constants";
 import {
   IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
@@ -36,7 +36,11 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
-  const { isSubModalOpen, selectedItem, itemId, problemDeleteId, totalPages, page, isOpen, openDelete, patientProblems } = state || {}
+  const {
+    isSubModalOpen, selectedItem, itemId, problemDeleteId, totalPages, page, isOpen,
+    openDelete, patientProblems
+  } = state || {}
+  
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
   const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page: page })
 
@@ -112,7 +116,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!patientProblems && patientProblems.length > 1) {
+          if (!!patientProblems && patientProblems.length) {
             await fetchProblems()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientProblems?.length || 0) })
@@ -160,9 +164,9 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                       {renderTh(ICD_CODE)}
                       {renderTh(PROBLEM_TEXT)}
                       {renderTh(ONSET_DATE)}
+                      {renderTh(STATUS)}
+                      {renderTh(COMMENTS)}
                       {renderTh(TYPE)}
-                      {renderTh(NOTES)}
-                      {renderTh(SEVERITY)}
                       {!shouldDisableEdit && renderTh(ACTIONS)}
                     </TableRow>
                   </TableHead>

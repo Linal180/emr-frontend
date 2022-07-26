@@ -30,9 +30,10 @@ import {
 } from "../utils";
 
 // regex
-export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^\d{9}$/;
+export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const NO_SPACE_REGEX = /^[^-\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -727,6 +728,7 @@ export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
 export const SIGN_OFF = "Sign Off";
+export const EXTENDED_PAGE_LIMIT = 12;
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
@@ -1371,11 +1373,11 @@ export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
 export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
-export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
+export const GUARANTOR_RELATION = "Patient’s Relationship";
 export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
 export const PAY_VIA_DEBIT_OR_CREDIT_CARD = "Pay via Debit or Credit Card";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
-export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
+export const USUAL_OCCUPATION = "Usual Occupation";
 export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const MEMBER_ID_CERTIFICATE_NUMBER = "Member ID/Certification Number";
 export const FEE_SCHEDULE_DESCRIPTION = "Manage fee schedule for procedures";
@@ -1442,7 +1444,6 @@ export const STAFF_ROUTE = "/staff";
 export const CHART_ROUTE = "/chart";
 export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
-export const VITALS_ROUTE = "/vitals";
 export const PROFILE_ROUTE = "/profile";
 export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
@@ -1522,7 +1523,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
-export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
@@ -1550,6 +1551,7 @@ export const minDobValidMessage = (label: string) => `${label}'s age should be m
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
+export const DESCRIPTION_INVALID_MESSAGE = "White-spaces at start and special characters (!@#$%^&*) are not acceptable";
 export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;

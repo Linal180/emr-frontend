@@ -42,6 +42,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       background: WHITE,
       borderRadius: 12,
       display: 'flex',
+      flexWrap: 'wrap',
     },
 
     patientProfileCard: {
