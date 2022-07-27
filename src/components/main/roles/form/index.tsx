@@ -34,7 +34,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [ids, setIds] = useState<string[]>([])
 
   const [modules, setModules] = useState<string[]>([])
-  const [custom, setCustom] = useState<boolean>(false)
+  const [custom, setCustom] = useState<boolean>(true)
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
 
@@ -228,6 +228,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Grid container spacing={3}>
               <Grid item md={6} sm={12}>
                 <InputController
+                  isRequired
                   fieldType="text"
                   disabled={!custom}
                   controllerName="role"
@@ -237,6 +238,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               <Grid item md={6} sm={12}>
                 <InputController
+                  isRequired
                   fieldType="text"
                   disabled={!custom}
                   controllerName="description"

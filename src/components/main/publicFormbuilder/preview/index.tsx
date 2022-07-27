@@ -1,15 +1,17 @@
-//packages block
+// packages block
+import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
-import { Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step } from '@material-ui/core';
-//components block
+import {
+  Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step
+} from '@material-ui/core';
+// components block
 import Alert from '../../../common/Alert';
 import { StepContext } from './StepContext';
 import ViewDataLoader from '../../../common/ViewDataLoader';
-//interfaces, reducers, utils, constants
+// interfaces, reducers, utils, constants block
 import { GREY } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
@@ -25,19 +27,19 @@ import {
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
   PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG,
 } from '../../../../constants';
-//constants
+
 const initialValues = {};
-//component
+
 const PublicFormPreview = () => {
-  //hooks
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
-  //constants destructuring
   const {
-    isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep, signatureLoader, agreements
+    isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep,
+    signatureLoader, agreements
   } = state
+
   const methods = useForm<any>({
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
@@ -45,13 +47,19 @@ const PublicFormPreview = () => {
   const { handleSubmit, setValue } = methods;
   const isSubmit = formValues?.length - 1 === activeStep
 
-  //mutation
   const [getForm] = useGetPublicFormLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
+    },
+
     onCompleted(data) {
       const { getPublicForm } = data || {};
+
       if (getPublicForm) {
         const { form, response } = getPublicForm || {};
 
@@ -69,30 +77,29 @@ const PublicFormPreview = () => {
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
               tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
-
-            }
-            else {
+            } else {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: false })
             }
           }
         }
       }
-    },
-    onError({ message }) {
-      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
-      history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
     }
   })
 
   const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
+    onError: ({ message }) => {
+      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
+    },
+
     onCompleted: (data) => {
-      const { saveUserFormValues } = data;
-      const { userForm, appointment, response } = saveUserFormValues;
+      const { saveUserFormValues: { userForm, appointment, response } } = data;
       const { status } = response || {}
       const { id, form } = userForm || {}
       const { type } = form || {}
+
       if (type === FormType.Appointment) {
         const { id: appointmentId, patientId } = appointment || {}
+
         if (status === 200 && id && appointmentId) {
           if (isSubmit) {
             Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
@@ -100,19 +107,18 @@ const PublicFormPreview = () => {
           } else {
             setValue('appointmentId', appointmentId)
             setValue('userFormId', id)
+
             if (patientId) {
               setValue('patientId', patientId)
               dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
             }
+
             nextStepHandler()
           }
-
-        }
-        else {
+        } else {
           Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
         }
-      }
-      else {
+      } else {
         if (isSubmit) {
           Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
           history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
@@ -120,9 +126,6 @@ const PublicFormPreview = () => {
           nextStepHandler()
         }
       }
-    },
-    onError: ({ message }) => {
-      Alert.error(message || PUBLIC_FORM_FAIL_MESSAGE)
     }
   })
 
@@ -135,11 +138,14 @@ const PublicFormPreview = () => {
     if (formValues && formValues?.length > 0) {
       formValues?.map((tab) => {
         const { sections } = tab || {}
+
         return sections?.map(({ fields }) => fields?.map((field) => {
           const { apiCall, fieldId } = field
+
           if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
             dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
           }
+
           return field
         }))
       })
@@ -149,25 +155,23 @@ const PublicFormPreview = () => {
   const createPatientConsentHandler = async (patientId: string, id: string) => {
     try {
       const arr = agreements?.map(({ body, id }) => {
-        return {
-          id,
-          body
-        }
+        return { id, body }
       })
+
       const body = JSON.stringify({ agreements: arr })
       await createPatientConsent({
         variables: {
           createPatientConsentInputs: {
-            appointmentId: id,
-            patientId,
-            body
+            appointmentId: id, patientId, body
           }
         }
       })
     } catch (error) { }
   }
 
-  const signatureUploadHandler = async (appointmentId: string, patientId: string, signature: File) => {
+  const signatureUploadHandler = async (
+    appointmentId: string, patientId: string, signature: File
+  ) => {
     dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: true })
 
     const formData = new FormData();
@@ -176,23 +180,20 @@ const PublicFormPreview = () => {
     signature && formData.append("file", signature);
 
     await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
-      formData,
-      {
-        headers: {
-          pathname: window.location.pathname
-        }
-      }).then((response) => {
-        const { status } = response
-        if (status !== 201) Alert.error("Something went wrong!");
-        else {
-          createPatientConsentHandler(patientId, appointmentId)
-          dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
-        }
-      }).catch(error => {
-        const { response: { data: { error: errorMessage } } } = error || {}
-        Alert.error(errorMessage);
+      formData, {
+      headers: { pathname: window.location.pathname }
+    }).then((response) => {
+      const { status } = response
+      if (status !== 201) Alert.error(SOMETHING_WENT_WRONG);
+      else {
+        createPatientConsentHandler(patientId, appointmentId)
         dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
-      });
+      }
+    }).catch(error => {
+      const { response: { data: { error: errorMessage } } } = error || {}
+      Alert.error(errorMessage);
+      dispatch({ type: ActionType.SET_SIGNATURE_LOADER, signatureLoader: false })
+    });
   }
 
   const submitHandler = async (values: any) => {
@@ -200,33 +201,30 @@ const PublicFormPreview = () => {
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: true })
       const formValues = await getUserFormFormattedValues(values, id);
       const data = {
-        FormId: id,
-        DoctorId: "",
-        PatientId: "",
-        StaffId: "",
-        SubmitterId: "",
-        userFormElements: formValues
+        FormId: id, DoctorId: "", PatientId: "", StaffId: "",
+        SubmitterId: "", userFormElements: formValues
       }
+
       dispatch({ type: ActionType.SET_UPLOAD_IMAGE, uploadImage: false })
 
       if (formType === FormType.Appointment) {
-        const { scheduleEndDateTime, scheduleStartDateTime, signature, appointmentId, patientId } = values;
+        const {
+          scheduleEndDateTime, scheduleStartDateTime, signature, appointmentId, patientId
+        } = values;
+
         if (scheduleStartDateTime && scheduleEndDateTime) {
           if (signature && appointmentId && patientId) {
             signatureUploadHandler(appointmentId, patientId, signature)
           }
-          await createUserForm({ variables: { createUserFormInput: data } })
 
-        }
-        else {
+          await createUserForm({ variables: { createUserFormInput: data } })
+        } else {
           Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
         }
-      }
-      else {
+      } else {
         await createUserForm({ variables: { createUserFormInput: data } })
       }
-    }
-    else {
+    } else {
       nextStepHandler()
     }
   };
@@ -242,11 +240,12 @@ const PublicFormPreview = () => {
     id ? getFormHandler() : history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
   }, [getFormHandler, id])
 
-  const nextStepHandler = () => !isSubmit && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
+  const nextStepHandler = () =>
+    !isSubmit && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
 
-  const backStepHandler = () => dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
+  const backStepHandler = () =>
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
-  //render
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
       <AIMEDLOGO />
@@ -283,12 +282,14 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
                   </Box>
+
                   {formValues?.length > 1 ?
                     <Grid container spacing={3}>
                       <Grid item xs={2}>
                         <Stepper activeStep={activeStep} orientation="vertical">
                           {formValues?.map((tab, index) => {
                             const { name, id } = tab || {}
+
                             return <Step key={`${id}-${index}`}>
                               <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
                             </Step>
@@ -300,6 +301,7 @@ const PublicFormPreview = () => {
                       <Grid item xs={10}>
                         {formValues?.map((tab, index) => {
                           const { sections, name, id } = tab || {}
+
                           return <Fragment key={`${id}-${name}`}>
                             {activeStep === index &&
                               <StepContext sections={sections} state={state} dispatch={dispatch} />
@@ -310,8 +312,9 @@ const PublicFormPreview = () => {
                       </Grid>
                     </Grid> :
                     <Fragment>
-                      {formValues?.map((tab, index) => {
+                      {formValues?.map((tab) => {
                         const { sections, name, id } = tab || {}
+
                         return <Fragment key={`${id}-${name}`}>
                           <StepContext sections={sections} state={state} dispatch={dispatch} />
                         </Fragment>

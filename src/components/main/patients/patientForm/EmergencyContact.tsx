@@ -5,7 +5,6 @@ import { Grid } from "@material-ui/core"
 import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
 import CardComponent from "../../../common/CardComponent"
-import ViewDataLoader from "../../../common/ViewDataLoader"
 // interfaces , constants block
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
@@ -24,49 +23,46 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
       cardTitle={EMERGENCY_CONTACT}
       disableSubmit={disableSubmit}
     >
-      {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-        <>
-          <Grid container spacing={3}>
-            <Grid item md={3} sm={12} xs={12}>
-              <InputController
-                fieldType="text"
-                controllerLabel={NAME}
-                loading={getPatientLoading}
-                disabled={shouldDisableEdit}
-                controllerName="emergencyName"
-              />
-            </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <Selector
-                addEmpty
-                label={RELATIONSHIP}
-                disabled={shouldDisableEdit}
-                name="emergencyRelationship"
-                loading={getPatientLoading}
-                options={MAPPED_CONTACT_RELATIONSHIP_TYPE}
-              />
-            </Grid>
+      <Grid container spacing={3}>
+        <Grid item md={3} sm={12} xs={12}>
+          <InputController
+            fieldType="text"
+            controllerLabel={NAME}
+            loading={getPatientLoading}
+            disabled={shouldDisableEdit}
+            controllerName="emergencyName"
+          />
+        </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <PhoneField
-                name="emergencyPhone"
-                label={HOME_PHONE}
-                disabled={shouldDisableEdit}
-                loading={getPatientLoading}
-              />
-            </Grid>
+        <Grid item md={3} sm={12} xs={12}>
+          <Selector
+            addEmpty
+            label={RELATIONSHIP}
+            disabled={shouldDisableEdit}
+            name="emergencyRelationship"
+            loading={getPatientLoading}
+            options={MAPPED_CONTACT_RELATIONSHIP_TYPE}
+          />
+        </Grid>
 
-            <Grid item md={3} sm={12} xs={12}>
-              <PhoneField
-                name="emergencyMobile"
-                label={MOBILE_PHONE}
-                disabled={shouldDisableEdit}
-                loading={getPatientLoading} />
-            </Grid>
-          </Grid>
-        </>
-      )}
+        <Grid item md={3} sm={12} xs={12}>
+          <PhoneField
+            name="emergencyPhone"
+            label={HOME_PHONE}
+            disabled={shouldDisableEdit}
+            loading={getPatientLoading}
+          />
+        </Grid>
+
+        <Grid item md={3} sm={12} xs={12}>
+          <PhoneField
+            name="emergencyMobile"
+            label={MOBILE_PHONE}
+            disabled={shouldDisableEdit}
+            loading={getPatientLoading} />
+        </Grid>
+      </Grid>
     </CardComponent>
   )
 }

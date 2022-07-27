@@ -86,6 +86,7 @@ const PracticeSelector: FC<PracticeSelectorProps> = ({
                 loading={loading}
                 value={field.value}
                 disabled={disabled}
+                disableClearable
                 defaultValue={updatedOptions[0]}
                 getOptionSelected={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name || ""}

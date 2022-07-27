@@ -14,6 +14,7 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import CountryController from '../../../../controller/CountryController';
 // interfaces, graphql, constants block /styles
+import { formatEmail } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { createPracticeSchema, updatePracticeSchema } from '../../../../validationSchemas';
@@ -158,7 +159,10 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           variables: {
             updatePracticeInput: {
               updatePracticeItemInput: { id, ...practiceInput },
-              updateUserInput: { id: practiceAdminId, phone: userPhone, email: userEmail, firstName: userFirstName, lastName: userLastName }
+              updateUserInput: {
+                id: practiceAdminId, phone: userPhone, email: formatEmail(userEmail),
+                firstName: userFirstName, lastName: userLastName
+              }
             }
           }
         })
@@ -173,14 +177,14 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
             createContactInput: {
-              firstName: userFirstName, lastName: userLastName, email: userEmail,
+              firstName: userFirstName, lastName: userLastName, email: formatEmail(userEmail),
               primaryContact: true
             },
 
             registerUserInput: {
-              isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName, phone: userPhone || '', adminId: adminId || '',
-              roleType: SYSTEM_ROLES.PracticeAdmin,
+              isAdmin: true, email: formatEmail(userEmail), password: SYSTEM_PASSWORD, 
+              firstName: userFirstName || '', lastName: userLastName, phone: userPhone || '',
+               adminId: adminId || '', roleType: SYSTEM_ROLES.PracticeAdmin,
             },
 
             createFacilityContactInput: {
@@ -220,9 +224,9 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
-              <Grid item md={6}>
+              <Grid item md={6} sm={12} xs={12}>
                 <Grid container>
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
@@ -255,7 +259,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={TAX_ID_DETAILS}>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
@@ -334,7 +338,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={PRACTICE_ADMIN_DETAILS_TEXT}>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
@@ -354,9 +358,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             controllerLabel={LAST_NAME}
                           />
                         </Grid>
-                      </Grid>
 
-                      <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
                             isRequired
@@ -373,11 +375,13 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
                     </CardComponent>
                   </Grid>
+
+                  <Box p={1.5} />
                 </Grid>
               </Grid>
 
-              <Grid md={6} item>
-                <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Grid container>
                   {!isEdit &&
                     <Grid md={12} item>
                       <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>

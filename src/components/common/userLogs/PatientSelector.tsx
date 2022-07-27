@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { AuthContext } from "../../../context";
 import { LogsPatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFetchAllPatientListLazyQuery } from "../../../generated/graphql";
+import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION } from "../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../reducers/patientReducer";
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel, sortingValue } from "../../../utils";
@@ -29,7 +29,7 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
 
   const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients)]
 
-  const [findAllPatient, { loading }] = useFetchAllPatientListLazyQuery({
+  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -38,10 +38,10 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
     },
 
     onCompleted(data) {
-      const { fetchAllPatients } = data || {};
+      const { findAllPatient } = data || {};
 
-      if (fetchAllPatients) {
-        const { pagination, patients } = fetchAllPatients
+      if (findAllPatient) {
+        const { pagination, patients } = findAllPatient
         patients && dispatch({
           type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
         })

@@ -1,30 +1,16 @@
 // packages block
 import { FC } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
+import { Box, Card, Grid, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
-import Selector from "../../common/Selector";
-import DatePicker from "../../common/DatePicker";
-import TimePicker from "../../common/TimePicker";
-import InputController from "../../../controller";
 import AppointmentsComponent from "../appointments/appointmentsListing";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 // constant block
-import {
-  APPOINTMENTS_TEXT, APPOINTMENT_TYPE, CREATE_APPOINTMENT, CREATE_PATIENT, DATE, DOB, EMPTY_OPTION,
-  FIRST_NAME, HOME_PHONE, LAST_NAME, LEGAL_SEX, MOBILE_PHONE, PATIENT, QUICK_APPOINTMENTS,
-  QUICK_PATIENT_REGISTRATIONS, REASON, TIME_SLOT, USUAL_PROVIDER,
-} from "../../../constants";
+import { APPOINTMENTS_TEXT } from "../../../constants";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
-  const methods = useForm<any>({
-    mode: "all",
-  });
-
   return (
     <>
-
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <PatientSearchComponent />
@@ -45,7 +31,7 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
 
       <Box p={1.5} />
 
-      <FormProvider {...methods}>
+      {/* <FormProvider {...methods}>
         <form>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
@@ -178,9 +164,9 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
             </Grid>
           </Grid>
         </form>
-      </FormProvider>
+      </FormProvider> 
 
-      <Box p={1.5} />
+      <Box p={1.5} />*/}
 
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>

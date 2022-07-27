@@ -1,7 +1,10 @@
 // packages block
 import { useState, useContext, ChangeEvent } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button, FormControl, InputLabel } from "@material-ui/core";
+import {
+  Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button,
+  FormControl, InputLabel
+} from "@material-ui/core";
 // components block
 import Selector from "../../../common/Selector";
 import DatePicker from "../../../common/DatePicker";

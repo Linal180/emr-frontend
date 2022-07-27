@@ -6,9 +6,9 @@ import AppMenuItem from "./AppMenuItem";
 import AppMenuItemComponent from "./AppMenuItemComponent";
 // history, constant and styles block
 import history from "../../history";
+import { DashboardIcon } from "../../assets/svgs";
 import { useAppMenuStyles } from "../../styles/appMenuStyles";
 import { APP_MENU_ITEMS, DASHBOARD_ROUTE, DASHBOARD_TEXT } from "../../constants";
-import { DashboardIcon } from "../../assets/svgs";
 
 const AppMenu: FC = () => {
   const classes = useAppMenuStyles();

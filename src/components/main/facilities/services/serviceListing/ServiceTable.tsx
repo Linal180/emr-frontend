@@ -1,35 +1,41 @@
 // packages block
-import { FC, useEffect, ChangeEvent, Reducer, useReducer, useCallback } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer, useCallback, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
-// import Alert from "../../../../common/Alert";
+import Alert from "../../../../common/Alert";
 import Search from "../../../../common/Search";
 import TableLoader from "../../../../common/TableLoader";
-// import ConfirmationModal from "../../../../common/ConfirmationModal";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import {  renderTh } from "../../../../../utils";
+import { AuthContext } from "../../../../../context";
 import { BLUE_FOUR, RED, } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import { EditNewIcon } from "../../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon } from "../../../../../assets/svgs";
+import { getPageNumber, isSuperAdmin, renderTh } from "../../../../../utils";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from '../../../../../reducers/serviceReducer';
 import {
-  useFindAllServicesLazyQuery, ServicePayload, ServicesPayload
+  useFindAllServicesLazyQuery, ServicePayload, ServicesPayload, useRemoveServiceMutation
 } from "../../../../../generated/graphql";
 import {
-  ACTION, NAME, DURATION, STATUS, PAGE_LIMIT, ACTIVE, INACTIVE, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE
+  ACTION, NAME, DURATION, STATUS, PAGE_LIMIT, ACTIVE, INACTIVE, FACILITIES_ROUTE,
+  FACILITY_SERVICES_ROUTE, SERVICE, DELETE_SERVICE_DESCRIPTION, CANT_DELETE_SERVICE
 } from "../../../../../constants";
 
 const ServicesTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
+  const { roles } = user || {}
+
+  const isSuper = isSuperAdmin(roles)
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
-  const { page, totalPages, searchQuery, services } = state;
+  const { page, openDelete, deleteServiceId, totalPages, searchQuery, services } = state;
 
   const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
     fetchPolicy: "network-only",
@@ -79,30 +85,30 @@ const ServicesTable: FC = (): JSX.Element => {
     }
   });
 
-  // const [removeService,] = useRemoveServiceMutation({
-  //   onError() {
-  //     Alert.error(CANT_DELETE_SERVICE)
-  //     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-  //   },
+  const [removeService, { loading: removeServiceLoading }] = useRemoveServiceMutation({
+    onError() {
+      Alert.error(CANT_DELETE_SERVICE)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+    },
 
-  //   onCompleted(data) {
-  //     if (data) {
-  //       const { removeService: { response } } = data
+    onCompleted(data) {
+      if (data) {
+        const { removeService: { response } } = data
 
-  //       if (response) {
-  //         const { message } = response
-  //         message && Alert.success(message);
-  //         dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-  //         if (!!services && services.length) {
-  //           fetchServices();
-  //         } else {
-  //           dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, services?.length || 0) })
-  //         }
-  //       }
-  //     }
-  //   }
-  // });
+          if (!!services && services.length) {
+            fetchServices();
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, services?.length || 0) })
+          }
+        }
+      }
+    }
+  });
 
   const fetchServices = useCallback(async () => {
     try {
@@ -114,20 +120,20 @@ const ServicesTable: FC = (): JSX.Element => {
     facilityId && fetchServices();
   }, [fetchServices, searchQuery, facilityId]);
 
-  // const onDeleteClick = (id: string) => {
-  //   if (id) {
-  //     dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
-  //     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-  //   }
-  // };
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    }
+  };
 
-  // const handleDeleteService = async () => {
-  //   deleteServiceId && await removeService({
-  //     variables: {
-  //       removeService: { id: deleteServiceId }
-  //     }
-  //   })
-  // };
+  const handleDeleteService = async () => {
+    deleteServiceId && await removeService({
+      variables: {
+        removeService: { id: deleteServiceId }
+      }
+    })
+  };
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
     dispatch({ type: ActionType.SET_PAGE, page });
@@ -187,9 +193,11 @@ const ServicesTable: FC = (): JSX.Element => {
                             </Link>
                           </Box>
 
-                          {/* <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashNewIcon />
-                          </Box> */}
+                          {isSuper &&
+                            <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                              <TrashNewIcon />
+                            </Box>
+                          }
                         </Box>
                       </TableCell>
                     </TableRow>
@@ -205,14 +213,14 @@ const ServicesTable: FC = (): JSX.Element => {
             </Box>
           )}
 
-          {/* <ConfirmationModal
+          <ConfirmationModal
             title={SERVICE}
             isOpen={openDelete}
-            isLoading={deleteServiceLoading}
+            isLoading={removeServiceLoading}
             handleDelete={handleDeleteService}
             description={DELETE_SERVICE_DESCRIPTION}
             setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
-          /> */}
+          />
         </Box>
       </Box>
 

@@ -5,7 +5,7 @@ import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
 import ScheduleListing from "../../common/scheduling/Listing";
-import DoctorPatients from "../../common/Dashboard/DoctorPatients";
+import FacilityDoctorPatients from "../../common/Dashboard/FacilityDoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import DoctorAppointmentsAndPatients from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs and constant block
@@ -66,7 +66,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
                 </Link>
               </Box>
 
-              <DoctorPatients providerId={id || ''} />
+              <FacilityDoctorPatients providerId={id || ''} />
             </Box>
           </Card>
 

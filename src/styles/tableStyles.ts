@@ -190,4 +190,8 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 16,
     }
   },
+
+  fullFlex:{
+    flex : 1
+  }
 }))

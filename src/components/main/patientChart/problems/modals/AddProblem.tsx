@@ -169,7 +169,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
           {!!tabs && renderTabs()}
         </Box>
 
-        <Box mb={2} className={chartingClasses.searchBox} display="flex">
+        {tab === tabs[0] && <Box mb={2} className={chartingClasses.searchBox} display="flex">
           <IconButton aria-label="search">
             <SearchIcon />
           </IconButton>
@@ -181,6 +181,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
+        }
 
         {renderSearchData()}
       </DialogContent>

@@ -27,6 +27,7 @@ export const useProfileStyles = makeStyles(() =>
     sidebarMenu: {
       "& .MuiListItem-root": {
         color: BLACK_THREE,
+        whiteSpace : 'normal'
       },
     },
   })

@@ -3,7 +3,7 @@ import { Box, Card, Grid, Typography } from "@material-ui/core";
 import { FC } from "react";
 //components block
 //constants, interfaces, utils block
-import { BUILD_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS, MODIFIERS, SR_NO, UNIT } from "../../constants";
+import { BILLED_FEE_DOLLAR, CODE, DESCRIPTION, DIAGNOSIS_POINTERS, MODIFIERS, SR_NO, UNIT } from "../../constants";
 import { CodesTableProps } from "../../interfacesTypes";
 import { SearchTooltip } from "../../styles/searchTooltip";
 import { useTableStyles } from "../../styles/tableStyles";
@@ -36,7 +36,7 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
                 </Grid>
 
                 <Grid item md={1} sm={1} xs={1}>
-                  <Typography variant="h5" color="textPrimary">{BUILD_FEE_DOLLAR}</Typography>
+                  <Typography variant="h5" color="textPrimary">{BILLED_FEE_DOLLAR}</Typography>
                 </Grid>
 
                 <Grid item md={3} sm={3} xs={3}>
@@ -68,7 +68,7 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
               <Grid container spacing={3} direction="row">
                 <Grid item md={1} sm={1} xs={1}>
                   <Box>
-                    <Typography variant="body1" color="textPrimary">{index+1}</Typography>
+                    <Typography variant="body1" color="textPrimary">{index + 1}</Typography>
                   </Box>
                 </Grid>
 
@@ -105,19 +105,19 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
                     <Grid item md={3} sm={3} xs={3}>
                       <Box pl={3} mt={1} display='flex' flexWrap='wrap'>
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m1}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m1?.id}</Typography>
                         </Box>
 
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m2}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m2?.id}</Typography>
                         </Box>
 
                         <Box mr={1.5}>
-                          <Typography variant="body1" color="textPrimary">{m3}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m3?.id}</Typography>
                         </Box>
 
                         <Box>
-                          <Typography variant="body1" color="textPrimary">{m4}</Typography>
+                          <Typography variant="body1" color="textPrimary">{m4?.id}</Typography>
                         </Box>
                       </Box>
                     </Grid>

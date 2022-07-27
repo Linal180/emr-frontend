@@ -150,6 +150,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   sidebarMenu: {
     "& .MuiListItem-root": {
       color: BLACK_THREE,
+      whiteSpace : 'normal'
     },
   },
 

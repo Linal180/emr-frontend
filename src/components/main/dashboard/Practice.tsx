@@ -15,8 +15,8 @@ import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, WHITE, PINK_TWO } from "../../../theme";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 import {
@@ -93,7 +93,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             <FacilityUsersWithRole practiceId={practiceId || ''} />
           </Card> */}
 
-          <Box p={2} />
+          {/* <Box p={2} /> */}
 
           {/* <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PURPLE_TWO} paddingBottom={3}>
