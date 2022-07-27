@@ -18,9 +18,11 @@ import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DoctorSearchInputProps, FormForwardRef } from "../../../../interfacesTypes";
-import { Action, ActionType, doctorReducer, initialState, State } from "../../../../reducers/doctorReducer";
 import {
-  checkPermission, formatPhone, formatEnumMember, isFacilityAdmin, isPracticeAdmin, isSuperAdmin,
+  Action, ActionType, doctorReducer, initialState, State
+} from "../../../../reducers/doctorReducer";
+import {
+  checkPermission, formatPhone, formatToLeadingCode, isFacilityAdmin, isPracticeAdmin, isSuperAdmin,
   isUser, renderTh, getPageNumber
 } from "../../../../utils";
 import {
@@ -28,8 +30,8 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, CANT_DELETE_DOCTOR, DELETE_DOCTOR_DESCRIPTION, DOCTOR, DOCTORS_ROUTE, EMAIL, FACILITY,
-  MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, ROOT_ROUTE,
-  SPECIALTY, USER_PERMISSIONS
+  MAPPED_SPECIALTIES, NAME, PAGE_LIMIT, PERMISSION_DENIED, PHONE, ROOT_ROUTE, USER_PERMISSIONS,
+  SPECIALTY,
 } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -86,7 +88,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const fetchAllDoctors = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: 1 || PAGE_LIMIT } }
       const doctorInputs = isSuper ? { ...pageInputs } :
         isPracticeUser ? { practiceId, ...pageInputs } :
           isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
@@ -120,7 +122,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!doctors && doctors.length > 1) {
+          if (!!doctors && doctors.length) {
             fetchAllDoctors()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, doctors?.length || 0) })
@@ -129,19 +131,6 @@ const DoctorsTable: FC = (): JSX.Element => {
       }
     }
   });
-
-  useEffect(() => {
-    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllDoctor)) {
-      Alert.error(PERMISSION_DENIED)
-      history.push(ROOT_ROUTE)
-    }
-  }, [userPermissions])
-
-  useEffect(() => {
-    fetchAllDoctors()
-  }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
-
-  useEffect(() => { }, [user]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -159,7 +148,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       await removeDoctor({
         variables: { removeDoctor: { id: deleteDoctorId } }
       })
-      searchRef.current?.submit()
+    searchRef.current?.submit()
   };
 
   const search = (query: string) => {
@@ -168,13 +157,26 @@ const DoctorsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  useEffect(() => { }, [user]);
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllDoctor)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions])
+
+  useEffect(() => {
+    fetchAllDoctors()
+  }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
+
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <Box mt={2}>
-              <Search search={search} ref={searchRef}/>
+              <Search search={search} ref={searchRef} />
             </Box>
           </Grid>
 
@@ -187,6 +189,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                     label={SPECIALTY}
                     name="speciality"
                     options={MAPPED_SPECIALTIES}
+                    onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
                 <Grid item md={6} sm={12} xs={12}>
@@ -194,6 +197,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                     label={FACILITY}
                     name="facilityId"
                     addEmpty
+                    onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
               </Grid>
@@ -238,7 +242,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{speciality ? formatEnumMember(speciality as string) : ''}</TableCell>
+                      <TableCell scope="row">{speciality ? formatToLeadingCode(speciality as string) : ''}</TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

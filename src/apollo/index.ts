@@ -6,7 +6,9 @@
 // packages block
 import dotenv from 'dotenv';
 import { onError } from "@apollo/client/link/error";
-import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions, Operation, NextLink } from "@apollo/client";
+import {
+  ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions, Operation, NextLink
+} from "@apollo/client";
 // components block
 import Alert from "../components/common/Alert";
 // utils and constants block
@@ -17,6 +19,7 @@ import {
   NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
   UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION, REMOTE_IP,
 } from "../constants";
+
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) => {
@@ -26,8 +29,7 @@ const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) 
 
   operation.setContext({
     headers: {
-      authorization: `Bearer ${token}`,
-      pathname, clientRemote
+      authorization: `Bearer ${token}`, pathname, clientRemote
     },
   });
 
@@ -65,6 +67,7 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
                   message && message !== NOT_FOUND_EXCEPTION
                   && message !== FORBIDDEN_EXCEPTION
                   && message !== CONFLICT_EXCEPTION
+                  && message !== PRECONDITION_FAILED_EXCEPTION
                 ) {
                   Alert.error(message)
                 } else if (
@@ -114,7 +117,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     addTypename: false
   }),
-  
+
   connectToDevTools: true,
   link: from([authMiddleware, errorLink, httpLink]),
   defaultOptions: defaultOptions

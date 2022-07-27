@@ -16,7 +16,7 @@ import {
 import { CodeType, SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
 import { ParamsType } from '../../../interfacesTypes';
 import { BLACK_FOUR, GREY_NINE } from '../../../theme';
-import { formatPhone, formatServiceEnumMember, getDateWithDayAndTime, getFormatDateString, getNumberFromChar, renderTh } from '../../../utils';
+import { formatPhone, formatToLeadingCode, getDateWithDayAndTime, getFormatDateString, getNumberFromChar, renderTh } from '../../../utils';
 
 const SuperBillComponent = (): JSX.Element => {
   const { id: appointmentId } = useParams<ParamsType>()
@@ -113,7 +113,7 @@ const SuperBillComponent = (): JSX.Element => {
                 <Box my={1} display="flex" flexWrap="wrap">
                   <Typography><strong>{PLACE_OF_SERVICE_CODE} :</strong></Typography>
                   <Box p={1} />
-                  <Typography>{formatServiceEnumMember(serviceCode || '')}</Typography>
+                  <Typography>{formatToLeadingCode(serviceCode || '')}</Typography>
                 </Box>
 
                 <Box my={1} display="flex" flexWrap="wrap">

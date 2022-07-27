@@ -302,9 +302,9 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           toggleSideDrawer={toggleSideDrawer}
         >
           <AddDocumentModal
+            state={state}
             patientId={id}
             dispatch={dispatch}
-            state={state}
             attachment={attachmentData}
             attachmentId={attachmentId}
             facilityId={facilityId || ''}

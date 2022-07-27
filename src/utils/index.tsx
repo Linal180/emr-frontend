@@ -74,7 +74,7 @@ export const formatEnumMember = (value: string) => {
   return formatted.trim();
 };
 
-export const formatServiceEnumMember = (value: string) => {
+export const formatToLeadingCode = (value: string) => {
   const parts = value.split("_");
   const code = parts[parts.length - 1]
   let formatted = ''
@@ -106,6 +106,16 @@ export const renderLoading = (label: string | JSX.Element) => (
     </Box>
   </>
 );
+
+export const renderTextLoading = () => (
+  <Box display="flex" pt={0.3}
+    justifyContent="space-between"
+    alignItems="center" borderRadius={4}
+    className="skelton-input"
+  >
+    <Skeleton animation="pulse" variant="rect" width={240} height={28} />
+  </Box>
+)
 
 export const renderItem = (
   label: string, value: Maybe<string> | number | ReactNode | undefined,
@@ -1829,14 +1839,14 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
   } else return [EMPTY_OPTION]
 }
 
-export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[] {
+export function mapEnumWithCode<enumType>(enumerable: enumType): SelectorOption[] {
   if (enumerable) {
     let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
 
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatServiceEnumMember(member)
+        name: formatToLeadingCode(member)
       }
     });
   } else return [EMPTY_OPTION]
@@ -2098,7 +2108,7 @@ export const getPageNumber = (page: number, pageRecords: number): number => {
 }
 
 export const formatEmail = (email: string) => {
-  if(!!!email) return '';
+  if (!!!email) return '';
 
   return email.toLowerCase();
 }

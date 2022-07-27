@@ -1,14 +1,14 @@
-// packages import
+// packages block
 import { FC } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
-// components import
+// components block
 import Selector from "../../../../common/Selector";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import DoctorSelector from "../../../../common/Selector/DoctorSelector";
-// constants, types, interfaces, utils import
+// constants, types, interfaces, utils block
 import { formatValue, setRecord } from "../../../../../utils";
 import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
@@ -20,7 +20,7 @@ import {
   REFERRING_PROVIDER, REMOVE_COPAY_AMOUNT, SUFFIX, VALUE
 } from "../../../../../constants";
 
-const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
+const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
   const { control } = useFormContext<InsuranceCreateInput>()
   const { fields: copayFields, remove: removeCopayField, append: appendCopayField } =
     useFieldArray({ control: control, name: "copayFields" });
@@ -31,6 +31,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Selector
             addEmpty
+            loading={loading}
             name="patientRelationship"
             label={PATIENT_RELATIONSHIP_TO_POLICY_HOLDER}
             options={MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE}
@@ -44,6 +45,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             isRequired
             fieldType="text"
+            loading={loading}
             controllerName="suffix"
             controllerLabel={SUFFIX}
           />
@@ -52,6 +54,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="certificationNumber"
             info={MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP}
             controllerLabel={MEMBER_ID_CERTIFICATE_NUMBER}
@@ -62,6 +65,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             isRequired
             fieldType="text"
+            loading={loading}
             controllerName="policyNumber"
             controllerLabel={POLICY_GROUP_NUMBER}
           />
@@ -70,17 +74,12 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
-              <DatePicker
-                name="issueDate"
-                label={ISSUE_DATE}
-              />
+              <DatePicker name="issueDate" label={ISSUE_DATE} loading={loading} />
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
               <DatePicker
-                name="expirationDate"
-                label={EXPIRATION_DATE}
-                disableFuture={false}
+                name="expirationDate" label={EXPIRATION_DATE} disableFuture={false} loading={loading}
               />
             </Grid>
           </Grid>
@@ -107,9 +106,10 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                 <Grid item md={6} sm={12} xs={12}>
                   <Selector
                     addEmpty
-                    name={`copayFields.${index}.copayType`}
+                    loading={loading}
                     label={COPAY_TYPE}
                     options={MAPPED_COPAY_TYPE}
+                    name={`copayFields.${index}.copayType`}
                   />
                 </Grid>
 
@@ -117,6 +117,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
                   <Box >
                     <InputController
                       fieldType="number"
+                      loading={loading}
                       controllerLabel={VALUE}
                       info={COPAY_AMOUNTS_TOOLTIP}
                       controllerName={`copayFields.${index}.amount`}
@@ -144,6 +145,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="number"
+            loading={loading}
             controllerName="coInsurancePercentage"
             controllerLabel={COINSURANCE_PERCENTAGE}
             className="input-dollar-class custom-num-input"
@@ -153,24 +155,27 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
             addEmpty
+            loading={loading}
+            shouldOmitFacilityId
             label={REFERRING_PROVIDER}
             name="referringProvider"
-            shouldOmitFacilityId
           />
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
             addEmpty
-            label={PRIMARY_CARE_PROVIDER}
-            name="primaryCareProvider"
+            loading={loading}
             shouldOmitFacilityId
+            name="primaryCareProvider"
+            label={PRIMARY_CARE_PROVIDER}
           />
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>
           <Selector
             addEmpty
+            loading={loading}
             name="pricingProductType"
             label={PRICING_PRODUCT_TYPE}
             options={MAPPED_PRICING_PRODUCT_TYPE}
@@ -179,10 +184,11 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit }) => {
 
         <Grid item md={12} sm={12} xs={12}>
           <InputController
+            multiline
             fieldType="text"
+            loading={loading}
             controllerName="notes"
             controllerLabel={NOTES}
-            multiline
           />
         </Grid>
       </Grid>
