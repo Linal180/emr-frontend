@@ -8,11 +8,11 @@ import Alert from "./Alert";
 import history from "../../history";
 import { WHITE_FOUR } from "../../theme";
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
-import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
+import { AppointmentCreateType, AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
 import {
   RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
-  CHECK_IN_ROUTE, MINUTES
+  CHECK_IN_ROUTE, MINUTES, TELEHEALTH_URL, TELEHEALTH_TEXT
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
@@ -50,7 +50,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
   return (
     <Box>
       {appointments?.map(appointment => {
-        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility } = appointment || {};
+        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility, appointmentCreateType } = appointment || {};
         const { firstName, lastName } = provider || {};
         const { name: facilityName } = facility || {};
         const { name: serviceName } = appointmentType || {};
@@ -81,12 +81,20 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                 </Link>
 
                 <Box p={1} />
-                <Button type="submit" variant="contained" color="secondary"
-                  onClick={() => handlePatientCheckIn(id || '')}
-                  disabled={updateAppointmentLoading}
-                >
-                  {CHECK_IN}
-                </Button>
+                {appointmentCreateType === AppointmentCreateType.Telehealth
+                  ? <Button type="submit" variant="contained" color="secondary"
+                    onClick={() => window.open(TELEHEALTH_URL)}
+                    disabled={updateAppointmentLoading}
+                  >
+                    {TELEHEALTH_TEXT}
+                  </Button>
+
+                  : <Button type="submit" variant="contained" color="secondary"
+                    onClick={() => handlePatientCheckIn(id || '')}
+                    disabled={updateAppointmentLoading}
+                  >
+                    {CHECK_IN}
+                  </Button>}
               </Box>
             }
           </Box>

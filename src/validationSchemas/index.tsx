@@ -1070,8 +1070,8 @@ export const labOrdersResultAttachmentSchema = yup.object({
 })
 
 export const createClaimStatusSchema = yup.object({
-  statusName: yup.string()
-    .required(requiredMessage(CLAIM_STATUS))
+  statusName: yup.string().required(requiredMessage(CLAIM_STATUS))
+  .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
 })
 
 

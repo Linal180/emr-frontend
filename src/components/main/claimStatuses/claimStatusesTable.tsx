@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Pagination } from '@material-ui/lab';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 // components block
@@ -11,7 +11,7 @@ import ClaimStatusModal from '../../common/ClaimStatusModal';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 //constants, types, interfaces, utils block
-import { GeneralFormProps } from '../../../interfacesTypes';
+import { FormForwardRef, GeneralFormProps } from '../../../interfacesTypes';
 import { useTableStyles } from '../../../styles/tableStyles';
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
 import { convertDateFromUnix, renderTh, getPageNumber } from '../../../utils';
@@ -35,6 +35,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
   
   const [isClaimStatusModalOpen, setIsClaimStatusModalOpen] = useState(false)
   const [editId, setEditId] = useState<string>('')
+  const searchRef = useRef<FormForwardRef>();
 
   const search = (query: string) => setSearchQuery(query)
 
@@ -125,6 +126,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
     claimStatusToRemove && await removeClaimStatus({
       variables: { id: claimStatusToRemove }
     })
+    searchRef.current?.submit()
   };
 
   useEffect(() => {
@@ -145,7 +147,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
       <Box className={classes.mainTableContainer}>
         <Box maxWidth={450}>
-          <Search search={search} />
+          <Search search={search} ref={searchRef}/>
         </Box>
 
         <Box className="table-overflow" mt={4}>
