@@ -311,7 +311,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
     } else Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
   }
 
-  const loading = (isEdit && isFormLoaded) || true
+  const loading = isEdit && isFormLoaded
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
