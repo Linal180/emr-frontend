@@ -114,7 +114,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           try {
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!agreements && agreements.length > 1) {
+            if (!!agreements && agreements.length) {
               await fetchAgreements()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, agreements?.length || 0) })
@@ -183,13 +183,6 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: false })
     dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: '' })
   }
-
-  useEffect(() => {
-    if (!agreements.length && page > 1) {
-      dispatch({ type: ActionType.SET_PAGE, page: page - 1 })
-    }
-  }, [agreements.length, page])
-
 
   return (
     <>
