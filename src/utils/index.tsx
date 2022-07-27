@@ -74,7 +74,7 @@ export const formatEnumMember = (value: string) => {
   return formatted.trim();
 };
 
-export const formatServiceEnumMember = (value: string) => {
+export const formatToLeadingCode = (value: string) => {
   const parts = value.split("_");
   const code = parts[parts.length - 1]
   let formatted = ''
@@ -1829,14 +1829,14 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
   } else return [EMPTY_OPTION]
 }
 
-export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[] {
+export function mapEnumWithCode<enumType>(enumerable: enumType): SelectorOption[] {
   if (enumerable) {
     let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
 
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatServiceEnumMember(member)
+        name: formatToLeadingCode(member)
       }
     });
   } else return [EMPTY_OPTION]
