@@ -592,6 +592,7 @@ export const PRICING = "Pricing";
 export const DOCTOR_ID = "provider id";
 export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
+export const BILLED_AMOUNT = "Billed Amount";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DECEASED_DATE = "Deceased Date";
 export const DEA_TERM_DATE = "DEA Term Date";
@@ -691,6 +692,7 @@ export const CVV = "CVV";
 export const PAY = "Pay";
 export const SSN = "SSN";
 export const ZIP = "Zip";
+export const OKAY = "Okay";
 export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
@@ -708,6 +710,7 @@ export const PAGE_LIMIT = 9;
 export const INS_1 = "Ins 1";
 export const VALUE = "Value";
 export const VISIT = "Visit";
+export const ISSUES = "Issues";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";
 export const INS_BAL = "Ins Bal";
@@ -732,9 +735,10 @@ export const SET = "Set Password";
 export const EIGHT_PAGE_LIMIT = 8;
 export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
+export const REJECTED = "Rejected";
 export const USERNAME = "Username";
+export const PAYER_ID = "Payer ID";
 export const SIGN_OFF = "Sign Off";
-export const EXTENDED_PAGE_LIMIT = 12;
 export const ADD_BILL = "Add Bill";
 export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
@@ -747,6 +751,7 @@ export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
 export const CLAIM_BAL = "Claim Bal";
 export const FROM_DATE = "From Date";
+export const EXTENDED_PAGE_LIMIT = 12;
 export const REACTION_PAGE_LIMIT = 50;
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const USER_LOG_PAGE_LIMIT = 50;
@@ -762,9 +767,9 @@ export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
+export const PAYER = "Payer";
 export const STAGE = "Stage";
 export const CANCEL = "Cancel";
-export const DOCTOR = "Provider";
 export const BILLED = "Billed";
 export const RESULT = "Result";
 export const ACTIVE = "Active";
@@ -773,9 +778,8 @@ export const USER_TEXT = "User";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Action";
 export const USER_ID = "User ID";
+export const DOCTOR = "Provider";
 export const PATIENT = "Patient";
-export const PAYER = "Payer";
-export const PAYER_ID = "Payer ID";
 export const SUCCESS = "success";
 export const CLAIMED = "Claimed";
 export const SERVICE = "Service";
@@ -1479,6 +1483,7 @@ export const AGREEMENTS_ROUTE = "/agreements";
 export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
+export const CLAIM_STATUS_ROUTE = "/claim-status";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
@@ -1831,6 +1836,10 @@ export const BILLING_MENU_ITEMS = [
   {
     name: LIVE_CLAIM_FEED,
     link: CLAIM_FEED_ROUTE
+  },
+  {
+    name: CLAIM_STATUS,
+    link: CLAIM_STATUS_ROUTE
   }
 ];
 
@@ -4162,6 +4171,65 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   {
     name: 'Provider Phone',
     value: '+1765345267542',
+  },
+]
+
+export const CLAIM_STATUS_DUMMY_DATA = [
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
   },
 ]
 
