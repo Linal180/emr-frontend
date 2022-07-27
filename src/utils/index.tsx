@@ -107,6 +107,16 @@ export const renderLoading = (label: string | JSX.Element) => (
   </>
 );
 
+export const renderTextLoading = () => (
+  <Box display="flex" pt={0.3}
+    justifyContent="space-between"
+    alignItems="center" borderRadius={4}
+    className="skelton-input"
+  >
+    <Skeleton animation="pulse" variant="rect" width={240} height={28} />
+  </Box>
+)
+
 export const renderItem = (
   label: string, value: Maybe<string> | number | ReactNode | undefined,
   noWrap?: boolean, loading?: boolean
@@ -2098,7 +2108,7 @@ export const getPageNumber = (page: number, pageRecords: number): number => {
 }
 
 export const formatEmail = (email: string) => {
-  if(!!!email) return '';
+  if (!!!email) return '';
 
   return email.toLowerCase();
 }
