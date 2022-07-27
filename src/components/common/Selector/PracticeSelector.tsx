@@ -12,7 +12,7 @@ import { isSuperAdmin, renderLoading, renderPractices, requiredLabel, sortingVal
 import { practiceReducer, Action, initialState, State, ActionType } from "../../../reducers/practiceReducer";
 
 const PracticeSelector: FC<PracticeSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, loading, isLabelDisplay = true
+  name, label, disabled, isRequired, addEmpty, loading, isLabelDisplay = true, handleFeeSchedule
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext)
@@ -111,7 +111,9 @@ const PracticeSelector: FC<PracticeSelectorProps> = ({
                   </FormControl>
                 )}
 
-                onChange={(_, data) => field.onChange(data)}
+                onChange={(_, data) => {
+                 handleFeeSchedule && handleFeeSchedule(data?.id)
+                  field.onChange(data)}}
               />
             );
           }}

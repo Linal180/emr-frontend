@@ -444,6 +444,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export interface PracticeSelectorProps extends SelectorProps {
   patientId?: string;
   isLabelDisplay?: boolean;
+  handleFeeSchedule?: Function;
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
