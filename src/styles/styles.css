@@ -16,10 +16,9 @@ a {
   color: #3f51b5;
 }
 
-/* img,
-svg {
+img {
   max-width: 100%;
-} */
+}
 
 body {
   font-family: Inter, sans-serif;
