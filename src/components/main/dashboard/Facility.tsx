@@ -285,9 +285,11 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex'>
-                    <CalendarBlackIconTwo />
+                    <Box minWidth={30}>
+                      <CalendarBlackIconTwo />
+                    </Box>
 
-                    <Box ml={2}>
+                    <Box ml={2} flex={1}>
                       <Typography variant="h5">{appointmentCount}</Typography>
 
                       <Box mt={0.5} color={GREEN_ONE}>
@@ -299,7 +301,9 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
 
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex'>
-                    <UserBlackIconTwo />
+                    <Box minWidth={30}>
+                      <UserBlackIconTwo />
+                    </Box>
 
                     <Box ml={2}>
                       <Typography variant="h5">{dischargedAppointment}</Typography>

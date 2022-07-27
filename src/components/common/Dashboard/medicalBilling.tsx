@@ -34,9 +34,11 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <Box display='flex'>
-              <PracticeActiveIcon />
+              <Box minWidth={30}>
+                <PracticeActiveIcon />
+              </Box>
 
-              <Box ml={2}>
+              <Box ml={2} flex={1}>
                 <Typography variant="h5">24</Typography>
 
                 <Box mt={0.5} color={GREEN_ONE}>
@@ -48,9 +50,11 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
 
           <Grid item md={6} sm={12} xs={12}>
             <Box display='flex'>
-              <PracticeInactiveIcon />
+              <Box minWidth={30}>
+                <PracticeInactiveIcon />
+              </Box>
 
-              <Box ml={2}>
+              <Box ml={2} flex={1}>
                 <Typography variant="h5">3</Typography>
 
                 <Box mt={0.5} color={BLUE_SEVEN}>
@@ -66,9 +70,11 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <Box display='flex'>
-              <ClaimActionIcon />
+              <Box minWidth={30}>
+                <ClaimActionIcon />
+              </Box>
 
-              <Box ml={2}>
+              <Box ml={2} flex={1}>
                 <Typography variant="h5">2</Typography>
 
                 <Box mt={0.5} color={RED_ONE}>
@@ -80,9 +86,11 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
           </Grid>
           <Grid item md={6} sm={12} xs={12}>
             <Box display='flex'>
-              <ClaimAmountIcon />
+              <Box minWidth={30}>
+                <ClaimAmountIcon />
+              </Box>
 
-              <Box ml={2}>
+              <Box ml={2} flex={1}>
                 <Typography variant="h5">$3,600</Typography>
 
                 <Box mt={0.5} color={GREY_SEVEN}>

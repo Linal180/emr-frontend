@@ -129,5 +129,11 @@ export const useCalendarStyles = makeStyles(() =>
       display: 'flex',
       textAlign: 'center',
     },
+
+    customCalender: {
+      '& .MuiTableRow-root td:first-child': {
+        paddingLeft : 0
+      }
+    }
   })
 );

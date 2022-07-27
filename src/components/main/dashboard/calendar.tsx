@@ -164,7 +164,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
       }
 
       <Card>
-        <Box>
+        <Box className={classes.customCalender}>
           {fetchAllAppointmentsLoading &&
             <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
           }
