@@ -11,6 +11,7 @@ import Alert from "../../Alert";
 import Search from "../../Search";
 import SideDrawer from "../../SideDrawer";
 import TableLoader from "../../TableLoader";
+import DocumentViewer from "../../DocumentViewer";
 import AddDocumentModal from "./AddDocumentModule";
 import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
@@ -28,12 +29,12 @@ import {
   getDocumentDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
 } from "../../../../utils";
 import {
-  AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-  useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
+  AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useUpdateAttachmentDataMutation,
+  useGetAttachmentsLazyQuery, useRemoveAttachmentDataMutation,
 } from "../../../../generated/graphql";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD, PREVIEW_IS_NOT_AVAILABLE,
 } from "../../../../constants";
 
 const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
@@ -58,7 +59,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    openSign, providerName, attachmentData, drawerOpened
+    openSign, providerName, attachmentData, drawerOpened, isOpen, preSignedUrl, documentName
   } = state
 
   const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened })
@@ -84,11 +85,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
 
-        if (preSignedUrl) {
-          window.open(preSignedUrl);
-
-          preSignedUrl && dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl })
-        }
+        preSignedUrl && dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl })
+        dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
       }
     },
   });
@@ -203,10 +201,20 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     })
   }
 
-  const handleDownload = async (id: string) => {
-    id && getAttachment({
-      variables: { getMedia: { id } }
-    })
+  // const handleDownload = async (id: string) => {
+  // id && getAttachment({
+  // variables: { getMedia: { id } }
+  // })
+  // }
+
+  const handlePreview = async (id: string, title: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DOCUMENT_NAME, documentName: title })
+
+      await getAttachment({
+        variables: { getMedia: { id } }
+      })
+    } else Alert.error(PREVIEW_IS_NOT_AVAILABLE)
   }
 
   const handleEdit = (attachmentId: string, attachment: AttachmentPayload['attachment']) => {
@@ -225,7 +233,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     attachmentId && await updateAttachmentData({
       variables: {
         updateAttachmentInput: {
-          id: attachmentId, attachmentName, comments, documentTypeId: selectedDocumentType, documentDate: date
+          id: attachmentId, attachmentName, comments, documentTypeId: selectedDocumentType,
+          documentDate: date
         }
       }
     })
@@ -247,6 +256,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
       dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: true })
       dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: id })
     }
+  }
+
+  const handlePreviewClose = () => {
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: false })
+    dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl: '' })
+    dispatch({ type: ActionType.SET_DOCUMENT_NAME, documentName: '' })
   }
 
   const search = (query: string) => { }
@@ -287,9 +302,9 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           toggleSideDrawer={toggleSideDrawer}
         >
           <AddDocumentModal
+            state={state}
             patientId={id}
             dispatch={dispatch}
-            state={state}
             attachment={attachmentData}
             attachmentId={attachmentId}
             facilityId={facilityId || ''}
@@ -372,7 +387,9 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                               </Box>
                             }
 
-                            <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
+                            <Box className={classes.iconsBackground}
+                              onClick={() => id && handlePreview(id, filteredFileName || '')}
+                            >
                               <VisibilityOnIcon />
                             </Box>
 
@@ -420,8 +437,15 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
         }
       />
+
+      {isOpen && <DocumentViewer
+        isOpen={isOpen}
+        url={preSignedUrl}
+        title={documentName}
+        handleClose={handlePreviewClose}
+      />}
     </Box>
-  );
+  )
 };
 
 export default DocumentsTable;

@@ -1,20 +1,21 @@
-//packages import
+// packages block
 import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
 import { useParams } from "react-router";
 import { Check } from '@material-ui/icons';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
-//components import
+import {
+  Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography
+} from "@material-ui/core";
+// components block
 import PolicyDetails from "./PolicyDetails";
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
 import PolicyAttachments from "./PolicyAttachments";
-import TextLoader from "../../../../common/TextLoader";
 import PolicyHolderDetails from "./PolicyHolderDetails";
 import ItemSelector from "../../../../common/ItemSelector";
-//constants, types, utils import
+// constants, types, utils block
 import { GREY_SIXTEEN } from "../../../../../theme";
 import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
@@ -22,22 +23,24 @@ import { createInsuranceSchema } from "../../../../../validationSchemas";
 import {
   Action, ActionType, insuranceReducer, initialState, State
 } from "../../../../../reducers/insuranceReducer";
-import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
+import {
+  CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles
+} from '../../../../../styles/checkInStyles';
 import {
   FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps
 } from "../../../../../interfacesTypes";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
-  INITIAL_COPAY_VALUE, INSURANCE_CARD_ERROR_MESSAGE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
+  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_CARD_ERROR_MESSAGE, INSURANCE_PAYER_NAME,
+  ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
   CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
   useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation
 } from "../../../../../generated/graphql";
 
-const CheckInStepIcon = (props: StepIconProps) => {
+const CheckInStepIcon: FC<StepIconProps> = ({ active, completed }) => {
   const classes = useCheckInStepIconStyles();
-  const { active, completed } = props;
 
   return (
     <div
@@ -55,27 +58,23 @@ const PolicyCard: FC<PolicyCardProps> = ({
 }) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
-
   const [state, dispatch] = useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
-  const { policyId, activeStep, isFormLoaded, policyHolderId, insuranceId, numberOfFiles } = state
 
+  const { policyId, activeStep, isFormLoaded, policyHolderId, insuranceId, numberOfFiles } = state
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
     mode: "all",
-    defaultValues: {
-      copayFields: [INITIAL_COPAY_VALUE]
-    },
+    defaultValues: { copayFields: [INITIAL_COPAY_VALUE] },
     resolver: yupResolver(createInsuranceSchema)
   });
   const { handleSubmit, setValue, trigger } = methods;
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else Alert.error(message)
+      Alert.error(message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION ?
+        EMAIL_OR_USERNAME_ALREADY_EXISTS : message)
     },
 
     onCompleted(data) {
@@ -218,7 +217,6 @@ const PolicyCard: FC<PolicyCardProps> = ({
         'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
       return isValid
     }
-
   }
 
   const handleStep = async (step: number) => {
@@ -310,12 +308,10 @@ const PolicyCard: FC<PolicyCardProps> = ({
           }
         })
       }
-    } else {
-      Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
-    }
-
+    } else Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
   }
 
+  const loading = (isEdit && isFormLoaded) || true
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -324,36 +320,46 @@ const PolicyCard: FC<PolicyCardProps> = ({
             <Grid container spacing={3} alignItems="center">
               <Grid item md={12} sm={12} xs={12}>
                 <ItemSelector
+                  addEmpty
                   isRequired
                   isEdit={isEdit}
-                  addEmpty
-                  label={INSURANCE_PAYER_NAME}
+                  loading={loading}
                   name="insuranceId"
-                  modalName={ITEM_MODULE.insurance}
                   value={insuranceId}
+                  label={INSURANCE_PAYER_NAME}
+                  modalName={ITEM_MODULE.insurance}
                 />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
                   isRequired
+                  loading={loading}
+                  value={EMPTY_OPTION}
                   name="orderOfBenefit"
                   label={ORDER_OF_BENEFIT}
-                  value={EMPTY_OPTION}
                   options={filteredOrderOfBenefitOptions ?? []}
                 />
               </Grid>
             </Grid>
 
-            <PolicyDetails isEdit={isEdit} />
+            <PolicyDetails isEdit={isEdit} loading={loading} />
           </>
         )
+
       case 1:
-        return <PolicyHolderDetails isEdit={isEdit} />
+        return <PolicyHolderDetails isEdit={isEdit} loading={loading} />
+
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} dispatch={dispatch} numberOfFiles={numberOfFiles} />
+          <PolicyAttachments handleReload={() => { }}
+            dispatch={dispatch}
+            policyId={policyId}
+            ref={policyAttachmentRef}
+            numberOfFiles={numberOfFiles}
+          />
         </Box>
+
       default:
         return 'Unknown step';
     }
@@ -370,10 +376,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
             <Typography variant='h3'>{isEdit ? EDIT_INSURANCE : ADD_INSURANCE}</Typography>
 
             <Box display="flex" alignItems="center">
-              {activeStep !== 0 && (<>
+              {activeStep !== 0 &&
                 <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
-              </>
-              )}
+              }
 
               <Box p={1} />
 
@@ -387,33 +392,30 @@ const PolicyCard: FC<PolicyCardProps> = ({
             </Box>
           </Box>
 
-          {isEdit && isFormLoaded ?
-            <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} />
-            :
-            <Box p={2}>
-              <Box className={addInsuranceClasses.checkInProfileBox}>
-                <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
-                  {ADD_INSURANCE_STEPS.map((label, index) => (
-                    <Step key={label}>
-                      <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
-                        <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
-                          {label}
-                          <Box p={0.5} />
+          <Box p={2}>
+            <Box className={addInsuranceClasses.checkInProfileBox}>
+              <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
+                {ADD_INSURANCE_STEPS.map((label, index) => (
+                  <Step key={label}>
+                    <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                      <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
+                        {label}
+                        <Box p={0.5} />
 
-                          {!(ADD_INSURANCE_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
-                        </Box>
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-              </Box>
+                        {!(ADD_INSURANCE_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
+                      </Box>
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
 
-              <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto">
-                <Box px={1}>
-                  <Typography>{getStepContent(activeStep)}</Typography>
-                </Box>
+            <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto">
+              <Box px={1}>
+                <Typography>{getStepContent(activeStep)}</Typography>
               </Box>
-            </Box>}
+            </Box>
+          </Box>
         </form>
       </FormProvider>
     </Box>
