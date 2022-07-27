@@ -3442,7 +3442,6 @@ export const PRACTICE_SETTINGS_ITEMS = [
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me'
-export const TELEHEALTH_TEXT = 'Telehealth'
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

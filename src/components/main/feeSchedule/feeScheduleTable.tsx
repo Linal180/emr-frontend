@@ -106,6 +106,15 @@ const FeeTable: FC = (): JSX.Element => {
     } catch (error) { }
   }, [page, practiceId, isSuper, findAllFeeSchedule, searchQuery])
 
+  const handleFetchFeeSchedule = async (id: string) => {
+    try {
+      const paginationOptions = { page, limit: EXTENDED_PAGE_LIMIT }
+      const findAllFeeScheduleInput = { paginationOptions, practiceId: id, searchString: searchQuery }
+
+      await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
+    } catch (error) { }
+  }
+
   useEffect(() => {
     fetchFeeSchedule()
   }, [fetchFeeSchedule, page])
@@ -183,6 +192,7 @@ const FeeTable: FC = (): JSX.Element => {
                     label=""
                     isLabelDisplay={false}
                     name="practiceId"
+                    handleFeeSchedule={handleFetchFeeSchedule}
                   />
                 </FormProvider>
               </Grid>}
