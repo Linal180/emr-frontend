@@ -1,6 +1,6 @@
 query FetchAllInsurances($insuranceInput: InsurancePaginationInput!){
   fetchAllInsurances(insuranceInput: $insuranceInput){
-    insurances{
+    insurances {
       payerName
       payerId
       id

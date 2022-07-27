@@ -1,4 +1,5 @@
 // packages block
+import { useHistory } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
 import { useFormContext } from 'react-hook-form';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
@@ -22,7 +23,7 @@ import {
 } from '../../../reducers/externalFormBuilderReducer';
 import {
   CHOOSE_YOUR_PAYMENT_METHOD, PAY, PAY_LATER, PAY_VIA_ACH, PAY_VIA_PAYPAL,
-  PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD,
+  PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE,
 } from '../../../constants';
 import { ACHIcon, PayLaterIcon } from '../../../assets/svgs';
 
@@ -33,11 +34,17 @@ interface PaymentComponentProps {
 
 const PaymentComponent = ({ dispatcher, state: formState }: PaymentComponentProps): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
+  const history = useHistory()
+
   const { appointmentPaymentToken, price, showPayBtn, instance, achPayment } = state;
-  const { activeStep, serviceTypeId, transactionId } = formState || {}
+  const { activeStep, serviceTypeId, transactionId, formValues } = formState || {}
   const { setValue } = useFormContext()
+  const isSubmit = formValues ? formValues?.length - 1 === activeStep : false
 
   const moveNext = () => {
+    if (isSubmit) {
+      history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
+    }
     dispatcher && activeStep && dispatcher({ type: FormActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
   }
 
