@@ -651,7 +651,7 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
         const { id, appointmentType, scheduleStartDateTime } = appointment;
         data.push({
           id,
-          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`.trim()
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`.trim()
         })
       }
     }
