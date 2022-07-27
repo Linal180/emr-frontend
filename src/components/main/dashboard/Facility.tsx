@@ -14,13 +14,13 @@ import history from "../../../history";
 import Alert from "../../common/Alert";
 import { AuthContext } from "../../../context";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE } from "../../../theme";
+import { BLUE_SEVEN, GREEN_ONE, WHITE, GREEN, PURPLE_ONE, GREY_NINE } from "../../../theme";
 import {
   AppointmentStatus, useFindAllAppointmentListLazyQuery, useFindAllDoctorListLazyQuery,
   useFindAllStaffListLazyQuery
 } from "../../../generated/graphql";
 import {
-  CalendarBlackIcon, CalendarBlackIconTwo, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
+  CalendarBlackIcon, CalendarNewIcon, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
   StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo,
 } from "../../../assets/svgs";
 import {
@@ -284,10 +284,15 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             <Box px={4} pb={2} display='flex' alignItems='center'>
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <CalendarBlackIconTwo />
+                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                    <Box
+                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                      display="flex" justifyContent="center" alignItems="center"
+                    >
+                      <CalendarNewIcon />
+                    </Box>
 
-                    <Box ml={2}>
+                    <Box>
                       <Typography variant="h5">{appointmentCount}</Typography>
 
                       <Box mt={0.5} color={GREEN_ONE}>
@@ -298,13 +303,18 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex'>
-                    <UserBlackIconTwo />
+                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                    <Box
+                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                      display="flex" justifyContent="center" alignItems="center"
+                    >
+                      <UserBlackIconTwo />
+                    </Box>
 
-                    <Box ml={2}>
+                    <Box>
                       <Typography variant="h5">{dischargedAppointment}</Typography>
 
-                      <Box mt={0.5} color={BLUE_SEVEN}>
+                      <Box mt={0.5} color={GREEN_ONE}>
                         <Typography variant="inherit">{TOTAL_DISCHARGED_PATIENTS}</Typography>
                       </Box>
                     </Box>

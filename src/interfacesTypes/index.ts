@@ -879,11 +879,11 @@ export interface CoverageDetailsHeaderProps {
   policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
 }
 
-export interface DocViewerProps {
+export interface DocumentViewerProps {
   title?: string
+  url: string
   isOpen: boolean
   handleClose: () => void
-  url: string
 }
 
 export interface AddAllergyModalProps extends GeneralFormProps {
