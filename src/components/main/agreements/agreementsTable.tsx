@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 // components block
-import DocViewer from './DocViewer';
 import Alert from '../../common/Alert';
 import Search from '../../common/Search';
 import TableLoader from '../../common/TableLoader';
+import DocumentViewer from '../../common/DocumentViewer';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 //constants, types, interfaces, utils block
@@ -45,13 +45,11 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const isPractice = isPracticeAdmin(roles)
   const isFac = isFacilityAdmin(roles)
 
-  const search = (query: string) => {
+  const search = (query: string) =>
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-  };
 
-  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
     dispatch({ type: ActionType.SET_PAGE, page: page })
-  }
 
   const [fetchAllAgreements, { loading, error }] = useFetchAllAgreementsLazyQuery({
     fetchPolicy: "network-only",
@@ -282,11 +280,11 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         />
       </Box>}
 
-      {isFileModalOpen && <DocViewer
-        handleClose={handleModalClose}
-        isOpen={isFileModalOpen}
-        url={agreementUrl}
+      {isFileModalOpen && <DocumentViewer
         title="Agreement"
+        url={agreementUrl}
+        isOpen={isFileModalOpen}
+        handleClose={handleModalClose}
       />}
     </>
   )
