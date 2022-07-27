@@ -33,7 +33,7 @@ import {
 export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const NO_SPACE_REGEX = /^[^-\s]+$/;
+export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -1545,6 +1545,7 @@ export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optiona
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
 export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
+export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not acceptable";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
