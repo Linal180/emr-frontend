@@ -100,7 +100,7 @@ const StaffTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!allStaff && allStaff.length > 1) {
+            if (!!allStaff && allStaff.length) {
               await fetchAllStaff();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, allStaff?.length || 0) })

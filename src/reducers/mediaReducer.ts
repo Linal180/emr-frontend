@@ -2,13 +2,12 @@ import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSig
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
-  meta: string
   files: File[]
-  loading: boolean
   action: string
   isOpen: boolean
   isEdit: boolean
   fileUrl: string
+  loading: boolean
   policyId: string
   openSign: boolean
   activeStep: number
@@ -17,6 +16,7 @@ export interface State {
   providerName: string
   isSignedTab: boolean
   preSignedUrl: string
+  documentName: string
   attachmentId: string
   drawerOpened: boolean
   isFormLoaded: boolean
@@ -43,7 +43,6 @@ export interface State {
 }
 
 export const initialState: State = {
-  meta: "",
   files: [],
   action: '',
   fileUrl: '',
@@ -55,20 +54,22 @@ export const initialState: State = {
   openSign: false,
   attachments: [],
   labResultId: '',
+  documentName: "",
   attachmentId: '',
   providerName: '',
   preSignedUrl: '',
+  openDelete: false,
+  attachmentUrl: '',
   practiceData: null,
   policyHolderId: '',
   isFormLoaded: true,
-  openDelete: false,
-  attachmentUrl: '',
   isSignedTab: false,
   drawerOpened: false,
   attachmentsData: [],
-  labDocumentTypeId: "",
   mediaData: undefined,
   attachmentData: null,
+  policyAttachments: [],
+  labDocumentTypeId: "",
   attachment: undefined,
   isEditModalOpen: false,
   deleteAttachmentId: '',
@@ -80,7 +81,6 @@ export const initialState: State = {
   drivingLicense2: undefined,
   insuranceId: { id: "", name: "" },
   documentTypeId: { id: "", name: "" },
-  policyAttachments: [],
 }
 
 export enum ActionType {
@@ -102,6 +102,7 @@ export enum ActionType {
   SET_IS_SIGNED_TAB = 'setIsSignedTab',
   SET_PRACTICE_DATA = 'setPracticeData',
   SET_DRAWER_OPENED = 'setDrawerOpened',
+  SET_DOCUMENT_NAME = 'setDocumentName',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_PRE_SIGNED_URL = 'setPreSignedUrl',
@@ -116,16 +117,16 @@ export enum ActionType {
   SET_DRIVING_LICENSE_1 = 'setDrivingLicense1',
   SET_DRIVING_LICENSE_2 = 'setDrivingLicense2',
   SET_SIGNED_BY_PROVIDER = 'setSignedByProvider',
+  SET_POLICY_ATTACHMENTS = 'setPolicyAttachments',
   SET_LAB_DOCUMENT_TYPE_ID = 'setLabDocumentTypeId',
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
   SET_LAB_ORDER_ATTACHMENTS = 'setLabOrderAttachments',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
-  SET_POLICY_ATTACHMENTS = 'setPolicyAttachments'
 }
 
 export type Action =
-  | { type: ActionType.SET_ACTION, action: string }
   | { type: ActionType.SET_FILES, files: File[] }
+  | { type: ActionType.SET_ACTION, action: string }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_LOADING; loading: boolean }
@@ -138,6 +139,7 @@ export type Action =
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
+  | { type: ActionType.SET_DOCUMENT_NAME, documentName: string }
   | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
   | { type: ActionType.SET_DRAWER_OPENED; drawerOpened: boolean }
   | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
@@ -152,14 +154,14 @@ export type Action =
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
   | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN; isEditModalOpen: boolean }
   | { type: ActionType.SET_INSURANCE_CARD_1; insuranceCard1: Attachment | undefined }
+  | { type: ActionType.SET_PRACTICE_DATA; practiceData: PracticePayload['practice'] }
   | { type: ActionType.SET_INSURANCE_CARD_2; insuranceCard2: Attachment | undefined }
   | { type: ActionType.SET_DRIVING_LICENSE_1; drivingLicense1: Attachment | undefined }
   | { type: ActionType.SET_DRIVING_LICENSE_2; drivingLicense2: Attachment | undefined }
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
-  | { type: ActionType.SET_PRACTICE_DATA; practiceData: PracticePayload['practice'] }
-  | { type: ActionType.SET_LAB_ORDER_ATTACHMENTS; labOrderAttachments: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
+  | { type: ActionType.SET_LAB_ORDER_ATTACHMENTS; labOrderAttachments: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
 
 export const mediaReducer = (state: State, action: Action): State => {
@@ -186,6 +188,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         providerName: action.providerName
+      }
+
+    case ActionType.SET_DOCUMENT_NAME:
+      return {
+        ...state,
+        documentName: action.documentName
       }
 
     case ActionType.SET_OPEN_DELETE:
@@ -380,7 +388,7 @@ export const mediaReducer = (state: State, action: Action): State => {
         labResultId: action.labResultId
       }
 
-      case ActionType.SET_PRACTICE_DATA:
+    case ActionType.SET_PRACTICE_DATA:
       return {
         ...state,
         practiceData: action.practiceData

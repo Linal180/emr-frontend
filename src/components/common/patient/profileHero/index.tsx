@@ -336,11 +336,11 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const regularComponent = () =>
     <>
-      <Box className={` ${classes.profileCard} card-box-shadow`}>
+      <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
         {patientAvatar()}
 
         {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }]} />
           :
           <Box flex={1}>
             <Box display='flex' className="profile-hero-patient">

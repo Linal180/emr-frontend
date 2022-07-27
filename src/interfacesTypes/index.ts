@@ -444,6 +444,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export interface PracticeSelectorProps extends SelectorProps {
   patientId?: string;
   isLabelDisplay?: boolean;
+  handleFeeSchedule?: Function;
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
@@ -869,6 +870,7 @@ export interface LocationModalProps extends DialogTypes {
 export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
+  loading?: boolean;
 }
 
 export interface CoverageDetailsHeaderProps {
@@ -878,11 +880,11 @@ export interface CoverageDetailsHeaderProps {
   policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
 }
 
-export interface DocViewerProps {
+export interface DocumentViewerProps {
+  url: string
   title?: string
   isOpen: boolean
   handleClose: () => void
-  url: string
 }
 
 export interface AddAllergyModalProps extends GeneralFormProps {
@@ -912,9 +914,9 @@ export interface CheckInComponentProps {
 
 export interface PolicyAttachmentProps {
   policyId?: string
-  handleReload: Function
-  dispatch: Dispatch<InsuranceAction>
   numberOfFiles: number
+  dispatch: Dispatch<InsuranceAction>
+  handleReload: Function
 }
 
 export interface LabOrderCreateProps {

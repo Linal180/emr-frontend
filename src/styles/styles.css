@@ -16,10 +16,10 @@ a {
   color: #3f51b5;
 }
 
-/* img,
-svg {
+img, svg {
   max-width: 100%;
-} */
+  max-width: -webkit-fill-available;
+}
 
 body {
   font-family: Inter, sans-serif;

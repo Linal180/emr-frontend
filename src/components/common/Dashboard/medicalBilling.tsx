@@ -1,7 +1,7 @@
 // packages block
 import { FC } from "react";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
-import { BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, } from "../../../theme";
+import { BLUE_SEVEN, GREEN_ONE, GREY_NINE, GREY_SEVEN, RED_ONE, } from "../../../theme";
 // components
 import PieChart2Component from "../charts/pieChart2";
 // history, constant and styles block
@@ -10,13 +10,13 @@ import {
   TOTAL_CLAIM_TEXT,
 } from "../../../constants";
 import {
-  RedirectIcon, PracticeActiveIcon, PracticeInactiveIcon, ClaimActionIcon, ClaimAmountIcon
+  RedirectIcon, PracticeActiveNewIcon, PracticeInactiveNewIcon, ClaimActionNewIcon, ClaimAmountNewIcon
 } from "../../../assets/svgs";
 
 const MedicalBillingComponent: FC = (): JSX.Element =>
   <Card>
-    <Box px={3} pb={2}>
-      <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+    <Box pb={2}>
+      <Box px={2} mb={3} display='flex' justifyContent='space-between' alignItems='center'>
         <Box pt={3}>
           <Typography variant="h5">{MEDICAL_BILLING}</Typography>
           <Box p={0.5} />
@@ -33,12 +33,15 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
       <Box px={4} mt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
-            <Box display='flex'>
-              <Box minWidth={30}>
-                <PracticeActiveIcon />
+            <Box display='flex' alignItems='center' flexWrap='wrap'>
+              <Box
+                bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                display="flex" justifyContent="center" alignItems="center"
+              >
+                <PracticeActiveNewIcon />
               </Box>
 
-              <Box ml={2} flex={1}>
+              <Box>
                 <Typography variant="h5">24</Typography>
 
                 <Box mt={0.5} color={GREEN_ONE}>
@@ -49,12 +52,15 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
           </Grid>
 
           <Grid item md={6} sm={12} xs={12}>
-            <Box display='flex'>
-              <Box minWidth={30}>
-                <PracticeInactiveIcon />
+            <Box display='flex' alignItems='center' flexWrap='wrap'>
+              <Box
+                bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                display="flex" justifyContent="center" alignItems="center"
+              >
+                <PracticeInactiveNewIcon />
               </Box>
 
-              <Box ml={2} flex={1}>
+              <Box>
                 <Typography variant="h5">3</Typography>
 
                 <Box mt={0.5} color={BLUE_SEVEN}>
@@ -69,12 +75,15 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
 
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
-            <Box display='flex'>
-              <Box minWidth={30}>
-                <ClaimActionIcon />
+            <Box display='flex' alignItems='center' flexWrap='wrap'>
+              <Box
+                bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                display="flex" justifyContent="center" alignItems="center"
+              >
+                <ClaimActionNewIcon />
               </Box>
 
-              <Box ml={2} flex={1}>
+              <Box>
                 <Typography variant="h5">2</Typography>
 
                 <Box mt={0.5} color={RED_ONE}>
@@ -85,12 +94,15 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
 
           </Grid>
           <Grid item md={6} sm={12} xs={12}>
-            <Box display='flex'>
-              <Box minWidth={30}>
-                <ClaimAmountIcon />
+            <Box display='flex' alignItems='center' flexWrap='wrap'>
+              <Box
+                bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                display="flex" justifyContent="center" alignItems="center"
+              >
+                <ClaimAmountNewIcon />
               </Box>
 
-              <Box ml={2} flex={1}>
+              <Box>
                 <Typography variant="h5">$3,600</Typography>
 
                 <Box mt={0.5} color={GREY_SEVEN}>
