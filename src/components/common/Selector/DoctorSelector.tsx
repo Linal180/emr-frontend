@@ -17,7 +17,7 @@ import {
 } from "../../../reducers/doctorReducer";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, loading,
+  name, label, disabled, isRequired, addEmpty, loading, onSelect,
   facilityId: selectedFacilityId, shouldOmitFacilityId = false, careProviderData
 }): JSX.Element => {
   const { control } = useFormContext()
@@ -169,7 +169,11 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
                     </FormControl>
                   )}
 
-                  onChange={(_, data) => field.onChange(data)}
+                  onChange={(_, data) => {
+                    field.onChange(data)
+                    onSelect && onSelect(data)
+                    return data
+                  }}
                 />
               );
             }}
