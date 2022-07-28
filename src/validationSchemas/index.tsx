@@ -69,6 +69,18 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
     .test('', MaxLength(label, max), value => value ? value.length <= max : false)
 }
 
+const generalNameSchema = (isRequired: boolean, label: string, allowNumber: boolean, allowSpecial: boolean) => (
+  yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
+    .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
+      value => allowSpecial ? true : value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
+    .test('', NO_NUMBER_ERROR_MESSAGE,
+      value => allowNumber ? true : value ? STRING_REGEX.test(value) : false)
+    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50))
+)
+
 const nameSchema = (label: string) => {
   return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
     .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
@@ -377,16 +389,7 @@ export const doctorSchema = yup.object({
 })
 
 export const facilityServicesSchema = {
-  name: yup.string()
-    .required(requiredMessage(SERVICE_NAME_TEXT))
-    .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
-      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
-    .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
-      value => value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
-    .test('', NO_NUMBER_ERROR_MESSAGE,
-      value => value ? STRING_REGEX.test(value) : false)
-    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
-  // .test('', DESCRIPTION_INVALID_MESSAGE, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
+  name: generalNameSchema(true, SERVICE_NAME_TEXT, true, false),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -589,16 +592,16 @@ const practiceFacilitySchema = {
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
   phone: notRequiredPhone(PHONE),
-  name: nameSchema(PRACTICE_NAME),
   city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
+  name: generalNameSchema(true, PRACTICE_NAME, true, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
   ...registerUserSchema,
   ...practiceFacilitySchema,
-  facilityName: nameSchema(FACILITY_NAME),
+  facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
   address: addressValidation(ADDRESS, true),
   ...npiSchema,
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),

@@ -12,6 +12,7 @@ import PageHeader from '../../../common/PageHeader';
 import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 import CountryController from '../../../../controller/CountryController';
 // interfaces, graphql, constants block /styles
 import { formatEmail } from '../../../../utils';
@@ -24,13 +25,12 @@ import {
 import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
   PRACTICE_MANAGEMENT_TEXT, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT, GROUP_NPI, USA,
-  PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
+  PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, TAXONOMY_CODE,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
   ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, GROUP_TAX_ID, NPI_INFO, TAXONOMY_CODE,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, GROUP_TAX_ID, NPI_INFO, 
 } from "../../../../constants";
-import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
