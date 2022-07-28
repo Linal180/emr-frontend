@@ -30,7 +30,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX,
-  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -369,7 +369,16 @@ export const doctorSchema = yup.object({
 export const facilityServicesSchema = {
   name: yup.string()
     .required(requiredMessage(SERVICE_NAME_TEXT))
+    .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
+    .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
+      value => value ? NO_SPECIAL_CHAR_REGEX.test(value) : false
+    )
+    .test('', NO_NUMBER_ERROR_MESSAGE,
+      value => value ? STRING_REGEX.test(value) : false
+    )
     .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
+  // .test('', DESCRIPTION_INVALID_MESSAGE, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -1071,14 +1080,14 @@ export const labOrdersResultAttachmentSchema = yup.object({
 
 export const createClaimStatusSchema = yup.object({
   statusName: yup.string().required(requiredMessage(CLAIM_STATUS))
-  .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
+    .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
 })
 
 
 export const feeScheduleSchema = yup.object({
   practiceId: selectorSchema(PRACTICE),
   name: yup.string().required(requiredMessage(NAME))
-  .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
+    .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
 })
 
 export const cptFeeScheduleSchema = yup.object({
