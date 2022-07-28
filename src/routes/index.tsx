@@ -1,97 +1,94 @@
 import { FC, useContext } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 // components
-import Login from "../pages/auth/login";
-import PublicRoute from "./PublicRoute";
-import { TwoFA } from "../pages/main/2FA";
-import { Lock } from "../pages/auth/lock";
-import PrivateRoute from "./PrivateRoute";
-import { PageNotFound } from "../pages/404";
-import Settings from "../pages/main/settings";
-import { Profile } from "../pages/main/profile";
-import { CheckIn } from "../pages/main/checkIn";
-import { Maintenance } from "../pages/maintenance";
-import { Signature } from "../pages/main/signature";
-import AddStaff from "../pages/main/staff/addStaff";
-import { SuperBill } from "../pages/main/superBill";
-import AddBill from "../pages/main/billing/addBill";
-import Staff from "../pages/main/staff/staffListing";
-import ViewStaff from "../pages/main/staff/viewStaff";
-import { Agreements } from "../pages/main/agreements";
-import { AutoLogout } from "../pages/main/autoLogout";
-import { AddRole } from "../pages/main/roles/addRole";
-import { Roles } from "../pages/main/roles/roleListing";
-import AddResult from "../pages/main/reports/addResult";
-import { SetPassword } from "../pages/auth/setPassword";
-import { EditRole } from "../pages/main/roles/viewRole";
-import { FeeSchedule } from "../pages/main/feeSchedule";
-import { PatientChart } from "../pages/main/patientChart";
-import { Cancellation } from "../pages/main/cancellation";
-import ForgetPassword from "../pages/auth/forgetPassword";
-import ViewDoctor from "../pages/main/doctors/viewDoctor";
-import AddPatient from "../pages/main/patients/addPatient";
-import Doctors from "../pages/main/doctors/doctorsListing";
 import AuditLogComponent from "../components/main/auditLog";
-import { ClaimStatuses } from "../pages/main/claimStatuses";
-import { Calendar } from "../pages/main/dashboard/calendar";
+import { PageNotFound } from "../pages/404";
+import ForgetPassword from "../pages/auth/forgetPassword";
+import { Lock } from "../pages/auth/lock";
+import Login from "../pages/auth/login";
 import { ResetPassword } from "../pages/auth/resetPassword";
+import { SetPassword } from "../pages/auth/setPassword";
+import { TwoFA } from "../pages/main/2FA";
 import { TwoFaAuthentication } from "../pages/main/2FaAuth";
-import { AddDoctor } from "../pages/main/doctors/addDoctor";
-import ViewPatient from "../pages/main/patients/viewPatient";
-import Invoices from "../pages/main/billing/invoicesListing";
-import { CptFeeSchedule } from "../pages/main/CptFeeSchedule";
-import DetailDoctor from "../pages/main/doctors/detailDoctor";
-import { ChangePassword } from "../pages/main/changePassword";
-import ClaimFeed from "../pages/main/billing/claimFeedListing";
-import { StaffDashboard } from "../pages/main/dashboard/Staff";
-import { SuperDashboard } from "../pages/main/dashboard/Super";
-import { AddLabOrders } from "../pages/main/labOrders/addOrder";
-import { EmergencyAccess } from "../pages/main/emergencyAccess";
+import { Agreements } from "../pages/main/agreements";
 import AddAgreement from "../pages/main/agreements/addAgreement";
+import { AddAppointment } from "../pages/main/appointments/addAppointment";
+import { Appointments } from "../pages/main/appointments/appointmentsListing";
+import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
+import { AutoLogout } from "../pages/main/autoLogout";
+import ClaimFeed from "../pages/main/billing/claimFeedListing";
+import Invoices from "../pages/main/billing/invoicesListing";
+import { Cancellation } from "../pages/main/cancellation";
+import { ChangePassword } from "../pages/main/changePassword";
+import { CheckIn } from "../pages/main/checkIn";
+import { ClaimStatuses } from "../pages/main/claimStatuses";
+import { CptFeeSchedule } from "../pages/main/CptFeeSchedule";
+import { Calendar } from "../pages/main/dashboard/calendar";
 import { DoctorDashboard } from "../pages/main/dashboard/Doctor";
-import { Patients } from "../pages/main/patients/patientsListing";
-import { EditLabOrders } from "../pages/main/labOrders/editOrder";
-import { AddPractice } from "../pages/main/practices/addPractice";
-import { AddFacility } from "../pages/main/facilities/addFacility";
-import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
-import { ViewPractice } from "../pages/main/practices/viewPractice";
-import { PatientDetail } from "../pages/main/patients/patientDetail";
-import { ViewFacility } from "../pages/main/facilities/viewFacility";
-import { LabResults } from "../pages/main/reports/labResultsListing";
 import { FacilityDashboard } from "../pages/main/dashboard/Facility";
 import { PracticeDashboard } from "../pages/main/dashboard/Practice";
-import { LabOrderResults } from "../pages/main/labOrders/orderResults";
-import { DetailPractice } from "../pages/main/practices/detailPractice";
+import { StaffDashboard } from "../pages/main/dashboard/Staff";
+import { SuperDashboard } from "../pages/main/dashboard/Super";
+import { AddDoctor } from "../pages/main/doctors/addDoctor";
+import DetailDoctor from "../pages/main/doctors/detailDoctor";
+import Doctors from "../pages/main/doctors/doctorsListing";
+import ViewDoctor from "../pages/main/doctors/viewDoctor";
+import { EmergencyAccess } from "../pages/main/emergencyAccess";
+import { AddFacility } from "../pages/main/facilities/addFacility";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
-import { AppointmentFail } from "../pages/main/publicAppointments/fail";
-import { PatientVitals } from "../pages/main/patientChart/patientVitals";
-import { PracticeListing } from "../pages/main/practices/practiceListing";
 import { AddService } from "../pages/main/facilities/services/addService";
-import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
-import { AddAppointment } from "../pages/main/appointments/addAppointment";
 import { Services } from "../pages/main/facilities/services/serviceListing";
-import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
 import { ViewService } from "../pages/main/facilities/services/viewService";
-import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
-import { Appointments } from "../pages/main/appointments/appointmentsListing";
-import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
+import { ViewFacility } from "../pages/main/facilities/viewFacility";
+import { FeeSchedule } from "../pages/main/feeSchedule";
+import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
+import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
 import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
-import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
-import { DoctorPublicAppointment } from "../pages/main/publicAppointments/doctor";
-import { FacilityPublicAppointment } from "../pages/main/publicAppointments/facility";
-import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
+import { AddLabOrders } from "../pages/main/labOrders/addOrder";
+import { EditLabOrders } from "../pages/main/labOrders/editOrder";
+import { LabOrderResults } from "../pages/main/labOrders/orderResults";
+import { PatientChart } from "../pages/main/patientChart";
+import { PatientVitals } from "../pages/main/patientChart/patientVitals";
+import AddPatient from "../pages/main/patients/addPatient";
+import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
-import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
 import { EligibilityTable } from "../pages/main/patients/patientDetail/EligibilityTable";
+import { Patients } from "../pages/main/patients/patientsListing";
+import ViewPatient from "../pages/main/patients/viewPatient";
+import { AddPractice } from "../pages/main/practices/addPractice";
+import { DetailPractice } from "../pages/main/practices/detailPractice";
+import { PracticeListing } from "../pages/main/practices/practiceListing";
+import { ViewPractice } from "../pages/main/practices/viewPractice";
+import { Profile } from "../pages/main/profile";
+import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
+import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
+import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+import { DoctorPublicAppointment } from "../pages/main/publicAppointments/doctor";
+import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
+import { FacilityPublicAppointment } from "../pages/main/publicAppointments/facility";
+import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
+import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { PublicFormFail, PublicFormPreview, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
+import AddResult from "../pages/main/reports/addResult";
+import { LabResults } from "../pages/main/reports/labResultsListing";
+import { AddRole } from "../pages/main/roles/addRole";
+import { Roles } from "../pages/main/roles/roleListing";
+import { EditRole } from "../pages/main/roles/viewRole";
+import Settings from "../pages/main/settings";
+import { Signature } from "../pages/main/signature";
+import AddStaff from "../pages/main/staff/addStaff";
+import Staff from "../pages/main/staff/staffListing";
+import ViewStaff from "../pages/main/staff/viewStaff";
+import { SuperBill } from "../pages/main/superBill";
+import { Maintenance } from "../pages/maintenance";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 // constants, contexts and utils
-import { AuthContext } from "../context";
-import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE,
   AUTO_LOGOUT_ROUTE, CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE,
-  CHECK_IN_ROUTE, CLAIMS_ROUTE, CLAIM_FEED_ROUTE, CLAIM_STATUSES_ROUTE, COVERAGE_ROUTE, CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE,
+  CHECK_IN_ROUTE, CLAIM_FEED_ROUTE, CLAIM_STATUSES_ROUTE, COVERAGE_ROUTE, CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE,
   DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ELIGIBILITY_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
   FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FEE_SCHEDULE_ROUTE, FORGET_PASSWORD_ROUTE,
   FORM_BUILDER_COPY_TEMPLATE_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_ROUTE,
@@ -102,6 +99,8 @@ import {
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
   SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE, VITALS_ROUTE
 } from "../constants";
+import { AuthContext } from "../context";
+import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -171,9 +170,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} permission={USER_PERMISSIONS.updateAppointment} />
       <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
       <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
-      {/* <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} /> */}
       <PrivateRoute exact path={CLAIM_FEED_ROUTE} component={ClaimFeed} />
-      <PrivateRoute exact path={`${CLAIMS_ROUTE}/new`} component={AddBill} />
       <PrivateRoute exact path={INVOICES_ROUTE} component={Invoices} />
       <PrivateRoute exact path={STAFF_ROUTE} component={Staff} permission={USER_PERMISSIONS.findAllStaff} />
       <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} permission={USER_PERMISSIONS.createStaff} />

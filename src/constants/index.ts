@@ -8,9 +8,8 @@ import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon, DateIcon,
-  EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon,
-  VitalsIcon, ProblemsIcon, AllergiesIcon
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, 
+  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -1483,7 +1482,6 @@ export const LAB_RESULTS_ROUTE = "/lab-results";
 export const AGREEMENTS_ROUTE = "/agreements";
 export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
-export const CLAIMS_ROUTE = "/insurance-claims";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
@@ -1785,91 +1783,6 @@ export const CLIA_ID_NUMBER_INFO =
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 export const YEARS = [2017, 2018, 2019, 2020, 2021, 2022]
 export const COVERAGE_SUMMARY_COLUMNS = ['Health Benefit Plan Coverage', 'Professional (Physician) Visit - Office', 'Urgent Care']
-export const APP_MENU_ITEMS = [
-  {
-    name: MANAGEMENT_TEXT,
-    items: [],
-    index: 2,
-    sectionName: true,
-  },
-  {
-    name: USERS_TEXT,
-    Icon: UsersIcon,
-    index: 3,
-    items: [
-      {
-        name: DOCTORS_TEXT,
-        link: DOCTORS_ROUTE,
-      },
-      {
-        name: PATIENTS_TEXT,
-        link: PATIENTS_ROUTE,
-      },
-      {
-        name: STAFF_TEXT,
-        link: STAFF_ROUTE,
-      },
-    ],
-  },
-  {
-    name: APPOINTMENTS_TEXT,
-    Icon: AppointmentsIcon,
-    index: 4,
-    items: [
-      {
-        name: VIEW_APPOINTMENTS_TEXT,
-        link: VIEW_APPOINTMENTS_ROUTE,
-      },
-      {
-        name: SCHEDULE_APPOINTMENTS_TEXT,
-        link: `${APPOINTMENTS_ROUTE}/new`,
-      },
-    ],
-  },
-  {
-    name: CLINICAL_TEXT,
-    items: [],
-    index: 5,
-    sectionName: true,
-  },
-  {
-    name: FACILITIES_TEXT,
-    Icon: FacilitiesIcon,
-    index: 6,
-    items: [
-      {
-        name: LIST_FACILITIES_TEXT,
-        link: FACILITIES_ROUTE,
-      },
-    ],
-  },
-  {
-    name: REPORTS_TEXT,
-    Icon: ReportsIcon,
-    index: 7,
-    items: [
-      {
-        name: LAB_RESULTS_TEXT,
-        link: LAB_RESULTS_ROUTE,
-      },
-    ],
-  },
-  {
-    name: BILLING_TEXT,
-    Icon: BillingIcon,
-    index: 8,
-    items: [
-      {
-        name: INVOICES_TEXT,
-        link: INVOICES_ROUTE,
-      },
-      {
-        name: INSURANCE_CLAIMS_TEXT,
-        link: CLAIMS_ROUTE,
-      },
-    ],
-  },
-];
 
 export const APPOINTMENT_MENU_ITEMS = [
   {
@@ -1917,10 +1830,6 @@ export const BILLING_MENU_ITEMS = [
     name: INVOICES_TEXT,
     link: INVOICES_ROUTE,
   },
-  // {
-  //   name: INSURANCE_CLAIMS_TEXT,
-  //   link: CLAIMS_ROUTE,
-  // },
   {
     name: LIVE_CLAIM_FEED,
     link: CLAIM_FEED_ROUTE
@@ -2303,7 +2212,6 @@ export const APPOINTMENT_NEW_BREAD = {
 export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: "" };
 export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new`, };
 
-export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE };
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: "" };
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE };
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new`, };
@@ -2338,7 +2246,6 @@ export const AGREEMENTS_NEW_BREAD = { text: ADD_AGREEMENT, link: `${AGREEMENTS_R
 export const CLAIM_STATUS_NEW_BREAD = { text: CLAIM_STATUSES, link: '', };
 export const AGREEMENTS_EDIT_BREAD = { text: EDIT_AGREEMENT, link: "", };
 
-export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
 export const VIEW_APPOINTMENTS_BREAD = {
   text: VIEW_APPOINTMENTS_TEXT,
