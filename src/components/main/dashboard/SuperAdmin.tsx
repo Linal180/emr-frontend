@@ -119,7 +119,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Link>
             </Box>
 
-            <PieChart practices={practices} />
+            <PieChart practices={practices?.length} />
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
               <Grid container spacing={3}>

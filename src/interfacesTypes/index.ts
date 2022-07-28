@@ -1763,7 +1763,7 @@ export interface PracticesTableProps {
 }
 
 export interface PieChartProps {
-  practices?: PracticesPayload['practices']
+  practices?: number
 }
 
 export interface CalenderProps {
