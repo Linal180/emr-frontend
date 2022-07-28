@@ -28,8 +28,9 @@ import {
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
   ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, GROUP_TAX_ID, NPI_INFO,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, GROUP_TAX_ID, NPI_INFO, TAXONOMY_CODE,
 } from "../../../../constants";
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -63,7 +64,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           const { status } = response
 
           if (practice && status && status === 200) {
-            const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice
+            const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId, taxonomyCode } = practice
             const { id: practiceAdminId, email, firstName, lastName, phone: practiceAdminPhone } = practiceAdmin || {}
 
             fax && setValue('fax', fax)
@@ -79,6 +80,10 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             firstName && setValue('userFirstName', firstName)
             lastName && setValue('userLastName', lastName)
             email && setValue('userEmail', email)
+            taxonomyCode?.id && setValue('taxonomyCodeId', {
+              id: taxonomyCode.id,
+              name: `${taxonomyCode.code} | ${taxonomyCode.displayName}`
+            })
             practiceAdminPhone && setValue('userPhone', practiceAdminPhone)
             practiceAdminId && setPracticeAdminId(practiceAdminId)
           }
@@ -146,11 +151,11 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const {
       name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
       userFirstName, userLastName, userEmail, email,
-      userPhone, address, address2, city, state, country, zipCode, npi, taxId
+      userPhone, address, address2, city, state, country, zipCode, npi, taxId, taxonomyCodeId
     } = inputs;
 
     const practiceInput = {
-      name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId
+      name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId, taxonomyCodeId: taxonomyCodeId.id
     }
 
     if (isEdit) {
@@ -283,6 +288,15 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             loading={getPracticeLoading}
                           />
                         </Grid>
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <TaxonomySelector
+                          label={TAXONOMY_CODE}
+                          name="taxonomyCodeId"
+                          loading={getPracticeLoading}
+                          addEmpty
+                        />
                       </Grid>
 
                       <Typography>{PRACTICE_IDENTIFIER}</Typography>

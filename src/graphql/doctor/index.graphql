@@ -98,6 +98,12 @@ query GetDoctor($getDoctor: GetDoctor!) {
       createdAt
       updatedAt
 
+      taxCode {
+        id
+        code
+        displayName
+      }
+
       billingAddress {
         id
         email
