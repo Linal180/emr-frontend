@@ -13,13 +13,17 @@ import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import CountryController from '../../../../controller/CountryController';
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, styles, constants block
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
+import {
+  dateValidation, formatEmail, formatToLeadingCode, getDate, getTimestamps, getTimestampsForDob, 
+  setRecord
+} from "../../../../utils";
 import {
   doctorReducer, State, Action, initialState, ActionType
 } from '../../../../reducers/doctorReducer';
@@ -40,9 +44,8 @@ import {
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO, USA,
   SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
-  SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR
+  SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR, INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_LICENSE_DATE_ERROR_MESSAGE
 } from "../../../../constants";
-import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext)
@@ -54,7 +57,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
-  const { reset, handleSubmit, setValue } = methods;
+  const { reset, handleSubmit, setValue, watch, setError, clearErrors } = methods;
+  const { deaActiveDate, deaTermDate, licenseActiveDate, licenseTermDate } = watch()
 
   const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -115,12 +119,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
             medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
             degreeCredentials && setValue('degreeCredentials', degreeCredentials)
-            speciality && setValue('speciality', setRecord(speciality, speciality))
             licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
             facilityId && name && setValue('facilityId', setRecord(facilityId, name, false))
             licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
+            speciality && setValue('speciality', setRecord(speciality, formatToLeadingCode(speciality), false))
 
             doctor && dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
 
@@ -221,6 +225,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }, [getDoctor, id, isEdit])
 
+  useEffect(() => {
+    dateValidation(deaTermDate || '', deaActiveDate || '') || !!!deaTermDate ?
+      clearErrors("deaTermDate")
+      : setError("deaTermDate", { message: INVALID_DEA_DATE_ERROR_MESSAGE })
+  }, [clearErrors, deaActiveDate, deaTermDate, setError])
+
+  useEffect(() => {
+    dateValidation(licenseTermDate || '', licenseActiveDate || '') || !!!licenseTermDate ?
+      clearErrors("licenseTermDate")
+      : setError("licenseTermDate", { message: INVALID_LICENSE_DATE_ERROR_MESSAGE })
+  }, [clearErrors, licenseActiveDate, licenseTermDate, setError])
+
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const {
       email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country, facilityId,
@@ -242,10 +258,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const doctorItemInput = {
         firstName, middleName, lastName, prefix: prefix || '', suffix: suffix || '',
-        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode: taxonomyCode.id, deaNumber, taxId,
-        npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
+        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode: taxonomyCode.id,
+        deaNumber, taxId, npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
-        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId,
+        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId, campusGrpNumber,
         dob: dob ? getTimestampsForDob(dob) : '', deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
@@ -254,14 +270,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       const contactInput = {
-        email: email || "", pager: pager || "", phone: phone || "",
+        email: formatEmail(email || ''), pager: pager || "", phone: phone || "",
         mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "",
         zipCode: zipCode || "", city: city || "", state: selectedState || "", country: country || USA,
         facilityId: selectedFacility || ""
       };
 
       const billingAddressInput = {
-        email: billingEmail || "", phone: billingPhone || "",
+        email: formatEmail(billingEmail || ''), phone: billingPhone || "",
         fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "",
         zipCode: billingZipCode || "", city: billingCity || "", state: selectedBillingState || "",
         country: billingCountry || USA, userId: billingUserId || "", facilityId: selectedFacility || ""
@@ -346,11 +362,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <Selector
                       isRequired
-                      value={EMPTY_OPTION}
-                      label={SPECIALTY}
                       name="speciality"
-                      options={MAPPED_SPECIALTIES}
+                      label={SPECIALTY}
+                      value={EMPTY_OPTION}
                       loading={getDoctorLoading}
+                      options={MAPPED_SPECIALTIES}
                     />
                   </Grid>
                 </Grid>
@@ -361,8 +377,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       isRequired
                       fieldType="text"
                       controllerName="firstName"
-                      controllerLabel={FIRST_NAME}
                       loading={getDoctorLoading}
+                      controllerLabel={FIRST_NAME}
                     />
                   </Grid>
 
@@ -371,8 +387,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       isRequired
                       fieldType="text"
                       controllerName="lastName"
-                      controllerLabel={LAST_NAME}
                       loading={getDoctorLoading}
+                      controllerLabel={LAST_NAME}
                     />
                   </Grid>
                 </Grid>
@@ -382,21 +398,21 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <InputController
                       fieldType="text"
                       controllerName="middleName"
-                      controllerLabel={MIDDLE_NAME}
                       loading={getDoctorLoading}
+                      controllerLabel={MIDDLE_NAME}
                     />
                   </Grid>
 
                   <Grid item md={4}>
-                    <DatePicker isRequired name="dob" label={DOB} />
+                    <DatePicker isRequired name="dob" label={DOB} loading={getDoctorLoading} />
                   </Grid>
 
                   <Grid item md={4} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="degreeCredentials"
                       controllerLabel={DEGREE_CREDENTIALS}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
 
@@ -439,8 +455,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <InputController
                       fieldType="text"
                       controllerName="ssn"
-                      controllerLabel={SOCIAL_SECURITY_NUMBER}
                       loading={getDoctorLoading}
+                      controllerLabel={SOCIAL_SECURITY_NUMBER}
                     />
                   </Grid>
 
@@ -448,39 +464,38 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <InputController
                       fieldType="text"
                       controllerName="deaNumber"
-                      controllerLabel={DEA_NUMBER}
                       loading={getDoctorLoading}
+                      controllerLabel={DEA_NUMBER}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
-                    />
+                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} loading={getDoctorLoading} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} />
+                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <TaxonomySelector
-                      label={TAXONOMY_CODE}
-                      name="taxonomyCode"
-                      loading={getDoctorLoading}
                       addEmpty
+                      name="taxonomyCode"
+                      label={TAXONOMY_CODE}
+                      loading={getDoctorLoading}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="languagesSpoken"
                       controllerLabel={LANGUAGE_SPOKEN}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -491,10 +506,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={BILLING_ADDRESS}>
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
-                    fieldType="text"
-                    controllerName="billingEmail"
+                    fieldType="email"
                     controllerLabel={EMAIL}
                     loading={getDoctorLoading}
+                    controllerName="billingEmail"
                   />
                 </Grid>
 
@@ -511,27 +526,27 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="billingZipCode"
                     controllerLabel={ZIP_CODE}
                     loading={getDoctorLoading}
+                    controllerName="billingZipCode"
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="billingAddress"
+                    loading={getDoctorLoading}
                     controllerLabel={ADDRESS_ONE}
-                    loading={getDoctorLoading}
+                    controllerName="billingAddress"
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="billingAddress2"
-                    controllerLabel={ADDRESS_TWO}
                     loading={getDoctorLoading}
+                    controllerLabel={ADDRESS_TWO}
+                    controllerName="billingAddress2"
                   />
                 </Grid>
 
@@ -539,17 +554,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={4}>
                     <InputController
                       fieldType="text"
-                      controllerName="billingCity"
                       controllerLabel={CITY}
                       loading={getDoctorLoading}
+                      controllerName="billingCity"
                     />
                   </Grid>
 
                   <Grid item md={4}>
                     <Selector
-                      value={EMPTY_OPTION}
                       label={STATE}
                       name="billingState"
+                      value={EMPTY_OPTION}
                       options={MAPPED_STATES}
                       loading={getDoctorLoading}
                     />
@@ -607,8 +622,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="address"
-                    controllerLabel={ADDRESS_ONE}
                     loading={getDoctorLoading}
+                    controllerLabel={ADDRESS_ONE}
                   />
                 </Grid>
 
@@ -616,8 +631,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="address2"
-                    controllerLabel={ADDRESS_TWO}
                     loading={getDoctorLoading}
+                    controllerLabel={ADDRESS_TWO}
                   />
                 </Grid>
 
@@ -633,9 +648,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Grid item md={4}>
                     <Selector
-                      value={EMPTY_OPTION}
-                      label={STATE}
                       name="state"
+                      label={STATE}
+                      value={EMPTY_OPTION}
                       options={MAPPED_STATES}
                       loading={getDoctorLoading}
                     />
@@ -653,8 +668,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
-                      info={TAX_ID_INFO}
                       fieldType="text"
+                      info={TAX_ID_INFO}
                       controllerName="taxId"
                       controllerLabel={TAX_ID}
                       loading={getDoctorLoading}
@@ -686,9 +701,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="emcProviderId"
                       controllerLabel={EMC_PROVIDER_ID}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -697,18 +712,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="medicareGrpNumber"
                       controllerLabel={MEDICARE_GRP_NUMBER}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="medicaidGrpNumber"
                       controllerLabel={MEDICAID_GRP_NUMBER}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -716,20 +731,20 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
-                      info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="meammographyCertNumber"
                       controllerLabel={MAMMOGRAPHY_CERT_NUMBER}
-                      loading={getDoctorLoading}
+                      info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="campusGrpNumber"
                       controllerLabel={CHAMPUS_GRP_NUMBER}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -738,18 +753,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="blueShildNumber"
                       controllerLabel={BLUE_SHIED_NUMBER}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="taxIdStuff"
                       controllerLabel={TAX_ID_STUFF}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -758,18 +773,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="specialityLicense"
                       controllerLabel={SPECIALTY_LICENSE}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="anesthesiaLicense"
                       controllerLabel={ANESTHESIA_LICENSE}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -778,18 +793,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
-                      controllerName="dpsCtpNumber"
-                      controllerLabel={CTP_NUMBER}
                       loading={getDoctorLoading}
+                      controllerLabel={CTP_NUMBER}
+                      controllerName="dpsCtpNumber"
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       fieldType="text"
+                      loading={getDoctorLoading}
                       controllerName="stateLicense"
                       controllerLabel={STATE_LICENSE}
-                      loading={getDoctorLoading}
                     />
                   </Grid>
                 </Grid>
@@ -807,9 +822,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
+                    loading={getDoctorLoading}
                     controllerName="prescriptiveAuthNumber"
                     controllerLabel={PRESCRIPTIVE_AUTH_NUMBER}
-                    loading={getDoctorLoading}
                   />
                 </Grid>
               </CardComponent>

@@ -81,7 +81,7 @@ export const formatToLeadingCode = (value: string) => {
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
-      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0).toUpperCase()}${parts[parseInt(index)].slice(1).toLowerCase()}`
     }
   }
 

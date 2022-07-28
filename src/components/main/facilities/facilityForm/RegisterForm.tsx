@@ -18,7 +18,7 @@ import {
 } from '../../../../constants';
 
 const RegisterFormComponent: FC<FacilityCardsProps> = ({
-  getFacilityLoading, dispatch, state, isSuper
+  getFacilityLoading, dispatch, state, isSuper, isEdit
 }) => {
   const classes = useFacilityStyles()
   const [activeBlock, setActiveBlock] = useState<string>(FacilityMenuNav[0].title)
@@ -98,7 +98,7 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({
               <Box pb={3} />
 
               <Grid md={12} id={BILLING_PROFILE_ROUTE} ref={billingProfileRef}>
-                <Billing getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
+                <Billing isEdit={isEdit} getFacilityLoading={getFacilityLoading} state={state} dispatch={dispatch} />
               </Grid>
 
               <Box pb={3} />

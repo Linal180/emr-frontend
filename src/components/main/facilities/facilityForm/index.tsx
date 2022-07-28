@@ -32,7 +32,7 @@ import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED, USA,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
   FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
-  INVALID_END_TIME, 
+  INVALID_END_TIME,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -128,6 +128,19 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address2 && setValue('billingAddress2', address2)
               country && setValue('billingCountry', country || USA)
               state && setValue('billingState', setRecord(state, state))
+
+              dispatch({
+                type: ActionType.SET_ADD_BILLING,
+                addBilling: !!(fax || city || email || phone || address || zipCode || address2 || state)
+              })
+
+              dispatch({
+                type: ActionType.SET_BILLING_DATA, billingData: {
+                  billingFax: fax || '', billingCity: city || '', billingEmail: email || '',
+                  billingPhone: phone || '', billingAddress: address || '', billingZipCode: zipCode || '',
+                  billingAddress2: address2 || '', billingCountry: country || '', billingState: state || ''
+                }
+              })
             }
 
             if (practiceId && practiceName) {
@@ -263,7 +276,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const handleChange = (_: ChangeEvent<{}>, newValue: string) => dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
+    dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const getAddressHandler = useCallback(async () => {
     if (zipCode) {
@@ -312,6 +326,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <RegisterFormComponent
               state={state}
+              isEdit={isEdit}
               isSuper={isSuper}
               dispatch={dispatch}
               getFacilityLoading={getFacilityLoading}

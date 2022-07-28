@@ -2,28 +2,40 @@
 import moment from "moment";
 import * as yup from "yup";
 // utils and constants block
-import {
-  ACCOUNT_TYPE, ADDRESS, ADDRESS_REGEX, ALPHABETS_REGEX, AMOUNT, APPOINTMENT, ATTACHMENT_NAME, AUTHORITY, BANK_ACCOUNT,
-  BANK_ACCOUNT_VALIDATION_MESSAGE, BLOOD_PRESSURE_TEXT, CITY, CLAIM_STATUS, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, COMPANY_NAME,
-  CONFIRM_YOUR_PASSWORD, CONTACT_NUMBER, COPAY_TYPE, COUNTRY, CPT_CODE_PROCEDURE_CODE, DATE, DATE_VALIDATION_MESSAGE, DECEASED_DATE,
-  DESCRIPTION, DESCRIPTION_INVALID_MESSAGE, DIAGNOSES_VALIDATION_MESSAGE, DOB, DOB_VALIDATION_MESSAGE, DOCUMENT_NAME, DOCUMENT_TYPE, DURATION, EIN_REGEX,
-  EIN_VALIDATION_MESSAGE, EMAIL, EMPLOYER, END_TIME, EXPIRATION_DATE, FACILITY, FACILITY_NAME, FAX, FIRST_NAME, FORM_NAME,
-  FORM_TYPE, GENDER, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, ICD_CODE, INDUSTRY, INSURANCE_PAYER_NAME, INVALID_EMAIL, INVALID_END_TIME,
-  ISSUE_DATE, ITEM_MODULE, LANGUAGE_SPOKEN, LAST_NAME, LEGAL_SEX, MAMMOGRAPHY_CERT_NUMBER_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE,
-  MaxLength, MIDDLE_NAME, MinLength, MOBILE, MOBILE_NUMBER, MOTHERS_MAIDEN_NAME, NAME, NO_SPACE_REGEX, NO_WHITE_SPACE_ALLOWED, NO_WHITE_SPACE_REGEX,
-  NO_WHITE_SPACING_ERROR_MESSAGE,
-  NPI_MESSAGE, NUMBER_REGEX, OLD_PASSWORD, ORDER_OF_BENEFIT, OTHER_RELATION, OTP_CODE, OXYGEN_SATURATION_TEXT, PAGER, PAIN_TEXT, PASSWORD,
-  PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PATIENT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, PHONE,
-  PHONE_NUMBER, POLICY_GROUP_NUMBER, POLICY_HOLDER_ID_CERTIFICATION_NUMBER, PRACTICE, PRACTICE_NAME, PREFERRED_LANGUAGE, PREFERRED_NAME,
-  PREFERRED_PHARMACY, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, PRIMARY_INSURANCE, PRIMARY_PROVIDER, PROVIDER, PULSE_TEXT, REFERRING_PROVIDER,
-  REGISTRATION_DATE, RELATIONSHIP, RESPIRATORY_RATE_TEXT, ROLE, ROLE_NAME, ROUTING_NO_VALIDATION_MESSAGE, ROUTING_NUMBER, SECONDARY_INSURANCE,
-  SERVICE_CODE, SERVICE_FEE_CHARGE, SERVICE_NAME_TEXT, SEX_AT_BIRTH, SPECIALTY, SPECIMEN_FIELD_VALIDATION_MESSAGE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  START_TIME, STATE, STREET_ADDRESS, STRING_REGEX, SUFFIX, SYSTEM_ROLES, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TAX_ID, TEMPERATURE_TEXT,
-  TEST_FIELD_VALIDATION_MESSAGE, TID_REGEX, TID_VALIDATION_MESSAGE, TIME_ZONE_TEXT, TITLE, UPIN_REGEX, UPIN_VALIDATION_MESSAGE, USUAL_OCCUPATION,
-  USUAL_PROVIDER_ID, US_BANK_ACCOUNT_REGEX, US_ROUTING_NUMBER_REGEX, ValidMessage, ValidOTP, WEIGHT_TEXT, ZIP_CODE, ZIP_REGEX, ZIP_VALIDATION_MESSAGE
-} from "../constants";
 import { SelectorOption } from "../interfacesTypes";
-import { checkNpi, dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
+import {
+  checkNpi, dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
+} from "../utils";
+import {
+  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
+  OTHER_RELATION, EIN_VALIDATION_MESSAGE, EIN_REGEX, UPIN_VALIDATION_MESSAGE, UPIN_REGEX,
+  SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
+  DOB_VALIDATION_MESSAGE, STATE, COUNTRY, PASSWORD, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE,
+  CONFIRM_YOUR_PASSWORD, START_TIME, END_TIME, REGISTRATION_DATE, DECEASED_DATE, ISSUE_DATE,
+  FIRST_NAME, FAX, PHONE, PAGER, CITY, ADDRESS, ZIP_VALIDATION_MESSAGE, ZIP_REGEX, MOBILE_NUMBER,
+  SERVICE_CODE, GENDER, MOBILE, DOB, ROLE, TIME_ZONE_TEXT, PRACTICE_NAME, NAME, EXPIRATION_DATE,
+  NO_WHITE_SPACE_REGEX, PRACTICE, SPECIALTY, SUFFIX, MIDDLE_NAME, LANGUAGE_SPOKEN, SERVICE_NAME_TEXT,
+  SEX_AT_BIRTH, PREFERRED_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME,
+  APPOINTMENT, PATIENT, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PROVIDER, PREFERRED_LANGUAGE,
+  OLD_PASSWORD, ROLE_NAME, FORM_TYPE, FORM_NAME, OTP_CODE, DATE_VALIDATION_MESSAGE, PULSE_TEXT,
+  RESPIRATORY_RATE_TEXT, OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE,
+  NO_WHITE_SPACE_ALLOWED, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, PHONE_NUMBER,
+  INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, SYSTEM_ROLES,
+  COPAY_TYPE, REFERRING_PROVIDER, ITEM_MODULE, INVALID_END_TIME, CLAIM_STATUS, ATTACHMENT_NAME,
+  POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, LEGAL_SEX, BANK_ACCOUNT, US_BANK_ACCOUNT_REGEX,
+  ROUTING_NUMBER, US_ROUTING_NUMBER_REGEX, ROUTING_NO_VALIDATION_MESSAGE, ACCOUNT_TYPE, STREET_ADDRESS,
+  DOCUMENT_TYPE, DATE, DOCUMENT_NAME, PRIMARY_PROVIDER, DESCRIPTION, TAX_ID, ICD_CODE,
+  INVALID_EMAIL, EMAIL, CLIA_VALIDATION_MESSAGE, CLIA_REGEX, TAXONOMY_CODE, NPI_MESSAGE,
+  LAST_NAME, MAMMOGRAPHY_CERT_NUMBER_REGEX, PASSWORDS_MUST_MATCH, ZIP_CODE, FACILITY,
+  DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME, CONTACT_NUMBER, TITLE,
+  SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
+  AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
+  CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX, INVALID_LICENSE_DATE_ERROR_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+  NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
+  INVALID_DEA_DATE_ERROR_MESSAGE,
+} from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
   return yup.string()
@@ -56,6 +68,18 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
     .test('', MinLength(label, min), value => value ? value.length >= min : false)
     .test('', MaxLength(label, max), value => value ? value.length <= max : false)
 }
+
+const generalNameSchema = (isRequired: boolean, label: string, allowNumber: boolean, allowSpecial: boolean) => (
+  yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
+    .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
+      value => allowSpecial ? true : value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
+    .test('', NO_NUMBER_ERROR_MESSAGE,
+      value => allowNumber ? true : value ? STRING_REGEX.test(value) : false)
+    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50))
+)
 
 const nameSchema = (label: string) => {
   return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
@@ -142,7 +166,9 @@ const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.o
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   label: yup.string().required(),
   value: yup.string().required()
-}).test('', requiredMessage(label), (multiValue) => isRequired ? !!multiValue?.value && !!multiValue?.label : true).nullable();
+}).test('', requiredMessage(label), (multiValue) =>
+  isRequired ? !!multiValue?.value && !!multiValue?.label : true
+).nullable();
 
 const stateSchema = (isRequired: boolean) => {
   return yup.object().shape({
@@ -174,16 +200,18 @@ const deaDateSchema = {
   deaActiveDate: yup.string().test(value => !value
     ? !value : new Date(value || '') <= new Date()),
 
-  deaTermDate: yup.string().test((value, { parent: { deaActiveDate } }) => !value
-    ? !value : dateValidation(value, deaActiveDate))
+  deaTermDate: yup.string().test('', INVALID_DEA_DATE_ERROR_MESSAGE,
+    (value, { parent: { deaActiveDate } }) => !value
+      ? !value : dateValidation(value, deaActiveDate))
 }
 
 const licenseDateSchema = {
   licenseActiveDate: yup.string().test(value => !value
     ? !value : new Date(value || '') <= new Date()),
 
-  licenseTermDate: yup.string().test((value, { parent: { licenseActiveDate } }) => !value
-    ? !value : dateValidation(value, licenseActiveDate))
+  licenseTermDate: yup.string().test('', INVALID_LICENSE_DATE_ERROR_MESSAGE,
+    (value, { parent: { licenseActiveDate } }) => !value
+      ? !value : dateValidation(value, licenseActiveDate))
 }
 
 const scheduleTimeSchema = {
@@ -361,9 +389,7 @@ export const doctorSchema = yup.object({
 })
 
 export const facilityServicesSchema = {
-  name: yup.string()
-    .required(requiredMessage(SERVICE_NAME_TEXT))
-    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
+  name: generalNameSchema(true, SERVICE_NAME_TEXT, true, false),
   // price: yup.string()
   //   .test('', requiredMessage(PRICE), value => !!value)
   //   .test('', invalidMessage(PRICE), value => parseInt(value || '') > 0)
@@ -566,16 +592,16 @@ const practiceFacilitySchema = {
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
   phone: notRequiredPhone(PHONE),
-  name: nameSchema(PRACTICE_NAME),
   city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
+  name: generalNameSchema(true, PRACTICE_NAME, true, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
   ...registerUserSchema,
   ...practiceFacilitySchema,
-  facilityName: nameSchema(FACILITY_NAME),
+  facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
   address: addressValidation(ADDRESS, true),
   ...npiSchema,
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
@@ -1067,14 +1093,14 @@ export const labOrdersResultAttachmentSchema = yup.object({
 
 export const createClaimStatusSchema = yup.object({
   statusName: yup.string().required(requiredMessage(CLAIM_STATUS))
-  .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
+    .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
 })
 
 
 export const feeScheduleSchema = yup.object({
   practiceId: selectorSchema(PRACTICE),
   name: yup.string().required(requiredMessage(NAME))
-  .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
+    .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
 })
 
 export const cptFeeScheduleSchema = yup.object({
