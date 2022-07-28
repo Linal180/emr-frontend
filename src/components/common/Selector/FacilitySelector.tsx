@@ -9,7 +9,8 @@ import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading, requiredLabel, sortingValue
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading,
+  requiredLabel, sortingValue
 } from "../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
