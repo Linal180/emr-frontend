@@ -16,17 +16,16 @@ import InputController from "../../../../controller"
 import { ActionType } from "../../../../reducers/facilityReducer"
 import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
 import {
-  SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP,
+  SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP, CLIA_ID_NUMBER,
   ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL,
   MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
   CLIA_ID_NUMBER_INFO, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, CITY,
-  CLIA_ID_NUMBER, MAMMOGRAPHY_CERTIFICATION_NUMBER, USA,
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, USA,
 } from "../../../../constants"
 
-const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch }) => {
-  const { addBilling } = state || {}
+const Billing: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch, isEdit }) => {
+  const { addBilling, sameAddress, billingData } = state || {}
   const methods = useFormContext<CustomFacilityInputProps>()
-  const { sameAddress } = state || {}
 
   const { watch, setValue } = methods
   const { email, zipCode, phone, fax, address, address2, city, state: inputState, country } = watch()
@@ -39,15 +38,32 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
   };
 
   const resetBillingAddress = () => {
-    setValue("billingFax", '')
-    setValue("billingCity", '')
-    setValue("billingPhone", '')
-    setValue("billingEmail", '')
-    setValue("billingAddress", '')
-    setValue("billingZipCode", '')
-    setValue("billingAddress2", '')
-    setValue("billingCountry", USA)
-    setValue("billingState", setRecord('', ''))
+    if (isEdit) {
+      const {
+        billingAddress, billingAddress2, billingCity, billingCountry, billingEmail, billingFax,
+        billingPhone, billingState, billingZipCode
+      } = billingData || {}
+
+      billingFax && setValue("billingFax", billingFax)
+      billingCity && setValue("billingCity", billingCity)
+      billingPhone && setValue("billingPhone", billingPhone)
+      billingEmail && setValue("billingEmail", billingEmail)
+      billingAddress && setValue("billingAddress", billingAddress)
+      billingZipCode && setValue("billingZipCode", billingZipCode)
+      billingCountry && setValue("billingCountry", billingCountry)
+      billingAddress2 && setValue("billingAddress2", billingAddress2)
+      billingState && setValue("billingState", setRecord(billingState, billingState))
+    } else {
+      setValue("billingFax", '')
+      setValue("billingCity", '')
+      setValue("billingPhone", '')
+      setValue("billingEmail", '')
+      setValue("billingAddress", '')
+      setValue("billingZipCode", '')
+      setValue("billingAddress2", '')
+      setValue("billingCountry", USA)
+      setValue("billingState", setRecord('', ''))
+    }
   };
 
   const copyAddress = () => {
@@ -108,7 +124,7 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={8}>
               <InputController
-                fieldType="text"
+                fieldType="email"
                 controllerName="billingEmail"
                 controllerLabel={EMAIL}
                 loading={getFacilityLoading}
@@ -239,4 +255,4 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
   )
 };
 
-export default BillingProfileCard;
+export default Billing;

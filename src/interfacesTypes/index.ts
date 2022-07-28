@@ -1239,10 +1239,11 @@ export interface PatientCardsProps extends GeneralFormProps {
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
+  isEdit?: boolean
+  isSuper?: boolean
+  state?: FacilityState
   getFacilityLoading: boolean;
   dispatch?: Dispatch<FacilityAction>
-  state?: FacilityState
-  isSuper?: boolean
 }
 
 export interface PatientFormProps extends GeneralFormProps {
@@ -1437,6 +1438,18 @@ export interface ConfirmModalTypes extends DialogTypes {
 export interface SmartyUserData {
   street: string;
   address: string;
+}
+
+export interface FacilityBillingType {
+  billingFax: string;
+  billingCity: string;
+  billingPhone: string;
+  billingEmail: string;
+  billingState: string;
+  billingAddress: string;
+  billingZipCode: string;
+  billingCountry: string;
+  billingAddress2: string;
 }
 
 export interface SmartyModalComponentType {
