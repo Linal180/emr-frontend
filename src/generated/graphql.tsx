@@ -560,7 +560,21 @@ export type Charge = {
   charge?: Maybe<Scalars['Int']>;
   diagPointer?: Maybe<Scalars['String']>;
   proc_code?: Maybe<Scalars['String']>;
-  units?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['Int']>;
+};
+
+export type ChargeItem = {
+  __typename?: 'ChargeItem';
+  charge: Scalars['Float'];
+  diagPointer: Scalars['String'];
+  diag_ref: Scalars['String'];
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
+  proc_code: Scalars['String'];
+  unit: Scalars['String'];
+  units: Scalars['String'];
 };
 
 export type Claim = {
@@ -1305,6 +1319,7 @@ export type CreatePracticeItemInput = {
   npi?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   taxId?: Maybe<Scalars['String']>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -1463,6 +1478,7 @@ export type Doctor = {
   staff?: Maybe<Array<Maybe<Staff>>>;
   stateLicense?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
+  taxCode?: Maybe<Taxonomy>;
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
@@ -1681,6 +1697,7 @@ export type Facility = {
   staff?: Maybe<Array<Staff>>;
   startTime?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Taxonomy>;
   timeZone?: Maybe<Scalars['String']>;
   transaction?: Maybe<Array<Transactions>>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -2116,34 +2133,29 @@ export type IcdCodesPayload = {
 
 export type Insurance = {
   __typename?: 'Insurance';
-  Note?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Scalars['String']>;
+  claimFee?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
   createdAt?: Maybe<Scalars['String']>;
-  electronicRemittanceAdvice?: Maybe<Scalars['Boolean']>;
-  enrollmentRequired?: Maybe<Scalars['Boolean']>;
+  electronicRemittanceAdvice?: Maybe<Scalars['String']>;
+  eligibility?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  lineOfBusiness: Scalars['String'];
   payerId: Scalars['String'];
   payerName: Scalars['String'];
   policies?: Maybe<Array<Policy>>;
-  realTimeClaimStatus?: Maybe<Scalars['Boolean']>;
-  realTimeEligibility?: Maybe<Scalars['Boolean']>;
-  secondaryCoordinationBenefits?: Maybe<Scalars['Boolean']>;
+  remitFee?: Maybe<Scalars['String']>;
+  secondaryCoordinationBenefits?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
-  type: InsurancePayerType;
+  type?: Maybe<Scalars['String']>;
+  ubClaims: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  workersComp?: Maybe<Scalars['String']>;
 };
 
 export type InsurancePaginationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
 };
-
-/** The insurance payer type */
-export enum InsurancePayerType {
-  Np = 'NP',
-  P = 'P'
-}
 
 export type InsurancesPayload = {
   __typename?: 'InsurancesPayload';
@@ -2280,6 +2292,61 @@ export type LayoutJsonType = {
   tabs: Array<FormTabs>;
 };
 
+export type LiveClaimFeed = {
+  __typename?: 'LiveClaimFeed';
+  InsuranceFullName?: Maybe<Scalars['String']>;
+  charge: Scalars['String'];
+  checkNumber?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  crossOverCarrier?: Maybe<Scalars['String']>;
+  crossOverId?: Maybe<Scalars['String']>;
+  eraId?: Maybe<Scalars['String']>;
+  fromDos?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  paidAmount?: Maybe<Scalars['String']>;
+  paidDate?: Maybe<Scalars['String']>;
+  patientFullName?: Maybe<Scalars['String']>;
+  payerAccount?: Maybe<Scalars['String']>;
+  payerAddress1?: Maybe<Scalars['String']>;
+  payerCity?: Maybe<Scalars['String']>;
+  payerId?: Maybe<Scalars['String']>;
+  payerName?: Maybe<Scalars['String']>;
+  payerRouting?: Maybe<Scalars['String']>;
+  paymentFormat?: Maybe<Scalars['String']>;
+  paymentMethod?: Maybe<Scalars['String']>;
+  pcn?: Maybe<Scalars['String']>;
+  provAccount?: Maybe<Scalars['String']>;
+  provAddress1?: Maybe<Scalars['String']>;
+  provCity?: Maybe<Scalars['String']>;
+  provCompanyId?: Maybe<Scalars['String']>;
+  provName?: Maybe<Scalars['String']>;
+  provNpi?: Maybe<Scalars['String']>;
+  provRouting?: Maybe<Scalars['String']>;
+  provState?: Maybe<Scalars['String']>;
+  provTaxId?: Maybe<Scalars['String']>;
+  provZip?: Maybe<Scalars['String']>;
+  thruDos?: Maybe<Scalars['String']>;
+  totalCharge?: Maybe<Scalars['String']>;
+  totalPaid?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type LiveClaimFeedInput = {
+  claimFeedFacilityName?: Maybe<Scalars['String']>;
+  claimFeedFromDate?: Maybe<Scalars['String']>;
+  claimFeedPatientName?: Maybe<Scalars['String']>;
+  claimFeedPayerId?: Maybe<Scalars['String']>;
+  claimFeedToDate?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type LiveClaimFeedPayload = {
+  __typename?: 'LiveClaimFeedPayload';
+  liveClaimFeeds?: Maybe<Array<LiveClaimFeed>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -2412,6 +2479,7 @@ export type Mutation = {
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
+  createLiveClaimFeed: Array<LiveClaimFeed>;
   createLoincCode: LoincCodePayload;
   createModifier: ModifierPayload;
   createPatient: PatientPayload;
@@ -3802,6 +3870,8 @@ export type Practice = {
   practiceId?: Maybe<Scalars['String']>;
   staff?: Maybe<Array<Staff>>;
   taxId?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Taxonomy>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
@@ -4003,6 +4073,7 @@ export type Query = {
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
+  findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
   findAllModifiers: AllModifiersPayload;
   findAllPatient: PatientsPayload;
@@ -4016,6 +4087,7 @@ export type Query = {
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  findAllTaxonomy: TaxonomyPayload;
   findAllTestSpecimenTypes: TestSpecimenTypesPayload;
   findAllUpcomingAppointments: AppointmentsPayload;
   findAllUserLogs: UserLogsPayload;
@@ -4240,6 +4312,11 @@ export type QueryFindAllLabTestArgs = {
 };
 
 
+export type QueryFindAllLiveClaimFeedsArgs = {
+  liveClaimFeedInput: LiveClaimFeedInput;
+};
+
+
 export type QueryFindAllLoincCodesArgs = {
   searchLoincCodesInput: SearchLoincCodesInput;
 };
@@ -4302,6 +4379,11 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryFindAllTaxonomyArgs = {
+  taxonomyInput: TaxonomyInput;
 };
 
 
@@ -5280,6 +5362,32 @@ export enum Transactionstatus {
   Refund = 'REFUND'
 }
 
+export type Taxonomy = {
+  __typename?: 'Taxonomy';
+  classification: Scalars['String'];
+  code: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  definition: Scalars['String'];
+  displayName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
+  specialization?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type TaxonomyInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type TaxonomyPayload = {
+  __typename?: 'TaxonomyPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  taxonomies?: Maybe<Array<Taxonomy>>;
+};
+
 /** The patient's temperature unit type assigned */
 export enum TempUnitType {
   DegC = 'DEG_C',
@@ -5879,6 +5987,7 @@ export type UpdatePracticeItemInput = {
   npi?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   taxId?: Maybe<Scalars['String']>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -6502,12 +6611,24 @@ export type GetSuperBillInfoQueryVariables = Exact<{
 
 export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', address?: string | null, phone?: string | null }> | null } | null } };
 
+export type FindAllLiveClaimFeedsQueryVariables = Exact<{
+  liveClaimFeedInput: LiveClaimFeedInput;
+}>;
+
+
+export type FindAllLiveClaimFeedsQuery = { __typename?: 'Query', findAllLiveClaimFeeds: { __typename?: 'LiveClaimFeedPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, liveClaimFeeds?: Array<{ __typename?: 'LiveClaimFeed', id: string, paidDate?: string | null, provAddress1?: string | null, provState?: string | null, provCompanyId?: string | null, provCity?: string | null, payerAddress1?: string | null, provRouting?: string | null, payerRouting?: string | null, payerCity?: string | null, eraId?: string | null, paymentFormat?: string | null, payerName?: string | null, provTaxId?: string | null, fromDos?: string | null, patientFullName?: string | null, InsuranceFullName?: string | null, totalPaid?: string | null, thruDos?: string | null, crossOverCarrier?: string | null, crossOverId?: string | null, pcn?: string | null, provNpi?: string | null, totalCharge?: string | null, charge: string, paidAmount?: string | null, provAccount?: string | null, payerAccount?: string | null, provZip?: string | null, paymentMethod?: string | null, provName?: string | null, payerId?: string | null, checkNumber?: string | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type CreateClaimStatusMutationVariables = Exact<{
   createClaimStatusInput: ClaimStatusInput;
 }>;
 
 
 export type CreateClaimStatusMutation = { __typename?: 'Mutation', createClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type CreateLiveClaimFeedMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateLiveClaimFeedMutation = { __typename?: 'Mutation', createLiveClaimFeed: Array<{ __typename?: 'LiveClaimFeed', id: string }> };
 
 export type UpdateClaimStatusMutationVariables = Exact<{
   updateClaimStatusInput: UpdateClaimStatusInput;
@@ -6825,7 +6946,7 @@ export type GetDoctorQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, prefix?: string | null, suffix?: string | null, email?: string | null, providerIntials?: string | null, degreeCredentials?: string | null, speciality?: Speciality | null, dob?: string | null, taxId?: string | null, facilityId?: string | null, ssn?: string | null, taxonomyCode?: string | null, deaNumber?: string | null, prescriptiveAuthNumber?: string | null, licenseTermDate?: string | null, stateLicense?: string | null, languagesSpoken?: string | null, dpsCtpNumber?: string | null, anesthesiaLicense?: string | null, specialityLicense?: string | null, taxIdStuff?: string | null, blueShildNumber?: string | null, campusGrpNumber?: string | null, medicareGrpNumber?: string | null, billingFacility?: string | null, emcProviderId?: string | null, upin?: string | null, npi?: string | null, practiceId?: string | null, licenseActiveDate?: string | null, meammographyCertNumber?: string | null, medicaidGrpNumber?: string | null, deaActiveDate?: string | null, deaTermDate?: string | null, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, pager?: string | null, fax?: string | null, address?: string | null, address2?: string | null, serviceCode?: ServiceCodes | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, createdAt?: string | null, updatedAt?: string | null } | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, prefix?: string | null, suffix?: string | null, email?: string | null, providerIntials?: string | null, degreeCredentials?: string | null, speciality?: Speciality | null, dob?: string | null, taxId?: string | null, facilityId?: string | null, ssn?: string | null, taxonomyCode?: string | null, deaNumber?: string | null, prescriptiveAuthNumber?: string | null, licenseTermDate?: string | null, stateLicense?: string | null, languagesSpoken?: string | null, dpsCtpNumber?: string | null, anesthesiaLicense?: string | null, specialityLicense?: string | null, taxIdStuff?: string | null, blueShildNumber?: string | null, campusGrpNumber?: string | null, medicareGrpNumber?: string | null, billingFacility?: string | null, emcProviderId?: string | null, upin?: string | null, npi?: string | null, practiceId?: string | null, licenseActiveDate?: string | null, meammographyCertNumber?: string | null, medicaidGrpNumber?: string | null, deaActiveDate?: string | null, deaTermDate?: string | null, createdAt: string, updatedAt: string, taxCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, pager?: string | null, fax?: string | null, address?: string | null, address2?: string | null, serviceCode?: ServiceCodes | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, createdAt?: string | null, updatedAt?: string | null } | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateDoctorMutationVariables = Exact<{
   updateDoctorInput: UpdateDoctorInput;
@@ -6846,7 +6967,14 @@ export type GetFacilityQueryVariables = Exact<{
 }>;
 
 
-export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, cliaIdNumber?: string | null, federalTaxId?: string | null, isPrivate?: boolean | null, tamxonomyCode?: string | null, timeZone?: string | null, mammographyCertificationNumber?: string | null, npi?: string | null, practiceId?: string | null, serviceCode?: ServiceCode | null, startTime?: string | null, endTime?: string | null, createdAt?: string | null, updatedAt?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, createdAt: string, updatedAt: string }> | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, cliaIdNumber?: string | null, federalTaxId?: string | null, isPrivate?: boolean | null, timeZone?: string | null, mammographyCertificationNumber?: string | null, npi?: string | null, practiceId?: string | null, serviceCode?: ServiceCode | null, startTime?: string | null, endTime?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string } | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, createdAt: string, updatedAt: string }> | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllTaxonomyQueryVariables = Exact<{
+  taxonomyInput: TaxonomyInput;
+}>;
+
+
+export type FindAllTaxonomyQuery = { __typename?: 'Query', findAllTaxonomy: { __typename?: 'TaxonomyPayload', taxonomies?: Array<{ __typename?: 'Taxonomy', id: string, code: string, specialization?: string | null, classification: string, definition: string, displayName?: string | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type RemoveFacilityMutationVariables = Exact<{
   removeFacility: RemoveFacility;
@@ -7278,7 +7406,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -9830,6 +9958,83 @@ export function useGetSuperBillInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetSuperBillInfoQueryHookResult = ReturnType<typeof useGetSuperBillInfoQuery>;
 export type GetSuperBillInfoLazyQueryHookResult = ReturnType<typeof useGetSuperBillInfoLazyQuery>;
 export type GetSuperBillInfoQueryResult = Apollo.QueryResult<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>;
+export const FindAllLiveClaimFeedsDocument = gql`
+    query FindAllLiveClaimFeeds($liveClaimFeedInput: LiveClaimFeedInput!) {
+  findAllLiveClaimFeeds(liveClaimFeedInput: $liveClaimFeedInput) {
+    response {
+      status
+      message
+    }
+    liveClaimFeeds {
+      id
+      paidDate
+      provAddress1
+      provState
+      provCompanyId
+      provCity
+      payerAddress1
+      provRouting
+      payerRouting
+      payerCity
+      eraId
+      paymentFormat
+      payerName
+      provTaxId
+      fromDos
+      patientFullName
+      InsuranceFullName
+      totalPaid
+      thruDos
+      crossOverCarrier
+      crossOverId
+      pcn
+      provNpi
+      totalCharge
+      charge
+      paidAmount
+      provAccount
+      payerAccount
+      provZip
+      paymentMethod
+      provName
+      payerId
+      checkNumber
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllLiveClaimFeedsQuery__
+ *
+ * To run a query within a React component, call `useFindAllLiveClaimFeedsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllLiveClaimFeedsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllLiveClaimFeedsQuery({
+ *   variables: {
+ *      liveClaimFeedInput: // value for 'liveClaimFeedInput'
+ *   },
+ * });
+ */
+export function useFindAllLiveClaimFeedsQuery(baseOptions: Apollo.QueryHookOptions<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>(FindAllLiveClaimFeedsDocument, options);
+      }
+export function useFindAllLiveClaimFeedsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>(FindAllLiveClaimFeedsDocument, options);
+        }
+export type FindAllLiveClaimFeedsQueryHookResult = ReturnType<typeof useFindAllLiveClaimFeedsQuery>;
+export type FindAllLiveClaimFeedsLazyQueryHookResult = ReturnType<typeof useFindAllLiveClaimFeedsLazyQuery>;
+export type FindAllLiveClaimFeedsQueryResult = Apollo.QueryResult<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>;
 export const CreateClaimStatusDocument = gql`
     mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
   createClaimStatus(createClaimStatusInput: $createClaimStatusInput) {
@@ -9869,6 +10074,38 @@ export function useCreateClaimStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateClaimStatusMutationHookResult = ReturnType<typeof useCreateClaimStatusMutation>;
 export type CreateClaimStatusMutationResult = Apollo.MutationResult<CreateClaimStatusMutation>;
 export type CreateClaimStatusMutationOptions = Apollo.BaseMutationOptions<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>;
+export const CreateLiveClaimFeedDocument = gql`
+    mutation createLiveClaimFeed {
+  createLiveClaimFeed {
+    id
+  }
+}
+    `;
+export type CreateLiveClaimFeedMutationFn = Apollo.MutationFunction<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>;
+
+/**
+ * __useCreateLiveClaimFeedMutation__
+ *
+ * To run a mutation, you first call `useCreateLiveClaimFeedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLiveClaimFeedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLiveClaimFeedMutation, { data, loading, error }] = useCreateLiveClaimFeedMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateLiveClaimFeedMutation(baseOptions?: Apollo.MutationHookOptions<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>(CreateLiveClaimFeedDocument, options);
+      }
+export type CreateLiveClaimFeedMutationHookResult = ReturnType<typeof useCreateLiveClaimFeedMutation>;
+export type CreateLiveClaimFeedMutationResult = Apollo.MutationResult<CreateLiveClaimFeedMutation>;
+export type CreateLiveClaimFeedMutationOptions = Apollo.BaseMutationOptions<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>;
 export const UpdateClaimStatusDocument = gql`
     mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
   updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput) {
@@ -11945,6 +12182,11 @@ export const GetDoctorDocument = gql`
       deaTermDate
       createdAt
       updatedAt
+      taxCode {
+        id
+        code
+        displayName
+      }
       billingAddress {
         id
         email
@@ -12141,7 +12383,11 @@ export const GetFacilityDocument = gql`
       cliaIdNumber
       federalTaxId
       isPrivate
-      tamxonomyCode
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
       timeZone
       mammographyCertificationNumber
       npi
@@ -12223,6 +12469,57 @@ export function useGetFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetFacilityQueryHookResult = ReturnType<typeof useGetFacilityQuery>;
 export type GetFacilityLazyQueryHookResult = ReturnType<typeof useGetFacilityLazyQuery>;
 export type GetFacilityQueryResult = Apollo.QueryResult<GetFacilityQuery, GetFacilityQueryVariables>;
+export const FindAllTaxonomyDocument = gql`
+    query FindAllTaxonomy($taxonomyInput: TaxonomyInput!) {
+  findAllTaxonomy(taxonomyInput: $taxonomyInput) {
+    taxonomies {
+      id
+      code
+      specialization
+      classification
+      definition
+      displayName
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllTaxonomyQuery__
+ *
+ * To run a query within a React component, call `useFindAllTaxonomyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllTaxonomyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllTaxonomyQuery({
+ *   variables: {
+ *      taxonomyInput: // value for 'taxonomyInput'
+ *   },
+ * });
+ */
+export function useFindAllTaxonomyQuery(baseOptions: Apollo.QueryHookOptions<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>(FindAllTaxonomyDocument, options);
+      }
+export function useFindAllTaxonomyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>(FindAllTaxonomyDocument, options);
+        }
+export type FindAllTaxonomyQueryHookResult = ReturnType<typeof useFindAllTaxonomyQuery>;
+export type FindAllTaxonomyLazyQueryHookResult = ReturnType<typeof useFindAllTaxonomyLazyQuery>;
+export type FindAllTaxonomyQueryResult = Apollo.QueryResult<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>;
 export const RemoveFacilityDocument = gql`
     mutation RemoveFacility($removeFacility: RemoveFacility!) {
   removeFacility(removeFacility: $removeFacility) {
@@ -15518,6 +15815,11 @@ export const GetPracticeDocument = gql`
       npi
       createdAt
       updatedAt
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
       attachments {
         id
         key

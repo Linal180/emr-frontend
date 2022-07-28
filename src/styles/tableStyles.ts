@@ -199,8 +199,11 @@ export const useTableStyles = makeStyles(() => ({
     "&:nth-of-type(odd)": {
       backgroundColor: GREY_EIGHTEEN,
     },
-    fullFlex: {
-      flex: 1
-    }
-  }
+  },
+  fullFlex: {
+    flex: 1
+  },
+  btnWrap: {
+    whiteSpace: 'nowrap',
+  },
 }))

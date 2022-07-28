@@ -42,7 +42,12 @@ query GetFacility($getFacility: GetFacility!){
       cliaIdNumber
       federalTaxId
       isPrivate
-      tamxonomyCode
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
+
       timeZone
       mammographyCertificationNumber
       npi
@@ -94,6 +99,30 @@ query GetFacility($getFacility: GetFacility!){
 
     response{
       name
+      status
+      message
+    }
+  }
+}
+
+query FindAllTaxonomy($taxonomyInput: TaxonomyInput!) {
+  findAllTaxonomy(taxonomyInput: $taxonomyInput) {
+    taxonomies {
+      id
+      code
+      specialization
+      classification
+      definition
+      displayName
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
       status
       message
     }

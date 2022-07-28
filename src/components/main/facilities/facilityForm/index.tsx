@@ -77,7 +77,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (facility && status && status === 200) {
             const {
               name, cliaIdNumber, federalTaxId, mammographyCertificationNumber, practiceId, npi,
-              tamxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
+              taxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
             } = facility;
             const { name: practiceName } = practice || {};
 
@@ -88,7 +88,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
-            tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
+            taxonomyCode?.id && setValue('tamxonomyCode', {
+              id: taxonomyCode.id,
+              name: `${taxonomyCode.code} | ${taxonomyCode.displayName}`
+            })
             startTime && setValue('startTime', getTimeString(startTime))
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
             serviceCode && setValue('serviceCode', setRecord(serviceCode, formatEnumMember(serviceCode)))
@@ -218,7 +221,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode,
+      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode: tamxonomyCode.id,
       practiceId: facilityPractice, mammographyCertificationNumber, endTime: endTime && setTime(endTime),
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       startTime: startTime && setTime(startTime),

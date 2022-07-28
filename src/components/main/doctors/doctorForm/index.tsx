@@ -42,6 +42,7 @@ import {
   SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
   SYSTEM_ROLES, SETTINGS_ROUTE, EDIT_DOCTOR
 } from "../../../../constants";
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user, userRoles } = useContext(AuthContext)
@@ -76,7 +77,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           if (doctor && status && status === 200) {
             const { dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, providerIntials,
-              degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
+              degreeCredentials, languagesSpoken, taxCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
               upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
               dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
@@ -96,7 +97,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             firstName && setValue('firstName', firstName)
             middleName && setValue('middleName', middleName)
             taxIdStuff && setValue('taxIdStuff', taxIdStuff)
-            taxonomyCode && setValue('taxonomyCode', taxonomyCode)
+            taxCode?.id && setValue('taxonomyCode', {
+              id: taxCode?.id,
+              name: `${taxCode?.code} | ${taxCode?.displayName}`
+            })
             dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
             stateLicense && setValue('stateLicense', stateLicense)
             emcProviderId && setValue('emcProviderId', emcProviderId)
@@ -238,7 +242,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const doctorItemInput = {
         firstName, middleName, lastName, prefix: prefix || '', suffix: suffix || '',
-        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
+        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode: taxonomyCode.id, deaNumber, taxId,
         npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
         providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId,
@@ -463,11 +467,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="taxonomyCode"
-                      controllerLabel={TAXONOMY_CODE}
+                    <TaxonomySelector
+                      label={TAXONOMY_CODE}
+                      name="taxonomyCode"
                       loading={getDoctorLoading}
+                      addEmpty
                     />
                   </Grid>
 

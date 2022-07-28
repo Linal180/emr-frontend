@@ -640,6 +640,7 @@ export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
+export const NPI_MESSAGE = "NPI should match LUHN Pattern";
 export const GROUP_NPI = "Group NPI ID";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -706,12 +707,14 @@ export const UNIT = "Unit";
 export const INFO = "Info";
 export const PAGE_LIMIT = 9;
 export const INS_1 = "Ins 1";
+export const INS = "Ins";
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";
 export const INS_BAL = "Ins Bal";
 export const MODIFIER = "Modifier";
+export const INS_PAID = "Ins Paid";
 export const INS_1_PAID = "Ins 1 Paid";
 export const INS_2_PAID = "Ins 2 Paid";
 export const ROLES = "Roles";
@@ -824,6 +827,7 @@ export const REVENUE_CODE = "Revenue Code";
 export const BILLING_TYPE = "Billing Type";
 export const SERVICE_CODE = "Service Code";
 export const UPDATE_FILTER = "Update Filter";
+export const CLEAR_FILTER = "Clear Filter";
 export const ALL_LOG_TYPES = "All Log Types";
 export const REGISTERED_ON = "Registered on";
 export const RECEIVED_DATE = "Received Date";
@@ -1208,6 +1212,7 @@ export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
+export const SYNC = "Sync";
 export const PREFERRED_NAME = "Preferred Name";
 export const EDIT_INSURANCE = "Edit Insurance";
 export const EDIT_AGREEMENT = "Edit Agreement";
@@ -2652,6 +2657,7 @@ export enum ITEM_MODULE {
   claimStatus = 'claimStatus',
   feeSchedule = 'feeSchedule',
   cptFeeSchedule = 'cptFeeSchedule',
+  taxonomies = 'taxonomies',
 }
 
 export enum TABLE_SELECTOR_MODULES {

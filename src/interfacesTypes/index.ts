@@ -649,8 +649,8 @@ interface CustomBillingAddressInputs {
 
 export type CustomFacilityInputProps = Omit<
   UpdateContactInput, "serviceCode" | "state">
-  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId">
-  & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption; }
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId" | "tamxonomyCode">
+  & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption; } & { tamxonomyCode: SelectorOption; }
   & { timeZone: SelectorOption } & { state: SelectorOption }
   & { practice: SelectorOption };
 
@@ -665,9 +665,9 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<
   "timeZone"
 > & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "taxonomyCode">
   & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs
-  & { facilityId: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
+  & { facilityId: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption } & { taxonomyCode: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & {
   facilityId: SelectorOption;
@@ -1306,10 +1306,10 @@ export interface AppointmentDatePickerProps {
   setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>;
 }
 
-export type CustomPracticeInputProps = CreatePracticeItemInput &
+export type CustomPracticeInputProps = Omit<CreatePracticeItemInput, "taxonomyCodeId"> &
   RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode"
     | "email" | "country"> & { facilityName: string } & { roleType: SelectorOption }
-  & { state: SelectorOption } & { isAdmin: boolean };
+  & { state: SelectorOption } & { isAdmin: boolean } & { taxonomyCodeId: SelectorOption };
 
 export interface PaymentProps {
   clientToken: string;
@@ -1435,6 +1435,22 @@ export interface ConfirmModalTypes extends DialogTypes {
 export interface SmartyUserData {
   street: string;
   address: string;
+}
+
+export interface ClaimFeedAdvanceSearchProps {
+  claimFeedFacilityName: SelectorOption
+  claimFeedPatientName: SelectorOption
+  claimFeedPayerId: SelectorOption
+  claimFeedFromDate?: string | null
+  claimFeedToDate?: string | null
+}
+
+export interface ClaimFeedAdvanceSearchInputProps {
+  claimFeedFacilityName: string
+  claimFeedPatientName: string
+  claimFeedPayerId: string
+  claimFeedFromDate?: string | null
+  claimFeedToDate?: string | null
 }
 
 export interface SmartyModalComponentType {

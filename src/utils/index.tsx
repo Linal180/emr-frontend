@@ -37,7 +37,7 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -466,6 +466,21 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
       if (practice) {
         const { id, name } = practice;
         data.push({ id, name: name.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTaxonomies = (taxonomies: TaxonomyPayload['taxonomies']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!taxonomies) {
+    for (let taxonomy of taxonomies) {
+      if (taxonomy) {
+        const { id, code, displayName } = taxonomy;
+        data.push({ id, name: `${code} | ${displayName}` })
       }
     }
   }
@@ -1612,6 +1627,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: cptFeeScheduleId, name: `${cptCode} | ${shortDescription}`, code: cptCode || '', serviceFee: serviceFee || '' })
           break;
+        case ITEM_MODULE.taxonomies:
+          let { id: taxonomyId, code: taxonomyCode, displayName: taxonomyName } = (item as unknown as Taxonomy) || {};
+
+          data.push({ id: taxonomyId, name: `${taxonomyCode} | ${taxonomyName}` })
+          break
         default:
           break;
       }
@@ -2095,4 +2115,32 @@ export const getPageNumber = (page: number, pageRecords: number): number => {
   }
 
   return 1;
+}
+
+export const checkNpi = (npi: string) => {
+  var tmp;
+  var sum;
+  var i;
+  var j;
+  i = npi.length;
+  if ((i === 15) && (npi.indexOf("80840", 0) === 0))
+    sum = 0;
+  else if (i === 10)
+    sum = 24;
+  else
+    return false;
+  j = 0;
+  while (i !== 0) {
+    tmp = npi.charCodeAt(i - 1) - '0'.charCodeAt(0);
+    if ((j++ % 2) !== 0) {
+      const con = tmp <<= 1
+      if (con > 9) {
+        tmp -= 10;
+        tmp++;
+      }
+    }
+    sum += tmp;
+    i--;
+  }
+  return ((sum % 10) === 0) ? true : false
 }
