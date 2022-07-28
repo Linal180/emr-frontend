@@ -268,9 +268,9 @@ const ClaimFeedTable: FC = (): JSX.Element => {
 
               <Collapse in={advanceSearchOpen} mountOnEnter unmountOnExit>
                 <FormProvider {...methods}>
-                  <Box p={3} mt={2} borderRadius={4}>
+                  <Box mt={4}>
                     <Grid container spacing={3} direction="row">
-                      <Grid item xs={12} sm={12} md={4}>
+                      <Grid item xs={12} sm={12} md={4} style={{border:'1px solid red'}}>
                         <Grid container spacing={3} direction="row">
                           <Grid item xs={12} sm={12} md={4}>
                             <FacilitySelector
