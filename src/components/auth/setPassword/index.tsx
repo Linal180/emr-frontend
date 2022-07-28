@@ -62,7 +62,7 @@ const SetPasswordComponent = (): JSX.Element => {
   }, [token])
 
   useEffect(() => {
-    password === repeatPassword ?
+    password === repeatPassword || !!!repeatPassword ?
       clearErrors("repeatPassword")
       : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
   }, [clearErrors, password, repeatPassword, setError, watch])

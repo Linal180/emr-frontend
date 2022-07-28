@@ -1,10 +1,15 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@material-ui/core";
+// packages block
 import { FC } from "react";
-import { CLOSE } from "../../../constants";
-import { DocViewerProps } from "../../../interfacesTypes";
+import {
+  Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography
+} from "@material-ui/core";
+// constants and types block
+import { CLOSE } from "../../constants";
+import { DocumentViewerProps } from "../../interfacesTypes";
 
-const DocViewer: FC<DocViewerProps> = ({ title, isOpen, handleClose, url }) => {
-  var encodedUrl = encodeURIComponent(url || '')
+const DocumentViewer: FC<DocumentViewerProps> = ({ title, isOpen, handleClose, url }) => {
+  const encodedUrl = encodeURIComponent(url || '')
+
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
       <DialogTitle>
@@ -30,4 +35,4 @@ const DocViewer: FC<DocViewerProps> = ({ title, isOpen, handleClose, url }) => {
   )
 }
 
-export default DocViewer
+export default DocumentViewer;

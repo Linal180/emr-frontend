@@ -30,7 +30,7 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX,
-  DESCRIPTION_INVALID_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -93,7 +93,7 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
   return yup.string()
     .test('', requiredMessage(label), value => isRequired ? !!value : true)
     .min(6, MinLength(label, 6)).max(30, MaxLength(label, 30))
-    .test('', invalidMessage(label), value => value ? NO_SPACE_REGEX.test(value) : false)
+    .test('', NO_WHITE_SPACING_ERROR_MESSAGE, value => value ? NO_SPACE_REGEX.test(value) : false)
 }
 
 const optionalEmailSchema = (isOptional: boolean) => {
@@ -1070,8 +1070,8 @@ export const labOrdersResultAttachmentSchema = yup.object({
 })
 
 export const createClaimStatusSchema = yup.object({
-  statusName: yup.string()
-    .required(requiredMessage(CLAIM_STATUS))
+  statusName: yup.string().required(requiredMessage(CLAIM_STATUS))
+  .min(3, MinLength(CLAIM_STATUS, 3)).max(26, MaxLength(CLAIM_STATUS, 26)),
 })
 
 

@@ -31,6 +31,7 @@ const ChangePasswordComponent = (): JSX.Element => {
 
   const [updatePassword, { loading }] = useUpdatePasswordMutation({
     onError() {
+      reset()
       Alert.error(OLD_PASSWORD_DID_NOT_MATCH)
     },
 
