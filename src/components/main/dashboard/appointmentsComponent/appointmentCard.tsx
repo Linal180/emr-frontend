@@ -16,9 +16,9 @@ import { useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCr
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
 import {
-  REASON, FACILITY_NAME, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE,
-  APPOINTMENT_CANCEL_REASON, CANCEL_TIME_PAST_MESSAGE, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS,
+  APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS,
   PRIMARY_INSURANCE, CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN, CHECK_IN_ROUTE, START_TELEHEALTH, TELEHEALTH_URL,
+  REASON, FACILITY_NAME, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
@@ -126,11 +126,9 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   }, [appointmentDatePassingView, onHide, patientName, setCurrentDate, setCurrentView, visible])
 
   const deleteAppointmentHandler = (scheduleStartDateTime: any) => {
-    moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
-      ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
-      : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-        ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-        : onDeleteClick()
+    moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
+      ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+      : onDeleteClick()
   }
 
   return (
