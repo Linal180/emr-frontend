@@ -30,7 +30,9 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CONTACT_NUMBER, TITLE, CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX,
-  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+  NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_LICENSE_DATE_ERROR_MESSAGE
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -180,16 +182,18 @@ const deaDateSchema = {
   deaActiveDate: yup.string().test(value => !value
     ? !value : new Date(value || '') <= new Date()),
 
-  deaTermDate: yup.string().test((value, { parent: { deaActiveDate } }) => !value
-    ? !value : dateValidation(value, deaActiveDate))
+  deaTermDate: yup.string().test('', INVALID_DEA_DATE_ERROR_MESSAGE,
+    (value, { parent: { deaActiveDate } }) => !value
+      ? !value : dateValidation(value, deaActiveDate))
 }
 
 const licenseDateSchema = {
   licenseActiveDate: yup.string().test(value => !value
     ? !value : new Date(value || '') <= new Date()),
 
-  licenseTermDate: yup.string().test((value, { parent: { licenseActiveDate } }) => !value
-    ? !value : dateValidation(value, licenseActiveDate))
+  licenseTermDate: yup.string().test('', INVALID_LICENSE_DATE_ERROR_MESSAGE,
+    (value, { parent: { licenseActiveDate } }) => !value
+      ? !value : dateValidation(value, licenseActiveDate))
 }
 
 const scheduleTimeSchema = {
@@ -372,11 +376,9 @@ export const facilityServicesSchema = {
     .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
       value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
     .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
-      value => value ? NO_SPECIAL_CHAR_REGEX.test(value) : false
-    )
+      value => value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
     .test('', NO_NUMBER_ERROR_MESSAGE,
-      value => value ? STRING_REGEX.test(value) : false
-    )
+      value => value ? STRING_REGEX.test(value) : false)
     .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50)),
   // .test('', DESCRIPTION_INVALID_MESSAGE, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false),
   // price: yup.string()

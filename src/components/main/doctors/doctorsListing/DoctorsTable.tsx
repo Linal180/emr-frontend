@@ -88,10 +88,10 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const fetchAllDoctors = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: 1 || PAGE_LIMIT } }
-      const doctorInputs = isSuper ? { ...pageInputs } :
-        isPracticeUser ? { practiceId, ...pageInputs } :
-          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
+      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const doctorInputs = isSuper ? { ...pageInputs }
+        : isPracticeUser ? { practiceId, ...pageInputs }
+          : isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
       const searchFilterInputs = {
         ...(selectedFacility ? { facilityId: selectedFacility } : {}),
@@ -192,6 +192,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                     onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
+
                 <Grid item md={6} sm={12} xs={12}>
                   <FacilitySelector
                     label={FACILITY}
