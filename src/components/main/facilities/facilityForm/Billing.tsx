@@ -1,27 +1,25 @@
 // packages block
-import { FC } from "react"
-import { useFormContext } from "react-hook-form"
-import { AddCircleOutline } from "@material-ui/icons"
 import {
   Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, FormGroup, Grid, Typography
 } from "@material-ui/core"
+import { AddCircleOutline } from "@material-ui/icons"
+import { FC } from "react"
+import { useFormContext } from "react-hook-form"
 // components block
-import Selector from "../../../common/Selector"
-import PhoneField from "../../../common/PhoneInput"
-import CardComponent from "../../../common/CardComponent"
 import CountryController from "../../../../controller/CountryController"
+import CardComponent from "../../../common/CardComponent"
+import PhoneField from "../../../common/PhoneInput"
+import TaxonomySelector from "../../../common/Selector/TaxonomySelector"
+import Selector from "../../../common/Selector"
 // constants, interface block
-import { setRecord } from "../../../../utils"
-import InputController from "../../../../controller"
-import { ActionType } from "../../../../reducers/facilityReducer"
-import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
 import {
-  SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP,
-  ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL,
-  MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
-  CLIA_ID_NUMBER_INFO, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, CITY,
-  CLIA_ID_NUMBER, MAMMOGRAPHY_CERTIFICATION_NUMBER, USA,
+  ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL, CITY,
+  CLIA_ID_NUMBER, CLIA_ID_NUMBER_INFO, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, MAMMOGRAPHY_CERTIFICATION_NUMBER, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE, SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, USA, ZIP
 } from "../../../../constants"
+import InputController from "../../../../controller"
+import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
+import { ActionType } from "../../../../reducers/facilityReducer"
+import { setRecord } from "../../../../utils"
 
 const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch }) => {
   const { addBilling } = state || {}
@@ -202,12 +200,11 @@ const BillingProfileCard: FC<FacilityCardsProps> = ({ getFacilityLoading, state,
 
           <Grid container spacing={3}>
             <Grid item md={6}>
-              <InputController
-                info={TAXONOMY_CODE_INFO}
-                fieldType="text"
-                controllerName="tamxonomyCode"
-                controllerLabel={TAXONOMY_CODE}
+              <TaxonomySelector
+                label={TAXONOMY_CODE}
+                name="tamxonomyCode"
                 loading={getFacilityLoading}
+                addEmpty
               />
             </Grid>
 
