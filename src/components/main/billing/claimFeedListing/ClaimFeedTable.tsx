@@ -8,6 +8,9 @@ import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "reac
 import { CSVLink } from "react-csv";
 import { FormProvider, useForm } from "react-hook-form";
 // components block
+import moment from "moment";
+import Alert from "../../../common/Alert";
+import Loader from "../../../common/Loader";
 import DatePicker from "../../../common/DatePicker";
 import ItemSelector from "../../../common/ItemSelector";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
@@ -17,16 +20,16 @@ import LogsPatientSelector from "../../../common/userLogs/PatientSelector";
 import { DownloadIconWhite } from "../../../../assets/svgs";
 import {
   ADJUSTMENT, ALLOWED, APPLY_FILTER, BILLED, CLAIM_FEED_TEXT, CLAIM_ID, CLEAR_FILTER, DATE_OF_SERVICE, EMPTY_OPTION,
-  EXPORT_TO_FILE, FACILITY, FROM_DATE, INS, INS_1, INS_PAID, ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, PT_PAID, SYNC, TOTALS, TO_DATE, UPDATE_FILTER
+  EXPORT_TO_FILE, FACILITY, FROM_DATE, INS, INS_1, INS_PAID, ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, PT_PAID, SYNC, 
+  TOTALS, TO_DATE, UPDATE_FILTER
 } from "../../../../constants";
-import { LiveClaimFeedPayload, useCreateLiveClaimFeedMutation, useFindAllLiveClaimFeedsLazyQuery } from "../../../../generated/graphql";
+import { 
+  LiveClaimFeedPayload, useCreateLiveClaimFeedMutation, useFindAllLiveClaimFeedsLazyQuery 
+} from "../../../../generated/graphql";
 import { ClaimFeedAdvanceSearchInputProps, ClaimFeedAdvanceSearchProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
 import { getArrayOfObjSum, getFormatDateString, renderTh } from "../../../../utils";
-import moment from "moment";
-import Loader from "../../../common/Loader";
-import Alert from "../../../common/Alert";
 
 const headers = [
   { label: CLAIM_ID, key: "claimId" },
@@ -269,10 +272,10 @@ const ClaimFeedTable: FC = (): JSX.Element => {
               <Collapse in={advanceSearchOpen} mountOnEnter unmountOnExit>
                 <FormProvider {...methods}>
                   <Box mt={4}>
-                    <Grid container spacing={3} direction="row">
-                      <Grid item xs={12} sm={12} md={4} style={{border:'1px solid red'}}>
+                    <Grid container spacing={2} direction="row">
+                      <Grid item xs={12} sm={12} md={12} lg={9}>
                         <Grid container spacing={3} direction="row">
-                          <Grid item xs={12} sm={12} md={4}>
+                          <Grid item xs={12} sm={6} md={3} lg={2}>
                             <FacilitySelector
                               addEmpty
                               label={FACILITY}
@@ -280,7 +283,7 @@ const ClaimFeedTable: FC = (): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item xs={12} sm={12} md={4}>
+                          <Grid item xs={12} sm={6} md={3} lg={3}>
                             <LogsPatientSelector
                               addEmpty
                               label={PATIENT}
@@ -288,7 +291,7 @@ const ClaimFeedTable: FC = (): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item xs={12} sm={12} md={4}>
+                          <Grid item xs={12} sm={6} md={3} lg={3}>
                             <ItemSelector
                               addEmpty
                               label={PAYER}
@@ -296,41 +299,41 @@ const ClaimFeedTable: FC = (): JSX.Element => {
                               modalName={ITEM_MODULE.insurance}
                             />
                           </Grid>
-                        </Grid>
-                      </Grid>
 
-                      <Grid item xs={12} sm={12} md={5}>
-                        <Grid container spacing={3} direction="row">
-                          {/* <Grid item xs={12} sm={12} md={3}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="payerId"
-                              controllerLabel={PAYER_ID}
-                            />
-                          </Grid> */}
-
-                          {/* <Grid item xs={12} sm={12} md={3}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="drClaim"
-                              controllerLabel={DR_CLAIM_NO}
-                            />
-                          </Grid> */}
-
-                          <Grid item xs={12} sm={12} md={3}>
+                          <Grid item xs={12} sm={6} md={3} lg={2}>
                             <DatePicker label={FROM_DATE} name="claimFeedFromDate" />
                           </Grid>
 
-                          <Grid item xs={12} sm={12} md={3}>
+                          <Grid item xs={12} sm={6} md={3} lg={2}>
                             <DatePicker label={TO_DATE} name="claimFeedToDate" />
                           </Grid>
                         </Grid>
                       </Grid>
 
-                      <Grid item xs={12} sm={12} md={3}>
-                        <Box display="flex" justifyContent="space-between" alignItems="flex-start" width="100%">
-                          <Box pt={2.5}>
-                            <Button className={classes.btnWrap} variant="contained" color="secondary" onClick={handleAdvanceSearch}>
+                      {/* <Grid item xs={12} sm={12} md={12} lg={3}>
+                        <Grid container spacing={3} direction="row">
+                          <Grid item xs={12} sm={12} md={3}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="payerId"
+                              controllerLabel={PAYER_ID}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} sm={12} md={3}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="drClaim"
+                              controllerLabel={DR_CLAIM_NO}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Grid> */}
+
+                      <Grid item xs={12} sm={12} md={12} lg={3}>
+                        <Box display="flex" alignItems="flex-baseline" flexWrap="wrap">
+                          <Box mx={0.7} mt={2.5}>
+                            <Button variant="contained" color="secondary" onClick={handleAdvanceSearch}>
                               {UPDATE_FILTER}
                             </Button>
                           </Box>
@@ -343,9 +346,9 @@ const ClaimFeedTable: FC = (): JSX.Element => {
                               options={MAPPED_STATES}
                             />
                           </Box> */}
-                          <Box p={1} />
-                          <Box pt={2.5}>
-                            <Button className={classes.btnWrap} variant="outlined" color="secondary" onClick={handleClear}>
+
+                          <Box mx={0.7} mt={2.5}>
+                            <Button variant="outlined" color="default" onClick={handleClear}>
                               {CLEAR_FILTER}
                             </Button>
                           </Box>
