@@ -21,7 +21,8 @@ import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  dateValidation, formatEmail, getDate, getTimestamps, getTimestampsForDob, setRecord
+  dateValidation, formatEmail, formatToLeadingCode, getDate, getTimestamps, getTimestampsForDob, 
+  setRecord
 } from "../../../../utils";
 import {
   doctorReducer, State, Action, initialState, ActionType
@@ -118,12 +119,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
             medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
             degreeCredentials && setValue('degreeCredentials', degreeCredentials)
-            speciality && setValue('speciality', setRecord(speciality, speciality))
             licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
             facilityId && name && setValue('facilityId', setRecord(facilityId, name, false))
             licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
+            speciality && setValue('speciality', setRecord(speciality, formatToLeadingCode(speciality), false))
 
             doctor && dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
 
