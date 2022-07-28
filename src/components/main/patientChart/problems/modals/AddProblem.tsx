@@ -138,7 +138,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
                     <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                      {referencedComponentId ? `snomed: ${referencedComponentId} | icd10: ${code}` : `icd10: ${code}`}
+                      {referencedComponentId ? `Snomed: ${referencedComponentId} | ICD10: ${code}` : `icd10: ${code}`}
                     </Typography>
                   </Box>
 

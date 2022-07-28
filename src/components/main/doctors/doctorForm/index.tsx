@@ -13,13 +13,16 @@ import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import CountryController from '../../../../controller/CountryController';
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, styles, constants block
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { dateValidation, formatEmail, getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
+import {
+  dateValidation, formatEmail, getDate, getTimestamps, getTimestampsForDob, setRecord
+} from "../../../../utils";
 import {
   doctorReducer, State, Action, initialState, ActionType
 } from '../../../../reducers/doctorReducer';
@@ -56,18 +59,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { reset, handleSubmit, setValue, watch, setError, clearErrors } = methods;
   const { deaActiveDate, deaTermDate, licenseActiveDate, licenseTermDate } = watch()
 
-  useEffect(() => {
-    dateValidation(deaTermDate || '', deaActiveDate || '') || !!!deaTermDate ?
-    clearErrors("deaTermDate")
-    : setError("deaTermDate", { message: INVALID_DEA_DATE_ERROR_MESSAGE })
-  }, [clearErrors, deaActiveDate, deaTermDate, setError])
-
-  useEffect(() => {
-    dateValidation(licenseTermDate || '', licenseActiveDate || '') || !!!licenseTermDate ?
-    clearErrors("licenseTermDate")
-    : setError("licenseTermDate", { message: INVALID_LICENSE_DATE_ERROR_MESSAGE })
-  }, [clearErrors, licenseActiveDate, licenseTermDate, setError])
-  
   const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -89,7 +80,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           if (doctor && status && status === 200) {
             const { dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, providerIntials,
-              degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
+              degreeCredentials, languagesSpoken, taxCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
               upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
               dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, email
@@ -109,7 +100,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             firstName && setValue('firstName', firstName)
             middleName && setValue('middleName', middleName)
             taxIdStuff && setValue('taxIdStuff', taxIdStuff)
-            taxonomyCode && setValue('taxonomyCode', taxonomyCode)
+            taxCode?.id && setValue('taxonomyCode', {
+              id: taxCode?.id,
+              name: `${taxCode?.code} | ${taxCode?.displayName}`
+            })
             dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
             stateLicense && setValue('stateLicense', stateLicense)
             emcProviderId && setValue('emcProviderId', emcProviderId)
@@ -230,6 +224,18 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }, [getDoctor, id, isEdit])
 
+  useEffect(() => {
+    dateValidation(deaTermDate || '', deaActiveDate || '') || !!!deaTermDate ?
+      clearErrors("deaTermDate")
+      : setError("deaTermDate", { message: INVALID_DEA_DATE_ERROR_MESSAGE })
+  }, [clearErrors, deaActiveDate, deaTermDate, setError])
+
+  useEffect(() => {
+    dateValidation(licenseTermDate || '', licenseActiveDate || '') || !!!licenseTermDate ?
+      clearErrors("licenseTermDate")
+      : setError("licenseTermDate", { message: INVALID_LICENSE_DATE_ERROR_MESSAGE })
+  }, [clearErrors, licenseActiveDate, licenseTermDate, setError])
+
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const {
       email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country, facilityId,
@@ -251,10 +257,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const doctorItemInput = {
         firstName, middleName, lastName, prefix: prefix || '', suffix: suffix || '',
-        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
-        npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
+        facilityId: selectedFacility, degreeCredentials, ssn, languagesSpoken, taxonomyCode: taxonomyCode.id,
+        deaNumber, taxId, npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber,
         blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
-        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId,
+        providerIntials: providerIntials || '', prescriptiveAuthNumber, adminId: userId, campusGrpNumber,
         dob: dob ? getTimestampsForDob(dob) : '', deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
@@ -475,11 +481,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
+                    <TaxonomySelector
+                      addEmpty
+                      name="taxonomyCode"
+                      label={TAXONOMY_CODE}
                       loading={getDoctorLoading}
-                      controllerName="taxonomyCode"
-                      controllerLabel={TAXONOMY_CODE}
                     />
                   </Grid>
 

@@ -8,15 +8,16 @@ import {
 // components block
 import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"
+import InputController from "../../../../controller"
 import CardComponent from "../../../common/CardComponent"
+import TaxonomySelector from "../../../common/Selector/TaxonomySelector"
 import CountryController from "../../../../controller/CountryController"
 // constants, interface block
-import { setRecord } from "../../../../utils"
-import InputController from "../../../../controller"
 import { ActionType } from "../../../../reducers/facilityReducer"
+import { setRecord } from "../../../../utils"
 import { CustomFacilityInputProps, FacilityCardsProps } from "../../../../interfacesTypes"
 import {
-  SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, TAXONOMY_CODE_INFO, ZIP, CLIA_ID_NUMBER,
+  SAME_AS_FACILITY_LOCATION, STATE, TAXONOMY_CODE, ZIP, CLIA_ID_NUMBER,
   ADDRESS_ONE, ADDRESS_TWO, ADD_FACILITY_BILLING, BILLING_IDENTIFIER, BILLING_PROFILE, CANCEL,
   MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, MAPPED_STATES, NPI, NPI_INFO, PAYABLE_ADDRESS, PHONE,
   CLIA_ID_NUMBER_INFO, EMAIL, EMPTY_OPTION, FAX, FEDERAL_TAX_ID, FEDERAL_TAX_ID_INFO, CITY,
@@ -218,12 +219,11 @@ const Billing: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch, 
 
           <Grid container spacing={3}>
             <Grid item md={6}>
-              <InputController
-                info={TAXONOMY_CODE_INFO}
-                fieldType="text"
-                controllerName="tamxonomyCode"
-                controllerLabel={TAXONOMY_CODE}
+              <TaxonomySelector
+                label={TAXONOMY_CODE}
+                name="tamxonomyCode"
                 loading={getFacilityLoading}
+                addEmpty
               />
             </Grid>
 
