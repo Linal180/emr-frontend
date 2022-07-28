@@ -48,7 +48,6 @@ import { AddLabOrders } from "../pages/main/labOrders/addOrder";
 import { EditLabOrders } from "../pages/main/labOrders/editOrder";
 import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 import { PatientChart } from "../pages/main/patientChart";
-import { PatientVitals } from "../pages/main/patientChart/patientVitals";
 import AddPatient from "../pages/main/patients/addPatient";
 import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { CoverageDetails } from "../pages/main/patients/patientDetail/CoverageDetails";
@@ -97,7 +96,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE, VITALS_ROUTE
+  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, TWO_FA_ROUTE, USER_PERMISSIONS, VIEW_APPOINTMENTS_ROUTE
 } from "../constants";
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -162,7 +161,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} permission={USER_PERMISSIONS.updatePatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details/:tabValue?`} component={PatientDetail} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}`} component={PatientChart} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}${VITALS_ROUTE}`} component={PatientVitals} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
       <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} permission={USER_PERMISSIONS.findAllAppointments} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} permission={USER_PERMISSIONS.createAppointment} />

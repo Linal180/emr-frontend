@@ -15,8 +15,8 @@ import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 import history from "../../../history";
 import { getShortName } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, WHITE, PINK_TWO } from "../../../theme";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 import {

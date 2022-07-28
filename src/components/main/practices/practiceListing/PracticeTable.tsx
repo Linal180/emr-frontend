@@ -94,7 +94,7 @@ const PracticeTable: FC = (): JSX.Element => {
             setRoleList([])
             fetchAllFacilityList()
 
-            if(practices && practices.length > 1){
+            if(!!practices && practices.length){
               await findAllPractices();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, practices?.length || 0)})

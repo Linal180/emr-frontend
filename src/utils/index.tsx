@@ -26,7 +26,7 @@ import {
 import {
   ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, 
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE, CLAIM_FEED_ROUTE,
 } from "../constants";
@@ -74,7 +74,7 @@ export const formatEnumMember = (value: string) => {
   return formatted.trim();
 };
 
-export const formatServiceEnumMember = (value: string) => {
+export const formatToLeadingCode = (value: string) => {
   const parts = value.split("_");
   const code = parts[parts.length - 1]
   let formatted = ''
@@ -106,6 +106,16 @@ export const renderLoading = (label: string | JSX.Element) => (
     </Box>
   </>
 );
+
+export const renderTextLoading = () => (
+  <Box display="flex" pt={0.3}
+    justifyContent="space-between"
+    alignItems="center" borderRadius={4}
+    className="skelton-input"
+  >
+    <Skeleton animation="pulse" variant="rect" width={240} height={28} />
+  </Box>
+)
 
 export const renderItem = (
   label: string, value: Maybe<string> | number | ReactNode | undefined,
@@ -666,7 +676,7 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
         const { id, appointmentType, scheduleStartDateTime } = appointment;
         data.push({
           id,
-          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`.trim()
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`.trim()
         })
       }
     }
@@ -1849,14 +1859,14 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
   } else return [EMPTY_OPTION]
 }
 
-export function mapServiceEnum<enumType>(enumerable: enumType): SelectorOption[] {
+export function mapEnumWithCode<enumType>(enumerable: enumType): SelectorOption[] {
   if (enumerable) {
     let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
 
     return enumMembers.map(member => {
       return {
         id: member,
-        name: formatServiceEnumMember(member)
+        name: formatToLeadingCode(member)
       }
     });
   } else return [EMPTY_OPTION]
@@ -2143,4 +2153,10 @@ export const checkNpi = (npi: string) => {
     i--;
   }
   return ((sum % 10) === 0) ? true : false
+}
+
+export const formatEmail = (email: string) => {
+  if (!!!email) return '';
+
+  return email.toLowerCase();
 }

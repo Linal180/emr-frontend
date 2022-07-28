@@ -2,47 +2,46 @@
 import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router';
-import { Box, Button, Card, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 //components block
-import AppointmentList from '../../../common/AppointmentList';
+import Insurance from './insurance';
+import AreaChartComponent from './charts';
+import CareTeamComponent from './careTeam';
+import PortalAccessCard from './portalAccessCard';
+import SideDrawer from '../../../common/SideDrawer';
+import CareTeamProvider from './careTeam/sideDrawer';
 import CardComponent from '../../../common/CardComponent';
-import PracticesByYear from '../../../common/charts/PracticesByYear';
-import ConfirmationModal from "../../../common/ConfirmationModal";
+// import PortalTable from '../../../common/patient/portal';
+import AppointmentList from '../../../common/AppointmentList';
 import NoDataComponent from '../../../common/NoDataComponent';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
-// import PortalTable from '../../../common/patient/portal';
-import PatientProfileHero from '../../../common/patient/profileHero';
-import SideDrawer from '../../../common/SideDrawer';
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import EncounterList from '../../patients/patientDetail/encounters';
-import CareTeamComponent from './careTeam';
-import CareTeamProvider from './careTeam/sideDrawer';
-import AreaChartComponent from './charts';
-import Insurance from './insurance';
+import PatientProfileHero from '../../../common/patient/profileHero';
+// import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
+import { ParamsType } from "../../../../interfacesTypes";
+import { getFormattedDate, hasEncounter } from '../../../../utils';
 import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import {
   areaChartOne, areaChartTwo, BLOOD_PRESSURE_LAST_READ, BLOOD_PRESSURE_RANGES, BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT,
   BLOOD_PRESSURE_VALUE, CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, HEART_RATE_LAST_READ,
   Heart_RATE_RANGES, HEART_RATE_TEXT, HEART_RATE_UNIT, HEART_RATE_VALUE, LAST_READING_TEXT, LIST_PAGE_LIMIT, PAST_APPOINTMENTS, PATIENTS_ROUTE,
-  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, VIEW_CHART_TEXT, VISITS
+  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, VIEW_CHART_TEXT
 } from "../../../../constants";
 import {
-  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload, PatientProviderPayload,
-  useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
+  AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload,
+  PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
-import { ParamsType } from "../../../../interfacesTypes";
 import {
-  Action as appointmentAction, ActionType as appointmentActionType, appointmentReducer, initialState as appointmentInitialState,
-  State as appointmentState
+  Action as appointmentAction, ActionType as appointmentActionType, appointmentReducer, initialState as appointmentInitialState, State as appointmentState
 } from "../../../../reducers/appointmentReducer";
 import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../../reducers/mediaReducer";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { WHITE } from '../../../../theme';
-import { getFormattedDate, hasEncounter } from '../../../../utils';
-import PortalAccessCard from './portalAccessCard';
+// import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
@@ -202,7 +201,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
           <TabPanel value="1">
 
-            <PortalAccessCard inviteAccepted={Boolean(patientData?.inviteAccepted)}/>
+            <PortalAccessCard inviteAccepted={Boolean(patientData?.inviteAccepted)} />
 
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
@@ -296,16 +295,16 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </CardComponent>
               </Box>
 
-              <Box className='masonry-box'>
+              {/* <Box className='masonry-box'>
                 <Card>
                   <Box px={3} pt={3} color="#21E1D8" bgcolor={WHITE} paddingBottom={3}>
                     <Typography variant="h4">{VISITS}</Typography>
                   </Box>
 
                   {/* Implement patient visits by year */}
-                  <PracticesByYear year={{ id: '2022', name: '2022' }} />
+              {/* <PracticesByYear year={{ id: '2022', name: '2022' }} />
                 </Card>
-              </Box>
+              </Box>  */}
               <Box className='masonry-box'>
                 <CareTeamComponent
                   patientProvidersData={patientProvidersData}

@@ -127,6 +127,7 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
           <DialogContent>
             <Box className="dialogBg">
               <InputController
+                isRequired
                 fieldType="text"
                 controllerName="statusName"
                 controllerLabel={STATUS_NAME}

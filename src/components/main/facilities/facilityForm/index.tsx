@@ -19,7 +19,7 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  formatEnumMember, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
+  formatEmail, formatEnumMember, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
 } from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -29,11 +29,10 @@ import {
   useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED,
+  FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED, USA,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
   FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
-  INVALID_END_TIME,
-  USA,
+  INVALID_END_TIME, 
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -233,7 +232,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
 
     const billingAddressInput = {
-      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
+      phone: billingPhone || '', email: formatEmail(billingEmail) || '', fax: billingFax || '', state: selectedBillingState || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
       country: billingCountry || USA, zipCode: billingZipCode || '',
     }

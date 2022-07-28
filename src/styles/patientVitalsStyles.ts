@@ -4,7 +4,7 @@ export const usePatientVitalListingStyles = makeStyles(() =>
 createStyles({
   listingTable: {
     width: '100%',
-    overflowX: "auto"
+    overflowX: "auto",
   }
 }))
 

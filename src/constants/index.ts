@@ -25,13 +25,14 @@ import {
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord, sortingValue
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
 } from "../utils";
 
 // regex
-export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^\d{9}$/;
+export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -736,6 +737,7 @@ export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
 export const SIGN_OFF = "Sign Off";
+export const EXTENDED_PAGE_LIMIT = 12;
 export const ADD_BILL = "Add Bill";
 export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
@@ -1394,11 +1396,11 @@ export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
 export const INSURANCE_POLICY_DETAILS = "Insurance and Policies Details";
 export const PROVIDER_REGISTRATION_DATES = "Provider/ Registration Dates";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
-export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
+export const GUARANTOR_RELATION = "Patient’s Relationship";
 export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
 export const PAY_VIA_DEBIT_OR_CREDIT_CARD = "Pay via Debit or Credit Card";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
-export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
+export const USUAL_OCCUPATION = "Usual Occupation";
 export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const MEMBER_ID_CERTIFICATE_NUMBER = "Member ID/Certification Number";
 export const FEE_SCHEDULE_DESCRIPTION = "Manage fee schedule for procedures";
@@ -1465,7 +1467,6 @@ export const STAFF_ROUTE = "/staff";
 export const CHART_ROUTE = "/chart";
 export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
-export const VITALS_ROUTE = "/vitals";
 export const PROFILE_ROUTE = "/profile";
 export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
@@ -1545,10 +1546,12 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
-export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
+export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
+export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
@@ -1557,23 +1560,23 @@ export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax ID valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const INVALID_END_TIME = "End time should be greater than start time";
+export const SPECIMEN_FIELD_VALIDATION_MESSAGE = "Specimen Type is required";
 export const REACTIONS_VALIDATION_MESSAGE = "At least one reaction is required";
 export const DIAGNOSES_VALIDATION_MESSAGE = "At least one diagnose is required";
-export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
-export const SPECIMEN_FIELD_VALIDATION_MESSAGE = "Specimen Type is required";
 export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
 export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
+export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not acceptable";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
-export const ValidOTP = () => `Please enter only numbers`;
+export const DESCRIPTION_INVALID_MESSAGE = "White-spaces at start and special characters (!@#$%^&*) are not acceptable";
+export const ValidOTP = () => 'Please enter only numbers';
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
 export const MaxLength = (fieldName: string, length: number) =>
@@ -1618,15 +1621,15 @@ export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
-export const SCHEDULE_WITH_DOCTOR = "Schedule with provider: ";
-export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
-export const DOCTOR_CREATED = "Provider created successfully!";
-export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
+export const SCHEDULE_WITH_DOCTOR = "Schedule with provider: ";
+export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
+export const DOCTOR_CREATED = "Provider created successfully!";
+export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const SCHEDULED_IN_FACILITY = "Scheduled in facility: ";
 export const SERVICE_CREATED = "Service created successfully!";
 export const SERVICE_UPDATED = "Service updated successfully!";
@@ -1643,16 +1646,15 @@ export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
-export const CANT_DELETE_FEE_SCHEDULE = "Fee Schedule can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const CANT_DELETE_SELF_STAFF = "Staff can't delete itself";
+export const PREVIEW_IS_NOT_AVAILABLE = "Preview isn't available!";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const PERMISSIONS_SET = "Role Permissions set successfully";
 export const CANT_DELETE_AGREEMENT = "Agreement can't be deleted.";
-export const CANT_DELETE_CLAIM_STATUS = "Claim Status can't be deleted.";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -1670,6 +1672,8 @@ export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
 export const TWO_FA_DISABLED_SUCCESSFULLY = "2FA disabled successfully";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ROLE_ALREADY_EXIST = "Role already exists with this name!";
+export const CANT_DELETE_FEE_SCHEDULE = "Fee Schedule can't be deleted.";
+export const CANT_DELETE_CLAIM_STATUS = "Claim Status can't be deleted.";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const PATIENT_ALLERGY_ADDED = "Patient allergy added successfully!";
@@ -1908,51 +1912,8 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SPECIALTIES = sortingValue(mapServiceEnum<typeof Speciality>(Speciality))
-export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
-
-export const TEMPORARY_CPT_CODES = [
-  {
-    cptCode: "86318",
-    description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip);"
-  },
-  {
-    cptCode: "86408",
-    description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); screen"
-  },
-  {
-    cptCode: "86413",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) antibody, quantitative"
-  },
-  {
-    cptCode: "86769",
-    description: "Antibody; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
-  },
-  {
-    cptCode: "87301",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; adenovirus enteric types 40/41"
-  },
-  {
-    cptCode: "0223U",
-    description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
-  },
-  {
-    cptCode: "0226U",
-    description: "Surrogate viral neutralization test (sVNT), severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), ELISA, plasma, serum"
-  },
-  {
-    cptCode: "0240U",
-    description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 3 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B), upper respiratory specimen, each pathogen reported as detected or not detected"
-  },
-  {
-    cptCode: "99072",
-    description: "Additional supplies, materials, and clinical staff time over and above those usually included in an office visit or other non-facility service(s), when performed during a Public Health Emergency, as defined by law, due to respiratory-transmitted infectious disease"
-  },
-  {
-    cptCode: "0001A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
-  },
-]
+export const MAPPED_SPECIALTIES = sortingValue(mapEnumWithCode<typeof Speciality>(Speciality))
+export const MAPPED_SERVICE_CODES = sortingValue(mapEnumWithCode<typeof ServiceCode>(ServiceCode))
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },

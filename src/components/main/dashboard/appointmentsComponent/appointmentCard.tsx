@@ -2,7 +2,7 @@
 import { Reducer, useCallback, useEffect, useReducer } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Close } from '@material-ui/icons';
+import { Close, VideocamOutlined } from '@material-ui/icons';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
@@ -174,8 +174,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
               </Box>
               {appointmentCreateType === AppointmentCreateType.Appointment
                 ? <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`} variant="contained" color="primary">{CHECK_IN}</Button>
-                : <Button variant="contained" color="primary" onClick={() => window.open(TELEHEALTH_URL)}>
-                  {START_TELEHEALTH}
+                : <Button variant="contained" className="blue-button-New" onClick={() => window.open(TELEHEALTH_URL)}>
+                  <VideocamOutlined />&nbsp; {START_TELEHEALTH}
                 </Button>
               }
             </Box>

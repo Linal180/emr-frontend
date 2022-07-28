@@ -112,7 +112,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
   return (
     <Box display="flex" flexWrap="wrap" gridGap={20}>
-      <Box className={classes.stepperGrid}>
+      <Box flex={1} className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
           <StepperCard
             stepperData={RegisterPatientMenuNav}
@@ -122,7 +122,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         </Card>
       </Box>
 
-      <Box flex={1}>
+      <Box flex={4}>
         {getActiveComponent(activeStep)}
       </Box>
     </Box>

@@ -129,14 +129,12 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               </FormProvider>
 
               <Box className={classes.tableBox}>
-                <Grid container>
-                  <Grid item xs={2}>
-                    <Box>
-                      <VitalsLabels patientStates={patientStates} />
-                    </Box>
-                  </Grid>
+                <Box display="flex">
+                  <Box flex={1}>
+                    <VitalsLabels patientStates={patientStates} />
+                  </Box>
 
-                  <Grid item xs={10}>
+                  <Box flex={3}>
                     <Box className={vitalClasses.listingTable}>
                       <VitalListingTable
                         loading={loading}
@@ -148,8 +146,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                       {!loading && !patientVitals?.length &&
                         <NoDataFoundComponent />}
                     </Box>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
               </Box>
             </Box>}
           </Card>

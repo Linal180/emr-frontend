@@ -5,19 +5,22 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 // utils and interfaces/types block
 import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
+import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
+import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
   ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery,
-  useFetchDocumentTypesLazyQuery, useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery, useSearchSnoMedCodesLazyQuery
-} from "../../generated/graphql";
-import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
-import { renderListOptions, requiredLabel, setRecord } from "../../utils";
+  useFetchDocumentTypesLazyQuery, useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery, useSearchSnoMedCodesLazyQuery,
+} from "../../generated/graphql"
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect, filteredOptions, practiceId, feeScheduleId
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
+  filteredOptions, practiceId, feeScheduleId, loading
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
+
   const [options, setOptions] = useState<ItemSelectorOption[]>([])
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -72,7 +75,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         }
       }
     },
-
   });
 
   const [findAllCptFeeSchedule] = useFindAllCptFeeScheduleLazyQuery({
@@ -224,7 +226,10 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       else if (modalName === ITEM_MODULE.feeSchedule) await findAllFeeSchedule()
       else if (modalName === ITEM_MODULE.cptFeeSchedule && feeScheduleId) await findAllCptFeeSchedule();
     } catch (error) { }
-  }, [feeScheduleId, fetchDocumentTypes, findAllCptFeeSchedule, findAllFeeSchedule, getClaimStatuses, getInsurances, getSnoMedCodes, modalName, searchIcdCodes])
+  }, [
+    feeScheduleId, fetchDocumentTypes, findAllCptFeeSchedule, findAllFeeSchedule, getClaimStatuses,
+    getInsurances, getSnoMedCodes, modalName, searchIcdCodes
+  ])
 
   useEffect(() => {
     fetchList()
@@ -254,49 +259,53 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   }
 
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={options[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            filterOptions={filterOptions}
-            options={options ?? []}
-            disableClearable
-            value={field.value ?? EMPTY_OPTION}
-            disabled={disabled}
-            getOptionSelected={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          rules={{ required: true }}
+          name={name}
+          control={control}
+          defaultValue={options[0]}
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+            return (
+              <Autocomplete
+                filterOptions={filterOptions}
+                options={options ?? []}
+                disableClearable
+                value={field.value ?? EMPTY_OPTION}
+                disabled={disabled}
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.name || ""}
+                renderOption={(option) => option.name}
+                renderInput={(params) => (
+                  <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
+                    <Box position="relative">
+                      <InputLabel id={`${name}-autocomplete`} shrink>
+                        {isRequired ? requiredLabel(label) : label}
+                      </InputLabel>
+                    </Box>
 
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={({ target: { value } }) => setQuery(value)}
-                />
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      error={invalid}
+                      className="selectorClass"
+                      onChange={({ target: { value } }) => setQuery(value)}
+                    />
 
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-            onChange={(_, data) => {
-              field.onChange(data)
-              onSelect && onSelect(data)
-            }}
-          />
-        );
-      }}
-    />
+                    <FormHelperText>{message}</FormHelperText>
+                  </FormControl>
+                )}
+                onChange={(_, data) => {
+                  field.onChange(data)
+                  onSelect && onSelect(data)
+                }}
+              />
+            );
+          }}
+        />
+      }
+    </>
   );
 };
 
