@@ -107,6 +107,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { value: selectedService } = selectedServiceId ?? {}
   const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
 
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
 
@@ -194,8 +195,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          scheduleStartDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleStartDateTime))
-          scheduleEndDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleEndDateTime))
           appointmentCreateType && setAppointmentType(appointmentCreateType)
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
@@ -205,6 +204,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             type: ActionType.SET_DATE,
             date: new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate
           });
+
+          scheduleEndDateTime && setValue('scheduleEndDateTime', getStandardTimeByMoment(scheduleEndDateTime))
+          scheduleStartDateTime && setValue('scheduleStartDateTime', getStandardTimeByMoment(scheduleStartDateTime))
         }
       }
     }
@@ -299,6 +301,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     if (selectedService && date) {
       const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
       const currentDay = appStartDate ? new Date(appStartDate).getDay() : new Date(date).getDay()
+
       const slotsInput = {
         offset, currentDate: appStartDate ? new Date(appStartDate).toString() : date.toString(),
         serviceId: selectedService, day: days[currentDay]
@@ -342,9 +345,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
 
-    const durationOfDays = moment(date).diff(moment(scheduleStartDateTime), 'days')
-    const scStartTimeStamps = moment(scheduleStartDateTime).add(durationOfDays, 'day').format().toString()
-    const scEndTimeStamps = moment(scheduleEndDateTime).add(durationOfDays, 'day').format().toString()
+    const dateToFormat = appStartDate ? appStartDate : date
+    const transformedStartTime = moment(`${moment(dateToFormat).format("MM-DD-YYYY")} ${moment(scheduleStartDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
+    const transformedEndTime = moment(`${moment(dateToFormat).format("MM-DD-YYYY")} ${moment(scheduleEndDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
@@ -363,8 +366,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: scStartTimeStamps, practiceId,
-        scheduleEndDateTime: scEndTimeStamps, autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: transformedStartTime, practiceId,
+        scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
         appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
@@ -416,12 +419,20 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     setValue('patientId', setRecord(pId, pName))
   }, [pId, pName, setValue])
 
-  useEffect(() => {
-    setValue('scheduleEndDateTime', '')
-    setValue('scheduleStartDateTime', '')
-  }, [date, selectedService, selectedFacility, setValue, selectedProvider])
+  const setScheduleEmpty = useCallback(() => {
+    if (isEdit && date) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+    }
+    else {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+    }
+  }, [setValue, isEdit, date])
 
-  useEffect(() => { }, [date, appStartDate])
+  useEffect(() => {
+    setScheduleEmpty()
+  }, [date, selectedService, selectedFacility, selectedProvider, setScheduleEmpty])
 
   const handleAppointmentType = (type: string) => setAppointmentType(type)
 
@@ -582,7 +593,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         openTo="date"
                         value={appStartDate ? appStartDate : date}
                         autoOk
-                        disablePast
                         fullWidth
                         disableToolbar
                         onChange={(currentDate) => { dateHandler(currentDate) }}
