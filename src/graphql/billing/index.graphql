@@ -1,5 +1,5 @@
 mutation CreateBilling($createBillingInput: BillingInput!) {
-  createBilling(createBillingInput: $createBillingInput){
+  createBilling(createBillingInput: $createBillingInput) {
     response {
       status
       message
@@ -11,13 +11,13 @@ mutation CreateBilling($createBillingInput: BillingInput!) {
   }
 }
 
-query FetchBillingDetailsByAppointmentId($appointmentId: String!){
-  fetchBillingDetailsByAppointmentId(appointmentId: $appointmentId){
+query FetchBillingDetailsByAppointmentId($appointmentId: String!) {
+  fetchBillingDetailsByAppointmentId(appointmentId: $appointmentId) {
     response {
       status
       message
     }
-    
+
     billing {
       id
       patientPaymentType
@@ -33,32 +33,32 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
       claimDate
       claimNo
       uncoveredAmount
-      to 
+      to
       from
       facility {
-       id
-       name
-       
-       practice {
         id
         name
-       }
-      },
+
+        practice {
+          id
+          name
+        }
+      }
       claimStatus {
-       id
-       statusName
-      },
-      pos,
+        id
+        statusName
+      }
+      pos
       servicingProvider {
         id
         firstName
         lastName
-      },
+      }
       renderingProvider {
         id
         firstName
         lastName
-      },
+      }
       feeSchedule {
         id
         name
@@ -80,8 +80,8 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!){
   }
 }
 
-query CreateClaim($claimInput: ClaimInput!) {
-  createClaim(claimInput: $claimInput){
+mutation CreateClaim($createClaimInput: CreateClaimInput!) {
+  createClaim(createClaimInput: $createClaimInput) {
     response {
       status
       message
@@ -89,8 +89,8 @@ query CreateClaim($claimInput: ClaimInput!) {
   }
 }
 
-query GetClaimFile($claimInput: ClaimInput!) {
-  getClaimFile(claimInput: $claimInput){
+query GetClaimFile($getClaimFileInput: GetClaimFileInput!) {
+  getClaimFile(getClaimFileInput: $getClaimFileInput) {
     response {
       status
       message
@@ -111,8 +111,12 @@ query GenerateClaimNo {
   }
 }
 
-query FetchAllClaimStatuses($claimStatusPaginationInput: ClaimStatusPaginationInput!) {
-  fetchAllClaimStatuses(claimStatusPaginationInput: $claimStatusPaginationInput) {
+query FetchAllClaimStatuses(
+  $claimStatusPaginationInput: ClaimStatusPaginationInput!
+) {
+  fetchAllClaimStatuses(
+    claimStatusPaginationInput: $claimStatusPaginationInput
+  ) {
     pagination {
       page
       totalCount
@@ -163,7 +167,7 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
         practice {
           name
         }
-        serviceCode        
+        serviceCode
       }
       contacts {
         phone
@@ -214,7 +218,7 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
 }
 
 mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
-  createClaimStatus(createClaimStatusInput: $createClaimStatusInput){
+  createClaimStatus(createClaimStatusInput: $createClaimStatusInput) {
     response {
       status
       message
@@ -227,7 +231,7 @@ mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
 }
 
 mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
-  updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput){
+  updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput) {
     response {
       status
       message
@@ -240,7 +244,7 @@ mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
 }
 
 mutation RemoveClaimStatus($id: String!) {
-  removeClaimStatus(id: $id){
+  removeClaimStatus(id: $id) {
     response {
       status
       message
