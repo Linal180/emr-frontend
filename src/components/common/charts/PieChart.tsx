@@ -4,7 +4,7 @@
 */
 
 // packages block
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
@@ -13,7 +13,7 @@ import { PRACTICES } from "../../../constants";
 import { PieChartProps } from "../../../interfacesTypes";
 
 const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
-  const [pieChart1] = useState(
+  const [pieChart1, setPieChart1] = useState(
     {
       tooltip: { enabled: true },
 
@@ -74,7 +74,7 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
         innerSize: '85%',
 
         data: [
-          ['active', 100],
+          ['active', 0],
           ['inactive', 0],
         ],
 
@@ -85,6 +85,27 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
         }
       }],
     });
+
+  useEffect(() => {
+    if (practices) {
+
+      setPieChart1({
+        ...pieChart1,
+        series: [{
+          ...pieChart1.series, data: [['active', practices],
+          ['inactive', 0],], showInLegend: false,
+          type: 'pie',
+          name: 'Practices',
+          innerSize: '85%', states: {
+            hover: {
+              enabled: false
+            }
+          }
+        }],
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [practices])
 
   return (
     <Box className="chartContainer">
