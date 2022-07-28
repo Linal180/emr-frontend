@@ -2116,34 +2116,29 @@ export type IcdCodesPayload = {
 
 export type Insurance = {
   __typename?: 'Insurance';
-  Note?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Scalars['String']>;
+  claimFee?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
   createdAt?: Maybe<Scalars['String']>;
-  electronicRemittanceAdvice?: Maybe<Scalars['Boolean']>;
-  enrollmentRequired?: Maybe<Scalars['Boolean']>;
+  electronicRemittanceAdvice?: Maybe<Scalars['String']>;
+  eligibility?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  lineOfBusiness: Scalars['String'];
   payerId: Scalars['String'];
   payerName: Scalars['String'];
   policies?: Maybe<Array<Policy>>;
-  realTimeClaimStatus?: Maybe<Scalars['Boolean']>;
-  realTimeEligibility?: Maybe<Scalars['Boolean']>;
-  secondaryCoordinationBenefits?: Maybe<Scalars['Boolean']>;
+  remitFee?: Maybe<Scalars['String']>;
+  secondaryCoordinationBenefits?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
-  type: InsurancePayerType;
+  type?: Maybe<Scalars['String']>;
+  ubClaims: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  workersComp?: Maybe<Scalars['String']>;
 };
 
 export type InsurancePaginationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
 };
-
-/** The insurance payer type */
-export enum InsurancePayerType {
-  Np = 'NP',
-  P = 'P'
-}
 
 export type InsurancesPayload = {
   __typename?: 'InsurancesPayload';
