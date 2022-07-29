@@ -2592,11 +2592,12 @@ export enum MODULE_TYPES {
   Schedule = "Schedule",
   Schedules = "Schedules",
   Permission = "Permission",
+  Agreements = 'Agreements',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
 
-export const MODULES = [
+export const  MODULES = [
   "User",
   "Practice",
   "Facility",
@@ -2607,6 +2608,7 @@ export const MODULES = [
   "Appointment",
   "Service",
   "Schedule",
+  'Agreements',
   "Lab Orders",
   "Patient Charting",
 ];
@@ -3294,7 +3296,12 @@ export enum USER_PERMISSIONS {
   getLabTest = "getLabTest",
   findAllAllergies = "findAllAllergies",
   updatePatientVital = "updatePatientVital",
-  addPatientVital = "addPatientVital"
+  addPatientVital = "addPatientVital",
+  fetchAllAgreements = 'fetchAllAgreements',
+  fetchAgreement = 'fetchAgreement',
+  removeAgreement = 'removeAgreement',
+  updateAgreement = 'updateAgreement',
+  createAgreement = 'createAgreement',
 }
 
 export const USER_MENU_ITEMS = [
