@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -33,9 +33,10 @@ import {
   useGetAttachmentsLazyQuery, useRemoveAttachmentDataMutation,
 } from "../../../../generated/graphql";
 import {
-  ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD, PREVIEW_IS_NOT_AVAILABLE,
+  ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD, PREVIEW_IS_NOT_AVAILABLE, PAGE_LIMIT,
 } from "../../../../constants";
+import { Pagination } from "@material-ui/lab";
 
 const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -58,8 +59,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const {
-    attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId,
-    openSign, providerName, attachmentData, drawerOpened, isOpen, preSignedUrl, documentName
+    attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId, page, searchQuery,
+    openSign, providerName, attachmentData, drawerOpened, isOpen, preSignedUrl, documentName, totalPages
   } = state
 
   const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened })
@@ -96,8 +97,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    variables: { getAttachment: { typeId: id, } },
-
     onError() {
       return null
     },
@@ -106,18 +105,23 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
       const { getAttachments } = data || {};
 
       if (getAttachments) {
-        const { attachments } = getAttachments
+        const { attachments, pagination } = getAttachments
 
         if (attachments) {
-          const documents = attachments.filter(
-            attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
-              && !!attachment.attachmentMetadata?.signedBy === isSignedTab
-          )
+          // const documents = attachments.filter(
+          //   attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
+          //     && !!attachment.attachmentMetadata?.signedBy === isSignedTab
+          // )
 
           dispatch({
             type: ActionType.SET_ATTACHMENTS_DATA,
-            attachmentsData: documents as AttachmentsPayload['attachments']
+            attachmentsData: attachments as AttachmentsPayload['attachments']
           })
+        }
+
+        if (pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
       }
     },
@@ -144,7 +148,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           if (message && status && status === 200) {
             Alert.success(message)
             closeDeleteModal();
-            getAttachments()
+            reloadAttachments()
           }
         }
       }
@@ -172,7 +176,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           if (message && status && status === 200) {
             Alert.success(message)
             closeDeleteModal();
-            getAttachments();
+            reloadAttachments();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
@@ -180,7 +184,16 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     }
   })
 
-  const reloadAttachments = useCallback(async () => id && await getAttachments(), [getAttachments, id])
+  const reloadAttachments = useCallback(async () => id && await getAttachments({
+    variables: {
+      getAttachment: {
+        paginationOptions: { limit: PAGE_LIMIT, page },
+        typeId: id,
+        attachmentName: searchQuery,
+        signedBy: isSignedTab,
+      }
+    }
+  }), [getAttachments, id, isSignedTab, page, searchQuery])
 
   const handleDelete = (id: string) => {
     if (id) {
@@ -264,7 +277,14 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     dispatch({ type: ActionType.SET_DOCUMENT_NAME, documentName: '' })
   }
 
-  const search = (query: string) => { }
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
+
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   useEffect(() => {
     reloadAttachments()
@@ -275,176 +295,190 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   }, [admin, firstName, lastName])
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" alignItems="center">
-          <Search search={search} />
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" alignItems="center">
+            <Search search={search} />
 
-          <Box display='flex'
-            ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
-          >
-            <Typography className={isSignedTab ? 'selectBox' : 'selectedBox  selectBox'}
-              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
+            <Box display='flex'
+              ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
-              {PENDING}
-            </Typography>
+              <Typography className={isSignedTab ? 'selectBox' : 'selectedBox  selectBox'}
+                onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
+              >
+                {PENDING}
+              </Typography>
 
-            <Typography className={isSignedTab ? 'selectedBox selectBox' : 'selectBox'}
-              onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
-            >
-              {SIGNED}
-            </Typography>
+              <Typography className={isSignedTab ? 'selectedBox selectBox' : 'selectBox'}
+                onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
+              >
+                {SIGNED}
+              </Typography>
+            </Box>
           </Box>
+
+          <SideDrawer
+            drawerOpened={drawerOpened}
+            toggleSideDrawer={toggleSideDrawer}
+          >
+            <AddDocumentModal
+              state={state}
+              patientId={id}
+              dispatch={dispatch}
+              attachment={attachmentData}
+              attachmentId={attachmentId}
+              facilityId={facilityId || ''}
+              patientName={patientName}
+              toggleSideDrawer={toggleSideDrawer}
+              fetchDocuments={() => reloadAttachments()}
+              submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
+            />
+          </SideDrawer>
+
+          {!isSignedTab && <Button onClick={handleUpload} variant="contained"
+            startIcon={<UploadIcon />} color="primary"
+          >
+            {UPLOAD}
+          </Button>}
         </Box>
 
-        <SideDrawer
-          drawerOpened={drawerOpened}
-          toggleSideDrawer={toggleSideDrawer}
-        >
-          <AddDocumentModal
-            state={state}
-            patientId={id}
-            dispatch={dispatch}
-            attachment={attachmentData}
-            attachmentId={attachmentId}
-            facilityId={facilityId || ''}
-            patientName={patientName}
-            toggleSideDrawer={toggleSideDrawer}
-            fetchDocuments={() => reloadAttachments()}
-            submitUpdate={(inputs: DocumentInputProps) => onSubmit(inputs)}
-          />
-        </SideDrawer>
-
-        {!isSignedTab && <Button onClick={handleUpload} variant="contained"
-          startIcon={<UploadIcon />} color="primary"
-        >
-          {UPLOAD}
-        </Button>}
-      </Box>
-
-      <Box className="table-overflow">
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {renderTh(TITLE)}
-                  {renderTh(TYPE)}
-                  {/* {renderTh(ADDED_BY)} */}
-                  {isSignedTab &&
-                    <>
-                      {renderTh(SIGNED_BY)}
-                      {renderTh(SIGNED_AT)}
-                    </>
-                  }
-                  {renderTh(DATE)}
-                  {renderTh(ACTION, "center")}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {loading ? (
+        <Box className="table-overflow">
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Table aria-label="customized table">
+                <TableHead>
                   <TableRow>
-                    <TableCell colSpan={10}>
-                      <TableLoader numberOfRows={4} numberOfColumns={4} />
-                    </TableCell>
+                    {renderTh(TITLE)}
+                    {renderTh(TYPE)}
+                    {/* {renderTh(ADDED_BY)} */}
+                    {isSignedTab &&
+                      <>
+                        {renderTh(SIGNED_BY)}
+                        {renderTh(SIGNED_AT)}
+                      </>
+                    }
+                    {renderTh(DATE)}
+                    {renderTh(ACTION, "center")}
                   </TableRow>
-                ) : (
-                  attachmentsData?.map((attachment) => {
-                    const { id, attachmentName, attachmentMetadata } = attachment || {};
-                    const { signedAt, signedBy, documentType, documentDate } = attachmentMetadata || {}
-                    const { type } = documentType || {}
+                </TableHead>
 
-                    const filteredFileName = attachmentName && attachmentName?.length > 40
-                      ? `${attachmentName?.substr(0, 40)}...` : attachmentName
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={10}>
+                        <TableLoader numberOfRows={4} numberOfColumns={4} />
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    attachmentsData?.map((attachment) => {
+                      const { id, attachmentName, attachmentMetadata } = attachment || {};
+                      const { signedAt, signedBy, documentType, documentDate } = attachmentMetadata || {}
+                      const { type } = documentType || {}
 
-                    return id && (
-                      <TableRow>
-                        <TableCell scope="row">
-                          <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachment)}>
-                            <Typography color='secondary'>
-                              {filteredFileName}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell scope="row">{type}</TableCell>
-                        {/* <TableCell scope="row">{addedBy}</TableCell> */}
-                        {isSignedTab &&
-                          <>
-                            <TableCell scope="row">{signedBy}</TableCell>
-                            {signedAt &&
-                              <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
-                          </>
-                        }
-                        <TableCell scope="row">{getDocumentDate(documentDate || '')}</TableCell>
-                        <TableCell scope="row">
-                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                            {!isSignedTab &&
+                      const filteredFileName = attachmentName && attachmentName?.length > 40
+                        ? `${attachmentName?.substr(0, 40)}...` : attachmentName
+
+                      return id && (
+                        <TableRow>
+                          <TableCell scope="row">
+                            <Box className="pointer-cursor" onClick={() => handleEdit(id || '', attachment)}>
+                              <Typography color='secondary'>
+                                {filteredFileName}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell scope="row">{type}</TableCell>
+                          {/* <TableCell scope="row">{addedBy}</TableCell> */}
+                          {isSignedTab &&
+                            <>
+                              <TableCell scope="row">{signedBy}</TableCell>
+                              {signedAt &&
+                                <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
+                            </>
+                          }
+                          <TableCell scope="row">{documentDate ? getDocumentDate(documentDate || '') : ''}</TableCell>
+                          <TableCell scope="row">
+                            <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                              {!isSignedTab &&
+                                <Box className={classes.iconsBackground}
+                                  onClick={() => handleSignDocument(id)}
+                                >
+                                  <SignedIcon />
+                                </Box>
+                              }
+
                               <Box className={classes.iconsBackground}
-                                onClick={() => handleSignDocument(id)}
+                                onClick={() => id && handlePreview(id, filteredFileName || '')}
                               >
-                                <SignedIcon />
+                                <VisibilityOnIcon />
                               </Box>
-                            }
 
-                            <Box className={classes.iconsBackground}
-                              onClick={() => id && handlePreview(id, filteredFileName || '')}
-                            >
-                              <VisibilityOnIcon />
+                              <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
+                                <TrashNewIcon />
+                              </Box>
                             </Box>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </form>
+          </FormProvider>
 
-                            <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
-                              <TrashNewIcon />
-                            </Box>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </form>
-        </FormProvider>
+          {(!loading && attachmentsData?.length === 0) &&
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          }
+        </Box>
 
-        {(!loading && attachmentsData?.length === 0) &&
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        }
+        <ConfirmationModal
+          title={DOCUMENT}
+          isOpen={openDelete}
+          isLoading={deleteAttachmentLoading}
+          description={DELETE_DOCUMENT_DESCRIPTION}
+          handleDelete={handleDeleteDocument}
+          setOpen={(open: boolean) =>
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+          }
+        />
+
+        <ConfirmationModal
+          isSign
+          title={DOCUMENT}
+          isOpen={openSign}
+          isLoading={updateAttachmentLoading}
+          description={SIGN_DOCUMENT_DESCRIPTION}
+          handleDelete={signDocument}
+          actionText={SIGN_DOCUMENT}
+          setOpen={(open: boolean) =>
+            dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
+          }
+        />
+
+        {isOpen && <DocumentViewer
+          isOpen={isOpen}
+          url={preSignedUrl}
+          title={documentName}
+          handleClose={handlePreviewClose}
+        />}
       </Box>
 
-      <ConfirmationModal
-        title={DOCUMENT}
-        isOpen={openDelete}
-        isLoading={deleteAttachmentLoading}
-        description={DELETE_DOCUMENT_DESCRIPTION}
-        handleDelete={handleDeleteDocument}
-        setOpen={(open: boolean) =>
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
-        }
-      />
-
-      <ConfirmationModal
-        isSign
-        title={DOCUMENT}
-        isOpen={openSign}
-        isLoading={updateAttachmentLoading}
-        description={SIGN_DOCUMENT_DESCRIPTION}
-        handleDelete={signDocument}
-        actionText={SIGN_DOCUMENT}
-        setOpen={(open: boolean) =>
-          dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
-        }
-      />
-
-      {isOpen && <DocumentViewer
-        isOpen={isOpen}
-        url={preSignedUrl}
-        title={documentName}
-        handleClose={handlePreviewClose}
-      />}
-    </Box>
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   )
 };
 
