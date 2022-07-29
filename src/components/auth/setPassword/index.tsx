@@ -7,7 +7,7 @@ import { Box, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import AuthLayout from "../AuthLayout";
-import ResetPasswordController from "../resetPassword/ResetPasswordController";
+import InputController from "../../../controller";
 // context, constants, graphql, interfaces, utils and styles block
 import history from "../../../history";
 import { getToken } from "../../../utils";
@@ -17,7 +17,7 @@ import { resetPasswordValidationSchema } from "../../../validationSchemas";
 import {
   BACK_TO, LOGIN_ROUTE, SIGN_IN, RESET_PASSWORD_TOKEN_NOT_FOUND, SET_PASSWORD_SUCCESS,
   PASSWORD_LABEL, CONFIRM_PASSWORD, ROOT_ROUTE, LOGGED_OUT_BEFORE_RESETTING_PASSWORD, SET,
-  PASSWORDS_MUST_MATCH,
+  PASSWORDS_MUST_MATCH, NOT_FOUND_EXCEPTION, RESET_TOKEN_EXPIRED,
 } from "../../../constants";
 
 const SetPasswordComponent = (): JSX.Element => {
@@ -32,8 +32,12 @@ const SetPasswordComponent = (): JSX.Element => {
   const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
-    onError() {
-      return null;
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      reset();
+      Alert.error(message === NOT_FOUND_EXCEPTION ? RESET_TOKEN_EXPIRED : message)
     },
 
     onCompleted() {
@@ -71,7 +75,7 @@ const SetPasswordComponent = (): JSX.Element => {
     <AuthLayout>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <ResetPasswordController
+          <InputController
             isRequired
             isPassword
             fieldType="password"
@@ -79,7 +83,7 @@ const SetPasswordComponent = (): JSX.Element => {
             controllerLabel={PASSWORD_LABEL}
           />
 
-          <ResetPasswordController
+          <InputController
             isRequired
             isPassword
             fieldType="password"

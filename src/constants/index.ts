@@ -1703,6 +1703,7 @@ export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
+export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
