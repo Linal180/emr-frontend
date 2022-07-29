@@ -14,7 +14,8 @@ import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
 import {
-  formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh,
+  checkPermission,
 } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -25,22 +26,27 @@ import {
 import {
   CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, SERVICES, PRACTICE,
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
-  FACILITY_SERVICES_ROUTE,
+  FACILITY_SERVICES_ROUTE, SOMETHING_WENT_WRONG, USER_PERMISSIONS,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, userPermissions } = useContext(AuthContext)
   const { deleteFacilityList } = useContext(ListContext)
-  const { facility, roles } = user || {}
 
+  const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
+
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegUser = isUser(roles)
   const { practiceId, id: facilityId } = facility || {}
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeFacility)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateFacility)
+  const canFetchServices = checkPermission(userPermissions, USER_PERMISSIONS.findAllServices)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     fetchPolicy: "network-only",
@@ -76,13 +82,16 @@ const FacilityTable: FC = (): JSX.Element => {
       const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
       const payload =
         isSuper ? { ...inputs } : isPracticeUser ? { ...inputs, practiceId } :
-          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
+          isFacAdmin || isRegUser ? { ...inputs, singleFacilityId: facilityId } : undefined
 
-      payload && await findAllFacility({
+      payload ? await findAllFacility({
         variables: { facilityInput: { ...payload } }
-      })
+      }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [facilityId, findAllFacility, isFacAdmin, isPracticeUser, isSuper, page, practiceId, searchQuery])
+  }, [
+    facilityId, findAllFacility, isFacAdmin, isPracticeUser, isRegUser, isSuper, page,
+    practiceId, searchQuery
+  ])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -175,6 +184,7 @@ const FacilityTable: FC = (): JSX.Element => {
                 facilities?.map((facility: FacilityPayload['facility']) => {
                   const { id, name, contacts, practice } = facility || {};
                   const { name: practiceName } = practice || {};
+
                   const facilityContact = contacts && (contacts.filter(contact => contact.primaryContact)[0])
                   const { email, phone, zipCode, city, state } = facilityContact || {}
 
@@ -190,20 +200,24 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={SERVICES}>
-                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}
+                              className={canFetchServices ? '' : 'disable-icon'}
+                            >
                               <Box className={classes.iconsBackground}>
                                 <AddNewIcon />
                               </Box>
                             </Link>
                           </DetailTooltip>
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}`}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                          <Box onClick={() => onDeleteClick(id || '')}
+                            className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}
+                          >
                             <TrashNewIcon />
                           </Box>
                         </Box>
