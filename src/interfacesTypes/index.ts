@@ -342,6 +342,7 @@ export interface IDetailCellProps {
 export interface SelectorOption {
   id: string;
   name: string | undefined | null;
+  statusName?: string | undefined | null;
 }
 
 export interface ItemSelectorOption extends SelectorOption {

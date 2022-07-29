@@ -33,15 +33,16 @@ export const initialState: State = {
 export enum ActionType {
   SET_EMPLOYMENT = 'SET_EMPLOYMENT',
   SET_FACILITY_ID = 'SET_FACILITY_ID',
+  SET_PRACTICE_ID = 'SET_PRACTICE_ID',
   SET_INSURANCE_ID = 'SET_INSURANCE_ID',
+  SET_SELECTED_TAB = 'SET_SELECTED_TAB',
   SET_CLAIM_NUMBER = 'SET_CLAIM_NUMBER',
   SET_AUTO_ACCIDENT = 'SET_AUTO_ACCIDENT',
   SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
   SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
+  SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
-  SET_PRACTICE_ID = 'SET_PRACTICE_ID',
-  SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT'
 }
 
 export type Action =
@@ -56,6 +57,8 @@ export type Action =
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
   | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
+  | { type: ActionType.SET_SELECTED_TAB, selectedTab: string }
+
 
 export const billingReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -123,6 +126,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         shouldCheckout: action.shouldCheckout
+      }
+
+    case ActionType.SET_SELECTED_TAB:
+      return {
+        ...state,
+        selectedTab: action.selectedTab
       }
   }
 };

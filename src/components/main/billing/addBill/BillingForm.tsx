@@ -1,8 +1,8 @@
 //packages block
 import { Link } from "react-router-dom";
+import { ChangeEvent, FC } from "react";
 import { useParams } from "react-router";
 import { FormProvider } from "react-hook-form";
-import { ChangeEvent, FC, useState } from "react";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 import {
@@ -10,26 +10,26 @@ import {
 } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
-import InputController from "../../../../controller";
 import CodesTable from "../../../common/CodesTable";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 import ItemSelector from "../../../common/ItemSelector";
 import CheckoutModal from "../../../common/CheckoutModal";
 import TableSelector from "../../../common/Selector/TableSelector";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
-import { formatValue, renderItem } from "../../../../utils";
+import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { ActionType } from "../../../../reducers/billingReducer";
 import { CodeType, OnsetDateType } from "../../../../generated/graphql";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { BillingFormProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
-  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
+  COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
   POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL,
@@ -40,13 +40,16 @@ const BillingForm: FC<BillingFormProps> = (
   const classesToggle = usePublicAppointmentStyles();
   const { appointmentId } = useParams<ParamsType>()
   const { handleSubmit, trigger, watch, setValue } = methods
-  const { onsetDateType, practice, feeSchedule } = watch()
+  const { onsetDateType, practice, feeSchedule, claimStatus } = watch()
   const { id: onsetDateTypeId } = onsetDateType || {}
-  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber, practiceId } = state
-  const [selectedTab, setSelectedTab] = useState<string>('1');
+  const { statusName } = claimStatus || {}
+  const {
+    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber,
+    practiceId, selectedTab
+  } = state
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
-    setSelectedTab(newValue)
+    dispatch({ type: ActionType.SET_SELECTED_TAB, selectedTab: newValue })
   }
 
   const toggleHandleChange = ({ target: { checked } }: ChangeEvent<HTMLInputElement>, name: string) => {
@@ -111,7 +114,7 @@ const BillingForm: FC<BillingFormProps> = (
                 color="secondary"
                 onClick={() => createClaimCallback()}
               >
-                {CREATE_CLAIM}
+                {getClaimBtnText(statusName || '')}
               </Button>
 
               <Box p={1} />

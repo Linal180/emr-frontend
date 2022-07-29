@@ -72,7 +72,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
     onCompleted(data) {
       if (data) {
-
+        const { createClaim } = data || {}
+        const { response, claimStatus } = createClaim || {}
+        const { status } = response || {}
+        if (status === 200) {
+          const { id, statusId: name, statusName } = claimStatus || {}
+          id && setValue('claimStatus', { id, name, statusName })
+        }
       }
     }
   });
@@ -303,7 +309,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('to', to ?? '')
         setValue('from', from ?? '')
         pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
-        claimStatus?.id && setValue('claimStatus', setRecord(claimStatus.id, claimStatus?.statusName || ''))
+        claimStatus?.id && setValue('claimStatus', { id: claimStatus?.id, name: claimStatus?.statusName || '', statusName: claimStatus?.statusName })
         facility?.id && setValue('facility', setRecord(facility.id, facility.name))
         feeSchedule?.id && setValue('feeSchedule', setRecord(feeSchedule.id, feeSchedule.name || ''))
         practiceName && setValue('practice', practiceName)

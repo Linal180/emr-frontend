@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -412,6 +411,7 @@ export type Billing = {
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
+  claim?: Maybe<Claim>;
   claimDate?: Maybe<Scalars['String']>;
   claimNo?: Maybe<Scalars['String']>;
   claimStatus?: Maybe<ClaimStatus>;
@@ -574,7 +574,7 @@ export type ChargeItem = {
   m4?: Maybe<Scalars['String']>;
   proc_code: Scalars['String'];
   unit: Scalars['String'];
-  units: Scalars['String'];
+  units: Scalars['Float'];
 };
 
 export type Claim = {
@@ -595,6 +595,8 @@ export type Claim = {
   bill_taxid_type?: Maybe<Scalars['String']>;
   bill_taxonomy?: Maybe<Scalars['String']>;
   bill_zip?: Maybe<Scalars['String']>;
+  billing?: Maybe<Billing>;
+  billingId?: Maybe<Scalars['String']>;
   charge?: Maybe<Array<ClaimChargeType>>;
   chg_facility_addr_1?: Maybe<Scalars['String']>;
   chg_facility_addr_2?: Maybe<Scalars['String']>;
@@ -605,8 +607,6 @@ export type Claim = {
   chg_facility_zip?: Maybe<Scalars['String']>;
   claimId?: Maybe<Scalars['String']>;
   claimMdId?: Maybe<Scalars['Float']>;
-  claimStatus?: Maybe<ClaimStatus>;
-  claimStatusId?: Maybe<Scalars['String']>;
   claim_form?: Maybe<Scalars['String']>;
   clia_number?: Maybe<Scalars['String']>;
   cond?: Maybe<OnsetDate>;
@@ -731,13 +731,13 @@ export type ClaimNumberPayload = {
 export type ClaimPayload = {
   __typename?: 'ClaimPayload';
   claim: Claim;
+  claimStatus: ClaimStatus;
   response?: Maybe<ResponsePayload>;
 };
 
 export type ClaimStatus = {
   __typename?: 'ClaimStatus';
   billings?: Maybe<Array<Billing>>;
-  claim?: Maybe<Claim>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   statusId?: Maybe<Scalars['String']>;
@@ -1045,6 +1045,7 @@ export type CreateClaimInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   claimDate?: Maybe<Scalars['String']>;
   claimNo?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -2088,6 +2089,10 @@ export type GetClaimFileInput = {
   otherDateType?: Maybe<OtherDateType>;
   patientId?: Maybe<Scalars['String']>;
   to?: Maybe<Scalars['String']>;
+};
+
+export type GetClaimInput = {
+  id: Scalars['String'];
 };
 
 export type GetContact = {
@@ -4260,6 +4265,7 @@ export type Query = {
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
   getCPTCode: CptCodePayload;
+  getClaim: ClaimPayload;
   getClaimFile: ClaimFilePayload;
   getContact: ContactPayload;
   getCptFeeSchedule: CptFeeSchedulePayload;
@@ -4629,6 +4635,11 @@ export type QueryGetAttachmentsByPolicyIdArgs = {
 
 export type QueryGetCptCodeArgs = {
   getCPTCodeInput: GetCptCodeInput;
+};
+
+
+export type QueryGetClaimArgs = {
+  getClaimInput: GetClaimInput;
 };
 
 
@@ -6721,7 +6732,7 @@ export type CreateClaimMutationVariables = Exact<{
 }>;
 
 
-export type CreateClaimMutation = { __typename?: 'Mutation', createClaim: { __typename?: 'ClaimPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+export type CreateClaimMutation = { __typename?: 'Mutation', createClaim: { __typename?: 'ClaimPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string, statusId?: string | null, statusName?: string | null } } };
 
 export type GetClaimFileQueryVariables = Exact<{
   getClaimFileInput: GetClaimFileInput;
@@ -9810,6 +9821,11 @@ export const CreateClaimDocument = gql`
     response {
       status
       message
+    }
+    claimStatus {
+      id
+      statusId
+      statusName
     }
   }
 }
