@@ -197,8 +197,6 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
                   reload={fetchAppointments}
                 />} />
               <CurrentTimeIndicator
-                shadePreviousCells={true}
-                shadePreviousAppointments={true}
                 indicatorComponent={Indicator}
               />
             </Scheduler>

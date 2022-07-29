@@ -217,6 +217,57 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
   }
 }
 
+query FindAllLiveClaimFeeds($liveClaimFeedInput: LiveClaimFeedInput!) {
+  findAllLiveClaimFeeds(liveClaimFeedInput: $liveClaimFeedInput) {
+    response {
+      status
+      message
+    }
+
+    liveClaimFeeds {
+      id
+      paidDate
+      provAddress1
+      provState
+      provCompanyId
+      provCity
+      payerAddress1
+      provRouting
+      payerRouting
+      payerCity
+      eraId
+      paymentFormat
+      payerName
+      provTaxId
+      fromDos
+      patientFullName
+      InsuranceFullName
+      totalPaid
+      thruDos
+      crossOverCarrier
+      crossOverId
+      pcn
+      provNpi
+      totalCharge
+      charge
+      paidAmount
+      provAccount
+      payerAccount
+      provZip
+      paymentMethod
+      provName
+      payerId
+      checkNumber
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+
 mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
   createClaimStatus(createClaimStatusInput: $createClaimStatusInput) {
     response {
@@ -227,6 +278,12 @@ mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
     claimStatus {
       id
     }
+  }
+}
+
+mutation createLiveClaimFeed {
+  createLiveClaimFeed {
+   id
   }
 }
 

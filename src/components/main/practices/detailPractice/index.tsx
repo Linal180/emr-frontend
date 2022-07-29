@@ -71,8 +71,8 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
               attachmentData: practiceAttachment
             })
 
-            mediaDispatch({ type: mediaActionType.SET_PRACTICE_DATA, practiceData: practice })
-            setEditData(practice);
+            mediaDispatch({ type: mediaActionType.SET_PRACTICE_DATA, practiceData: practice as PracticePayload['practice'] })
+            setEditData(practice as PracticePayload['practice']);
           }
         }
       }

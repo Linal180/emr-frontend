@@ -1,23 +1,20 @@
 // packages block
-import axios from 'axios';
-import { useState, useEffect } from 'react'
-import { SnackbarProvider } from "notistack";
 import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "@material-ui/styles";
+import axios from 'axios';
+import { SnackbarProvider } from "notistack";
+import { useEffect, useState } from 'react';
 // components block
-import AppContainer from './AppContainer'
+import AppContainer from './AppContainer';
+import { CloseButton, SnackbarUtilsConfigrator } from "./components/common/Alert";
 import Loader from './components/common/Loader';
-import { SnackbarUtilsConfigrator, CloseButton } from "./components/common/Alert";
 // graphql, constants, context, apollo, and theme block
-import './styles/styles.css'
-import client from './apollo'
-import { theme } from "./theme/theme";
-import { REMOTE_IP } from './constants';
 import 'rc-time-picker/assets/index.css';
-import {
-  AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, 
-  PermissionContextProvider, ChartContextProvider
-} from './context'
+import client from './apollo';
+import { REMOTE_IP } from './constants';
+import { AppContextProvider, AuthContextProvider, FacilityContextProvider, ListContextProvider, PermissionContextProvider } from './context';
+import './styles/styles.css';
+import { theme } from "./theme/theme";
 
 const App = () => {
   const [loader, setLoader] = useState(false)
@@ -51,9 +48,7 @@ const App = () => {
                 <PermissionContextProvider>
                   <ListContextProvider>
                     <FacilityContextProvider>
-                      <ChartContextProvider>
-                        <AppContainer />
-                      </ChartContextProvider>
+                      <AppContainer />
                     </FacilityContextProvider>
                   </ListContextProvider>
                 </PermissionContextProvider>

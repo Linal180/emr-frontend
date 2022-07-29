@@ -11,6 +11,7 @@ import { PATIENT_CHARTING_TABS } from "../../../../constants";
 import { ChartComponentProps } from "../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { ChartContextProvider } from '../../../../context';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
@@ -56,7 +57,9 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
             </TabPanel>
 
             <TabPanel value="3" className='tab-panel'>
-              <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+              <ChartContextProvider>
+                <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+              </ChartContextProvider>
             </TabPanel>
           </Grid>
         </Grid>
