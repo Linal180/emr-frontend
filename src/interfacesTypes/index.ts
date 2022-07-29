@@ -40,7 +40,7 @@ import {
   FacilitiesPayload, FieldsInputs, FormElement, FormTabsInputs, Gender, IcdCodes, IcdCodesPayload,
   IcdCodesWithSnowMedCode, LoginUserInput, Patient, PatientPayload, PatientProviderPayload,
   PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput,
-  Practice, PracticePayload, PracticesPayload, ReactionsPayload, ResponsePayloadResponse,
+  Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse,
   RolesPayload, Schedule, SectionsInputs, ServicesPayload, SnoMedCodesPayload, Staff,
   TwoFactorInput, UpdateAppointmentInput, UpdateAttachmentInput, UpdateContactInput,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, CreateFeeScheduleInput, CreateCptFeeScheduleInput,
@@ -1914,6 +1914,7 @@ export interface BillingFormProps extends BillingComponentProps {
   dispatch: Dispatch<BillingAction>
   state: BillingState
   claimNumber: string
+  createClaimLoading: boolean
 }
 
 export interface CodeTypeInterface {

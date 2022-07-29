@@ -6,12 +6,13 @@ export interface State {
   insuranceId: string;
   claimNumber: string;
   employment: boolean;
+  selectedTab: string;
   isModalOpen: boolean;
   autoAccident: boolean;
   otherAccident: boolean;
+  shouldCheckout: boolean;
   isCheckoutModalOpen: boolean
   tableCodesData: CodeTablesData;
-  shouldCheckout: boolean;
 }
 
 export const initialState: State = {
@@ -19,13 +20,14 @@ export const initialState: State = {
   practiceId: '',
   claimNumber: '',
   insuranceId: '',
+  selectedTab: '1',
   employment: false,
   isModalOpen: false,
   tableCodesData: {},
   autoAccident: false,
   otherAccident: false,
+  shouldCheckout: false,
   isCheckoutModalOpen: false,
-  shouldCheckout: false
 }
 
 export enum ActionType {

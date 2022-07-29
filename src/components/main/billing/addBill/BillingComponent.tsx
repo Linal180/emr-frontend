@@ -62,7 +62,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
-  const [createClaim] = useCreateClaimMutation({
+  const [createClaim, { loading: createClaimLoading }] = useCreateClaimMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -521,6 +521,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       submitButtonText={submitButtonText}
       createClaimCallback={createClaimCallback}
       claimNumber={claimNumber}
+      createClaimLoading={createClaimLoading}
     />
   )
 }
