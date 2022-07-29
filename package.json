@@ -75,12 +75,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "gen": "graphql-codegen --config codegen.yml",
-    "preinstall": "npx npm-force-resolutions"
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "engines": {
-    "node": "^16.13.1",
-    "npm": "^8.1.2"
+    "node": "^14",
+    "npm": "^6"
   },
   "eslintConfig": {
     "extends": [
@@ -100,10 +99,6 @@
       "last 1 safari version"
     ]
   },
-  "resolutions": {
-    "//": "See https://github.com/facebook/create-react-app/issues/11773",
-    "react-error-overlay": "6.0.9"
-  },
   "devDependencies": {
     "@graphql-codegen/cli": "2.2.0",
     "@graphql-codegen/typescript": "2.2.2",
@@ -122,5 +117,8 @@
     "@types/smartystreets-javascript-sdk": "^1.6.4",
     "@types/underscore": "^1.11.4",
     "@types/uuid": "^8.3.4"
-  }
+  },
+  "description": "- Node JS   - TypeScript   - GraphQL   - Apollo Client ### Installations #### Code Setup   - Pre-requisites     - Install [node JS](https://nodejs.org/en/download/)   - Clone the repo   - Go to emr-frontend   - Run the following command to install the node modules     - `npm i`   - Run the following command to go into emr-frontend     - `cd emr-frontend`   - Run the following command to start the frontend server     - `npm start`   - The .env file will be provided separately by developers   - Check sample.env for all the env variables needed to run the app successfully",
+  "author": "",
+  "license": "ISC"
 }

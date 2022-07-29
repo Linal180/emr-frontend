@@ -26,9 +26,9 @@ import {
 import {
   ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
-  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
+  SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE, CLAIM_FEED_ROUTE,
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -37,7 +37,7 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -81,7 +81,7 @@ export const formatToLeadingCode = (value: string) => {
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
-      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0).toUpperCase()}${parts[parseInt(index)].slice(1).toLowerCase()}`
     }
   }
 
@@ -476,6 +476,21 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
       if (practice) {
         const { id, name } = practice;
         data.push({ id, name: name.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTaxonomies = (taxonomies: TaxonomyPayload['taxonomies']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!taxonomies) {
+    for (let taxonomy of taxonomies) {
+      if (taxonomy) {
+        const { id, code, displayName } = taxonomy;
+        data.push({ id, name: `${code} | ${displayName}` })
       }
     }
   }
@@ -995,7 +1010,7 @@ export const activeClass = (pathname: string): string => {
       return "isAgreement"
 
     case INVOICES_ROUTE:
-    case CLAIMS_ROUTE:
+    case CLAIM_FEED_ROUTE:
       return "inBilling"
 
     default:
@@ -1622,6 +1637,11 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: cptFeeScheduleId, name: `${cptCode} | ${shortDescription}`, code: cptCode || '', serviceFee: serviceFee || '' })
           break;
+        case ITEM_MODULE.taxonomies:
+          let { id: taxonomyId, code: taxonomyCode, displayName: taxonomyName } = (item as unknown as Taxonomy) || {};
+
+          data.push({ id: taxonomyId, name: `${taxonomyCode} | ${taxonomyName}` })
+          break
         default:
           break;
       }
@@ -2105,6 +2125,34 @@ export const getPageNumber = (page: number, pageRecords: number): number => {
   }
 
   return 1;
+}
+
+export const checkNpi = (npi: string) => {
+  var tmp;
+  var sum;
+  var i;
+  var j;
+  i = npi.length;
+  if ((i === 15) && (npi.indexOf("80840", 0) === 0))
+    sum = 0;
+  else if (i === 10)
+    sum = 24;
+  else
+    return false;
+  j = 0;
+  while (i !== 0) {
+    tmp = npi.charCodeAt(i - 1) - '0'.charCodeAt(0);
+    if ((j++ % 2) !== 0) {
+      const con = tmp <<= 1
+      if (con > 9) {
+        tmp -= 10;
+        tmp++;
+      }
+    }
+    sum += tmp;
+    i--;
+  }
+  return ((sum % 10) === 0) ? true : false
 }
 
 export const formatEmail = (email: string) => {

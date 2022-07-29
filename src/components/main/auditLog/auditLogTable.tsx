@@ -158,10 +158,10 @@ const AuditLogTable = (): JSX.Element => {
 
       <Box mt={3} mb={1}>
         <FormProvider {...methods}>
-          <Grid container spacing={3} direction='row'>
-            <Grid item md={10} sm={12} xs={12}>
+          <Grid container spacing={2} direction='row'>
+            <Grid item lg={9} md={12} sm={12} xs={12}>
               <Grid container spacing={3} direction='row'>
-                <Grid item md={2} sm={12} xs={12}>
+                <Grid item lg={2} md={3} sm={6} xs={12}>
                   <LogsPatientSelector
                     addEmpty
                     label={PATIENT_NAME}
@@ -169,7 +169,7 @@ const AuditLogTable = (): JSX.Element => {
                   />
                 </Grid>
 
-                <Grid item md={2} sm={12} xs={12}>
+                <Grid item lg={2} md={3} sm={6} xs={12}>
                   <UserSelector
                     addEmpty
                     label={USER_NAME}
@@ -177,7 +177,7 @@ const AuditLogTable = (): JSX.Element => {
                   />
                 </Grid>
 
-                <Grid item md={2} sm={12} xs={12}>
+                <Grid item lg={2} md={3} sm={6} xs={12}>
                   <Selector
                     addEmpty
                     label={ALL_LOG_TYPES}
@@ -186,17 +186,17 @@ const AuditLogTable = (): JSX.Element => {
                   />
                 </Grid>
 
-                <Grid item md={2} sm={12} xs={12}>
+                <Grid item lg={3} md={3} sm={6} xs={12}>
                   <DatePicker name="startDate" label={FROM_DATE} />
                 </Grid>
 
-                <Grid item md={2} sm={12} xs={12}>
+                <Grid item lg={3} md={3} sm={6} xs={12}>
                   <DatePicker name="endDate" label={TO_DATE} />
                 </Grid>
               </Grid>
             </Grid>
 
-            <Grid item md={2} sm={12} xs={12}>
+            <Grid item lg={3} md={12} sm={12} xs={12}>
               <Box display='flex' alignItems='flex-baseline' flexWrap='wrap'>
                 <Box mx={0.7} mt={2}>
                   <Button variant="contained" color="secondary" onClick={handleSubmit(onSubmit)}>{UPDATE_FILTER}</Button>

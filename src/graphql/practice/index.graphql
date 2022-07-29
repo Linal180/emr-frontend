@@ -44,6 +44,12 @@ query GetPractice($getPractice: GetPractice!){
       createdAt
       updatedAt
 
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
+
       attachments {
         id
         key
