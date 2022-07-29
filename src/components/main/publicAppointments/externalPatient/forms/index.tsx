@@ -51,7 +51,7 @@ import {
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, PATIENT_NOT_FOUND, DEMOGRAPHICS,
   APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
-  YES_TEXT, CONSENT_TO_MESSAGES_DESCRIPTION,
+  YES_TEXT, CONSENT_TO_MESSAGES_DESCRIPTION, PAGE_LIMIT,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -101,7 +101,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const fetchDocuments = async () => {
     try {
       id && await getAttachments({
-        variables: { getAttachment: { typeId: id } }
+        variables: { getAttachment: { typeId: id, paginationOptions: { page: 1, limit: PAGE_LIMIT } } }
       })
     } catch (error) { }
   };

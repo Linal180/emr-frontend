@@ -2,6 +2,9 @@ import { Attachment, AttachmentPayload, AttachmentsPayload, AttachmentWithPreSig
 import { SelectorOption } from "../interfacesTypes";
 
 export interface State {
+  page: number
+  totalPages: number
+  searchQuery: string
   files: File[]
   action: string
   isOpen: boolean
@@ -43,6 +46,9 @@ export interface State {
 }
 
 export const initialState: State = {
+  page: 1,
+  totalPages: 0,
+  searchQuery: '',
   files: [],
   action: '',
   fileUrl: '',
@@ -84,6 +90,9 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_PAGE = 'SetPage',
+  SET_TOTAL_PAGES = 'setTotalPages',
+  SET_SEARCH_QUERY = 'setSearchQuery',
   SET_ACTION = 'setAction',
   SET_FILES = 'SET_FILES',
   SET_IS_OPEN = 'setIsOpen',
@@ -125,6 +134,9 @@ export enum ActionType {
 }
 
 export type Action =
+  | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
+  | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_FILES, files: File[] }
   | { type: ActionType.SET_ACTION, action: string }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
@@ -166,6 +178,24 @@ export type Action =
 
 export const mediaReducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case ActionType.SET_PAGE:
+      return {
+        ...state,
+        page: action.page
+      }
+
+    case ActionType.SET_TOTAL_PAGES:
+      return {
+        ...state,
+        totalPages: action.totalPages
+      }
+
+    case ActionType.SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.searchQuery
+      }
+
     case ActionType.SET_IS_OPEN:
       return {
         ...state,
