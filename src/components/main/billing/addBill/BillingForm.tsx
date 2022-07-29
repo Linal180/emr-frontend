@@ -145,7 +145,7 @@ const BillingForm: FC<BillingFormProps> = (
             </Box>}
           </Box>
 
-          <Box className="billing-inputs" mt={2} p={3}>
+          <Box className="billing-inputs" mt={2} px={2} py={3}>
             <Grid container spacing={3} direction="row">
               <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
@@ -415,7 +415,7 @@ const BillingForm: FC<BillingFormProps> = (
           </Box>
         </Card>
 
-        <Box p={2} />
+        <Box p={1} />
 
         <Box>
           <TabContext value={selectedTab}>
