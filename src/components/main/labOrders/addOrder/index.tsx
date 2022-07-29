@@ -59,8 +59,6 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
       <Box display="flex">
         <BackButton to={PATIENTS_ROUTE} />
         
-        {/* <BackButton to='/' /> */}
-
         <Box ml={2}>
           <PageHeader
             title={LAB_ORDER}
