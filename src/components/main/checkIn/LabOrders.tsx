@@ -21,7 +21,7 @@ const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => 
         </Button>
       </Box>
 
-      <Box p={2}>
+      <Box>
         <LabOrdersCreateForm appointmentInfo={appointmentInfo} />
       </Box>
     </Card>

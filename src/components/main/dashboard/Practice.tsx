@@ -73,8 +73,8 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
     <>
       <PatientSearchComponent />
 
-      <Grid container spacing={3}>
-        <Grid item md={8}>
+      <Grid container spacing={2}>
+        <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
               <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
@@ -83,7 +83,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             <FacilityAppointments practiceId={practiceId || ''} />
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           {/* <Card>
             <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={BLUE_TEN} paddingBottom={3}>
@@ -159,19 +159,25 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Box p={2} />
+      <Box p={1} />
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={4} sm={12} xs={12}>
           <Card>
-            <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
+            <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
               <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
 
-              <Link to={FACILITIES_ROUTE}>
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
-              </Link>
+              <Box>
+                <Link to={`${FACILITIES_ROUTE}/new`}>
+                  <Button variant="contained" color="primary" size="small">{ADD_FACILITY}</Button>
+                </Link>
+
+                <Link to={FACILITIES_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
+              </Box>
             </Box>
 
             {facilities?.map((facility) => {
@@ -190,12 +196,6 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 </Box>
               )
             })}
-
-            <Box width="100%" mb={2} display='flex' justifyContent='center'>
-              <Link to={`${FACILITIES_ROUTE}/new`}>
-                <Button variant="contained" color="primary" size="large">{ADD_FACILITY}</Button>
-              </Link>
-            </Box>
           </Card>
         </Grid>
 

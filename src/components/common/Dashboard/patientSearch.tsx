@@ -20,7 +20,7 @@ const PatientSearchComponent: FC = (): JSX.Element => {
   const handleSearch = () => history.push({ pathname: PATIENTS_ROUTE, search: searchQuery })
 
   return (
-    <Box p={3} mb={3} bgcolor={BLUE} borderRadius={5}>
+    <Box p={2} mb={2} bgcolor={BLUE} borderRadius={5}>
       <Box mb={2} color={WHITE}>
         <Typography variant="h3">{SEARCH_PATIENT}</Typography>
       </Box>
@@ -28,7 +28,7 @@ const PatientSearchComponent: FC = (): JSX.Element => {
       <Grid container spacing={3} alignItems='center'>
         <Grid item md={8} sm={12} xs={12}>
           <Box
-            px={2} py={0.5} bgcolor={WHITE} borderRadius={8} display="flex" justifyContent="space-between"
+            pr={1.5} py={0.5} bgcolor={WHITE} borderRadius={8} display="flex" justifyContent="space-between"
             alignItems="center"
           >
             <Box className={classes.searchContainer} width="90%" maxWidth="90%">
