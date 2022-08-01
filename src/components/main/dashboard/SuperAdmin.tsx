@@ -34,7 +34,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -52,7 +52,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box px={2} pt={2} color={WHITE} bgcolor={BLUE_TEN}>
@@ -62,7 +62,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <PracticeUsers />
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box className="totalFacilitiesChartContainer">
@@ -100,7 +100,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -122,7 +122,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <PieChart practices={practices?.length} />
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex'>
                     <PracticeActiveIcon />
@@ -156,10 +156,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      {/* <Box p={2} /> */}
+      {/* <Box p={1} /> */}
 
-      <Grid container spacing={0}>
-        {/* <Grid item md={6} sm={12} xs={12}>
+      {/* <Grid container spacing={0}>
+        <Grid item md={6} sm={12} xs={12}>
           <Card>
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -175,8 +175,8 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               <PracticesByYear year={year} />
             </Box>
           </Card>
-        </Grid> */}
-      </Grid>
+        </Grid>
+      </Grid> */}
     </>
   )
 };

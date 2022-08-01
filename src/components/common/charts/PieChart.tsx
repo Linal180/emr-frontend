@@ -15,7 +15,7 @@ import { PieChartProps } from "../../../interfacesTypes";
 const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
   const [pieChart1, setPieChart1] = useState(
     {
-      tooltip: { enabled: true },
+      tooltip: { enabled: false },
 
       credits: { enabled: false },
 

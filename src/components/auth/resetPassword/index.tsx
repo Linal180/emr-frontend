@@ -33,6 +33,9 @@ const ResetPasswordComponent = (): JSX.Element => {
   const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError() {
       return null;
     },

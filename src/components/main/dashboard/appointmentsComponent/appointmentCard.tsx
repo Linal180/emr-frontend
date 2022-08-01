@@ -163,9 +163,9 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
           <Box className={classes.cardText}>
             <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start">
               <Box>
-                <Typography variant='h4'>{patientName}</Typography>
-
-                <Box p={0.5} />
+                <Box maxWidth={300}>
+                  <Typography variant='h4' noWrap>{patientName}</Typography>
+                </Box>
 
                 <Typography variant="body1">{appDate}</Typography>
                 <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
