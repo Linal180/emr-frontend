@@ -51,8 +51,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       } else
         Alert.error(message)
     },
-
-    onCompleted(data) {
+    onCompleted() {
       if (labOrderNumber) {
         history.push(`/patients/${id}/details/10`)
         return
@@ -76,8 +75,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { response, claimStatus } = createClaim || {}
         const { status } = response || {}
         if (status === 200) {
-          const { id, statusId: name, statusName } = claimStatus || {}
-          id && setValue('claimStatus', { id, name, statusName })
+          const { id, statusId, statusName } = claimStatus || {}
+          id && setValue('claimStatus', { id, name: statusName, statusName: statusId })
         }
       }
     }
@@ -243,9 +242,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       if (data) {
         const { fetchBillingDetailsByAppointmentId } = data ?? {}
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
+
         const { onsetDateType, otherDateType, patientPaymentType,
           autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
-          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from, feeSchedule } = billing ?? {}
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from,
+          feeSchedule, claim
+        } = billing ?? {}
+
         const { practice } = facility || {}
         const { name: practiceName, id: practiceId } = practice || {}
         const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
@@ -309,12 +312,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         setValue('to', to ?? '')
         setValue('from', from ?? '')
         pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
-        claimStatus?.id && setValue('claimStatus', { id: claimStatus?.id, name: claimStatus?.statusName || '', statusName: claimStatus?.statusName })
+        claimStatus?.id && setValue('claimStatus', { id: claimStatus?.id, name: claimStatus?.statusName || '', statusName: claimStatus?.statusId })
         facility?.id && setValue('facility', setRecord(facility.id, facility.name))
         feeSchedule?.id && setValue('feeSchedule', setRecord(feeSchedule.id, feeSchedule.name || ''))
         practiceName && setValue('practice', practiceName)
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
+        dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
       }
     }
   })
@@ -510,6 +514,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   if (createBillingLoading) {
     return <Loader loading loaderText='Saving Billing Details...' />
+  }
+
+  if (getClaimFileLoading) {
+    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
   }
 
   if (getClaimFileLoading) {

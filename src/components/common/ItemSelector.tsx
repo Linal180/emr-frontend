@@ -107,7 +107,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
 
   });
 
-
   const [getClaimStatuses] = useFetchAllClaimStatusesLazyQuery({
     variables: {
       claimStatusPaginationInput: {

@@ -35,6 +35,8 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!) {
       uncoveredAmount
       to
       from
+      pos
+
       facility {
         id
         name
@@ -44,25 +46,30 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!) {
           name
         }
       }
+
       claimStatus {
         id
         statusName
+        statusId
       }
-      pos
+
       servicingProvider {
         id
         firstName
         lastName
       }
+
       renderingProvider {
         id
         firstName
         lastName
       }
+
       feeSchedule {
         id
         name
       }
+
       codes {
         id
         code
@@ -75,6 +82,10 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!) {
         m4
         unit
         diagPointer
+      }
+
+      claim {
+        id
       }
     }
   }
@@ -173,31 +184,39 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
         practice {
           name
         }
+
         serviceCode
       }
+
       contacts {
         phone
         address
         email
       }
+
       firstName
       lastName
       npi
     }
+
     insuranceDetail {
       insurance {
         payerId
         payerName
       }
+
       memberId
       groupNumber
     }
+
     policyHolderInfo {
       firstName
       lastName
     }
+
     billingInfo {
       claimDate
+
       codes {
         code
         codeType
@@ -211,13 +230,16 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
         unit
       }
     }
+
     patientInfo {
       firstName
       lastName
+
       contacts {
         address
         phone
       }
+
       dob
     }
   }

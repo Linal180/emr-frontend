@@ -4322,3 +4322,9 @@ export const MODULE_LOGS_TYPES = [
   "Permission",
   "RolePermission",
 ]
+
+export enum SystemBillingStatuses {
+  READY_TO_CLAIM = 'ready_to_claim',
+  REJECTED = 'rejected',
+  ACKNOWLEDGED = 'acknowledged'
+}
