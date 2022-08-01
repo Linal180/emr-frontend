@@ -28,7 +28,7 @@ import {
   DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE, CLAIM_FEED_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE, CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM,
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -2159,4 +2159,26 @@ export const formatEmail = (email: string) => {
   if (!!!email) return '';
 
   return email.toLowerCase();
+}
+
+export const getClaimBtnText = (statusName: string) => {
+  if (!!statusName) {
+    switch (statusName) {
+
+      case 'ready_to_claim':
+        return SUBMIT_CLAIM;
+
+      case 'rejected':
+        return UPDATE_CLAIM;
+
+      case 'acknowledged':
+        return UPDATE_CLAIM;
+
+      default:
+        return UPDATE_CLAIM
+    }
+  }
+  else {
+    return CREATE_CLAIM
+  }
 }

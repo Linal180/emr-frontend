@@ -91,10 +91,15 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
 
   const delTabHandler = () => {
     const parsedIndex = parseInt(selectedTab)
-    const arr = formValues?.filter((_, index) => index !== parsedIndex)
-    dispatch({
-      type: ActionType.SET_FORM_VALUES, formValues: arr
-    })
+    if (parsedIndex !== 0) {
+      const arr = formValues?.filter((_, index) => index !== parsedIndex)
+      dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+      dispatch({ type: ActionType.SET_TAB, selectedTab: `${parsedIndex - 1}` })
+    }
+    if (parsedIndex === 0) {
+      const arr = formValues?.filter((_, index) => index !== parsedIndex)
+      dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+    }
   }
 
   const editTabHandler = () => {

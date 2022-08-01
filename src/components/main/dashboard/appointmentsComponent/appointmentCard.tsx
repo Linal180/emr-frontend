@@ -16,9 +16,9 @@ import { useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCr
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
 import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
 import {
-  APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS,
-  PRIMARY_INSURANCE, CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN, CHECK_IN_ROUTE, START_TELEHEALTH, TELEHEALTH_URL,
-  REASON, FACILITY_NAME, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE,
+  APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS, PRIMARY_INSURANCE, 
+  CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN, CHECK_IN_ROUTE, TELEHEALTH_URL, REASON, FACILITY_NAME, APPOINTMENT_TYPE, 
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, TELEHEALTH,
 } from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
@@ -173,7 +173,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
               {appointmentCreateType === AppointmentCreateType.Appointment
                 ? <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`} variant="contained" color="primary">{CHECK_IN}</Button>
                 : <Button variant="contained" className="blue-button-New" onClick={() => window.open(TELEHEALTH_URL)}>
-                  <VideocamOutlined />&nbsp; {START_TELEHEALTH}
+                  <VideocamOutlined />&nbsp; {TELEHEALTH}
                 </Button>
               }
             </Box>

@@ -69,7 +69,9 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
     .test('', MaxLength(label, max), value => value ? value.length <= max : false)
 }
 
-const generalNameSchema = (isRequired: boolean, label: string, allowNumber: boolean, allowSpecial: boolean) => (
+const generalNameSchema = (
+  isRequired: boolean, label: string, allowNumber: boolean, allowSpecial: boolean
+  ) => (
   yup.string()
     .test('', requiredMessage(label), value => isRequired ? !!value : true)
     .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
@@ -128,7 +130,7 @@ const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
 const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGEX) }
 const npiSchema = {
   npi: yup.string().required()
-    .test('', NPI_MESSAGE, value => value ? checkNpi(value) : false)
+    .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
 }
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }

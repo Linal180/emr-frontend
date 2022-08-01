@@ -527,6 +527,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                               name="providerId"
                               facilityId={selectedFacility}
                               loading={getAppointmentLoading}
+                              isRequired={appointmentType === AppointmentCreateType.Telehealth}
                             />
                           }
                         </Grid>

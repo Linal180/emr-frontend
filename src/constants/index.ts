@@ -8,7 +8,7 @@ import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, 
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
   TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
 } from "../assets/svgs";
 import {
@@ -45,7 +45,7 @@ export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
-export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\s]+$/;
+export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\-\s]+$/;
 export const ALPHABETS_REGEX = /^([A-Za-z]+\s)*[A-Za-z]+$/;
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const NO_SPACE_AT_BOTH_ENDS_REGEX = /^[^\s]+(\s+[^\s]+)*$/;
@@ -267,6 +267,7 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const TELEHEALTH = "Telehealth";
 export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
@@ -528,6 +529,8 @@ export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
+export const SNOMED = "SnoMed";
+export const ICD_10 = "ICD-10";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -872,6 +875,7 @@ export const FIRST_NAME = "First Name";
 export const START_TIME = "Start Time";
 export const START_DATE = "Start Date";
 export const SUPER_BILL = "Super Bill";
+export const SELECT_ANOTHER_STATUS = 'Please Select another status';
 export const DEACTIVATE = "DEACTIVATE";
 export const ADD_VITALS = "Add Vitals";
 export const SETTINGS_TEXT = "Settings";
@@ -1172,6 +1176,8 @@ export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
 export const FFE_SCHEDULE = "Fee Schedule";
 export const CREATE_CLAIM = "Create Claim";
+export const UPDATE_CLAIM = "Update Claim";
+export const SUBMIT_CLAIM = "Submit Claim";
 export const SEX_AT_BIRTH = "Sex At Birth";
 export const PAY_VIA_CARD = "Pay via Card";
 export const RELATIONSHIP = "Relationship";
@@ -2529,7 +2535,7 @@ export enum ITEM_MODULE {
   insurance = 'insurance',
   documentTypes = 'documentTypes',
   icdCodes = 'IcdCodes',
-  cptCode = 'CPTCode',
+  cptCode = 'CPT Code',
   claimStatus = 'claimStatus',
   feeSchedule = 'feeSchedule',
   cptFeeSchedule = 'cptFeeSchedule',
@@ -2597,7 +2603,7 @@ export enum MODULE_TYPES {
   EmergencyAccess = "Emergency Access",
 }
 
-export const  MODULES = [
+export const MODULES = [
   "User",
   "Practice",
   "Facility",
@@ -3191,6 +3197,7 @@ export const ICD_TEN_CODES_DATA = [
 ];
 
 export enum USER_PERMISSIONS {
+  me = 'me',
   fetchAllUsers = "fetchAllUsers",
   fetchUser = "fetchUser",
   getUser = "getUser",
@@ -4328,3 +4335,9 @@ export const MODULE_LOGS_TYPES = [
   "Permission",
   "RolePermission",
 ]
+
+export enum SystemBillingStatuses {
+  READY_TO_CLAIM = 'ready_to_claim',
+  REJECTED = 'rejected',
+  ACKNOWLEDGED = 'acknowledged'
+}
