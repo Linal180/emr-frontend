@@ -284,6 +284,7 @@ export type TableAlignType =
 export interface SelectorOption {
   id: string;
   name: string | undefined | null;
+  statusName?: string | undefined | null;
 }
 
 export interface ItemSelectorOption extends SelectorOption {
@@ -1739,6 +1740,7 @@ export interface BillingFormProps extends BillingComponentProps {
   dispatch: Dispatch<BillingAction>
   state: BillingState
   claimNumber: string
+  createClaimLoading: boolean
 }
 
 export interface CodesTableProps {
