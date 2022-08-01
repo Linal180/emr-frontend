@@ -1,13 +1,13 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
-import Loader from "../../../common/Loader";
-import Alert from "../../../common/Alert";
 import BillingForm from "./BillingForm";
+import Alert from "../../../common/Alert";
+import Loader from "../../../common/Loader";
 // constants block
 import history from "../../../../history";
 import { createBillingSchema } from "../../../../validationSchemas";
@@ -23,7 +23,7 @@ import {
 } from "../../../../constants";
 import {
   CodeType, DoctorPatientRelationType, OnsetDateType, OrderOfBenefitType, OtherDateType,
-  PatientPaymentType, useCreateBillingMutation, useCreateClaimLazyQuery, useGetPatientProvidersLazyQuery,
+  PatientPaymentType, useCreateBillingMutation, useCreateClaimMutation, useGetPatientProvidersLazyQuery,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
   useFetchBillingDetailsByAppointmentIdLazyQuery,
   useGenerateClaimNoLazyQuery,
@@ -51,8 +51,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       } else
         Alert.error(message)
     },
-
-    onCompleted(data) {
+    onCompleted() {
       if (labOrderNumber) {
         history.push(`/patients/${id}/details/10`)
         return
@@ -62,7 +61,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
-  const [createClaim] = useCreateClaimLazyQuery({
+  const [createClaim, { loading: createClaimLoading }] = useCreateClaimMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -72,7 +71,13 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
     onCompleted(data) {
       if (data) {
-
+        const { createClaim } = data || {}
+        const { response, claimStatus } = createClaim || {}
+        const { status } = response || {}
+        if (status === 200) {
+          const { id, statusId, statusName } = claimStatus || {}
+          id && setValue('claimStatus', { id, name: statusName, statusName: statusId })
+        }
       }
     }
   });
@@ -98,208 +103,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       }
     }
   });
-
-  const createClaimCallback = useCallback((claimMethod?: boolean) => {
-    try {
-      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to } = watch()
-      const { id: onSetDateTypeId } = onsetDateType ?? {}
-      const { id: otherDateTypeId } = otherDateType ?? {}
-
-      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
-      const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
-        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
-        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
-        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
-        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
-        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
-        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
-        const cptVariables = {
-          diagPointer: diagPointer,
-          m1: m1?.name,
-          m2: m2?.name,
-          m3: m3?.name,
-          m4: m4?.name,
-          unit
-        }
-        return {
-          ...billingCodeToCreate,
-          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
-        }
-      }) : []
-
-      const claimInput = {
-        appointmentId,
-        autoAccident,
-        codes: transformedBillingCodes,
-        employment,
-        onsetDate,
-        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
-        otherAccident,
-        otherDate,
-        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
-        patientId: id,
-        from,
-        to
-      }
-
-      !claimMethod ? createClaim({ variables: { claimInput } }) : getClaimFile({ variables: { claimInput } })
-
-    } catch (error) { }
-  }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
-
-  const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
-    onCompleted(data) {
-      if (data) {
-        const { fetchBillingDetailsByAppointmentId } = data ?? {}
-        const { billing } = fetchBillingDetailsByAppointmentId ?? {}
-        const { onsetDateType, otherDateType, patientPaymentType,
-          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
-          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from, feeSchedule } = billing ?? {}
-        const { practice } = facility || {}
-        const { name: practiceName, id: practiceId } = practice || {}
-        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
-          const { codeType, code, diagPointer, price, unit, description, m1, m2, m3, m4 } = codeValues
-          const codeData = {
-            id: codeValues.id,
-            codeId: codeValues?.code || '',
-            code: code ?? '',
-            description: description ?? '',
-            price: price ?? '',
-            codeType,
-            m1: setRecord(m1 || '', m1 || ''),
-            m2: setRecord(m2 || '', m2 || ''),
-            m3: setRecord(m3 || '', m3 || ''),
-            m4: setRecord(m4 || '', m4 || ''),
-            unit: unit ?? '',
-            diagPointer: diagPointer ?? '',
-            diag1: diagPointer ? String(getNumberFromChar(diagPointer, 0)) : '',
-            diag2: diagPointer ? String(getNumberFromChar(diagPointer, 1)) : '',
-            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : '',
-            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
-          }
-
-          if (acc[codeType]) {
-            acc[codeType]?.push(codeData)
-            return acc
-          }
-
-          acc[codeType] = [codeData]
-          return acc
-        }, {})
-
-        transformedCodes && Object.keys(transformedCodes).forEach((key) => {
-          if (key === CodeType.Icd_10Code) {
-            transformedCodes && setValue(ITEM_MODULE.icdCodes, transformedCodes?.ICD_10_CODE || [], { shouldValidate: true })
-            return
-          }
-
-          if (key === CodeType.CptCode) {
-            transformedCodes && setValue(ITEM_MODULE.cptFeeSchedule, transformedCodes.CPT_CODE || [])
-            return
-          }
-        })
-        transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
-
-        otherAccident && dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: otherAccident })
-        autoAccident && dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: autoAccident })
-        employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
-        claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
-        practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
-
-        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
-        setValue('otherDateType', setRecord(otherDateType, otherDateType))
-        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
-        setValue('otherDate', otherDate ?? '')
-        setValue('onsetDate', onsetDate ?? '')
-        setValue('amount', amount ?? '')
-        setValue('uncoveredAmount', uncoveredAmount ?? '')
-        setValue('claimDate', claimDate ?? '')
-        setValue('serviceDate', serviceDate ?? '')
-        setValue('to', to ?? '')
-        setValue('from', from ?? '')
-        pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
-        claimStatus?.id && setValue('claimStatus', setRecord(claimStatus.id, claimStatus?.statusName || ''))
-        facility?.id && setValue('facility', setRecord(facility.id, facility.name))
-        feeSchedule?.id && setValue('feeSchedule', setRecord(feeSchedule.id, feeSchedule.name || ''))
-        practiceName && setValue('practice', practiceName)
-        servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
-        renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
-      }
-    }
-  })
-
-  const fetchBillingDetails = useCallback(async () => {
-    try {
-      fetchBillingDetailsByAppointmentId({
-        variables: {
-          appointmentId: appointmentId ?? ''
-        }
-      })
-    } catch (error) { }
-  }, [appointmentId, fetchBillingDetailsByAppointmentId])
-
-  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
-    if (shouldDisableEdit) {
-      history.push(VIEW_APPOINTMENTS_ROUTE)
-    } else {
-      const { amount, paymentType, onsetDate, onsetDateType, otherDate,
-        otherDateType, cptFeeSchedule, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider,
-        servicingProvider, uncoveredAmount, claimStatus, from, to, feeSchedule } = values
-      const { id: onSetDateTypeId } = onsetDateType ?? {}
-      const { id: otherDateTypeId } = otherDateType ?? {}
-      const { id: paymentTypeId } = paymentType ?? {}
-      const { id: facilityId } = facility ?? {}
-      const { id: renderingProviderId } = renderingProvider ?? {}
-      const { id: servicingProviderId } = servicingProvider ?? {}
-      const { id: posId } = pos ?? {}
-      const { id: claimStatusId } = claimStatus ?? {}
-      const { id: feeScheduleId } = feeSchedule ?? {}
-
-      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
-      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
-        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
-        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
-        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
-        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
-        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
-        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
-        const cptVariables = {
-          diagPointer: diagPointer,
-          ...(m1?.id && { m1: m1?.id }),
-          ...(m2?.id && { m2: m2?.id }),
-          ...(m3?.id && { m3: m3?.id }),
-          ...(m4?.id && { m4: m4?.id }),
-          unit
-        }
-        return {
-          ...billingCodeToCreate,
-          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
-        }
-      })
-
-      const createBillingInput = {
-        ...(appointmentId && { appointmentId: appointmentId || '' }),
-        ...(facilityId && { facilityId: facilityId || '' }),
-        ...(renderingProviderId && { renderingProviderId: renderingProviderId || '' }),
-        ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
-        ...(claimStatusId && { claimStatusId: claimStatusId || '' }),
-        ...(feeScheduleId && { feeScheduleId: feeScheduleId || '' }),
-        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
-        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
-        ...(paymentTypeId && { patientPaymentType: paymentTypeId as PatientPaymentType }),
-        ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
-        autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
-        onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
-        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
-      }
-
-      createBilling({
-        variables: {
-          createBillingInput
-        }
-      })
-    }
-  }
 
   const [fetchPatientInsurances, { loading: fetchPatientInsurancesLoading }] = useFetchPatientInsurancesLazyQuery({
     fetchPolicy: "network-only",
@@ -434,6 +237,165 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
+  const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
+    onCompleted(data) {
+      if (data) {
+        const { fetchBillingDetailsByAppointmentId } = data ?? {}
+        const { billing } = fetchBillingDetailsByAppointmentId ?? {}
+
+        const { onsetDateType, otherDateType, patientPaymentType,
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from,
+          feeSchedule, claim
+        } = billing ?? {}
+
+        const { practice } = facility || {}
+        const { name: practiceName, id: practiceId } = practice || {}
+        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
+          const { codeType, code, diagPointer, price, unit, description, m1, m2, m3, m4 } = codeValues
+          const codeData = {
+            id: codeValues.id,
+            codeId: codeValues?.code || '',
+            code: code ?? '',
+            description: description ?? '',
+            price: price ?? '',
+            codeType,
+            m1: setRecord(m1 || '', m1 || ''),
+            m2: setRecord(m2 || '', m2 || ''),
+            m3: setRecord(m3 || '', m3 || ''),
+            m4: setRecord(m4 || '', m4 || ''),
+            unit: unit ?? '',
+            diagPointer: diagPointer ?? '',
+            diag1: diagPointer ? String(getNumberFromChar(diagPointer, 0)) : '',
+            diag2: diagPointer ? String(getNumberFromChar(diagPointer, 1)) : '',
+            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : '',
+            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
+          }
+
+          if (acc[codeType]) {
+            acc[codeType]?.push(codeData)
+            return acc
+          }
+
+          acc[codeType] = [codeData]
+          return acc
+        }, {})
+
+        transformedCodes && Object.keys(transformedCodes).forEach((key) => {
+          if (key === CodeType.Icd_10Code) {
+            transformedCodes && setValue(ITEM_MODULE.icdCodes, transformedCodes?.ICD_10_CODE || [], { shouldValidate: true })
+            return
+          }
+
+          if (key === CodeType.CptCode) {
+            transformedCodes && setValue(ITEM_MODULE.cptFeeSchedule, transformedCodes.CPT_CODE || [])
+            return
+          }
+        })
+        transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
+
+        otherAccident && dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: otherAccident })
+        autoAccident && dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: autoAccident })
+        employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
+        claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
+        practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
+
+        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
+        setValue('otherDateType', setRecord(otherDateType, otherDateType))
+        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
+        setValue('otherDate', otherDate ?? '')
+        setValue('onsetDate', onsetDate ?? '')
+        setValue('amount', amount ?? '')
+        setValue('uncoveredAmount', uncoveredAmount ?? '')
+        setValue('claimDate', claimDate ?? '')
+        setValue('serviceDate', serviceDate ?? '')
+        setValue('to', to ?? '')
+        setValue('from', from ?? '')
+        pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
+        claimStatus?.id && setValue('claimStatus', { id: claimStatus?.id, name: claimStatus?.statusName || '', statusName: claimStatus?.statusId })
+        facility?.id && setValue('facility', setRecord(facility.id, facility.name))
+        feeSchedule?.id && setValue('feeSchedule', setRecord(feeSchedule.id, feeSchedule.name || ''))
+        practiceName && setValue('practice', practiceName)
+        servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
+        renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
+        dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
+      }
+    }
+  })
+
+  const createClaimCallback = useCallback((claimMethod?: boolean) => {
+    try {
+      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to } = watch()
+      const { id: onSetDateTypeId } = onsetDateType ?? {}
+      const { id: otherDateTypeId } = otherDateType ?? {}
+
+      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
+      const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
+        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
+        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
+        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
+        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
+        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
+        const cptVariables = {
+          diagPointer: diagPointer,
+          m1: m1?.name,
+          m2: m2?.name,
+          m3: m3?.name,
+          m4: m4?.name,
+          unit
+        }
+        return {
+          ...billingCodeToCreate,
+          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+        }
+      }) : []
+
+      const createClaimInput = {
+        appointmentId,
+        autoAccident,
+        codes: transformedBillingCodes,
+        employment,
+        onsetDate,
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        otherAccident,
+        otherDate,
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        patientId: id,
+        from,
+        to
+      }
+
+      const getClaimFileInput = {
+        appointmentId,
+        autoAccident,
+        codes: transformedBillingCodes,
+        employment,
+        onsetDate,
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        otherAccident,
+        otherDate,
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        patientId: id,
+        from,
+        to
+      }
+
+      !claimMethod ? createClaim({ variables: { createClaimInput } }) : getClaimFile({ variables: { getClaimFileInput } })
+
+    } catch (error) { }
+  }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
+
+  const fetchBillingDetails = useCallback(async () => {
+    try {
+      fetchBillingDetailsByAppointmentId({
+        variables: {
+          appointmentId: appointmentId ?? ''
+        }
+      })
+    } catch (error) { }
+  }, [appointmentId, fetchBillingDetailsByAppointmentId])
+
   const fetchAppointment = useCallback(async () => {
     try {
       appointmentId && await getAppointment({
@@ -466,6 +428,69 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     } catch (error) { }
   }, [generateClaimNo])
 
+  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
+    if (shouldDisableEdit) {
+      history.push(VIEW_APPOINTMENTS_ROUTE)
+    } else {
+      const { amount, paymentType, onsetDate, onsetDateType, otherDate,
+        otherDateType, cptFeeSchedule, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider,
+        servicingProvider, uncoveredAmount, claimStatus, from, to, feeSchedule } = values
+      const { id: onSetDateTypeId } = onsetDateType ?? {}
+      const { id: otherDateTypeId } = otherDateType ?? {}
+      const { id: paymentTypeId } = paymentType ?? {}
+      const { id: facilityId } = facility ?? {}
+      const { id: renderingProviderId } = renderingProvider ?? {}
+      const { id: servicingProviderId } = servicingProvider ?? {}
+      const { id: posId } = pos ?? {}
+      const { id: claimStatusId } = claimStatus ?? {}
+      const { id: feeScheduleId } = feeSchedule ?? {}
+
+      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
+      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
+        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
+        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
+        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
+        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
+        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
+        const cptVariables = {
+          diagPointer: diagPointer,
+          ...(m1?.id && { m1: m1?.id }),
+          ...(m2?.id && { m2: m2?.id }),
+          ...(m3?.id && { m3: m3?.id }),
+          ...(m4?.id && { m4: m4?.id }),
+          unit
+        }
+        return {
+          ...billingCodeToCreate,
+          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+        }
+      })
+
+      const createBillingInput = {
+        ...(appointmentId && { appointmentId: appointmentId || '' }),
+        ...(facilityId && { facilityId: facilityId || '' }),
+        ...(renderingProviderId && { renderingProviderId: renderingProviderId || '' }),
+        ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
+        ...(claimStatusId && { claimStatusId: claimStatusId || '' }),
+        ...(feeScheduleId && { feeScheduleId: feeScheduleId || '' }),
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        ...(paymentTypeId && { patientPaymentType: paymentTypeId as PatientPaymentType }),
+        ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
+        autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
+        onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
+        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
+      }
+
+      createBilling({
+        variables: {
+          createBillingInput
+        }
+      })
+    }
+  }
+
   useEffect(() => {
     if (shouldDisableEdit) {
       fetchBillingDetails()
@@ -495,6 +520,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
   }
 
+  if (getClaimFileLoading) {
+    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
+  }
+
   return (
     <BillingForm
       createBillingLoading={createBillingLoading}
@@ -506,8 +535,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       submitButtonText={submitButtonText}
       createClaimCallback={createClaimCallback}
       claimNumber={claimNumber}
+      createClaimLoading={createClaimLoading}
     />
   )
 }
 
-export default BillingComponent
+export default BillingComponent;

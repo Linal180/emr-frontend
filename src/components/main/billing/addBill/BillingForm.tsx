@@ -1,50 +1,59 @@
 //packages block
+import { Link } from "react-router-dom";
+import { ChangeEvent, FC } from "react";
+import { useParams } from "react-router";
+import { FormProvider } from "react-hook-form";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 import {
   Box, Button, Card, Checkbox, CircularProgress, colors, FormControlLabel, FormGroup, Grid, Tab, Typography
 } from "@material-ui/core";
-import { useParams } from "react-router";
-import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { ChangeEvent, FC, useState } from "react";
-import { FormProvider } from "react-hook-form";
 //components block
-import InputController from "../../../../controller";
-import CheckoutModal from "../../../common/CheckoutModal";
-import CodesTable from "../../../common/CodesTable";
+import Alert from "../../../common/Alert";
+import Selector from "../../../common/Selector";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
+import CodesTable from "../../../common/CodesTable";
+import InputController from "../../../../controller";
 import ItemSelector from "../../../common/ItemSelector";
-import Selector from "../../../common/Selector";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import CheckoutModal from "../../../common/CheckoutModal";
 import TableSelector from "../../../common/Selector/TableSelector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
-import { Link } from "react-router-dom";
+import { GREY_THREE } from "../../../../theme";
+import { ActionType } from "../../../../reducers/billingReducer";
+import { CodeType, OnsetDateType } from "../../../../generated/graphql";
+import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
-  COPAY_AMOUNT, CPT_CODES, CREATE_CLAIM, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES, INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE,
+  COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
+  INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
-  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, TO, UNCOVERED_AMT
+  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SystemBillingStatuses,
+  SELECT_ANOTHER_STATUS,
 } from "../../../../constants";
-import { CodeType, OnsetDateType } from "../../../../generated/graphql";
-import { BillingFormProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/billingReducer";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { GREY_THREE } from "../../../../theme";
-import { formatValue, renderItem } from "../../../../utils";
 
-const BillingForm: FC<BillingFormProps> = (
-  { methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state, }) => {
+const BillingForm: FC<BillingFormProps> = ({
+  methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state,
+  createClaimLoading
+}) => {
   const classesToggle = usePublicAppointmentStyles();
   const { appointmentId } = useParams<ParamsType>()
   const { handleSubmit, trigger, watch, setValue } = methods
-  const { onsetDateType, practice, feeSchedule } = watch()
+  const { onsetDateType, practice, feeSchedule, claimStatus } = watch()
   const { id: onsetDateTypeId } = onsetDateType || {}
-  const { isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber, practiceId } = state
-  const [selectedTab, setSelectedTab] = useState<string>('1')
+  const { statusName } = claimStatus || {}
+  const {
+    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber,
+    practiceId, selectedTab, isClaimCreated
+  } = state
+
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
-    setSelectedTab(newValue)
+    dispatch({ type: ActionType.SET_SELECTED_TAB, selectedTab: newValue })
   }
 
   const toggleHandleChange = ({ target: { checked } }: ChangeEvent<HTMLInputElement>, name: string) => {
@@ -85,6 +94,16 @@ const BillingForm: FC<BillingFormProps> = (
     }
   }
 
+  const onClaimStatusHandler = (data: ItemSelectorOption) => {
+    if (isClaimCreated) {
+      const { statusName } = data || {}
+      if (statusName) {
+        Alert.error(SELECT_ANOTHER_STATUS)
+      }
+    }
+
+  }
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -108,8 +127,10 @@ const BillingForm: FC<BillingFormProps> = (
                 variant="contained"
                 color="secondary"
                 onClick={() => createClaimCallback()}
+                disabled={!!createClaimLoading || (statusName === SystemBillingStatuses.ACKNOWLEDGED)}
               >
-                {CREATE_CLAIM}
+                {createClaimLoading && <CircularProgress size={20} color="inherit" />}
+                {getClaimBtnText(statusName || '')}
               </Button>
 
               <Box p={1} />
@@ -186,10 +207,6 @@ const BillingForm: FC<BillingFormProps> = (
               <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <Grid container spacing={3} direction="row">
-                      </Grid>
-                    </Grid> */}
 
                     <Box pl={1.8} mb={2.5} className="claim-box">
                       {renderItem(PRACTICE, practice)}
@@ -197,19 +214,21 @@ const BillingForm: FC<BillingFormProps> = (
 
                     <Grid item md={12} sm={12} xs={12}>
                       <FacilitySelector
-                        addEmpty
-                        label={APPOINTMENT_FACILITY}
-                        name="facility"
                         disabled
+                        addEmpty
+                        key='facility'
+                        name="facility"
+                        label={APPOINTMENT_FACILITY}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
                       <Selector
-                        label={POS}
-                        name="pos"
-                        options={MAPPED_SERVICE_CODES}
                         addEmpty
+                        key='pos'
+                        name="pos"
+                        label={POS}
+                        options={MAPPED_SERVICE_CODES}
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
@@ -218,6 +237,7 @@ const BillingForm: FC<BillingFormProps> = (
                       <Grid container spacing={3} direction="row">
                         <Grid item lg={6} md={12} sm={12} xs={12}>
                           <InputController
+                            key='amount'
                             fieldType="text"
                             controllerName="amount"
                             controllerLabel={COPAY_AMOUNT}
@@ -228,6 +248,7 @@ const BillingForm: FC<BillingFormProps> = (
                         <Grid item lg={6} md={12} sm={12} xs={12}>
                           <InputController
                             fieldType="number"
+                            key='uncoveredAmount'
                             controllerName="uncoveredAmount"
                             controllerLabel={UNCOVERED_AMT}
                             disabled={shouldDisableEdit}
@@ -241,12 +262,9 @@ const BillingForm: FC<BillingFormProps> = (
                         className="billing-box" display="flex" justifyContent="flex-end"
                       >
                         <AddCircleOutline color='inherit' />
-
                         <Typography>{ADD_ANOTHER}</Typography>
                       </Box>
                     }
-
-
 
                     {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
@@ -286,6 +304,7 @@ const BillingForm: FC<BillingFormProps> = (
                         isEdit
                         label={CLAIM_STATUS}
                         name="claimStatus"
+                        onSelect={onClaimStatusHandler}
                         modalName={ITEM_MODULE.claimStatus}
                         disabled={shouldDisableEdit}
                       />
@@ -369,6 +388,7 @@ const BillingForm: FC<BillingFormProps> = (
                               <DatePicker
                                 disabled={shouldDisableEdit}
                                 name="from"
+                                disableFuture
                                 label={FROM}
                               />
                             </Grid>
@@ -384,6 +404,7 @@ const BillingForm: FC<BillingFormProps> = (
                             <DatePicker
                               disabled={shouldDisableEdit}
                               name="onsetDate"
+                              disableFuture
                               label={ONSET_DATE}
                             />
                           </Grid>
