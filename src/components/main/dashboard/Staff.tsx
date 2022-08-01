@@ -11,14 +11,12 @@ import { APPOINTMENTS_TEXT } from "../../../constants";
 const StaffDashboardComponent: FC = (): JSX.Element => {
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item md={12} sm={12} xs={12}>
-          <PatientSearchComponent />
-        </Grid>
+      <PatientSearchComponent />
 
+      <Grid container spacing={2}>
         <Grid item md={12} sm={12} xs={12}>
           <Card>
-            <Box p={3} pb={2}>
+            <Box px={3} pt={3}>
               <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
 
               <Box p={2} />
@@ -29,7 +27,7 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Box p={1.5} />
+      <Box p={1} />
 
       {/* <FormProvider {...methods}>
         <form>
@@ -168,10 +166,10 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
 
       <Box p={1.5} />*/}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={12} sm={12} xs={12}>
           <Card>
-            <Box p={3} pb={2}>
+            <Box px={3} pt={3}>
               <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
 
               <CalendarComponent showHeader={false} />

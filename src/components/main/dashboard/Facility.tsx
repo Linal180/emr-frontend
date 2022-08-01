@@ -182,9 +182,9 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
     <>
       <PatientSearchComponent />
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
-          <Grid container spacing={3}>
+          <Grid container spacing={2} direction="row">
             <Grid item md={4} sm={12} xs={12}>
               <Box p={3} minHeight={180} bgcolor={BLUE_SEVEN} borderRadius={8}>
                 <CalendarWhiteIcon />
@@ -214,7 +214,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Grid>
           </Grid>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box px={3} pb={2}>
@@ -232,9 +232,9 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             <Grid item md={6} sm={12} xs={12}>
               <Card>
                 <Box px={3} pb={2}>
@@ -261,15 +261,12 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
 
         <Grid item md={4} sm={12} xs={12}>
           <Card>
-            <Box p={2} />
-            <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>
-              <Box>
-                <Typography variant="h5">{PATIENT_DISCHARGED}</Typography>
+            <Box px={3} py={2}>
+              <Typography variant="h5">{PATIENT_DISCHARGED}</Typography>
 
-                <Box p={0.5} />
+              <Box p={0.5} />
 
-                <Typography variant="body2">{AGAINST_TOTAL_APPOINTMENTS}</Typography>
-              </Box>
+              <Typography variant="body2">{AGAINST_TOTAL_APPOINTMENTS}</Typography>
             </Box>
 
             {!appointmentLoading &&
@@ -282,11 +279,11 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             }
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex' alignItems='center' flexWrap='wrap'>
                     <Box
-                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2}
                       display="flex" justifyContent="center" alignItems="center"
                     >
                       <CalendarNewIcon />
@@ -305,7 +302,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex' alignItems='center' flexWrap='wrap'>
                     <Box
-                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2} 
+                      bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2}
                       display="flex" justifyContent="center" alignItems="center"
                     >
                       <UserBlackIconTwo />
@@ -366,7 +363,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card> */}
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box className={classes.blueCard}>
@@ -428,13 +425,9 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
-          <Card>
-            <Box px={3}>
-              <ScheduleListing />
-            </Box>
-          </Card>
+          <ScheduleListing />
         </Grid>
       </Grid>
     </>

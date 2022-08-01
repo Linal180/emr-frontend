@@ -1705,6 +1705,7 @@ export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
+export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
@@ -2593,11 +2594,12 @@ export enum MODULE_TYPES {
   Schedule = "Schedule",
   Schedules = "Schedules",
   Permission = "Permission",
+  Agreements = 'Agreements',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
 
-export const MODULES = [
+export const  MODULES = [
   "User",
   "Practice",
   "Facility",
@@ -2608,6 +2610,7 @@ export const MODULES = [
   "Appointment",
   "Service",
   "Schedule",
+  'Agreements',
   "Lab Orders",
   "Patient Charting",
 ];
@@ -3295,7 +3298,12 @@ export enum USER_PERMISSIONS {
   getLabTest = "getLabTest",
   findAllAllergies = "findAllAllergies",
   updatePatientVital = "updatePatientVital",
-  addPatientVital = "addPatientVital"
+  addPatientVital = "addPatientVital",
+  fetchAllAgreements = 'fetchAllAgreements',
+  fetchAgreement = 'fetchAgreement',
+  removeAgreement = 'removeAgreement',
+  updateAgreement = 'updateAgreement',
+  createAgreement = 'createAgreement',
 }
 
 export const USER_MENU_ITEMS = [

@@ -205,7 +205,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   <Grid item md={6} sm={12} xs={12}>
                     <Box width="100%" className='card-chart'>
                       <Box display="flex" justifyContent="space-between" p={3}>

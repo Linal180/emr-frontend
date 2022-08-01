@@ -86,8 +86,6 @@ const CodesTable: FC<CodesTableProps> = ({ title, tableData, shouldShowPrice }) 
                   </SearchTooltip>
                 </Grid>
 
-
-
                 {shouldShowPrice ? (
                   <>
                     <Grid item md={1} sm={1} xs={1}>

@@ -2053,6 +2053,10 @@ export type GetAppointments = {
 };
 
 export type GetAttachment = {
+  attachmentName?: Maybe<Scalars['String']>;
+  documentType?: Maybe<Array<Scalars['String']>>;
+  paginationOptions: PaginationInput;
+  signedBy?: Maybe<Scalars['Boolean']>;
   typeId: Scalars['String'];
 };
 

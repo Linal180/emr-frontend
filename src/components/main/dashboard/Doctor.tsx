@@ -24,7 +24,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
     <>
       <PatientSearchComponent />
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box p={3} pb={2}>
@@ -38,7 +38,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={4} sm={12} xs={12}>
           <Card>
             <Box px={3} pb={2}>
-              <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+              <Box mb={1} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{TODAYS_APPOINTMENTS}</Typography>
 
                 <Link to={VIEW_APPOINTMENTS_ROUTE}>
@@ -52,11 +52,11 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box px={3} pb={2}>
-              <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+              <Box mb={1} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{MY_PATIENTS}</Typography>
 
                 <Link to={PATIENTS_ROUTE}>
@@ -70,11 +70,9 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
-          <Box>
-            <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
-          </Box>
+          <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
 
         </Grid>
       </Grid>
