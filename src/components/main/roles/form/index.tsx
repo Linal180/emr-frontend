@@ -263,6 +263,10 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               modulePermissions = permissions?.filter(permission =>
                 permission?.moduleType === MODULE_TYPES.Schedule
                 || permission?.moduleType === MODULE_TYPES.Schedules) || []
+
+            } else if (module === MODULE_TYPES.User) {
+              modulePermissions = permissions?.filter(permission =>
+                permission?.moduleType === module && permission?.name !== 'me') || []
             } else {
               modulePermissions = permissions?.filter(permission => permission?.moduleType === module) || []
             }
