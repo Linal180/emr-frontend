@@ -93,55 +93,57 @@ const BillingForm: FC<BillingFormProps> = (
             <Typography variant="h4">{BILLING}</Typography>
 
             {!shouldDisableEdit && <Box display="flex" alignItems="center" flexWrap="wrap">
-              <Button
-                variant="contained"
-                color="secondary"
-                component={Link}
-                to={`${SUPER_BILL_ROUTE}/${appointmentId}`}
-              >
-                {SUPER_BILL}
-              </Button>
+              <Box m={0.5}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  component={Link}
+                  to={`${SUPER_BILL_ROUTE}/${appointmentId}`}
+                >
+                  {SUPER_BILL}
+                </Button>
+              </Box>
 
-              <Box p={1} />
+              <Box m={0.5}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => createClaimCallback()}
+                >
+                  {CREATE_CLAIM}
+                </Button>
+              </Box>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => createClaimCallback()}
-              >
-                {CREATE_CLAIM}
-              </Button>
+              <Box m={0.5}>
+                <Button
+                  variant="outlined"
+                  color="default"
+                  onClick={() => createClaimCallback(true)}
+                >
+                  {HCFA_1500_FORM}
+                </Button>
+              </Box>
 
-              <Box p={1} />
+              <Box m={0.5}>
+                <Button
+                  variant="outlined"
+                  color="default"
+                  onClick={() => handleCheckout(false)}
+                >
+                  {SAVE_TEXT}
+                </Button>
+              </Box>
 
-              <Button
-                variant="outlined"
-                color="default"
-                onClick={() => createClaimCallback(true)}
-              >
-                {HCFA_1500_FORM}
-              </Button>
-
-              <Box p={1} />
-
-              <Button
-                variant="outlined"
-                color="default"
-                onClick={() => handleCheckout(false)}
-              >
-                {SAVE_TEXT}
-              </Button>
-
-              <Box p={1} />
-
-              <Button
-                variant="contained" color="primary" disabled={createBillingLoading}
-                onClick={() => handleCheckout(true)}
-              >
-                {submitButtonText ?? CHECKOUT}
-                {createBillingLoading && <CircularProgress size={20} color="inherit" />}
-                <ChevronRight />
-              </Button>
+              <Box m={0.5}>
+                <Button
+                  variant="contained" color="primary" disabled={createBillingLoading}
+                  onClick={() => handleCheckout(true)}
+                >
+                  {submitButtonText ?? CHECKOUT}
+                  {createBillingLoading && <CircularProgress size={20} color="inherit" />}
+                  <ChevronRight />
+                </Button>
+              </Box>
             </Box>}
           </Box>
 
