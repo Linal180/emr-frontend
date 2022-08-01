@@ -26,6 +26,7 @@ import {
   DESCRIPTION, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET, ROLES_ROUTE,
   ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED, SAVE_TEXT, SET_PERMISSIONS, ROLES_TEXT,
   ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED, SYSTEM_ROLES,
+  USER_PERMISSIONS,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -266,7 +267,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             } else if (module === MODULE_TYPES.User) {
               modulePermissions = permissions?.filter(permission =>
-                permission?.moduleType === module && permission?.name !== 'me') || []
+                permission?.moduleType === module && permission?.name !== USER_PERMISSIONS.me) || []
             } else {
               modulePermissions = permissions?.filter(permission => permission?.moduleType === module) || []
             }

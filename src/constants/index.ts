@@ -3197,6 +3197,7 @@ export const ICD_TEN_CODES_DATA = [
 ];
 
 export enum USER_PERMISSIONS {
+  me = 'me',
   fetchAllUsers = "fetchAllUsers",
   fetchUser = "fetchUser",
   getUser = "getUser",
