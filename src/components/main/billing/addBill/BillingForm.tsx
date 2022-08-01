@@ -34,6 +34,7 @@ import {
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
   POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SystemBillingStatuses,
+  SELECT_ANOTHER_STATUS,
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = ({
@@ -96,9 +97,8 @@ const BillingForm: FC<BillingFormProps> = ({
   const onClaimStatusHandler = (data: ItemSelectorOption) => {
     if (isClaimCreated) {
       const { statusName } = data || {}
-      debugger
       if (statusName) {
-        Alert.error('Please Select another status')
+        Alert.error(SELECT_ANOTHER_STATUS)
       }
     }
 

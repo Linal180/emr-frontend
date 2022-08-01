@@ -8,7 +8,7 @@ import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, 
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
   TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
 } from "../assets/svgs";
 import {
@@ -872,6 +872,7 @@ export const FIRST_NAME = "First Name";
 export const START_TIME = "Start Time";
 export const START_DATE = "Start Date";
 export const SUPER_BILL = "Super Bill";
+export const SELECT_ANOTHER_STATUS = 'Please Select another status';
 export const DEACTIVATE = "DEACTIVATE";
 export const ADD_VITALS = "Add Vitals";
 export const SETTINGS_TEXT = "Settings";
@@ -2599,7 +2600,7 @@ export enum MODULE_TYPES {
   EmergencyAccess = "Emergency Access",
 }
 
-export const  MODULES = [
+export const MODULES = [
   "User",
   "Practice",
   "Facility",
