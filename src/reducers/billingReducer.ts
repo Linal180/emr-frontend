@@ -6,12 +6,14 @@ export interface State {
   insuranceId: string;
   claimNumber: string;
   employment: boolean;
+  selectedTab: string;
   isModalOpen: boolean;
   autoAccident: boolean;
   otherAccident: boolean;
-  isCheckoutModalOpen: boolean
-  tableCodesData: CodeTablesData;
   shouldCheckout: boolean;
+  isClaimCreated: Boolean;
+  isCheckoutModalOpen: boolean;
+  tableCodesData: CodeTablesData;
 }
 
 export const initialState: State = {
@@ -19,41 +21,48 @@ export const initialState: State = {
   practiceId: '',
   claimNumber: '',
   insuranceId: '',
+  selectedTab: '1',
   employment: false,
   isModalOpen: false,
   tableCodesData: {},
   autoAccident: false,
   otherAccident: false,
+  shouldCheckout: false,
+  isClaimCreated: false,
   isCheckoutModalOpen: false,
-  shouldCheckout: false
 }
 
 export enum ActionType {
   SET_EMPLOYMENT = 'SET_EMPLOYMENT',
   SET_FACILITY_ID = 'SET_FACILITY_ID',
+  SET_PRACTICE_ID = 'SET_PRACTICE_ID',
   SET_INSURANCE_ID = 'SET_INSURANCE_ID',
+  SET_SELECTED_TAB = 'SET_SELECTED_TAB',
   SET_CLAIM_NUMBER = 'SET_CLAIM_NUMBER',
   SET_AUTO_ACCIDENT = 'SET_AUTO_ACCIDENT',
   SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
+  SET_CLAIM_CREATED = "SET_CLAIM_CREATED",
   SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
+  SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
-  SET_PRACTICE_ID = 'SET_PRACTICE_ID',
-  SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT'
 }
 
 export type Action =
   | { type: ActionType.SET_EMPLOYMENT, employment: boolean }
+  | { type: ActionType.SET_FACILITY_ID, facilityId: string }
+  | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
+  | { type: ActionType.SET_INSURANCE_ID, insuranceId: string }
+  | { type: ActionType.SET_CLAIM_NUMBER, claimNumber: string }
+  | { type: ActionType.SET_SELECTED_TAB, selectedTab: string }
+  | { type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: boolean }
   | { type: ActionType.SET_AUTO_ACCIDENT, autoAccident: boolean }
   | { type: ActionType.SET_OTHER_ACCIDENT, otherAccident: boolean }
-  | { type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: boolean }
-  | { type: ActionType.SET_INSURANCE_ID, insuranceId: string }
-  | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
-  | { type: ActionType.SET_FACILITY_ID, facilityId: string }
-  | { type: ActionType.SET_CLAIM_NUMBER, claimNumber: string }
-  | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
-  | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
+  | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: Boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
+  | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
+  | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
+
 
 export const billingReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -121,6 +130,18 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         shouldCheckout: action.shouldCheckout
+      }
+
+    case ActionType.SET_SELECTED_TAB:
+      return {
+        ...state,
+        selectedTab: action.selectedTab
+      }
+
+    case ActionType.SET_CLAIM_CREATED:
+      return {
+        ...state,
+        isClaimCreated: action.isClaimCreated
       }
   }
 };

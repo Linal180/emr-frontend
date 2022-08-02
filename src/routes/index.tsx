@@ -83,6 +83,7 @@ import { SuperBill } from "../pages/main/superBill";
 import { Maintenance } from "../pages/maintenance";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import ClaimStatus from "../pages/main/billing/claimStatusListing";
 // constants, contexts and utils
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE,
@@ -100,7 +101,6 @@ import {
 } from "../constants";
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
-import ClaimStatus from "../pages/main/billing/claimStatusListing";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -182,11 +182,11 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} permission={USER_PERMISSIONS.createService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
-      <PrivateRoute exact path={AGREEMENTS_ROUTE} component={Agreements} />
+      <PrivateRoute exact path={AGREEMENTS_ROUTE} component={Agreements} permission={USER_PERMISSIONS.fetchAllAgreements} />
       <PrivateRoute exact path={CLAIM_STATUSES_ROUTE} component={ClaimStatuses} />
       <PrivateRoute exact path={AUDIT_LOG_ROUTE} component={AuditLogComponent} />
-      <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/new`} component={AddAgreement} />
-      <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} />
+      <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/new`} component={AddAgreement} permission={USER_PERMISSIONS.createAgreement} />
+      <PrivateRoute exact path={`${AGREEMENTS_ROUTE}/:id`} component={AddAgreement} permission={USER_PERMISSIONS.updateAgreement} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={FEE_SCHEDULE_ROUTE} component={FeeSchedule} />
       <PrivateRoute exact path={`${FEE_SCHEDULE_ROUTE}/:id/details`} component={CptFeeSchedule} />

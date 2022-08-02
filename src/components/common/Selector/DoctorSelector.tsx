@@ -9,14 +9,15 @@ import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
-  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading, sortingValue
+  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading,
+  sortingValue, isStaff
 } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, loading,
+  name, label, disabled, isRequired, addEmpty, loading, onSelect,
   facilityId: selectedFacilityId, shouldOmitFacilityId = false, careProviderData
 }): JSX.Element => {
   const { control } = useFormContext()
@@ -25,10 +26,11 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
 
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPractice = isPracticeAdmin(roles);
 
   const isFacAdmin = isFacilityAdmin(roles);
-  const isSuperAndPracAdmin = isSuper || isPracAdmin
+  const isSuperOrPractice = isSuper || isPractice
+  const isStaffUser = isStaff(roles)
   const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
@@ -63,8 +65,8 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPractice ? { practiceId, ...pageInputs } :
+          isFacAdmin || isStaffUser ? { facilityId, ...pageInputs } : undefined
 
       if (shouldOmitFacilityId) {
         doctorsInputs && await findAllDoctor({
@@ -78,7 +80,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
         return
       }
 
-      doctorsInputs && isSuperAndPracAdmin ? selectedFacilityId && await findAllDoctor({
+      doctorsInputs && isSuperOrPractice ? selectedFacilityId && await findAllDoctor({
         variables: {
           doctorInput: {
             ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId
@@ -93,8 +95,8 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       })
     } catch (error) { }
   }, [
-    page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, shouldOmitFacilityId, isSuperAndPracAdmin,
-    selectedFacilityId, findAllDoctor, searchQuery
+    page, isSuper, isPractice, practiceId, isFacAdmin, isStaffUser, facilityId, shouldOmitFacilityId,
+    isSuperOrPractice, selectedFacilityId, findAllDoctor, searchQuery
   ])
 
   useEffect(() => {
@@ -116,7 +118,10 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
         return !careProvider?.includes(id)
       })
 
-      filterDoctor && dispatch({ type: ActionType.SET_DOCTORS, doctors: filterDoctor as AllDoctorPayload['doctors'] })
+      filterDoctor && dispatch({
+        type: ActionType.SET_DOCTORS,
+        doctors: filterDoctor as AllDoctorPayload['doctors']
+      })
     }
     else {
       dispatch({ type: ActionType.SET_DOCTORS, doctors: allDoctors as AllDoctorPayload['doctors'] })
@@ -135,8 +140,8 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
             render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
               return (
                 <Autocomplete
-                options={sortingValue(updatedOptions) ?? []}
-                value={field.value}
+                  options={sortingValue(updatedOptions) ?? []}
+                  value={field.value}
                   disabled={disabled}
                   disableClearable
                   getOptionLabel={(option) => option.name || ""}
@@ -154,14 +159,21 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
                         variant="outlined"
                         error={invalid}
                         className="selectorClass"
-                        onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                        onChange={(event) => dispatch({
+                          type: ActionType.SET_SEARCH_QUERY,
+                          searchQuery: event.target.value
+                        })}
                       />
 
                       <FormHelperText>{message}</FormHelperText>
                     </FormControl>
                   )}
 
-                  onChange={(_, data) => field.onChange(data)}
+                  onChange={(_, data) => {
+                    field.onChange(data)
+                    onSelect && onSelect(data)
+                    return data
+                  }}
                 />
               );
             }}

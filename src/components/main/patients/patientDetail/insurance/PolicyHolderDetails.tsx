@@ -19,7 +19,7 @@ import {
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER,
 } from "../../../../../constants";
 
-const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
+const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
   const { id: patientId } = useParams<ParamsType>()
   const { watch, setValue, trigger } = useFormContext<InsuranceCreateInput>()
   const { patientRelationship } = watch()
@@ -73,6 +73,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             isRequired
             fieldType="text"
+            loading={loading}
             controllerName="policyHolderId"
             controllerLabel={POLICY_HOLDER_ID_CERTIFICATION_NUMBER}
           />
@@ -82,6 +83,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
           <InputController
             isRequired
             fieldType="text"
+            loading={loading}
             controllerName="employer"
             controllerLabel={EMPLOYER}
           />
@@ -92,6 +94,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="firstName"
             controllerLabel={FIRST_NAME}
           />
@@ -100,6 +103,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="middleName"
             controllerLabel={MIDDLE_NAME}
           />
@@ -108,6 +112,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="lastName"
             controllerLabel={LAST_NAME}
           />
@@ -118,6 +123,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="zipCode"
             controllerLabel={ZIP_CODE}
           />
@@ -126,6 +132,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="address"
             controllerLabel={ADDRESS_ONE}
           />
@@ -134,6 +141,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="addressCTD"
             controllerLabel={ADDRESS_TWO}
           />
@@ -144,6 +152,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="city"
             controllerLabel={CITY}
           />
@@ -154,6 +163,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             addEmpty
             name="state"
             label={STATE}
+            loading={loading}
             value={EMPTY_OPTION}
             options={MAPPED_STATES}
           />
@@ -164,6 +174,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"
+            loading={loading}
             controllerName="ssn"
             controllerLabel={SSN}
           />
@@ -174,13 +185,14 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit }) => {
             addEmpty
             name="sex"
             label={LEGAL_SEX}
+            loading={loading}
             value={EMPTY_OPTION}
             options={MAPPED_POLICY_GENDER}
           />
         </Grid>
 
         <Grid item md={6} sm={12} xs={12}>
-          <DatePicker name="dob" label={DOB} />
+          <DatePicker name="dob" label={DOB} loading={loading} />
         </Grid>
       </Grid>
     </Box>

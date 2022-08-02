@@ -1,6 +1,5 @@
 //packages block
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
 import { FC } from "react";
 import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
 //components
@@ -19,6 +18,7 @@ import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../.
 import { SearchTooltip } from "../../../styles/searchTooltip";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { GREY_NINE } from "../../../theme";
+import { TrashNewIcon } from "../../../assets/svgs";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice, feeScheduleId }) => {
   const classes = useTableStyles()
@@ -260,7 +260,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
 
                       <Grid item md={1} sm={1} xs={1}>
                         <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
-                          <Delete />
+                          <TrashNewIcon />
                         </IconButton>
                       </Grid>
                     </Grid>

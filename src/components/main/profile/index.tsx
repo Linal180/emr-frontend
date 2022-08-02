@@ -48,22 +48,16 @@ const ProfileComponent = (): JSX.Element => {
   } = primaryContact || {}
   const isSuper = isSuperAdmin(roles)
 
-  const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
+  const [mediaState, mediaDispatch] =
+    useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
   const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
 
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
-      firstName: FIRST_NAME,
-      lastName: LAST_NAME,
-      email: "",
-      phone: "",
-      addressNumber: "",
-      city: "",
-      state: EMPTY_OPTION,
-      country: EMPTY_OPTION,
-      zipCode: "",
-      contactId: ""
+      firstName: FIRST_NAME, lastName: LAST_NAME,
+      email: "", phone: "", addressNumber: "", city: "", state: EMPTY_OPTION,
+      country: EMPTY_OPTION, zipCode: "", contactId: ""
     },
     resolver: yupResolver(profileSchema)
   });
@@ -161,7 +155,7 @@ const ProfileComponent = (): JSX.Element => {
 
     userType === SYSTEM_ROLES.Doctor ?
       doctorPreview() : staffPreview()
-      mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+    mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
   }
 
   const setAttachment = useCallback(async () => {
@@ -186,7 +180,7 @@ const ProfileComponent = (): JSX.Element => {
       <CardComponent cardTitle={PROFILE_TEXT}>
         <Box className={classes.profileContainer}>
           <Grid container spacing={0}>
-            <Grid item lg={4} md={5}  sm={12} xs={12}>
+            <Grid item lg={4} md={5} sm={12} xs={12}>
               <Box key={attachmentId} mx={3.5}>
                 <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
               </Box>
@@ -210,7 +204,7 @@ const ProfileComponent = (): JSX.Element => {
               </Box>
             </Grid>
 
-            <Grid item lg={8} md={7}  sm={12} xs={12}>
+            <Grid item lg={8} md={7} sm={12} xs={12}>
               <Box mx={5}>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -233,7 +227,9 @@ const ProfileComponent = (): JSX.Element => {
                               </Box>
                             </>
                             :
-                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>
+                              {EDIT}
+                            </Button>
                           }
                         </Box>
                       </Box>
@@ -329,9 +325,9 @@ const ProfileComponent = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
-                              fieldType="text"
-                              controllerName="email"
                               disabled
+                              fieldType="email"
+                              controllerName="email"
                               controllerLabel={EMAIL}
                             />
                           </Grid>

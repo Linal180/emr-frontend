@@ -35,7 +35,7 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
-  US_DATE_FORMAT, RESET, USER_PERMISSIONS, 
+  US_DATE_FORMAT, RESET, USER_PERMISSIONS,
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
@@ -99,9 +99,9 @@ const PatientsTable: FC = (): JSX.Element => {
   const fetchAllPatients = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
-          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
+      const patientsInputs = isSuper ? { ...pageInputs }
+        : isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs }
+          : isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
@@ -207,9 +207,13 @@ const PatientsTable: FC = (): JSX.Element => {
 
           <Grid item md={2} sm={12} xs={12}>
             <Box
-              onClick={() => dispatch({ type: ActionType.SET_OPEN_ADVANCED_SEARCH, openAdvancedSearch: !openAdvancedSearch })} className='pointer-cursor'
+              className='pointer-cursor'
               border={`1px solid ${GREY_FIVE}`} borderRadius={4}
               color={BLACK_TWO} p={1.35} display='flex' width={186}
+              onClick={() => dispatch({
+                type: ActionType.SET_OPEN_ADVANCED_SEARCH,
+                openAdvancedSearch: !openAdvancedSearch
+              })}
             >
               <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
               {openAdvancedSearch ? <ExpandLess /> : <ExpandMore />}
@@ -227,8 +231,9 @@ const PatientsTable: FC = (): JSX.Element => {
                     controllerName="dob"
                     controllerLabel={DOB}
                     clearable={!!dob}
-                    handleClearField={handleClearField}
                     placeholder={US_DATE_FORMAT}
+                    handleClearField={handleClearField}
+                    onChange={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
 
@@ -236,19 +241,21 @@ const PatientsTable: FC = (): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="dos"
-                    controllerLabel={DATE_OF_SERVICE}
                     clearable={!!dos}
-                    handleClearField={handleClearField}
                     placeholder={US_DATE_FORMAT}
+                    controllerLabel={DATE_OF_SERVICE}
+                    handleClearField={handleClearField}
+                    onChange={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
 
                 {(isSuper || isPracticeUser) &&
                   <Grid item md={3} sm={12} xs={12}>
                     <FacilitySelector
+                      addEmpty
                       label={LOCATION}
                       name="location"
-                      addEmpty
+                      onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                     />
                   </Grid>
                 }
@@ -256,10 +263,11 @@ const PatientsTable: FC = (): JSX.Element => {
                 <Grid item md={3} sm={12} xs={12}>
                   {!(isDoctor || isRegularUser) &&
                     <DoctorSelector
-                      label={PROVIDER}
-                      name="provider"
-                      shouldOmitFacilityId
                       addEmpty
+                      name="provider"
+                      label={PROVIDER}
+                      shouldOmitFacilityId
+                      onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                     />
                   }
                 </Grid>

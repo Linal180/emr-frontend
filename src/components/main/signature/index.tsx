@@ -19,7 +19,7 @@ import {
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON, DRAW_SIGNATURE,
+  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON, DRAW_SIGNATURE, PAGE_LIMIT,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
@@ -156,7 +156,7 @@ const SignatureComponent = (): JSX.Element => {
 
   const fetchAttachments = async () => {
     id && await getAttachments({
-      variables: { getAttachment: { typeId: id } }
+      variables: { getAttachment: { typeId: id, paginationOptions: { limit: PAGE_LIMIT, page: 1 } } }
     })
   }
 

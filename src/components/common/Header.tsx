@@ -10,14 +10,16 @@ import { BLACK } from "../../theme";
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
-import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
-import {
-  APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT, SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
-} from "../../constants";
-import { AuthContext } from "../../context";
 import history from "../../history";
+import { AuthContext } from "../../context";
+import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
+import {
+  APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
+  PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT,
+  SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
+} from "../../constants";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -28,8 +30,6 @@ const Header: FC = (): JSX.Element => {
   const { roles } = user || {};
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
-
-  const showFacility = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles)
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -97,8 +97,7 @@ const Header: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-            && showFacility &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -182,8 +181,7 @@ const Header: FC = (): JSX.Element => {
                 current={currentRoute === 'inBilling'}
               />
 
-              {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-                && showFacility &&
+              {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
                 <Typography
                   component={Link}
                   to={FACILITIES_ROUTE}

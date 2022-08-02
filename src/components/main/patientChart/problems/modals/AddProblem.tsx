@@ -14,7 +14,7 @@ import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
 import {
-  ADD_PROBLEM, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
+  ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE
 } from "../../../../../constants";
 import {
   IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
@@ -138,7 +138,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
                     <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                      {referencedComponentId ? `snomed: ${referencedComponentId} | icd10: ${code}` : `icd10: ${code}`}
+                      {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
                     </Typography>
                   </Box>
 

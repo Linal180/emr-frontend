@@ -194,15 +194,18 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   });
 
   const logoutUser = () => {
-    setIsLoggedIn(false)
     setUser(null)
+    setRoleList([]);
+    setProfileUrl('')
     setPracticeName('');
+    setIsLoggedIn(false)
     setCurrentUser(null)
     setFacilityList([]);
-    setRoleList([]);
-    handleLogout();
-    setCurrentDoctor(null);
     setCurrentStaff(null)
+    setCurrentDoctor(null);
+    setProfileAttachment(null)
+
+    handleLogout();
   }
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);

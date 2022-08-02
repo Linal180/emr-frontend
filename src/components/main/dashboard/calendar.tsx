@@ -1,8 +1,10 @@
 // packages block
-import { useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState } from "react";
+import {
+  useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState
+} from "react";
 import classNames from "clsx";
-import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import { Box, Card, CircularProgress } from "@material-ui/core";
+import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
   AppointmentTooltip, ViewSwitcher, CurrentTimeIndicator,
@@ -23,10 +25,18 @@ import { AuthContext } from "../../../context";
 import { CalenderProps } from "../../../interfacesTypes";
 import { useCalendarStyles } from "../../../styles/calendarStyles";
 import { useIndicatorStyles } from "../../../styles/indicatorStyles";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
-import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus } from "../../../generated/graphql";
-import { isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff } from "../../../utils"
-import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG } from "../../../constants";
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../../reducers/appointmentReducer";
+import {
+  useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus
+} from "../../../generated/graphql";
+import {
+  isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff
+} from "../../../utils"
+import {
+  CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG
+} from "../../../constants";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -118,22 +128,15 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: 25 } }
-      let inputs = null
-
-      if (isSuper) {
-        inputs = { ...pageInputs }
-      } else if (isPractice) {
-        inputs = { practiceId, ...pageInputs }
-      } else if (isFacility || isStaffUser) {
-        inputs = { facilityId, ...pageInputs }
-      } else if (isDoctor) {
-        inputs = { providerId: userId, ...pageInputs }
-      }
+      const pageInputs = { paginationOptions: { page, limit: 125 } }
+      let inputs = isSuper ? {}
+        : isPractice ? { practiceId }
+          : isFacility || isStaffUser ? { facilityId }
+            : isDoctor ? { providerId: userId } : undefined
 
       !!inputs ? await findAllAppointments({
         variables: {
-          appointmentInput: { ...inputs }
+          appointmentInput: { ...inputs, ...pageInputs }
         },
       }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
@@ -164,7 +167,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
       }
 
       <Card>
-        <Box>
+        <Box className={classes.customCalender}>
           {fetchAllAppointmentsLoading &&
             <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
           }
@@ -197,8 +200,6 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
                   reload={fetchAppointments}
                 />} />
               <CurrentTimeIndicator
-                shadePreviousCells={true}
-                shadePreviousAppointments={true}
                 indicatorComponent={Indicator}
               />
             </Scheduler>

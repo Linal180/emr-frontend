@@ -19,7 +19,8 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  formatEmail, formatEnumMember, getTimeString, isSuperAdmin, setRecord, setTime, timeValidation
+  formatEmail, formatToLeadingCode, getTimeString, isSuperAdmin, setRecord,
+  setTime, timeValidation
 } from '../../../../utils';
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -32,7 +33,7 @@ import {
   FACILITY_SCHEDULE, ZIP_CODE_ENTER, SYSTEM_ROLES, SETTINGS_ROUTE, FACILITY_CREATED, USA,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, FACILITY_UPDATED, FACILITY_NOT_FOUND,
   FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, UPDATE_FACILITY, FACILITY_REGISTRATION, CREATE_FACILITY,
-  INVALID_END_TIME, 
+  INVALID_END_TIME,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -76,7 +77,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (facility && status && status === 200) {
             const {
               name, cliaIdNumber, federalTaxId, mammographyCertificationNumber, practiceId, npi,
-              tamxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
+              taxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
             } = facility;
             const { name: practiceName } = practice || {};
 
@@ -87,10 +88,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
-            tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
+            taxonomyCode?.id && setValue('tamxonomyCode', {
+              id: taxonomyCode.id,
+              name: `${taxonomyCode.code} | ${taxonomyCode.displayName}`
+            })
             startTime && setValue('startTime', getTimeString(startTime))
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatEnumMember(serviceCode)))
+            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatToLeadingCode(serviceCode), false))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
             if (contacts && contacts.length > 0) {
@@ -125,6 +129,19 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address2 && setValue('billingAddress2', address2)
               country && setValue('billingCountry', country || USA)
               state && setValue('billingState', setRecord(state, state))
+
+              dispatch({
+                type: ActionType.SET_ADD_BILLING,
+                addBilling: !!(fax || city || email || phone || address || zipCode || address2 || state)
+              })
+
+              dispatch({
+                type: ActionType.SET_BILLING_DATA, billingData: {
+                  billingFax: fax || '', billingCity: city || '', billingEmail: email || '',
+                  billingPhone: phone || '', billingAddress: address || '', billingZipCode: zipCode || '',
+                  billingAddress2: address2 || '', billingCountry: country || '', billingState: state || ''
+                }
+              })
             }
 
             if (practiceId && practiceName) {
@@ -217,7 +234,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode,
+      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode: tamxonomyCode.id,
       practiceId: facilityPractice, mammographyCertificationNumber, endTime: endTime && setTime(endTime),
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       startTime: startTime && setTime(startTime),
@@ -260,7 +277,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const handleChange = (_: ChangeEvent<{}>, newValue: string) => dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
+    dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
   const getAddressHandler = useCallback(async () => {
     if (zipCode) {
@@ -309,6 +327,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <RegisterFormComponent
               state={state}
+              isEdit={isEdit}
               isSuper={isSuper}
               dispatch={dispatch}
               getFacilityLoading={getFacilityLoading}

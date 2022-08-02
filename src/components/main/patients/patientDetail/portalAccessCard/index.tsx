@@ -55,7 +55,7 @@ const PortalAccessCard: FC<PortalCardProps> = ({ inviteAccepted }) => {
     <Box
       className='overflow-visible card-box-shadow'
       display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" bgcolor={WHITE}
-      p={3} mb={3} borderRadius={8}
+      p={3} mb={2.5} borderRadius={8}
     >
       <Box>
         <Box className={classes.userName} mr={1}> {PORTAL_ACCESS_TITLE}</Box>

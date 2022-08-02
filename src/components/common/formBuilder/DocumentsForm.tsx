@@ -12,7 +12,7 @@ import { FieldComponentProps } from '../../../interfacesTypes';
 import { useDropzoneStyles } from '../../../styles/dropzoneStyles';
 import { ActionType } from '../../../reducers/externalFormBuilderReducer'
 import {
-  ATTACHMENT_DELETED, ATTACHMENT_TITLES, BACK_SIDE, FormBuilderApiSelector, FRONT_SIDE
+  ATTACHMENT_DELETED, ATTACHMENT_TITLES, BACK_SIDE, FormBuilderApiSelector, FRONT_SIDE, PAGE_LIMIT
 } from '../../../constants'
 import {
   Attachment, AttachmentsPayload, AttachmentType, useGetAttachmentsLazyQuery, useRemoveAttachmentDataMutation
@@ -111,7 +111,7 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
 
   const fetchDocuments = useCallback(async () => {
     try {
-      patientId && await getAttachments({ variables: { getAttachment: { typeId: patientId } } })
+      patientId && await getAttachments({ variables: { getAttachment: { typeId: patientId, paginationOptions: { page: 1, limit: PAGE_LIMIT } } } })
     } catch (error) { }
   }, [getAttachments, patientId])
 

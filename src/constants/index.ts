@@ -8,7 +8,7 @@ import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
 import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
 import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
 import {
-  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, 
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
   TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
 } from "../assets/svgs";
 import {
@@ -25,14 +25,14 @@ import {
 } from "../interfacesTypes";
 // graphql and interfaces block
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapServiceEnum, setRecord, sortingValue
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
 } from "../utils";
 
 // regex
 export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const NO_SPACE_REGEX = /^[^-\s]+$/;
+export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -45,8 +45,10 @@ export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\-\s]+$/;
 export const ALPHABETS_REGEX = /^([A-Za-z]+\s)*[A-Za-z]+$/;
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
+export const NO_SPACE_AT_BOTH_ENDS_REGEX = /^[^\s]+(\s+[^\s]+)*$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
@@ -265,6 +267,7 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const TELEHEALTH = "Telehealth";
 export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
@@ -526,6 +529,8 @@ export const ICT_TEN = "ICT-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
+export const SNOMED = "SnoMed";
+export const ICD_10 = "ICD-10";
 export const HCPCS_CODES = "HCPCS Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
@@ -641,6 +646,7 @@ export const UPDATE_PRIMARY_PROVIDER = "Update primary provider";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
+export const NPI_MESSAGE = "NPI should match LUHN Pattern";
 export const GROUP_NPI = "Group NPI ID";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -708,6 +714,7 @@ export const UNIT = "Unit";
 export const INFO = "Info";
 export const PAGE_LIMIT = 9;
 export const INS_1 = "Ins 1";
+export const INS = "Ins";
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ISSUES = "Issues";
@@ -715,6 +722,7 @@ export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";
 export const INS_BAL = "Ins Bal";
 export const MODIFIER = "Modifier";
+export const INS_PAID = "Ins Paid";
 export const INS_1_PAID = "Ins 1 Paid";
 export const INS_2_PAID = "Ins 2 Paid";
 export const ROLES = "Roles";
@@ -829,6 +837,7 @@ export const REVENUE_CODE = "Revenue Code";
 export const BILLING_TYPE = "Billing Type";
 export const SERVICE_CODE = "Service Code";
 export const UPDATE_FILTER = "Update Filter";
+export const CLEAR_FILTER = "Clear Filter";
 export const ALL_LOG_TYPES = "All Log Types";
 export const REGISTERED_ON = "Registered on";
 export const RECEIVED_DATE = "Received Date";
@@ -870,6 +879,7 @@ export const FIRST_NAME = "First Name";
 export const START_TIME = "Start Time";
 export const START_DATE = "Start Date";
 export const SUPER_BILL = "Super Bill";
+export const SELECT_ANOTHER_STATUS = 'Please Select another status';
 export const DEACTIVATE = "DEACTIVATE";
 export const ADD_VITALS = "Add Vitals";
 export const SETTINGS_TEXT = "Settings";
@@ -1170,6 +1180,8 @@ export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
 export const FFE_SCHEDULE = "Fee Schedule";
 export const CREATE_CLAIM = "Create Claim";
+export const UPDATE_CLAIM = "Update Claim";
+export const SUBMIT_CLAIM = "Submit Claim";
 export const SEX_AT_BIRTH = "Sex At Birth";
 export const PAY_VIA_CARD = "Pay via Card";
 export const RELATIONSHIP = "Relationship";
@@ -1213,6 +1225,7 @@ export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
+export const SYNC = "Sync";
 export const PREFERRED_NAME = "Preferred Name";
 export const EDIT_INSURANCE = "Edit Insurance";
 export const EDIT_AGREEMENT = "Edit Agreement";
@@ -1554,6 +1567,7 @@ export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
+export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
 export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
@@ -1568,11 +1582,16 @@ export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optiona
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
 export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
+export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not acceptable";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
+export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
+export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
+export const INVALID_LICENSE_DATE_ERROR_MESSAGE = "License Term date should be after License Active date";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
+export const NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE = "White-spaces at beginning or ending is not acceptable";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
 export const DESCRIPTION_INVALID_MESSAGE = "White-spaces at start and special characters (!@#$%^&*) are not acceptable";
 export const ValidOTP = () => 'Please enter only numbers';
@@ -1695,6 +1714,7 @@ export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
+export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
   "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
@@ -1915,51 +1935,8 @@ export const MAPPED_STATES: SelectorOption[] = states.map(
   ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
 );
 
-export const MAPPED_SPECIALTIES = sortingValue(mapServiceEnum<typeof Speciality>(Speciality))
-export const MAPPED_SERVICE_CODES = sortingValue(mapServiceEnum<typeof ServiceCode>(ServiceCode))
-
-export const TEMPORARY_CPT_CODES = [
-  {
-    cptCode: "86318",
-    description: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip);"
-  },
-  {
-    cptCode: "86408",
-    description: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); screen"
-  },
-  {
-    cptCode: "86413",
-    description: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) antibody, quantitative"
-  },
-  {
-    cptCode: "86769",
-    description: "Antibody; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
-  },
-  {
-    cptCode: "87301",
-    description: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; adenovirus enteric types 40/41"
-  },
-  {
-    cptCode: "0223U",
-    description: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
-  },
-  {
-    cptCode: "0226U",
-    description: "Surrogate viral neutralization test (sVNT), severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), ELISA, plasma, serum"
-  },
-  {
-    cptCode: "0240U",
-    description: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 3 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B), upper respiratory specimen, each pathogen reported as detected or not detected"
-  },
-  {
-    cptCode: "99072",
-    description: "Additional supplies, materials, and clinical staff time over and above those usually included in an office visit or other non-facility service(s), when performed during a Public Health Emergency, as defined by law, due to respiratory-transmitted infectious disease"
-  },
-  {
-    cptCode: "0001A",
-    description: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
-  },
-]
+export const MAPPED_SPECIALTIES = sortingValue(mapEnumWithCode<typeof Speciality>(Speciality))
+export const MAPPED_SERVICE_CODES = sortingValue(mapEnumWithCode<typeof ServiceCode>(ServiceCode))
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
@@ -2567,10 +2544,11 @@ export enum ITEM_MODULE {
   insurance = 'insurance',
   documentTypes = 'documentTypes',
   icdCodes = 'IcdCodes',
-  cptCode = 'CPTCode',
+  cptCode = 'CPT Code',
   claimStatus = 'claimStatus',
   feeSchedule = 'feeSchedule',
   cptFeeSchedule = 'cptFeeSchedule',
+  taxonomies = 'taxonomies',
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -2629,6 +2607,7 @@ export enum MODULE_TYPES {
   Schedule = "Schedule",
   Schedules = "Schedules",
   Permission = "Permission",
+  Agreements = 'Agreements',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
@@ -2644,6 +2623,7 @@ export const MODULES = [
   "Appointment",
   "Service",
   "Schedule",
+  'Agreements',
   "Lab Orders",
   "Patient Charting",
 ];
@@ -3226,6 +3206,7 @@ export const ICD_TEN_CODES_DATA = [
 ];
 
 export enum USER_PERMISSIONS {
+  me = 'me',
   fetchAllUsers = "fetchAllUsers",
   fetchUser = "fetchUser",
   getUser = "getUser",
@@ -3331,7 +3312,12 @@ export enum USER_PERMISSIONS {
   getLabTest = "getLabTest",
   findAllAllergies = "findAllAllergies",
   updatePatientVital = "updatePatientVital",
-  addPatientVital = "addPatientVital"
+  addPatientVital = "addPatientVital",
+  fetchAllAgreements = 'fetchAllAgreements',
+  fetchAgreement = 'fetchAgreement',
+  removeAgreement = 'removeAgreement',
+  updateAgreement = 'updateAgreement',
+  createAgreement = 'createAgreement',
 }
 
 export const USER_MENU_ITEMS = [
@@ -3383,7 +3369,6 @@ export const PRACTICE_SETTINGS_ITEMS = [
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me'
-export const TELEHEALTH_TEXT = 'Telehealth'
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
@@ -4418,3 +4403,9 @@ export const MODULE_LOGS_TYPES = [
   "Permission",
   "RolePermission",
 ]
+
+export enum SystemBillingStatuses {
+  READY_TO_CLAIM = 'ready_to_claim',
+  REJECTED = 'rejected',
+  ACKNOWLEDGED = 'acknowledged'
+}

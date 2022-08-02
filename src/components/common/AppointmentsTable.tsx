@@ -168,7 +168,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!appointments && appointments.length > 1) {
+            if (!!appointments && appointments.length) {
               await fetchAppointments()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, appointments?.length || 0) })

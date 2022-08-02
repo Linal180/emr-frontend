@@ -809,18 +809,18 @@ input::-webkit-inner-spin-button {
 /* masonry-css */
 .masonry-container {
   -moz-column-count: 2;
-  -moz-column-gap: 1.5%;
+  -moz-column-gap: 1%;
   -moz-column-width: 48%;
   -webkit-column-count: 2;
-  -webkit-column-gap: 1.5%;
+  -webkit-column-gap: 1%;
   -webkit-column-width: 48%;
   column-count: 2;
-  column-gap: 1.5%;
+  column-gap: 1%;
   column-width: 48%;
 }
 
 .masonry-box {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   break-inside: avoid;
 }
 

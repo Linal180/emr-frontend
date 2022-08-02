@@ -1,6 +1,7 @@
 // packages block
 import { FC } from "react";
 import { Link, useParams } from "react-router-dom";
+import { VideocamOutlined } from "@material-ui/icons";
 import { Box, Typography, Button } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
@@ -12,7 +13,7 @@ import { AppointmentCreateType, AppointmentStatus, useUpdateAppointmentMutation 
 import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
 import {
   RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
-  CHECK_IN_ROUTE, MINUTES, TELEHEALTH_URL, TELEHEALTH_TEXT
+  CHECK_IN_ROUTE, MINUTES, TELEHEALTH_URL, START_TELEHEALTH
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
@@ -82,11 +83,8 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
 
                 <Box p={1} />
                 {appointmentCreateType === AppointmentCreateType.Telehealth
-                  ? <Button type="submit" variant="contained" color="secondary"
-                    onClick={() => window.open(TELEHEALTH_URL)}
-                    disabled={updateAppointmentLoading}
-                  >
-                    {TELEHEALTH_TEXT}
+                  ? <Button variant="contained" className="blue-button-New" onClick={() => window.open(TELEHEALTH_URL)}>
+                    <VideocamOutlined />&nbsp; {START_TELEHEALTH}
                   </Button>
 
                   : <Button type="submit" variant="contained" color="secondary"
