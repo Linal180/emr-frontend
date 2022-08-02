@@ -83,11 +83,12 @@ import { SuperBill } from "../pages/main/superBill";
 import { Maintenance } from "../pages/maintenance";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import ClaimStatus from "../pages/main/billing/claimStatusListing";
 // constants, contexts and utils
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, AGREEMENTS_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_PAYMENT, AUDIT_LOG_ROUTE,
   AUTO_LOGOUT_ROUTE, CALENDAR_ROUTE, CANCELLATION_ROUTE, CANCEL_APPOINTMENT, CHANGE_PASSWORD_ROUTE, CHART_ROUTE,
-  CHECK_IN_ROUTE, CLAIM_FEED_ROUTE, CLAIM_STATUSES_ROUTE, COVERAGE_ROUTE, CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE,
+  CHECK_IN_ROUTE, CLAIM_FEED_ROUTE, CLAIM_STATUSES_ROUTE, CLAIM_STATUS_ROUTE, COVERAGE_ROUTE, CREATE_LAB_ORDERS_ROUTE, DASHBOARD_ROUTE,
   DOCTORS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ELIGIBILITY_ROUTE, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE,
   FACILITY_PUBLIC_APPOINTMENT_ROUTE, FACILITY_SERVICES_ROUTE, FEE_SCHEDULE_ROUTE, FORGET_PASSWORD_ROUTE,
   FORM_BUILDER_COPY_TEMPLATE_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_ROUTE,
@@ -169,6 +170,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
       <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
       <PrivateRoute exact path={CLAIM_FEED_ROUTE} component={ClaimFeed} />
+      <PrivateRoute exact path={CLAIM_STATUS_ROUTE} component={ClaimStatus} />
       <PrivateRoute exact path={INVOICES_ROUTE} component={Invoices} />
       <PrivateRoute exact path={STAFF_ROUTE} component={Staff} permission={USER_PERMISSIONS.findAllStaff} />
       <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} permission={USER_PERMISSIONS.createStaff} />
