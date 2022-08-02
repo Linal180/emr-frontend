@@ -470,21 +470,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Grid item md={8} sm={12} xs={12}>
                 <CardComponent cardTitle={APPOINTMENT}>
                   <Grid container spacing={3}>
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Typography variant='body1'>{TYPE}</Typography>
+                    {!isEdit &&
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Typography variant='body1'>{TYPE}</Typography>
 
-                      <Box className={chartingClasses.toggleProblem}>
-                        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                          {appointmentTypes.map(type =>
-                            <Box onClick={() => handleAppointmentType(type)}
-                              className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
-                            >
-                              <Typography variant='h6'>{type}</Typography>
-                            </Box>
-                          )}
+                        <Box className={chartingClasses.toggleProblem}>
+                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                            {appointmentTypes.map(type =>
+                              <Box onClick={() => handleAppointmentType(type)}
+                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
+                              >
+                                <Typography variant='h6'>{type}</Typography>
+                              </Box>
+                            )}
+                          </Box>
                         </Box>
-                      </Box>
-                    </Grid>
+                      </Grid>}
 
                     <Grid item md={6} sm={12} xs={12}>
                       {isHigherAdmin ?
