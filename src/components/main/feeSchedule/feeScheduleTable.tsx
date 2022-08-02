@@ -4,19 +4,22 @@ import { Pagination } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import {
-  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography
+  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button,
 } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
 import FeeScheduleForm from './feeScheduleForm';
 import SideDrawer from '../../common/SideDrawer';
+import BackButton from "../../common/BackButton";
+import PageHeader from "../../common/PageHeader";
 import TableLoader from "../../common/TableLoader";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import PracticeSelector from "../../common/Selector/PracticeSelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../context";
+import { SelectorOption } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon, EyeIcon } from "../../../assets/svgs";
 import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
@@ -27,12 +30,13 @@ import {
 import {
   ACTION, EFFECTIVE_DATE, EXPIRY_DATE, ELEVEN_PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT, TOTAL_CODES,
   DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE,
+  FEE_SCHEDULE_BREAD, SETTINGS_ROUTE,
 } from "../../../constants";
-import { SelectorOption } from "../../../interfacesTypes";
+
 
 const FeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const methods = useForm<{ selectedPractice: SelectorOption}>({ mode: "all" });
+  const methods = useForm<{ selectedPractice: SelectorOption }>({ mode: "all" });
   const { watch } = methods
 
   const { selectedPractice } = watch();
@@ -169,8 +173,18 @@ const FeeTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{FEE_SCHEDULE}</Typography>
+      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Box display='flex'>
+          <BackButton to={SETTINGS_ROUTE} />
+
+          <Box ml={2} />
+
+          <PageHeader
+            title={FEE_SCHEDULE}
+            path={[FEE_SCHEDULE_BREAD]}
+          />
+        </Box>
+
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >

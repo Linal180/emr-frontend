@@ -1,6 +1,6 @@
-import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
+import { makeStyles, Theme, Tooltip, withStyles } from "@material-ui/core";
 import {
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE, GREEN_TWO, GREY_EIGHTEEN
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN, GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -191,6 +191,10 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
+  fullFlex:{
+    flex : 1
+  },
+  
   firstRowBg: {
     backgroundColor: GREEN_TWO,
   },
@@ -200,10 +204,12 @@ export const useTableStyles = makeStyles(() => ({
       backgroundColor: GREY_EIGHTEEN,
     },
   },
-  fullFlex: {
-    flex: 1
-  },
+
   btnWrap: {
     whiteSpace: 'nowrap',
+  },
+
+  claimTableHead: {
+    backgroundColor: GREY_ELEVEN,
   },
 }))

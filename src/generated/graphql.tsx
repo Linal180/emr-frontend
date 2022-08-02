@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -512,6 +511,13 @@ export enum BillingStatus {
   Paid = 'PAID',
   Refund = 'REFUND'
 }
+
+export type BillingsPayload = {
+  __typename?: 'BillingsPayload';
+  billings: Array<Billing>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
+};
 
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
@@ -1848,6 +1854,16 @@ export type FeeSchedulePayload = {
   __typename?: 'FeeSchedulePayload';
   feeSchedule?: Maybe<FeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FetchBillingClaimStatusesInput = {
+  claimId?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -4209,6 +4225,7 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4358,6 +4375,11 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchBillingClaimStatusesArgs = {
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 
@@ -7260,6 +7282,13 @@ export type CreateFormTemplateMutationVariables = Exact<{
 
 
 export type CreateFormTemplateMutation = { __typename?: 'Mutation', createFormTemplate: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null, error?: string | null } | null, form?: { __typename?: 'Form', id: string } | null } };
+
+export type FindAllPublicFacilityQueryVariables = Exact<{
+  facilityInput: FacilityInput;
+}>;
+
+
+export type FindAllPublicFacilityQuery = { __typename?: 'Query', findAllPublicFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FetchAllInsurancesQueryVariables = Exact<{
   insuranceInput: InsurancePaginationInput;
@@ -13587,6 +13616,53 @@ export function useCreateFormTemplateMutation(baseOptions?: Apollo.MutationHookO
 export type CreateFormTemplateMutationHookResult = ReturnType<typeof useCreateFormTemplateMutation>;
 export type CreateFormTemplateMutationResult = Apollo.MutationResult<CreateFormTemplateMutation>;
 export type CreateFormTemplateMutationOptions = Apollo.BaseMutationOptions<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>;
+export const FindAllPublicFacilityDocument = gql`
+    query FindAllPublicFacility($facilityInput: FacilityInput!) {
+  findAllPublicFacility(facilityInput: $facilityInput) {
+    facilities {
+      id
+      name
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPublicFacilityQuery__
+ *
+ * To run a query within a React component, call `useFindAllPublicFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPublicFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPublicFacilityQuery({
+ *   variables: {
+ *      facilityInput: // value for 'facilityInput'
+ *   },
+ * });
+ */
+export function useFindAllPublicFacilityQuery(baseOptions: Apollo.QueryHookOptions<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>(FindAllPublicFacilityDocument, options);
+      }
+export function useFindAllPublicFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>(FindAllPublicFacilityDocument, options);
+        }
+export type FindAllPublicFacilityQueryHookResult = ReturnType<typeof useFindAllPublicFacilityQuery>;
+export type FindAllPublicFacilityLazyQueryHookResult = ReturnType<typeof useFindAllPublicFacilityLazyQuery>;
+export type FindAllPublicFacilityQueryResult = Apollo.QueryResult<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>;
 export const FetchAllInsurancesDocument = gql`
     query FetchAllInsurances($insuranceInput: InsurancePaginationInput!) {
   fetchAllInsurances(insuranceInput: $insuranceInput) {
