@@ -129,7 +129,7 @@ const nameValidationSchema = (label: string, required: boolean) => yup.string()
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
 const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGEX) }
 const npiSchema = {
-  npi: yup.string().required()
+  npi: yup.string()
     .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
 }
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
