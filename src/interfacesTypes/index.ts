@@ -1860,8 +1860,9 @@ export interface DoctorAppointmentsAndPatientsProps {
 }
 
 export interface FeeScheduleFormProps {
-  state: FeeScheduleState,
+  state: FeeScheduleState;
   dispatcher: Dispatch<FeeScheduleAction>
+  reload?: Function;
 }
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {

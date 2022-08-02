@@ -743,6 +743,7 @@ export const ORDER_NUM = "Order #";
 export const USERNAME = "Username";
 export const SIGN_OFF = "Sign Off";
 export const EXTENDED_PAGE_LIMIT = 12;
+export const ELEVEN_PAGE_LIMIT = 11;
 export const ADD_BILL = "Add Bill";
 export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
