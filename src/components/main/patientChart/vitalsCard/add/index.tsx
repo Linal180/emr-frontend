@@ -17,11 +17,11 @@ import {
   useUpdatePatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
 import {
-  ADD_VITALS, BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, CANCEL_TEXT, DATE, FEVER_UNITS, 
-  HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT, 
-  MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, 
+  ADD_VITALS, BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, CANCEL_TEXT, DATE, FEVER_UNITS,
+  HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT, KG_PER_METER_SQUARE_TEXT,
+  MMHG_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS,
   RESPIRATORY_RATE_TEXT, RPM_TEXT, SAVE_TEXT, SMOKING_STATUS_TEXT, VITAL_ERROR_MSG, WEIGHT_TEXT,
-  MAPPED_SMOKING_STATUS, PULSE_TEXT, TEMPERATURE_TEXT
+  MAPPED_SMOKING_STATUS, PULSE_TEXT, TEMPERATURE_TEXT, UPDATE_VITALS
 } from '../../../../../constants';
 
 import { patientVitalSchema } from '../../../../../validationSchemas';
@@ -30,13 +30,13 @@ import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { GRAY_SIX, GREY_TWO } from '../../../../../theme';
 import {
-  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI,
+  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, formatValue, getBMI,
   getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
   kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, roundOffUpto2Decimal
 } from '../../../../../utils';
 
 export const AddVitals = memo(({
-  fetchPatientAllVitals, patientStates, dispatcher, isOpen = false, handleClose, vitalToEdit }: AddPatientVitalsProps) => {
+  fetchPatientAllVitals, patientStates, dispatcher, handleClose, }: AddPatientVitalsProps) => {
   const chartingClasses = useChartingStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
@@ -44,7 +44,7 @@ export const AddVitals = memo(({
   const { PatientHeight, PatientWeight, patientHeadCircumference, patientTemperature } = watch()
   const {
     prevHeightUnit, heightUnit, isHeightEdit, isWeightEdit, prevWeightUnit, weightUnit, isHeadEdit, prevHeadUnit,
-    headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit } = patientStates || {}
+    headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit, openVital, vitalToEdit } = patientStates || {}
   const { id: feverUnitId } = feverUnit
   const { id: heightUnitId } = heightUnit
   const { id: weightUnitId } = weightUnit
@@ -160,7 +160,7 @@ export const AddVitals = memo(({
       setValue('patientHeadCircumference', patientHeadCircumference || '')
       setValue('PatientHeight', PatientHeight || '')
       setValue('PatientWeight', PatientWeight || '')
-      setValue('smokingStatus', { id: smokingStatus as SmokingStatus, name: smokingStatus })
+      setValue('smokingStatus', { id: smokingStatus as SmokingStatus, name: formatValue(smokingStatus) })
       setValue('systolicBloodPressure', systolicBloodPressure || '')
       setValue('diastolicBloodPressure', diastolicBloodPressure || '')
       setValue('PatientBMI', PatientBMI || '')
@@ -315,9 +315,9 @@ export const AddVitals = memo(({
   }, [isTempEdit, tempUnitConvertHandler])
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
+    <Dialog fullWidth maxWidth="sm" open={openVital} onClose={handleModalClose}>
       <DialogTitle>
-        <Typography variant="h4">{ADD_VITALS}</Typography>
+        <Typography variant="h4">{vitalToEdit ? UPDATE_VITALS : ADD_VITALS}</Typography>
       </DialogTitle>
 
       <FormProvider {...methods}>
@@ -329,42 +329,10 @@ export const AddVitals = memo(({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                <DatePicker name='vitalsDate' label={''} />
+                <DatePicker defaultValue={new Date()} name='vitalsDate' label={''} />
               </Grid>
 
               <Grid item md={3} sm={12} xs={12}></Grid>
-            </Grid>
-
-            <Grid container alignContent='center' alignItems='center'>
-              <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{TEMPERATURE_TEXT}</Typography>
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <InputController
-                  fieldType="number"
-                  controllerName="patientTemperature"
-                  controllerLabel={''}
-                  notStep
-                />
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
-                  <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                    {FEVER_UNITS?.map((temp, index) => {
-                      const { id, name } = temp || {}
-                      return (<Box key={`${index}-${name}-${id}`}
-                        className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
-                        onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
-                      >
-                        <Typography variant='h6'>{name}</Typography>
-                      </Box>
-                      )
-                    })}
-                  </Box>
-                </Box>
-              </Grid>
             </Grid>
 
             <Grid container alignContent='center' alignItems='center'>
@@ -612,6 +580,38 @@ export const AddVitals = memo(({
                     })}
                   </Box>
                 </Box>
+              </Grid>
+
+              <Grid container alignContent='center' alignItems='center'>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Typography variant='body1'>{TEMPERATURE_TEXT}</Typography>
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="number"
+                    controllerName="patientTemperature"
+                    controllerLabel={''}
+                    notStep
+                  />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <Box className={`${chartingClasses.toggleProblem} ${chartingClasses.toggleBox}`}>
+                    <Box display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                      {FEVER_UNITS?.map((temp, index) => {
+                        const { id, name } = temp || {}
+                        return (<Box key={`${index}-${name}-${id}`}
+                          className={id === feverUnitId ? 'selectedBox selectBox' : 'selectBox'}
+                          onClick={() => dispatcher({ type: ActionType.SET_FEVER_UNIT, feverUnit: temp })}
+                        >
+                          <Typography variant='h6'>{name}</Typography>
+                        </Box>
+                        )
+                      })}
+                    </Box>
+                  </Box>
+                </Grid>
               </Grid>
             </Grid>
           </form>

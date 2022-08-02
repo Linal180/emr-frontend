@@ -11,6 +11,7 @@ export interface State {
   totalPages: number;
   currentDate: string;
   openDelete: boolean;
+  openMoreInfo: boolean;
   searchQuery: string;
   deleteDoctorId: string;
   doctorFacilityId: string;
@@ -34,6 +35,7 @@ export const initialState: State = {
   currentDate: '',
   searchQuery: "",
   openDelete: false,
+  openMoreInfo: false,
   deleteDoctorId: "",
   doctorFacilityId: "",
   provider: {
@@ -57,6 +59,7 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_CURRENT_DATE = 'setCurrentDate',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_OPEN_MORE_INFO = 'setOpenMoreInfo',
   SET_DELETE_DOCTOR_ID = 'setDeleteDoctorId',
   SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
 }
@@ -73,12 +76,13 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_PROVIDER, provider: SelectorOption }
+  | { type: ActionType.SET_OPEN_MORE_INFO; openMoreInfo: boolean }
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_DELETE_DOCTOR_ID; deleteDoctorId: string }
   | { type: ActionType.SET_DOCTOR_FACILITY_ID; doctorFacilityId: string }
   | { type: ActionType.SET_DOCTORS; doctors: AllDoctorPayload['doctors'] }
   | { type: ActionType.SET_ALL_DOCTORS; allDoctors: AllDoctorPayload['doctors'] }
-  
+
 export const doctorReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case ActionType.SET_PAGE:
@@ -175,6 +179,12 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         provider: action.provider
+      }
+
+    case ActionType.SET_OPEN_MORE_INFO:
+      return {
+        ...state,
+        openMoreInfo: action.openMoreInfo
       }
   };
 }

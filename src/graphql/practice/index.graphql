@@ -39,8 +39,16 @@ query GetPractice($getPractice: GetPractice!){
       medicare
       medicaid
       champus
+      taxId
+      npi
       createdAt
       updatedAt
+
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
 
       attachments {
         id
@@ -52,6 +60,14 @@ query GetPractice($getPractice: GetPractice!){
         createdAt
         updatedAt
       }
+    }
+
+    practiceAdmin {
+      firstName
+      lastName
+      id
+      phone
+      email
     }
   }
 }

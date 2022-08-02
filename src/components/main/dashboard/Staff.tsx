@@ -1,38 +1,22 @@
 // packages block
 import { FC } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
+import { Box, Card, Grid, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
-import Selector from "../../common/Selector";
-import DatePicker from "../../common/DatePicker";
-import TimePicker from "../../common/TimePicker";
-import InputController from "../../../controller";
 import AppointmentsComponent from "../appointments/appointmentsListing";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 // constant block
-import {
-  APPOINTMENTS_TEXT, APPOINTMENT_TYPE, CREATE_APPOINTMENT, CREATE_PATIENT, DATE, DOB, EMPTY_OPTION,
-  FIRST_NAME, HOME_PHONE, LAST_NAME, LEGAL_SEX, MOBILE_PHONE, PATIENT, QUICK_APPOINTMENTS,
-  QUICK_PATIENT_REGISTRATIONS, REASON, TIME_SLOT, USUAL_PROVIDER,
-} from "../../../constants";
+import { APPOINTMENTS_TEXT } from "../../../constants";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
-  const methods = useForm<any>({
-    mode: "all",
-  });
-
   return (
     <>
+      <PatientSearchComponent />
 
-      <Grid container spacing={3}>
-        <Grid item md={12} sm={12} xs={12}>
-          <PatientSearchComponent />
-        </Grid>
-
+      <Grid container spacing={2}>
         <Grid item md={12} sm={12} xs={12}>
           <Card>
-            <Box p={3} pb={2}>
+            <Box px={3} pt={3}>
               <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
 
               <Box p={2} />
@@ -43,9 +27,9 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Box p={1.5} />
+      <Box p={1} />
 
-      <FormProvider {...methods}>
+      {/* <FormProvider {...methods}>
         <form>
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
@@ -178,14 +162,14 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
             </Grid>
           </Grid>
         </form>
-      </FormProvider>
+      </FormProvider> 
 
-      <Box p={1.5} />
+      <Box p={1.5} />*/}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={12} sm={12} xs={12}>
           <Card>
-            <Box p={3} pb={2}>
+            <Box px={3} pt={3}>
               <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
 
               <CalendarComponent showHeader={false} />

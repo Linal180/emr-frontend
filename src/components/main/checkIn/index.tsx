@@ -1,21 +1,21 @@
 // packages block
-import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
-import { Check, ChevronRight } from '@material-ui/icons';
-import clsx from 'clsx';
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { Reducer, useCallback, useEffect, useReducer, useRef } from "react";
+import clsx from 'clsx';
+import {
+  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
+} from "@material-ui/core";
+import { Check, ChevronRight } from '@material-ui/icons';
 // component block
-import Alert from "../../common/Alert";
-import PatientForm from "../patients/patientForm";
-import BillingComponent from "./BillingComponent";
-import PatientProfileHero from "../../common/patient/profileHero";
-import InsuranceComponent from "../patients/patientDetail/insurance";
-// constants, interfaces, utils block
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
+import Alert from "../../common/Alert";
+import PatientForm from "../patients/patientForm";
+import BillingComponent from "../billing/addBill/BillingComponent";
+import PatientProfileHero from "../../common/patient/profileHero";
 // constants, interfaces, utils block
 import {
-  CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
+  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
 } from "../../../constants";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
@@ -59,13 +59,12 @@ const CheckInComponent = (): JSX.Element => {
 
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-  const { appointment } = state
+  const { appointment, activeStep } = state
   const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
 
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
-  const [activeStep, setActiveStep] = useState<number>(0);
 
   const appointmentInfo = {
     name: `${appointmentType?.name ?? ''}  ${appointmentTime}`,
@@ -75,7 +74,7 @@ const CheckInComponent = (): JSX.Element => {
   const shouldDisableEdit = status === AppointmentStatus.Discharged
 
   useEffect(() => {
-    setActiveStep(Number(checkInActiveStep) ?? 0)
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
   }, [checkInActiveStep])
 
   const [getAppointment] = useGetAppointmentLazyQuery({
@@ -186,7 +185,7 @@ const CheckInComponent = (): JSX.Element => {
       }
     })
 
-    setActiveStep(step);
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
   };
 
   const getStepContent = (step: number) => {
@@ -195,16 +194,17 @@ const CheckInComponent = (): JSX.Element => {
         return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
       case 1:
         return <PatientInfo />
+      // case 2:
+      //   return <Insurance />
       case 2:
-        return <Insurance />
-      case 3:
         return <Chart />
+      case 3:
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} />
       case 4:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={handleStep} />
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
-        return 'Unknown step';
+        return <CircularProgress />;
     }
   }
 
@@ -221,7 +221,7 @@ const CheckInComponent = (): JSX.Element => {
           <Typography variant="h4">{PATIENT_INFO}</Typography>
 
           <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-            {INSURANCE}
+            {TO_CHART}
             <ChevronRight />
           </Button>
         </Box>
@@ -239,21 +239,21 @@ const CheckInComponent = (): JSX.Element => {
     </>
 
   // 2- INSURANCE
-  const Insurance = () =>
-    <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{INSURANCE}</Typography>
+  // const Insurance = () =>
+  //   <>
+  //     <Card>
+  //       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+  //         <Typography variant="h4">{INSURANCE}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-            {TO_CHART}
-            <ChevronRight />
-          </Button>
-        </Box>
-        <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
-        <Box p={2}></Box>
-      </Card>
-    </>
+  //         <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
+  //           {TO_CHART}
+  //           <ChevronRight />
+  //         </Button>
+  //       </Box>
+  //       <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+  //       <Box p={2}></Box>
+  //     </Card>
+  //   </>
 
   // 3- CHART
   const Chart = () =>
@@ -262,7 +262,7 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{CHART_TEXT}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(4)}>
+          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
             {TO_LAB_ORDERS}
             <ChevronRight />
           </Button>
@@ -287,13 +287,13 @@ const CheckInComponent = (): JSX.Element => {
           />
         </Box>
 
-        <Box p={2} />
+        <Box p={1.5} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Typography variant="h6" color="textPrimary">{`Encounter on ${appointmentTime}`}</Typography>
         </Box>
 
-        <Box p={2} />
+        <Box p={1.5} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
@@ -303,7 +303,7 @@ const CheckInComponent = (): JSX.Element => {
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />
-                    <ChevronRightIcon />
+                    {!(CHECK_IN_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
                   </Box>
                 </StepLabel>
               </Step>
@@ -312,7 +312,7 @@ const CheckInComponent = (): JSX.Element => {
         </Box>
       </Box>
 
-      <Box mt={2}>
+      <Box mt={1}>
         <Typography>{getStepContent(activeStep)}</Typography>
       </Box>
     </>

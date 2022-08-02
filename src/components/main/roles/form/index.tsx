@@ -25,31 +25,32 @@ import {
 import {
   DESCRIPTION, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET, ROLES_ROUTE,
   ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED, SAVE_TEXT, SET_PERMISSIONS, ROLES_TEXT,
-  ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED,
+  ROLES_ADD_BREAD, ROLES_EDIT_BREAD, ROLES_BREAD, ROLE_ALREADY_EXIST, ROLE_CREATED, SYSTEM_ROLES,
+  USER_PERMISSIONS,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { permissions } = useContext(PermissionContext)
   const { addRoleList, updateRoleList } = useContext(ListContext)
   const [ids, setIds] = useState<string[]>([])
+
   const [modules, setModules] = useState<string[]>([])
   const [custom, setCustom] = useState<boolean>(true)
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
-  const isSuper = isSuperAdmin(roles);
 
+  const isSuper = isSuperAdmin(roles);
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
   });
-  const { handleSubmit, reset, setValue } = methods;
+  const { handleSubmit, reset, setValue, watch } = methods;
+  const { role } = watch()
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
-      if (ids.includes(id)) {
+      ids.includes(id) ?
         setIds(ids.filter(permission => permission !== id))
-      } else {
-        setIds([...ids, id])
-      }
+        : setIds([...ids, id])
     }
   };
 
@@ -216,7 +217,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
 
-              {(custom || isSuper) &&
+              {custom &&
                 <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
                   {SAVE_TEXT}
                 </Button>
@@ -225,25 +226,27 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <Box p={2} />
 
-            {loading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
-              <Grid container spacing={3}>
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="role"
-                    controllerLabel={ROLE_NAME}
-                  />
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="description"
-                    controllerLabel={DESCRIPTION}
-                  />
-                </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12}>
+                <InputController
+                  isRequired
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="role"
+                  controllerLabel={ROLE_NAME}
+                />
               </Grid>
-            )}
+
+              <Grid item md={6} sm={12}>
+                <InputController
+                  isRequired
+                  fieldType="text"
+                  disabled={!custom}
+                  controllerName="description"
+                  controllerLabel={DESCRIPTION}
+                />
+              </Grid>
+            </Grid>
           </Box>
         </Card>
 
@@ -252,6 +255,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         {isEdit && MODULES.map((module, index) => {
           if (module !== MODULE_TYPES.Practice) {
             let modulePermissions = [];
+
             if (module === MODULE_TYPES.Service) {
               modulePermissions = permissions?.filter(permission =>
                 permission?.moduleType === MODULE_TYPES.Service
@@ -260,6 +264,10 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               modulePermissions = permissions?.filter(permission =>
                 permission?.moduleType === MODULE_TYPES.Schedule
                 || permission?.moduleType === MODULE_TYPES.Schedules) || []
+
+            } else if (module === MODULE_TYPES.User) {
+              modulePermissions = permissions?.filter(permission =>
+                permission?.moduleType === module && permission?.name !== USER_PERMISSIONS.me) || []
             } else {
               modulePermissions = permissions?.filter(permission => permission?.moduleType === module) || []
             }
@@ -274,7 +282,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <FormGroup>
                         <FormControlLabel
                           control={
-                            <Box className='permissionDenied'>
+                            <Box>
                               <Checkbox disabled={!(custom || isSuper)} color="primary" checked={modules.includes(module)}
                                 onChange={() => handleAllIds(module, allIds)} />
                             </Box>
@@ -285,11 +293,14 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </FormGroup>
                     </Grid>
 
-
                     {index === 0 && (custom || isSuper) &&
-                      <Button onClick={setPermissions} variant='contained' color='secondary' disabled={assignPermissionLoading}
-                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
-                    }
+                      <Button onClick={setPermissions}
+                        variant='contained' color='secondary'
+                        disabled={assignPermissionLoading}
+                        className='blue-button-new'
+                      >
+                        {SET_PERMISSIONS}
+                      </Button>}
                   </Box>
 
                   <Box p={2} />
@@ -304,9 +315,13 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Box className='permissionDenied'>
-                                    <Checkbox disabled={!(custom || isSuper)} color="primary" checked={ids.includes(id || '')}
-                                      onChange={() => handleChangeForCheckBox(id || '')} />
+                                  <Box>
+                                    <Checkbox
+                                      color="primary"
+                                      checked={ids.includes(id || '')}
+                                      disabled={!(custom || isSuper) || role === SYSTEM_ROLES.SuperAdmin}
+                                      onChange={() => handleChangeForCheckBox(id || '')}
+                                    />
                                   </Box>
                                 }
                                 label={formatPermissionName(name || '')}

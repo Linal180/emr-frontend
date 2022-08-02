@@ -4,7 +4,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderServices, requiredLabel } from "../../../utils";
+import { renderServices, requiredLabel, sortingValue } from "../../../utils";
 import { ServiceSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
@@ -73,7 +73,7 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={serviceType}
             disabled={disabled}
             disableClearable

@@ -3,51 +3,51 @@ import { FormsPayload, FormTabsInputs } from "../generated/graphql";
 import { FormInitialType } from "../interfacesTypes";
 
 export interface State {
-  isActive: boolean;
-  openTemplate: boolean;
-  formName: string;
-  colMenu: HTMLElement | null;
-  selected: FormInitialType;
-  formValues: FormTabsInputs[];
   isEdit: string;
+  formName: string;
+  isActive: boolean;
+  tabOptions: string;
+  openTemplate: boolean;
   sectionValue: string;
-  preDefinedComponent: FormsPayload['forms'],
   formFacility: string;
   formPractice: string;
   selectedTab: string;
-  tabOptions: string
+  selected: FormInitialType;
+  colMenu: HTMLElement | null;
+  formValues: FormTabsInputs[];
+  preDefinedComponent: FormsPayload['forms'];
 }
 
 export const initialState: State = {
-  isActive: false,
-  openTemplate: false,
+  isEdit: '',
   formName: '',
   colMenu: null,
-  selected: FIELD_EDIT_INITIAL_VALUES,
-  formValues: getFormInitialValues(),
-  isEdit: '',
+  tabOptions: '',
+  isActive: false,
   sectionValue: '',
-  preDefinedComponent: [],
   formFacility: "",
   formPractice: "",
   selectedTab: '0',
-  tabOptions: ''
+  openTemplate: false,
+  preDefinedComponent: [],
+  selected: FIELD_EDIT_INITIAL_VALUES,
+  formValues: getFormInitialValues(),
 }
 
 export enum ActionType {
+  SET_TAB = 'setTab',
   SET_ACTIVE = 'setIsActive',
-  SET_OPEN_TEMPLATE = 'setOpenTemplate',
-  SET_FORM_NAME = 'setFormName',
   SET_COL_MENU = 'setColMenu',
-  SET_SELECTED_FIELD = 'setSelected',
-  SET_FORM_VALUES = 'setFormValues',
+  SET_FACILITY = "setFacility",
   SET_SECTION_EDIT = 'setEdit',
+  SET_PRACTICE = "setPractice",
+  SET_FORM_NAME = 'setFormName',
+  SET_TAB_OPTIONS = 'setSelectTab',
+  SET_FORM_VALUES = 'setFormValues',
+  SET_SELECTED_FIELD = 'setSelected',
+  SET_OPEN_TEMPLATE = 'setOpenTemplate',
   SET_SECTION_VALUE = 'setSectionValue',
   SET_PRE_DEFINED_COMPONENTS = 'setPreDefinedComponents',
-  SET_FACILITY = "setFacility",
-  SET_PRACTICE = "setPractice",
-  SET_TAB = 'setTab',
-  SET_TAB_OPTIONS = 'setSelectTab'
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |

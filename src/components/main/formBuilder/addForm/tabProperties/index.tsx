@@ -42,6 +42,7 @@ const TabProperties = ({ dispatch, formState }: TabPropertiesProps) => {
       return tab
     })
     name && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+    name && dispatch({ type: ActionType.SET_TAB_OPTIONS, tabOptions: '' })
     reset()
   };
 
@@ -49,20 +50,18 @@ const TabProperties = ({ dispatch, formState }: TabPropertiesProps) => {
   return (
     <FormProvider {...methods}>
       <Box className={classes.main}>
-        <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
+        <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <Typography variant='h4'>{PROPERTIES_TEXT}</Typography>
 
           <Button type='button' onClick={handleSubmit(submitHandler)}
-            variant={'contained'} color="primary">
+            variant={'contained'} color="primary" disabled={!tabOptions}>
             {SAVE_TEXT}
           </Button>
 
         </Box>
 
-        <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">
+        <Box mt={4} pt={1}>
           <Grid container spacing={2}>
-
-
             <Grid item md={12}>
               <LabeledInputController
                 fieldType="text"

@@ -45,6 +45,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         name
         price
         color
+        duration
       }
     }
   }
@@ -276,6 +277,39 @@ query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmen
     }
     
 		 appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+query FindPatientLastAppointment($lastVisitedAppointmentInput: LastVisitedAppointmentInput!){
+  findPatientLastAppointment(lastVisitedAppointmentInput: $lastVisitedAppointmentInput){
+    response {
+      status
+    }
+    
+		 appointment {
       id
       status
       scheduleStartDateTime

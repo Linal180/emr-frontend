@@ -1,30 +1,35 @@
 // packages block
 import { FC, useContext } from "react";
+import { Link } from "react-router-dom";
 import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
+import ScheduleListing from "../../common/scheduling/Listing";
+import FacilityDoctorPatients from "../../common/Dashboard/FacilityDoctorPatients";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
-import DoctorPatients from "../../common/Dashboard/DoctorPatients";
-import ScheduleAvailableComponent from "../../common/Dashboard/scheduleAvailable";
 import DoctorAppointmentsAndPatients from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs and constant block
-import { RedirectIcon, } from "../../../assets/svgs";
-import { TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, } from "../../../constants";
 import { AuthContext } from "../../../context";
+import { RedirectIcon, } from "../../../assets/svgs";
+import {
+  TODAYS_APPOINTMENTS, MY_PATIENTS, MY_APPOINTMENTS, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE
+} from "../../../constants";
 
 const DoctorDashboardComponent: FC = (): JSX.Element => {
-  const {currentUser} = useContext(AuthContext)
-  const { id } = currentUser || {}
+  const { currentUser } = useContext(AuthContext)
+  const { id, facility } = currentUser || {}
+  const { id: facilityId } = facility || {}
+
   return (
     <>
       <PatientSearchComponent />
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box p={3} pb={2}>
               <Typography variant="h5">{MY_APPOINTMENTS}</Typography>
-            
+
               <CalendarComponent showHeader={false} />
             </Box>
           </Card>
@@ -33,41 +38,42 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={4} sm={12} xs={12}>
           <Card>
             <Box px={3} pb={2}>
-              <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+              <Box mb={1} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{TODAYS_APPOINTMENTS}</Typography>
 
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
+                <Link to={VIEW_APPOINTMENTS_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
               </Box>
 
               <DoctorAppointmentsAndPatients providerId={id || ''} />
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
             <Box px={3} pb={2}>
-              <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
+              <Box mb={1} display='flex' justifyContent='space-between' alignItems='center'>
                 <Typography variant="h5">{MY_PATIENTS}</Typography>
 
-                <IconButton>
-                  <RedirectIcon />
-                </IconButton>
+                <Link to={PATIENTS_ROUTE}>
+                  <IconButton>
+                    <RedirectIcon />
+                  </IconButton>
+                </Link>
               </Box>
 
-              <DoctorPatients providerId={id || ''} />
+              <FacilityDoctorPatients providerId={id || ''} />
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
-          <Card>
-            <Box px={3}>
-              <ScheduleAvailableComponent />
-            </Box>
-          </Card>
+          <ScheduleListing doctorId={id || ''} isDoctor doctorFacilityId={facilityId || ''} />
+
         </Grid>
       </Grid>
     </>

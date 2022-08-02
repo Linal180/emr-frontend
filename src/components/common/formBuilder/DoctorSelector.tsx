@@ -5,21 +5,22 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors } from "../../../utils";
+import { FormDoctorSelectorProps } from "../../../interfacesTypes";
+import { requiredLabel, renderDoctors, sortingValue } from "../../../utils";
+import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
 
-const DoctorSelector: FC<DoctorSelectorProps> = ({
-  name, label, disabled, isRequired = false, addEmpty, facilityId, shouldOmitFacilityId = false
-}): JSX.Element => {
+const DoctorSelector: FC<FormDoctorSelectorProps> = (
+  { name, label, disabled, isRequired = false, addEmpty, facilityId, formDispatch, formState }
+): JSX.Element => {
   const { control } = useFormContext()
-
+  const { provider } = formState || {}
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { page, searchQuery, doctors, provider } = state;
+  const { page, searchQuery, doctors } = state;
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
@@ -79,7 +80,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={updatedOptions ?? []}
+            options={sortingValue(updatedOptions) ?? []}
             value={provider}
             disabled={disabled}
             disableClearable
@@ -106,9 +107,9 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
             )}
 
             onChange={(_, data) => {
-              const { id } = data || {}
+              const { id, name } = data || {}
               field.onChange(id)
-              dispatch({ type: ActionType.SET_PROVIDER, provider: data })
+              formDispatch && formDispatch({ type: FormActionType.SET_PROVIDER, provider: { id, name } })
             }}
           />
         );

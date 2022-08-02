@@ -1,52 +1,62 @@
 // packages block
-import { useEffect, useCallback, Reducer, useState, useReducer, useContext, useRef, FC } from "react";
+import {
+  useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState
+} from "react";
 import classNames from "clsx";
-import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import { Box, Card, CircularProgress } from "@material-ui/core";
+import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
   AppointmentTooltip, ViewSwitcher, CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
-import AppointmentCard from "./appointmentsComponent/appointmentCard";
+import Alert from "../../common/Alert";
+import PageHeader from "../../common/PageHeader";
 import { DayTimeTableCell } from "./calendarViews/dayView";
 import { WeekTimeTableCell } from "./calendarViews/weekView";
 import { MonthTimeTableCell } from "./calendarViews/monthView";
 import { IntegratedAppointments } from "./integratedAppointments";
 import { Appointment } from "./appointmentsComponent/appointments";
+import AppointmentCard from "./appointmentsComponent/appointmentCard";
 import { AppointmentContent } from "./appointmentsComponent/appointmentContent";
 import { AppointmentContainer } from "./appointmentsComponent/appointmentContainer";
 // context, constants block
 import { AuthContext } from "../../../context";
-import { isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor } from "../../../utils"
+import { CalenderProps } from "../../../interfacesTypes";
 import { useCalendarStyles } from "../../../styles/calendarStyles";
+import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
 import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus
 } from "../../../generated/graphql";
-import PageHeader from "../../common/PageHeader";
-import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD } from "../../../constants";
-import { useIndicatorStyles } from "../../../styles/indicatorStyles";
-//Interfaces
-import { CalenderProps } from "../../../interfacesTypes";
+import {
+  isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff
+} from "../../../utils"
+import {
+  CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG
+} from "../../../constants";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
-
-  const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState<string>('Month')
+
   const [data, setData] = useState<any[]>([])
+  const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles, userId } = user || {}
+
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
   const isPractice = isPracticeAdmin(roles);
-  const isFacility = isFacilityAdmin(roles);
+
+  const isStaffUser = isStaff(roles);
   const isDoctor = isOnlyDoctor(roles);
-  const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const isFacility = isFacilityAdmin(roles);
+
   const indicatorRef = useRef<Element>(null);
+  const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
   const Indicator = ({ top, ...restProps }: any) => {
     const classes = useIndicatorStyles({ top });
@@ -82,6 +92,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
       if (findAllAppointments) {
         const { appointments } = findAllAppointments
+
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
           appointments: appointments?.filter(appointment =>
@@ -91,64 +102,50 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     }
   });
 
-  const onCommitChanges = useCallback(
-    ({ added, changed, deleted }) => {
-      if (added) {
-        const startingAddedId =
-          Array.isArray(data) && data.length > 0 ? data && data[data.length - 1].id + 1 : 0;
-        setData([...data, { id: startingAddedId, ...added }]);
-      }
-      if (changed) {
-        setData(
-          data.map(appointment =>
-            changed[appointment.id]
-              ? { ...appointment, ...changed[appointment.id] }
-              : appointment
-          )
-        );
-      }
-      if (deleted !== undefined) {
-        setData(data.filter(appointment => appointment.id !== deleted));
-      }
-    },
-    [setData, data]
-  );
+  const onCommitChanges = useCallback(({ added, changed, deleted }) => {
+    if (added) {
+      const startingAddedId =
+        Array.isArray(data) && data.length > 0 ? data && data[data.length - 1].id + 1 : 0;
+      setData([...data, { id: startingAddedId, ...added }]);
+    }
+
+    if (changed) {
+      setData(
+        data.map(appointment =>
+          changed[appointment.id]
+            ? { ...appointment, ...changed[appointment.id] } : appointment
+        )
+      );
+    }
+
+    if (deleted !== undefined) {
+      setData(data.filter(appointment => appointment.id !== deleted));
+    }
+  }, [setData, data]);
 
 
   const handleDateChange = (currentDate: Date) => setCurrentDate(currentDate)
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: 25 } }
-      let inputs = null
+      const pageInputs = { paginationOptions: { page, limit: 125 } }
+      let inputs = isSuper ? {}
+        : isPractice ? { practiceId }
+          : isFacility || isStaffUser ? { facilityId }
+            : isDoctor ? { providerId: userId } : undefined
 
-      if (isSuper) {
-        inputs = { ...pageInputs }
-      }
-      else if (isPractice) {
-        inputs = { practiceId, ...pageInputs }
-      }
-      else if (isFacility) {
-        inputs = { facilityId, ...pageInputs }
-      }
-      else if (isDoctor) {
-        inputs = { providerId: userId, ...pageInputs }
-      }
-      else {
-        inputs = { practiceId, ...pageInputs }
-      }
-
-      await findAllAppointments({
+      !!inputs ? await findAllAppointments({
         variables: {
-          appointmentInput: { ...inputs }
+          appointmentInput: { ...inputs, ...pageInputs }
         },
-      })
+      }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [page, isSuper, facilityId, practiceId, findAllAppointments, userId, isDoctor, isFacility, isPractice])
+  }, [
+    page, isSuper, isPractice, isFacility, isStaffUser, isDoctor, findAllAppointments,
+    practiceId, facilityId, userId
+  ])
 
-  const currentViewNameChange = (currentViewName: string) => {
-    setCurrentView(currentViewName);
-  };
+  const currentViewNameChange = (currentViewName: string) => setCurrentView(currentViewName);
 
   useEffect(() => {
     indicatorRef?.current?.scrollIntoView({ block: "center" });
@@ -170,7 +167,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
       }
 
       <Card>
-        <Box>
+        <Box className={classes.customCalender}>
           {fetchAllAppointmentsLoading &&
             <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
           }
@@ -199,12 +196,10 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
                 showCloseButton
                 layoutComponent={(props) => <AppointmentCard tooltip={props}
                   setCurrentView={setCurrentView}
-                  setCurrentDate={setCurrentDate} 
+                  setCurrentDate={setCurrentDate}
                   reload={fetchAppointments}
-                  />} />
+                />} />
               <CurrentTimeIndicator
-                shadePreviousCells={true}
-                shadePreviousAppointments={true}
                 indicatorComponent={Indicator}
               />
             </Scheduler>

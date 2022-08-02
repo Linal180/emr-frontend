@@ -1,5 +1,5 @@
 import { makeStyles, } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -97,20 +97,12 @@ export const useChartingStyles = makeStyles({
 
       "& .MuiTableCell-head .MuiTypography-root": {
         color: BLACK_THREE,
-        fontWeight: 600,
-        fontSize: 12,
         textTransform: 'uppercase',
       },
 
-      "& .MuiTableCell-body .MuiTypography-root": {
-        color: BLACK_ONE,
-        fontWeight: 500,
-        fontSize: 14,
-      },
-
       "& .MuiTableCell-body": {
-        paddingTop: 7,
-        paddingBottom: 7,
+        paddingTop: 10,
+        paddingBottom: 10,
       },
 
       "& .MuiIconButton-root": {
@@ -214,12 +206,14 @@ export const useChartingStyles = makeStyles({
   activeBox: {
     borderRadius: 6,
     width: 'fit-content',
-    height: 30,
-    padding: '0 10px',
+    height : '100%',
+    minHeight: 30,
+    padding: '2px 10px',
     color: WHITE,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign : 'center'
   },
 
   textOverflow: {
@@ -237,4 +231,19 @@ export const useChartingStyles = makeStyles({
     padding: '0px 6px',
     marginTop: 1,
   },
+
+  accordion: {
+    backgroundColor: WHITE,
+    borderRadius: 8,
+    boxShadow: 'none',
+    padding: 10,
+
+    "& .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root": {
+      color: BLACK,
+    },
+
+    "& .MuiAccordionDetails-root": {
+      display: 'block',
+    },
+  }
 });

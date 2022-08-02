@@ -5,20 +5,20 @@ import { Box, Typography } from "@material-ui/core";
 import Avatar from "../Avatar";
 import ViewDataLoader from "../ViewDataLoader";
 // history, constant and styles block
-import { NO_RECORDS } from "../../../constants";
-import { getStandardTime } from "../../../utils";
 import { NoDataIcon } from "../../../assets/svgs";
+import { DESC, NO_RECORDS } from "../../../constants";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
-import { AppointmentsPayload, AppointmentStatus, useFindAllDoctorUpcomingAppointmentsLazyQuery } from "../../../generated/graphql";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
-
-interface DoctorAppointmentsAndPatientsProps {
-  patientId?: string;
-  providerId?: string;
-}
+import { getStandardTime, sortingArray, isCurrentDay } from "../../../utils";
+import { DoctorAppointmentsAndPatientsProps } from "../../../interfacesTypes";
+import {
+  Action, ActionType, appointmentReducer, initialState, State
+} from "../../../reducers/appointmentReducer";
+import {
+  AppointmentsPayload, AppointmentStatus, useFindAllDoctorUpcomingAppointmentsLazyQuery
+} from "../../../generated/graphql";
 
 const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
-  patientId, providerId
+  patientId, providerId, setCount
 }): JSX.Element => {
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
@@ -37,10 +37,21 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
       if (findAllUpcomingAppointments) {
         const { appointments } = findAllUpcomingAppointments
 
+
+        const todayAppointments = appointments?.filter(appointment =>
+          appointment?.status !== AppointmentStatus.Cancelled
+          && appointment?.status !== AppointmentStatus.NoShow
+          && appointment?.status !== AppointmentStatus.Discharged
+          && isCurrentDay(appointment?.scheduleStartDateTime || '')
+        )
+        
+        setCount && setCount(todayAppointments?.length || 0)
+        const sorted = sortingArray<typeof todayAppointments>(todayAppointments,
+          'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
+
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment =>
-            appointment?.status !== AppointmentStatus.Cancelled) as AppointmentsPayload['appointments']
+          appointments: sorted as AppointmentsPayload['appointments']
         });
       } else {
         dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
@@ -67,13 +78,12 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
         <>
           {!!appointments && appointments.length > 0 ? (
             appointments.map((appointment) => {
-              const { scheduleStartDateTime, appointmentType, patient } = appointment || {}
+              const { id, scheduleStartDateTime, appointmentType, patient } = appointment || {}
               const { firstName, lastName, profileAttachment } = patient || {}
               const { name } = appointmentType || {}
 
-
               return (
-                <Box mb={3} display='flex' justifyContent='space-between' alignItems='start'>
+                <Box key={id} display='flex' justifyContent='space-between' alignItems='start' className="mb-3">
                   <Box display='flex'>
                     <Avatar id={profileAttachment || ''} name={`${firstName} ${lastName}`} />
                     <Box>
@@ -93,7 +103,8 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
                 </Box>
               )
             }
-            )) : (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            )) : (
+            <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
             </Box>)

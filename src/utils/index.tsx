@@ -1,41 +1,43 @@
 // packages block
-import React, { ReactNode, memo } from "react";
+import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
-import { pluck } from "underscore";
+import { Skeleton } from "@material-ui/lab";
+import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, TableCell, Theme, Tooltip, Typography,
-  withStyles
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
+  Typography, withStyles
 } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption, LoaderProps, ModifiersSelectorOption,
+  multiOptionType, Order, SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
-  RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE, WHITE, RED_THREE, GRAY_SIMPLE, DARK_GREEN, BLUE_SEVEN,
-  PURPLE, GREEN_RGBA, RED_THREE_RGBA, RED_RGBA, LIGHT_GREEN_RGBA, DARK_GREEN_RGBA, BLUE_SEVEN_RGBA,
-  GRAY_SIMPLE_RGBA, PURPLE_RGBA, ORANGE_SIMPLE_RGBA, LIGHT_GREEN_ONE, ORANGE_SIMPLE, GREEN_ONE,
-  BLUE, PURPLE_ONE, GREY_TWO, ORANGE_ONE
+  ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
+  GREEN, GREEN_ONE, GREEN_RGBA, GREY_TWO, LIGHT_GREEN_ONE, LIGHT_GREEN_RGBA, MILD, MODERATE, ORANGE_ONE,
+  ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
+  RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
 import {
-  ATTACHMENT_TITLES, CALENDAR_ROUTE, CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, N_A,
-  FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE, LOCK_ROUTE, LOGIN_ROUTE, MISSING,
-  PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN, SYSTEM_ROLES, TABLE_SELECTOR_MODULES,
-  TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
-  ACCEPTABLE_PDF_AND_IMAGES_FILES
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
+  SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE, CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM,
 } from "../constants";
 import {
-  AllDoctorPayload, AllergySeverity, AppointmentsPayload, AppointmentStatus, AttachmentsPayload, AttachmentType,
-  ContactsPayload, DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload, UnitType,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, WeightType, UserForms,
-  ProblemType, AppointmentCreateType,
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
+  AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -46,45 +48,99 @@ export const handleLogout = () => {
   client.clearStore();
 };
 
-export const upperToNormal = (value: string) => {
-  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
+export const upperToNormal = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term =>
-    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+  value?.split("_").map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted.trim();
+  return formatted?.trim();
 };
 
-export const formatServiceCode = (value: string) => {
+export const formatEnumMember = (value: string) => {
   const parts = value.split("_");
-  let formatted = `${parts[parts.length - 1]} - `;
+  let formatted = ''
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
-      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()} `
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()}`
     }
   }
 
-  return formatted;
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;
+  return formatted.trim();
 };
 
+export const formatToLeadingCode = (value: string) => {
+  const parts = value.split("_");
+  const code = parts[parts.length - 1]
+  let formatted = ''
+
+  for (let index in parts) {
+    if (parseInt(index) < parts.length - 1) {
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0).toUpperCase()}${parts[parseInt(index)].slice(1).toLowerCase()}`
+    }
+  }
+
+  return `${code} - ${formatted}`.trim();
+};
+
+export const renderLoading = (label: string | JSX.Element) => (
+  <>
+    <Box position="relative">
+      <InputLabel shrink className="skelton-label-margin">
+        {label}
+      </InputLabel>
+    </Box>
+
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius={4} className="skelton-input"
+    >
+      <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
+    </Box>
+  </>
+);
+
+export const renderTextLoading = () => (
+  <Box display="flex" pt={0.3}
+    justifyContent="space-between"
+    alignItems="center" borderRadius={4}
+    className="skelton-input"
+  >
+    <Skeleton animation="pulse" variant="rect" width={240} height={28} />
+  </Box>
+)
+
 export const renderItem = (
-  name: string,
-  value: Maybe<string> | number | ReactNode | undefined,
-  noWrap?: boolean,
+  label: string, value: Maybe<string> | number | ReactNode | undefined,
+  noWrap?: boolean, loading?: boolean
 ) => (
   <>
-    <Typography variant="body2">{name}</Typography>
-    <Box pb={2} pt={0.5}>
-
-      <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
-        {value ? value : N_A}
-      </Typography>
+    <Box position="relative">
+      <InputLabel shrink className="skelton-label-margin">
+        {label}
+      </InputLabel>
     </Box>
+
+    {!!loading ? <Box display="flex"
+      justifyContent="space-between"
+      alignItems="center" borderRadius={4}
+      className="skelton-input"
+    >
+      <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
+    </Box>
+      : <Box pb={2} pt={0.5}>
+        <Typography component="h5" variant="h5" noWrap={noWrap} className="word-break">
+          {value ? value : N_A}
+        </Typography>
+      </Box>
+    }
   </>
 );
 
@@ -99,7 +155,6 @@ export const renderTh = (
           <Box dangerouslySetInnerHTML={{ __html: text }}>
           </Box> : text
         }
-
       </Typography>
 
       {renderIcon && renderIcon()}
@@ -107,21 +162,16 @@ export const renderTh = (
   </TableCell>
 );
 
-export const renderMissing = () => (
-  <Typography variant='h6' className="danger">{MISSING}</Typography>
-);
+export const renderMissing = () =>
+  <Typography variant='h6' className="danger">{MISSING}</Typography>;
 
-export const requiredLabel = (label: string) => {
-  return (
-    <Box>
-      {label}
-      <Box component="span" color="black">
-        {' '}
-        *
-      </Box>
-    </Box>
-  )
-}
+export const requiredLabel = (label: string) => <Box>
+  {label}
+  <Box component="span" color="black">
+    {' '}
+    *
+  </Box>
+</Box>;
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
   const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
@@ -176,6 +226,17 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
+export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
@@ -188,18 +249,12 @@ export const getUserRole = (roles: RolesPayload['roles']) => {
   return 'staff'
 }
 
-export const recordNotFound = (record: string = "Record"): string => {
-  return `${record} not found.`
-};
-
-export const getToken = () => {
-  return localStorage.getItem(TOKEN);
-};
-
-export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
-export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
-export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const getToken = () => localStorage.getItem(TOKEN);
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
+export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
+export const recordNotFound = (record: string = "Record"): string => `${record} not found.`
+export const requiredMessage = (fieldName: string) => `${capitalize(fieldName)} is required`;
 
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {
@@ -214,20 +269,22 @@ export const getPracticeType = (type: PracticeType): string => {
   }
 };
 
-export const getTimestamps = (date: string): string => {
-  return date ? moment(date).format().toString() : moment().format().toString()
-};
+export const getFormatLogsDate = (date: string | undefined): string => date ? moment(Number(date)).format('MM/DD/YYYY') : '';
+export const getFormatLogsTime = (date: string | undefined): string => date ? moment(Number(date)).format('hh:mm:ss A') : '';
+
+export const getTimestamps = (date: string): string =>
+  date ? moment(date).format().toString() : moment().format().toString();
 
 export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
-  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
-  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const currentDate = moment(newDate).format('MM-DD-YYYY')
+  const existingTime = moment(existingDate).format('hh:mm A')
   const date = moment(currentDate + ' ' + existingTime)
   const updateDate = moment(date).format().toString()
   return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
 };
 
 export const getTimestampsForDob = (date: string): string => {
-  return date ? moment(date).format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
+  return date ? moment(date, "MM-DD-YYYY").format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
 };
 
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
@@ -243,19 +300,19 @@ export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefine
 };
 
 export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
-
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
-
-export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
-
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
+export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+export const getFeeScheduleDate = (date: string) => moment(new Date(date)).format(`DD-MM-YY`)
 
-export const getFormattedDate = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
-};
+export const getFormattedDate = (date: string) =>
+  moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
+
+export const getDocumentDate = (date: string) =>
+  moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(new Date(startingDate).toISOString().substr(0, 10));
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -283,6 +340,7 @@ export const dateDifference = (startingDate: string) => {
     }
     dayDiff += daysInMonth[startDate.getMonth()];
   }
+
   let newYears = yearDiff;
   let newMonths = monthDiff;
   let newDays = dayDiff;
@@ -291,6 +349,16 @@ export const dateDifference = (startingDate: string) => {
   return `${ageString} old`
 }
 
+export const timeDifference = (time: string) => {
+  const startTime = moment(time, "x")
+  const now = moment()
+
+  const days = now.diff(startTime, 'days')
+  const hours = now.diff(startTime, 'hours')
+  const minutes = now.diff(startTime, 'minutes')
+
+  return days > 1 ? `${days} days ago` : hours > 1 ? `${hours} hours ago` : `${minutes} minutes ago`
+}
 
 // export const calculateAge = (dateString: string) => {
 //   let now = new Date();
@@ -372,37 +440,33 @@ export const dateDifference = (startingDate: string) => {
 //   return `${ageString} old`;
 // }
 
-export const getDateWithDay = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY")
+export const getDateWithDay = (date: string) =>
+  moment(date, "x").format("ddd MMM. DD, YYYY");
+
+export const getDateWithDayAndTime = (date: string) =>
+  moment(date, "x").format("ddd MMM DD, YYYY hh:mm A");
+
+export const isCurrentDay = (date: string) => {
+  if (!!!date) return false
+
+  return new Date().getDate().toLocaleString() === new Date(parseInt(date)).getDate().toLocaleString()
 };
 
-export const deleteRecordTitle = (recordType: string) => {
-  return `Delete ${recordType} Record`;
-}
+export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
+export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
+export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;
+export const aboutToDelete = (recordType: string) =>
+  `You are about to delete ${recordType.toLowerCase()} record`;
 
-export const cancelRecordTitle = (recordType: string) => {
-  return `Cancel ${recordType} Record`;
-}
+export const aboutToCancel = (recordType: string) =>
+  `You are about to cancel ${recordType.toLowerCase()} record`;
 
-export const UpdateRecordTitle = (recordType: string) => {
-  return `Update ${recordType}`;
-}
 
-export const aboutToDelete = (recordType: string) => {
-  return `You are about to delete ${recordType.toLowerCase()} record`;
-}
+export const aboutToSign = (recordType: string) =>
+  `You are about to sign a patient ${recordType.toLowerCase()}`;
 
-export const aboutToCancel = (recordType: string) => {
-  return `You are about to cancel ${recordType.toLowerCase()} record`;
-}
-
-export const aboutToSign = (recordType: string) => {
-  return `You are about to sign a patient ${recordType.toLowerCase()}`;
-}
-
-export const aboutToUpdate = (recordType: string) => {
-  return `You are about to update ${recordType.toLowerCase()}`;
-}
+export const aboutToUpdate = (recordType: string) =>
+  `You are about to update ${recordType.toLowerCase()}`;
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
   const data: SelectorOption[] = [];
@@ -411,8 +475,22 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
     for (let practice of practices) {
       if (practice) {
         const { id, name } = practice;
+        data.push({ id, name: name.trim() })
+      }
+    }
+  }
 
-        data.push({ id, name })
+  return data;
+}
+
+export const renderTaxonomies = (taxonomies: TaxonomyPayload['taxonomies']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!taxonomies) {
+    for (let taxonomy of taxonomies) {
+      if (taxonomy) {
+        const { id, code, displayName } = taxonomy;
+        data.push({ id, name: `${code} | ${displayName}` })
       }
     }
   }
@@ -452,18 +530,28 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
   return data;
 }
 
-export const renderStaffRoles = (roles: RolesPayload['roles']) => {
+export const renderStaffRoles = (roles: RolesPayload['roles'], userRoles: string[]) => {
   const data: SelectorOption[] = [];
 
   if (!!roles) {
+    const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
+
+    userRoles.includes(SYSTEM_ROLES.PracticeAdmin) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
+    userRoles.includes(SYSTEM_ROLES.FacilityAdmin
+      || SYSTEM_ROLES.Nurse
+      || SYSTEM_ROLES.Staff
+      || SYSTEM_ROLES.Doctor
+      || SYSTEM_ROLES.FrontDesk
+      || SYSTEM_ROLES.OfficeManager
+      || SYSTEM_ROLES.DoctorAssistant
+      || SYSTEM_ROLES.NursePractitioner
+    ) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin)
+
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        // && name !== SYSTEM_ROLES.FacilityAdmin
-        if (
-          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
-          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
-        )
+
+        if (!rolesToEmit.includes(name || ''))
           name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
@@ -480,7 +568,7 @@ export const renderFacilities = (facilities: FacilitiesPayload['facilities']) =>
       if (facility) {
         const { id, name } = facility;
 
-        data.push({ id, name })
+        data.push({ id, name: name.trim() })
       }
     }
   }
@@ -496,7 +584,7 @@ export const renderMultiServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, duration, name } = service;
 
-        service && data.push({ value: id, label: `${name} (duration: ${duration} minutes)` })
+        service && data.push({ value: id, label: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -512,23 +600,7 @@ export const renderServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, name, duration } = service;
 
-        data.push({ id, name: `${name} (duration: ${duration} minutes)` })
-      }
-    }
-  }
-
-  return data;
-}
-
-export const renderLocations = (locations: ContactsPayload['contacts']) => {
-  const data: SelectorOption[] = [];
-
-  if (!!locations) {
-    for (let location of locations) {
-      if (location) {
-        const { id, name } = location;
-
-        data.push({ id, name })
+        data.push({ id, name: `${name.trim()} (duration: ${duration} minutes)` })
       }
     }
   }
@@ -580,6 +652,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
   return data;
 }
 
+export const renderUser = (users: UsersPayload['users']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!users) {
+    for (let user of users) {
+      if (user) {
+        const { id, email } = user;
+        data.push({ id, name: `${email}` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderAppointments = (appointments: AppointmentsPayload['appointments']) => {
   const data: SelectorOption[] = [];
 
@@ -587,7 +674,71 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
     for (let appointment of appointments) {
       if (appointment) {
         const { id, appointmentType, scheduleStartDateTime } = appointment;
-        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
+        data.push({
+          id,
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`.trim()
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
+  const data: CptCodeSelectorOption[] = [];
+
+  if (!!cptCodes) {
+    for (let cptCode of cptCodes) {
+      if (cptCode) {
+        const { id, code, description, longDescription, shortDescription } = cptCode;
+        data.push({
+          id: id,
+          name: code,
+          description,
+          longDescription,
+          shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderFeeCPTCodes = (feeCptCodes: AllCptFeeSchedulesPayload['cptFeeSchedules']) => {
+  const data: ItemSelectorOption[] = [];
+
+  if (!!feeCptCodes) {
+    for (let feeCptCode of feeCptCodes) {
+      if (feeCptCode) {
+        const { id, code, shortDescription, serviceFee } = feeCptCode;
+        data.push({
+          id: id,
+          name: `${code} | ${shortDescription}`,
+          description: shortDescription || '',
+          code: code || '',
+          serviceFee: serviceFee || ''
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderModifiers = (modifiers: AllModifiersPayload['modifiers']) => {
+  const data: ModifiersSelectorOption[] = [];
+
+  if (!!modifiers) {
+    for (let modifier of modifiers) {
+      if (modifier) {
+        const { code, description } = modifier;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
+        })
       }
     }
   }
@@ -676,18 +827,26 @@ export const renderSpecimenTypes = (specimenTypes: TestSpecimenTypesPayload['spe
 }
 
 
-export const setRecord = (id: string, name: string): SelectorOption => {
+export const setRecord = (id: string, name: string, format = true): SelectorOption => {
   let value = ''
   if (name) {
-    value = formatValue(name)
+    value = format ? formatValue(name) : name
   }
 
   return { id, name: value };
 };
 
-export const formatPhone = (phone: string): string => {
-  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
+export const setCTPCode = (id: string, name: string, description: string, longDescription: string, shortDescription: string): CptCodeSelectorOption => {
+  let value = ''
+  if (name) {
+    value = name
+  }
+
+  return { id, name: value, description, longDescription, shortDescription };
 };
+
+export const formatPhone = (phone: string): string =>
+  phone && phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : '';
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
@@ -716,6 +875,15 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getStandardTimeByMoment = (timestamp: string) => {
+  if (!timestamp) return "";
+  const date = new Date(parseInt(timestamp)).setDate((new Date().getDate()) - 1)
+  const parsedDate = new Date(date).toISOString()
+  const newDate = moment(parsedDate).local().toString()
+  const d = moment(newDate).format()
+  return d
+};
+
 export const getTimeString = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -727,6 +895,12 @@ export const getISOTime = (timestamp: string) => {
 
   return new Date(parseInt(timestamp)).toISOString()
 };
+
+export const getScheduleStartTime = (time: string) => {
+  if (!time) return "";
+
+  return new Date(new Date(time).getTime()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toString()
+}
 
 export const getAppointmentDateTime = (date: string) => {
   const timeDate = moment(date, "x")
@@ -740,13 +914,14 @@ export const getStandardTime = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
-export const getStandardTimeDuration = (strtimestamp: string, endtimestamp: string) => {
-  if (!strtimestamp && !endtimestamp) return "";
+export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string): Number => {
+  if (!starTimestamp && !endTimestamp) return 0;
 
-  var startTime = moment(new Date(parseInt(strtimestamp)));
-  var endTime = moment(new Date(parseInt(endtimestamp)));
+  var startTime = moment(new Date(parseInt(starTimestamp)));
+  var endTime = moment(new Date(parseInt(endTimestamp)));
 
-  return endTime.diff(startTime, 'minutes');
+  const dateDifference = endTime.diff(startTime, 'minutes');
+  return Math.abs(dateDifference)
 };
 
 export const getDayFromTimestamps = (timestamp: string) => {
@@ -831,8 +1006,11 @@ export const activeClass = (pathname: string): string => {
     case LAB_RESULTS_ROUTE:
       return "inReport"
 
+    case AGREEMENTS_ROUTE:
+      return "isAgreement"
+
     case INVOICES_ROUTE:
-    case CLAIMS_ROUTE:
+    case CLAIM_FEED_ROUTE:
       return "inBilling"
 
     default:
@@ -864,7 +1042,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token, billingStatus
+      reason, primaryInsurance, status, token, billingStatus, appointmentCreateType
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -891,6 +1069,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       billingStatus,
       appointmentName,
       appointmentStatus,
+      appointmentCreateType,
       scheduleStartDateTime,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
@@ -1023,15 +1202,17 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
 };
 
 export const formatPermissionName = (name: string) => {
-  const [text, ...rest] = name.split(/(?=[A-Z])/)
+  const [text, ...rest] = name?.split(/(?=[A-Z])/)
   const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `
   return updateName.replaceAll(',', ' ');
 }
 
 export const formatRoleName = (name: string): string => {
-  const text = name.split(/[-_\s]+/)
+  let formatted = ''
+  name?.split(/[-_\s]+/)?.map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)[0].trim()
+  return formatted?.trim();
 };
 
 export const parseColumnGrid = (col: number): GridSize => {
@@ -1098,9 +1279,13 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
-export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
-  return moment(date, 'x').format(format).toString()
+  return moment(date).format(format).toString()
+};
+
+export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+  return !date ? '' : moment(date, 'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
@@ -1112,7 +1297,12 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -1161,6 +1351,17 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         }
       }
     }
+    else if (values[property] instanceof File) {
+      const file = values[property];
+      const title = values[property]?.name;
+      const key = await userFormUploadImage(file, property, title, id);
+      if (key) {
+        arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
+      }
+      else {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
+      }
+    }
     else if (typeof values[property] === 'boolean') {
       arr.push({ FormsElementsId: property, value: values[property]?.toString(), arrayOfStrings: [], arrayOfObjects: [] })
     }
@@ -1185,18 +1386,20 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 }
 
 
-export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null, value?: string | null | undefined) => {
   switch (type) {
     case ElementType.Text:
-      return ''
+      return value || ''
     case ElementType.Select:
-      return isMultiSelect ? [] : ''
+      return isMultiSelect ? [] : value || ''
+    case ElementType.Dropdown:
+      return value || ''
     case ElementType.Radio:
-      return ''
+      return value || ''
     case ElementType.Checkbox:
       return []
     case ElementType.Date:
-      return new Date()
+      return value || null
     default:
       return ''
   }
@@ -1280,33 +1483,21 @@ export const getProfileImageType = (userType: string) => {
 }
 
 export const fahrenheitToCelsius = (f: number) => ((5 / 9) * (f - 32))
-
 export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
-
 export const inchesToCentimeter = (i: number) => (i * 2.54)
-
 export const inchesToMeter = (i: number) => (i / 39.37)
-
 export const centimeterToMeter = (c: number) => (c / 100)
-
 export const centimeterToInches = (c: number) => (c / 2.54)
-
 export const kilogramToPounds = (kg: number) => (kg * 2.2046)
-
 export const kilogramToOunce = (kg: number) => (kg * 35.274)
-
 export const poundsToKilogram = (po: number) => (po / 2.2046)
-
 export const poundsToOunce = (po: number) => (po * 16)
-
 export const ounceToKilogram = (o: number) => (o / 35.274)
-
 export const ounceToPounds = (o: number) => (o / 16)
-
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  let arr = url.split(','),
+  let arr = url?.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1316,9 +1507,8 @@ export const dataURLtoFile = (url: any, filename: string) => {
     u8arr[n] = bstr.charCodeAt(n);
   }
 
-  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+  return new File([u8arr], `${filename}.${mime?.split('/').pop()}`, { type: mime });
 }
-
 
 export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
   const patientHeight = parseFloat(PatientHeight)
@@ -1348,7 +1538,6 @@ export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircu
     default:
       return patientHeadCircumference
   }
-
 }
 
 export const getDefaultTemp = (tempType: TempUnitType, patientTemperature: string) => {
@@ -1408,7 +1597,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
 }
 
 export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
-  const data: SelectorOption[] = [];
+  const data: ItemSelectorOption[] = [];
 
   if (!!list) {
     for (let item of list) {
@@ -1423,11 +1612,6 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: icdCodesId, name: `${code} | ${description}` })
           break;
-        case ITEM_MODULE.cptCode:
-          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
-
-          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
-          break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
 
@@ -1438,6 +1622,26 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
+        case ITEM_MODULE.feeSchedule:
+          let { id: feeScheduleId, name: feeScheduleName } = (item as unknown as FeeSchedule) || {};
+
+          data.push({ id: feeScheduleId, name: feeScheduleName })
+          break;
+        case ITEM_MODULE.cptFeeSchedule:
+          let { id: cptFeeScheduleId, serviceFee, code: cptCode, shortDescription } = (item as unknown as CptFeeSchedule) || {};
+
+          data.push({ id: cptFeeScheduleId, name: `${cptCode} | ${shortDescription}`, code: cptCode || '', serviceFee: serviceFee || '' })
+          break;
+        case ITEM_MODULE.taxonomies:
+          let { id: taxonomyId, code: taxonomyCode, displayName: taxonomyName } = (item as unknown as Taxonomy) || {};
+
+          data.push({ id: taxonomyId, name: `${taxonomyCode} | ${taxonomyName}` })
+          break
         default:
           break;
       }
@@ -1635,7 +1839,7 @@ export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => 
 
 export const getShortName = (name: string) => {
   let shortName = '';
-  const parts = name.split(' ')
+  const parts = name?.split(' ')
 
   parts.map(part => shortName = shortName.concat(part.charAt(0)))
 
@@ -1650,6 +1854,19 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
       return {
         id: member,
         name: formatValue(member).trim()
+      }
+    });
+  } else return [EMPTY_OPTION]
+}
+
+export function mapEnumWithCode<enumType>(enumerable: enumType): SelectorOption[] {
+  if (enumerable) {
+    let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+
+    return enumMembers.map(member => {
+      return {
+        id: member,
+        name: formatToLeadingCode(member)
       }
     });
   } else return [EMPTY_OPTION]
@@ -1713,10 +1930,12 @@ export const getCheckInStatus = (
     }
   }
 
-  if (status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow || status === AppointmentStatus.Rescheduled) {
+  if (
+    status === AppointmentStatus.Cancelled || status === AppointmentStatus.NoShow
+    || status === AppointmentStatus.Rescheduled
+  ) {
     return {
-      stage: '',
-      stageColor: ''
+      stage: '', stageColor: ''
     }
   }
 
@@ -1726,18 +1945,19 @@ export const getCheckInStatus = (
     case 1:
     case 2:
       return { stage: 'With Staff', stageColor: BLUE };
+
     case 3:
     case 4:
       return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
+
     case 5:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
+
     case 6:
       return { stage: 'With Biller', stageColor: PURPLE_ONE };
+
     default:
-      return {
-        stage: '',
-        stageColor: ''
-      }
+      return { stage: '', stageColor: '' }
   }
 }
 
@@ -1745,7 +1965,9 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
-export const AppointmentStatusStateMachine = (value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null) => {
+export const AppointmentStatusStateMachine = (
+  value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null
+) => {
   if (appointmentCreateType === AppointmentCreateType.Telehealth) {
     return renderArrayAsSelectorOptions(
       [
@@ -1805,7 +2027,7 @@ export const appointmentChargesDescription = (amount: string) =>
   <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography>
 
 export const getFilteredSSN = (value: string) => {
-  const [, , last4] = value.split('-')
+  const [, , last4] = value?.split('-')
 
   return `***-**-${last4 || '0000'}`
 }
@@ -1819,10 +2041,10 @@ export const mediaType = (attachmentTitle: string): string[] => {
       return ACCEPTABLE_PDF_AND_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.InsuranceCard1:
-      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.InsuranceCard2:
-      return ACCEPTABLE_PDF_AND_IMAGES_FILES;
+      return ACCEPTABLE_ONLY_IMAGES_FILES;
 
     case ATTACHMENT_TITLES.LabOrders:
       return ACCEPTABLE_PDF_AND_IMAGES_FILES;
@@ -1839,7 +2061,124 @@ export const mediaType = (attachmentTitle: string): string[] => {
     case ATTACHMENT_TITLES.Signature:
       return ACCEPTABLE_ONLY_IMAGES_FILES;
 
+    case ATTACHMENT_TITLES.Agreement:
+      return ACCEPTABLE_PDF_FILES;
+
     default:
       return ACCEPTABLE_FILES
   }
 };
+
+export const updateSortOptions = (options: SelectorOption[]) => {
+  const updateSortOptions = options?.map((option) => {
+    const firstLetter = option && option?.name?.toUpperCase() as string;
+    return {
+      firstLetter,
+      ...option,
+    };
+  });
+  return (
+    updateSortOptions
+  )
+}
+
+export const sortingValue = (updatedOptions: SelectorOption[]) =>
+  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) =>
+    -b?.firstLetter.localeCompare(a?.firstLetter)
+  )
+
+export const isValidDate = (date: Date) => {
+  return date instanceof Date && !isNaN(date.getTime());
+}
+
+export const hasEncounter = (status: AppointmentStatus) => {
+  return status !== AppointmentStatus.Cancelled
+    && status !== AppointmentStatus.NoShow
+    && status !== AppointmentStatus.Scheduled
+    && status !== AppointmentStatus.Discharged
+}
+
+export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {
+  const sorted = sortBy(array as Collection<any>, by)
+
+  return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
+}
+
+export const excludeLeadingZero = (value: string) => parseInt(value).toString()
+export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
+
+export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+
+export const getCharFromNumber = (num: number, isUpper = true) => {
+  const caseNumber = isUpper ? 65 : 97
+  return String.fromCharCode(caseNumber + num)
+}
+
+export const getNumberFromChar = (s: string, index: number) => {
+  const numb = s.charCodeAt(index) - 65 + 1
+  return isNaN(numb) ? '' : numb
+}
+
+export const getPageNumber = (page: number, pageRecords: number): number => {
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
+
+  return 1;
+}
+
+export const checkNpi = (npi: string) => {
+  var tmp;
+  var sum;
+  var i;
+  var j;
+  i = npi.length;
+  if ((i === 15) && (npi.indexOf("80840", 0) === 0))
+    sum = 0;
+  else if (i === 10)
+    sum = 24;
+  else
+    return false;
+  j = 0;
+  while (i !== 0) {
+    tmp = npi.charCodeAt(i - 1) - '0'.charCodeAt(0);
+    if ((j++ % 2) !== 0) {
+      const con = tmp <<= 1
+      if (con > 9) {
+        tmp -= 10;
+        tmp++;
+      }
+    }
+    sum += tmp;
+    i--;
+  }
+  return ((sum % 10) === 0) ? true : false
+}
+
+export const formatEmail = (email: string) => {
+  if (!!!email) return '';
+
+  return email.toLowerCase();
+}
+
+export const getClaimBtnText = (statusName: string) => {
+  if (!!statusName) {
+    switch (statusName) {
+
+      case 'ready_to_claim':
+        return SUBMIT_CLAIM;
+
+      case 'rejected':
+        return UPDATE_CLAIM;
+
+      case 'acknowledged':
+        return UPDATE_CLAIM;
+
+      default:
+        return UPDATE_CLAIM
+    }
+  }
+  else {
+    return CREATE_CLAIM
+  }
+}

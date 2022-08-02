@@ -11,7 +11,7 @@ import HighchartsReact from "highcharts-react-official";
 
 const PieChart2Component: FC = (): JSX.Element => {
   const [pieChart2] = useState({
-    tooltip: { enabled: true },
+    tooltip: { enabled: false },
     credits: { enabled: false },
 
     chart: {

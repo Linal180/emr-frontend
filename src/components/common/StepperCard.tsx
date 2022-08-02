@@ -1,5 +1,5 @@
 // packages block
-import { Stepper, Step, StepLabel, Typography, useMediaQuery } from '@material-ui/core';
+import { Stepper, Step, StepLabel, Typography} from '@material-ui/core';
 // components block
 import CustomStepIcon from './CustomStepIcon';
 // constants, interfaces and styles block
@@ -9,14 +9,14 @@ import { ActionType } from '../../reducers/patientReducer';
 
 const StepperCard = ({ activeStep, stepperData, dispatch }: StepperComponentProps) => {
   const classes = useExternalPatientStyles();
-  const matches = useMediaQuery('(min-width:960px)');
+  // const matches = useMediaQuery('(min-width:960px)');
 
   return (
     <Stepper
       className={classes.customStepper}
       activeStep={activeStep}
       connector={<CustomConnector />}
-      orientation={`${matches ? 'vertical' : 'horizontal'}`}
+      orientation='vertical'
       style={{ position: 'relative' }}
       data-cy="newCourseStepper"
     >

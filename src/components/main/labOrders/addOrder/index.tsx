@@ -2,7 +2,10 @@
 import clsx from 'clsx';
 import { Box, Button, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { FC, useState } from 'react';
-import { BACK_TEXT, LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT, } from '../../../../constants';
+import { 
+  BACK_TEXT, LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT, DASHBOARD_BREAD, LAB_ORDER, 
+  LAB_ORDER_BREAD, PATIENTS_BREAD, PATIENTS_ROUTE, SUBMIT 
+} from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import { Check, ChevronRight } from '@material-ui/icons';
 import { useLabOrderStyles } from '../../../../styles/labOrderStyles';
@@ -10,6 +13,11 @@ import { GREY_SIXTEEN } from '../../../../theme';
 import TestsComponent from './Tests';
 import LabOrderComponent from './LabOrder';
 import PaymentsComponent from './Payments';
+import PageHeader from '../../../common/PageHeader';
+import LabOrdersCreateForm from './LabOrdersCreateForm';
+import LabOrdersProviderForm from './LabOrdersProviderForm';
+import BillingComponent from '../../billing/addBill/BillingComponent';
+import BackButton from '../../../common/BackButton';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -43,6 +51,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
         return <TestsComponent />
       case 2:
         return <PaymentsComponent />
+        return <BillingComponent submitButtonText={SUBMIT} labOrderNumber={labOrderNumber} />
       default:
         return 'Unknown step';
     }
@@ -91,7 +100,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
         </Stepper>
       </Box>
 
-      <Box p={2} />
+      <Box p={1.5} />
 
       <Box maxHeight="calc(100vh - 170px)" className="overflowY-auto">
         <Typography>{getStepContent(activeStep)}</Typography>

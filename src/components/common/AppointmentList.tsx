@@ -1,17 +1,19 @@
 // packages block
 import { FC } from "react";
 import { Link, useParams } from "react-router-dom";
+import { VideocamOutlined } from "@material-ui/icons";
 import { Box, Typography, Button } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 // interfaces, constants, utils blocks
 import history from "../../history";
 import { WHITE_FOUR } from "../../theme";
-import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
-import { AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
 import { AppointmentListProps, ParamsType } from "../../interfacesTypes";
+import { AppointmentCreateType, AppointmentStatus, useUpdateAppointmentMutation } from "../../generated/graphql"
+import { convertDateFromUnix, getAppointmentDateTime, getStandardTimeDuration } from "../../utils";
 import {
-  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY, CHECK_IN_ROUTE, MINUTES
+  RE_SCHEDULE, CHECK_IN, APPOINTMENTS_ROUTE, SCHEDULE_WITH_DOCTOR, SCHEDULED_IN_FACILITY,
+  CHECK_IN_ROUTE, MINUTES, TELEHEALTH_URL, START_TELEHEALTH
 } from "../../constants";
 
 const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
@@ -49,7 +51,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
   return (
     <Box>
       {appointments?.map(appointment => {
-        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility } = appointment || {};
+        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility, appointmentCreateType } = appointment || {};
         const { firstName, lastName } = provider || {};
         const { name: facilityName } = facility || {};
         const { name: serviceName } = appointmentType || {};
@@ -74,18 +76,23 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
             </Box>
 
             {type === AppointmentStatus.Scheduled &&
-              <Box display="flex" my={2}>
+              <Box display="flex" my={2} className="appointment-action-btn">
                 <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                   <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
                 </Link>
 
                 <Box p={1} />
-                <Button type="submit" variant="contained" color="secondary"
-                  onClick={() => handlePatientCheckIn(id || '')}
-                  disabled={updateAppointmentLoading}
-                >
-                  {CHECK_IN}
-                </Button>
+                {appointmentCreateType === AppointmentCreateType.Telehealth
+                  ? <Button variant="contained" className="blue-button-New" onClick={() => window.open(TELEHEALTH_URL)}>
+                    <VideocamOutlined />&nbsp; {START_TELEHEALTH}
+                  </Button>
+
+                  : <Button type="submit" variant="contained" color="secondary"
+                    onClick={() => handlePatientCheckIn(id || '')}
+                    disabled={updateAppointmentLoading}
+                  >
+                    {CHECK_IN}
+                  </Button>}
               </Box>
             }
           </Box>

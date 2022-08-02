@@ -1,5 +1,5 @@
 // packages block
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, CircularProgress, Grid, } from "@material-ui/core";
@@ -9,13 +9,14 @@ import InputController from '../../../controller';
 import CardComponent from "../../common/CardComponent";
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
 // constants, history, styling block
-import {
-  CHANGE_PASSWORD, CONFIRM_PASSWORD, NEW_PASSWORD, OLD_PASSWORD, OLD_PASSWORD_DID_NOT_MATCH, SAVE_TEXT, SET_PASSWORD_SUCCESS,
-} from "../../../constants";
 import { AuthContext } from '../../../context';
-import { updatePasswordSchema } from '../../../validationSchemas';
 import { ChangePasswordInputs } from '../../../interfacesTypes';
+import { updatePasswordSchema } from '../../../validationSchemas';
 import { useUpdatePasswordMutation } from '../../../generated/graphql';
+import {
+  CHANGE_PASSWORD, CONFIRM_PASSWORD, NEW_PASSWORD, OLD_PASSWORD, OLD_PASSWORD_DID_NOT_MATCH,
+  PASSWORDS_MUST_MATCH, SAVE_TEXT, SET_PASSWORD_SUCCESS,
+} from "../../../constants";
 
 const ChangePasswordComponent = (): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -24,16 +25,20 @@ const ChangePasswordComponent = (): JSX.Element => {
     mode: "all",
     resolver: yupResolver(updatePasswordSchema),
   });
-  const { handleSubmit, reset } = methods;
+
+  const { handleSubmit, reset, setError, watch, clearErrors } = methods;
+  const { password, repeatPassword } = watch()
 
   const [updatePassword, { loading }] = useUpdatePasswordMutation({
     onError() {
+      reset()
       Alert.error(OLD_PASSWORD_DID_NOT_MATCH)
     },
 
     onCompleted({ updatePassword }) {
       const { response } = updatePassword;
       const { status } = response || {}
+
       if (status === 200) {
         Alert.success(SET_PASSWORD_SUCCESS);
         reset()
@@ -48,8 +53,13 @@ const ChangePasswordComponent = (): JSX.Element => {
         variables: { updatePasswordInput: { id: userId, newPassword: password, oldPassword } }
       });
     } catch (error) { }
-
   };
+
+  useEffect(() => {
+    password === repeatPassword || !!!repeatPassword ?
+      clearErrors("repeatPassword")
+      : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
+  }, [clearErrors, password, repeatPassword, setError, watch])
 
   return (
     <ProfileSettingsLayout>

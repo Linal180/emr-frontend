@@ -6,8 +6,8 @@ import Search from "../../../common/Search";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { ACTION, TEST, TEST_TAKEN, PRESCRIBED_BY, REPORTS } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { ACTION, TEST, TEST_TAKEN, PRESCRIBED_BY, REPORTS } from "../../../../constants";
 
 const LabResultsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -16,7 +16,7 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box py={2} mb={2} maxWidth={450}>
+      <Box mb={2} maxWidth={450}>
         <Search search={search} />
       </Box>
 
@@ -31,10 +31,11 @@ const LabResultsTable: FC = (): JSX.Element => {
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
-          <TableBody>
 
+          <TableBody>
           </TableBody>
         </Table>
+
         <Box display="flex" justifyContent="center" alignItems="center" pb={12} pt={5}>
           <NoDataFoundComponent />
         </Box>

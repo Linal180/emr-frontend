@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { Box, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
@@ -17,19 +17,25 @@ import { useResetPasswordMutation, } from "../../../generated/graphql";
 import { resetPasswordValidationSchema } from "../../../validationSchemas";
 import {
   BACK_TO, LOGIN_ROUTE, RESET, RESET_PASSWORD_SUCCESS, SIGN_IN, RESET_PASSWORD_TOKEN_NOT_FOUND,
-  PASSWORD_LABEL, CONFIRM_PASSWORD, ROOT_ROUTE, LOGGED_OUT_BEFORE_RESETTING_PASSWORD
+  PASSWORD_LABEL, CONFIRM_PASSWORD, ROOT_ROUTE, LOGGED_OUT_BEFORE_RESETTING_PASSWORD, PASSWORDS_MUST_MATCH
 } from "../../../constants";
 
 const ResetPasswordComponent = (): JSX.Element => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
   const [passwordChanged, setPasswordChanged] = useState<boolean>(false)
-  const { handleSubmit, reset, control, formState: { errors } } = useForm<ResetPasswordInputs>({
+
+  const methods = useForm<ResetPasswordInputs>({
     mode: 'all',
     resolver: yupResolver(resetPasswordValidationSchema)
   });
+  const { handleSubmit, reset, setError, clearErrors, watch } = methods;
+  const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError() {
       return null;
     },
@@ -60,39 +66,42 @@ const ResetPasswordComponent = (): JSX.Element => {
     }
   }, [token])
 
-  const { password: { message: passwordError } = {}, repeatPassword: { message: repeatPasswordError } = {} } = errors;
+  useEffect(() => {
+    password === repeatPassword || !!!repeatPassword ?
+      clearErrors("repeatPassword")
+      : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
+  }, [clearErrors, password, repeatPassword, setError, watch])
 
   return (
     passwordChanged ?
       <PasswordChange /> : <AuthLayout>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ResetPasswordController
-            control={control}
-            isRequired
-            controllerName="password"
-            controllerLabel={PASSWORD_LABEL}
-            fieldType="password"
-            isPassword
-            error={passwordError}
-          />
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <ResetPasswordController
+              isPassword
+              isRequired
+              fieldType="password"
+              controllerName="password"
+              controllerLabel={PASSWORD_LABEL}
+            />
 
-          <ResetPasswordController
-            isRequired
-            control={control}
-            controllerName="repeatPassword"
-            controllerLabel={CONFIRM_PASSWORD}
-            fieldType="password"
-            isPassword
-            error={repeatPasswordError}
-          />
+            <ResetPasswordController
+              isPassword
+              isRequired
+              fieldType="password"
+              controllerName="repeatPassword"
+              controllerLabel={CONFIRM_PASSWORD}
+            />
 
-          <Box py={2}>
-            <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-              {RESET}
-              {loading && <CircularProgress size={20} color="inherit" />}
-            </Button>
-          </Box>
-        </form>
+            <Box py={2}>
+              <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+                {RESET}
+
+                {loading && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            </Box>
+          </form>
+        </FormProvider>
 
         <Box justifyContent="center" alignItems="center" display="flex">
           <Typography variant="body2">

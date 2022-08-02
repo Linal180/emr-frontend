@@ -70,7 +70,7 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
   }, [fetchPractices])
 
   return (
-    <Box className={classes.dashboardTableContainer}>
+    <Box className={classes.mainTableContainer}>
       <Box className="table-overflow">
         <Table aria-label="customized table">
           <TableHead>

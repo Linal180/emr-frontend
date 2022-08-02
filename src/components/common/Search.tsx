@@ -1,13 +1,13 @@
 // packages block
-import { FC, Fragment, useState } from "react";
+import { forwardRef, Fragment, useImperativeHandle, useState } from "react";
 import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
-import { SearchComponentProps } from "../../interfacesTypes";
 import { SearchTooltip } from "../../styles/searchTooltip";
+import { FormForwardRef, SearchComponentProps } from "../../interfacesTypes";
+import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 
-const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder }): JSX.Element => {
+const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(({ search, info, tooltipData, placeHolder, submit }, searchRef): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
@@ -16,9 +16,17 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
   const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {
-    setQuery('')
-    search('')
+    if (query.length > 2) {
+      setQuery('')
+      search('')
+    } else setQuery('')
   }
+
+  useImperativeHandle(searchRef, () => ({
+    submit() {
+      handleClear()
+    }
+  }));
 
   return (
     <Box className={classes.searchBox}>
@@ -30,21 +38,22 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
         fullWidth
         variant="outlined"
         name="searchQuery"
-        placeholder= {placeHolder ? placeHolder :  "Search here..."}
+        placeholder={placeHolder ? placeHolder : "Search here..."}
         className={classes.searchInput}
         value={query}
+        onKeyPress={({ key }) => key === 'Enter' && query.length > 2 && submit && submit()}
         onChange={({ target: { value } }) => {
-          if(value.length>2){
+          if (value.length > 2) {
             search(value)
             setQuery(value)
           }
 
-          if(!value.length){
+          if (!value.length) {
             search('')
           }
 
           setQuery(value)
-        } }
+        }}
       />
 
       {query &&
@@ -52,6 +61,7 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
           <ClearIcon />
         </IconButton>
       }
+
       {info && <ClickAwayListener onClickAway={handleTooltipClose}>
         <SearchTooltip
           PopperProps={{
@@ -85,6 +95,6 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHold
       </ClickAwayListener>}
     </Box>
   );
-};
+});
 
 export default Search;
