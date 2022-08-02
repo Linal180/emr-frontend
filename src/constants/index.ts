@@ -1677,6 +1677,7 @@ export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ORDER_DELETION_MESSAGE = "Order is deleted successfully";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
+export const NO_FILE_ASSOCIATED = 'No File Associated with agreement';
 export const TWO_FA_ENABLED_SUCCESSFULLY = "2FA enabled successfully";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
