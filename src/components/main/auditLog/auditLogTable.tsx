@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
 import { ChangeEvent, Fragment, Reducer, useCallback, useReducer, useEffect, useMemo } from "react";
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, } from "@material-ui/core";
 // components block
 import Selector from "../../common/Selector";
 import DatePicker from "../../common/DatePicker";
@@ -23,8 +23,10 @@ import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh, setR
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT, AUDIT_LOG_REPORT, EXPORT_TO_FILE,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT, USER_LOG_PAGE_LIMIT,
-  MODULE_LOGS_TYPES, PAGE_LIMIT, PATIENTS_ROUTE, CLEAR_TEXT
+  MODULE_LOGS_TYPES, PAGE_LIMIT, PATIENTS_ROUTE, CLEAR_TEXT, SETTINGS_ROUTE, AUDIT_LOG_BREAD,
 } from "../../../constants";
+import BackButton from "../../common/BackButton";
+import PageHeader from "../../common/PageHeader";
 
 const headers = [
   { label: "Date", key: "date" },
@@ -146,7 +148,17 @@ const AuditLogTable = (): JSX.Element => {
   return (
     <Fragment>
       <Box display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{AUDIT_LOG_REPORT}</Typography>
+        <Box display='flex'>
+          <BackButton to={SETTINGS_ROUTE} />
+
+          <Box ml={2}>
+            <PageHeader title={AUDIT_LOG_REPORT}
+              path={[AUDIT_LOG_BREAD]}
+            />
+          </Box>
+          {/* <Box ml={1} /> */}
+          {/* <Typography variant="h4" color="textPrimary">{AUDIT_LOG_REPORT}</Typography> */}
+        </Box>
 
         <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
           filename={`audit_log_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>

@@ -4,7 +4,7 @@ import { Pagination } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import {
-  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography
+  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button,
 } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
@@ -28,7 +28,11 @@ import {
   ACTION, EFFECTIVE_DATE, EXPIRY_DATE, EXTENDED_PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT,
   DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE,
   TOTAL_CODES,
+  FEE_SCHEDULE_BREAD,
+  SETTINGS_ROUTE,
 } from "../../../constants";
+import BackButton from "../../common/BackButton";
+import PageHeader from "../../common/PageHeader";
 
 const FeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -168,8 +172,18 @@ const FeeTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{FEE_SCHEDULE}</Typography>
+      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Box display='flex'>
+          <BackButton to={SETTINGS_ROUTE} />
+
+          <Box ml={2} />
+
+          <PageHeader
+            title={FEE_SCHEDULE}
+            path={[FEE_SCHEDULE_BREAD]}
+          />
+        </Box>
+
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >

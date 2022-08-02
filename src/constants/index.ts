@@ -1314,6 +1314,7 @@ export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
+export const FEE_SCHEDULE_LISTING = "Fee Schedule Listing";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
 export const ADD_UPLOAD_IMAGES = "Add & Upload Images";
 export const REFERRING_PROVIDER = "Referring Provider";
@@ -2153,6 +2154,8 @@ export const SERVICES_BREAD = (facilityId: string) => {
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
 export const ELIGIBILITY_BREAD = { text: ELIGIBILITY_LISTING, link: ELIGIBILITY_ROUTE, };
 export const COVERAGE_BREAD = { text: COVERAGE_DETAILS, link: COVERAGE_ROUTE, };
+
+export const FEE_SCHEDULE_BREAD = { text: FEE_SCHEDULE_LISTING, link: FEE_SCHEDULE_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
