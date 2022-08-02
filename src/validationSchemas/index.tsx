@@ -132,7 +132,7 @@ const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGE
 const npiSchema = (isRequired: boolean = false) => {
   return {
     npi: yup.string()
-      .test('', requiredMessage(NPI), value => isRequired ? !!value : true )
+      .test('', requiredMessage(NPI), value => isRequired ? !!value : true)
       .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
   }
 }
@@ -1051,7 +1051,10 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
-  amount: yup.number().typeError(requiredMessage(AMOUNT))
+  amount: yup.string()
+    .test('', requiredMessage(AMOUNT), value => !!value)
+    .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
+    .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
 })
 
 export const createBillingSchema = yup.object({
