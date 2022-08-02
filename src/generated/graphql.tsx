@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -512,6 +511,13 @@ export enum BillingStatus {
   Paid = 'PAID',
   Refund = 'REFUND'
 }
+
+export type BillingsPayload = {
+  __typename?: 'BillingsPayload';
+  billings: Array<Billing>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
+};
 
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
@@ -1848,6 +1854,16 @@ export type FeeSchedulePayload = {
   __typename?: 'FeeSchedulePayload';
   feeSchedule?: Maybe<FeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FetchBillingClaimStatusesInput = {
+  claimId?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -4209,6 +4225,7 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4358,6 +4375,11 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchBillingClaimStatusesArgs = {
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 
@@ -6802,6 +6824,13 @@ export type RemoveClaimStatusMutationVariables = Exact<{
 
 
 export type RemoveClaimStatusMutation = { __typename?: 'Mutation', removeClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type FetchBillingClaimStatusesQueryVariables = Exact<{
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
+}>;
+
+
+export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -10350,6 +10379,53 @@ export function useRemoveClaimStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type RemoveClaimStatusMutationHookResult = ReturnType<typeof useRemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationResult = Apollo.MutationResult<RemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationOptions = Apollo.BaseMutationOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
+export const FetchBillingClaimStatusesDocument = gql`
+    query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!) {
+  fetchBillingClaimStatuses(
+    fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput
+  ) {
+    response {
+      status
+      message
+    }
+    billings {
+      id
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchBillingClaimStatusesQuery__
+ *
+ * To run a query within a React component, call `useFetchBillingClaimStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchBillingClaimStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchBillingClaimStatusesQuery({
+ *   variables: {
+ *      fetchBillingClaimStatusesInput: // value for 'fetchBillingClaimStatusesInput'
+ *   },
+ * });
+ */
+export function useFetchBillingClaimStatusesQuery(baseOptions: Apollo.QueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+      }
+export function useFetchBillingClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+        }
+export type FetchBillingClaimStatusesQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesQuery>;
+export type FetchBillingClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesLazyQuery>;
+export type FetchBillingClaimStatusesQueryResult = Apollo.QueryResult<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {

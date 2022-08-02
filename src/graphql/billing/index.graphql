@@ -339,3 +339,23 @@ mutation RemoveClaimStatus($id: String!) {
     }
   }
 }
+
+query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!) {
+  fetchBillingClaimStatuses(fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput){
+
+    response {
+      status
+      message
+    }
+
+    billings {
+      id
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+  }
+}
