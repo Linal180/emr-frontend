@@ -1,38 +1,40 @@
 // packages block
-import { Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
-import { Box, Button, Card, colors, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
+import {
+  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
+} from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
 // component block
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
-import BackButton from "../../common/BackButton";
-import PageHeader from "../../common/PageHeader";
 import PatientForm from "../patients/patientForm";
-import BillingComponent from "./BillingComponent";
+import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
-import InsuranceComponent from "../patients/patientDetail/insurance";
-import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
 // constants, interfaces, utils block
-import { 
-  CHART_TEXT, CHECK_IN_STEPS, INSURANCE, PATIENT_INFO, RECORD_VITALS, TO_CHART, TO_LAB_ORDERS, VIEW_APPOINTMENTS_ROUTE, VITALS_TEXT 
+import {
+  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
 } from "../../../constants";
-import { 
-  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload, useFetchPatientInsurancesLazyQuery, 
-  useGetAppointmentLazyQuery, useUpdateAppointmentMutation 
+import {
+  AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
+  useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../generated/graphql";
 import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
-import { 
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState 
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
+  State as mediaState
 } from "../../../reducers/mediaReducer";
-import { 
-  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState, patientReducer, State as PatientState 
+import {
+  Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
+  patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
+import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate } from "../../../utils";
+import { ChevronRightIcon } from "../../../assets/svgs";
+import ChartCards from "../patientChart/chartCards";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -50,18 +52,20 @@ const CheckInStepIcon = (props: StepIconProps) => {
 }
 
 const CheckInComponent = (): JSX.Element => {
+  const checkInClasses = useCheckInProfileStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
     useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
+
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-  const { appointment } = state
+  const { appointment, activeStep } = state
   const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
 
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
-  const [activeStep, setActiveStep] = useState<number>(0);
+
   const appointmentInfo = {
     name: `${appointmentType?.name ?? ''}  ${appointmentTime}`,
     id: appointmentId ?? ''
@@ -70,7 +74,7 @@ const CheckInComponent = (): JSX.Element => {
   const shouldDisableEdit = status === AppointmentStatus.Discharged
 
   useEffect(() => {
-    setActiveStep(Number(checkInActiveStep) ?? 0)
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
   }, [checkInActiveStep])
 
   const [getAppointment] = useGetAppointmentLazyQuery({
@@ -180,7 +184,8 @@ const CheckInComponent = (): JSX.Element => {
         }
       }
     })
-    setActiveStep(step);
+
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
   };
 
   const getStepContent = (step: number) => {
@@ -189,18 +194,17 @@ const CheckInComponent = (): JSX.Element => {
         return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
       case 1:
         return <PatientInfo />
+      // case 2:
+      //   return <Insurance />
       case 2:
-        return <Insurance />
-      case 3:
         return <Chart />
+      case 3:
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} />
       case 4:
-        return <Vitals />
       case 5:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={handleStep} />
-      case 6:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
-        return 'Unknown step';
+        return <CircularProgress />;
     }
   }
 
@@ -217,7 +221,7 @@ const CheckInComponent = (): JSX.Element => {
           <Typography variant="h4">{PATIENT_INFO}</Typography>
 
           <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-            {INSURANCE}
+            {TO_CHART}
             <ChevronRight />
           </Button>
         </Box>
@@ -235,21 +239,21 @@ const CheckInComponent = (): JSX.Element => {
     </>
 
   // 2- INSURANCE
-  const Insurance = () =>
-    <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{INSURANCE}</Typography>
+  // const Insurance = () =>
+  //   <>
+  //     <Card>
+  //       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+  //         <Typography variant="h4">{INSURANCE}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-            {TO_CHART}
-            <ChevronRight />
-          </Button>
-        </Box>
-        <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
-        <Box p={2}></Box>
-      </Card>
-    </>
+  //         <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
+  //           {TO_CHART}
+  //           <ChevronRight />
+  //         </Button>
+  //       </Box>
+  //       <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+  //       <Box p={2}></Box>
+  //     </Card>
+  //   </>
 
   // 3- CHART
   const Chart = () =>
@@ -258,77 +262,57 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{CHART_TEXT}</Typography>
 
-          <Button variant="contained" color="primary" onClick={() => handleStep(4)}>
-            {RECORD_VITALS}
-            <ChevronRight />
-          </Button>
-        </Box>
-
-        {/* <ChartCards shouldDisableEdit={shouldDisableEdit} /> */}
-      </Card>
-    </>
-
-  // 4- VITALS
-  const Vitals = () =>
-    <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{VITALS_TEXT}</Typography>
-
-          <Button variant="contained" color="primary" onClick={() => handleStep(5)}>
+          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
             {TO_LAB_ORDERS}
             <ChevronRight />
           </Button>
         </Box>
 
-        {/* <ChartCards  /> */}
-        <VitalsChartingTable isCalendar={false} shouldDisableEdit={shouldDisableEdit} />
+        <ChartCards shouldDisableEdit={shouldDisableEdit} />
       </Card>
     </>
 
   return (
     <>
-      {appointmentTime &&
-        <Box display='flex' alignItems='center'>
-          <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
-
-          <Box ml={2} pt={2}>
-            <PageHeader title={`Encounter on ${appointmentTime}`} />
-          </Box>
+      <Box display='flex' alignItems='center' flexWrap='wrap'>
+        <Box className={checkInClasses.checkInProfileBox}>
+          <PatientProfileHero
+            isCheckIn
+            setPatient={(patient: PatientPayload['patient']) =>
+              patientDispatcher({ type: PatientActionType.SET_PATIENT_DATA, patientData: patient })
+            }
+            setAttachmentsData={(attachments: AttachmentsPayload['attachments']) =>
+              mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
+            }
+          />
         </Box>
-      }
 
-      <PatientProfileHero
-        isCheckIn
-        setPatient={(patient: PatientPayload['patient']) =>
-          patientDispatcher({ type: PatientActionType.SET_PATIENT_DATA, patientData: patient })
-        }
-        setAttachmentsData={(attachments: AttachmentsPayload['attachments']) =>
-          mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
-        }
-      />
+        <Box p={1.5} />
 
-      <Box p={2} />
+        <Box className={checkInClasses.checkInProfileBox}>
+          <Typography variant="h6" color="textPrimary">{`Encounter on ${appointmentTime}`}</Typography>
+        </Box>
 
-      <Card>
-        <Box px={3} pt={1} pb={1}>
+        <Box p={1.5} />
+
+        <Box className={checkInClasses.checkInProfileBox}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
                 <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
-                  <Box className='pointer-cursor'>
+                  <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
+                    <Box p={0.5} />
+                    {!(CHECK_IN_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
                   </Box>
                 </StepLabel>
               </Step>
             ))}
           </Stepper>
         </Box>
-      </Card>
+      </Box>
 
-      <Box p={2} />
-
-      <Box>
+      <Box mt={1}>
         <Typography>{getStepContent(activeStep)}</Typography>
       </Box>
     </>

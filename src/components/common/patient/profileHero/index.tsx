@@ -1,40 +1,52 @@
-import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link, IconButton } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
+import history from "../../../../history";
+import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  formatPhone, getFormattedDate, renderMissing, calculateAge, formatValue,
-  getFormatDateString, getDateWithDay
+  ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT, PATIENTS_ROUTE
+} from "../../../../constants";
+import {
+  formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
 } from "../../../../utils";
 import {
-  AppointmentPayload,
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientNearestAppointmentsLazyQuery
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
+  useGetPatientNearestAppointmentsLazyQuery, DoctorPatientRelationType
 } from "../../../../generated/graphql";
 import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon, EditNewIcon
 } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
+import {
+  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, State as appointmentState,
+  ActionType as appointmentActionType
+} from "../../../../reducers/appointmentReducer";
 
-const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
+const PatientProfileHero: FC<PatientProfileHeroProps> = ({
+  setPatient, setAttachmentsData, isCheckIn, isChart
+}) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
-  const [open, setOpen] = useState<boolean>(false)
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
+
+  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment, openMoreInfo } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [{ appointmentId }, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -60,9 +72,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   const fetchAttachment = useCallback(async () => {
     try {
       await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
+        variables: { getMedia: { id: attachmentId } }
       })
     } catch (error) { }
   }, [attachmentId, getAttachment])
@@ -114,7 +124,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    onError() {},
+    onError() { },
 
     onCompleted(data) {
       const { getPatientPastUpcomingAppointment: { response, appointments } } = data;
@@ -135,6 +145,12 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
               type: ActionType.SET_NEXT_APPOINTMENT,
               nextAppointment: upcomingAppointment as AppointmentPayload['appointment']
             })
+
+          if (upcomingAppointment) {
+            const { id: appointmentId } = upcomingAppointment
+            appointmentId &&
+              appointmentDispatch({ type: appointmentActionType.SET_APPOINTMENT_ID, appointmentId: appointmentId })
+          }
         }
       }
     }
@@ -156,7 +172,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, sexAtBirth, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt, genderIdentity
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -167,45 +183,33 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   if (selfContact && selfContact[0]) {
     const { phone, email, state, address, city, zipCode } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || ""
+
     selfEmail = patientEmail ? patientEmail : email || ""
     const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
     selfCurrentLocation = selfAddress.trim() ? selfAddress : ''
   }
 
-  const ProfileDetails = [
-    {
-      icon: ProfileUserIcon(),
-      description: calculateAge(dob || '')
-    },
-    {
-      icon: HashIcon(),
-      description: selfPhoneNumber
-    },
-    {
-      icon: AtIcon(),
-      description: selfEmail
-    },
-    {
-      icon: LocationIcon(),
-      description: selfCurrentLocation
-    },
-  ]
-
   let providerName = ""
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
   if (doctorPatients) {
-    const currentDoctor = doctorPatients.map(doctorPatient => {
-      if (doctorPatient.currentProvider) {
-        return doctorPatient.doctor
+    const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+      relation === DoctorPatientRelationType.PrimaryProvider)
+
+    if (doesPrimaryProviderExist) {
+      const { doctor } = doesPrimaryProviderExist ?? {}
+      const { firstName, lastName } = doctor ?? {}
+
+      providerName = `${firstName} ${lastName}`
+    } else {
+      const currentDoctorPatients = doctorPatients[0]
+
+      if (currentDoctorPatients) {
+        const { doctor } = currentDoctorPatients || {};
+        const { firstName, lastName } = doctor ?? {}
+
+        providerName = `${firstName} ${lastName}`
       }
-
-      return null
-    })[0];
-
-    if (currentDoctor) {
-      const { firstName, lastName, } = currentDoctor || {};
-      providerName = `${firstName} ${lastName}` || "--"
     }
   }
 
@@ -235,10 +239,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       title: "Last Scheduled Appointment",
       description: lastAppointmentDate || '--'
     },
-    {
-      title: "Next Scheduled Appointment",
-      description: nextAppointmentDate || '--'
-    },
   ]
 
   useEffect(() => {
@@ -247,98 +247,149 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  return (
-    <>
-      <Box className={` ${classes.profileCard} card-box-shadow`}>
-        <Box key={attachmentId} display="flex" alignItems="center">
-          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
-            {getAttachmentLoading ?
-              <Avatar variant="square" className={classes.profileImage}>
-                <CircularProgress size={20} color="inherit" />
-              </Avatar>
-              :
-              <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-            }
+  const patientAvatar = () => <Box key={attachmentId} display="flex" alignItems="center">
+    <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
+      {getAttachmentLoading ?
+        <Avatar variant="square" className={classes.profileImage}>
+          <CircularProgress size={20} color="inherit" />
+        </Avatar>
+        :
+        <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+      }
 
-            <MediaCards
-              title={ATTACHMENT_TITLES.ProfilePicture}
-              reload={() => fetchPatient()}
-              notDescription={true}
-              moduleType={AttachmentType.Patient}
-              itemId={id}
-              imageSide={attachmentUrl}
-              attachmentData={attachmentData || undefined}
-            />
-          </Box>
+      {!isCheckIn &&
+        <MediaCards
+          title={ATTACHMENT_TITLES.ProfilePicture}
+          reload={() => fetchPatient()}
+          notDescription={true}
+          moduleType={AttachmentType.Patient}
+          itemId={id}
+          imageSide={attachmentUrl}
+          attachmentData={attachmentData || undefined}
+        />
+      }
+    </Box>
+  </Box>
+
+  const renderName = () => <>
+    <Box display="flex" alignItems="center">
+      <Box className={classes.userName} mr={1}>
+        {`${firstName} ${lastName}`}
+      </Box>
+
+      <Box display="flex" flexWrap="wrap" alignItems="center">
+        {!isCheckIn &&
+          <Typography variant="body2">
+            {`(${patientRecord}) | ${formatValue(genderIdentity || '')} | ${getFormatDateString(dob || '')}`}
+          </Typography>
+        }
+      </Box>
+    </Box>
+  </>
+
+  const renderAge = () =>
+    <Box display="flex" className={classes.profileInfoItem}>
+      <Box display='flex' alignItems='center'>
+        <ProfileUserIcon />
+
+        <Box color={BLACK_THREE}>
+          <Typography variant="body1">{dob ? dateDifference(dob || '') : renderMissing()}</Typography>
         </Box>
+      </Box>
+    </Box>
+
+  const renderNotes = () => <>
+    <div ref={noteRef}
+      className={`${classes.profileNoteInfoItem} pointer-cursor`}
+      onClick={(event) => dispatch({
+        type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
+      })}
+    >
+      <NotesOutlinedCardIcon />
+
+      <Box display="flex" alignItems="center">
+        <Typography variant="body1">{NOTES}</Typography>
+
+        <Box className="mt-10px">
+          <RedCircleIcon />
+        </Box>
+      </Box>
+    </div>
+
+    <Menu
+      getContentAnchorEl={null}
+      anchorEl={isNoteOpen}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      id={'patient-notes'}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      open={!!isNoteOpen}
+      onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+      className={classes.noteDropdown}
+    >
+      <PatientNoteModal
+        patientStates={patientState}
+        dispatcher={dispatch}
+      />
+    </Menu>
+  </>
+
+  const regularComponent = () =>
+    <>
+      <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
+        {patientAvatar()}
 
         {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }]} />
           :
           <Box flex={1}>
-            <Box display='flex'>
+            <Box display='flex' className="profile-hero-patient">
               <Box flex={1} flexWrap="wrap">
-                <Box display="flex" alignItems="center">
-                  <Box className={classes.userName} mr={1}>
-                    {`${firstName} ${lastName}`}
-                  </Box>
+                <Box display='flex' alignItems='baseline'>
+                  {renderName()}
 
-                  <Box display="flex" flexWrap="wrap" alignItems="center">
-                    <Typography variant="body2">
-                      {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
-                    </Typography>
-                  </Box>
+                  <IconButton onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                    <EditNewIcon />
+                  </IconButton>
                 </Box>
 
-                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => {
-                    const { icon, description } = item
+                <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
+                  {renderAge()}
 
-                    return (
-                      <Box display="flex" key={`${description}-${index}`}
-                        className={classes.profileInfoItem}
-                      >
-                        <Box>{icon}</Box>
-                        <Typography variant="body1">{description ? description : renderMissing()}</Typography>
-                      </Box>
-                    )
-                  })}
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><HashIcon /></Box>
 
-                  <div ref={noteRef}
-                    className={`${classes.profileNoteInfoItem} pointer-cursor`}
-                    onClick={(event) => dispatch({
-                      type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget
-                    })}
-                  >
-                    <Box><NotesCardIcon /></Box>
-                    <Box display="flex" alignItems="center">
-                      <Typography variant="body1">{NOTES}</Typography>
-                      <RedCircleIcon />
-                    </Box>
-                  </div>
+                    <Typography variant="body1">
+                      {selfPhoneNumber ?
+                        <Link href={`tel:${selfPhoneNumber}`} target="_blank">{selfPhoneNumber}</Link>
+                        : renderMissing()
+                      }
+                    </Typography>
+                  </Box>
 
-                  <Menu
-                    getContentAnchorEl={null}
-                    anchorEl={isNoteOpen}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                    id={'patient-notes'}
-                    keepMounted
-                    transformOrigin={{ vertical: "top", horizontal: "left" }}
-                    open={!!isNoteOpen}
-                    onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
-                    className={classes.noteDropdown}
-                  >
-                    <PatientNoteModal
-                      patientStates={patientState}
-                      dispatcher={dispatch}
-                    />
-                  </Menu>
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><AtIcon /></Box>
+
+                    <Typography variant="body1">
+                      {selfEmail ?
+                        <Link href={`mailto:${selfEmail}`} target="_blank">{selfEmail}</Link>
+                        : renderMissing()
+                      }
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" className={classes.profileInfoItem}>
+                    <Box><LocationIcon /></Box>
+                    <Typography variant="body1">{selfCurrentLocation ? selfCurrentLocation : renderMissing()}</Typography>
+                  </Box>
+
+                  {renderNotes()}
                 </Box>
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
-                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_MORE_INFO, openMoreInfo: !openMoreInfo })} variant="text" className="btn-focus">
+                  {openMoreInfo ? <Typography variant="body2">... {LESS_INFO}</Typography>
                     : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
 
@@ -352,25 +403,60 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         }
       </Box>
 
-      <Collapse in={open} mountOnEnter unmountOnExit>
+      <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
-              {ProfileAdditionalDetails.map((item, index) => (
-                <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                  <Box className={classes.profileInfoHeading}>{item.title}</Box>
+              <>
+                {ProfileAdditionalDetails.map((item, index) => (
+                  <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
 
-                  <Box className={classes.profileInfoItem}>
-                    <Typography variant="body1">{item.description}</Typography>
+                    <Box className={classes.profileInfoItem}>
+                      <Typography variant="body1">{item.description}</Typography>
+                    </Box>
                   </Box>
+                ))}
+                <Box className={classes.profileAdditionalInfo}>
+                  <Box className={classes.profileInfoHeading}>{NEXT_SCHEDULED_APPOINTMENT}</Box>
+
+                  {nextAppointmentDate ? <Box className={classes.profileInfoItem}>
+                    <Typography variant="body1">
+                      <Link href={`${process.env.REACT_APP_URL}/appointments/${appointmentId}`}>
+                        {nextAppointmentDate}
+                      </Link>
+                    </Typography>
+                  </Box>
+                    :
+                    <Box className={classes.profileInfoItem}>
+                      <Typography variant="body1">{'--'}</Typography>
+                    </Box>}
                 </Box>
-              ))}
+              </>
             </Box>
           </Card>
         </Box>
       </Collapse>
     </>
-  )
+
+  const checkInComponent = () =>
+    <Box display='flex' alignItems='center'>
+      {patientAvatar()}
+
+      <Box>
+        {renderName()}
+
+        <Box display="flex" alignItems="baseline">
+          {renderAge()}
+
+          <Box p={1} />
+
+          {renderNotes()}
+        </Box>
+      </Box>
+    </Box>
+
+  return isCheckIn ? checkInComponent() : regularComponent()
 };
 
 export default PatientProfileHero;

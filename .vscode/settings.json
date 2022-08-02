@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "AIMEDLOGO",
     "allowfullscreen",
     "Appointmentstatus",
     "bgcolor",
@@ -9,10 +10,14 @@
     "CLIA",
     "clsx",
     "Communicationtype",
+    "Configrator",
     "copays",
     "devexpress",
+    "DONT",
     "dropzone",
     "Formbuilder",
+    "HCFA",
+    "hcpcs",
     "Highcharts",
     "Holdstatement",
     "hookform",
@@ -21,12 +26,15 @@
     "Maritialstatus",
     "MMHG",
     "notistack",
+    "referer",
     "Requestable",
     "SIGNOFF",
     "smartystreets",
+    "snomed",
     "SPECIALITY",
     "svgs",
     "UPIN",
+    "Videocam",
     "Xrange",
     "Zipcode"
   ]

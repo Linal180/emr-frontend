@@ -24,9 +24,8 @@ import {
 import {
   EMAIL, EMPTY_OPTION, FIRST_NAME, LAST_NAME, SAVE_TEXT, SPECIALTY, CANCEL, PROVIDER,
   DOCTORS_ROUTE, NOT_FOUND_EXCEPTION, PHONE, MAPPED_SPECIALTIES, PATIENT_PROVIDER_UPDATED,
-  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION, 
-  UPDATE_PRIMARY_PROVIDER,
-  EDIT_PROVIDER, 
+  ADD_PROVIDER_TEXT, MAPPED_DOCTOR_PATIENT_RELATION, YES, PRIMARY_PROVIDER_DESCRIPTION,
+  UPDATE_PRIMARY_PROVIDER, EDIT_PROVIDER,
 } from '../../../../../../constants';
 
 const CareTeamForm: FC<CareTeamsProps> = ({
@@ -84,7 +83,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
                 const { email, phone, } = primaryContact
                 email && setValue('email', email)
                 phone && setValue('phone', phone)
-
               }
             }
           }
@@ -126,7 +124,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
                 const { email, phone, } = primaryContact
                 email && setValue('email', email)
                 phone && setValue('phone', phone)
-
               }
             }
           }
@@ -180,12 +177,13 @@ const CareTeamForm: FC<CareTeamsProps> = ({
     setRelationInput(relation as DoctorPatientRelationType)
     setOtherRelationInput(otherRelation as string)
     if (isEdit) {
-      const editPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== item.id)
+      const editPrimaryProvidersData = patientProvidersData?.find(({id, relation}) =>
+        relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== id)
+
       const { id } = editPrimaryProvidersData || {}
       if (id && relation === DoctorPatientRelationType.PrimaryProvider) {
         setOpenSave(true)
-      }
-      else {
+      }else {
         await updatePatientProviderRelation({
           variables: {
             updatePatientProviderRelationInputs: {
@@ -200,8 +198,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
       const { id } = newPrimaryProvidersData || {}
       if (relation === DoctorPatientRelationType.PrimaryProvider && id) {
         setOpenSave(true)
-      }
-      else {
+      } else {
         await updatePatientProvider({
           variables: {
             updatePatientProvider: {
@@ -254,7 +251,9 @@ const CareTeamForm: FC<CareTeamsProps> = ({
 
   useEffect(() => {
     if (isEdit)
-      getPatientProvider({ variables: { patientProviderInputs: { patientId: patientId as string, providerId: doctorId as string } } })
+      getPatientProvider({
+        variables: { patientProviderInputs: { patientId: patientId as string, providerId: doctorId as string } }
+      })
   }, [getPatientProvider, isEdit, doctorId, patientId])
 
   useEffect(() => {
@@ -285,6 +284,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
           <Box mt={2} p={3}>
             {isEdit ? renderItem(PROVIDER, doctorName) :
               <DoctorSelector
+                addEmpty
                 isRequired
                 shouldOmitFacilityId
                 name="providerId"
@@ -332,7 +332,6 @@ const CareTeamForm: FC<CareTeamsProps> = ({
 
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="speciality"
                   label={SPECIALTY}
                   value={EMPTY_OPTION}

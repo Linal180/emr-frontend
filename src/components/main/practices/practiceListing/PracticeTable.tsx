@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
-import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
+import { formatPhone, getFormattedDate, getPageNumber, renderTh } from "../../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -46,6 +46,7 @@ const PracticeTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -54,7 +55,11 @@ const PracticeTable: FC = (): JSX.Element => {
 
         if (findAllPractices) {
           const { pagination, practices } = findAllPractices
-          practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+
+          practices && dispatch({
+            type: ActionType.SET_PRACTICES,
+            practices: practices as PracticesPayload['practices']
+          })
 
           if (pagination) {
             const { totalPages } = pagination
@@ -85,10 +90,15 @@ const PracticeTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-            await findAllPractices();
             setFacilityList([])
             setRoleList([])
             fetchAllFacilityList()
+
+            if(!!practices && practices.length){
+              await findAllPractices();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, practices?.length || 0)})
+            }
           }
         }
       } catch (error) { }
@@ -121,7 +131,7 @@ const PracticeTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 
@@ -140,7 +150,7 @@ const PracticeTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={4} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={4} />
                   </TableCell>
                 </TableRow>) : (
                 practices?.map(practice => {

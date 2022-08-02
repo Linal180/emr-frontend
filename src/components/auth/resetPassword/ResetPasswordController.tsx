@@ -1,29 +1,28 @@
 // packages block
 import { FC, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
-import { Controller } from "react-hook-form";
 // components block
 import ShowPassword from "../../common/ShowPassword";
 // utils. styles, constants and interfaces block
 import { PASSWORD, TEXT } from "../../../constants";
 import { PasswordType, ResetPasswordInputControlProps } from "../../../interfacesTypes";
 
-const ResetPasswordController: FC<ResetPasswordInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
+const ResetPasswordController: FC<ResetPasswordInputControlProps> = ({
+  controllerName, controllerLabel, fieldType, error, isPassword
+}): JSX.Element => {
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
+  const { control } = useFormContext();
 
-  const handleClickShowPassword = () => {
-    if (passwordType === PASSWORD) {
-      setPasswordType(TEXT);
-    } else {
-      setPasswordType(PASSWORD);
-    }
-  };
+  const handleClickShowPassword = () => passwordType === PASSWORD
+    ? setPasswordType(TEXT)
+    : setPasswordType(PASSWORD);
 
   return (
     <Controller
       name={controllerName}
       control={control}
-      render={({ field, fieldState: { invalid } }) => (
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
             {controllerLabel}
@@ -36,7 +35,7 @@ const ResetPasswordController: FC<ResetPasswordInputControlProps> = ({ control, 
             error={invalid}
             fullWidth
             {...field}
-            helperText={error && error}
+            helperText={error ? error : message || ''}
             InputProps={{
               endAdornment: <ShowPassword
                 isPassword={isPassword}

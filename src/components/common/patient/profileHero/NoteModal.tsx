@@ -1,5 +1,5 @@
 //packages block
-import { FC, Fragment, useState, useEffect } from "react";
+import { FC, Fragment, useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
 //components
@@ -15,10 +15,9 @@ import {
 } from "../../../../constants";
 
 export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patientStates }) => {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
   const methods = useForm<any>({ mode: "all" });
 
-  const { patientNoteOpen, patientData } = patientStates
+  const { patientNoteOpen, patientData, isEdit } = patientStates
   const { id, patientNote, patientNoteOpen: isNote } = patientData || {}
   const { handleSubmit, setValue } = methods;
 
@@ -26,6 +25,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
     onCompleted: ({ updatePatientNoteInfo }) => {
       const { response, patient } = updatePatientNoteInfo || {}
       const { status } = response || {}
+
       if (status && status === 200) {
         const { patientNote, patientNoteOpen } = patient || {}
         const newPatient = { ...patientData, patientNoteOpen, patientNote }
@@ -33,6 +33,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
         Alert.success(PATIENT_NOTE_SUCCESS_MESSAGE)
       }
     },
+
     onError: () => {
       Alert.error(PATIENT_NOTE_ERROR_MESSAGE)
     }
@@ -47,7 +48,7 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
       }
     })
 
-    setIsEdit(!isEdit)
+    dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: !isEdit })
   }
 
   const handleChange = async () => {
@@ -69,22 +70,22 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
 
   return (
     <Fragment>
-
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography>{PINNED_NOTES}</Typography>
 
         {isEdit ?
           <IconButton onClick={handleSubmit(onSubmit)}><SaveIcon /></IconButton> :
-          <IconButton onClick={() => setIsEdit(true)}><EditOutlinedIcon /></IconButton>
+          <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })}><EditOutlinedIcon /></IconButton>
         }
       </Box>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {isEdit ?
             <InputController fieldType="text" controllerName="patientNote" /> :
             <Typography color="inherit">{patientNote}</Typography>
           }
-          
+
           <FormControlLabel
             control={<Checkbox checked={patientNoteOpen} onChange={handleChange} name="checked" />}
             label={AUTO_OPEN_NOTES} />

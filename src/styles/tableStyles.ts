@@ -1,8 +1,6 @@
-import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
+import { makeStyles, Theme, Tooltip, withStyles } from "@material-ui/core";
 import {
-  BLACK_ONE,
-  BLACK_THREE,
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN, GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -47,7 +45,7 @@ export const useTableStyles = makeStyles(() => ({
     background: WHITE,
     borderRadius: 12,
     overflow: "auto",
-    padding: theme.spacing(2),
+    padding: theme.spacing(2.5),
     maxHeight: "calc(100vh - 248px)",
   },
 
@@ -65,10 +63,10 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   selectorBox: {
-    maxWidth: 120,
+    // maxWidth: 120,
 
     "& .MuiFormControl-fullWidth": {
-      width: 120,
+      // width: 120,
       borderRadius: 8,
     },
 
@@ -77,6 +75,10 @@ export const useTableStyles = makeStyles(() => ({
       borderRadius: 8,
       padding: '0 5px',
       minHeight: 34,
+    },
+    "& .MuiAutocomplete-option": {
+      backgroundColor: WHITE,
+      border: '1px solid red',
     },
   },
 
@@ -103,7 +105,15 @@ export const useTableStyles = makeStyles(() => ({
 
     "& svg": {
       maxWidth: 16
-    }
+    },
+
+    "& .MuiButton-root": {
+      minWidth: 'auto',
+    },
+
+    "& .MuiButton-root:hover": {
+      backgroundColor: 'transparent',
+    },
   },
 
   iconsBackgroundDisabled: {
@@ -181,24 +191,25 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
-  dashboardTableContainer: {
-    background: WHITE,
-    borderRadius: 12,
-    overflow: "auto",
-    padding: theme.spacing(2),
-    maxHeight: 500,
-    overflowY: 'hidden',
+  fullFlex:{
+    flex : 1
+  },
+  
+  firstRowBg: {
+    backgroundColor: GREEN_TWO,
+  },
 
-    "& .MuiTableCell-head": {
-      color: BLACK_THREE,
-      fontSize: 12,
-      fontWeight: 600,
+  tableRowRoot: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: GREY_EIGHTEEN,
     },
+  },
 
-    "& .MuiTableCell-body": {
-      color: BLACK_ONE,
-      fontSize: 14,
-      fontWeight: 500,
-    },
+  btnWrap: {
+    whiteSpace: 'nowrap',
+  },
+
+  claimTableHead: {
+    backgroundColor: GREY_ELEVEN,
   },
 }))

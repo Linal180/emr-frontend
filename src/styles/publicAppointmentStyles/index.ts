@@ -9,9 +9,13 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       margin: theme.spacing(0.5),
       backgroundColor: WHITE,
       minHeight: 100,
-      position: "sticky",
-      top: 100,
+      // position: "sticky",
+      // top: 100,
       zIndex: 1,
+    },
+
+    timeSlot: {
+      cursor: "pointer"
     },
     
     timeSlots: {
@@ -26,7 +30,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
 
       '& li': {
         width: 'calc(50% - 12px)',
-        margin: "0 12px 12px 0",
+        margin: "0 12px 15px 0",
       },
 
       "& input": {
@@ -98,7 +102,56 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         borderBottomLeftRadius: "6px",
       }
     },
+    toggleSmContainer: {
+      "& .toggle-main": {
+        display: 'flex',
+        position: 'relative',
+        border: `1px solid ${GRAY_SIX}`,
+        fontWeight: 600,
+        fontSize: 16,
+        width: 145,
+        height: 44,
+        padding: 7,
+        borderRadius: 6,
 
+        "& > div": {
+          position: 'relative',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingBottom: 2,
+          zIndex: 2,
+          flex: 1,
+        }
+      },
+
+      "& .MuiToggleButtonGroup-root": {
+        marginTop: 10,
+      },
+
+      "& .MuiToggleButton-root.Mui-selected": {
+        color: WHITE,
+        backgroundColor: GREY_TWO,
+        padding: "12px 20px",
+        borderRadius: 6,
+      },
+
+      "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
+        borderTopRightRadius: "6px",
+        borderBottomRightRadius: "6px",
+      },
+
+      "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
+        borderTopLeftRadius: "6px",
+        borderBottomLeftRadius: "6px",
+      },
+
+      "& .MuiSwitch-thumb": {  
+        backgroundColor: "#204ECF !important",
+      }
+      
+    },
     agreement_box: {
       boxShadow: `0px -4px 10px rgba(0, 0, 0, 0.1)`,
       borderRadius: '0px 0px 8px 8px',
@@ -115,6 +168,25 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         fontWeight: 600,
         fontSize: 16,
       }
+    },
+
+    daysBox: {
+      "& .MuiTypography-body1": {
+        fontSize: 14,
+      },
+
+      "& .MuiCheckbox-root .MuiIconButton-label:before": {
+        width: 16,
+        height: 16,
+      }
+    },
+
+    billingCard: {
+      [theme.breakpoints.up("md")]: {
+        borderRight: `1px solid ${GRAY_SIX}`,
+        minHeight: 354,
+        paddingRight: theme.spacing(3),
+      },
     }
   })
 );

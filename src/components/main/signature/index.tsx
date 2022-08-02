@@ -19,7 +19,7 @@ import {
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON,
+  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON, DRAW_SIGNATURE, PAGE_LIMIT,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
@@ -31,6 +31,7 @@ const SignatureComponent = (): JSX.Element => {
     attachments?.filter(attachment =>
       attachment.title === ATTACHMENT_TITLES.Signature)[0]
   )
+  const [error, setError] = useState(false)
   const classes = useHeaderStyles();
   let data = ''
   let signCanvas = useRef<any>({});
@@ -114,7 +115,10 @@ const SignatureComponent = (): JSX.Element => {
         `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
       formData,
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          pathname: window.location.pathname
+        }
       }
     ).then(response => {
       const { status } = response
@@ -133,12 +137,16 @@ const SignatureComponent = (): JSX.Element => {
   }
 
   const save = () => {
-    if (signCanvas && signCanvas.current) {
-      const { toDataURL } = signCanvas.current;
-      data = toDataURL();
-      const file = dataURLtoFile(data, `${moduleRoute}-${id}-signature`)
-
-      handleFileChange(file);
+    if (signCanvas && signCanvas?.current) {
+      const { toDataURL, isEmpty } = signCanvas.current;
+      const empty = isEmpty()
+      if (empty) setError(true)
+      else {
+        setError(false)
+        data = toDataURL();
+        const file = dataURLtoFile(data, `${moduleRoute}-${id}-signature`)
+        handleFileChange(file);
+      }
     }
   }
 
@@ -148,7 +156,7 @@ const SignatureComponent = (): JSX.Element => {
 
   const fetchAttachments = async () => {
     id && await getAttachments({
-      variables: { getAttachment: { typeId: id } }
+      variables: { getAttachment: { typeId: id, paginationOptions: { limit: PAGE_LIMIT, page: 1 } } }
     })
   }
 
@@ -217,7 +225,7 @@ const SignatureComponent = (): JSX.Element => {
               }
 
               <Box mb={4} display="flex" justifyContent="space-between" alignItems="center">
-                {!signatureUrl  &&  <Button onClick={() => setOpen(!open)} type="submit" disabled={isLoading} variant="outlined" color='secondary'>
+                {!signatureUrl && <Button onClick={() => setOpen(!open)} type="submit" disabled={isLoading} variant="outlined" color='secondary'>
                   {ADD_SIGNATURE}
 
                   {isLoading && <CircularProgress size={20} color="inherit" />}
@@ -238,6 +246,10 @@ const SignatureComponent = (): JSX.Element => {
                 <Box py={1} borderTop={`1px solid ${WHITE_FOUR}`}>
                   <Typography variant="h5">{SIGNATURE_TEXT}</Typography>
                 </Box>
+              </Box>
+
+              <Box>
+                {error && <Typography color='error'>{DRAW_SIGNATURE}</Typography>}
               </Box>
 
               <Box py={1} mb={4} display="flex" justifyContent="space-between" alignItems="center">

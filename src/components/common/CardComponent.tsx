@@ -44,20 +44,18 @@ const CardComponent: FC<CardComponentType> = ({
             <Button
               variant="contained" color='primary' type='submit'
               disabled={disableSubmit}
-
             >
               {SAVE_TEXT}
 
               {disableSubmit && <CircularProgress size={20} color="inherit" />}
             </Button>
             : ''
-
         }
         title={cardTitle}
       />
 
       <CardContent>{children}</CardContent>
-    </Card >
+    </Card>
   )
 };
 

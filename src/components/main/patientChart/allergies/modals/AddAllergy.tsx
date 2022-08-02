@@ -1,23 +1,30 @@
 //packages import
-import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { Add as AddIcon } from '@material-ui/icons';
-import { FC, MouseEvent, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-//constants, utils, interfaces
-import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE } from "../../../../../constants";
-import { Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery } from "../../../../../generated/graphql";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
-//components
+import { 
+  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography 
+} from "@material-ui/core";
+// components block
 import AllergyModal from "./AllergyModal";
+//constants, utils, interfaces
+import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
+import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import { 
+  ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE 
+} from "../../../../../constants";
+import { 
+  Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery 
+} from "../../../../../generated/graphql";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const tabs = Object.keys(AllergyType)
   const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
-  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData }, dispatch] =
+
+  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData,  }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const closeSearchMenu = () => {
@@ -83,12 +90,12 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     handleSearch('', name);
   };
 
-  const handleOpenForm = ({ currentTarget }: MouseEvent<HTMLElement>, item: Allergies) => {
+  const handleOpenForm = (item: Allergies) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
 
-  const handleNewAllergy = ({ currentTarget }: MouseEvent<HTMLElement>) => {
+  const handleNewAllergy = () => {
     dispatch({ type: ActionType.SET_NEW_RECORD, newRecord: searchQuery })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   }
@@ -107,7 +114,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   );
 
   const renderSearchData = () =>
-    <Box maxHeight={280} minHeight={260} className="overflowY-auto" display="flex"
+    <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
       flexDirection="column" alignItems="flex-start"
     >
       {!!findAllergiesLoading ?
@@ -121,7 +128,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
             return (
               <Box key={name} className='pointer-cursor' my={0.2}
-                onClick={(event) => item && handleOpenForm(event, item as Allergies)}
+                onClick={() => item && handleOpenForm(item as Allergies)}
               >
                 <Typography variant='body1' className="hoverClass">{name}</Typography>
               </Box>
@@ -136,7 +143,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
             {searchQuery &&
               <Button type="submit" size='small' variant='contained' color='primary'
-                onClick={(event) => handleNewAllergy(event)}
+                onClick={handleNewAllergy}
                 startIcon={<AddIcon />}
               >
                 {ADD_ALLERGY}

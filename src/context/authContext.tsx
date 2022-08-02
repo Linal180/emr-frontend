@@ -1,11 +1,12 @@
 // packages block
-import { createContext, FC, useEffect, useState } from "react";
+import { createContext, FC, useContext, useEffect, useState } from "react";
 import { pluck } from "underscore";
 import { useCallback } from "react";
 // graphql, interfaces/types and constants block
-import { ATTACHMENT_TITLES, TOKEN } from "../constants";
-import { getUserRole, isSuperAdmin } from "../utils";
+import { ListContext } from "./listContext";
 import { AuthContextProps } from "../interfacesTypes";
+import { ATTACHMENT_TITLES, TOKEN } from "../constants";
+import { getUserRole, handleLogout, isSuperAdmin } from "../utils";
 import {
   User, useGetLoggedInUserLazyQuery, Doctor, Staff, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery,
   RolesPayload, useGetAttachmentLazyQuery, Attachment
@@ -14,36 +15,40 @@ import {
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
   userRoles: [],
+  profileUrl: '',
   practiceName: '',
+  isLoggedIn: false,
   currentUser: null,
   currentStaff: null,
   currentDoctor: null,
-  isLoggedIn: false,
   userPermissions: [],
-  setIsLoggedIn: () => { },
-  setUser: (user: User | null) => { },
-  setPracticeName: (name: string) => { },
-  setCurrentUser: (user: Doctor | Staff | null) => { },
-  setCurrentDoctor: (doctor: Doctor | null) => { },
-  setCurrentStaff: (staff: Staff | null) => { },
-  setUserRoles: (roles: string[]) => { },
-  setUserPermissions: (permissions: string[]) => { },
-  setProfileUrl: (url: string) => { },
-  profileUrl: '',
+  profileAttachment: null,
   fetchUser: () => { },
+  logoutUser: () => { },
+  setIsLoggedIn: () => { },
   fetchAttachment: () => { },
-  profileAttachment: null
+  setUser: (user: User | null) => { },
+  setProfileUrl: (url: string) => { },
+  setUserRoles: (roles: string[]) => { },
+  setPracticeName: (name: string) => { },
+  setCurrentStaff: (staff: Staff | null) => { },
+  setCurrentDoctor: (doctor: Doctor | null) => { },
+  setUserPermissions: (permissions: string[]) => { },
+  setCurrentUser: (user: Doctor | Staff | null) => { },
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
+  const {setFacilityList, setRoleList} = useContext(ListContext)
   const hasToken = localStorage.getItem(TOKEN);
   const [user, setUser] = useState<User | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [practiceName, setPracticeName] = useState<string>('');
+
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
   const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
+
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
   const [profileUrl, setProfileUrl] = useState('')
   const [profileAttachment, setProfileAttachment] = useState<null | Attachment>(null)
@@ -188,6 +193,21 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     }
   });
 
+  const logoutUser = () => {
+    setUser(null)
+    setRoleList([]);
+    setProfileUrl('')
+    setPracticeName('');
+    setIsLoggedIn(false)
+    setCurrentUser(null)
+    setFacilityList([]);
+    setCurrentStaff(null)
+    setCurrentDoctor(null);
+    setProfileAttachment(null)
+
+    handleLogout();
+  }
+
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
 
   const getUser = useCallback(async () => {
@@ -235,8 +255,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setProfileUrl,
         profileUrl,
         fetchUser,
+        logoutUser,
         fetchAttachment,
-        profileAttachment
+        profileAttachment,
       }}
     >
       {children}

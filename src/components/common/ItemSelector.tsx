@@ -1,24 +1,26 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from "react";
+import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE, TEMPORARY_CPT_CODES } from '../../constants'
-import { requiredLabel, renderListOptions, setRecord } from "../../utils";
-import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
+import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
+import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
+import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
-  DocumentType, IcdCodes, Insurance, SnoMedCodes, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
-  useFetchIcdCodesLazyQuery,
-  useSearchSnoMedCodesLazyQuery
-} from "../../generated/graphql";
+  ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery,
+  useFetchDocumentTypesLazyQuery, useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery, useSearchSnoMedCodesLazyQuery,
+} from "../../generated/graphql"
 
 const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect
+  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
+  filteredOptions, practiceId, feeScheduleId, loading
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
-  const [options, setOptions] = useState<SelectorOption[]>([])
+
+  const [options, setOptions] = useState<ItemSelectorOption[]>([])
+  const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -29,7 +31,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
 
     onError() {
-      return null;
+      setOptions([]);
     },
 
     onCompleted(data) {
@@ -46,6 +48,91 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
+  const [findAllFeeSchedule] = useFindAllFeeSchedulesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      findAllFeeScheduleInput: {
+        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        searchString: searchQuery ? searchQuery : query ? query : '',
+        practiceId: practiceId || ''
+      }
+    },
+
+    onError(error) {
+      setOptions([]);
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllFeeSchedules } = data
+
+        if (findAllFeeSchedules) {
+          const { feeSchedules } = findAllFeeSchedules
+
+          !!feeSchedules &&
+            setOptions(renderListOptions<FeeSchedule>(feeSchedules as FeeSchedule[], modalName))
+        }
+      }
+    },
+  });
+
+  const [findAllCptFeeSchedule] = useFindAllCptFeeScheduleLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      findAllCptFeeScheduleInput: {
+        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        searchString: searchQuery ? searchQuery : query ? query : '',
+        feeScheduleId
+      }
+    },
+
+    onError(error) {
+      setOptions([]);
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllCptFeeSchedule } = data
+
+        if (findAllCptFeeSchedule) {
+          const { cptFeeSchedules } = findAllCptFeeSchedule
+
+          !!cptFeeSchedules &&
+            setOptions(renderListOptions<CptFeeSchedule>([EMPTY_OPTION, ...cptFeeSchedules as CptFeeSchedule[]], modalName))
+        }
+      }
+    },
+
+  });
+
+  const [getClaimStatuses] = useFetchAllClaimStatusesLazyQuery({
+    variables: {
+      claimStatusPaginationInput: {
+        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
+        searchString: searchQuery ? searchQuery : query ? query : ''
+      }
+    },
+
+    onError() {
+      setOptions([]);
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchAllClaimStatuses } = data
+
+        if (fetchAllClaimStatuses) {
+          const { claimStatuses } = fetchAllClaimStatuses
+
+          !!claimStatuses &&
+            setOptions(renderListOptions<ClaimStatus>(claimStatuses as ClaimStatus[], modalName))
+        }
+      }
+    },
+  })
+
   const [getInsurances] = useFetchAllInsurancesLazyQuery({
     variables: {
       insuranceInput: {
@@ -55,7 +142,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
 
     onError() {
-      return null;
+      setOptions([]);
     },
 
     onCompleted(data) {
@@ -81,7 +168,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
 
     onError() {
-      return null;
+      setOptions([]);
     },
 
     onCompleted(data) {
@@ -110,7 +197,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
 
     onError() {
-      return null
+      setOptions([])
     },
 
     onCompleted(data) {
@@ -128,33 +215,28 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     }
   });
 
-  const getTempCptCode = useCallback(() => {
-    if (query) {
-      const filteredCptCode = TEMPORARY_CPT_CODES.filter(({ cptCode, description }) => {
-        return (cptCode.toLowerCase().includes(query.toLowerCase()) || description.toLowerCase().includes(query.toLowerCase()))
-      })
-
-      const transformedCptCode = filteredCptCode.map((cptCode) => setRecord(cptCode.cptCode, cptCode.description)).slice(0, INITIAL_PAGE_LIMIT)
-      setOptions(renderListOptions<SelectorOption>(transformedCptCode, modalName))
-      return
-    }
-    const transformedCptCode = TEMPORARY_CPT_CODES.map(cptCode => setRecord(cptCode.cptCode, cptCode.description)).slice(0, INITIAL_PAGE_LIMIT)
-    setOptions(renderListOptions<SelectorOption>(transformedCptCode, modalName))
-  }, [modalName, query])
-
   const fetchList = useCallback(async () => {
     try {
       if (modalName === ITEM_MODULE.snoMedCode) await getSnoMedCodes();
-      if (modalName === ITEM_MODULE.insurance) await getInsurances();
-      if (modalName === ITEM_MODULE.documentTypes) await fetchDocumentTypes();
-      if (modalName === ITEM_MODULE.icdCodes) await searchIcdCodes();
-      if (modalName === ITEM_MODULE.cptCode) await getTempCptCode();
+      else if (modalName === ITEM_MODULE.insurance) await getInsurances();
+      else if (modalName === ITEM_MODULE.documentTypes) await fetchDocumentTypes();
+      else if (modalName === ITEM_MODULE.icdCodes) await searchIcdCodes();
+      else if (modalName === ITEM_MODULE.claimStatus) await getClaimStatuses()
+      else if (modalName === ITEM_MODULE.feeSchedule) await findAllFeeSchedule()
+      else if (modalName === ITEM_MODULE.cptFeeSchedule && feeScheduleId) await findAllCptFeeSchedule();
     } catch (error) { }
-  }, [fetchDocumentTypes, getInsurances, getSnoMedCodes, getTempCptCode, modalName, searchIcdCodes])
+  }, [
+    feeScheduleId, fetchDocumentTypes, findAllCptFeeSchedule, findAllFeeSchedule, getClaimStatuses,
+    getInsurances, getSnoMedCodes, modalName, searchIcdCodes
+  ])
 
   useEffect(() => {
-    (!query.length || query.length > 2) && fetchList()
+    fetchList()
   }, [fetchList, query, searchQuery])
+
+  useEffect(() => {
+    setQuery('')
+  }, [feeScheduleId])
 
   useEffect(() => {
     if (isEdit) {
@@ -167,49 +249,62 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     }
   }, [isEdit, modalName, setValue, value])
 
+  const filterOptions = (options: ItemSelectorOption[]) => {
+    if (filteredOptions) {
+      return options.filter((value) => !filteredOptions.some(option => option.id === value.name?.split(" |")[0]))
+    }
+
+    return options
+  }
+
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={options[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={options.length ? options : []}
-            disableClearable
-            value={field.value ?? EMPTY_OPTION}
-            disabled={disabled}
-            getOptionSelected={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          rules={{ required: true }}
+          name={name}
+          control={control}
+          defaultValue={options[0]}
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+            return (
+              <Autocomplete
+                filterOptions={filterOptions}
+                options={options ?? []}
+                disableClearable
+                value={field.value ?? EMPTY_OPTION}
+                disabled={disabled}
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.name || ""}
+                renderOption={(option) => option.name}
+                renderInput={(params) => (
+                  <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
+                    <Box position="relative">
+                      <InputLabel id={`${name}-autocomplete`} shrink>
+                        {isRequired ? requiredLabel(label) : label}
+                      </InputLabel>
+                    </Box>
 
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={({ target: { value } }) => value.length > 2 && setQuery(value)}
-                />
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      error={invalid}
+                      className="selectorClass"
+                      onChange={({ target: { value } }) => setQuery(value)}
+                    />
 
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-            onChange={(_, data) => {
-              field.onChange(data)
-              onSelect && onSelect(data)
-            }}
-          />
-        );
-      }}
-    />
+                    <FormHelperText>{message}</FormHelperText>
+                  </FormControl>
+                )}
+                onChange={(_, data) => {
+                  field.onChange(data)
+                  onSelect && onSelect(data)
+                }}
+              />
+            );
+          }}
+        />
+      }
+    </>
   );
 };
 

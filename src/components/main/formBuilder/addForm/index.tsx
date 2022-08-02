@@ -36,9 +36,9 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
-  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
+  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
   CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
-  PRE_DEFINED, ITEMS_ID, PRACTICE,
+  PRE_DEFINED, ITEMS_ID, PRACTICE, DRAG_FIELD,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -110,8 +110,6 @@ const AddForm = () => {
             practiceId && dispatch({ type: ActionType.SET_PRACTICE, formPractice: practiceId })
             const { tabs } = layout
             tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
-            // const facilityName = facilityId && getFacilityNameHandler(facilityId)
-            // if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
       }
@@ -261,7 +259,8 @@ const AddForm = () => {
               options: itemField?.options ?? [],
               textArea: itemField?.textArea ?? false,
               isMultiSelect: itemField?.isMultiSelect ?? false,
-              apiCall: itemField?.apiCall ?? ''
+              apiCall: itemField?.apiCall ?? '',
+              regex: itemField?.regex ?? ''
             };
 
             fields?.splice(destination.index, 0, newField);
@@ -463,17 +462,17 @@ const AddForm = () => {
       }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
-    else Alert.error(DROP_FIELD)
+    else Alert.error(DRAG_FIELD)
 
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea } = item;
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea, regex } = item;
 
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg,
-        defaultValue, list: id, options, textArea
+        defaultValue, list: id, options, textArea, regex
       }
     })
   };
@@ -493,7 +492,8 @@ const AddForm = () => {
                 column: values?.column,
                 placeholder: values?.placeholder,
                 required: values?.required,
-                options: values?.options
+                options: values?.options,
+                regex: values?.regex
               }
               : field
           );
@@ -509,6 +509,12 @@ const AddForm = () => {
     });
 
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr1 })
+    dispatch({
+      type: ActionType.SET_SELECTED_FIELD, selected: {
+        fieldId: '', label: "", type: ElementType.Text, name: "", css: "", column: 12, placeholder: "", required: false,
+        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false, regex: ''
+      }
+    })
   }
 
   const clearHandler = () => dispatch({ type: ActionType.SET_FORM_VALUES, formValues: getFormInitialValues() })
@@ -540,7 +546,7 @@ const AddForm = () => {
     })
     if (isFieldFound) {
       dispatch({ type: ActionType.SET_OPEN_TEMPLATE, openTemplate: true })
-    } else Alert.error(DROP_FIELD)
+    } else Alert.error(DRAG_FIELD)
   }
 
   return (
@@ -686,14 +692,15 @@ const AddForm = () => {
                           ))}
                         </Menu>
                       </Grid>
-
                     </Grid>
                   </Box>
                 </Grid>
 
                 <Grid item md={3} sm={4} xs={12}>
-                  <TabProperties formState={state} dispatch={dispatch} />
-                  <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                  <Box className={classes.main}>
+                    <TabProperties formState={state} dispatch={dispatch} />
+                    <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                  </Box>
                 </Grid>
               </Grid>
             </Box>

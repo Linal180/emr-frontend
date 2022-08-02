@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE  } from "../theme";
+import {
+  BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX, BLUE_ONE
+} from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -14,14 +16,14 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   appBar: {
-    backgroundColor: WHITE,
+    backgroundColor: '#ffffff !important',
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: "none",
-    padding: theme.spacing(0, 4),
+    padding: theme.spacing(0),
     height: 80,
     overflow: 'hidden',
 
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       padding: 0,
     },
   },
@@ -32,16 +34,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   menuBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-
     "& .active": {
       borderBottom: `2px solid ${BLUE}`,
-    },
-
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
     },
   },
 
@@ -55,7 +49,9 @@ export const useHeaderStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "0 20px",
+    [theme.breakpoints.up('md')]: {
+      margin: "0 20px",
+    },
 
     "& .MuiIconButton-root": {
       padding: "0 5px",
@@ -64,6 +60,67 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
   menuLink: {
     color: BLACK,
+  },
+
+  mobileMenuBar: {
+    minHeight: 300,
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 0.3)",
+    },
+  },
+
+  mobileMenuItem: {
+    display: 'block',
+    textAlign: 'start',
+    paddingBottom: 10,
+    marginBottom: 10,
+    color: BLACK,
+    cursor: "pointer",
+    textTransform: "capitalize",
+
+    "& .MuiTypography-root": {
+      justifyContent: 'flex-start !important',
+      textAlign: 'start !important',
+      margin: '0px !important',
+    },
+
+    "& .MuiIconButton-root": {
+      padding: "0 5px",
+    },
+
+    "& .active": {
+      borderBottom: `2px solid ${BLUE} !important`,
+    },
+  },
+
+  grow: {
+    flexGrow: 1,
+  },
+
+  logo: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'block',
+    },
+  },
+
+  sectionDesktop: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
+  },
+
+  sectionMobile: {
+    position: 'absolute',
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+
+    "& .MuiSvgIcon-root": {
+      fill: BLACK,
+    },
   },
 
   profileItem: {
@@ -75,8 +132,6 @@ export const useHeaderStyles = makeStyles((theme) => ({
   profileItemName: {
     "& .MuiTypography-root": {
       minWidth: 30,
-      margin: 0,
-      color: BLACK,
     },
   },
 
@@ -95,10 +150,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
   sidebarMenu: {
     "& .MuiListItem-root": {
       color: BLACK_THREE,
+      whiteSpace : 'normal'
     },
   },
 
-  toggleContainer: {    
+  toggleContainer: {
     "& .toggle-main": {
       cursor: 'pointer',
       display: 'flex',
@@ -171,6 +227,15 @@ export const useHeaderStyles = makeStyles((theme) => ({
     "&:hover": {
       textDecoration: 'underline',
       color: BLUE,
+    }
+  },
+
+  factorAuthHeader: {
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: 'column'
+    },
+    "& h4": {
+      marginTop: '10px'
     }
   }
 }));

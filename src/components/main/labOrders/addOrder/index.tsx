@@ -2,13 +2,16 @@
 import clsx from 'clsx';
 import { Box, Card, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { FC, useState } from 'react';
-import { LAB_ORDER, LAB_ORDER_STEPS, SUBMIT } from '../../../../constants';
+import { 
+  DASHBOARD_BREAD, LAB_ORDER, LAB_ORDER_BREAD, LAB_ORDER_STEPS, PATIENTS_BREAD, PATIENTS_ROUTE, SUBMIT 
+} from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import PageHeader from '../../../common/PageHeader';
 import LabOrdersCreateForm from './LabOrdersCreateForm';
 import LabOrdersProviderForm from './LabOrdersProviderForm';
 import { Check } from '@material-ui/icons';
-import BillingComponent from '../../checkIn/BillingComponent';
+import BillingComponent from '../../billing/addBill/BillingComponent';
+import BackButton from '../../../common/BackButton';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -41,7 +44,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
       case 1:
         return <ProviderOrderForm />
       case 2:
-        return <BillingComponent submitButtonText={SUBMIT} labOrderNumber={labOrderNumber}/>
+        return <BillingComponent submitButtonText={SUBMIT} labOrderNumber={labOrderNumber} />
       default:
         return 'Unknown step';
     }
@@ -53,7 +56,17 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
 
   return (
     <>
-      <PageHeader title={LAB_ORDER} />
+      <Box display="flex">
+        <BackButton to={PATIENTS_ROUTE} />
+        
+        <Box ml={2}>
+          <PageHeader
+            title={LAB_ORDER}
+            path={[DASHBOARD_BREAD, PATIENTS_BREAD, LAB_ORDER_BREAD]}
+          />
+        </Box>
+      </Box>
+
       <Card>
         <Box p={2}>
           <Grid container spacing={3} justifyContent="center">
@@ -70,11 +83,9 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
         </Box>
       </Card>
 
-      <Box p={2} />
+      <Box p={1.5} />
 
-      <Box>
-        <Typography>{getStepContent(activeStep)}</Typography>
-      </Box>
+      <Typography>{getStepContent(activeStep)}</Typography>
     </>
   )
 }

@@ -17,7 +17,7 @@ const FormFailComponent = () => {
             <Typography variant="h5">Form link has expired, kindly contact with our support team.</Typography>
 
             <Box mt={1} component='span'>
-              <a href='mailto:support@emr.com'>support@emr.com</a>
+              <a href='mailto:support@aimed.com'>support@aimed.com</a>
             </Box>
           </Box>
         </Box>

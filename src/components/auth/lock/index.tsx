@@ -10,7 +10,7 @@ import Alert from "../../common/Alert";
 import LoginController from "../login/LoginController";
 // history, context, constants, graphql, and utils
 import history from "../../../history";
-import { handleLogout, requiredLabel } from "../../../utils";
+import { requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
@@ -22,8 +22,8 @@ import {
 } from "../../../constants";
 
 const LockComponent = (): JSX.Element => {
-  const { setIsLoggedIn } = useContext(AuthContext);
-  const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext);
+  const { setIsLoggedIn, logoutUser } = useContext(AuthContext);
+  const { fetchAllFacilityList  } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: localStorage.getItem(EMAIL) || '',
@@ -58,6 +58,7 @@ const LockComponent = (): JSX.Element => {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
               fetchAllFacilityList();
+
               const existingRoute = sessionStorage.getItem(ROUTE)
                 ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
               existingRoute && history.push(existingRoute);
@@ -79,12 +80,6 @@ const LockComponent = (): JSX.Element => {
       variables: { loginUser: data }
     });
   };
-
-  const logout = () => {
-    handleLogout()
-    setFacilityList([])
-    setRoleList([])
-  }
 
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
 
@@ -109,7 +104,7 @@ const LockComponent = (): JSX.Element => {
           error={passwordError}
         />
         <Box display='flex' justifyContent='space-between'>
-          <Button variant="contained" color="inherit" onClick={() => logout()}>
+          <Button variant="contained" color="inherit" onClick={() => logoutUser()}>
             {LOGOUT_TEXT}
           </Button>
 

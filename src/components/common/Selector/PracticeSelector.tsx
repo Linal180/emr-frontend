@@ -1,28 +1,33 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
+import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isSuperAdmin, renderPractices, requiredLabel } from "../../../utils";
-import {
-  practiceReducer, Action, initialState, State, ActionType
-} from "../../../reducers/practiceReducer";
 import { AuthContext } from "../../../context";
+import { PracticeSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { PracticesPayload, useFindAllPracticeListLazyQuery } from "../../../generated/graphql";
+import { isSuperAdmin, renderLoading, renderPractices, requiredLabel, sortingValue } from "../../../utils";
+import { practiceReducer, Action, initialState, State, ActionType } from "../../../reducers/practiceReducer";
 
-const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, }): JSX.Element => {
+const PracticeSelector: FC<PracticeSelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, loading, isLabelDisplay = true, handleFeeSchedule
+}): JSX.Element => {
   const { control } = useFormContext()
   const { user } = useContext(AuthContext)
   const { roles } = user || {};
+
   const isSuper = isSuperAdmin(roles);
-  const [state, dispatch,] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { page, searchQuery, practices } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderPractices(practices ?? [])] : [...renderPractices(practices ?? [])]
-  
-  const [findAllPractice,] = useFindAllPracticeListLazyQuery({
+
+  const inputLabel = isRequired ? requiredLabel(label) : label
+  const updatedOptions = addEmpty ?
+    [EMPTY_OPTION, ...renderPractices(practices ?? [])]
+    : [...renderPractices(practices ?? [])]
+
+  const [findAllPractice] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -35,7 +40,10 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
 
       if (findAllPractices) {
         const { pagination, practices } = findAllPractices
-        practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+        practices && dispatch({
+          type: ActionType.SET_PRACTICES,
+          practices: practices as PracticesPayload['practices']
+        })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -64,42 +72,53 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
   }, [page, searchQuery, fetchAllPractices]);
 
   return (
-    <Controller
-      rules={{ required: true }}
-      name={name}
-      control={control}
-      defaultValue={updatedOptions[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        return (
-          <Autocomplete
-            options={updatedOptions ?? []}
-            value={field.value}
-            disabled={disabled}
-            disableClearable
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
-            renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
-                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
-                />
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
-            )}
-            onChange={(_, data) => field.onChange(data)}
-          />
-        );
-      }}
-    />
+    <>
+      {loading ? renderLoading(inputLabel || '') :
+        <Controller
+          rules={{ required: isRequired }}
+          name={name}
+          control={control}
+          defaultValue={updatedOptions[0]}
+          render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+            return (
+              <Autocomplete
+                options={sortingValue(updatedOptions) ?? []}
+                loading={loading}
+                value={field.value}
+                disabled={disabled}
+                disableClearable
+                defaultValue={updatedOptions[0]}
+                getOptionSelected={(option, value) => option.id === value.id}
+                getOptionLabel={(option) => option.name || ""}
+                renderOption={(option) => option.name}
+                renderInput={(params) => (
+                  <FormControl fullWidth margin={isLabelDisplay ? 'normal' : 'none'} error={Boolean(invalid)}>
+                    {isLabelDisplay && <Box position="relative">
+                      <InputLabel id={`${name}-autocomplete`} shrink>
+                        {inputLabel}
+                      </InputLabel>
+                    </Box>}
+
+                    <TextField
+                      {...params}
+                      error={invalid}
+                      variant="outlined"
+                      className="selectorClass"
+                      onChange={(event) =>
+                        dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                    />
+                    <FormHelperText>{message}</FormHelperText>
+                  </FormControl>
+                )}
+
+                onChange={(_, data) => {
+                 handleFeeSchedule && handleFeeSchedule(data?.id)
+                  field.onChange(data)}}
+              />
+            );
+          }}
+        />}
+    </>
   );
 };
 

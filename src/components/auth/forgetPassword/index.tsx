@@ -1,14 +1,14 @@
 // packages block
 import { Link } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, TextField, Button, Typography, CircularProgress, FormControl, InputLabel } from "@material-ui/core";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
+import { Box, Button, Typography, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import AuthLayout from "../AuthLayout";
+import InputController from "../../../controller";
 // context, constants, graphql,svgs, interfaces and styles block
 import history from "../../../history";
-import { requiredLabel } from "../../../utils";
 import { ForgetPasswordInputs } from "../../../interfacesTypes";
 import { useForgetPasswordMutation } from "../../../generated/graphql";
 import { forgetPasswordValidationSchema } from "../../../validationSchemas";
@@ -18,10 +18,11 @@ import {
 } from "../../../constants";
 
 const ForgetPasswordComponent = (): JSX.Element => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<ForgetPasswordInputs>({
+  const methods = useForm<ForgetPasswordInputs>({
     mode: "all",
     resolver: yupResolver(forgetPasswordValidationSchema)
   });
+  const { handleSubmit, reset } = methods
 
   const [forgotPassword, { loading }] = useForgetPasswordMutation({
     onError({ message }) {
@@ -46,41 +47,25 @@ const ForgetPasswordComponent = (): JSX.Element => {
     });
   };
 
-  const { email: { message: emailError } = {} } = errors;
-
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="email"
-          control={control}
-          defaultValue=""
-          render={({ field, fieldState: { invalid } }) => (
-            <FormControl fullWidth margin="normal">
-              <InputLabel shrink htmlFor="email">
-                {requiredLabel(EMAIL)}
-              </InputLabel>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputController
+            fieldType="email"
+            controllerName="email"
+            controllerLabel={EMAIL}
+          />
 
-              <TextField
-                type="email"
-                id="email"
-                variant="outlined"
-                fullWidth
-                {...field}
-                error={invalid}
-                helperText={emailError}
-              />
-            </FormControl>
-          )}
-        />
+          <Box py={2}>
+            <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+              {SEND_EMAIL}
 
-        <Box py={2}>
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-            {SEND_EMAIL}
-            {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
-      </form>
+              {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </form>
+      </FormProvider>
 
       <Box justifyContent="center" alignItems="center" display="flex">
         <Typography variant="body2">

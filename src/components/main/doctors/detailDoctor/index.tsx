@@ -1,18 +1,15 @@
 // packages block
 import { ChangeEvent, Reducer, useReducer } from "react";
-import { useParams } from "react-router";
-import { Box, Button, Grid, Tab, } from "@material-ui/core";
+import { Box, Grid, Tab, } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
 import DoctorProfileHero from "./profileHero";
-import DoctorScheduleForm from "../schedules";
+import ScheduleListing from "../../../common/scheduling/Listing";
 import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants, history, styling block
-import history from "../../../../history";
-import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AttachmentsPayload, DoctorPayload, } from "../../../../generated/graphql";
-import { DOCTORS_ROUTE, DOCTOR_TOP_TABS, EDIT_DOCTOR, } from "../../../../constants";
+import { DOCTOR_TOP_TABS, } from "../../../../constants";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
@@ -23,8 +20,8 @@ import {
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
-  const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+
   const { currentTab, doctor } = state;
   const { facilityId: doctorFacilityId } = doctor || {}
   const [, mediaDispatcher] =
@@ -37,16 +34,12 @@ const DoctorDetailComponent = (): JSX.Element => {
   return (
     <Box>
       <TabContext value={currentTab}>
-        <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>
+        <Box width='100%'>
           <TabList onChange={handleChange} aria-label="Profile top tabs">
             {DOCTOR_TOP_TABS.map(item => (
               <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
             ))}
           </TabList>
-
-          <Button color="secondary" variant="outlined" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
-            {EDIT_DOCTOR}
-          </Button>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
@@ -60,16 +53,20 @@ const DoctorDetailComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1" />
-          
+
           <TabPanel value="2">
             <Grid spacing={3}>
-              <DoctorScheduleForm doctorFacilityId={doctorFacilityId || ''} />
+
+              <Grid md={6}>
+                <ScheduleListing isDoctor doctorFacilityId={doctorFacilityId || ''} />
+              </Grid>
+
             </Grid>
           </TabPanel>
 
           <TabPanel value="3">
             <Grid>
-              <AppointmentsTable doctorId={id} />
+              <AppointmentsTable />
             </Grid>
           </TabPanel>
         </Box>

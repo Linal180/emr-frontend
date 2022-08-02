@@ -23,7 +23,7 @@ import {
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
 import Alert from '../../../common/Alert';
-import { generateString, getFormatDateString, renderItem } from '../../../../utils';
+import { generateString, getFormatDateString, renderItem, setRecord } from '../../../../utils';
 
 const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }): JSX.Element => {
   const methods = useForm<LabOrdersCreateFormInput>({
@@ -32,6 +32,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
       testField: [TEST_FIELD_INITIAL_VALUES],
       appointment: EMPTY_OPTION,
       diagnosesIds: [EMPTY_MULTISELECT_OPTION],
+      labTestStatus: setRecord(LabTestStatus.OrderEntered, LabTestStatus.OrderEntered)
     },
     resolver: yupResolver(createLabOrdersSchema)
   });
@@ -125,18 +126,17 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
     })
   }
 
-
   return (
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card className='overflowVisible'>
-            <Box p={2}>
+            <Box px={2}>
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
               </Box>
 
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item md={4} sm={12} xs={12}>
                   {appointmentInfo ? renderItem(APPOINTMENT_TEXT, appointmentInfo.name) :
                     <AppointmentSelector
@@ -149,6 +149,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                 <Grid item md={4} sm={12} xs={12}>
                   <Selector
+                    isRequired
                     name="labTestStatus"
                     label={STATUS}
                     value={EMPTY_OPTION}
@@ -158,6 +159,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                 <Grid item md={4} sm={12} xs={12}>
                   <DiagnosesSelector
+                    isRequired
                     isEdit={false}
                     label={DIAGNOSES}
                     name="diagnosesIds"
@@ -174,7 +176,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
             return (
               <Box mb={4}>
                 <Card>
-                  <Box p={2}>
+                  <Box px={2}>
                     <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                       <Typography variant='h4'>{TEST}</Typography>
 
@@ -183,9 +185,10 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
                       </Button>}
                     </Box>
 
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                       <Grid item md={6} sm={12} xs={12}>
                         <TestsSelector
+                          isRequired
                           label={TEST}
                           name={`testField.${index}.test`}
                           addEmpty
@@ -198,7 +201,6 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
                       <Grid item md={3} sm={12} xs={12}>
                         <TimePicker
-                          isRequired
                           label={TEST_TIME}
                           name={`testField.${index}.testTime`}
                         />
@@ -223,15 +225,17 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
             )
           })}
 
-          <Box display='flex' justifyContent='flex-end'>
+          <Box px={2} display='flex' justifyContent='flex-end'>
             <Button onClick={() => appendTestField(TEST_FIELD_INITIAL_VALUES)} type="submit" variant="outlined" color="secondary">
               {ADD_ANOTHER_TEST}
             </Button>
           </Box>
 
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
+          <Box px={2}>
+            <Button type="submit" variant="contained" color="primary" size='large' disabled={loading}>
+              {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
         </form>
       </FormProvider>
     </>

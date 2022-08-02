@@ -81,14 +81,25 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
     dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
   }
 
-  const addTabHandler = () => dispatch({ type: ActionType.SET_FORM_VALUES, formValues: [...formValues, getFormInitialValues()[0]] })
+  const addTabHandler = () => {
+    const parsedIndex = parseInt(selectedTab)
+    const tabs = getFormInitialValues()
+    const newTab = tabs[0]
+    formValues?.splice(parsedIndex + 1, 0, newTab)
+    dispatch({ type: ActionType.SET_FORM_VALUES, formValues })
+  }
 
   const delTabHandler = () => {
     const parsedIndex = parseInt(selectedTab)
-    const arr = formValues?.filter((_, index) => index !== parsedIndex)
-    dispatch({
-      type: ActionType.SET_FORM_VALUES, formValues: arr
-    })
+    if (parsedIndex !== 0) {
+      const arr = formValues?.filter((_, index) => index !== parsedIndex)
+      dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+      dispatch({ type: ActionType.SET_TAB, selectedTab: `${parsedIndex - 1}` })
+    }
+    if (parsedIndex === 0) {
+      const arr = formValues?.filter((_, index) => index !== parsedIndex)
+      dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+    }
   }
 
   const editTabHandler = () => {
@@ -128,7 +139,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
     <TabContext value={selectedTab}>
       <Grid container>
         <Grid item xs={10}>
-          <TabList onChange={handleChange} variant='scrollable'>
+          <TabList onChange={handleChange} variant='scrollable' className='align-center'>
             {formValues?.map((tab, i) => {
               const { id, name } = tab || {}
               return (
@@ -137,6 +148,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
             })}
           </TabList>
         </Grid>
+
         <Grid item xs={2}>
           <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
             <IconButton onClick={addTabHandler}>

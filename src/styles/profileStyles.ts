@@ -15,17 +15,19 @@ export const useProfileStyles = makeStyles(() =>
     profileImage: {
       height: 160,
       width: 160,
+
       borderRadius: 12,
       "& > img": {
         height: "100%",
         width: "100%",
-        objectFit: "cover",
+        objectFit: "contain",
       },
     },
 
     sidebarMenu: {
       "& .MuiListItem-root": {
         color: BLACK_THREE,
+        whiteSpace : 'normal'
       },
     },
   })

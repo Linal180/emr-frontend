@@ -5,13 +5,15 @@ import { Redirect, useLocation } from "react-router";
 import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
-import BackdropLoader from "./Backdrop";
+import Loader from "./Loader";
 // interfaces/types and main layout styles block
 import history from "../../history";
 import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
-import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE } from "../../constants";
+import {
+  EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE
+} from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)
@@ -37,7 +39,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     {pathname !== LOCK_ROUTE && <Header />}
 
     <Box display="flex" padding="102px 30px 0px" position="relative">
-      <Box component="main" flex={1} paddingLeft={3.75} width="100%">
+      <Box component="main" flex={1} width="100%">
         <Box minHeight="calc(100vh - 170px)" paddingBottom={3}>
           {children}
         </Box>
@@ -51,7 +53,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
       {!getToken() && <Redirect to={{ pathname: LOGIN_ROUTE }} />}
 
       {isLoggedIn &&
-        ((!user || !userPermissions.length) ? <BackdropLoader loading={true} /> : <AppLayout />)
+        ((!user || !userPermissions.length) ? <Loader loading={true} /> : <AppLayout />)
       }
     </>
   )

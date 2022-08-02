@@ -12,37 +12,41 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
+import {
+  formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh,
+  checkPermission,
+} from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
-  State as AppointmentState, ActionType as AppointmentActionType
-} from "../../../../reducers/appointmentReducer";
-import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, SERVICES, PRACTICE,
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE, FACILITY_SERVICES_ROUTE,
-  PUBLIC_LINK, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
+  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, SERVICES, PRACTICE,
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
+  FACILITY_SERVICES_ROUTE, SOMETHING_WENT_WRONG, USER_PERMISSIONS,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, userPermissions } = useContext(AuthContext)
   const { deleteFacilityList } = useContext(ListContext)
+
   const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
+
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegUser = isUser(roles)
   const { practiceId, id: facilityId } = facility || {}
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
-  const [{ copied }, appointmentDispatcher] =
-    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
+  const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeFacility)
+  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateFacility)
+  const canFetchServices = checkPermission(userPermissions, USER_PERMISSIONS.findAllServices)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     fetchPolicy: "network-only",
@@ -77,14 +81,17 @@ const FacilityTable: FC = (): JSX.Element => {
     try {
       const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
       const payload =
-        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
-          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
+        isSuper ? { ...inputs } : isPracticeUser ? { ...inputs, practiceId } :
+          isFacAdmin || isRegUser ? { ...inputs, singleFacilityId: facilityId } : undefined
 
-      payload && await findAllFacility({
+      payload ? await findAllFacility({
         variables: { facilityInput: { ...payload } }
-      })
+      }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
+  }, [
+    facilityId, findAllFacility, isFacAdmin, isPracticeUser, isRegUser, isSuper, page,
+    practiceId, searchQuery
+  ])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -100,9 +107,14 @@ const FacilityTable: FC = (): JSX.Element => {
           try {
             const { message } = response
             message && Alert.success(message);
-            await fetchAllFacilities();
             deleteFacilityList(deleteFacilityId)
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+            if (!!facilities && facilities.length > 1) {
+              await fetchAllFacilities();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, facilities?.length || 0) })
+            }
           } catch (error) { }
         }
       }
@@ -133,16 +145,6 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleClipboard = (id: string) => {
-    if (id) {
-      navigator.clipboard.writeText(
-        `${process.env.REACT_APP_URL}${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/${id}`
-      )
-
-      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
-    }
-  };
-
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
@@ -152,7 +154,7 @@ const FacilityTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 
@@ -175,13 +177,14 @@ const FacilityTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                    <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
               ) : (
                 facilities?.map((facility: FacilityPayload['facility']) => {
                   const { id, name, contacts, practice } = facility || {};
                   const { name: practiceName } = practice || {};
+
                   const facilityContact = contacts && (contacts.filter(contact => contact.primaryContact)[0])
                   const { email, phone, zipCode, city, state } = facilityContact || {}
 
@@ -196,27 +199,25 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')} onMouseLeave={() => appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: false })}>
-                              <LinkIcon />
-                            </Box>
-                          </DetailTooltip>
-
                           <DetailTooltip title={SERVICES}>
-                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}
+                              className={canFetchServices ? '' : 'disable-icon'}
+                            >
                               <Box className={classes.iconsBackground}>
                                 <AddNewIcon />
                               </Box>
                             </Link>
                           </DetailTooltip>
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}`}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                          <Box onClick={() => onDeleteClick(id || '')}
+                            className={`${classes.iconsBackground} ${canDelete ? '' : 'disable-icon'}`}
+                          >
                             <TrashNewIcon />
                           </Box>
                         </Box>

@@ -1,6 +1,6 @@
 query FetchAllInsurances($insuranceInput: InsurancePaginationInput!){
   fetchAllInsurances(insuranceInput: $insuranceInput){
-    insurances{
+    insurances {
       payerName
       payerId
       id
@@ -190,6 +190,117 @@ query FetchPatientInsurances($id: String!){
   }
 }
 
+query GetPoliciesEligibilities($policyEligibilityInput: PolicyEligibilityPaginationInput!){
+  getPoliciesEligibilities(policyEligibilityInput: $policyEligibilityInput){
+    policyEligibilities {
+      id
+      createdAt
+      payerId
+      payerName
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+query GetPoliciesEligibility($id: String!){
+  getPoliciesEligibility(id: $id){
+    policyEligibility {
+      id
+      createdAt
+      eligibilityResultDate
+      eligibilityResultTime
+      eligibilityId
+      groupNumber
+      insAddress1
+      insCity
+      insDob
+      insFirstName
+      insLastName
+      insSex
+      insState
+      insZip
+      planBeginDate
+      planNumber
+      payerId
+      payerName
+
+      policy{
+        id
+      }
+
+      policyCoverages {
+        id
+        benefitCode
+        benefitCoverageCode
+        benefitCoverageDescription
+        benefitDescription
+        benefitNotes
+        dateOfLastUpdated
+        benefitLevelCode
+        benefitLevelCodeDescription
+        benefitPeriodCode
+        benefitPeriodCodeDescription
+        inPlanNetwork
+        benefitAmount
+        insuranceTypeCode
+        insuranceTypeCodeDescription
+        benefitPercent
+      }
+    }
+
+    patient {
+      firstName 
+      lastName
+      middleName
+      ssn
+      dob
+      gender
+
+      contacts {
+        address
+        city
+        state
+        zipCode
+      }
+    }
+
+    policyHolder {
+      firstName 
+      lastName
+      middleName
+      ssn
+      dob
+      sex
+      address
+      city
+      state
+      zipCode
+    }
+
+    primaryProvider {
+      firstName
+      lastName
+      contacts {
+        phone
+      }
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
 mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
   createPolicy(createPolicyInput: $createPolicyInput){
     response {
@@ -218,6 +329,19 @@ mutation UpdatePolicy($updatePolicyInput: UpdatePolicyInput!) {
     }
 
     policy {
+      id
+    }
+  }
+}
+
+mutation GetEligibilityAndCoverage($policyId: String!) {
+  getEligibilityAndCoverage(policyId: $policyId){
+    response {
+      status
+      message
+    }
+
+    policyEligibility {
       id
     }
   }

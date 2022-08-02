@@ -8,54 +8,62 @@ import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
 import { AddPatientIcon } from "../../../assets/svgs";
 import { PatientSelectorProps } from "../../../interfacesTypes";
-import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
+import { PatientsPayload, useFetchAllPatientLazyQuery } from "../../../generated/graphql";
 import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
 } from "../../../constants";
 import {
-  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel
+  isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isUser, renderPatient, requiredLabel, sortingValue
 } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../reducers/patientReducer";
 
 const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue
+  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles
 }): JSX.Element => {
   const { control } = useFormContext()
-  const { user } = useContext(AuthContext)
+  const { user, currentUser } = useContext(AuthContext)
   const { roles, facility } = user || {};
+
+  const { id: currentUserId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPractice = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
+  const isRegularUser = isUser(roles);
+
+  const isDoctor = isOnlyDoctor(roles)
   const { id: facilityId, practiceId } = facility || {}
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { page, searchQuery, patients } = state;
+  const [{ page, searchQuery, patients, doctorId }, dispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  sortingValue(renderPatient(patients))
+  const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), DUMMY_OPTION]
 
-  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
-
-  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
+  const [fetchAllPatientsQuery, { loading }] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
       dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
-      const { findAllPatient } = data || {};
+      const { fetchAllPatients } = data || {};
 
-      if (findAllPatient) {
-        const { pagination, patients } = findAllPatient
+      if (fetchAllPatients) {
+        const { pagination, patients } = fetchAllPatients
         patients && dispatch({
-          type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients']
+          type: ActionType.SET_PATIENTS,
+          patients: patients as PatientsPayload['patients']
         })
 
         if (pagination) {
           const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+      } else {
+        dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
       }
     }
   });
@@ -64,14 +72,24 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+        isPractice ? { practiceId, ...pageInputs }
+          : isFacAdmin || isRegularUser
+            ? { facilityId, ...pageInputs }
+            : undefined
 
-      patientsInputs && await findAllPatient({
-        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
+      patientsInputs && await fetchAllPatientsQuery({
+        variables: {
+          patientInput: {
+            ...patientsInputs, searchString: searchQuery,
+            ...(isDoctor ? { doctorId: doctorId } : {})
+          }
+        }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
+  }, [
+    page, isSuper, isPractice, practiceId, facilityId, fetchAllPatientsQuery, searchQuery,
+    isDoctor, doctorId, isFacAdmin, isRegularUser
+  ])
 
   useEffect(() => {
     (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
@@ -81,8 +99,12 @@ const PatientSelector: FC<PatientSelectorProps> = ({
     !isOpen && setValue('patientId', EMPTY_OPTION)
   }, [isOpen, setValue])
 
-  const defaultFilterOptions = createFilterOptions();
+  useEffect(() => {
+    isDoctor && currentUserId &&
+      dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
+  }, [currentUserId, doctorId, isDoctor])
 
+  const defaultFilterOptions = createFilterOptions();
   return (
     <Controller
       rules={{ required: true }}
@@ -95,6 +117,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
             options={updatedOptions ?? []}
             value={field.value}
             loading={loading}
+            disableClearable
             disabled={disabled}
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name ?? ""}
@@ -124,22 +147,26 @@ const PatientSelector: FC<PatientSelectorProps> = ({
 
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+                {!!!placeholder &&
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>}
+
                 <TextField
                   {...params}
-                  variant="outlined"
                   error={invalid}
-                  className="selectorClass"
+                  variant="outlined"
+                  placeholder={placeholder ? label : ''}
+                  className={`selectorClass ${styles}`}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
 
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
+
             onChange={(_, data) => field.onChange(data)}
           />
         );
