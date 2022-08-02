@@ -4159,64 +4159,6 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   },
 ]
 
-export const CLAIM_STATUS_DUMMY_DATA = [
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-]
 
 export const CLAIM_FEED_DUMMY_DATA = [
   {

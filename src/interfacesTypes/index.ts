@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn, UseFormSetValue,
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
@@ -41,7 +41,7 @@ import {
   PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput, RolesPayload,
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, FetchBillingClaimStatusesInput,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -378,7 +378,8 @@ export interface PatientSelectorProps extends SelectorProps {
   isModal?: boolean
   placeholder?: boolean
   handlePatientModal?: Function
-  setValue: UseFormSetValue<ExtendedAppointmentInputProps>
+  setValue?: Function;
+  addNewPatientOption?: boolean
 }
 
 export interface FacilitySelectorProps extends SelectorProps {
@@ -520,6 +521,7 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
+  format?: string;
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
@@ -1884,4 +1886,9 @@ export interface FeeScheduleFormProps {
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
   id: string;
+}
+
+
+export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
+  facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption
 }

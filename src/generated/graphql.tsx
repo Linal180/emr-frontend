@@ -1857,7 +1857,7 @@ export type FeeSchedulePayload = {
 };
 
 export type FetchBillingClaimStatusesInput = {
-  claimId?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
   claimStatusId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   from?: Maybe<Scalars['String']>;
@@ -6830,7 +6830,7 @@ export type FetchBillingClaimStatusesQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string, claimNo?: string | null, serviceDate?: string | null, claimStatus?: { __typename?: 'ClaimStatus', statusName?: string | null } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, claim?: { __typename?: 'Claim', payer_name?: string | null, total_charge?: number | null } | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -10390,6 +10390,19 @@ export const FetchBillingClaimStatusesDocument = gql`
     }
     billings {
       id
+      claimNo
+      serviceDate
+      claimStatus {
+        statusName
+      }
+      patient {
+        firstName
+        lastName
+      }
+      claim {
+        payer_name
+        total_charge
+      }
     }
     pagination {
       page

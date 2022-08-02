@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback } from "react";
+import { FC } from "react";
 import { FormProvider, useForm, } from "react-hook-form";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from "@material-ui/core";
 // components block
@@ -13,10 +13,10 @@ const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, }): JSX.Elem
   });
   const { reset } = methods;
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     reset();
     setIsOpen(false)
-  }, [setIsOpen, reset])
+  }
 
   return (
     <Dialog
@@ -41,7 +41,7 @@ const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, }): JSX.Elem
           </DialogContent>
 
           <DialogActions>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleClose}>
               {OKAY}
             </Button>
           </DialogActions>

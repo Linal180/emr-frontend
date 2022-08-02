@@ -340,9 +340,12 @@ mutation RemoveClaimStatus($id: String!) {
   }
 }
 
-query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!) {
-  fetchBillingClaimStatuses(fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput){
-
+query FetchBillingClaimStatuses(
+  $fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!
+) {
+  fetchBillingClaimStatuses(
+    fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput
+  ) {
     response {
       status
       message
@@ -350,12 +353,27 @@ query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingCla
 
     billings {
       id
+      claimNo
+      serviceDate
+
+      claimStatus {
+        statusName
+      }
+
+      patient {
+        firstName
+        lastName
+      }
+
+      claim {
+        payer_name
+        total_charge
+      }
     }
 
     pagination {
       page
       totalPages
     }
-
   }
 }

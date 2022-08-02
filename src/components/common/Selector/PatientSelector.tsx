@@ -20,7 +20,7 @@ import {
 } from "../../../reducers/patientReducer";
 
 const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles
+  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles, addNewPatientOption = true
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user, currentUser } = useContext(AuthContext)
@@ -37,7 +37,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   const [{ page, searchQuery, patients, doctorId }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
   sortingValue(renderPatient(patients))
-  const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), DUMMY_OPTION]
+  const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), ...(addNewPatientOption ? [DUMMY_OPTION] : [])]
 
   const [fetchAllPatientsQuery, { loading }] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -96,8 +96,8 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   }, [page, searchQuery, fetchAllPatients]);
 
   useEffect(() => {
-    !isOpen && setValue('patientId', EMPTY_OPTION)
-  }, [isOpen, setValue])
+    !isOpen && setValue && setValue(name, EMPTY_OPTION)
+  }, [isOpen, setValue, name])
 
   useEffect(() => {
     isDoctor && currentUserId &&

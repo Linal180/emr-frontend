@@ -12,7 +12,7 @@ import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 
 const DatePicker: FC<PickerProps> = ({
   name, label, isRequired, clearable = false, disableFuture = true, disabled, disablePast,
-  loading, defaultValue, onSelect
+  loading, defaultValue, onSelect, format
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -36,7 +36,7 @@ const DatePicker: FC<PickerProps> = ({
                   {...field}
                   id={`${name}-dialog`}
                   variant="inline"
-                  format="MM/dd/yyyy"
+                  format={format ? format : "MM/dd/yyyy"}
                   inputVariant="outlined"
                   KeyboardButtonProps={{ 'aria-label': 'change date', }}
                   open={openPicker}
