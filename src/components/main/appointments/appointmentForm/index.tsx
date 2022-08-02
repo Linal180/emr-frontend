@@ -366,7 +366,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: transformedStartTime, practiceId,
+        reason, scheduleStartDateTime: transformedStartTime, practiceId, status: AppointmentStatus.Scheduled,
         scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
