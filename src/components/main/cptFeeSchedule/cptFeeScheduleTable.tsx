@@ -101,7 +101,8 @@ const CptFeeTable: FC = (): JSX.Element => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
       dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
-      const findAllCptFeeScheduleInput = { paginationOptions, searchString: searchQuery, feeScheduleId }
+      const findAllCptFeeScheduleInput = { paginationOptions, searchString: searchQuery.trim(), feeScheduleId }
+      
       await findAllCptFeeSchedule({ variables: { findAllCptFeeScheduleInput } })
     } catch (error) { }
   }, [page, findAllCptFeeSchedule, searchQuery, feeScheduleId])

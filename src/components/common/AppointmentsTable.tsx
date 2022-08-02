@@ -194,7 +194,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
       inputs && await findAllAppointments({
         variables: {
           appointmentInput: {
-            ...inputs, ...pageInputs, searchString: searchQuery,
+            ...inputs, ...pageInputs, searchString: searchQuery.trim(),
             appointmentTypeId: appointmentTypeId,
             appointmentDate: moment(selectDate, 'MM-DD-YYYY').format('YYYY-MM-DD')
           }

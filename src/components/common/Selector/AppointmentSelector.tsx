@@ -48,7 +48,11 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllAppointment({
-        variables: { appointmentInput: { ...pageInputs, searchString: searchQuery, patientId, relationTable: 'Services' } }
+        variables: {
+          appointmentInput: {
+            ...pageInputs, searchString: searchQuery.trim(), patientId, relationTable: 'Services'
+          }
+        }
       })
     } catch (error) { }
   }, [page, findAllAppointment, searchQuery, patientId])
@@ -68,8 +72,8 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={sortingValue(updatedOptions) ?? []}
-          value={field.value}
+            options={sortingValue(updatedOptions) ?? []}
+            value={field.value}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}

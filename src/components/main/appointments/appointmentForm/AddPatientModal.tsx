@@ -15,7 +15,9 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
-import { checkPermission, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem } from "../../../../utils";
+import {
+  checkPermission, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem
+} from "../../../../utils";
 import {
   extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema
 } from "../../../../validationSchemas";
@@ -26,7 +28,8 @@ import {
 import {
   EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX,
   MAPPED_GENDER_IDENTITY, DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR, USUAL_PROVIDER_ID,
+  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR,
+  USUAL_PROVIDER_ID,
 } from "../../../../constants";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
 
@@ -34,9 +37,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   const { userPermissions, user, currentDoctor } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { name: facilityName, id: selectedFacilityId } = facility || {};
-  const { firstName, lastName,  id: selectedDoctorId } = currentDoctor || {}
+  const { firstName, lastName, id: selectedDoctorId } = currentDoctor || {}
+  
   const doctorName = `${firstName} ${lastName}`
-
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctorRole = isOnlyDoctor(roles)
 
@@ -112,7 +115,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
       };
 
       const contactInput = {
-        email: basicEmail, city: '', zipCode: '', state: '', facilityId:selectedFacility, phone: basicPhone,
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: '', address: '', contactType: ContactType.Self,
         country: '', primaryContact: true,
       };
