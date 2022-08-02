@@ -33,6 +33,7 @@ export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/; 
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;

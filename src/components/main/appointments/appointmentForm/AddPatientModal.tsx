@@ -88,8 +88,11 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
-      firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId, usualProviderId
+      firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId, usualProviderId, gender,
     } = inputs;
+     
+    console.log("ASD", inputs);
+    
 
     if (user) {
       const { id: userId } = user;
@@ -105,7 +108,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         callToConsent: false, privacyNotice: false, releaseOfInfoBill: false,
         medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
-        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male,
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male, genderIdentity: Genderidentity.Male,
         maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None,
         statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '', holdStatement: Holdstatement.None,
