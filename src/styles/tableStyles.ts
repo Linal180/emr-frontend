@@ -1,8 +1,6 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
 import {
-  BLACK_ONE,
-  BLACK_THREE,
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE, GREEN_TWO, GREY_EIGHTEEN
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -47,7 +45,7 @@ export const useTableStyles = makeStyles(() => ({
     background: WHITE,
     borderRadius: 12,
     overflow: "auto",
-    padding: theme.spacing(2),
+    padding: theme.spacing(2.5),
     maxHeight: "calc(100vh - 248px)",
   },
 
@@ -66,7 +64,7 @@ export const useTableStyles = makeStyles(() => ({
 
   selectorBox: {
     // maxWidth: 120,
-    
+
     "& .MuiFormControl-fullWidth": {
       // width: 120,
       borderRadius: 8,
@@ -193,24 +191,19 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
-  dashboardTableContainer: {
-    background: WHITE,
-    borderRadius: 12,
-    overflow: "auto",
-    padding: theme.spacing(2),
-    maxHeight: 500,
-    overflowY: 'hidden',
+  firstRowBg: {
+    backgroundColor: GREEN_TWO,
+  },
 
-    "& .MuiTableCell-head": {
-      color: BLACK_THREE,
-      fontSize: 12,
-      fontWeight: 600,
+  tableRowRoot: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: GREY_EIGHTEEN,
     },
-
-    "& .MuiTableCell-body": {
-      color: BLACK_ONE,
-      fontSize: 14,
-      fontWeight: 500,
-    },
+  },
+  fullFlex: {
+    flex: 1
+  },
+  btnWrap: {
+    whiteSpace: 'nowrap',
   },
 }))

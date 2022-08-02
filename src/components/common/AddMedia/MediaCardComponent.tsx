@@ -1,24 +1,28 @@
 // packages block
 import { FC, useState } from "react";
-import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
 import { CameraAlt } from "@material-ui/icons";
+import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
 // graphql, constants and interfaces/types block
 import { MediaCardComponentType } from "../../../interfacesTypes";
-import { DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT, UPLOAD } from "../../../constants";
-import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
-import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileUploadIcon, UploadIcon } from "../../../assets/svgs";
+import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
+import {
+  documentVerificationFormStyles
+} from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
+import {
+  DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT, UPLOAD
+} from "../../../constants";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
   allAttachments, imageSide, notDescription, button, buttonText
 }): JSX.Element => {
+  const classes = documentVerificationFormStyles()
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
-  const classes = documentVerificationFormStyles()
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
@@ -102,17 +106,22 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          {(!notDescription || button) && <Grid item md={12} xs={12}>
-            {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
+          {notDescription && button && <Grid item md={12} xs={12}>
+            <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {buttonText || UPLOAD}
-            </Button>}
+            </Button>
+          </Grid>
+          }
 
-            {notDescription && !button && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+          {notDescription && !button &&
+            <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
-            </Typography>}
+            </Typography>
+          }
 
-            {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
+          {!notDescription && <Grid item md={12} xs={12}>
+            <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
                 <FileUploadIcon />
                 <Typography component="p" variant="body2">{imageSide}</Typography>
@@ -122,20 +131,17 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
                 <Typography component="h4" variant="h4">{DROP_YOUR_IMAGE_TEXT}</Typography>
                 <Typography component="h6" variant="body1">{SUPPORT_DOC_TEXT}</Typography>
               </Box>
-            </Box>}
+            </Box>
           </Grid>}
-
         </Grid>
       </Box>
 
-      {
-        isDeleteOpen && (
-          <ConfirmationModal
-            setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia}
-            isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION}
-          />
-        )
-      }
+      {isDeleteOpen && (
+        <ConfirmationModal
+          setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia}
+          isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION}
+        />
+      )}
     </>
   );
 };

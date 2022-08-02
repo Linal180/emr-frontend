@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, useState, useContext, Fragment, useEffect, useCallback } from 'react';
+import { Reducer, useReducer, useContext, Fragment, useEffect, useCallback } from 'react';
 import { Edit } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, CircularProgress, Collapse, Grid, } from "@material-ui/core";
@@ -19,9 +19,11 @@ import { profileSchema } from '../../../validationSchemas';
 import { ProfileEditFormType } from '../../../interfacesTypes';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { formatPhone, getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
-import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import {
-  ADDRESS_NUMBER, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
+  AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation
+} from '../../../generated/graphql';
+import {
+  ADDRESS, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
   FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
   STATE, SUPER, SYSTEM_ROLES, UPLOAD_PICTURE, ZIP_CODE
 } from "../../../constants";
@@ -41,26 +43,21 @@ const ProfileComponent = (): JSX.Element => {
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
 
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
-  const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+  const {
+    address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId
+  } = primaryContact || {}
   const isSuper = isSuperAdmin(roles)
 
-  const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData } = mediaState
-  const [edit, setEdit] = useState<boolean>(false)
+  const [mediaState, mediaDispatch] =
+    useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
+  const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
 
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
-      firstName: "Super",
-      lastName: "Admin",
-      email: "",
-      phone: "",
-      addressNumber: "",
-      city: "",
-      state: EMPTY_OPTION,
-      country: EMPTY_OPTION,
-      zipCode: "",
-      contactId: ""
+      firstName: FIRST_NAME, lastName: LAST_NAME,
+      email: "", phone: "", addressNumber: "", city: "", state: EMPTY_OPTION,
+      country: EMPTY_OPTION, zipCode: "", contactId: ""
     },
     resolver: yupResolver(profileSchema)
   });
@@ -81,7 +78,7 @@ const ProfileComponent = (): JSX.Element => {
           fetchUser()
           Alert.success(PROFILE_UPDATE);
           reset()
-          setEdit(!edit)
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
         }
       }
     }
@@ -101,17 +98,17 @@ const ProfileComponent = (): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          reset()
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
           fetchUser()
           Alert.success(PROFILE_UPDATE);
-          reset()
-          setEdit(!edit)
         }
       }
     }
   });
 
   const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
-    const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
+    const { firstName, lastName, addressNumber, city, phone, country, state, zipCode, email } = values || {}
     const { id: stateId } = state;
     const { id: countryId } = country
 
@@ -120,11 +117,11 @@ const ProfileComponent = (): JSX.Element => {
         variables: {
           updateDoctorInput: {
             updateDoctorItemInput: { id: userId, firstName, lastName },
+            updateBillingAddressInput: {},
             updateContactInput: {
-              id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
-              zipCode, country: countryId, phone
+              id: contactId, primaryContact: true, address: addressNumber, city, email,
+              state: stateId || '', zipCode, country: countryId, phone
             },
-            updateBillingAddressInput: {}
           }
         }
       })
@@ -132,7 +129,7 @@ const ProfileComponent = (): JSX.Element => {
       userId && await updateStaff({
         variables: {
           updateStaffInput: {
-            updateStaffItemInput: { id: userId, firstName, lastName, phone }
+            updateStaffItemInput: { id: userId, firstName, lastName, phone, email }
           }
         }
       })
@@ -145,8 +142,8 @@ const ProfileComponent = (): JSX.Element => {
     setValue('addressNumber', address || '')
     setValue('phone', phone || doctorPhone || '')
     contactId && setValue('contactId', contactId)
-    doctorState && setValue('state', setRecord(doctorState, doctorState))
     country && setValue('country', setRecord(country, country))
+    doctorState && setValue('state', setRecord(doctorState, doctorState))
   }
 
   const staffPreview = () => setValue('phone', phone || userPhone || '')
@@ -158,8 +155,7 @@ const ProfileComponent = (): JSX.Element => {
 
     userType === SYSTEM_ROLES.Doctor ?
       doctorPreview() : staffPreview()
-
-    setEdit(!edit)
+    mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
   }
 
   const setAttachment = useCallback(async () => {
@@ -183,13 +179,13 @@ const ProfileComponent = (): JSX.Element => {
     <ProfileSettingsLayout>
       <CardComponent cardTitle={PROFILE_TEXT}>
         <Box className={classes.profileContainer}>
-          <Grid container>
-            <Grid item md={4} sm={12} xs={12}>
+          <Grid container spacing={0}>
+            <Grid item lg={4} md={5} sm={12} xs={12}>
               <Box key={attachmentId} mx={3.5}>
                 <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
               </Box>
 
-              <Box>
+              <Box minWidth={224}>
                 {!email ?
                   <CircularProgress color='inherit' />
                   :
@@ -208,14 +204,14 @@ const ProfileComponent = (): JSX.Element => {
               </Box>
             </Grid>
 
-            <Grid item md={8} sm={12} xs={12}>
-              <Box px={2}>
+            <Grid item lg={8} md={7} sm={12} xs={12}>
+              <Box mx={5}>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     {userType !== SYSTEM_ROLES.SuperAdmin &&
                       <Box mb={3} display="flex" justifyContent="flex-end">
                         <Box display={'flex'}>
-                          {edit ?
+                          {isEdit ?
                             <>
                               <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
@@ -231,13 +227,15 @@ const ProfileComponent = (): JSX.Element => {
                               </Box>
                             </>
                             :
-                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>
+                              {EDIT}
+                            </Button>
                           }
                         </Box>
                       </Box>
                     }
 
-                    <Collapse in={!edit} mountOnEnter unmountOnExit>
+                    <Collapse in={!isEdit} mountOnEnter unmountOnExit>
                       {email ?
                         <Box py={2}>
                           <Grid container spacing={5}>
@@ -274,7 +272,7 @@ const ProfileComponent = (): JSX.Element => {
                             <Fragment>
                               <Grid container spacing={5}>
                                 <Grid item md={12} sm={12} xs={12}>
-                                  {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                  {renderItem(ADDRESS, address || 'N/A')}
                                 </Grid>
                               </Grid>
 
@@ -304,7 +302,7 @@ const ProfileComponent = (): JSX.Element => {
                         </Box>}
                     </Collapse>
 
-                    <Collapse in={edit} mountOnEnter unmountOnExit>
+                    <Collapse in={isEdit} mountOnEnter unmountOnExit>
                       <Box py={2}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
@@ -327,9 +325,9 @@ const ProfileComponent = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
-                              fieldType="text"
-                              controllerName="email"
                               disabled
+                              fieldType="email"
+                              controllerName="email"
                               controllerLabel={EMAIL}
                             />
                           </Grid>
@@ -345,8 +343,8 @@ const ProfileComponent = (): JSX.Element => {
                               <Grid item md={12} sm={12} xs={12}>
                                 <InputController
                                   fieldType="text"
-                                  controllerName="addressNumber"
-                                  controllerLabel={ADDRESS_NUMBER}
+                                  controllerName="address"
+                                  controllerLabel={ADDRESS}
                                 />
                               </Grid>
                             </Grid>

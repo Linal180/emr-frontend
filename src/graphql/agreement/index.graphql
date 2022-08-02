@@ -16,6 +16,7 @@ query FetchAllAgreements($agreementPaginationInput: AgreementPaginationInput!){
       title
       body
       createdAt
+      signatureRequired
     }
   }
 }

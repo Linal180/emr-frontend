@@ -1,43 +1,52 @@
-import { FC, Reducer, useState, useCallback, useEffect, useReducer, useRef } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu, Collapse, Card, Link, IconButton } from "@material-ui/core";
 // components block
 import TextLoader from "../../TextLoader";
 import { PatientNoteModal } from './NoteModal'
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
+import history from "../../../../history";
 import { BLACK_THREE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT } from "../../../../constants";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT, PATIENTS_ROUTE
+} from "../../../../constants";
 import {
   formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
-  useGetPatientNearestAppointmentsLazyQuery
+  useGetPatientNearestAppointmentsLazyQuery, DoctorPatientRelationType
 } from "../../../../generated/graphql";
 import {
-  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon
+  ProfileUserIcon, HashIcon, AtIcon, LocationIcon, RedCircleIcon, NotesOutlinedCardIcon, EditNewIcon
 } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
+import {
+  appointmentReducer, Action as appointmentAction, initialState as appointmentInitialState, State as appointmentState,
+  ActionType as appointmentActionType
+} from "../../../../reducers/appointmentReducer";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   setPatient, setAttachmentsData, isCheckIn, isChart
 }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
-  const [open, setOpen] = useState<boolean>(false)
-  const [appointmentId, setAppointmentId] = useState<string>('')
   const classes = useProfileDetailsStyles();
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment } = patientState
+
+  const { patientData, isNoteOpen, patientNoteOpen, nextAppointment, lastAppointment, openMoreInfo } = patientState
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [{ appointmentId }, appointmentDispatch] =
+    useReducer<Reducer<appointmentState, appointmentAction>>(appointmentReducer, appointmentInitialState)
+
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -139,7 +148,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
           if (upcomingAppointment) {
             const { id: appointmentId } = upcomingAppointment
-            appointmentId && setAppointmentId(appointmentId)
+            appointmentId &&
+              appointmentDispatch({ type: appointmentActionType.SET_APPOINTMENT_ID, appointmentId: appointmentId })
           }
         }
       }
@@ -162,7 +172,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, sexAtBirth, dob, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt, genderIdentity
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -183,17 +193,23 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
   if (doctorPatients) {
-    const currentDoctor = doctorPatients.map(doctorPatient => {
-      if (doctorPatient.currentProvider) {
-        return doctorPatient.doctor
+    const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
+      relation === DoctorPatientRelationType.PrimaryProvider)
+
+    if (doesPrimaryProviderExist) {
+      const { doctor } = doesPrimaryProviderExist ?? {}
+      const { firstName, lastName } = doctor ?? {}
+
+      providerName = `${firstName} ${lastName}`
+    } else {
+      const currentDoctorPatients = doctorPatients[0]
+
+      if (currentDoctorPatients) {
+        const { doctor } = currentDoctorPatients || {};
+        const { firstName, lastName } = doctor ?? {}
+
+        providerName = `${firstName} ${lastName}`
       }
-
-      return null
-    })[0];
-
-    if (currentDoctor) {
-      const { firstName, lastName, } = currentDoctor || {};
-      providerName = `${firstName} ${lastName}` || "--"
     }
   }
 
@@ -264,7 +280,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       <Box display="flex" flexWrap="wrap" alignItems="center">
         {!isCheckIn &&
           <Typography variant="body2">
-            {`(${patientRecord}) | (${formatValue(sexAtBirth || '')}) | ${getFormatDateString(dob || '')}`}
+            {`(${patientRecord}) | ${formatValue(genderIdentity || '')} | ${getFormatDateString(dob || '')}`}
           </Typography>
         }
       </Box>
@@ -320,16 +336,22 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const regularComponent = () =>
     <>
-      <Box className={` ${classes.profileCard} card-box-shadow`}>
+      <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
         {patientAvatar()}
 
         {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }]} />
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }]} />
           :
           <Box flex={1}>
-            <Box display='flex'>
+            <Box display='flex' className="profile-hero-patient">
               <Box flex={1} flexWrap="wrap">
-                {renderName()}
+                <Box display='flex' alignItems='baseline'>
+                  {renderName()}
+
+                  <IconButton onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                    <EditNewIcon />
+                  </IconButton>
+                </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
                   {renderAge()}
@@ -366,8 +388,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
-                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_MORE_INFO, openMoreInfo: !openMoreInfo })} variant="text" className="btn-focus">
+                  {openMoreInfo ? <Typography variant="body2">... {LESS_INFO}</Typography>
                     : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
 
@@ -381,7 +403,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         }
       </Box>
 
-      <Collapse in={open} mountOnEnter unmountOnExit>
+      <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">

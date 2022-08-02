@@ -76,6 +76,8 @@ export type Agreement = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  patientConsent?: Maybe<PatientConsent>;
+  patientConsentId?: Maybe<Scalars['String']>;
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
   signatureRequired?: Maybe<Scalars['Boolean']>;
@@ -114,11 +116,39 @@ export type AgreementsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type AllCptCodePayload = {
+  __typename?: 'AllCPTCodePayload';
+  cptCodes?: Maybe<Array<Maybe<CptCodes>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type AllCptFeeSchedulesPayload = {
+  __typename?: 'AllCPTFeeSchedulesPayload';
+  cptFeeSchedules?: Maybe<Array<Maybe<CptFeeSchedule>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type AllDoctorPayload = {
   __typename?: 'AllDoctorPayload';
   doctors?: Maybe<Array<Maybe<Doctor>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type AllFeeSchedulesPayload = {
+  __typename?: 'AllFeeSchedulesPayload';
+  feeSchedules?: Maybe<Array<Maybe<FeeSchedule>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type AllModifiersPayload = {
+  __typename?: 'AllModifiersPayload';
+  modifiers?: Maybe<Array<Maybe<Modifier>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type AllStaffPayload = {
@@ -204,6 +234,7 @@ export type Appointment = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
+  patientConsent?: Maybe<PatientConsent>;
   patientId?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
@@ -230,6 +261,7 @@ export enum AppointmentCreateType {
 }
 
 export type AppointmentInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentStatus?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
@@ -380,9 +412,19 @@ export type Billing = {
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
+  claim?: Maybe<Claim>;
+  claimDate?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
+  claimStatus?: Maybe<ClaimStatus>;
+  claimStatusId?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<Code>>;
   createdAt?: Maybe<Scalars['String']>;
   employment?: Maybe<Scalars['Boolean']>;
+  facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
+  feeSchedule?: Maybe<FeeSchedule>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
@@ -391,9 +433,16 @@ export type Billing = {
   otherDate?: Maybe<Scalars['String']>;
   otherDateType: OtherDateType;
   patient?: Maybe<Patient>;
-  patientBillingStatus: PatientBillingStatus;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType: PatientPaymentType;
+  pos?: Maybe<Scalars['String']>;
+  renderingProvider?: Maybe<Doctor>;
+  renderingProviderId?: Maybe<Scalars['String']>;
+  serviceDate?: Maybe<Scalars['String']>;
+  servicingProvider?: Maybe<Doctor>;
+  servicingProviderId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+  uncoveredAmount?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -425,17 +474,29 @@ export type BillingInput = {
   amount?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
+  claimDate?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
   codes?: Maybe<Array<CodesInput>>;
   employment?: Maybe<Scalars['Boolean']>;
+  facilityId?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
   labOrderNumber?: Maybe<Scalars['String']>;
   onsetDate?: Maybe<Scalars['String']>;
   onsetDateType?: Maybe<OnsetDateType>;
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
-  patientBillingStatus?: Maybe<PatientBillingStatus>;
   patientId?: Maybe<Scalars['String']>;
   patientPaymentType?: Maybe<PatientPaymentType>;
+  pos?: Maybe<Scalars['String']>;
+  renderingProviderId?: Maybe<Scalars['String']>;
+  serviceDate?: Maybe<Scalars['String']>;
+  servicingProviderId?: Maybe<Scalars['String']>;
+  shouldCheckout?: Maybe<Scalars['Boolean']>;
+  to?: Maybe<Scalars['String']>;
+  uncoveredAmount?: Maybe<Scalars['String']>;
 };
 
 export type BillingPayload = {
@@ -465,9 +526,249 @@ export enum Communicationtype {
   VoiceMessage = 'VOICE_MESSAGE'
 }
 
+export type CptCodePayload = {
+  __typename?: 'CPTCodePayload';
+  cptCode?: Maybe<CptCodes>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type CptCodes = {
+  __typename?: 'CPTCodes';
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  cptFeeSchedule?: Maybe<Array<CptFeeSchedule>>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type CptFeeSchedulePayload = {
+  __typename?: 'CPTFeeSchedulePayload';
+  cptFeeSchedule?: Maybe<CptFeeSchedule>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type CancelAppointment = {
   reason: Scalars['String'];
   token: Scalars['String'];
+};
+
+export type Charge = {
+  __typename?: 'Charge';
+  charge?: Maybe<Scalars['Int']>;
+  diagPointer?: Maybe<Scalars['String']>;
+  proc_code?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['Int']>;
+};
+
+export type ChargeItem = {
+  __typename?: 'ChargeItem';
+  charge: Scalars['Float'];
+  diagPointer: Scalars['String'];
+  diag_ref: Scalars['String'];
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
+  proc_code: Scalars['String'];
+  unit: Scalars['String'];
+  units: Scalars['Float'];
+};
+
+export type Claim = {
+  __typename?: 'Claim';
+  accept_assign?: Maybe<Scalars['String']>;
+  auto_accident?: Maybe<Scalars['String']>;
+  batchId?: Maybe<Scalars['Float']>;
+  billNpi?: Maybe<Scalars['Float']>;
+  billTaxId?: Maybe<Scalars['Float']>;
+  bill_addr_1?: Maybe<Scalars['String']>;
+  bill_addr_2?: Maybe<Scalars['String']>;
+  bill_city?: Maybe<Scalars['String']>;
+  bill_name?: Maybe<Scalars['String']>;
+  bill_npi?: Maybe<Scalars['String']>;
+  bill_phone?: Maybe<Scalars['String']>;
+  bill_state?: Maybe<Scalars['String']>;
+  bill_taxid?: Maybe<Scalars['String']>;
+  bill_taxid_type?: Maybe<Scalars['String']>;
+  bill_taxonomy?: Maybe<Scalars['String']>;
+  bill_zip?: Maybe<Scalars['String']>;
+  billing?: Maybe<Billing>;
+  billingId?: Maybe<Scalars['String']>;
+  charge?: Maybe<Array<ClaimChargeType>>;
+  chg_facility_addr_1?: Maybe<Scalars['String']>;
+  chg_facility_addr_2?: Maybe<Scalars['String']>;
+  chg_facility_city?: Maybe<Scalars['String']>;
+  chg_facility_name?: Maybe<Scalars['String']>;
+  chg_facility_npi?: Maybe<Scalars['String']>;
+  chg_facility_state?: Maybe<Scalars['String']>;
+  chg_facility_zip?: Maybe<Scalars['String']>;
+  claimId?: Maybe<Scalars['String']>;
+  claimMdId?: Maybe<Scalars['Float']>;
+  claim_form?: Maybe<Scalars['String']>;
+  clia_number?: Maybe<Scalars['String']>;
+  cond?: Maybe<OnsetDate>;
+  cond_date?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  diag_1?: Maybe<Scalars['String']>;
+  diag_2?: Maybe<Scalars['String']>;
+  diag_3?: Maybe<Scalars['String']>;
+  diag_4?: Maybe<Scalars['String']>;
+  diag_5?: Maybe<Scalars['String']>;
+  diag_6?: Maybe<Scalars['String']>;
+  diag_7?: Maybe<Scalars['String']>;
+  diag_8?: Maybe<Scalars['String']>;
+  diag_9?: Maybe<Scalars['String']>;
+  diag_10?: Maybe<Scalars['String']>;
+  diag_11?: Maybe<Scalars['String']>;
+  diag_12?: Maybe<Scalars['String']>;
+  employment_related?: Maybe<Scalars['String']>;
+  facilityDateOfService?: Maybe<Scalars['String']>;
+  facility_addr_1?: Maybe<Scalars['String']>;
+  facility_addr_2?: Maybe<Scalars['String']>;
+  facility_city?: Maybe<Scalars['String']>;
+  facility_clia?: Maybe<Scalars['String']>;
+  facility_id?: Maybe<Scalars['String']>;
+  facility_name?: Maybe<Scalars['String']>;
+  facility_npi?: Maybe<Scalars['String']>;
+  facility_state?: Maybe<Scalars['String']>;
+  facility_zip?: Maybe<Scalars['String']>;
+  fileId?: Maybe<Scalars['Float']>;
+  fileName?: Maybe<Scalars['String']>;
+  from_date_1?: Maybe<Scalars['String']>;
+  hosp_from_date?: Maybe<Scalars['String']>;
+  hosp_thru_date?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  ins_addr_1?: Maybe<Scalars['String']>;
+  ins_addr_2?: Maybe<Scalars['String']>;
+  ins_city?: Maybe<Scalars['String']>;
+  ins_dob?: Maybe<Scalars['String']>;
+  ins_group?: Maybe<Scalars['String']>;
+  ins_name_f?: Maybe<Scalars['String']>;
+  ins_name_l?: Maybe<Scalars['String']>;
+  ins_name_m?: Maybe<Scalars['String']>;
+  ins_number?: Maybe<Scalars['String']>;
+  ins_sex?: Maybe<Scalars['String']>;
+  ins_state?: Maybe<Scalars['String']>;
+  ins_zip?: Maybe<Scalars['String']>;
+  insuranceNumber?: Maybe<Scalars['Float']>;
+  onset?: Maybe<OtherDate>;
+  onset_date?: Maybe<Scalars['String']>;
+  ord_name_f?: Maybe<Scalars['String']>;
+  ord_name_l?: Maybe<Scalars['String']>;
+  ord_name_m?: Maybe<Scalars['String']>;
+  ord_npi?: Maybe<Scalars['String']>;
+  ord_prov_name_f?: Maybe<Scalars['String']>;
+  ord_prov_name_l?: Maybe<Scalars['String']>;
+  ord_prov_name_m?: Maybe<Scalars['String']>;
+  ord_prov_npi?: Maybe<Scalars['String']>;
+  other_accident?: Maybe<Scalars['String']>;
+  pat_addr_1?: Maybe<Scalars['String']>;
+  pat_addr_2?: Maybe<Scalars['String']>;
+  pat_city?: Maybe<Scalars['String']>;
+  pat_country?: Maybe<Scalars['String']>;
+  pat_dob?: Maybe<Scalars['String']>;
+  pat_marital?: Maybe<Scalars['String']>;
+  pat_name_f?: Maybe<Scalars['String']>;
+  pat_name_l?: Maybe<Scalars['String']>;
+  pat_name_m?: Maybe<Scalars['String']>;
+  pat_phone?: Maybe<Scalars['String']>;
+  pat_rel?: Maybe<Scalars['String']>;
+  pat_sex?: Maybe<Scalars['String']>;
+  pat_state?: Maybe<Scalars['String']>;
+  pat_zip?: Maybe<Scalars['String']>;
+  payer_name?: Maybe<Scalars['String']>;
+  payer_order?: Maybe<OrderOfBenefit>;
+  payerid?: Maybe<Scalars['String']>;
+  pcn?: Maybe<Scalars['String']>;
+  place_of_service_1?: Maybe<Scalars['String']>;
+  prov_name_f?: Maybe<Scalars['String']>;
+  prov_name_l?: Maybe<Scalars['String']>;
+  prov_name_m?: Maybe<Scalars['String']>;
+  prov_npi?: Maybe<Scalars['String']>;
+  receivePayerId?: Maybe<Scalars['Float']>;
+  ref_id?: Maybe<Scalars['String']>;
+  ref_name_f?: Maybe<Scalars['String']>;
+  ref_name_l?: Maybe<Scalars['String']>;
+  ref_name_m?: Maybe<Scalars['String']>;
+  ref_npi?: Maybe<Scalars['String']>;
+  sendIcn?: Maybe<Scalars['String']>;
+  senderId?: Maybe<Scalars['String']>;
+  senderName?: Maybe<Scalars['String']>;
+  thru_date?: Maybe<Scalars['String']>;
+  totalCharge?: Maybe<Scalars['Float']>;
+  total_charge?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ClaimChargeType = {
+  __typename?: 'ClaimChargeType';
+  charge: Scalars['Float'];
+  diagPointer: Scalars['String'];
+  diag_ref: Scalars['String'];
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
+  proc_code: Scalars['String'];
+  units: Scalars['Float'];
+};
+
+export type ClaimFilePayload = {
+  __typename?: 'ClaimFilePayload';
+  claimFile?: Maybe<Array<Scalars['Int']>>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type ClaimNumberPayload = {
+  __typename?: 'ClaimNumberPayload';
+  claimNumber?: Maybe<Scalars['String']>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type ClaimPayload = {
+  __typename?: 'ClaimPayload';
+  claim: Claim;
+  claimStatus: ClaimStatus;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type ClaimStatus = {
+  __typename?: 'ClaimStatus';
+  billings?: Maybe<Array<Billing>>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+  system: Scalars['Boolean'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusInput = {
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusPaginationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
+export type ClaimStatusPayload = {
+  __typename?: 'ClaimStatusPayload';
+  claimStatus: ClaimStatus;
+  response?: Maybe<Response>;
+};
+
+export type ClaimStatusesPayload = {
+  __typename?: 'ClaimStatusesPayload';
+  claimStatuses: Array<ClaimStatus>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
 };
 
 export type Code = {
@@ -478,8 +779,18 @@ export type Code = {
   codeType: CodeType;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  diagPointer?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
+  modifier1?: Maybe<Modifier>;
+  modifier2?: Maybe<Modifier>;
+  modifier3?: Maybe<Modifier>;
+  modifier4?: Maybe<Modifier>;
   price?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -495,7 +806,13 @@ export type CodesInput = {
   code?: Maybe<Scalars['String']>;
   codeType?: Maybe<CodeType>;
   description?: Maybe<Scalars['String']>;
+  diagPointer?: Maybe<Scalars['String']>;
+  m1?: Maybe<Scalars['String']>;
+  m2?: Maybe<Scalars['String']>;
+  m3?: Maybe<Scalars['String']>;
+  m4?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['String']>;
+  unit?: Maybe<Scalars['String']>;
 };
 
 export type Contact = {
@@ -527,7 +844,7 @@ export type Contact = {
   phone?: Maybe<Scalars['String']>;
   primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
-  serviceCode: ServiceCodes;
+  serviceCode?: Maybe<ServiceCodes>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
@@ -630,6 +947,24 @@ export enum CopayType {
   XrayImaging = 'XRAY_IMAGING'
 }
 
+export type CptFeeSchedule = {
+  __typename?: 'CptFeeSchedule';
+  code?: Maybe<Scalars['String']>;
+  cptCodes?: Maybe<CptCodes>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeSchedule?: Maybe<FeeSchedule>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CreateAppointmentInput = {
   appointmentCreateType?: Maybe<AppointmentCreateType>;
   appointmentTypeId: Scalars['String'];
@@ -697,6 +1032,41 @@ export type CreateBillingAddressInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type CreateCptCodeInput = {
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
+export type CreateClaimInput = {
+  amount?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  autoAccident?: Maybe<Scalars['Boolean']>;
+  claimDate?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
+  codes?: Maybe<Array<CodesInput>>;
+  employment?: Maybe<Scalars['Boolean']>;
+  facilityId?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
+  labOrderNumber?: Maybe<Scalars['String']>;
+  onsetDate?: Maybe<Scalars['String']>;
+  onsetDateType?: Maybe<OnsetDateType>;
+  otherAccident?: Maybe<Scalars['Boolean']>;
+  otherDate?: Maybe<Scalars['String']>;
+  otherDateType?: Maybe<OtherDateType>;
+  patientId?: Maybe<Scalars['String']>;
+  pos?: Maybe<Scalars['String']>;
+  renderingProviderId?: Maybe<Scalars['String']>;
+  serviceDate?: Maybe<Scalars['String']>;
+  servicingProviderId?: Maybe<Scalars['String']>;
+  shouldCheckout?: Maybe<Scalars['Boolean']>;
+  to?: Maybe<Scalars['String']>;
+  uncoveredAmount?: Maybe<Scalars['String']>;
+};
+
 export type CreateContactInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
@@ -727,6 +1097,18 @@ export type CreateContactInput = {
   suffix?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type CreateCptFeeScheduleInput = {
+  code?: Maybe<Scalars['String']>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
 };
 
 export type CreateDoctorInput = {
@@ -764,8 +1146,6 @@ export type CreateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the string - Sign-up */
-  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -782,6 +1162,7 @@ export type CreateDoctorItemInput = {
 export type CreateEmployerInput = {
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
@@ -850,6 +1231,21 @@ export type CreateFacilityItemInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
+export type CreateFeeScheduleInput = {
+  cptCode?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  effectiveDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  procedureCode?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
 export type CreateFormInput = {
   facilityId?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
@@ -912,6 +1308,11 @@ export type CreateLabTestObservationItemInput = {
   resultValue: Scalars['String'];
 };
 
+export type CreateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
 export type CreatePatientAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   allergyName?: Maybe<Scalars['String']>;
@@ -926,6 +1327,13 @@ export type CreatePatientAllergyInput = {
   providerId?: Maybe<Scalars['String']>;
   reactionsIds: Array<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
+};
+
+export type CreatePatientConsentInputs = {
+  agreementIds?: Maybe<Array<Scalars['String']>>;
+  appointmentId?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientInput = {
@@ -963,7 +1371,6 @@ export type CreatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
-  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -1020,7 +1427,10 @@ export type CreatePracticeItemInput = {
   medicaid?: Maybe<Scalars['String']>;
   medicare?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  npi?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -1167,9 +1577,11 @@ export type Doctor = {
   practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  primaryProviderBillings?: Maybe<Array<Billing>>;
   primaryProviderLabTests?: Maybe<Array<LabTests>>;
   providerIntials?: Maybe<Scalars['String']>;
   referringProviderLabTests?: Maybe<Array<LabTests>>;
+  renderingProviderBillings?: Maybe<Array<Billing>>;
   schedule?: Maybe<Array<Schedule>>;
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -1177,6 +1589,7 @@ export type Doctor = {
   staff?: Maybe<Array<Maybe<Staff>>>;
   stateLicense?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
+  taxCode?: Maybe<Taxonomy>;
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
@@ -1194,6 +1607,7 @@ export type DoctorInput = {
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
+  speciality?: Maybe<Speciality>;
 };
 
 export type DoctorPatient = {
@@ -1212,12 +1626,12 @@ export type DoctorPatient = {
 
 /** The relationship of patient with doctor */
 export enum DoctorPatientRelationType {
-  BackupProvider = 'BACKUP_PROVIDER',
   OrderingProvider = 'ORDERING_PROVIDER',
   OtherProvider = 'OTHER_PROVIDER',
   PreferredProvider = 'PREFERRED_PROVIDER',
   PrimaryProvider = 'PRIMARY_PROVIDER',
-  ReferringProvider = 'REFERRING_PROVIDER'
+  ReferringProvider = 'REFERRING_PROVIDER',
+  RenderingProvider = 'RENDERING_PROVIDER'
 }
 
 export type DoctorPatientsInput = {
@@ -1329,6 +1743,7 @@ export type Employer = {
   __typename?: 'Employer';
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1370,6 +1785,7 @@ export type Facility = {
   agreements?: Maybe<Array<Agreement>>;
   appointments?: Maybe<Array<Appointment>>;
   billingAddress?: Maybe<Array<BillingAddress>>;
+  billings?: Maybe<Array<Billing>>;
   cliaIdNumber?: Maybe<Scalars['String']>;
   color?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
@@ -1387,11 +1803,12 @@ export type Facility = {
   practiceId?: Maybe<Scalars['String']>;
   practiceType?: Maybe<PracticeType>;
   schedule?: Maybe<Array<Schedule>>;
-  serviceCode: ServiceCode;
+  serviceCode?: Maybe<ServiceCode>;
   services?: Maybe<Array<Service>>;
   staff?: Maybe<Array<Staff>>;
   startTime?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Taxonomy>;
   timeZone?: Maybe<Scalars['String']>;
   transaction?: Maybe<Array<Transactions>>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -1410,6 +1827,27 @@ export type FacilityPayload = {
   __typename?: 'FacilityPayload';
   facility?: Maybe<Facility>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type FeeSchedule = {
+  __typename?: 'FeeSchedule';
+  billing?: Maybe<Array<Billing>>;
+  cptFeeSchedule?: Maybe<Array<CptFeeSchedule>>;
+  cptFeeScheduleCount?: Maybe<Scalars['Float']>;
+  createdAt?: Maybe<Scalars['String']>;
+  effectiveDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  practice?: Maybe<Practice>;
+  practiceId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FeeSchedulePayload = {
+  __typename?: 'FeeSchedulePayload';
+  feeSchedule?: Maybe<FeeSchedule>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type FieldOptionsInputType = {
@@ -1436,6 +1874,7 @@ export type FieldsInputs = {
   name: Scalars['String'];
   options: Array<FieldOptionsInputType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
@@ -1457,11 +1896,34 @@ export type FieldsTypes = {
   name: Scalars['String'];
   options: Array<FieldOptionsType>;
   placeholder: Scalars['String'];
+  regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
   tableContactType?: Maybe<Scalars['String']>;
   tableName?: Maybe<Scalars['String']>;
   textArea: Scalars['Boolean'];
   type: ElementType;
+};
+
+export type FindAllCptCodesInput = {
+  code?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type FindAllCptFeeScheduleInput = {
+  feeScheduleId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type FindAllFeeScheduleInput = {
+  paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type FindAllModifierInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
 };
 
 export type ForgotPasswordInput = {
@@ -1515,6 +1977,7 @@ export type FormInput = {
   isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type FormMediaPayload = {
@@ -1591,6 +2054,9 @@ export type GetAppointments = {
 };
 
 export type GetAttachment = {
+  attachmentName?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  signedBy?: Maybe<Scalars['Boolean']>;
   typeId: Scalars['String'];
 };
 
@@ -1609,8 +2075,35 @@ export type GetAttachmentsByPolicyId = {
   typeId: Scalars['String'];
 };
 
+export type GetCptCodeInput = {
+  id: Scalars['String'];
+};
+
+export type GetClaimFileInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  autoAccident?: Maybe<Scalars['Boolean']>;
+  codes?: Maybe<Array<CodesInput>>;
+  employment?: Maybe<Scalars['Boolean']>;
+  from?: Maybe<Scalars['String']>;
+  onsetDate?: Maybe<Scalars['String']>;
+  onsetDateType?: Maybe<OnsetDateType>;
+  otherAccident?: Maybe<Scalars['Boolean']>;
+  otherDate?: Maybe<Scalars['String']>;
+  otherDateType?: Maybe<OtherDateType>;
+  patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
+export type GetClaimInput = {
+  id: Scalars['String'];
+};
+
 export type GetContact = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type GetCptFeeScheduleInput = {
+  id: Scalars['String'];
 };
 
 export type GetDoctor = {
@@ -1625,7 +2118,16 @@ export type GetFacility = {
   id: Scalars['String'];
 };
 
+export type GetFacilityPatientsInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
 export type GetFacilitySchedule = {
+  id: Scalars['String'];
+};
+
+export type GetFeeScheduleInput = {
   id: Scalars['String'];
 };
 
@@ -1639,6 +2141,10 @@ export type GetLabTest = {
 
 export type GetMedia = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type GetModifierInput = {
+  id: Scalars['String'];
 };
 
 export type GetPatient = {
@@ -1760,34 +2266,29 @@ export type IcdCodesPayload = {
 
 export type Insurance = {
   __typename?: 'Insurance';
-  Note?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Scalars['String']>;
+  claimFee?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
   createdAt?: Maybe<Scalars['String']>;
-  electronicRemittanceAdvice?: Maybe<Scalars['Boolean']>;
-  enrollmentRequired?: Maybe<Scalars['Boolean']>;
+  electronicRemittanceAdvice?: Maybe<Scalars['String']>;
+  eligibility?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  lineOfBusiness: Scalars['String'];
   payerId: Scalars['String'];
   payerName: Scalars['String'];
   policies?: Maybe<Array<Policy>>;
-  realTimeClaimStatus?: Maybe<Scalars['Boolean']>;
-  realTimeEligibility?: Maybe<Scalars['Boolean']>;
-  secondaryCoordinationBenefits?: Maybe<Scalars['Boolean']>;
+  remitFee?: Maybe<Scalars['String']>;
+  secondaryCoordinationBenefits?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
-  type: InsurancePayerType;
+  type?: Maybe<Scalars['String']>;
+  ubClaims: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  workersComp?: Maybe<Scalars['String']>;
 };
 
 export type InsurancePaginationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
 };
-
-/** The insurance payer type */
-export enum InsurancePayerType {
-  Np = 'NP',
-  P = 'P'
-}
 
 export type InsurancesPayload = {
   __typename?: 'InsurancesPayload';
@@ -1911,6 +2412,10 @@ export type LabTestsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LastVisitedAppointmentInput = {
+  patientId?: Maybe<Scalars['String']>;
+};
+
 export type LayoutJsonInputType = {
   tabs: Array<FormTabsInputs>;
 };
@@ -1918,6 +2423,61 @@ export type LayoutJsonInputType = {
 export type LayoutJsonType = {
   __typename?: 'LayoutJSONType';
   tabs: Array<FormTabs>;
+};
+
+export type LiveClaimFeed = {
+  __typename?: 'LiveClaimFeed';
+  InsuranceFullName?: Maybe<Scalars['String']>;
+  charge: Scalars['String'];
+  checkNumber?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  crossOverCarrier?: Maybe<Scalars['String']>;
+  crossOverId?: Maybe<Scalars['String']>;
+  eraId?: Maybe<Scalars['String']>;
+  fromDos?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  paidAmount?: Maybe<Scalars['String']>;
+  paidDate?: Maybe<Scalars['String']>;
+  patientFullName?: Maybe<Scalars['String']>;
+  payerAccount?: Maybe<Scalars['String']>;
+  payerAddress1?: Maybe<Scalars['String']>;
+  payerCity?: Maybe<Scalars['String']>;
+  payerId?: Maybe<Scalars['String']>;
+  payerName?: Maybe<Scalars['String']>;
+  payerRouting?: Maybe<Scalars['String']>;
+  paymentFormat?: Maybe<Scalars['String']>;
+  paymentMethod?: Maybe<Scalars['String']>;
+  pcn?: Maybe<Scalars['String']>;
+  provAccount?: Maybe<Scalars['String']>;
+  provAddress1?: Maybe<Scalars['String']>;
+  provCity?: Maybe<Scalars['String']>;
+  provCompanyId?: Maybe<Scalars['String']>;
+  provName?: Maybe<Scalars['String']>;
+  provNpi?: Maybe<Scalars['String']>;
+  provRouting?: Maybe<Scalars['String']>;
+  provState?: Maybe<Scalars['String']>;
+  provTaxId?: Maybe<Scalars['String']>;
+  provZip?: Maybe<Scalars['String']>;
+  thruDos?: Maybe<Scalars['String']>;
+  totalCharge?: Maybe<Scalars['String']>;
+  totalPaid?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type LiveClaimFeedInput = {
+  claimFeedFacilityName?: Maybe<Scalars['String']>;
+  claimFeedFromDate?: Maybe<Scalars['String']>;
+  claimFeedPatientName?: Maybe<Scalars['String']>;
+  claimFeedPayerId?: Maybe<Scalars['String']>;
+  claimFeedToDate?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type LiveClaimFeedPayload = {
+  __typename?: 'LiveClaimFeedPayload';
+  liveClaimFeeds?: Maybe<Array<LiveClaimFeed>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type LoginUserInput = {
@@ -2000,11 +2560,26 @@ export type LoincCodesPayload = {
 /** The patient's maritial status type assigned */
 export enum Maritialstatus {
   Divorced = 'DIVORCED',
-  Maried = 'MARIED',
+  Married = 'MARRIED',
   Separated = 'SEPARATED',
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
 }
+
+export type Modifier = {
+  __typename?: 'Modifier';
+  code?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ModifierPayload = {
+  __typename?: 'ModifierPayload';
+  modifier?: Maybe<Modifier>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2021,20 +2596,28 @@ export type Mutation = {
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createBilling: BillingPayload;
+  createCPTCode: CptCodePayload;
+  createClaim: ClaimPayload;
+  createClaimStatus: ClaimStatusPayload;
   createContact: ContactPayload;
   createCopay: Copay;
+  createCptFeeSchedule: CptFeeSchedulePayload;
   createDoctor: DoctorPayload;
   createElement: Element;
   createExternalAppointment: AppointmentPayload;
   createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
+  createFeeSchedule: FeeSchedulePayload;
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
+  createLiveClaimFeed: Array<LiveClaimFeed>;
   createLoincCode: LoincCodePayload;
+  createModifier: ModifierPayload;
   createPatient: PatientPayload;
+  createPatientConsent: PatientConsentPayload;
   createPermission: PermissionPayload;
   createPolicy: PolicyPayload;
   createPolicyHolder: PolicyHolder;
@@ -2048,6 +2631,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   getAllTransactions: TransactionsPayload;
+  getEligibilityAndCoverage: PolicyEligibilityPayload;
   getFormPublicMediaUrl: FormMediaPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
@@ -2056,12 +2640,17 @@ export type Mutation = {
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
   removeAttachmentMedia: AttachmentPayload;
+  removeCPTCode: CptCodePayload;
+  removeClaimStatus: ClaimStatusPayload;
   removeContact: ContactPayload;
+  removeCptFeeSchedule: CptFeeSchedulePayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
+  removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
+  removeModifier: ModifierPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -2085,16 +2674,21 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateCPTCode: CptCodePayload;
+  updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
+  updateCptFeeSchedule: CptFeeSchedulePayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
+  updateFeeSchedule: FeeSchedulePayload;
   updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
   updateLabTestObservation: LabTestObservationPayload;
   updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
+  updateModifier: ModifierPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
@@ -2183,6 +2777,21 @@ export type MutationCreateBillingArgs = {
 };
 
 
+export type MutationCreateCptCodeArgs = {
+  createCPTCodeInput: CreateCptCodeInput;
+};
+
+
+export type MutationCreateClaimArgs = {
+  createClaimInput: CreateClaimInput;
+};
+
+
+export type MutationCreateClaimStatusArgs = {
+  createClaimStatusInput: ClaimStatusInput;
+};
+
+
 export type MutationCreateContactArgs = {
   createContactInput: CreateContactInput;
 };
@@ -2190,6 +2799,11 @@ export type MutationCreateContactArgs = {
 
 export type MutationCreateCopayArgs = {
   createCopayInput: CopayInput;
+};
+
+
+export type MutationCreateCptFeeScheduleArgs = {
+  createCptFeeScheduleInput: CreateCptFeeScheduleInput;
 };
 
 
@@ -2215,6 +2829,11 @@ export type MutationCreateExternalInvoiceArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateFeeScheduleArgs = {
+  createFeeScheduleInput: CreateFeeScheduleInput;
 };
 
 
@@ -2248,8 +2867,18 @@ export type MutationCreateLoincCodeArgs = {
 };
 
 
+export type MutationCreateModifierArgs = {
+  createModifierInput: CreateModifierInput;
+};
+
+
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
+};
+
+
+export type MutationCreatePatientConsentArgs = {
+  createPatientConsentInputs: CreatePatientConsentInputs;
 };
 
 
@@ -2318,6 +2947,11 @@ export type MutationGetAllTransactionsArgs = {
 };
 
 
+export type MutationGetEligibilityAndCoverageArgs = {
+  policyId: Scalars['String'];
+};
+
+
 export type MutationGetFormPublicMediaUrlArgs = {
   getPublicMediaInput: GetPublicMediaInput;
 };
@@ -2358,8 +2992,23 @@ export type MutationRemoveAttachmentMediaArgs = {
 };
 
 
+export type MutationRemoveCptCodeArgs = {
+  removeCPTCodeInput: RemoveCptCodeInput;
+};
+
+
+export type MutationRemoveClaimStatusArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
+};
+
+
+export type MutationRemoveCptFeeScheduleArgs = {
+  removeCptFeeScheduleInput: RemoveCptFeeScheduleInput;
 };
 
 
@@ -2370,6 +3019,11 @@ export type MutationRemoveDoctorArgs = {
 
 export type MutationRemoveFacilityArgs = {
   removeFacility: RemoveFacility;
+};
+
+
+export type MutationRemoveFeeScheduleArgs = {
+  removeFeeScheduleInput: RemoveFeeScheduleInput;
 };
 
 
@@ -2385,6 +3039,11 @@ export type MutationRemoveLabTestArgs = {
 
 export type MutationRemoveLabTestObservationArgs = {
   removeLabTestObservation: RemoveLabTestObservation;
+};
+
+
+export type MutationRemoveModifierArgs = {
+  removeModifierInput: RemoveModifierInput;
 };
 
 
@@ -2498,8 +3157,23 @@ export type MutationUpdateAutoLogoutTimeArgs = {
 };
 
 
+export type MutationUpdateCptCodeArgs = {
+  updateCPTCodeInput: UpdateCptCodeInput;
+};
+
+
+export type MutationUpdateClaimStatusArgs = {
+  updateClaimStatusInput: UpdateClaimStatusInput;
+};
+
+
 export type MutationUpdateContactArgs = {
   updateContactInput: UpdateContactInput;
+};
+
+
+export type MutationUpdateCptFeeScheduleArgs = {
+  updateCptFeeScheduleInput: UpdateCptFeeScheduleInput;
 };
 
 
@@ -2515,6 +3189,11 @@ export type MutationUpdateFacilityArgs = {
 
 export type MutationUpdateFacilityTimeZoneArgs = {
   updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
+};
+
+
+export type MutationUpdateFeeScheduleArgs = {
+  updateFeeScheduleInput: UpdateFeeScheduleInput;
 };
 
 
@@ -2545,6 +3224,11 @@ export type MutationUpdateLabTestsByOrderNumArgs = {
 
 export type MutationUpdateLoincCodeArgs = {
   updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
+export type MutationUpdateModifierArgs = {
+  updateModifierInput: UpdateModifierInput;
 };
 
 
@@ -2666,10 +3350,22 @@ export type Observations = {
 };
 
 /** The patient billing status assigned */
+export enum OnsetDate {
+  DateOfAccident = 'DATE_OF_ACCIDENT',
+  DateOfHospitalization = 'DATE_OF_HOSPITALIZATION'
+}
+
+/** The patient billing status assigned */
 export enum OnsetDateType {
   DateOfAccident = 'DATE_OF_ACCIDENT',
-  LastMenstrualPeriod = 'LAST_MENSTRUAL_PERIOD',
-  OnsetOfCurrentSymptomsOrIllness = 'ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS'
+  DateOfHospitalization = 'DATE_OF_HOSPITALIZATION'
+}
+
+/** The order of benefit type */
+export enum OrderOfBenefit {
+  Primary = 'PRIMARY',
+  Secondary = 'SECONDARY',
+  Tertiary = 'TERTIARY'
 }
 
 /** The order of benefit type */
@@ -2677,6 +3373,13 @@ export enum OrderOfBenefitType {
   Primary = 'PRIMARY',
   Secondary = 'SECONDARY',
   Tertiary = 'TERTIARY'
+}
+
+/** The patient billing status assigned */
+export enum OtherDate {
+  InitialTreatmentDate = 'INITIAL_TREATMENT_DATE',
+  InitialVisitDate = 'INITIAL_VISIT_DATE',
+  LastRelatedVisit = 'LAST_RELATED_VISIT'
 }
 
 /** The patient billing status assigned */
@@ -2688,10 +3391,10 @@ export enum OtherDateType {
 
 /** The Policy Holder gender Type */
 export enum Policy_Holder_Gender_Identity {
+  DeclineToSpecify = 'DECLINE_TO_SPECIFY',
   Female = 'FEMALE',
   Male = 'MALE',
   None = 'NONE',
-  NotExclusive = 'NOT_EXCLUSIVE',
   TransgenderFemale = 'TRANSGENDER_FEMALE',
   TransgenderMale = 'TRANSGENDER_MALE'
 }
@@ -2722,6 +3425,7 @@ export type Patient = {
   attachments?: Maybe<Array<Attachment>>;
   billings?: Maybe<Array<Billing>>;
   callToConsent: Scalars['Boolean'];
+  consent?: Maybe<PatientConsent>;
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
   deceasedDate?: Maybe<Scalars['String']>;
@@ -2838,18 +3542,30 @@ export type PatientAttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-/** The patient billing status assigned */
-export enum PatientBillingStatus {
-  AutoAccidentClaim = 'AUTO_ACCIDENT_CLAIM',
-  BalanceDue = 'BALANCE_DUE',
-  BillInsurance = 'BILL_INSURANCE',
-  BillSecondaryInsurance = 'BILL_SECONDARY_INSURANCE',
-  DurableMedicalEquipmentClaim = 'DURABLE_MEDICAL_EQUIPMENT_CLAIM',
-  InternalReview = 'INTERNAL_REVIEW',
-  PaidInFull = 'PAID_IN_FULL',
-  Settled = 'SETTLED',
-  WorkersCompClaim = 'WORKERS_COMP_CLAIM'
-}
+export type PatientConsent = {
+  __typename?: 'PatientConsent';
+  agreements?: Maybe<Array<Agreement>>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  attachmentId?: Maybe<Scalars['String']>;
+  body?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  signature?: Maybe<Attachment>;
+  updatedAt: Scalars['String'];
+};
+
+export type PatientConsentInput = {
+  id: Scalars['String'];
+};
+
+export type PatientConsentPayload = {
+  __typename?: 'PatientConsentPayload';
+  patientConsent?: Maybe<PatientConsent>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
 
 export type PatientDoctorPayload = {
   __typename?: 'PatientDoctorPayload';
@@ -3103,6 +3819,7 @@ export type Policy = {
   orderOfBenefit?: Maybe<OrderOfBenefitType>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  policyEligibilities?: Maybe<Array<PolicyEligibility>>;
   policyHolder?: Maybe<PolicyHolder>;
   policyHolderId?: Maybe<Scalars['String']>;
   policyHolderRelationship?: Maybe<PolicyHolderRelationshipType>;
@@ -3112,6 +3829,86 @@ export type Policy = {
   referringProvider?: Maybe<Doctor>;
   referringProviderId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
+};
+
+export type PolicyCoverage = {
+  __typename?: 'PolicyCoverage';
+  benefitAmount?: Maybe<Scalars['String']>;
+  benefitCode?: Maybe<Scalars['String']>;
+  benefitCoverageCode?: Maybe<Scalars['String']>;
+  benefitCoverageDescription?: Maybe<Scalars['String']>;
+  benefitDescription?: Maybe<Scalars['String']>;
+  benefitLevelCode?: Maybe<Scalars['String']>;
+  benefitLevelCodeDescription?: Maybe<Scalars['String']>;
+  benefitNotes?: Maybe<Scalars['String']>;
+  benefitPercent?: Maybe<Scalars['String']>;
+  benefitPeriodCode?: Maybe<Scalars['String']>;
+  benefitPeriodCodeDescription?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  dateOfLastUpdated?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  inPlanNetwork?: Maybe<Scalars['String']>;
+  insuranceTypeCode?: Maybe<Scalars['String']>;
+  insuranceTypeCodeDescription?: Maybe<Scalars['String']>;
+  policyEligibility?: Maybe<PolicyEligibility>;
+  policyEligibilityId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilitiesPayload = {
+  __typename?: 'PolicyEligibilitiesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  policyEligibilities: Array<PolicyEligibility>;
+  response?: Maybe<Response>;
+};
+
+export type PolicyEligibility = {
+  __typename?: 'PolicyEligibility';
+  createdAt?: Maybe<Scalars['String']>;
+  eligibilityId?: Maybe<Scalars['String']>;
+  eligibilityResultDate?: Maybe<Scalars['String']>;
+  eligibilityResultTime?: Maybe<Scalars['String']>;
+  groupNumber?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  insAddress1?: Maybe<Scalars['String']>;
+  insCity?: Maybe<Scalars['String']>;
+  insDob?: Maybe<Scalars['String']>;
+  insFirstName?: Maybe<Scalars['String']>;
+  insLastName?: Maybe<Scalars['String']>;
+  insSex?: Maybe<Scalars['String']>;
+  insState?: Maybe<Scalars['String']>;
+  insZip?: Maybe<Scalars['String']>;
+  payerId?: Maybe<Scalars['String']>;
+  payerName?: Maybe<Scalars['String']>;
+  planBeginDate?: Maybe<Scalars['String']>;
+  planNumber?: Maybe<Scalars['String']>;
+  policy?: Maybe<Policy>;
+  policyCoverages?: Maybe<Array<PolicyCoverage>>;
+  policyId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilityPaginationInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  searchTerm?: Maybe<Scalars['String']>;
+};
+
+export type PolicyEligibilityPayload = {
+  __typename?: 'PolicyEligibilityPayload';
+  pagination?: Maybe<PaginationPayload>;
+  policyEligibility: PolicyEligibility;
+  response?: Maybe<Response>;
+};
+
+export type PolicyEligibilityWithPatientPayload = {
+  __typename?: 'PolicyEligibilityWithPatientPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patient: Patient;
+  policyEligibility: PolicyEligibility;
+  policyHolder: PolicyHolder;
+  primaryProvider: Doctor;
+  response?: Maybe<Response>;
 };
 
 export type PolicyHolder = {
@@ -3222,12 +4019,18 @@ export type Practice = {
   ein?: Maybe<Scalars['String']>;
   facilities?: Maybe<Array<Facility>>;
   fax?: Maybe<Scalars['String']>;
+  feeSchedules?: Maybe<Array<FeeSchedule>>;
   id: Scalars['String'];
   medicaid?: Maybe<Scalars['String']>;
   medicare?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  npi?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
+  staff?: Maybe<Array<Staff>>;
+  taxId?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Taxonomy>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
@@ -3274,6 +4077,7 @@ export type PracticeInput = {
 export type PracticePayload = {
   __typename?: 'PracticePayload';
   practice?: Maybe<Practice>;
+  practiceAdmin?: Maybe<Staff>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -3398,6 +4202,7 @@ export type Query = {
   GetPermission: PermissionPayload;
   fetchAgreement: AgreementPayload;
   fetchAllAgreements: AgreementsPayload;
+  fetchAllClaimStatuses: ClaimStatusesPayload;
   fetchAllInsurances: InsurancesPayload;
   fetchAllPatients: PatientsPayload;
   fetchAllPolicies: PoliciesPayload;
@@ -3418,28 +4223,40 @@ export type Query = {
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
+  findAllCptCodes: AllCptCodePayload;
+  findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
+  findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
+  findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
+  findAllModifiers: AllModifiersPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
+  findAllPublicFacility: FacilitiesPayload;
   findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  findAllTaxonomy: TaxonomyPayload;
   findAllTestSpecimenTypes: TestSpecimenTypesPayload;
   findAllUpcomingAppointments: AppointmentsPayload;
+  findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
+  findClaimStatus: ClaimStatusPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
+  findPatientConsent: PatientConsentPayload;
+  findPatientLastAppointment: AppointmentPayload;
+  generateClaimNo: ClaimNumberPayload;
   getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
@@ -3450,13 +4267,20 @@ export type Query = {
   getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
+  getCPTCode: CptCodePayload;
+  getClaim: ClaimPayload;
+  getClaimFile: ClaimFilePayload;
   getContact: ContactPayload;
+  getCptFeeSchedule: CptFeeSchedulePayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
+  getFacilityPatients: PatientsPayload;
   getFacilitySchedule: SchedulesPayload;
+  getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getLabTest: LabTestPayload;
+  getModifier: ModifierPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -3465,6 +4289,8 @@ export type Query = {
   getPatientProvider: PatientDoctorPayload;
   getPatientProviders: PatientProviderPayload;
   getPatientVital: PatientVitalPayload;
+  getPoliciesEligibilities: PolicyEligibilitiesPayload;
+  getPoliciesEligibility: PolicyEligibilityWithPatientPayload;
   getPractice: PracticePayload;
   getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
   getPracticeFacilityAppointments: PracticeFacilityAppointmentsPayload;
@@ -3478,6 +4304,7 @@ export type Query = {
   getSlots: SlotsPayload;
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
+  getSuperBillInfo: SuperBillPayload;
   getToken: BraintreePayload;
   getTransaction: TransactionPayload;
   getUser: UserPayload;
@@ -3501,6 +4328,11 @@ export type QueryFetchAgreementArgs = {
 
 export type QueryFetchAllAgreementsArgs = {
   agreementPaginationInput: AgreementPaginationInput;
+};
+
+
+export type QueryFetchAllClaimStatusesArgs = {
+  claimStatusPaginationInput: ClaimStatusPaginationInput;
 };
 
 
@@ -3594,6 +4426,16 @@ export type QueryFindAllContactsArgs = {
 };
 
 
+export type QueryFindAllCptCodesArgs = {
+  findAllCptCodesInput: FindAllCptCodesInput;
+};
+
+
+export type QueryFindAllCptFeeScheduleArgs = {
+  findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
+};
+
+
 export type QueryFindAllDoctorArgs = {
   doctorInput: DoctorInput;
 };
@@ -3609,6 +4451,11 @@ export type QueryFindAllFacilityArgs = {
 };
 
 
+export type QueryFindAllFeeSchedulesArgs = {
+  findAllFeeScheduleInput: FindAllFeeScheduleInput;
+};
+
+
 export type QueryFindAllFormsArgs = {
   formInput: FormInput;
 };
@@ -3619,8 +4466,18 @@ export type QueryFindAllLabTestArgs = {
 };
 
 
+export type QueryFindAllLiveClaimFeedsArgs = {
+  liveClaimFeedInput: LiveClaimFeedInput;
+};
+
+
 export type QueryFindAllLoincCodesArgs = {
   searchLoincCodesInput: SearchLoincCodesInput;
+};
+
+
+export type QueryFindAllModifiersArgs = {
+  findAllModifierInput: FindAllModifierInput;
 };
 
 
@@ -3654,6 +4511,11 @@ export type QueryFindAllPracticesArgs = {
 };
 
 
+export type QueryFindAllPublicFacilityArgs = {
+  facilityInput: FacilityInput;
+};
+
+
 export type QueryFindAllReactionsArgs = {
   reactionInput: ReactionInput;
 };
@@ -3674,6 +4536,11 @@ export type QueryFindAllStaffArgs = {
 };
 
 
+export type QueryFindAllTaxonomyArgs = {
+  taxonomyInput: TaxonomyInput;
+};
+
+
 export type QueryFindAllTestSpecimenTypesArgs = {
   testSpecimenTypeInput: TestSpecimenTypeInput;
 };
@@ -3684,8 +4551,18 @@ export type QueryFindAllUpcomingAppointmentsArgs = {
 };
 
 
+export type QueryFindAllUserLogsArgs = {
+  userLogsInput: UserLogsInput;
+};
+
+
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindClaimStatusArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -3701,6 +4578,16 @@ export type QueryFindLoincCodeArgs = {
 
 export type QueryFindPatientAttachmentsArgs = {
   patientAttachmentsInput: PatientAttachmentsInput;
+};
+
+
+export type QueryFindPatientConsentArgs = {
+  patientInput: PatientConsentInput;
+};
+
+
+export type QueryFindPatientLastAppointmentArgs = {
+  lastVisitedAppointmentInput: LastVisitedAppointmentInput;
 };
 
 
@@ -3749,8 +4636,28 @@ export type QueryGetAttachmentsByPolicyIdArgs = {
 };
 
 
+export type QueryGetCptCodeArgs = {
+  getCPTCodeInput: GetCptCodeInput;
+};
+
+
+export type QueryGetClaimArgs = {
+  getClaimInput: GetClaimInput;
+};
+
+
+export type QueryGetClaimFileArgs = {
+  getClaimFileInput: GetClaimFileInput;
+};
+
+
 export type QueryGetContactArgs = {
   getContact: GetContact;
+};
+
+
+export type QueryGetCptFeeScheduleArgs = {
+  getCptFeeScheduleInput: GetCptFeeScheduleInput;
 };
 
 
@@ -3769,8 +4676,18 @@ export type QueryGetFacilityArgs = {
 };
 
 
+export type QueryGetFacilityPatientsArgs = {
+  getFacilityPatientsInput: GetFacilityPatientsInput;
+};
+
+
 export type QueryGetFacilityScheduleArgs = {
   getFacilitySchedule: GetFacilitySchedule;
+};
+
+
+export type QueryGetFeeScheduleArgs = {
+  getFeeScheduleInput: GetFeeScheduleInput;
 };
 
 
@@ -3781,6 +4698,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetLabTestArgs = {
   getLabTest: GetLabTest;
+};
+
+
+export type QueryGetModifierArgs = {
+  getModifierInput: GetModifierInput;
 };
 
 
@@ -3821,6 +4743,16 @@ export type QueryGetPatientProvidersArgs = {
 
 export type QueryGetPatientVitalArgs = {
   getPatientVital: GetPatientVital;
+};
+
+
+export type QueryGetPoliciesEligibilitiesArgs = {
+  policyEligibilityInput: PolicyEligibilityPaginationInput;
+};
+
+
+export type QueryGetPoliciesEligibilityArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -3876,6 +4808,11 @@ export type QueryGetSpecimenTypeByNameArgs = {
 
 export type QueryGetStaffArgs = {
   getStaff: GetStaff;
+};
+
+
+export type QueryGetSuperBillInfoArgs = {
+  superBillInput: SuperBillInput;
 };
 
 
@@ -3959,27 +4896,32 @@ export enum RelationshipType {
   Child = 'CHILD',
   ChildFatherInsurance = 'CHILD_FATHER_INSURANCE',
   ChildMotherInsurance = 'CHILD_MOTHER_INSURANCE',
+  Cousin = 'COUSIN',
   DependentOfMinorDependent = 'DEPENDENT_OF_MINOR_DEPENDENT',
   EmancipatedMinor = 'EMANCIPATED_MINOR',
   Employee = 'EMPLOYEE',
   Father = 'FATHER',
-  FostherChild = 'FOSTHER_CHILD',
+  FosterChild = 'FOSTER_CHILD',
+  Friend = 'FRIEND',
   Grandchild = 'GRANDCHILD',
   Grandparent = 'GRANDPARENT',
+  Guardian = 'GUARDIAN',
   HandicappedDependent = 'HANDICAPPED_DEPENDENT',
-  InjuredPlaintiiff = 'INJURED_PLAINTIIFF',
+  InjuredPlaintiff = 'INJURED_PLAINTIFF',
   LifePartner = 'LIFE_PARTNER',
   Mother = 'MOTHER',
   NephewNiece = 'NEPHEW_NIECE',
   OrganDonor = 'ORGAN_DONOR',
   Other = 'OTHER',
+  Parent = 'PARENT',
   Self = 'SELF',
+  Sibling = 'SIBLING',
   SignificantOther = 'SIGNIFICANT_OTHER',
   SponsoredDependent = 'SPONSORED_DEPENDENT',
   Spouse = 'SPOUSE',
   StepsonStepdaughter = 'STEPSON_STEPDAUGHTER',
-  StepsonStepdaughterStepfatherInsrtance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE',
-  StepsonStepdaughterStepmotherInsrtance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE',
+  StepsonStepdaughterStepfatherInsurance = 'STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE',
+  StepsonStepdaughterStepmotherInsurance = 'STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE',
   Unknown = 'UNKNOWN',
   Ward = 'WARD'
 }
@@ -3992,8 +4934,16 @@ export type RemoveAttachment = {
   id?: Maybe<Scalars['String']>;
 };
 
+export type RemoveCptCodeInput = {
+  id: Scalars['String'];
+};
+
 export type RemoveContact = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveCptFeeScheduleInput = {
+  id: Scalars['String'];
 };
 
 export type RemoveDoctor = {
@@ -4001,6 +4951,10 @@ export type RemoveDoctor = {
 };
 
 export type RemoveFacility = {
+  id: Scalars['String'];
+};
+
+export type RemoveFeeScheduleInput = {
   id: Scalars['String'];
 };
 
@@ -4013,6 +4967,10 @@ export type RemoveLabTest = {
 };
 
 export type RemoveLabTestObservation = {
+  id: Scalars['String'];
+};
+
+export type RemoveModifierInput = {
   id: Scalars['String'];
 };
 
@@ -4107,7 +5065,7 @@ export type RoleInput = {
 };
 
 export type RoleItemInput = {
-  customRole?: Maybe<Scalars['Boolean']>;
+  customRole: Scalars['Boolean'];
   description?: Maybe<Scalars['String']>;
   role: Scalars['String'];
 };
@@ -4253,83 +5211,114 @@ export type Service = {
 
 /** The facility service code type assigned */
 export enum ServiceCode {
-  Ambulance_24 = 'AMBULANCE_24',
-  Ambulance_41 = 'AMBULANCE_41',
-  Ambulance_42 = 'AMBULANCE_42',
-  AmbulanceLand_41 = 'AMBULANCE_LAND_41',
-  AmbulatorySurgicalCenter_24 = 'AMBULATORY_SURGICAL_CENTER_24',
-  AssistedLiving_13 = 'ASSISTED_LIVING_13',
-  BirthingCenter_25 = 'BIRTHING_CENTER_25',
-  CommunityMentalHealthCenter_53 = 'COMMUNITY_MENTAL_HEALTH_CENTER_53',
-  ComprehensiveInpatientRehabilitationFacility_61 = 'COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61',
-  ComprehensiveOutpatientRehabilitationFacility_62 = 'COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62',
-  CustodialCareFacility_33 = 'CUSTODIAL_CARE_FACILITY_33',
-  EmergencyRoom_23 = 'EMERGENCY_ROOM_23',
-  EmergencyRoomHospital_23 = 'EMERGENCY_ROOM_HOSPITAL_23',
-  EndStageRenalDiseaseTreatmentFacility_65 = 'END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65',
-  FederallyQualifiedHealthCenter_50 = 'FEDERALLY_QUALIFIED_HEALTH_CENTER_50',
-  GroupHome_14 = 'GROUP_HOME_14',
-  HomelessShelter_04 = 'HOMELESS_SHELTER_04',
-  Home_12 = 'HOME_12',
-  Hospice_34 = 'HOSPICE_34',
-  IndependentClinic_49 = 'INDEPENDENT_CLINIC_49',
-  IndependentLaboratory_81 = 'INDEPENDENT_LABORATORY_81',
-  IndianHealthServiceFreeStandingFacility_05 = 'INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05',
-  IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06',
-  InpatientHospital_21 = 'INPATIENT_HOSPITAL_21',
-  InpatientPsychiatricFacility_51 = 'INPATIENT_PSYCHIATRIC_FACILITY_51',
-  IntermediateCareFacilityMentallyRetarded_54 = 'INTERMEDIATE_CARE_FACILITY_MENTALLY_RETARDED_54',
-  MassImmunizationCenter_60 = 'MASS_IMMUNIZATION_CENTER_60',
-  MilitaryTreatmentFacility_26 = 'MILITARY_TREATMENT_FACILITY_26',
-  MobileUnit_15 = 'MOBILE_UNIT_15',
-  NonResidentialOpioidTreatmentFacility_58 = 'NON_RESIDENTIAL_OPIOID_TREATMENT_FACILITY_58',
-  NonResidentialSubstanceAbuseTreatmentFacility_57 = 'NON_RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENT_FACILITY_57',
-  NursingFacility_32 = 'NURSING_FACILITY_32',
-  Office_11 = 'OFFICE_11',
-  OffCampusOutpatientHospital_19 = 'OFF_CAMPUS_OUTPATIENT_HOSPITAL_19',
-  OutpatientHospital_22 = 'OUTPATIENT_HOSPITAL_22',
-  Pharmacy_01 = 'PHARMACY_01',
-  PlaceOfEmployment_18 = 'PLACE_OF_EMPLOYMENT_18',
-  Prison_09 = 'PRISON_09',
-  Prison_10 = 'PRISON_10',
-  PsychiatricFacilityPartialHospitilization_52 = 'PSYCHIATRIC_FACILITY_PARTIAL_HOSPITILIZATION_52',
-  PsychiatricResidentialTreatmentCenter_56 = 'PSYCHIATRIC_RESIDENTIAL_TREATMENT_CENTER_56',
-  ResidentialSubstanceAbuseTreatmenmtFacility_55 = 'RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENMT_FACILITY_55',
-  RuralHealthClinic_72 = 'RURAL_HEALTH_CLINIC_72',
-  School_03 = 'SCHOOL_03',
-  SkilledNursingFacility_31 = 'SKILLED_NURSING_FACILITY_31',
-  StateOrLocalPublicHealthClinic_71 = 'STATE_OR_LOCAL_PUBLIC_HEALTH_CLINIC_71',
-  Telehealth_02 = 'TELEHEALTH_02',
-  Telehealth_10 = 'TELEHEALTH_10',
-  TelehealthOtherThanPatientHome_02 = 'TELEHEALTH_OTHER_THAN_PATIENT_HOME_02',
-  TemporaryLoOgoing_16 = 'TEMPORARY_LoOGOING_16',
-  Tribal_07 = 'TRIBAL_07',
-  Tribal_08 = 'TRIBAL_08',
-  UrgentCare_20 = 'URGENT_CARE_20',
-  WalkInRetailHealthClinic = 'WALK_IN_RETAIL_HEALTH_CLINIC'
+  AmbulanceAirOrWater_42 = 'Ambulance_Air_or_Water_42',
+  AmbulanceLand_41 = 'Ambulance_Land_41',
+  AmbulatorySurgicalCenter_24 = 'Ambulatory_Surgical_Center_24',
+  AssistedLiving_13 = 'Assisted_Living_13',
+  BirthingCenter_25 = 'Birthing_Center_25',
+  CommunityMentalHealthCenter_53 = 'Community_Mental_Health_Center_53',
+  ComprehensiveInpatientRehabilitationFacility_61 = 'Comprehensive_Inpatient_Rehabilitation_Facility_61',
+  ComprehensiveOutpatientRehabilitationFacility_62 = 'Comprehensive_Outpatient_Rehabilitation_Facility_62',
+  CustodialCareFacility_33 = 'Custodial_Care_Facility_33',
+  EmergencyRoomHospital_23 = 'Emergency_Room_Hospital_23',
+  EndStageRenalDiseaseTreatmentFacility_65 = 'End_Stage_Renal_Disease_Treatment_Facility_65',
+  FederallyQualifiedHealthCenter_50 = 'Federally_Qualified_Health_Center_50',
+  GroupHome_14 = 'Group_Home_14',
+  Home_12 = 'Home_12',
+  HomelessShelter_04 = 'Homeless_Shelter_04',
+  Hospice_34 = 'Hospice_34',
+  IndependentClinic_49 = 'Independent_Clinic_49',
+  IndependentLaboratory_81 = 'Independent_Laboratory_81',
+  IndianHealthServiceFreeStandingFacility_05 = 'Indian_Health_Service_Free_standing_Facility_05',
+  IndianHealthServiceProviderBasedFacility_06 = 'Indian_Health_Service_Provider_based_Facility_06',
+  InpatientHospital_21 = 'Inpatient_Hospital_21',
+  InpatientPsychiatricFacility_51 = 'Inpatient_Psychiatric_Facility_51',
+  IntermediateCareFacilityMentallyRetarded_54 = 'Intermediate_Care_Facility_Mentally_Retarded_54',
+  MassImmunizationCenter_60 = 'Mass_Immunization_Center_60',
+  MilitaryTreatmentFacility_26 = 'Military_Treatment_Facility_26',
+  MobileUnit_15 = 'Mobile_Unit_15',
+  NonResidentialOpioidTreatmentFacility_58 = 'Non_residential_Opioid_Treatment_Facility_58',
+  NonResidentialSubstanceAbuseTreatmentFacility_57 = 'Non_residential_Substance_Abuse_Treatment_Facility_57',
+  NursingFacility_32 = 'Nursing_Facility_32',
+  OffCampusOutpatientHospital_19 = 'Off_Campus_Outpatient_Hospital_19',
+  Office_11 = 'Office_11',
+  OtherUnlistedFacility_99 = 'Other_Unlisted_Facility_99',
+  OutpatientHospital_22 = 'Outpatient_Hospital_22',
+  Pharmacy_01 = 'Pharmacy_01',
+  PlaceOfEmployment_18 = 'Place_of_Employment_18',
+  PrisonCorrectionalFacility_09 = 'Prison_Correctional_Facility_09',
+  PrisonCorrectionalFacility_10 = 'Prison_Correctional_Facility_10',
+  PsychiatricFacilityPartialHospitilzation_52 = 'Psychiatric_Facility_Partial_Hospitilzation_52',
+  PsychiatricResidentialTreatmentCenter_56 = 'Psychiatric_Residential_Treatment_Center_56',
+  ResidentialSubstanceAbuseTreatmentFacility_55 = 'Residential_Substance_Abuse_Treatment_Facility_55',
+  RuralHealthClinic_72 = 'Rural_Health_Clinic_72',
+  School_03 = 'School_03',
+  SkilledNursingFacility_31 = 'Skilled_Nursing_Facility_31',
+  StateOrLocalPublicHealthClinic_71 = 'State_or_Local_Public_Health_Clinic_71',
+  Telehealth_02 = 'Telehealth_02',
+  TelehealthProvidedOtherThanInPatientsHome_02 = 'Telehealth_Provided_Other_than_in_Patients_Home_02',
+  TelehealthProvidedInPatientsHome_10 = 'Telehealth_Provided_in_Patients_Home_10',
+  TemporaryLodging_16 = 'Temporary_Lodging_16',
+  Tribal_638FreeStandingFacility_07 = 'Tribal_638_Free_standing_Facility_07',
+  Tribal_638ProviderBasedFacility_08 = 'Tribal_638_Provider_based_Facility_08',
+  UrgentCare_20 = 'Urgent_Care_20',
+  WalkInRetailHealthClinic_17 = 'Walk_in_Retail_Health_Clinic_17'
 }
 
 /** The facility service code type assigned */
 export enum ServiceCodes {
-  Ambulance_24 = 'AMBULANCE_24',
-  Ambulance_41 = 'AMBULANCE_41',
-  Ambulance_42 = 'AMBULANCE_42',
-  AssistedLiving_13 = 'ASSISTED_LIVING_13',
-  BirthingCenter_25 = 'BIRTHING_CENTER_25',
-  CommunityMentalHealthCenter_53 = 'COMMUNITY_MENTAL_HEALTH_CENTER_53',
-  ComprehensiveInpatientRehabilitationFacility_61 = 'COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61',
-  ComprehensiveOutpatientRehabilitationFacility_62 = 'COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62',
-  CustodialCareFacility_33 = 'CUSTODIAL_CARE_FACILITY_33',
-  EmergencyRoom_23 = 'EMERGENCY_ROOM_23',
-  EndStageRenalDiseaseTreatmentFacility_65 = 'END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65',
-  FederallyQualifiedHealthCenter_50 = 'FEDERALLY_QUALIFIED_HEALTH_CENTER_50',
-  GroupHome_14 = 'GROUP_HOME_14',
-  HomelessShelter_04 = 'HOMELESS_SHELTER_04',
-  Hospice_34 = 'HOSPICE_34',
-  IndependentClinic_49 = 'INDEPENDENT_CLINIC_49',
-  IndependentLaboratory_81 = 'INDEPENDENT_LABORATORY_81',
-  IndianHealthServiceFreeStandingFacility_05 = 'INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05',
-  IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06'
+  AmbulanceAirOrWater_42 = 'Ambulance_Air_or_Water_42',
+  AmbulanceLand_41 = 'Ambulance_Land_41',
+  AmbulatorySurgicalCenter_24 = 'Ambulatory_Surgical_Center_24',
+  AssistedLiving_13 = 'Assisted_Living_13',
+  BirthingCenter_25 = 'Birthing_Center_25',
+  CommunityMentalHealthCenter_53 = 'Community_Mental_Health_Center_53',
+  ComprehensiveInpatientRehabilitationFacility_61 = 'Comprehensive_Inpatient_Rehabilitation_Facility_61',
+  ComprehensiveOutpatientRehabilitationFacility_62 = 'Comprehensive_Outpatient_Rehabilitation_Facility_62',
+  CustodialCareFacility_33 = 'Custodial_Care_Facility_33',
+  EmergencyRoomHospital_23 = 'Emergency_Room_Hospital_23',
+  EndStageRenalDiseaseTreatmentFacility_65 = 'End_Stage_Renal_Disease_Treatment_Facility_65',
+  FederallyQualifiedHealthCenter_50 = 'Federally_Qualified_Health_Center_50',
+  GroupHome_14 = 'Group_Home_14',
+  Home_12 = 'Home_12',
+  HomelessShelter_04 = 'Homeless_Shelter_04',
+  Hospice_34 = 'Hospice_34',
+  IndependentClinic_49 = 'Independent_Clinic_49',
+  IndependentLaboratory_81 = 'Independent_Laboratory_81',
+  IndianHealthServiceFreeStandingFacility_05 = 'Indian_Health_Service_Free_standing_Facility_05',
+  IndianHealthServiceProviderBasedFacility_06 = 'Indian_Health_Service_Provider_based_Facility_06',
+  InpatientHospital_21 = 'Inpatient_Hospital_21',
+  InpatientPsychiatricFacility_51 = 'Inpatient_Psychiatric_Facility_51',
+  IntermediateCareFacilityMentallyRetarded_54 = 'Intermediate_Care_Facility_Mentally_Retarded_54',
+  MassImmunizationCenter_60 = 'Mass_Immunization_Center_60',
+  MilitaryTreatmentFacility_26 = 'Military_Treatment_Facility_26',
+  MobileUnit_15 = 'Mobile_Unit_15',
+  NonResidentialOpioidTreatmentFacility_58 = 'Non_residential_Opioid_Treatment_Facility_58',
+  NonResidentialSubstanceAbuseTreatmentFacility_57 = 'Non_residential_Substance_Abuse_Treatment_Facility_57',
+  NursingFacility_32 = 'Nursing_Facility_32',
+  OffCampusOutpatientHospital_19 = 'Off_Campus_Outpatient_Hospital_19',
+  Office_11 = 'Office_11',
+  OtherUnlistedFacility_99 = 'Other_Unlisted_Facility_99',
+  OutpatientHospital_22 = 'Outpatient_Hospital_22',
+  Pharmacy_01 = 'Pharmacy_01',
+  PlaceOfEmployment_18 = 'Place_of_Employment_18',
+  PrisonCorrectionalFacility_09 = 'Prison_Correctional_Facility_09',
+  PrisonCorrectionalFacility_10 = 'Prison_Correctional_Facility_10',
+  PsychiatricFacilityPartialHospitilzation_52 = 'Psychiatric_Facility_Partial_Hospitilzation_52',
+  PsychiatricResidentialTreatmentCenter_56 = 'Psychiatric_Residential_Treatment_Center_56',
+  ResidentialSubstanceAbuseTreatmentFacility_55 = 'Residential_Substance_Abuse_Treatment_Facility_55',
+  RuralHealthClinic_72 = 'Rural_Health_Clinic_72',
+  School_03 = 'School_03',
+  SkilledNursingFacility_31 = 'Skilled_Nursing_Facility_31',
+  StateOrLocalPublicHealthClinic_71 = 'State_or_Local_Public_Health_Clinic_71',
+  Telehealth_02 = 'Telehealth_02',
+  TelehealthProvidedOtherThanInPatientsHome_02 = 'Telehealth_Provided_Other_than_in_Patients_Home_02',
+  TelehealthProvidedInPatientsHome_10 = 'Telehealth_Provided_in_Patients_Home_10',
+  TemporaryLodging_16 = 'Temporary_Lodging_16',
+  Tribal_638FreeStandingFacility_07 = 'Tribal_638_Free_standing_Facility_07',
+  Tribal_638ProviderBasedFacility_08 = 'Tribal_638_Provider_based_Facility_08',
+  UrgentCare_20 = 'Urgent_Care_20',
+  WalkInRetailHealthClinic_17 = 'Walk_in_Retail_Health_Clinic_17'
 }
 
 export type ServiceInput = {
@@ -4404,33 +5393,64 @@ export type SnoMedCodes = {
 
 /** The doctor's speciality */
 export enum Speciality {
-  AllergyOrImmunology = 'ALLERGY_OR_IMMUNOLOGY',
-  Anesthesiology = 'ANESTHESIOLOGY',
-  Cardiology = 'CARDIOLOGY',
-  Dermatology = 'DERMATOLOGY',
-  FamilyPractice = 'FAMILY_PRACTICE',
-  Gastroenterology = 'GASTROENTEROLOGY',
-  GeneralPractice = 'GENERAL_PRACTICE',
-  GeneralSurgery = 'GENERAL_SURGERY',
-  InternalMedicine = 'INTERNAL_MEDICINE',
-  InterventionalPainManagement = 'INTERVENTIONAL_PAIN_MANAGEMENT',
-  Neurology = 'NEUROLOGY',
-  Neurosurgery = 'NEUROSURGERY',
-  ObstetricsOrGynecology = 'OBSTETRICS_OR_GYNECOLOGY',
-  Ophthalmology = 'OPHTHALMOLOGY',
-  OralSurgery = 'ORAL_SURGERY',
-  OrthopedicSurgery = 'ORTHOPEDIC_SURGERY',
-  OsteopathicManipulativeTherapy = 'OSTEOPATHIC_MANIPULATIVE_THERAPY',
-  Otolaryngology = 'OTOLARYNGOLOGY',
-  Pathology = 'PATHOLOGY',
-  PediatricDentist = 'PEDIATRIC_DENTIST',
-  PediatricDermatology = 'PEDIATRIC_DERMATOLOGY',
-  Periodontics = 'PERIODONTICS',
-  Pharmacist = 'PHARMACIST',
-  PhysicalMedicineAndRehabilitation = 'PHYSICAL_MEDICINE_AND_REHABILITATION',
-  PhysicianAssistant = 'PHYSICIAN_ASSISTANT',
-  PlasticAndReconstructiveSurgery = 'PLASTIC_AND_RECONSTRUCTIVE_SURGERY',
-  Psychiatry = 'PSYCHIATRY'
+  AddictionMedicine_79 = 'Addiction_Medicine_79',
+  AllergyImmunology_03 = 'Allergy_Immunology_03',
+  Anesthesiology_05 = 'Anesthesiology_05',
+  CardiacSurgery_78 = 'Cardiac_Surgery_78',
+  Cardiology_06 = 'Cardiology_06',
+  Chiropractic_35 = 'Chiropractic_35',
+  ColorectalSurgeryFormerlyProctology_28 = 'Colorectal_Surgery_formerly_proctology_28',
+  CriticalCareIntensivists_81 = 'Critical_Care_Intensivists_81',
+  Dermatology_07 = 'Dermatology_07',
+  DiagnosticRadiology_30 = 'Diagnostic_Radiology_30',
+  EmergencyMedicine_93 = 'Emergency_Medicine_93',
+  Endocrinology_46 = 'Endocrinology_46',
+  FamilyPractice_08 = 'Family_Practice_08',
+  Gastroenterology_10 = 'Gastroenterology_10',
+  GeneralPractice_01 = 'General_Practice_01',
+  GeneralSurgery_02 = 'General_Surgery_02',
+  GeriatricMedicine_38 = 'Geriatric_Medicine_38',
+  GynecologicalOncology_98 = 'Gynecological_Oncology_98',
+  HandSurgery_40 = 'Hand_Surgery_40',
+  Hematology_82 = 'Hematology_82',
+  HematologyOncology_83 = 'Hematology_Oncology_83',
+  InfectiousDisease_44 = 'Infectious_Disease_44',
+  InternalMedicine_11 = 'Internal_Medicine_11',
+  InterventionalPainManagement_09 = 'Interventional_Pain_Management_09',
+  InterventionalRadiology_94 = 'Interventional_Radiology_94',
+  MultispecialtyClinicOrGroupPractice_70 = 'Multispecialty_Clinic_or_Group_Practice_70',
+  Nephrology_39 = 'Nephrology_39',
+  Neurosurgery_14 = 'Neurosurgery_14',
+  NuclearMedicine_36 = 'Nuclear_Medicine_36',
+  ObstetricsGynecology_16 = 'Obstetrics_Gynecology_16',
+  Ophthalmology_18 = 'Ophthalmology_18',
+  Optometry_41 = 'Optometry_41',
+  OralSurgeryDentistsOnly_19 = 'Oral_Surgery_dentists_only_19',
+  OrthopedicSurgery_20 = 'Orthopedic_Surgery_20',
+  OsteopathicManipulativeTherapy_12 = 'Osteopathic_Manipulative_Therapy_12',
+  Otolaryngology_04 = 'Otolaryngology_04',
+  PainManagement_72 = 'Pain_Management_72',
+  Pathology_22 = 'Pathology_22',
+  PediatricMedicine_37 = 'Pediatric_Medicine_37',
+  PeripheralVascularDisease_76 = 'Peripheral_Vascular_Disease_76',
+  PhysicalMedicineAndRehabilitation_25 = 'Physical_Medicine_and_Rehabilitation_25',
+  PlasticAndReconstructiveSurgery_24 = 'Plastic_and_Reconstructive_Surgery_24',
+  Podiatry_48 = 'Podiatry_48',
+  PreventiveMedicine_84 = 'Preventive_Medicine_84',
+  Psychiatry_26 = 'Psychiatry_26',
+  PulmonaryDisease_29 = 'Pulmonary_Disease_29',
+  RadiationOncology_92 = 'Radiation_Oncology_92',
+  Rheumatology_66 = 'Rheumatology_66',
+  ThoracicSurgery_33 = 'Thoracic_Surgery_33',
+  Unassigned_15 = 'Unassigned_15',
+  Unassigned_17 = 'Unassigned_17',
+  Unassigned_21 = 'Unassigned_21',
+  Unassigned_23 = 'Unassigned_23',
+  Unassigned_27 = 'Unassigned_27',
+  Unassigned_31 = 'Unassigned_31',
+  UnknownPhysicianSpecialty_99 = 'Unknown_Physician_Specialty_99',
+  Urology_34 = 'Urology_34',
+  VascularSurgery_77 = 'Vascular_Surgery_77'
 }
 
 export type SpecimenTypes = {
@@ -4459,6 +5479,7 @@ export type Staff = {
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<PatientVitals>;
   phone?: Maybe<Scalars['String']>;
+  practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
@@ -4478,12 +5499,53 @@ export type StaffPayload = {
   staff?: Maybe<Staff>;
 };
 
+export type SuperBillInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+};
+
+export type SuperBillPayload = {
+  __typename?: 'SuperBillPayload';
+  appointmentInfo?: Maybe<Appointment>;
+  billingInfo?: Maybe<Billing>;
+  insuranceDetail?: Maybe<Policy>;
+  patientInfo?: Maybe<Patient>;
+  policyHolderInfo?: Maybe<PolicyHolder>;
+  providerInfo?: Maybe<Doctor>;
+  response?: Maybe<ResponsePayload>;
+};
+
 /** The transaction payment status type assigned */
 export enum Transactionstatus {
   Due = 'DUE',
   Paid = 'PAID',
   Refund = 'REFUND'
 }
+
+export type Taxonomy = {
+  __typename?: 'Taxonomy';
+  classification: Scalars['String'];
+  code: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  definition: Scalars['String'];
+  displayName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
+  specialization?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type TaxonomyInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type TaxonomyPayload = {
+  __typename?: 'TaxonomyPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  taxonomies?: Maybe<Array<Taxonomy>>;
+};
 
 /** The patient's temperature unit type assigned */
 export enum TempUnitType {
@@ -4673,6 +5735,21 @@ export type UpdateBillingAddressInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type UpdateCptCodeInput = {
+  category?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
+export type UpdateClaimStatusInput = {
+  id?: Maybe<Scalars['String']>;
+  statusId?: Maybe<Scalars['String']>;
+  statusName?: Maybe<Scalars['String']>;
+};
+
 export type UpdateContactInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
@@ -4714,6 +5791,19 @@ export type UpdateCopayInput = {
   type?: Maybe<CopayType>;
 };
 
+export type UpdateCptFeeScheduleInput = {
+  code?: Maybe<Scalars['String']>;
+  cptCodesId?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  feeScheduleId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+};
+
 export type UpdateDoctorInput = {
   updateBillingAddressInput: UpdateBillingAddressInput;
   updateContactInput: UpdateContactInput;
@@ -4750,8 +5840,6 @@ export type UpdateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the string - Sign-up */
-  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -4768,6 +5856,7 @@ export type UpdateDoctorItemInput = {
 export type UpdateEmployerItemInput = {
   address?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   industry?: Maybe<Scalars['String']>;
@@ -4809,6 +5898,22 @@ export type UpdateFacilityItemInput = {
 export type UpdateFacilityTimeZoneInput = {
   id: Scalars['String'];
   timeZone?: Maybe<Scalars['String']>;
+};
+
+export type UpdateFeeScheduleInput = {
+  cptCode?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  effectiveDate?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  longDescription?: Maybe<Scalars['String']>;
+  modifier?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  procedureCode?: Maybe<Scalars['String']>;
+  revenueCode?: Maybe<Scalars['String']>;
+  serviceFee?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
 };
 
 export type UpdateFormInput = {
@@ -4871,6 +5976,12 @@ export type UpdateLoincCodeInput = {
   loincNum?: Maybe<Scalars['String']>;
 };
 
+export type UpdateModifierInput = {
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -4922,7 +6033,6 @@ export type UpdatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
-  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -5021,6 +6131,11 @@ export type UpdatePolicyInput = {
 };
 
 export type UpdatePracticeInput = {
+  updatePracticeItemInput?: Maybe<UpdatePracticeItemInput>;
+  updateUserInput?: Maybe<UpdateUserInput>;
+};
+
+export type UpdatePracticeItemInput = {
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -5028,7 +6143,10 @@ export type UpdatePracticeInput = {
   medicaid?: Maybe<Scalars['String']>;
   medicare?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  npi?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+  taxonomyCodeId?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -5118,6 +6236,7 @@ export type UpdateUserInput = {
   isAdmin?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
 };
 
@@ -5213,8 +6332,45 @@ export type UserIdInput = {
 export type UserInfoInput = {
   autoLogoutTime?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
+};
+
+export type UserLogs = {
+  __typename?: 'UserLogs';
+  activityPayload?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  ipAddress?: Maybe<Scalars['String']>;
+  moduleType?: Maybe<Scalars['String']>;
+  operationName?: Maybe<Scalars['String']>;
+  operationType?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  refererUrl?: Maybe<Scalars['String']>;
+  responseCode?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type UserLogsInput = {
+  endDate?: Maybe<Scalars['String']>;
+  moduleType?: Maybe<Scalars['String']>;
+  paginationOptions?: Maybe<PaginationInput>;
+  patientId?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['String']>;
+};
+
+export type UserLogsPayload = {
+  __typename?: 'UserLogsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response: ResponsePayloadResponse;
+  userLogs?: Maybe<Array<Maybe<UserLogs>>>;
 };
 
 export type UserPayload = {
@@ -5250,8 +6406,10 @@ export type UsersFormsElements = {
 };
 
 export type UsersInput = {
+  facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
   status?: Maybe<UserStatus>;
 };
 
@@ -5294,7 +6452,7 @@ export type FetchAllAgreementsQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null }> } };
+export type FetchAllAgreementsQuery = { __typename?: 'Query', fetchAllAgreements: { __typename?: 'AgreementsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, agreements: Array<{ __typename?: 'Agreement', id: string, title?: string | null, body?: string | null, createdAt?: string | null, signatureRequired?: boolean | null }> } };
 
 export type FetchAgreementQueryVariables = Exact<{
   agreementId: Scalars['String'];
@@ -5329,14 +6487,14 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null } | null } | null> | null } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null, duration: string } | null } | null> | null } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode: ServiceCode } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -5400,6 +6558,13 @@ export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
 
 
 export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+
+export type FindPatientLastAppointmentQueryVariables = Exact<{
+  lastVisitedAppointmentInput: LastVisitedAppointmentInput;
+}>;
+
+
+export type FindPatientLastAppointmentQuery = { __typename?: 'Query', findPatientLastAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -5563,7 +6728,80 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, patientBillingStatus: PatientBillingStatus, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType }> | null } } };
+export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, to?: string | null, from?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null, statusId?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null, claim?: { __typename?: 'Claim', id: string } | null } } };
+
+export type CreateClaimMutationVariables = Exact<{
+  createClaimInput: CreateClaimInput;
+}>;
+
+
+export type CreateClaimMutation = { __typename?: 'Mutation', createClaim: { __typename?: 'ClaimPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string, statusId?: string | null, statusName?: string | null } } };
+
+export type GetClaimFileQueryVariables = Exact<{
+  getClaimFileInput: GetClaimFileInput;
+}>;
+
+
+export type GetClaimFileQuery = { __typename?: 'Query', getClaimFile: { __typename?: 'ClaimFilePayload', claimFile?: Array<number> | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type GenerateClaimNoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateClaimNoQuery = { __typename?: 'Query', generateClaimNo: { __typename?: 'ClaimNumberPayload', claimNumber?: string | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type FetchAllClaimStatusesQueryVariables = Exact<{
+  claimStatusPaginationInput: ClaimStatusPaginationInput;
+}>;
+
+
+export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null }> } };
+
+export type FindClaimStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type FindClaimStatusQuery = { __typename?: 'Query', findClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null } } };
+
+export type GetSuperBillInfoQueryVariables = Exact<{
+  superBillInput: SuperBillInput;
+}>;
+
+
+export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', address?: string | null, phone?: string | null }> | null } | null } };
+
+export type FindAllLiveClaimFeedsQueryVariables = Exact<{
+  liveClaimFeedInput: LiveClaimFeedInput;
+}>;
+
+
+export type FindAllLiveClaimFeedsQuery = { __typename?: 'Query', findAllLiveClaimFeeds: { __typename?: 'LiveClaimFeedPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, liveClaimFeeds?: Array<{ __typename?: 'LiveClaimFeed', id: string, paidDate?: string | null, provAddress1?: string | null, provState?: string | null, provCompanyId?: string | null, provCity?: string | null, payerAddress1?: string | null, provRouting?: string | null, payerRouting?: string | null, payerCity?: string | null, eraId?: string | null, paymentFormat?: string | null, payerName?: string | null, provTaxId?: string | null, fromDos?: string | null, patientFullName?: string | null, InsuranceFullName?: string | null, totalPaid?: string | null, thruDos?: string | null, crossOverCarrier?: string | null, crossOverId?: string | null, pcn?: string | null, provNpi?: string | null, totalCharge?: string | null, charge: string, paidAmount?: string | null, provAccount?: string | null, payerAccount?: string | null, provZip?: string | null, paymentMethod?: string | null, provName?: string | null, payerId?: string | null, checkNumber?: string | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type CreateClaimStatusMutationVariables = Exact<{
+  createClaimStatusInput: ClaimStatusInput;
+}>;
+
+
+export type CreateClaimStatusMutation = { __typename?: 'Mutation', createClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type CreateLiveClaimFeedMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateLiveClaimFeedMutation = { __typename?: 'Mutation', createLiveClaimFeed: Array<{ __typename?: 'LiveClaimFeed', id: string }> };
+
+export type UpdateClaimStatusMutationVariables = Exact<{
+  updateClaimStatusInput: UpdateClaimStatusInput;
+}>;
+
+
+export type UpdateClaimStatusMutation = { __typename?: 'Mutation', updateClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
+
+export type RemoveClaimStatusMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveClaimStatusMutation = { __typename?: 'Mutation', removeClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -5705,13 +6943,6 @@ export type FindAllDoctorListQueryVariables = Exact<{
 
 export type FindAllDoctorListQuery = { __typename?: 'Query', findAllDoctor: { __typename?: 'AllDoctorPayload', doctors?: Array<{ __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null } };
 
-export type FetchAllPatientListQueryVariables = Exact<{
-  patientInput: PatientInput;
-}>;
-
-
-export type FetchAllPatientListQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, patients?: Array<{ __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null } | null> | null } };
-
 export type FindAllPatientListQueryVariables = Exact<{
   patientInput: PatientInput;
 }>;
@@ -5726,12 +6957,75 @@ export type FindAllServiceListQueryVariables = Exact<{
 
 export type FindAllServiceListQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, services?: Array<{ __typename?: 'Service', id: string, name: string, duration: string } | null> | null } };
 
+export type GetCurrentFacilityQueryVariables = Exact<{
+  getFacility: GetFacility;
+}>;
+
+
+export type GetCurrentFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string } | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type FindAllStaffListQueryVariables = Exact<{
+  staffInput: StaffInput;
+}>;
+
+
+export type FindAllStaffListQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null, response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
+
+export type FindAllAppointmentListQueryVariables = Exact<{
+  appointmentInput: AppointmentInput;
+}>;
+
+
+export type FindAllAppointmentListQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null } };
+
+export type FindAllCptCodesQueryVariables = Exact<{
+  findAllCptCodesInput: FindAllCptCodesInput;
+}>;
+
+
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllCptFeeScheduleQueryVariables = Exact<{
+  findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
+}>;
+
+
+export type FindAllCptFeeScheduleQuery = { __typename?: 'Query', findAllCptFeeSchedule: { __typename?: 'AllCPTFeeSchedulesPayload', cptFeeSchedules?: Array<{ __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetCptFeeScheduleQueryVariables = Exact<{
+  getCptFeeScheduleInput: GetCptFeeScheduleInput;
+}>;
+
+
+export type GetCptFeeScheduleQuery = { __typename?: 'Query', getCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, modifier?: string | null, code?: string | null, description?: string | null, shortDescription?: string | null, longDescription?: string | null, serviceFee?: string | null, revenueCode?: string | null, cptCodes?: { __typename?: 'CPTCodes', id: string } | null } | null } };
+
+export type RemoveCptFeeScheduleMutationVariables = Exact<{
+  removeCptFeeScheduleInput: RemoveCptFeeScheduleInput;
+}>;
+
+
+export type RemoveCptFeeScheduleMutation = { __typename?: 'Mutation', removeCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateCptFeeScheduleMutationVariables = Exact<{
+  updateCptFeeScheduleInput: UpdateCptFeeScheduleInput;
+}>;
+
+
+export type UpdateCptFeeScheduleMutation = { __typename?: 'Mutation', updateCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, code?: string | null } | null } };
+
+export type CreateCptFeeScheduleMutationVariables = Exact<{
+  createCptFeeScheduleInput: CreateCptFeeScheduleInput;
+}>;
+
+
+export type CreateCptFeeScheduleMutation = { __typename?: 'Mutation', createCptFeeSchedule: { __typename?: 'CPTFeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, cptFeeSchedule?: { __typename?: 'CptFeeSchedule', id: string, code?: string | null } | null } };
+
 export type FindAllDoctorPatientQueryVariables = Exact<{
   doctorPatientsInput: DoctorPatientsInput;
 }>;
 
 
-export type FindAllDoctorPatientQuery = { __typename?: 'Query', findAllDoctorPatients: { __typename?: 'DoctorPatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, dob?: string | null, profileAttachment?: string | null } | null } | null> | null } };
+export type FindAllDoctorPatientQuery = { __typename?: 'Query', findAllDoctorPatients: { __typename?: 'DoctorPatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, totalCount?: number | null } | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, dob?: string | null, profileAttachment?: string | null } | null } | null> | null } };
 
 export type FindAllDoctorUpcomingAppointmentsQueryVariables = Exact<{
   upComingAppointmentsInput: UpComingAppointmentsInput;
@@ -5739,6 +7033,13 @@ export type FindAllDoctorUpcomingAppointmentsQueryVariables = Exact<{
 
 
 export type FindAllDoctorUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, profileAttachment?: string | null } | null } | null> | null } };
+
+export type GetFacilityPatientsQueryVariables = Exact<{
+  getFacilityPatientsInput: GetFacilityPatientsInput;
+}>;
+
+
+export type GetFacilityPatientsQuery = { __typename?: 'Query', getFacilityPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', totalCount?: number | null } | null, patients?: Array<{ __typename?: 'Patient', id: string, dob?: string | null, lastName?: string | null, firstName?: string | null, profileAttachment?: string | null } | null> | null } };
 
 export type GetPracticeUsersWithRolesQueryVariables = Exact<{
   practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs;
@@ -5804,7 +7105,7 @@ export type GetDoctorQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, prefix?: string | null, suffix?: string | null, email?: string | null, providerIntials?: string | null, degreeCredentials?: string | null, speciality?: Speciality | null, dob?: string | null, taxId?: string | null, facilityId?: string | null, ssn?: string | null, taxonomyCode?: string | null, deaNumber?: string | null, prescriptiveAuthNumber?: string | null, licenseTermDate?: string | null, stateLicense?: string | null, languagesSpoken?: string | null, dpsCtpNumber?: string | null, anesthesiaLicense?: string | null, specialityLicense?: string | null, taxIdStuff?: string | null, blueShildNumber?: string | null, campusGrpNumber?: string | null, medicareGrpNumber?: string | null, billingFacility?: string | null, emcProviderId?: string | null, upin?: string | null, npi?: string | null, practiceId?: string | null, licenseActiveDate?: string | null, meammographyCertNumber?: string | null, medicaidGrpNumber?: string | null, deaActiveDate?: string | null, deaTermDate?: string | null, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, pager?: string | null, fax?: string | null, address?: string | null, address2?: string | null, serviceCode: ServiceCodes, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, createdAt?: string | null, updatedAt?: string | null } | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, prefix?: string | null, suffix?: string | null, email?: string | null, providerIntials?: string | null, degreeCredentials?: string | null, speciality?: Speciality | null, dob?: string | null, taxId?: string | null, facilityId?: string | null, ssn?: string | null, taxonomyCode?: string | null, deaNumber?: string | null, prescriptiveAuthNumber?: string | null, licenseTermDate?: string | null, stateLicense?: string | null, languagesSpoken?: string | null, dpsCtpNumber?: string | null, anesthesiaLicense?: string | null, specialityLicense?: string | null, taxIdStuff?: string | null, blueShildNumber?: string | null, campusGrpNumber?: string | null, medicareGrpNumber?: string | null, billingFacility?: string | null, emcProviderId?: string | null, upin?: string | null, npi?: string | null, practiceId?: string | null, licenseActiveDate?: string | null, meammographyCertNumber?: string | null, medicaidGrpNumber?: string | null, deaActiveDate?: string | null, deaTermDate?: string | null, createdAt: string, updatedAt: string, taxCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, pager?: string | null, fax?: string | null, address?: string | null, address2?: string | null, serviceCode?: ServiceCodes | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, userId?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, createdAt?: string | null, updatedAt?: string | null } | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateDoctorMutationVariables = Exact<{
   updateDoctorInput: UpdateDoctorInput;
@@ -5825,7 +7126,14 @@ export type GetFacilityQueryVariables = Exact<{
 }>;
 
 
-export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, cliaIdNumber?: string | null, federalTaxId?: string | null, isPrivate?: boolean | null, tamxonomyCode?: string | null, timeZone?: string | null, mammographyCertificationNumber?: string | null, npi?: string | null, practiceId?: string | null, serviceCode: ServiceCode, startTime?: string | null, endTime?: string | null, createdAt?: string | null, updatedAt?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, createdAt: string, updatedAt: string }> | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, cliaIdNumber?: string | null, federalTaxId?: string | null, isPrivate?: boolean | null, timeZone?: string | null, mammographyCertificationNumber?: string | null, npi?: string | null, practiceId?: string | null, serviceCode?: ServiceCode | null, startTime?: string | null, endTime?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string } | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, mobile?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, primaryContact?: boolean | null, createdAt: string, updatedAt: string }> | null, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null, mobile?: string | null, phone?: string | null, fax?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, country?: string | null, createdAt: string, updatedAt: string }> | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllTaxonomyQueryVariables = Exact<{
+  taxonomyInput: TaxonomyInput;
+}>;
+
+
+export type FindAllTaxonomyQuery = { __typename?: 'Query', findAllTaxonomy: { __typename?: 'TaxonomyPayload', taxonomies?: Array<{ __typename?: 'Taxonomy', id: string, code: string, specialization?: string | null, classification: string, definition: string, displayName?: string | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type RemoveFacilityMutationVariables = Exact<{
   removeFacility: RemoveFacility;
@@ -5848,6 +7156,41 @@ export type CreateFacilityMutationVariables = Exact<{
 
 export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null } };
 
+export type FindAllFeeSchedulesQueryVariables = Exact<{
+  findAllFeeScheduleInput: FindAllFeeScheduleInput;
+}>;
+
+
+export type FindAllFeeSchedulesQuery = { __typename?: 'Query', findAllFeeSchedules: { __typename?: 'AllFeeSchedulesPayload', feeSchedules?: Array<{ __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, cptFeeScheduleCount?: number | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetFeeScheduleQueryVariables = Exact<{
+  getFeeScheduleInput: GetFeeScheduleInput;
+}>;
+
+
+export type GetFeeScheduleQuery = { __typename?: 'Query', getFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null, expiryDate?: string | null, effectiveDate?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null } };
+
+export type RemoveFeeScheduleMutationVariables = Exact<{
+  removeFeeScheduleInput: RemoveFeeScheduleInput;
+}>;
+
+
+export type RemoveFeeScheduleMutation = { __typename?: 'Mutation', removeFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateFeeScheduleMutationVariables = Exact<{
+  updateFeeScheduleInput: UpdateFeeScheduleInput;
+}>;
+
+
+export type UpdateFeeScheduleMutation = { __typename?: 'Mutation', updateFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null } | null } };
+
+export type CreateFeeScheduleMutationVariables = Exact<{
+  createFeeScheduleInput: CreateFeeScheduleInput;
+}>;
+
+
+export type CreateFeeScheduleMutation = { __typename?: 'Mutation', createFeeSchedule: { __typename?: 'FeeSchedulePayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null } | null } };
+
 export type CreateFormMutationVariables = Exact<{
   createFormInput: CreateFormInput;
 }>;
@@ -5860,7 +7203,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, createdAt?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalCount?: number | null, totalPages?: number | null } | null } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, createdAt?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalCount?: number | null, totalPages?: number | null } | null } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -5874,7 +7217,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -5888,7 +7231,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -5902,7 +7245,7 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 }>;
 
 
-export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string } | null, appointment?: { __typename?: 'Appointment', id: string } | null } };
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null, error?: string | null } | null, userForm?: { __typename?: 'UserForms', id: string, form?: { __typename?: 'Form', type: FormType } | null } | null, appointment?: { __typename?: 'Appointment', id: string, patientId?: string | null } | null } };
 
 export type GetFormPublicMediaUrlMutationVariables = Exact<{
   getPublicMediaInput: GetPublicMediaInput;
@@ -5946,6 +7289,20 @@ export type FetchPatientInsurancesQueryVariables = Exact<{
 
 export type FetchPatientInsurancesQuery = { __typename?: 'Query', fetchPatientInsurances: { __typename?: 'PoliciesPayload', policies: Array<{ __typename?: 'Policy', id: string, policyHolderRelationship?: PolicyHolderRelationshipType | null, coinsurancePercentage?: string | null, expirationDate?: string | null, pricingProductType?: PricingProductType | null, issueDate?: string | null, memberId?: string | null, groupNumber?: string | null, notes?: string | null, orderOfBenefit?: OrderOfBenefitType | null, referringProvider?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, id: string } | null, primaryCareProvider?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, id: string } | null, copays?: Array<{ __typename?: 'Copay', id: string, type?: CopayType | null, amount?: string | null }> | null, policyHolder?: { __typename?: 'PolicyHolder', id: string, address?: string | null, addressCTD?: string | null, city?: string | null, dob?: string | null, employer?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, certificationNumber?: string | null, ssn?: string | null, state?: string | null, suffix?: string | null, zipCode?: string | null, sex?: Policy_Holder_Gender_Identity | null } | null, patient?: { __typename?: 'Patient', id: string } | null, insurance?: { __typename?: 'Insurance', payerName: string, payerId: string, id: string } | null }>, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
 
+export type GetPoliciesEligibilitiesQueryVariables = Exact<{
+  policyEligibilityInput: PolicyEligibilityPaginationInput;
+}>;
+
+
+export type GetPoliciesEligibilitiesQuery = { __typename?: 'Query', getPoliciesEligibilities: { __typename?: 'PolicyEligibilitiesPayload', policyEligibilities: Array<{ __typename?: 'PolicyEligibility', id: string, createdAt?: string | null, payerId?: string | null, payerName?: string | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
+
+export type GetPoliciesEligibilityQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetPoliciesEligibilityQuery = { __typename?: 'Query', getPoliciesEligibility: { __typename?: 'PolicyEligibilityWithPatientPayload', policyEligibility: { __typename?: 'PolicyEligibility', id: string, createdAt?: string | null, eligibilityResultDate?: string | null, eligibilityResultTime?: string | null, eligibilityId?: string | null, groupNumber?: string | null, insAddress1?: string | null, insCity?: string | null, insDob?: string | null, insFirstName?: string | null, insLastName?: string | null, insSex?: string | null, insState?: string | null, insZip?: string | null, planBeginDate?: string | null, planNumber?: string | null, payerId?: string | null, payerName?: string | null, policy?: { __typename?: 'Policy', id: string } | null, policyCoverages?: Array<{ __typename?: 'PolicyCoverage', id: string, benefitCode?: string | null, benefitCoverageCode?: string | null, benefitCoverageDescription?: string | null, benefitDescription?: string | null, benefitNotes?: string | null, dateOfLastUpdated?: string | null, benefitLevelCode?: string | null, benefitLevelCodeDescription?: string | null, benefitPeriodCode?: string | null, benefitPeriodCodeDescription?: string | null, inPlanNetwork?: string | null, benefitAmount?: string | null, insuranceTypeCode?: string | null, insuranceTypeCodeDescription?: string | null, benefitPercent?: string | null }> | null }, patient: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null }, policyHolder: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, sex?: Policy_Holder_Gender_Identity | null, address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }, primaryProvider: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null }> | null }, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
+
 export type CreatePolicyMutationVariables = Exact<{
   createPolicyInput: CreatePolicyInput;
 }>;
@@ -5966,6 +7323,13 @@ export type UpdatePolicyMutationVariables = Exact<{
 
 
 export type UpdatePolicyMutation = { __typename?: 'Mutation', updatePolicy: { __typename?: 'PolicyPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, policy: { __typename?: 'Policy', id: string } } };
+
+export type GetEligibilityAndCoverageMutationVariables = Exact<{
+  policyId: Scalars['String'];
+}>;
+
+
+export type GetEligibilityAndCoverageMutation = { __typename?: 'Mutation', getEligibilityAndCoverage: { __typename?: 'PolicyEligibilityPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, policyEligibility: { __typename?: 'PolicyEligibility', id: string } } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -6051,6 +7415,13 @@ export type UpdateLabTestObservationMutationVariables = Exact<{
 
 export type UpdateLabTestObservationMutation = { __typename?: 'Mutation', updateLabTestObservation: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type FindAllModifiersQueryVariables = Exact<{
+  findAllModifierInput: FindAllModifierInput;
+}>;
+
+
+export type FindAllModifiersQuery = { __typename?: 'Query', findAllModifiers: { __typename?: 'AllModifiersPayload', modifiers?: Array<{ __typename?: 'Modifier', id: string, code?: string | null, description?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
 }>;
@@ -6070,7 +7441,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode: ServiceCodes, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode: ServiceCode, updatedAt?: string | null } | null } | null } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, country?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -6098,7 +7469,7 @@ export type SendInviteToPatientMutationVariables = Exact<{
 }>;
 
 
-export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, inviteAccepted?: boolean | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode: ServiceCodes, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode: ServiceCode, updatedAt?: string | null } | null } | null } };
+export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, inviteAccepted?: boolean | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
 
 export type UpdatePatientNoteInfoMutationVariables = Exact<{
   updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
@@ -6134,6 +7505,13 @@ export type GetPatientProviderQueryVariables = Exact<{
 
 
 export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, provider?: { __typename?: 'DoctorPatient', id: string, doctorId?: string | null, patientId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null, city?: string | null, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null } | null } | null } };
+
+export type CreatePatientConsentMutationVariables = Exact<{
+  createPatientConsentInputs: CreatePatientConsentInputs;
+}>;
+
+
+export type CreatePatientConsentMutation = { __typename?: 'Mutation', createPatientConsent: { __typename?: 'PatientConsentPayload', response?: { __typename?: 'ResponsePayloadResponse', name?: string | null, status?: number | null, message?: string | null } | null, patientConsent?: { __typename?: 'PatientConsent', id: string } | null } };
 
 export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6187,7 +7565,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, createdAt?: string | null, updatedAt?: string | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -6348,7 +7726,7 @@ export type GetServiceQueryVariables = Exact<{
 }>;
 
 
-export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, service?: { __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: boolean | null, color?: string | null, facilityId?: string | null, createdAt?: string | null, updatedAt?: string | null, facility?: { __typename?: 'Facility', id: string, name: string, createdAt?: string | null, updatedAt?: string | null } | null } | null } };
+export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, service?: { __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: boolean | null, color?: string | null, facilityId?: string | null, createdAt?: string | null, updatedAt?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null } | null } };
 
 export type RemoveServiceMutationVariables = Exact<{
   removeService: RemoveService;
@@ -6390,7 +7768,7 @@ export type GetStaffQueryVariables = Exact<{
 }>;
 
 
-export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, staff?: { __typename?: 'Staff', id: string, dob?: string | null, email: string, phone?: string | null, mobile?: string | null, gender: Gender, lastName: string, username?: string | null, firstName: string, facilityId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'User', roles?: Array<{ __typename?: 'Role', id: string, role?: string | null } | null> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null } | null } };
+export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, staff?: { __typename?: 'Staff', id: string, dob?: string | null, email: string, phone?: string | null, mobile?: string | null, gender: Gender, lastName: string, username?: string | null, firstName: string, facilityId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'User', roles?: Array<{ __typename?: 'Role', id: string, role?: string | null } | null> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null } };
 
 export type RemoveStaffMutationVariables = Exact<{
   removeStaff: RemoveStaff;
@@ -6425,6 +7803,20 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, userId: string, userType: string, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
+export type FetchAllUsersQueryVariables = Exact<{
+  userInput: UsersInput;
+}>;
+
+
+export type FetchAllUsersQuery = { __typename?: 'Query', fetchAllUsers: { __typename?: 'UsersPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, users?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null } | null> | null } };
+
+export type FindAllUserLogsQueryVariables = Exact<{
+  userLogsInput: UserLogsInput;
+}>;
+
+
+export type FindAllUserLogsQuery = { __typename?: 'Query', findAllUserLogs: { __typename?: 'UserLogsPayload', response: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null }, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, userLogs?: Array<{ __typename?: 'UserLogs', id: string, createdAt: string, ipAddress?: string | null, refererUrl?: string | null, moduleType?: string | null, responseCode?: string | null, operationType?: string | null, activityPayload?: string | null, user?: { __typename?: 'User', email: string } | null, patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, patientRecord?: string | null } | null } | null> | null } };
+
 
 export const FetchAllAgreementsDocument = gql`
     query FetchAllAgreements($agreementPaginationInput: AgreementPaginationInput!) {
@@ -6443,6 +7835,7 @@ export const FetchAllAgreementsDocument = gql`
       title
       body
       createdAt
+      signatureRequired
     }
   }
 }
@@ -6681,6 +8074,7 @@ export const FindAllAppointmentsDocument = gql`
         name
         price
         color
+        duration
       }
     }
   }
@@ -7227,6 +8621,66 @@ export function useFindAllUpcomingAppointmentsLazyQuery(baseOptions?: Apollo.Laz
 export type FindAllUpcomingAppointmentsQueryHookResult = ReturnType<typeof useFindAllUpcomingAppointmentsQuery>;
 export type FindAllUpcomingAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllUpcomingAppointmentsLazyQuery>;
 export type FindAllUpcomingAppointmentsQueryResult = Apollo.QueryResult<FindAllUpcomingAppointmentsQuery, FindAllUpcomingAppointmentsQueryVariables>;
+export const FindPatientLastAppointmentDocument = gql`
+    query FindPatientLastAppointment($lastVisitedAppointmentInput: LastVisitedAppointmentInput!) {
+  findPatientLastAppointment(
+    lastVisitedAppointmentInput: $lastVisitedAppointmentInput
+  ) {
+    response {
+      status
+    }
+    appointment {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      appointmentType {
+        id
+        name
+        duration
+      }
+      provider {
+        id
+        firstName
+        lastName
+      }
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindPatientLastAppointmentQuery__
+ *
+ * To run a query within a React component, call `useFindPatientLastAppointmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindPatientLastAppointmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindPatientLastAppointmentQuery({
+ *   variables: {
+ *      lastVisitedAppointmentInput: // value for 'lastVisitedAppointmentInput'
+ *   },
+ * });
+ */
+export function useFindPatientLastAppointmentQuery(baseOptions: Apollo.QueryHookOptions<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>(FindPatientLastAppointmentDocument, options);
+      }
+export function useFindPatientLastAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>(FindPatientLastAppointmentDocument, options);
+        }
+export type FindPatientLastAppointmentQueryHookResult = ReturnType<typeof useFindPatientLastAppointmentQuery>;
+export type FindPatientLastAppointmentLazyQueryHookResult = ReturnType<typeof useFindPatientLastAppointmentLazyQuery>;
+export type FindPatientLastAppointmentQueryResult = Apollo.QueryResult<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -8278,7 +9732,6 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
     billing {
       id
       patientPaymentType
-      patientBillingStatus
       onsetDateType
       onsetDate
       otherDateType
@@ -8287,12 +9740,55 @@ export const FetchBillingDetailsByAppointmentIdDocument = gql`
       otherAccident
       otherDate
       amount
+      serviceDate
+      claimDate
+      claimNo
+      uncoveredAmount
+      to
+      from
+      pos
+      facility {
+        id
+        name
+        practice {
+          id
+          name
+        }
+      }
+      claimStatus {
+        id
+        statusName
+        statusId
+      }
+      servicingProvider {
+        id
+        firstName
+        lastName
+      }
+      renderingProvider {
+        id
+        firstName
+        lastName
+      }
+      feeSchedule {
+        id
+        name
+      }
       codes {
         id
         code
         description
         price
         codeType
+        m1
+        m2
+        m3
+        m4
+        unit
+        diagPointer
+      }
+      claim {
+        id
       }
     }
   }
@@ -8326,6 +9822,534 @@ export function useFetchBillingDetailsByAppointmentIdLazyQuery(baseOptions?: Apo
 export type FetchBillingDetailsByAppointmentIdQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdQuery>;
 export type FetchBillingDetailsByAppointmentIdLazyQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdLazyQuery>;
 export type FetchBillingDetailsByAppointmentIdQueryResult = Apollo.QueryResult<FetchBillingDetailsByAppointmentIdQuery, FetchBillingDetailsByAppointmentIdQueryVariables>;
+export const CreateClaimDocument = gql`
+    mutation CreateClaim($createClaimInput: CreateClaimInput!) {
+  createClaim(createClaimInput: $createClaimInput) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+      statusId
+      statusName
+    }
+  }
+}
+    `;
+export type CreateClaimMutationFn = Apollo.MutationFunction<CreateClaimMutation, CreateClaimMutationVariables>;
+
+/**
+ * __useCreateClaimMutation__
+ *
+ * To run a mutation, you first call `useCreateClaimMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClaimMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClaimMutation, { data, loading, error }] = useCreateClaimMutation({
+ *   variables: {
+ *      createClaimInput: // value for 'createClaimInput'
+ *   },
+ * });
+ */
+export function useCreateClaimMutation(baseOptions?: Apollo.MutationHookOptions<CreateClaimMutation, CreateClaimMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateClaimMutation, CreateClaimMutationVariables>(CreateClaimDocument, options);
+      }
+export type CreateClaimMutationHookResult = ReturnType<typeof useCreateClaimMutation>;
+export type CreateClaimMutationResult = Apollo.MutationResult<CreateClaimMutation>;
+export type CreateClaimMutationOptions = Apollo.BaseMutationOptions<CreateClaimMutation, CreateClaimMutationVariables>;
+export const GetClaimFileDocument = gql`
+    query GetClaimFile($getClaimFileInput: GetClaimFileInput!) {
+  getClaimFile(getClaimFileInput: $getClaimFileInput) {
+    response {
+      status
+      message
+    }
+    claimFile
+  }
+}
+    `;
+
+/**
+ * __useGetClaimFileQuery__
+ *
+ * To run a query within a React component, call `useGetClaimFileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetClaimFileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetClaimFileQuery({
+ *   variables: {
+ *      getClaimFileInput: // value for 'getClaimFileInput'
+ *   },
+ * });
+ */
+export function useGetClaimFileQuery(baseOptions: Apollo.QueryHookOptions<GetClaimFileQuery, GetClaimFileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetClaimFileQuery, GetClaimFileQueryVariables>(GetClaimFileDocument, options);
+      }
+export function useGetClaimFileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetClaimFileQuery, GetClaimFileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetClaimFileQuery, GetClaimFileQueryVariables>(GetClaimFileDocument, options);
+        }
+export type GetClaimFileQueryHookResult = ReturnType<typeof useGetClaimFileQuery>;
+export type GetClaimFileLazyQueryHookResult = ReturnType<typeof useGetClaimFileLazyQuery>;
+export type GetClaimFileQueryResult = Apollo.QueryResult<GetClaimFileQuery, GetClaimFileQueryVariables>;
+export const GenerateClaimNoDocument = gql`
+    query GenerateClaimNo {
+  generateClaimNo {
+    response {
+      status
+      message
+    }
+    claimNumber
+  }
+}
+    `;
+
+/**
+ * __useGenerateClaimNoQuery__
+ *
+ * To run a query within a React component, call `useGenerateClaimNoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateClaimNoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateClaimNoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateClaimNoQuery(baseOptions?: Apollo.QueryHookOptions<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>(GenerateClaimNoDocument, options);
+      }
+export function useGenerateClaimNoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>(GenerateClaimNoDocument, options);
+        }
+export type GenerateClaimNoQueryHookResult = ReturnType<typeof useGenerateClaimNoQuery>;
+export type GenerateClaimNoLazyQueryHookResult = ReturnType<typeof useGenerateClaimNoLazyQuery>;
+export type GenerateClaimNoQueryResult = Apollo.QueryResult<GenerateClaimNoQuery, GenerateClaimNoQueryVariables>;
+export const FetchAllClaimStatusesDocument = gql`
+    query FetchAllClaimStatuses($claimStatusPaginationInput: ClaimStatusPaginationInput!) {
+  fetchAllClaimStatuses(claimStatusPaginationInput: $claimStatusPaginationInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      status
+      message
+    }
+    claimStatuses {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllClaimStatusesQuery__
+ *
+ * To run a query within a React component, call `useFetchAllClaimStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllClaimStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllClaimStatusesQuery({
+ *   variables: {
+ *      claimStatusPaginationInput: // value for 'claimStatusPaginationInput'
+ *   },
+ * });
+ */
+export function useFetchAllClaimStatusesQuery(baseOptions: Apollo.QueryHookOptions<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>(FetchAllClaimStatusesDocument, options);
+      }
+export function useFetchAllClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>(FetchAllClaimStatusesDocument, options);
+        }
+export type FetchAllClaimStatusesQueryHookResult = ReturnType<typeof useFetchAllClaimStatusesQuery>;
+export type FetchAllClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchAllClaimStatusesLazyQuery>;
+export type FetchAllClaimStatusesQueryResult = Apollo.QueryResult<FetchAllClaimStatusesQuery, FetchAllClaimStatusesQueryVariables>;
+export const FindClaimStatusDocument = gql`
+    query FindClaimStatus($id: String!) {
+  findClaimStatus(id: $id) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+      createdAt
+      statusName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindClaimStatusQuery__
+ *
+ * To run a query within a React component, call `useFindClaimStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindClaimStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindClaimStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFindClaimStatusQuery(baseOptions: Apollo.QueryHookOptions<FindClaimStatusQuery, FindClaimStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindClaimStatusQuery, FindClaimStatusQueryVariables>(FindClaimStatusDocument, options);
+      }
+export function useFindClaimStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindClaimStatusQuery, FindClaimStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindClaimStatusQuery, FindClaimStatusQueryVariables>(FindClaimStatusDocument, options);
+        }
+export type FindClaimStatusQueryHookResult = ReturnType<typeof useFindClaimStatusQuery>;
+export type FindClaimStatusLazyQueryHookResult = ReturnType<typeof useFindClaimStatusLazyQuery>;
+export type FindClaimStatusQueryResult = Apollo.QueryResult<FindClaimStatusQuery, FindClaimStatusQueryVariables>;
+export const GetSuperBillInfoDocument = gql`
+    query GetSuperBillInfo($superBillInput: SuperBillInput!) {
+  getSuperBillInfo(superBillInput: $superBillInput) {
+    response {
+      status
+      message
+    }
+    appointmentInfo {
+      scheduleStartDateTime
+    }
+    providerInfo {
+      facility {
+        practice {
+          name
+        }
+        serviceCode
+      }
+      contacts {
+        phone
+        address
+        email
+      }
+      firstName
+      lastName
+      npi
+    }
+    insuranceDetail {
+      insurance {
+        payerId
+        payerName
+      }
+      memberId
+      groupNumber
+    }
+    policyHolderInfo {
+      firstName
+      lastName
+    }
+    billingInfo {
+      claimDate
+      codes {
+        code
+        codeType
+        description
+        price
+        diagPointer
+        m1
+        m2
+        m3
+        m4
+        unit
+      }
+    }
+    patientInfo {
+      firstName
+      lastName
+      contacts {
+        address
+        phone
+      }
+      dob
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSuperBillInfoQuery__
+ *
+ * To run a query within a React component, call `useGetSuperBillInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSuperBillInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSuperBillInfoQuery({
+ *   variables: {
+ *      superBillInput: // value for 'superBillInput'
+ *   },
+ * });
+ */
+export function useGetSuperBillInfoQuery(baseOptions: Apollo.QueryHookOptions<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>(GetSuperBillInfoDocument, options);
+      }
+export function useGetSuperBillInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>(GetSuperBillInfoDocument, options);
+        }
+export type GetSuperBillInfoQueryHookResult = ReturnType<typeof useGetSuperBillInfoQuery>;
+export type GetSuperBillInfoLazyQueryHookResult = ReturnType<typeof useGetSuperBillInfoLazyQuery>;
+export type GetSuperBillInfoQueryResult = Apollo.QueryResult<GetSuperBillInfoQuery, GetSuperBillInfoQueryVariables>;
+export const FindAllLiveClaimFeedsDocument = gql`
+    query FindAllLiveClaimFeeds($liveClaimFeedInput: LiveClaimFeedInput!) {
+  findAllLiveClaimFeeds(liveClaimFeedInput: $liveClaimFeedInput) {
+    response {
+      status
+      message
+    }
+    liveClaimFeeds {
+      id
+      paidDate
+      provAddress1
+      provState
+      provCompanyId
+      provCity
+      payerAddress1
+      provRouting
+      payerRouting
+      payerCity
+      eraId
+      paymentFormat
+      payerName
+      provTaxId
+      fromDos
+      patientFullName
+      InsuranceFullName
+      totalPaid
+      thruDos
+      crossOverCarrier
+      crossOverId
+      pcn
+      provNpi
+      totalCharge
+      charge
+      paidAmount
+      provAccount
+      payerAccount
+      provZip
+      paymentMethod
+      provName
+      payerId
+      checkNumber
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllLiveClaimFeedsQuery__
+ *
+ * To run a query within a React component, call `useFindAllLiveClaimFeedsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllLiveClaimFeedsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllLiveClaimFeedsQuery({
+ *   variables: {
+ *      liveClaimFeedInput: // value for 'liveClaimFeedInput'
+ *   },
+ * });
+ */
+export function useFindAllLiveClaimFeedsQuery(baseOptions: Apollo.QueryHookOptions<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>(FindAllLiveClaimFeedsDocument, options);
+      }
+export function useFindAllLiveClaimFeedsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>(FindAllLiveClaimFeedsDocument, options);
+        }
+export type FindAllLiveClaimFeedsQueryHookResult = ReturnType<typeof useFindAllLiveClaimFeedsQuery>;
+export type FindAllLiveClaimFeedsLazyQueryHookResult = ReturnType<typeof useFindAllLiveClaimFeedsLazyQuery>;
+export type FindAllLiveClaimFeedsQueryResult = Apollo.QueryResult<FindAllLiveClaimFeedsQuery, FindAllLiveClaimFeedsQueryVariables>;
+export const CreateClaimStatusDocument = gql`
+    mutation CreateClaimStatus($createClaimStatusInput: ClaimStatusInput!) {
+  createClaimStatus(createClaimStatusInput: $createClaimStatusInput) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type CreateClaimStatusMutationFn = Apollo.MutationFunction<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>;
+
+/**
+ * __useCreateClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useCreateClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createClaimStatusMutation, { data, loading, error }] = useCreateClaimStatusMutation({
+ *   variables: {
+ *      createClaimStatusInput: // value for 'createClaimStatusInput'
+ *   },
+ * });
+ */
+export function useCreateClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>(CreateClaimStatusDocument, options);
+      }
+export type CreateClaimStatusMutationHookResult = ReturnType<typeof useCreateClaimStatusMutation>;
+export type CreateClaimStatusMutationResult = Apollo.MutationResult<CreateClaimStatusMutation>;
+export type CreateClaimStatusMutationOptions = Apollo.BaseMutationOptions<CreateClaimStatusMutation, CreateClaimStatusMutationVariables>;
+export const CreateLiveClaimFeedDocument = gql`
+    mutation createLiveClaimFeed {
+  createLiveClaimFeed {
+    id
+  }
+}
+    `;
+export type CreateLiveClaimFeedMutationFn = Apollo.MutationFunction<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>;
+
+/**
+ * __useCreateLiveClaimFeedMutation__
+ *
+ * To run a mutation, you first call `useCreateLiveClaimFeedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLiveClaimFeedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLiveClaimFeedMutation, { data, loading, error }] = useCreateLiveClaimFeedMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateLiveClaimFeedMutation(baseOptions?: Apollo.MutationHookOptions<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>(CreateLiveClaimFeedDocument, options);
+      }
+export type CreateLiveClaimFeedMutationHookResult = ReturnType<typeof useCreateLiveClaimFeedMutation>;
+export type CreateLiveClaimFeedMutationResult = Apollo.MutationResult<CreateLiveClaimFeedMutation>;
+export type CreateLiveClaimFeedMutationOptions = Apollo.BaseMutationOptions<CreateLiveClaimFeedMutation, CreateLiveClaimFeedMutationVariables>;
+export const UpdateClaimStatusDocument = gql`
+    mutation UpdateClaimStatus($updateClaimStatusInput: UpdateClaimStatusInput!) {
+  updateClaimStatus(updateClaimStatusInput: $updateClaimStatusInput) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type UpdateClaimStatusMutationFn = Apollo.MutationFunction<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>;
+
+/**
+ * __useUpdateClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClaimStatusMutation, { data, loading, error }] = useUpdateClaimStatusMutation({
+ *   variables: {
+ *      updateClaimStatusInput: // value for 'updateClaimStatusInput'
+ *   },
+ * });
+ */
+export function useUpdateClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>(UpdateClaimStatusDocument, options);
+      }
+export type UpdateClaimStatusMutationHookResult = ReturnType<typeof useUpdateClaimStatusMutation>;
+export type UpdateClaimStatusMutationResult = Apollo.MutationResult<UpdateClaimStatusMutation>;
+export type UpdateClaimStatusMutationOptions = Apollo.BaseMutationOptions<UpdateClaimStatusMutation, UpdateClaimStatusMutationVariables>;
+export const RemoveClaimStatusDocument = gql`
+    mutation RemoveClaimStatus($id: String!) {
+  removeClaimStatus(id: $id) {
+    response {
+      status
+      message
+    }
+    claimStatus {
+      id
+    }
+  }
+}
+    `;
+export type RemoveClaimStatusMutationFn = Apollo.MutationFunction<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
+
+/**
+ * __useRemoveClaimStatusMutation__
+ *
+ * To run a mutation, you first call `useRemoveClaimStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveClaimStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeClaimStatusMutation, { data, loading, error }] = useRemoveClaimStatusMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveClaimStatusMutation(baseOptions?: Apollo.MutationHookOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>(RemoveClaimStatusDocument, options);
+      }
+export type RemoveClaimStatusMutationHookResult = ReturnType<typeof useRemoveClaimStatusMutation>;
+export type RemoveClaimStatusMutationResult = Apollo.MutationResult<RemoveClaimStatusMutation>;
+export type RemoveClaimStatusMutationOptions = Apollo.BaseMutationOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
@@ -9257,48 +11281,6 @@ export function useFindAllDoctorListLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindAllDoctorListQueryHookResult = ReturnType<typeof useFindAllDoctorListQuery>;
 export type FindAllDoctorListLazyQueryHookResult = ReturnType<typeof useFindAllDoctorListLazyQuery>;
 export type FindAllDoctorListQueryResult = Apollo.QueryResult<FindAllDoctorListQuery, FindAllDoctorListQueryVariables>;
-export const FetchAllPatientListDocument = gql`
-    query FetchAllPatientList($patientInput: PatientInput!) {
-  fetchAllPatients(patientInput: $patientInput) {
-    pagination {
-      totalPages
-    }
-    patients {
-      id
-      lastName
-      firstName
-    }
-  }
-}
-    `;
-
-/**
- * __useFetchAllPatientListQuery__
- *
- * To run a query within a React component, call `useFetchAllPatientListQuery` and pass it any options that fit your needs.
- * When your component renders, `useFetchAllPatientListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFetchAllPatientListQuery({
- *   variables: {
- *      patientInput: // value for 'patientInput'
- *   },
- * });
- */
-export function useFetchAllPatientListQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
-      }
-export function useFetchAllPatientListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>(FetchAllPatientListDocument, options);
-        }
-export type FetchAllPatientListQueryHookResult = ReturnType<typeof useFetchAllPatientListQuery>;
-export type FetchAllPatientListLazyQueryHookResult = ReturnType<typeof useFetchAllPatientListLazyQuery>;
-export type FetchAllPatientListQueryResult = Apollo.QueryResult<FetchAllPatientListQuery, FetchAllPatientListQueryVariables>;
 export const FindAllPatientListDocument = gql`
     query FindAllPatientList($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
@@ -9383,11 +11365,405 @@ export function useFindAllServiceListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FindAllServiceListQueryHookResult = ReturnType<typeof useFindAllServiceListQuery>;
 export type FindAllServiceListLazyQueryHookResult = ReturnType<typeof useFindAllServiceListLazyQuery>;
 export type FindAllServiceListQueryResult = Apollo.QueryResult<FindAllServiceListQuery, FindAllServiceListQueryVariables>;
+export const GetCurrentFacilityDocument = gql`
+    query GetCurrentFacility($getFacility: GetFacility!) {
+  getFacility(getFacility: $getFacility) {
+    facility {
+      id
+      name
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentFacilityQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentFacilityQuery({
+ *   variables: {
+ *      getFacility: // value for 'getFacility'
+ *   },
+ * });
+ */
+export function useGetCurrentFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>(GetCurrentFacilityDocument, options);
+      }
+export function useGetCurrentFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>(GetCurrentFacilityDocument, options);
+        }
+export type GetCurrentFacilityQueryHookResult = ReturnType<typeof useGetCurrentFacilityQuery>;
+export type GetCurrentFacilityLazyQueryHookResult = ReturnType<typeof useGetCurrentFacilityLazyQuery>;
+export type GetCurrentFacilityQueryResult = Apollo.QueryResult<GetCurrentFacilityQuery, GetCurrentFacilityQueryVariables>;
+export const FindAllStaffListDocument = gql`
+    query FindAllStaffList($staffInput: StaffInput!) {
+  findAllStaff(staffInput: $staffInput) {
+    pagination {
+      totalCount
+    }
+    response {
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllStaffListQuery__
+ *
+ * To run a query within a React component, call `useFindAllStaffListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllStaffListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllStaffListQuery({
+ *   variables: {
+ *      staffInput: // value for 'staffInput'
+ *   },
+ * });
+ */
+export function useFindAllStaffListQuery(baseOptions: Apollo.QueryHookOptions<FindAllStaffListQuery, FindAllStaffListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllStaffListQuery, FindAllStaffListQueryVariables>(FindAllStaffListDocument, options);
+      }
+export function useFindAllStaffListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllStaffListQuery, FindAllStaffListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllStaffListQuery, FindAllStaffListQueryVariables>(FindAllStaffListDocument, options);
+        }
+export type FindAllStaffListQueryHookResult = ReturnType<typeof useFindAllStaffListQuery>;
+export type FindAllStaffListLazyQueryHookResult = ReturnType<typeof useFindAllStaffListLazyQuery>;
+export type FindAllStaffListQueryResult = Apollo.QueryResult<FindAllStaffListQuery, FindAllStaffListQueryVariables>;
+export const FindAllAppointmentListDocument = gql`
+    query FindAllAppointmentList($appointmentInput: AppointmentInput!) {
+  findAllAppointments(appointmentInput: $appointmentInput) {
+    pagination {
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllAppointmentListQuery__
+ *
+ * To run a query within a React component, call `useFindAllAppointmentListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllAppointmentListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllAppointmentListQuery({
+ *   variables: {
+ *      appointmentInput: // value for 'appointmentInput'
+ *   },
+ * });
+ */
+export function useFindAllAppointmentListQuery(baseOptions: Apollo.QueryHookOptions<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>(FindAllAppointmentListDocument, options);
+      }
+export function useFindAllAppointmentListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>(FindAllAppointmentListDocument, options);
+        }
+export type FindAllAppointmentListQueryHookResult = ReturnType<typeof useFindAllAppointmentListQuery>;
+export type FindAllAppointmentListLazyQueryHookResult = ReturnType<typeof useFindAllAppointmentListLazyQuery>;
+export type FindAllAppointmentListQueryResult = Apollo.QueryResult<FindAllAppointmentListQuery, FindAllAppointmentListQueryVariables>;
+export const FindAllCptCodesDocument = gql`
+    query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
+  findAllCptCodes(findAllCptCodesInput: $findAllCptCodesInput) {
+    cptCodes {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCptCodesQuery__
+ *
+ * To run a query within a React component, call `useFindAllCptCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCptCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCptCodesQuery({
+ *   variables: {
+ *      findAllCptCodesInput: // value for 'findAllCptCodesInput'
+ *   },
+ * });
+ */
+export function useFindAllCptCodesQuery(baseOptions: Apollo.QueryHookOptions<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>(FindAllCptCodesDocument, options);
+      }
+export function useFindAllCptCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>(FindAllCptCodesDocument, options);
+        }
+export type FindAllCptCodesQueryHookResult = ReturnType<typeof useFindAllCptCodesQuery>;
+export type FindAllCptCodesLazyQueryHookResult = ReturnType<typeof useFindAllCptCodesLazyQuery>;
+export type FindAllCptCodesQueryResult = Apollo.QueryResult<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>;
+export const FindAllCptFeeScheduleDocument = gql`
+    query FindAllCptFeeSchedule($findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!) {
+  findAllCptFeeSchedule(findAllCptFeeScheduleInput: $findAllCptFeeScheduleInput) {
+    cptFeeSchedules {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCptFeeScheduleQuery__
+ *
+ * To run a query within a React component, call `useFindAllCptFeeScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCptFeeScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCptFeeScheduleQuery({
+ *   variables: {
+ *      findAllCptFeeScheduleInput: // value for 'findAllCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useFindAllCptFeeScheduleQuery(baseOptions: Apollo.QueryHookOptions<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>(FindAllCptFeeScheduleDocument, options);
+      }
+export function useFindAllCptFeeScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>(FindAllCptFeeScheduleDocument, options);
+        }
+export type FindAllCptFeeScheduleQueryHookResult = ReturnType<typeof useFindAllCptFeeScheduleQuery>;
+export type FindAllCptFeeScheduleLazyQueryHookResult = ReturnType<typeof useFindAllCptFeeScheduleLazyQuery>;
+export type FindAllCptFeeScheduleQueryResult = Apollo.QueryResult<FindAllCptFeeScheduleQuery, FindAllCptFeeScheduleQueryVariables>;
+export const GetCptFeeScheduleDocument = gql`
+    query GetCptFeeSchedule($getCptFeeScheduleInput: GetCptFeeScheduleInput!) {
+  getCptFeeSchedule(getCptFeeScheduleInput: $getCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      modifier
+      code
+      description
+      shortDescription
+      longDescription
+      serviceFee
+      revenueCode
+      cptCodes {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCptFeeScheduleQuery__
+ *
+ * To run a query within a React component, call `useGetCptFeeScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCptFeeScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCptFeeScheduleQuery({
+ *   variables: {
+ *      getCptFeeScheduleInput: // value for 'getCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useGetCptFeeScheduleQuery(baseOptions: Apollo.QueryHookOptions<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>(GetCptFeeScheduleDocument, options);
+      }
+export function useGetCptFeeScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>(GetCptFeeScheduleDocument, options);
+        }
+export type GetCptFeeScheduleQueryHookResult = ReturnType<typeof useGetCptFeeScheduleQuery>;
+export type GetCptFeeScheduleLazyQueryHookResult = ReturnType<typeof useGetCptFeeScheduleLazyQuery>;
+export type GetCptFeeScheduleQueryResult = Apollo.QueryResult<GetCptFeeScheduleQuery, GetCptFeeScheduleQueryVariables>;
+export const RemoveCptFeeScheduleDocument = gql`
+    mutation RemoveCptFeeSchedule($removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!) {
+  removeCptFeeSchedule(removeCptFeeScheduleInput: $removeCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveCptFeeScheduleMutationFn = Apollo.MutationFunction<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>;
+
+/**
+ * __useRemoveCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useRemoveCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCptFeeScheduleMutation, { data, loading, error }] = useRemoveCptFeeScheduleMutation({
+ *   variables: {
+ *      removeCptFeeScheduleInput: // value for 'removeCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useRemoveCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>(RemoveCptFeeScheduleDocument, options);
+      }
+export type RemoveCptFeeScheduleMutationHookResult = ReturnType<typeof useRemoveCptFeeScheduleMutation>;
+export type RemoveCptFeeScheduleMutationResult = Apollo.MutationResult<RemoveCptFeeScheduleMutation>;
+export type RemoveCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<RemoveCptFeeScheduleMutation, RemoveCptFeeScheduleMutationVariables>;
+export const UpdateCptFeeScheduleDocument = gql`
+    mutation UpdateCptFeeSchedule($updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!) {
+  updateCptFeeSchedule(updateCptFeeScheduleInput: $updateCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}
+    `;
+export type UpdateCptFeeScheduleMutationFn = Apollo.MutationFunction<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>;
+
+/**
+ * __useUpdateCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCptFeeScheduleMutation, { data, loading, error }] = useUpdateCptFeeScheduleMutation({
+ *   variables: {
+ *      updateCptFeeScheduleInput: // value for 'updateCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>(UpdateCptFeeScheduleDocument, options);
+      }
+export type UpdateCptFeeScheduleMutationHookResult = ReturnType<typeof useUpdateCptFeeScheduleMutation>;
+export type UpdateCptFeeScheduleMutationResult = Apollo.MutationResult<UpdateCptFeeScheduleMutation>;
+export type UpdateCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateCptFeeScheduleMutation, UpdateCptFeeScheduleMutationVariables>;
+export const CreateCptFeeScheduleDocument = gql`
+    mutation CreateCptFeeSchedule($createCptFeeScheduleInput: CreateCptFeeScheduleInput!) {
+  createCptFeeSchedule(createCptFeeScheduleInput: $createCptFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    cptFeeSchedule {
+      id
+      code
+    }
+  }
+}
+    `;
+export type CreateCptFeeScheduleMutationFn = Apollo.MutationFunction<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>;
+
+/**
+ * __useCreateCptFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useCreateCptFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCptFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCptFeeScheduleMutation, { data, loading, error }] = useCreateCptFeeScheduleMutation({
+ *   variables: {
+ *      createCptFeeScheduleInput: // value for 'createCptFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useCreateCptFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>(CreateCptFeeScheduleDocument, options);
+      }
+export type CreateCptFeeScheduleMutationHookResult = ReturnType<typeof useCreateCptFeeScheduleMutation>;
+export type CreateCptFeeScheduleMutationResult = Apollo.MutationResult<CreateCptFeeScheduleMutation>;
+export type CreateCptFeeScheduleMutationOptions = Apollo.BaseMutationOptions<CreateCptFeeScheduleMutation, CreateCptFeeScheduleMutationVariables>;
 export const FindAllDoctorPatientDocument = gql`
     query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {
     pagination {
       totalPages
+      totalCount
     }
     doctorPatients {
       patient {
@@ -9490,6 +11866,50 @@ export function useFindAllDoctorUpcomingAppointmentsLazyQuery(baseOptions?: Apol
 export type FindAllDoctorUpcomingAppointmentsQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsQuery>;
 export type FindAllDoctorUpcomingAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllDoctorUpcomingAppointmentsLazyQuery>;
 export type FindAllDoctorUpcomingAppointmentsQueryResult = Apollo.QueryResult<FindAllDoctorUpcomingAppointmentsQuery, FindAllDoctorUpcomingAppointmentsQueryVariables>;
+export const GetFacilityPatientsDocument = gql`
+    query GetFacilityPatients($getFacilityPatientsInput: GetFacilityPatientsInput!) {
+  getFacilityPatients(getFacilityPatientsInput: $getFacilityPatientsInput) {
+    pagination {
+      totalCount
+    }
+    patients {
+      id
+      dob
+      lastName
+      firstName
+      profileAttachment
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFacilityPatientsQuery__
+ *
+ * To run a query within a React component, call `useGetFacilityPatientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFacilityPatientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFacilityPatientsQuery({
+ *   variables: {
+ *      getFacilityPatientsInput: // value for 'getFacilityPatientsInput'
+ *   },
+ * });
+ */
+export function useGetFacilityPatientsQuery(baseOptions: Apollo.QueryHookOptions<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>(GetFacilityPatientsDocument, options);
+      }
+export function useGetFacilityPatientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>(GetFacilityPatientsDocument, options);
+        }
+export type GetFacilityPatientsQueryHookResult = ReturnType<typeof useGetFacilityPatientsQuery>;
+export type GetFacilityPatientsLazyQueryHookResult = ReturnType<typeof useGetFacilityPatientsLazyQuery>;
+export type GetFacilityPatientsQueryResult = Apollo.QueryResult<GetFacilityPatientsQuery, GetFacilityPatientsQueryVariables>;
 export const GetPracticeUsersWithRolesDocument = gql`
     query GetPracticeUsersWithRoles($practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!) {
   getPracticeFacilitiesUsersWithRoles(
@@ -9928,6 +12348,11 @@ export const GetDoctorDocument = gql`
       deaTermDate
       createdAt
       updatedAt
+      taxCode {
+        id
+        code
+        displayName
+      }
       billingAddress {
         id
         email
@@ -10124,7 +12549,11 @@ export const GetFacilityDocument = gql`
       cliaIdNumber
       federalTaxId
       isPrivate
-      tamxonomyCode
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
       timeZone
       mammographyCertificationNumber
       npi
@@ -10206,6 +12635,57 @@ export function useGetFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetFacilityQueryHookResult = ReturnType<typeof useGetFacilityQuery>;
 export type GetFacilityLazyQueryHookResult = ReturnType<typeof useGetFacilityLazyQuery>;
 export type GetFacilityQueryResult = Apollo.QueryResult<GetFacilityQuery, GetFacilityQueryVariables>;
+export const FindAllTaxonomyDocument = gql`
+    query FindAllTaxonomy($taxonomyInput: TaxonomyInput!) {
+  findAllTaxonomy(taxonomyInput: $taxonomyInput) {
+    taxonomies {
+      id
+      code
+      specialization
+      classification
+      definition
+      displayName
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllTaxonomyQuery__
+ *
+ * To run a query within a React component, call `useFindAllTaxonomyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllTaxonomyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllTaxonomyQuery({
+ *   variables: {
+ *      taxonomyInput: // value for 'taxonomyInput'
+ *   },
+ * });
+ */
+export function useFindAllTaxonomyQuery(baseOptions: Apollo.QueryHookOptions<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>(FindAllTaxonomyDocument, options);
+      }
+export function useFindAllTaxonomyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>(FindAllTaxonomyDocument, options);
+        }
+export type FindAllTaxonomyQueryHookResult = ReturnType<typeof useFindAllTaxonomyQuery>;
+export type FindAllTaxonomyLazyQueryHookResult = ReturnType<typeof useFindAllTaxonomyLazyQuery>;
+export type FindAllTaxonomyQueryResult = Apollo.QueryResult<FindAllTaxonomyQuery, FindAllTaxonomyQueryVariables>;
 export const RemoveFacilityDocument = gql`
     mutation RemoveFacility($removeFacility: RemoveFacility!) {
   removeFacility(removeFacility: $removeFacility) {
@@ -10325,6 +12805,228 @@ export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
 export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
 export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;
+export const FindAllFeeSchedulesDocument = gql`
+    query FindAllFeeSchedules($findAllFeeScheduleInput: FindAllFeeScheduleInput!) {
+  findAllFeeSchedules(findAllFeeScheduleInput: $findAllFeeScheduleInput) {
+    feeSchedules {
+      id
+      name
+      expiryDate
+      effectiveDate
+      cptFeeScheduleCount
+      practice {
+        id
+        name
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllFeeSchedulesQuery__
+ *
+ * To run a query within a React component, call `useFindAllFeeSchedulesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllFeeSchedulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllFeeSchedulesQuery({
+ *   variables: {
+ *      findAllFeeScheduleInput: // value for 'findAllFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useFindAllFeeSchedulesQuery(baseOptions: Apollo.QueryHookOptions<FindAllFeeSchedulesQuery, FindAllFeeSchedulesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllFeeSchedulesQuery, FindAllFeeSchedulesQueryVariables>(FindAllFeeSchedulesDocument, options);
+      }
+export function useFindAllFeeSchedulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllFeeSchedulesQuery, FindAllFeeSchedulesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllFeeSchedulesQuery, FindAllFeeSchedulesQueryVariables>(FindAllFeeSchedulesDocument, options);
+        }
+export type FindAllFeeSchedulesQueryHookResult = ReturnType<typeof useFindAllFeeSchedulesQuery>;
+export type FindAllFeeSchedulesLazyQueryHookResult = ReturnType<typeof useFindAllFeeSchedulesLazyQuery>;
+export type FindAllFeeSchedulesQueryResult = Apollo.QueryResult<FindAllFeeSchedulesQuery, FindAllFeeSchedulesQueryVariables>;
+export const GetFeeScheduleDocument = gql`
+    query GetFeeSchedule($getFeeScheduleInput: GetFeeScheduleInput!) {
+  getFeeSchedule(getFeeScheduleInput: $getFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    feeSchedule {
+      id
+      name
+      expiryDate
+      effectiveDate
+      practice {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFeeScheduleQuery__
+ *
+ * To run a query within a React component, call `useGetFeeScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeeScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFeeScheduleQuery({
+ *   variables: {
+ *      getFeeScheduleInput: // value for 'getFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useGetFeeScheduleQuery(baseOptions: Apollo.QueryHookOptions<GetFeeScheduleQuery, GetFeeScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFeeScheduleQuery, GetFeeScheduleQueryVariables>(GetFeeScheduleDocument, options);
+      }
+export function useGetFeeScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFeeScheduleQuery, GetFeeScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFeeScheduleQuery, GetFeeScheduleQueryVariables>(GetFeeScheduleDocument, options);
+        }
+export type GetFeeScheduleQueryHookResult = ReturnType<typeof useGetFeeScheduleQuery>;
+export type GetFeeScheduleLazyQueryHookResult = ReturnType<typeof useGetFeeScheduleLazyQuery>;
+export type GetFeeScheduleQueryResult = Apollo.QueryResult<GetFeeScheduleQuery, GetFeeScheduleQueryVariables>;
+export const RemoveFeeScheduleDocument = gql`
+    mutation RemoveFeeSchedule($removeFeeScheduleInput: RemoveFeeScheduleInput!) {
+  removeFeeSchedule(removeFeeScheduleInput: $removeFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveFeeScheduleMutationFn = Apollo.MutationFunction<RemoveFeeScheduleMutation, RemoveFeeScheduleMutationVariables>;
+
+/**
+ * __useRemoveFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useRemoveFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFeeScheduleMutation, { data, loading, error }] = useRemoveFeeScheduleMutation({
+ *   variables: {
+ *      removeFeeScheduleInput: // value for 'removeFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useRemoveFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFeeScheduleMutation, RemoveFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFeeScheduleMutation, RemoveFeeScheduleMutationVariables>(RemoveFeeScheduleDocument, options);
+      }
+export type RemoveFeeScheduleMutationHookResult = ReturnType<typeof useRemoveFeeScheduleMutation>;
+export type RemoveFeeScheduleMutationResult = Apollo.MutationResult<RemoveFeeScheduleMutation>;
+export type RemoveFeeScheduleMutationOptions = Apollo.BaseMutationOptions<RemoveFeeScheduleMutation, RemoveFeeScheduleMutationVariables>;
+export const UpdateFeeScheduleDocument = gql`
+    mutation UpdateFeeSchedule($updateFeeScheduleInput: UpdateFeeScheduleInput!) {
+  updateFeeSchedule(updateFeeScheduleInput: $updateFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    feeSchedule {
+      id
+      name
+    }
+  }
+}
+    `;
+export type UpdateFeeScheduleMutationFn = Apollo.MutationFunction<UpdateFeeScheduleMutation, UpdateFeeScheduleMutationVariables>;
+
+/**
+ * __useUpdateFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFeeScheduleMutation, { data, loading, error }] = useUpdateFeeScheduleMutation({
+ *   variables: {
+ *      updateFeeScheduleInput: // value for 'updateFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFeeScheduleMutation, UpdateFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFeeScheduleMutation, UpdateFeeScheduleMutationVariables>(UpdateFeeScheduleDocument, options);
+      }
+export type UpdateFeeScheduleMutationHookResult = ReturnType<typeof useUpdateFeeScheduleMutation>;
+export type UpdateFeeScheduleMutationResult = Apollo.MutationResult<UpdateFeeScheduleMutation>;
+export type UpdateFeeScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateFeeScheduleMutation, UpdateFeeScheduleMutationVariables>;
+export const CreateFeeScheduleDocument = gql`
+    mutation CreateFeeSchedule($createFeeScheduleInput: CreateFeeScheduleInput!) {
+  createFeeSchedule(createFeeScheduleInput: $createFeeScheduleInput) {
+    response {
+      name
+      status
+      message
+    }
+    feeSchedule {
+      id
+      name
+    }
+  }
+}
+    `;
+export type CreateFeeScheduleMutationFn = Apollo.MutationFunction<CreateFeeScheduleMutation, CreateFeeScheduleMutationVariables>;
+
+/**
+ * __useCreateFeeScheduleMutation__
+ *
+ * To run a mutation, you first call `useCreateFeeScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFeeScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFeeScheduleMutation, { data, loading, error }] = useCreateFeeScheduleMutation({
+ *   variables: {
+ *      createFeeScheduleInput: // value for 'createFeeScheduleInput'
+ *   },
+ * });
+ */
+export function useCreateFeeScheduleMutation(baseOptions?: Apollo.MutationHookOptions<CreateFeeScheduleMutation, CreateFeeScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFeeScheduleMutation, CreateFeeScheduleMutationVariables>(CreateFeeScheduleDocument, options);
+      }
+export type CreateFeeScheduleMutationHookResult = ReturnType<typeof useCreateFeeScheduleMutation>;
+export type CreateFeeScheduleMutationResult = Apollo.MutationResult<CreateFeeScheduleMutation>;
+export type CreateFeeScheduleMutationOptions = Apollo.BaseMutationOptions<CreateFeeScheduleMutation, CreateFeeScheduleMutationVariables>;
 export const CreateFormDocument = gql`
     mutation createForm($createFormInput: CreateFormInput!) {
   createForm(createFormInput: $createFormInput) {
@@ -10403,6 +13105,7 @@ export const FindAllFormsDocument = gql`
               isMultiSelect
               apiCall
               tableContactType
+              regex
               options {
                 name
                 value
@@ -10524,6 +13227,7 @@ export const GetFormDocument = gql`
               isMultiSelect
               tableContactType
               apiCall
+              regex
               options {
                 name
                 value
@@ -10642,6 +13346,7 @@ export const GetPublicFormDocument = gql`
               isMultiSelect
               apiCall
               tableContactType
+              regex
               options {
                 name
                 value
@@ -10767,9 +13472,13 @@ export const SaveUserFormValuesDocument = gql`
     }
     userForm {
       id
+      form {
+        type
+      }
     }
     appointment {
       id
+      patientId
     }
   }
 }
@@ -11170,6 +13879,166 @@ export function useFetchPatientInsurancesLazyQuery(baseOptions?: Apollo.LazyQuer
 export type FetchPatientInsurancesQueryHookResult = ReturnType<typeof useFetchPatientInsurancesQuery>;
 export type FetchPatientInsurancesLazyQueryHookResult = ReturnType<typeof useFetchPatientInsurancesLazyQuery>;
 export type FetchPatientInsurancesQueryResult = Apollo.QueryResult<FetchPatientInsurancesQuery, FetchPatientInsurancesQueryVariables>;
+export const GetPoliciesEligibilitiesDocument = gql`
+    query GetPoliciesEligibilities($policyEligibilityInput: PolicyEligibilityPaginationInput!) {
+  getPoliciesEligibilities(policyEligibilityInput: $policyEligibilityInput) {
+    policyEligibilities {
+      id
+      createdAt
+      payerId
+      payerName
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoliciesEligibilitiesQuery__
+ *
+ * To run a query within a React component, call `useGetPoliciesEligibilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoliciesEligibilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoliciesEligibilitiesQuery({
+ *   variables: {
+ *      policyEligibilityInput: // value for 'policyEligibilityInput'
+ *   },
+ * });
+ */
+export function useGetPoliciesEligibilitiesQuery(baseOptions: Apollo.QueryHookOptions<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>(GetPoliciesEligibilitiesDocument, options);
+      }
+export function useGetPoliciesEligibilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>(GetPoliciesEligibilitiesDocument, options);
+        }
+export type GetPoliciesEligibilitiesQueryHookResult = ReturnType<typeof useGetPoliciesEligibilitiesQuery>;
+export type GetPoliciesEligibilitiesLazyQueryHookResult = ReturnType<typeof useGetPoliciesEligibilitiesLazyQuery>;
+export type GetPoliciesEligibilitiesQueryResult = Apollo.QueryResult<GetPoliciesEligibilitiesQuery, GetPoliciesEligibilitiesQueryVariables>;
+export const GetPoliciesEligibilityDocument = gql`
+    query GetPoliciesEligibility($id: String!) {
+  getPoliciesEligibility(id: $id) {
+    policyEligibility {
+      id
+      createdAt
+      eligibilityResultDate
+      eligibilityResultTime
+      eligibilityId
+      groupNumber
+      insAddress1
+      insCity
+      insDob
+      insFirstName
+      insLastName
+      insSex
+      insState
+      insZip
+      planBeginDate
+      planNumber
+      payerId
+      payerName
+      policy {
+        id
+      }
+      policyCoverages {
+        id
+        benefitCode
+        benefitCoverageCode
+        benefitCoverageDescription
+        benefitDescription
+        benefitNotes
+        dateOfLastUpdated
+        benefitLevelCode
+        benefitLevelCodeDescription
+        benefitPeriodCode
+        benefitPeriodCodeDescription
+        inPlanNetwork
+        benefitAmount
+        insuranceTypeCode
+        insuranceTypeCodeDescription
+        benefitPercent
+      }
+    }
+    patient {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      gender
+      contacts {
+        address
+        city
+        state
+        zipCode
+      }
+    }
+    policyHolder {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      sex
+      address
+      city
+      state
+      zipCode
+    }
+    primaryProvider {
+      firstName
+      lastName
+      contacts {
+        phone
+      }
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoliciesEligibilityQuery__
+ *
+ * To run a query within a React component, call `useGetPoliciesEligibilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoliciesEligibilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoliciesEligibilityQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPoliciesEligibilityQuery(baseOptions: Apollo.QueryHookOptions<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>(GetPoliciesEligibilityDocument, options);
+      }
+export function useGetPoliciesEligibilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>(GetPoliciesEligibilityDocument, options);
+        }
+export type GetPoliciesEligibilityQueryHookResult = ReturnType<typeof useGetPoliciesEligibilityQuery>;
+export type GetPoliciesEligibilityLazyQueryHookResult = ReturnType<typeof useGetPoliciesEligibilityLazyQuery>;
+export type GetPoliciesEligibilityQueryResult = Apollo.QueryResult<GetPoliciesEligibilityQuery, GetPoliciesEligibilityQueryVariables>;
 export const CreatePolicyDocument = gql`
     mutation CreatePolicy($createPolicyInput: CreatePolicyInput!) {
   createPolicy(createPolicyInput: $createPolicyInput) {
@@ -11281,6 +14150,45 @@ export function useUpdatePolicyMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdatePolicyMutationHookResult = ReturnType<typeof useUpdatePolicyMutation>;
 export type UpdatePolicyMutationResult = Apollo.MutationResult<UpdatePolicyMutation>;
 export type UpdatePolicyMutationOptions = Apollo.BaseMutationOptions<UpdatePolicyMutation, UpdatePolicyMutationVariables>;
+export const GetEligibilityAndCoverageDocument = gql`
+    mutation GetEligibilityAndCoverage($policyId: String!) {
+  getEligibilityAndCoverage(policyId: $policyId) {
+    response {
+      status
+      message
+    }
+    policyEligibility {
+      id
+    }
+  }
+}
+    `;
+export type GetEligibilityAndCoverageMutationFn = Apollo.MutationFunction<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>;
+
+/**
+ * __useGetEligibilityAndCoverageMutation__
+ *
+ * To run a mutation, you first call `useGetEligibilityAndCoverageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetEligibilityAndCoverageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getEligibilityAndCoverageMutation, { data, loading, error }] = useGetEligibilityAndCoverageMutation({
+ *   variables: {
+ *      policyId: // value for 'policyId'
+ *   },
+ * });
+ */
+export function useGetEligibilityAndCoverageMutation(baseOptions?: Apollo.MutationHookOptions<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>(GetEligibilityAndCoverageDocument, options);
+      }
+export type GetEligibilityAndCoverageMutationHookResult = ReturnType<typeof useGetEligibilityAndCoverageMutation>;
+export type GetEligibilityAndCoverageMutationResult = Apollo.MutationResult<GetEligibilityAndCoverageMutation>;
+export type GetEligibilityAndCoverageMutationOptions = Apollo.BaseMutationOptions<GetEligibilityAndCoverageMutation, GetEligibilityAndCoverageMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {
@@ -11883,6 +14791,54 @@ export function useUpdateLabTestObservationMutation(baseOptions?: Apollo.Mutatio
 export type UpdateLabTestObservationMutationHookResult = ReturnType<typeof useUpdateLabTestObservationMutation>;
 export type UpdateLabTestObservationMutationResult = Apollo.MutationResult<UpdateLabTestObservationMutation>;
 export type UpdateLabTestObservationMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>;
+export const FindAllModifiersDocument = gql`
+    query FindAllModifiers($findAllModifierInput: FindAllModifierInput!) {
+  findAllModifiers(findAllModifierInput: $findAllModifierInput) {
+    modifiers {
+      id
+      code
+      description
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllModifiersQuery__
+ *
+ * To run a query within a React component, call `useFindAllModifiersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllModifiersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllModifiersQuery({
+ *   variables: {
+ *      findAllModifierInput: // value for 'findAllModifierInput'
+ *   },
+ * });
+ */
+export function useFindAllModifiersQuery(baseOptions: Apollo.QueryHookOptions<FindAllModifiersQuery, FindAllModifiersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllModifiersQuery, FindAllModifiersQueryVariables>(FindAllModifiersDocument, options);
+      }
+export function useFindAllModifiersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllModifiersQuery, FindAllModifiersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllModifiersQuery, FindAllModifiersQueryVariables>(FindAllModifiersDocument, options);
+        }
+export type FindAllModifiersQueryHookResult = ReturnType<typeof useFindAllModifiersQuery>;
+export type FindAllModifiersLazyQueryHookResult = ReturnType<typeof useFindAllModifiersLazyQuery>;
+export type FindAllModifiersQueryResult = Apollo.QueryResult<FindAllModifiersQuery, FindAllModifiersQueryVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
@@ -12118,6 +15074,7 @@ export const GetPatientDocument = gql`
         usualOccupation
         city
         state
+        country
         zipCode
         address
         createdAt
@@ -12672,6 +15629,46 @@ export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
 export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
 export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
+export const CreatePatientConsentDocument = gql`
+    mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
+  createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {
+    response {
+      name
+      status
+      message
+    }
+    patientConsent {
+      id
+    }
+  }
+}
+    `;
+export type CreatePatientConsentMutationFn = Apollo.MutationFunction<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>;
+
+/**
+ * __useCreatePatientConsentMutation__
+ *
+ * To run a mutation, you first call `useCreatePatientConsentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePatientConsentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPatientConsentMutation, { data, loading, error }] = useCreatePatientConsentMutation({
+ *   variables: {
+ *      createPatientConsentInputs: // value for 'createPatientConsentInputs'
+ *   },
+ * });
+ */
+export function useCreatePatientConsentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>(CreatePatientConsentDocument, options);
+      }
+export type CreatePatientConsentMutationHookResult = ReturnType<typeof useCreatePatientConsentMutation>;
+export type CreatePatientConsentMutationResult = Apollo.MutationResult<CreatePatientConsentMutation>;
+export type CreatePatientConsentMutationOptions = Apollo.BaseMutationOptions<CreatePatientConsentMutation, CreatePatientConsentMutationVariables>;
 export const GetTokenDocument = gql`
     query GetToken {
   getToken {
@@ -12980,8 +15977,15 @@ export const GetPracticeDocument = gql`
       medicare
       medicaid
       champus
+      taxId
+      npi
       createdAt
       updatedAt
+      taxonomyCode {
+        id
+        code
+        displayName
+      }
       attachments {
         id
         key
@@ -12992,6 +15996,13 @@ export const GetPracticeDocument = gql`
         createdAt
         updatedAt
       }
+    }
+    practiceAdmin {
+      firstName
+      lastName
+      id
+      phone
+      email
     }
   }
 }
@@ -14048,8 +17059,6 @@ export const GetServiceDocument = gql`
       facility {
         id
         name
-        createdAt
-        updatedAt
       }
     }
   }
@@ -14323,6 +17332,10 @@ export const GetStaffDocument = gql`
         id
         name
       }
+      practice {
+        id
+        name
+      }
     }
   }
 }
@@ -14576,3 +17589,113 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const FetchAllUsersDocument = gql`
+    query fetchAllUsers($userInput: UsersInput!) {
+  fetchAllUsers(userInput: $userInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    users {
+      id
+      email
+      facilityId
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllUsersQuery__
+ *
+ * To run a query within a React component, call `useFetchAllUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllUsersQuery({
+ *   variables: {
+ *      userInput: // value for 'userInput'
+ *   },
+ * });
+ */
+export function useFetchAllUsersQuery(baseOptions: Apollo.QueryHookOptions<FetchAllUsersQuery, FetchAllUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllUsersQuery, FetchAllUsersQueryVariables>(FetchAllUsersDocument, options);
+      }
+export function useFetchAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllUsersQuery, FetchAllUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllUsersQuery, FetchAllUsersQueryVariables>(FetchAllUsersDocument, options);
+        }
+export type FetchAllUsersQueryHookResult = ReturnType<typeof useFetchAllUsersQuery>;
+export type FetchAllUsersLazyQueryHookResult = ReturnType<typeof useFetchAllUsersLazyQuery>;
+export type FetchAllUsersQueryResult = Apollo.QueryResult<FetchAllUsersQuery, FetchAllUsersQueryVariables>;
+export const FindAllUserLogsDocument = gql`
+    query findAllUserLogs($userLogsInput: UserLogsInput!) {
+  findAllUserLogs(userLogsInput: $userLogsInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    userLogs {
+      id
+      createdAt
+      ipAddress
+      refererUrl
+      moduleType
+      responseCode
+      operationType
+      activityPayload
+      user {
+        email
+      }
+      patient {
+        id
+        lastName
+        firstName
+        patientRecord
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllUserLogsQuery__
+ *
+ * To run a query within a React component, call `useFindAllUserLogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllUserLogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllUserLogsQuery({
+ *   variables: {
+ *      userLogsInput: // value for 'userLogsInput'
+ *   },
+ * });
+ */
+export function useFindAllUserLogsQuery(baseOptions: Apollo.QueryHookOptions<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>(FindAllUserLogsDocument, options);
+      }
+export function useFindAllUserLogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>(FindAllUserLogsDocument, options);
+        }
+export type FindAllUserLogsQueryHookResult = ReturnType<typeof useFindAllUserLogsQuery>;
+export type FindAllUserLogsLazyQueryHookResult = ReturnType<typeof useFindAllUserLogsLazyQuery>;
+export type FindAllUserLogsQueryResult = Apollo.QueryResult<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>;

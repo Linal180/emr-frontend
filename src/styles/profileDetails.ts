@@ -3,6 +3,17 @@ import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, GREY_THREE, theme, WHIT
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
+    main: {
+      padding: theme.spacing(3),
+      borderRadius: theme.spacing(1),
+      margin: theme.spacing(0.5),
+      backgroundColor: WHITE,
+      minHeight: 100,
+      position: "sticky",
+      top: 100,
+      zIndex: 1,
+    },
+
     changePasswordContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -18,6 +29,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
+      [theme.breakpoints.down('xs')]: {
+        "& .MuiBox-root-1825" :{
+          flexDirection : 'column'
+        }
+      }
     },
 
     profileCard: {
@@ -25,7 +41,6 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 20,
       background: WHITE,
       borderRadius: 12,
-      display: 'flex',
     },
 
     patientProfileCard: {
@@ -174,5 +189,9 @@ export const useProfileDetailsStyles = makeStyles(() =>
         minWidth: 14
       }
     },
+
+    tab: {
+      flexDirection: "row-reverse"
+    }
   })
 );

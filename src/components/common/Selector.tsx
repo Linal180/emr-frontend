@@ -1,11 +1,11 @@
 // packages block
-import { FC, useRef } from "react";
+import { FC } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 // utils and interfaces/types block
-import { renderLoading, requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
+import { renderLoading, requiredLabel } from "../../utils";
 import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@material-ui/core";
 
 const Selector: FC<SelectorProps> = ({
@@ -13,8 +13,6 @@ const Selector: FC<SelectorProps> = ({
   loading, onOutsideClick, focus
 }): JSX.Element => {
   const { control } = useFormContext()
-  const eleRef = useRef<any>();
-
   const inputLabel = isRequired ? requiredLabel(label) : label
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options || []] : [...options || []]
 
@@ -29,7 +27,6 @@ const Selector: FC<SelectorProps> = ({
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
-                ref={eleRef}
                 options={!!updatedOptions?.length ? updatedOptions : []}
                 disableClearable
                 value={field.value}

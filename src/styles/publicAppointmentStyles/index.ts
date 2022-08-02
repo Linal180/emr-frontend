@@ -9,8 +9,8 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       margin: theme.spacing(0.5),
       backgroundColor: WHITE,
       minHeight: 100,
-      position: "sticky",
-      top: 100,
+      // position: "sticky",
+      // top: 100,
       zIndex: 1,
     },
 
@@ -30,7 +30,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
 
       '& li': {
         width: 'calc(50% - 12px)',
-        margin: "0 12px 12px 0",
+        margin: "0 12px 15px 0",
       },
 
       "& input": {
@@ -180,5 +180,13 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         height: 16,
       }
     },
+
+    billingCard: {
+      [theme.breakpoints.up("md")]: {
+        borderRight: `1px solid ${GRAY_SIX}`,
+        minHeight: 354,
+        paddingRight: theme.spacing(3),
+      },
+    }
   })
 );

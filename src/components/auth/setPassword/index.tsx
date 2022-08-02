@@ -2,12 +2,12 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { Box, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import AuthLayout from "../AuthLayout";
-import ResetPasswordController from "../resetPassword/ResetPasswordController";
+import InputController from "../../../controller";
 // context, constants, graphql, interfaces, utils and styles block
 import history from "../../../history";
 import { getToken } from "../../../utils";
@@ -17,20 +17,27 @@ import { resetPasswordValidationSchema } from "../../../validationSchemas";
 import {
   BACK_TO, LOGIN_ROUTE, SIGN_IN, RESET_PASSWORD_TOKEN_NOT_FOUND, SET_PASSWORD_SUCCESS,
   PASSWORD_LABEL, CONFIRM_PASSWORD, ROOT_ROUTE, LOGGED_OUT_BEFORE_RESETTING_PASSWORD, SET,
+  PASSWORDS_MUST_MATCH, NOT_FOUND_EXCEPTION, RESET_TOKEN_EXPIRED,
 } from "../../../constants";
 
 const SetPasswordComponent = (): JSX.Element => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
 
-  const { handleSubmit, reset, control, formState: { errors } } = useForm<ResetPasswordInputs>({
+  const methods = useForm<ResetPasswordInputs>({
     mode: 'all',
     resolver: yupResolver(resetPasswordValidationSchema)
   });
+  const { handleSubmit, reset, setError, clearErrors, watch } = methods
+  const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
-    onError() {
-      return null;
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      reset();
+      Alert.error(message === NOT_FOUND_EXCEPTION ? RESET_TOKEN_EXPIRED : message)
     },
 
     onCompleted() {
@@ -42,9 +49,8 @@ const SetPasswordComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<ResetPasswordInputs> = async (data) => {
     const { password } = data;
-    if (token) {
-      await resetPassword({ variables: { resetPassword: { password, token } } });
-    }
+
+    token && await resetPassword({ variables: { resetPassword: { password, token } } });
   };
 
   useEffect(() => {
@@ -59,39 +65,41 @@ const SetPasswordComponent = (): JSX.Element => {
     }
   }, [token])
 
-  const { password: { message: passwordError } = {}, repeatPassword: { message: repeatPasswordError } = {} } = errors;
+  useEffect(() => {
+    password === repeatPassword || !!!repeatPassword ?
+      clearErrors("repeatPassword")
+      : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
+  }, [clearErrors, password, repeatPassword, setError, watch])
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <ResetPasswordController
-          control={control}
-          isRequired
-          controllerName="password"
-          controllerLabel={PASSWORD_LABEL}
-          fieldType="password"
-          isPassword
-          error={passwordError}
-        />
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputController
+            isRequired
+            isPassword
+            fieldType="password"
+            controllerName="password"
+            controllerLabel={PASSWORD_LABEL}
+          />
 
-        <ResetPasswordController
-          isRequired
-          control={control}
-          controllerName="repeatPassword"
-          controllerLabel={CONFIRM_PASSWORD}
-          fieldType="password"
-          isPassword
-          error={repeatPasswordError}
-        />
+          <InputController
+            isRequired
+            isPassword
+            fieldType="password"
+            controllerName="repeatPassword"
+            controllerLabel={CONFIRM_PASSWORD}
+          />
 
-        <Box py={2}>
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-            {SET}
+          <Box py={2}>
+            <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+              {SET}
 
-            {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
-      </form>
+              {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </form>
+      </FormProvider>
 
       <Box justifyContent="center" alignItems="center" display="flex">
         <Typography variant="body2">

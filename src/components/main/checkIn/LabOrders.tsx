@@ -3,10 +3,11 @@ import { FC } from "react";
 import { Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 //components import
-import LabOrdersTable from "../../common/patient/labOrders";
+// import LabOrdersTable from "../../common/patient/labOrders";
 //constants, types, interfaces, utils import
 import { TO_BILLING } from "../../../constants";
 import { LabOrderCreateProps } from "../../../interfacesTypes";
+import LabOrdersCreateForm from "../labOrders/addOrder/LabOrdersCreateForm";
 
 const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => {
   return (
@@ -20,9 +21,8 @@ const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => 
         </Button>
       </Box>
 
-      <Box p={2}>
-        {/* <LabOrdersCreateForm appointmentInfo={appointmentInfo} /> */}
-        <LabOrdersTable />
+      <Box>
+        <LabOrdersCreateForm appointmentInfo={appointmentInfo} />
       </Box>
     </Card>
   )

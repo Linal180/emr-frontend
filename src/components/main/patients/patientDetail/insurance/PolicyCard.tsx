@@ -1,40 +1,46 @@
-//packages import
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+// packages block
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
 import { useParams } from "react-router";
 import { Check } from '@material-ui/icons';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from "@material-ui/core";
-//components import
+import {
+  Box, Button, Grid, Step, StepIconProps, StepLabel, Stepper, Typography
+} from "@material-ui/core";
+// components block
 import PolicyDetails from "./PolicyDetails";
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
 import PolicyAttachments from "./PolicyAttachments";
-import TextLoader from "../../../../common/TextLoader";
 import PolicyHolderDetails from "./PolicyHolderDetails";
 import ItemSelector from "../../../../common/ItemSelector";
-//constants, types, utils import
-import { ChevronRightIcon } from "../../../../../assets/svgs";
+// constants, types, utils block
 import { GREY_SIXTEEN } from "../../../../../theme";
+import { ChevronRightIcon } from "../../../../../assets/svgs";
 import { formatValue, setRecord } from "../../../../../utils";
 import { createInsuranceSchema } from "../../../../../validationSchemas";
-import { CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles } from '../../../../../styles/checkInStyles';
 import {
-  FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps, SelectorOption
+  Action, ActionType, insuranceReducer, initialState, State
+} from "../../../../../reducers/insuranceReducer";
+import {
+  CheckInConnector, useCheckInStepIconStyles, useInsurancesStyles
+} from '../../../../../styles/checkInStyles';
+import {
+  FormForwardRef, InsuranceCreateInput, ParamsType, PolicyCardProps
 } from "../../../../../interfacesTypes";
 import {
-  ADD_INSURANCE, ADD_INSURANCE_STEPS, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FORBIDDEN_EXCEPTION,
-  INITIAL_COPAY_VALUE, INSURANCE_PAYER_NAME, ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
+  ADD_INSURANCE, ADD_INSURANCE_STEPS, CONFLICT_EXCEPTION, EDIT_INSURANCE, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  EMPTY_OPTION, FORBIDDEN_EXCEPTION, INITIAL_COPAY_VALUE, INSURANCE_CARD_ERROR_MESSAGE, INSURANCE_PAYER_NAME,
+  ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
   CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
   useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation
 } from "../../../../../generated/graphql";
 
-const CheckInStepIcon = (props: StepIconProps) => {
+const CheckInStepIcon: FC<StepIconProps> = ({ active, completed }) => {
   const classes = useCheckInStepIconStyles();
-  const { active, completed } = props;
 
   return (
     <div
@@ -52,31 +58,23 @@ const PolicyCard: FC<PolicyCardProps> = ({
 }) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
-  const [policyId, setPolicyId] = useState<string>('')
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
 
-  const [policyHolderId, setPolicyHolderId] = useState<string>('')
-  const [insuranceId, setInsuranceId] = useState<SelectorOption>(EMPTY_OPTION)
+  const { policyId, activeStep, isFormLoaded, policyHolderId, insuranceId, numberOfFiles } = state
   const policyAttachmentRef = useRef<FormForwardRef | null>(null);
-
-  const [activeStep, setActiveStep] = useState(0);
-  const [isFormLoaded, setIsFormLoaded] = useState<boolean>(true)
   const isLastStep = activeStep === ADD_INSURANCE_STEPS.length - 1;
 
   const methods = useForm<InsuranceCreateInput>({
     mode: "all",
-    defaultValues: {
-      copayFields: [INITIAL_COPAY_VALUE]
-    },
+    defaultValues: { copayFields: [INITIAL_COPAY_VALUE] },
     resolver: yupResolver(createInsuranceSchema)
   });
-  const { handleSubmit, setValue, trigger, formState } = methods;
+  const { handleSubmit, setValue, trigger } = methods;
 
   const [createPolicy, { loading: createPolicyLoading }] = useCreatePolicyMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      Alert.error(message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION ?
+        EMAIL_OR_USERNAME_ALREADY_EXISTS : message)
     },
 
     onCompleted(data) {
@@ -86,7 +84,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
         const { status } = response
 
         if (status && status === 200) {
-          setPolicyId(policy.id ?? '')
+          dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           policyAttachmentRef.current?.submit()
           handleReload && handleReload()
         }
@@ -96,10 +94,9 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
   const [updatePolicy, { loading: updatePolicyLoading }] = useUpdatePolicyMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else Alert.error(message)
     },
 
     onCompleted(data) {
@@ -110,7 +107,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         if (status && status === 200) {
           policyAttachmentRef.current?.submit()
-          setPolicyId(policy.id ?? '')
+          dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           handleReload && handleReload()
         }
       }
@@ -144,20 +141,20 @@ const PolicyCard: FC<PolicyCardProps> = ({
           }
         })
 
+        notes && setValue('notes', notes)
+        issueDate && setValue('issueDate', issueDate)
+        groupNumber && setValue('policyNumber', groupNumber)
+        memberId && setValue('certificationNumber', memberId)
+        expirationDate && setValue('expirationDate', expirationDate)
         transformedCopayFields && setValue('copayFields', transformedCopayFields)
         coinsurancePercentage && setValue('coInsurancePercentage', coinsurancePercentage)
-        expirationDate && setValue('expirationDate', expirationDate)
-        groupNumber && setValue('policyNumber', groupNumber)
-        issueDate && setValue('issueDate', issueDate)
-        memberId && setValue('certificationNumber', memberId)
-        notes && setValue('notes', notes)
         orderOfBenefit && setValue('orderOfBenefit', setRecord(orderOfBenefit, orderOfBenefit))
         policyHolderRelationship &&
           setValue('patientRelationship', setRecord(policyHolderRelationship, policyHolderRelationship))
 
         if (insurance) {
           const insuranceInfo = { id: insurance.id, name: `${insurance.payerId} | ${insurance.payerName}` }
-          setInsuranceId(insuranceInfo)
+          dispatch({ type: ActionType.SET_INSURANCE_ID, insuranceId: insuranceInfo })
           setValue('insuranceId', insuranceInfo)
         }
 
@@ -169,33 +166,33 @@ const PolicyCard: FC<PolicyCardProps> = ({
           setValue('referringProvider', setRecord(referringProvider.id,
             `${referringProvider.firstName} ${referringProvider.lastName}`))
 
-        pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
-        employer && setValue('employer', employer)
+        dob && setValue('dob', dob)
+        ssn && setValue('ssn', ssn)
+        city && setValue('city', city)
         suffix && setValue('suffix', suffix)
+        address && setValue('address', address)
+        zipCode && setValue('zipCode', zipCode)
+        lastName && setValue('lastName', lastName)
+        employer && setValue('employer', employer)
+        sex && setValue('sex', setRecord(sex, sex))
         firstName && setValue('firstName', firstName)
         middleName && setValue('middleName', middleName)
-        lastName && setValue('lastName', lastName)
-        zipCode && setValue('zipCode', zipCode)
-        city && setValue('city', city)
-        address && setValue('address', address)
         addressCTD && setValue('addressCTD', addressCTD)
-        dob && setValue('dob', dob)
         state && setValue('state', setRecord(state, state))
-        sex && setValue('sex', setRecord(sex, sex))
-        ssn && setValue('ssn', ssn)
         certificationNumber && setValue('policyHolderId', certificationNumber)
+        pricingProductType && setValue('pricingProductType', setRecord(pricingProductType, pricingProductType))
 
-        setPolicyId(id ?? '')
-        setPolicyHolderId(policyHolderIdToUpdate ?? '')
+        dispatch({ type: ActionType.SET_POLICY_ID, policyId: id || '' })
+        dispatch({ type: ActionType.SET_POLICY_HOLDER_ID, policyHolderId: policyHolderIdToUpdate || '' })
         trigger()
-        setIsFormLoaded(false)
+        dispatch({ type: ActionType.SET_IS_FORM_LOADED, isFormLoaded: false })
       }
     }
   });
 
   const findPolicy = useCallback(async () => {
     try {
-      await fetchPolicy({ variables: { id: id ?? '' } })
+      id && await fetchPolicy({ variables: { id } })
     } catch (error) { }
   }, [fetchPolicy, id])
 
@@ -203,122 +200,118 @@ const PolicyCard: FC<PolicyCardProps> = ({
     isEdit && findPolicy()
   }, [findPolicy, isEdit]);
 
-  useEffect(() => {
-    if (activeStep === 0) {
-      trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
+  const handleStepsValidation = async (step: number) => {
+    if (step === 0) {
+      return true
+    }
+
+    if (step === 1) {
+      const isValid = await trigger(['insuranceId', 'orderOfBenefit', "patientRelationship", "certificationNumber",
         "policyNumber", "issueDate", "expirationDate", "copayFields", "coInsurancePercentage",
-        "referringProvider", "primaryCareProvider", "pricingProductType", "notes",])
-    } else if (activeStep === 1) {
-      trigger(['policyHolderId', 'employer', 'suffix', 'firstName', 'middleName', 'lastName', 'zipCode',
-        'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
-    }
-  }, [activeStep, trigger])
-
-  const handleStepsValidation = useCallback(() => {
-    return !Object.keys(formState.errors).length
-  }, [formState.errors])
-
-  const handleStep = (step: number) => {
-    const shouldProceed = handleStepsValidation()
-    shouldProceed && setActiveStep(step);
-  };
-
-  const handleBack = () => {
-    const shouldProceed = handleStepsValidation()
-    shouldProceed && setActiveStep(activeStep - 1);;
-  };
-
-  const handleForward = () => {
-    const shouldProceed = handleStepsValidation()
-    shouldProceed && setActiveStep(activeStep + 1);
-  };
-
-  const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
-    const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
-      dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
-      notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
-      pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode
-    } = values ?? {}
-
-    const transformedCopays = copayFields?.map((copayField) => {
-      return {
-        amount: copayField.amount,
-        id: copayField.copayId ?? '',
-        ...(copayField.copayType?.id && { type: copayField.copayType?.id as CopayType })
-      }
-    }) ?? []
-
-    const policyHolderInfo = {
-      address,
-      addressCTD,
-      city,
-      dob,
-      employer,
-      firstName,
-      middleName,
-      lastName,
-      certificationNumber: inputPolicyHolderId,
-      ssn,
-      state: state?.id ?? '',
-      suffix,
-      zipCode,
-      ...(sex?.id && { sex: sex?.id as Policy_Holder_Gender_Identity })
+        "referringProvider", "primaryCareProvider", "pricingProductType", "notes", 'suffix',])
+      return isValid
     }
 
-    if (isEdit) {
-      await updatePolicy({
-        variables: {
-          updatePolicyInput: {
-            id: policyId,
-            coinsurancePercentage: coInsurancePercentage,
-            ...(transformedCopays.length && { copays: transformedCopays }),
-            expirationDate,
-            insuranceId: insuranceId?.id ?? '',
-            issueDate,
-            memberId: certificationNumber,
-            groupNumber: policyNumber,
-            notes,
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
-            patientId: patientId,
-            ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
-            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
-            referringProviderId: referringProvider?.id ?? '',
-            primaryCareProviderId: primaryCareProvider?.id ?? '',
-            policyHolderInfo: { ...policyHolderInfo, id: policyHolderId }
-          }
-        }
-      })
-      setPolicyToEdit && setPolicyToEdit('')
-    } else {
-      createPolicy({
-        variables: {
-          createPolicyInput: {
-            coinsurancePercentage: coInsurancePercentage,
-            ...(transformedCopays.length && {
-              copays: transformedCopays.map((copayValues) => {
-                const { id: copayId, ...copayValue } = copayValues
-                return copayValue
-              })
-            }),
-            expirationDate,
-            insuranceId: insuranceId?.id ?? '',
-            issueDate,
-            memberId: certificationNumber,
-            groupNumber: policyNumber,
-            notes,
-            ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
-            patientId: patientId,
-            ...(patientRelationship?.id && { policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType }),
-            ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
-            referringProviderId: referringProvider?.id ?? '',
-            primaryCareProviderId: primaryCareProvider?.id ?? '',
-            policyHolderInfo
-          }
-        }
-      })
+    if (step === 2) {
+      const isValid = await trigger(['policyHolderId', 'employer', 'firstName', 'middleName', 'lastName',
+        'zipCode', 'address', 'addressCTD', 'city', 'state', 'ssn', 'sex', 'dob'])
+      return isValid
     }
   }
 
+  const handleStep = async (step: number) => {
+    const shouldProceed = await handleStepsValidation(step)
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
+  };
+
+  const handleBack = async () => {
+    const shouldProceed = await handleStepsValidation(activeStep - 1)
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
+  };
+
+  const handleForward = async () => {
+    const shouldProceed = await handleStepsValidation(activeStep + 1)
+    shouldProceed && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
+  };
+
+  const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
+    if (numberOfFiles) {
+      const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
+        dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
+        notes, orderOfBenefit, patientRelationship, policyHolderId: inputPolicyHolderId, policyNumber,
+        pricingProductType, primaryCareProvider, referringProvider, sex, ssn, state, suffix, zipCode
+      } = values ?? {}
+
+      const transformedCopays = copayFields?.map((copayField) => {
+        return {
+          amount: copayField.amount,
+          id: copayField.copayId ?? '',
+          ...(copayField.copayType?.id && { type: copayField.copayType?.id as CopayType })
+        }
+      }) ?? []
+
+      const policyHolderInfo = {
+        address, addressCTD, city, dob, employer, firstName, suffix, zipCode,
+        middleName, lastName, certificationNumber: inputPolicyHolderId, ssn, state: state?.id ?? '',
+        ...(sex?.id && { sex: sex?.id as Policy_Holder_Gender_Identity })
+      }
+
+      const { id: selectedInsurance } = insuranceId || {}
+      const { id: selectedReferringProvider } = referringProvider || {}
+      const { id: selectedPrimaryCareProvider } = primaryCareProvider || {}
+
+      if (isEdit) {
+        policyId && await updatePolicy({
+          variables: {
+            updatePolicyInput: {
+              id: policyId, coinsurancePercentage: coInsurancePercentage,
+              expirationDate, insuranceId: selectedInsurance || '', issueDate,
+              memberId: certificationNumber, groupNumber: policyNumber, notes,
+              patientId: patientId,
+              referringProviderId: selectedReferringProvider || '',
+              primaryCareProviderId: selectedPrimaryCareProvider || '',
+              policyHolderInfo: { ...policyHolderInfo, id: policyHolderId },
+              ...(transformedCopays.length && { copays: transformedCopays }),
+              ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+              ...(patientRelationship?.id && {
+                policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+              }),
+              ...(pricingProductType?.id && {
+                pricingProductType: pricingProductType?.id as PricingProductType
+              }),
+            }
+          }
+        })
+
+        setPolicyToEdit && setPolicyToEdit('')
+      } else {
+        createPolicy({
+          variables: {
+            createPolicyInput: {
+              coinsurancePercentage: coInsurancePercentage, patientId: patientId,
+              expirationDate, insuranceId: selectedInsurance || '', issueDate,
+              memberId: certificationNumber, groupNumber: policyNumber, notes,
+              policyHolderInfo, referringProviderId: selectedReferringProvider || '',
+              primaryCareProviderId: selectedPrimaryCareProvider || '',
+              ...(orderOfBenefit?.id && { orderOfBenefit: orderOfBenefit?.id.trim() as OrderOfBenefitType }),
+              ...(pricingProductType?.id && { pricingProductType: pricingProductType?.id as PricingProductType }),
+              ...(patientRelationship?.id && {
+                policyHolderRelationship: patientRelationship?.id as PolicyHolderRelationshipType
+              }),
+              ...(transformedCopays.length && {
+                copays: transformedCopays.map((copayValues) => {
+                  const { id: copayId, ...copayValue } = copayValues
+                  return copayValue
+                })
+              }),
+            }
+          }
+        })
+      }
+    } else Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
+  }
+
+  const loading = isEdit && isFormLoaded
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -327,34 +320,46 @@ const PolicyCard: FC<PolicyCardProps> = ({
             <Grid container spacing={3} alignItems="center">
               <Grid item md={12} sm={12} xs={12}>
                 <ItemSelector
+                  addEmpty
                   isRequired
                   isEdit={isEdit}
-                  addEmpty
-                  label={INSURANCE_PAYER_NAME}
+                  loading={loading}
                   name="insuranceId"
-                  modalName={ITEM_MODULE.insurance}
                   value={insuranceId}
+                  label={INSURANCE_PAYER_NAME}
+                  modalName={ITEM_MODULE.insurance}
                 />
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
                   isRequired
+                  loading={loading}
+                  value={EMPTY_OPTION}
                   name="orderOfBenefit"
                   label={ORDER_OF_BENEFIT}
-                  value={EMPTY_OPTION}
                   options={filteredOrderOfBenefitOptions ?? []}
                 />
               </Grid>
             </Grid>
 
-            <PolicyDetails isEdit={isEdit} />
+            <PolicyDetails isEdit={isEdit} loading={loading} />
           </>
         )
+
       case 1:
-        return <PolicyHolderDetails isEdit={isEdit} />
+        return <PolicyHolderDetails isEdit={isEdit} loading={loading} />
+
       case 2:
-        return <Box p={3}><PolicyAttachments handleReload={() => { }} policyId={policyId} ref={policyAttachmentRef} /></Box>
+        return <Box p={3}>
+          <PolicyAttachments handleReload={() => { }}
+            dispatch={dispatch}
+            policyId={policyId}
+            ref={policyAttachmentRef}
+            numberOfFiles={numberOfFiles}
+          />
+        </Box>
+
       default:
         return 'Unknown step';
     }
@@ -368,9 +373,14 @@ const PolicyCard: FC<PolicyCardProps> = ({
             display="flex" justifyContent="space-between" alignItems="center"
             borderBottom={`1px solid ${GREY_SIXTEEN}`} p={2}
           >
-            <Typography variant='h3'>{ADD_INSURANCE}</Typography>
+            <Typography variant='h3'>{isEdit ? EDIT_INSURANCE : ADD_INSURANCE}</Typography>
 
             <Box display="flex" alignItems="center">
+              {activeStep !== 0 &&
+                <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
+              }
+
+              <Box p={1} />
 
               <Button
                 type={'button'}
@@ -379,43 +389,37 @@ const PolicyCard: FC<PolicyCardProps> = ({
                 disabled={isLastStep ? createPolicyLoading || updatePolicyLoading : false} >
                 {isLastStep ? SAVE_TEXT : NEXT}
               </Button>
-
-              {activeStep !== 0 && (<>
-                <Box mr={1} />
-                <Button type="button" onClick={handleBack} variant="outlined" color="secondary">BACK</Button>
-              </>
-              )}
             </Box>
           </Box>
-          {isEdit && isFormLoaded ? <TextLoader rows={[{ column: 1, size: 3 }, { column: 4, size: 3 }, { column: 2, size: 3 }]} /> :
-            <Box p={2}>
-              <Box className={addInsuranceClasses.checkInProfileBox}>
-                <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
-                  {ADD_INSURANCE_STEPS.map((label, index) => (
-                    <Step key={label}>
-                      <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
-                        <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
-                          {label}
-                          <Box p={0.5} />
 
-                          {!(ADD_INSURANCE_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
-                        </Box>
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-              </Box>
+          <Box p={2}>
+            <Box className={addInsuranceClasses.checkInProfileBox}>
+              <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
+                {ADD_INSURANCE_STEPS.map((label, index) => (
+                  <Step key={label}>
+                    <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                      <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
+                        {label}
+                        <Box p={0.5} />
 
-              <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto scrollbar-hover">
-                <Box px={1}>
-                  <Typography>{getStepContent(activeStep)}</Typography>
-                </Box>
+                        {!(ADD_INSURANCE_STEPS.length - 1 === index) ? <ChevronRightIcon /> : ''}
+                      </Box>
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
+
+            <Box pt={2} mt={2} maxHeight="calc(100vh - 160px)" className="overflowY-auto">
+              <Box px={1}>
+                <Typography>{getStepContent(activeStep)}</Typography>
               </Box>
-            </Box>}
+            </Box>
+          </Box>
         </form>
       </FormProvider>
     </Box>
   )
 }
 
-export default PolicyCard
+export default PolicyCard;

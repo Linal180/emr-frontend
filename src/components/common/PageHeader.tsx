@@ -16,8 +16,8 @@ const PageHeader: FC<PageHeaderProps> = ({
    isIcon, id, startIcon
  }): JSX.Element => {
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
-      <Box>
+    <Box className="page-hero-box" display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
+      <Box className="breadcrumb-list">
         {isIcon &&
           (
             <Box mr={2}>

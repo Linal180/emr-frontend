@@ -19,6 +19,7 @@ a {
 img,
 svg {
   max-width: 100%;
+  max-width: -webkit-fill-available;
 }
 
 body {
@@ -241,12 +242,12 @@ input[type="email"] {
 
 .MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-daysHeader .MuiPickersCalendarHeader-dayLabel {
   font-size: 14px;
-  width: 42px;
+  /* width: 42px; */
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
-  height: 42px;
-  width: 42px;
+  /* height: 42px; */
+  /* width: 42px; */
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected {
@@ -364,6 +365,10 @@ body .MuiTabPanel-root {
   font-weight: 600;
 }
 
+.permissionDenied {
+  margin-right: 16px !important;
+}
+
 .permissionDenied:hover {
   cursor: not-allowed;
 }
@@ -372,6 +377,12 @@ body .MuiTabPanel-root {
 .signCanvas {
   width: 100%;
   height: 150px;
+}
+
+/* Signature-pad-Styling  */
+.publicSignCanvas {
+  width: 100%;
+  height: 300px;
 }
 
 /* Drop-in-Payment-Styling */
@@ -477,6 +488,7 @@ body .MuiTabPanel-root {
 
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   margin-top: 2px;
   margin-bottom: 2px;
@@ -486,6 +498,7 @@ body .MuiTabPanel-root {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #E0E0E0;
 }
 
@@ -524,7 +537,7 @@ body .MuiTabPanel-root {
 .input-dollar-class .MuiInputBase-input {
   background-image: url(../assets/images/dollar-sign.svg) !important;
   background-size: auto !important;
-  background-position: right   center !important;
+  background-position: right center !important;
   padding-right: 25px;
   background-repeat: no-repeat !important;
 }
@@ -684,10 +697,16 @@ input::-webkit-inner-spin-button {
 
 .media-inner-image {
   padding: 0px !important;
+  height: 150px !important;
 }
 
 .media-inner-image>img {
-  height: 150px !important;
+  object-fit: fill !important;
+}
+
+.dropzone-area-preview-list .MuiGrid-spacing-xs-8 {
+  margin: 0 !important;
+  padding: 0 20px !important;
 }
 
 .whiteColor {
@@ -791,18 +810,18 @@ input::-webkit-inner-spin-button {
 /* masonry-css */
 .masonry-container {
   -moz-column-count: 2;
-  -moz-column-gap: 1.5%;
+  -moz-column-gap: 1%;
   -moz-column-width: 48%;
   -webkit-column-count: 2;
-  -webkit-column-gap: 1.5%;
+  -webkit-column-gap: 1%;
   -webkit-column-width: 48%;
   column-count: 2;
-  column-gap: 1.5%;
+  column-gap: 1%;
   column-width: 48%;
 }
 
 .masonry-box {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   break-inside: avoid;
 }
 
@@ -811,11 +830,7 @@ input::-webkit-inner-spin-button {
 }
 
 .appointment-view-list .MuiTable-root tbody tr .custom-cell {
-  padding: 0 0 5px 0;
-}
-
-.appointment-view-list .MuiTable-root tbody tr .custom-cell {
-  padding: 14px 11px 14px 30px;
+  padding: 10px;
 }
 
 .card-box {
@@ -868,8 +883,26 @@ input::-webkit-inner-spin-button {
   margin-left: 5px !important;
 }
 
-.vitals-column .MuiTypography-h5 {
-  line-height: 1.43 !important;
+.h-24 {
+  height: 24px !important;
+}
+
+.vitals-header>th>div>h5 {
+  text-transform: capitalize !important;
+}
+
+.patient-add-form .MuiInputLabel-formControl {
+  position: relative;
+}
+
+.vitals-column .MuiTableCell-root {
+  height: 45px !important;
+}
+
+.vitals-column .MuiTableCell-root .MuiBox-root>.MuiTypography-noWrap {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .copay-type-value {
@@ -903,8 +936,7 @@ input[type=number] {
   pointer-events: none;
 }
 
-.toggle-main .MuiSwitch-thumb
- {
+.toggle-main .MuiSwitch-thumb {
   background-color: #204ECF !important;
 }
 
@@ -919,6 +951,10 @@ input[type=number] {
   height: 30px !important;
 }
 
+.makeStyles-chartModalBox-137 .MuiSkeleton-text {
+  transform: scale(1, 1) !important;
+}
+
 .skelton-label-margin {
   margin-top: -8px;
   margin-bottom: 12px;
@@ -929,7 +965,157 @@ input[type=number] {
   padding-bottom: 16px;
 }
 
+.align-center {
+  align-items: center !important;
+}
+
+/* form-builder */
+.formBuilder-stepLabel .MuiStepIcon-root {
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  border-radius: 50px;
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root .MuiStepIcon-text {
+  fill: rgba(0, 0, 0, 0.38);
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root.MuiStepIcon-active {
+  color: #204ECF;
+  border: 1px solid #ffffff;
+}
+
+.formBuilder-stepLabel .MuiStepIcon-root.MuiStepIcon-active .MuiStepIcon-text {
+  fill: #ffffff;
+}
+
+/* edge-eye-icon-bug */
+::-ms-reveal {
+  display: none !important;
+}
+
+.date-box-wrap .MuiTypography-colorTextPrimary {
+  margin-top: -9px;
+  margin-bottom: 5px;
+  color: #202020;
+  font-size: 14px;
+  transform: scale(1);
+  font-weight: 500;
+  transform-origin: top left;
+}
+
+.date-box .btn-icon {
+  min-width: 35px;
+  min-height: 41px;
+}
+
+.date-input-box {
+  height: 40px;
+  padding: 0 10px;
+  min-width: 100px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.date-input-box .MuiFormControl-marginNormal {
+  margin-top: -5px;
+}
+
+.schedule-modal .MuiDialog-paper {
+  overflow-y: inherit;
+}
+
+.cke_path {
+  display: none !important;
+}
+
+.ach-hover:hover {
+  cursor: pointer;
+}
+
+.ach-hover:hover .MuiTypography-root {
+  font-weight: 600 !important;
+  transform: scale(1.05) !important;
+}
+
+.mb-3 {
+  margin-bottom: 24px !important;
+}
+
+.text-underline {
+  text-decoration: underline !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #F3F6F9;
+}
+
+.rotate-180 {
+  transform: rotateX(180deg);
+}
+
+.rotate-Icon {
+  transition: 0.9s linear !important;
+  transform: rotate(0deg);
+}
+
+.rotate-Icon.to-180 {
+  transform: rotateX(180deg);
+}
+
+.log-class {
+  border: 10px solid red;
+}
+
+.billing-inputs .MuiFormControl-marginNormal {
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+.billing-selector .MuiFormControl-root .MuiAutocomplete-inputRoot {
+  height: auto !important;
+  min-height: auto !important;
+}
+
+.billing-selector .MuiFormControl-marginNormal {
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+}
+
+.billing-tabs .MuiTabPanel-root {
+  padding-top: 0 !important;
+}
+
+.claim-box .MuiOutlinedInput-root {
+  background-color: #E5E7EB !important;
+}
+
+.header-selector .MuiSvgIcon-root path {
+  display: none !important;
+}
+
+.header-selector .MuiSvgIcon-root {
+  background-image: url(../assets/images/chevron-down.svg) !important;
+  background-size: auto !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 /* media queries */
+
+@media(max-width : 1260px) {
+  .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
+    height: 36px;
+    width: 36px;
+  }
+}
+
+@media(max-width : 960px) {
+  .appointment-action-btn {
+    flex-direction: column;
+  }
+}
+
 @media(max-width : 768px) {
   .facility-registration-form {
     flex-direction: column;
@@ -946,4 +1132,26 @@ input[type=number] {
     top: 0;
     margin-bottom: 0.875rem;
   }
+
+  .profile-hero-patient {
+    flex-direction: column;
+  }
+}
+
+@media(max-width : 572px) {
+  .page-hero-box {
+    flex-direction: column;
+  }
+
+  .breadcrumb-list {
+    margin-bottom: 10px;
+  }
+}
+
+.csvLink {
+  color: inherit;
+}
+
+.ck-content {
+  height: 320px;
 }

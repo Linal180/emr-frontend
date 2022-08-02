@@ -166,6 +166,27 @@ export const useExternalPatientStyles = makeStyles({
     width: "100%",
     textAlign: "center",
   },
+
+  privacyLabelHeader: {
+    fontWeight: 'bold',
+  },
+
+  privacyLabelDescription: {
+    paddingLeft: 25,
+    "& .MuiFormControlLabel-label": {
+      fontSize: 14,
+    },
+
+    "& .MuiCheckbox-root .MuiIconButton-label:before":{
+      width:15,
+      height:15
+    }
+  },
+
+  privacyFormGroup: {
+    display: 'flex',
+    flexDirection: 'row'
+  }
 });
 
 export const toggleButtonComponent = makeStyles({

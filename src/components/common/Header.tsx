@@ -1,7 +1,11 @@
 // packages block
-import { FC, useContext } from "react";
+import {
+  AppBar, Box, Fade, IconButton, Menu, MenuItem, Toolbar, Typography
+} from '@material-ui/core';
+import { Menu as MenuIcon } from "@material-ui/icons";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
+import { BLACK } from "../../theme";
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
@@ -10,14 +14,14 @@ import history from "../../history";
 import { AuthContext } from "../../context";
 import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
+  APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
+  PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT,
+  SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
 } from "../../constants";
 
-const HeaderNew: FC = (): JSX.Element => {
+const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
@@ -26,22 +30,33 @@ const HeaderNew: FC = (): JSX.Element => {
   const { roles } = user || {};
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
-  
-  const showFacility = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles)
 
-  return (
-    <AppBar className={classes.appBar}>
-      <Toolbar className={classes.toolBar}>
-        <Link to={ROOT_ROUTE}>
-          <AIMEDLOGO />
-        </Link>
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const handleMobileMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) =>
+    setMobileMoreAnchorEl(currentTarget);
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
+
+  const renderMobileMenu = (
+    <Menu
+      id="mobile-menu"
+      anchorEl={mobileMoreAnchorEl}
+      keepMounted
+      TransitionComponent={Fade}
+      getContentAnchorEl={null}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      transformOrigin={{ vertical: "top", horizontal: "center" }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem>
         <Box className={classes.menuBar}>
           <Typography
             component={Link}
             to={ROOT_ROUTE}
-            className={currentRoute === 'inDashboard' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            className={currentRoute === 'inDashboard' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {HOME_TEXT}
           </Typography>
@@ -50,42 +65,43 @@ const HeaderNew: FC = (): JSX.Element => {
             <Typography
               component={Link}
               to={PRACTICE_MANAGEMENT_ROUTE}
-              className={currentRoute === 'inPractice' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+              className={currentRoute === 'inPractice' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
             >
               {PRACTICE_MANAGEMENT_TEXT}
             </Typography>
           }
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllAppointments) &&
-            <DropdownMenu
-              itemName={SCHEDULE_TEXT}
-              menuItem={APPOINTMENT_MENU_ITEMS}
-              current={currentRoute === 'inAppointment'}
-            />
-          }
+          <Box className={classes.mobileMenuItem}>
+            {checkPermission(userPermissions, USER_PERMISSIONS.findAllAppointments) &&
+              <DropdownMenu
+                itemName={SCHEDULE_TEXT}
+                menuItem={APPOINTMENT_MENU_ITEMS}
+                current={currentRoute === 'inAppointment'}
+              />
+            }
+          </Box>
 
           {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
             <Typography
               component={Link}
               to={PATIENTS_ROUTE}
-              className={currentRoute === 'inPatient' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+              className={currentRoute === 'inPatient' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
             >
               {PATIENTS_TEXT}
             </Typography>
           }
 
-          {/* <DropdownMenu
+          <DropdownMenu
             itemName={BILLING_TEXT}
             menuItem={BILLING_MENU_ITEMS}
             current={currentRoute === 'inBilling'}
-          /> */}
+          />
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-            && showFacility &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
-              className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+              className={currentRoute === 'inFacility' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
             >
               {FACILITIES_TEXT}
             </Typography>
@@ -94,55 +110,158 @@ const HeaderNew: FC = (): JSX.Element => {
           {/* <Typography
             component={Link}
             to={LAB_RESULTS_ROUTE}
-            className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            className={currentRoute === 'inReport' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {REPORTS}
           </Typography> */}
 
-          <Typography
+          {/* <Typography
             component={Link}
             to={AGREEMENTS_ROUTE}
-            className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            className={currentRoute === 'isAgreement' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {AGREEMENTS}
-          </Typography>
+          </Typography> */}
         </Box>
+      </MenuItem>
+    </Menu>
+  );
 
-        <Box display="flex" alignItems="center">
-          <Link to={SETTINGS_ROUTE}>
-            <Box pt={1} />
-
-            <SettingsIcon />
+  return (
+    <>
+      <AppBar className={classes.appBar}>
+        <Toolbar className={classes.toolBar}>
+          <Link to={ROOT_ROUTE} className={classes.logo}>
+            <AIMEDLOGO />
           </Link>
 
-          <Box px={3} />
+          <Box className={classes.grow} />
 
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Box display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="flex-end"
-              className={classes.profileItemName}
-            >
-              {isSuper ?
-                <Typography variant="h6">{SUPER_ADMIN}</Typography>
-                : (
-                  <>
-                    <Typography variant="h6">{firstName} {lastName}</Typography>
+          <Box className={classes.sectionDesktop}>
+            <Box className={classes.menuBar} display='flex' justifyContent='space-between' alignItems='center'>
+              <Typography
+                component={Link}
+                to={ROOT_ROUTE}
+                className={currentRoute === 'inDashboard' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+              >
+                {HOME_TEXT}
+              </Typography>
 
-                    <Box className={classes.roleName}>
-                      <Typography variant="body1">{roleName}</Typography>
-                    </Box>
-                  </>
-                )}
+              {isSuper &&
+                <Typography
+                  component={Link}
+                  to={PRACTICE_MANAGEMENT_ROUTE}
+                  className={currentRoute === 'inPractice' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+                >
+                  {PRACTICE_MANAGEMENT_TEXT}
+                </Typography>
+              }
+
+              {checkPermission(userPermissions, USER_PERMISSIONS.findAllAppointments) &&
+                <DropdownMenu
+                  itemName={SCHEDULE_TEXT}
+                  menuItem={APPOINTMENT_MENU_ITEMS}
+                  current={currentRoute === 'inAppointment'}
+                />
+              }
+
+              {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
+                <Typography
+                  component={Link}
+                  to={PATIENTS_ROUTE}
+                  className={currentRoute === 'inPatient' ? `${classes.menuItem} active` : `${classes.menuItem}`}
+                >
+                  {PATIENTS_TEXT}
+                </Typography>
+              }
+
+              <DropdownMenu
+                itemName={BILLING_TEXT}
+                menuItem={BILLING_MENU_ITEMS}
+                current={currentRoute === 'inBilling'}
+              />
+
+              {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+                <Typography
+                  component={Link}
+                  to={FACILITIES_ROUTE}
+                  className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+                >
+                  {FACILITIES_TEXT}
+                </Typography>
+              }
+
+              {/* <Typography
+                      component={Link}
+                      to={LAB_RESULTS_ROUTE}
+                      className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+                    >
+                      {REPORTS}
+                    </Typography> */}
+
+              {/* <Typography
+                component={Link}
+                to={AGREEMENTS_ROUTE}
+                className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+              >
+                {AGREEMENTS}
+              </Typography> */}
             </Box>
-
-            <ProfileDropdownMenu />
           </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+
+          <Box className={classes.grow} />
+
+          <Box display="flex" alignItems="center">
+            <Link to={SETTINGS_ROUTE}>
+              <Box pt={0.8} />
+
+              <SettingsIcon />
+            </Link>
+
+            <Box px={2} />
+
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <Box display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="flex-end"
+                maxWidth='200px'
+              >
+                {isSuper ?
+                  <Typography variant="h6" color="textPrimary" noWrap>{SUPER_ADMIN}</Typography>
+                  : (
+                    <Box maxWidth="200px" textAlign="right">
+                      <Box color={BLACK} minWidth='30px'>
+                        <Box maxWidth={200}>
+                          <Typography variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        </Box>
+                        <Typography variant="body1" noWrap>{roleName}</Typography>
+                      </Box>
+                    </Box>
+                  )}
+              </Box>
+
+              <ProfileDropdownMenu />
+            </Box>
+          </Box>
+
+          <Box className={classes.sectionMobile}>
+            <IconButton
+              aria-label="dropdown menu"
+              aria-controls="mobile-menu"
+              aria-haspopup="true"
+              color="inherit"
+              onClick={(event) => handleMobileMenuOpen(event)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {renderMobileMenu}
+    </>
   );
 };
 
-export default HeaderNew;
+export default Header;

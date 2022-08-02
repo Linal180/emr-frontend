@@ -1,15 +1,15 @@
 // packages block
-import clsx from 'clsx';
 import { Box, Button, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
-import { FC, useState } from 'react';
-import { BACK_TEXT, LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT, } from '../../../../constants';
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { FC, useState } from 'react';
+import { BACK_TEXT, LAB_ORDER_SIDEDRAWER_STEPS, LAB_ORDER_STEPS, NEW_LAB_ORDER, NEXT } from '../../../../constants';
+import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import { useLabOrderStyles } from '../../../../styles/labOrderStyles';
 import { GREY_SIXTEEN } from '../../../../theme';
-import TestsComponent from './Tests';
 import LabOrderComponent from './LabOrder';
 import PaymentsComponent from './Payments';
+import TestsComponent from './Tests';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -91,7 +91,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
         </Stepper>
       </Box>
 
-      <Box p={2} />
+      <Box p={1.5} />
 
       <Box maxHeight="calc(100vh - 170px)" className="overflowY-auto">
         <Typography>{getStepContent(activeStep)}</Typography>

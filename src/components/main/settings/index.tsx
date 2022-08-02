@@ -7,42 +7,43 @@ import PageHeader from "../../common/PageHeader";
 import CardComponent from "../../common/CardComponent";
 // constants block
 import { AuthContext } from "../../../context";
-import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../../../utils";
+import { isFacilityAdmin, isOnlyDoctor, isSuperAdmin } from "../../../utils";
 import {
   PRACTICE_MANAGEMENT_DESCRIPTION, PRACTICE_DETAILS, PROVIDER_DETAILS, PROVIDER_DETAILS_DESCRIPTION,
   CALENDAR_SETTINGS_TEXT, FACILITY_SERVICES_DESCRIPTION, FACILITY_SERVICES_TEXT, PROVIDER_MANAGEMENT,
   PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS,
   PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, FACILITIES_ROUTE, SETTINGS_TEXT,
-  FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS,
+  FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, PROVIDER_PROFILE_DESCRIPTION, CLINICAL_TEXT,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS,
-  PROVIDER_PROFILE_DESCRIPTION,
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS,
+
 } from "../../../constants";
+import { useSettingtyles } from "../../../styles/settingStyles";
 
 export const SettingsComponent = () => {
   const { user, currentDoctor, userPermissions } = useContext(AuthContext)
+  const classes = useSettingtyles()
   const { roles, facility, } = user || {}
   const { id: facilityId } = facility || {}
   const isSuper = isSuperAdmin(roles)
 
-  const isPractice = isPracticeAdmin(roles)
   const isFacility = isFacilityAdmin(roles)
   const isDoctor = isOnlyDoctor(roles)
   const { id: doctorId } = currentDoctor || {}
 
   return (
     <Grid container justifyContent='center'>
-      <Grid item md={7} sm={12} xs={12}>
+      <Grid item lg={7} md={10} sm={12} xs={12}>
         <PageHeader title={SETTINGS_TEXT} />
 
         <CardComponent cardTitle={USERS_MANAGEMENT}>
           {isDoctor && <Box>
-            <Box display="flex" alignItems="center" flexWrap="wrap">
+            <Box className={classes.settingContainer}>
               <Link key={DOCTOR_PROFILE_TEXT} to={`${DOCTORS_ROUTE}/${doctorId}`}>
                 <MenuItem>{DOCTOR_PROFILE_TEXT}</MenuItem>
               </Link>
 
-              <Box pr={2}>-</Box>
+              <Box pr={2} className={classes.inlinedashes}>-</Box>
 
               <Typography variant="body1">{PROVIDER_PROFILE_DESCRIPTION} </Typography>
             </Box>
@@ -55,12 +56,12 @@ export const SettingsComponent = () => {
               const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
 
               return userPermissions.includes(permission) && (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+                <Box className={classes.settingContainer}>
                   <Link key={`${link}-${name}`} to={(doctorAdminRoute) ? doctorDetailRoute : link}>
                     <MenuItem>{(doctorAdminRoute) ? PROVIDER_DETAILS : name}</MenuItem>
                   </Link>
 
-                  <Box pr={2}>-</Box>
+                  <Box pr={2} className={classes.inlinedashes}>-</Box>
 
                   <Typography variant="body1">{(doctorAdminRoute) ? PROVIDER_DETAILS_DESCRIPTION : desc} </Typography>
                 </Box>
@@ -74,7 +75,7 @@ export const SettingsComponent = () => {
         <CardComponent cardTitle={PRACTICE_SETTINGS}>
           <Box pb={3}>
             {PRACTICE_SETTINGS_ITEMS.map((item) => {
-              const { name, link, desc } = item || {}
+              const { name, link, desc, permission } = item || {}
               const practiceAdminRoute = isSuper && name === PRACTICE_DETAILS;
               const facilityAdminRoute = isFacility && name === FACILITY_MANAGEMENT;
 
@@ -82,8 +83,8 @@ export const SettingsComponent = () => {
               const facilityDetailRoute = `${FACILITIES_ROUTE}/${facilityId}`
               const doctorDetailRoute = `${DOCTORS_ROUTE}/${doctorId}/details`
 
-              return isPractice && (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+              return userPermissions.includes(permission) && (
+                <Box className={classes.settingContainer}>
                   <Link
                     key={`${link}-${name}`}
                     to={(facilityAdminRoute) ? facilityDetailRoute
@@ -97,7 +98,7 @@ export const SettingsComponent = () => {
                     </MenuItem>
                   </Link>
 
-                  <Box pr={2}>-</Box>
+                  <Box pr={2} className={classes.inlinedashes}>-</Box>
 
                   <Typography variant="body1">
                     {(practiceAdminRoute)
@@ -115,11 +116,11 @@ export const SettingsComponent = () => {
 
         <Box p={2} />
 
-        <CardComponent cardTitle={INVENTORY}>
+        {/* <CardComponent cardTitle={INVENTORY}>
           <Box pb={3}>
             {INVENTORY_ITEMS.map(({ name, link, desc }) => {
               return (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+                <Box className={classes.settingContainer}>
                   <Link key={`${link}-${name}`} to={link}>
                     <MenuItem>{name}</MenuItem>
                   </Link>
@@ -131,33 +132,29 @@ export const SettingsComponent = () => {
               )
             })}
           </Box>
-        </CardComponent>
-
-        <Box p={2} />
+        </CardComponent> */}
 
         {isFacility && <CardComponent cardTitle={SERVICES}>
           <Box pb={3}>
-            <Box display="flex" alignItems="center" flexWrap="wrap">
+            <Box className={classes.settingContainer}>
               <Link key={FACILITY_SERVICES_TEXT}
                 to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`}
               >
                 <MenuItem>{FACILITY_SERVICES_TEXT}</MenuItem>
               </Link>
 
-              <Box pr={2}>-</Box>
+              <Box pr={2} className={classes.inlinedashes}>-</Box>
 
               <Typography variant="body1">{FACILITY_SERVICES_DESCRIPTION}</Typography>
             </Box>
           </Box>
         </CardComponent>}
 
-        <Box p={2} />
-
-        <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
+        {/* <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
           <Box pb={3}>
             {APPOINTMENT_SETTINGS_ITEMS.map(({ name, link, desc }) => {
               return (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+                <Box className={classes.settingContainer}>
                   <Link key={`${link}-${name}`} to={link}>
                     <MenuItem>{name}</MenuItem>
                   </Link>
@@ -169,36 +166,32 @@ export const SettingsComponent = () => {
               )
             })}
           </Box>
-        </CardComponent>
-
-        <Box p={2} />
+        </CardComponent> */}
 
         {isFacility && <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
           <Box pb={3}>
-            <Box display="flex" alignItems="center" flexWrap="wrap">
+            <Box className={classes.settingContainer}>
               <Link key={FACILITY_SCHEDULE} to={`${FACILITIES_ROUTE}/${facilityId}`}>
                 <MenuItem>{FACILITY_SCHEDULE}</MenuItem>
               </Link>
 
-              <Box pr={2}>-</Box>
+              <Box pr={2} className={classes.inlinedashes}>-</Box>
 
               <Typography variant="body1">{FACILITY_SCHEDULE_DESCRIPTION}</Typography>
             </Box>
           </Box>
         </CardComponent>}
 
-        <Box p={2} />
-
         <CardComponent cardTitle={CLINICAL_TEXT}>
           <Box pb={3}>
             {CLINICAL_ITEMS.map(({ name, link, desc }) => {
               return (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+                <Box className={classes.settingContainer}>
                   <Link key={`${link}-${name}`} to={link}>
                     <MenuItem>{name}</MenuItem>
                   </Link>
 
-                  <Box pr={2}>-</Box>
+                  <Box pr={2} className={classes.inlinedashes}>-</Box>
 
                   <Typography variant="body1">{desc}</Typography>
                 </Box>
@@ -213,12 +206,12 @@ export const SettingsComponent = () => {
           <Box pb={3}>
             {MISCELLANEOUS_SETTINGS_ITEMS.map(({ name, link, desc }) => {
               return (
-                <Box display="flex" alignItems="center" flexWrap="wrap">
+                <Box className={classes.settingContainer}>
                   <Link key={`${link}-${name}`} to={link}>
                     <MenuItem>{name}</MenuItem>
                   </Link>
 
-                  <Box pr={2}>-</Box>
+                  <Box pr={2} className={classes.inlinedashes}>-</Box>
 
                   <Typography variant="body1">{desc}</Typography>
                 </Box>

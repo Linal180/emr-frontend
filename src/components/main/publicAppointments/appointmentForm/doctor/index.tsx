@@ -1,12 +1,14 @@
 // packages block
-import { Reducer, useContext, useEffect, useReducer, useCallback } from "react";
+import axios from "axios";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { Reducer, useContext, useEffect, useReducer, useCallback, useState } from "react";
 import { Box, Button, Checkbox, FormControlLabel, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
+import Signature from "../../../../common/signature";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
@@ -17,35 +19,39 @@ import history from "../../../../../history";
 import { WHITE, GREY } from "../../../../../theme";
 import { AIMEDLOGO } from "../../../../../assets/svgs";
 import { FacilityContext } from '../../../../../context';
-import { externalAppointmentSchema } from "../../../../../validationSchemas";
 import { getCurrentTimestamps, getTimestampsForDob } from "../../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
+import { externalAppointmentSchema, externalSignatureAppointmentSchema } from "../../../../../validationSchemas";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
 import {
   ContactType, Genderidentity, PaymentType, useCreateExternalAppointmentMutation, DoctorPayload,
-  BillingStatus, useGetDoctorLazyQuery,
+  BillingStatus, useGetDoctorLazyQuery, useCreatePatientConsentMutation, useFetchAllAgreementsLazyQuery,
+  AgreementsPayload,
 } from "../../../../../generated/graphql";
 import {
   MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, DOCTOR_NOT_FOUND,
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
   PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING, APPOINTMENT_PAYMENT,
-  BOOK_YOUR_APPOINTMENT,
+  BOOK_YOUR_APPOINTMENT, ATTACHMENT_TITLES, PUBLIC_AGREEMENTS_PAGE_LIMIT,
 } from "../../../../../constants";
 
 const DoctorPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { id: doctorId } = useParams<ParamsType>();
+  const [loading, setLoading] = useState(false)
   const { fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { agreed, doctor, date, facilityId } = state;
+  const { agreed, doctor, date, facilityId, agreements, isSignature } = state;
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
-    resolver: yupResolver(externalAppointmentSchema)
+    resolver: yupResolver(isSignature ? externalSignatureAppointmentSchema : externalAppointmentSchema),
+    defaultValues: { signature: null }
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, setValue, watch } = methods;
+  const { signature } = watch()
 
   const [getDoctor] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -86,15 +92,40 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
       if (response && appointment) {
         const { status } = response
-        const { id } = appointment
-
+        const { id, patientId } = appointment
         if (id && status && status === 200) {
-          reset()
-          history.push(`${APPOINTMENT_PAYMENT}/${id}`)
+          if (!isSignature) {
+            history.push(`${APPOINTMENT_PAYMENT}/${id}`)
+          } else {
+            id && patientId && signatureUploadHandler(id, patientId)
+          }
         }
       }
     }
   });
+
+  const [getAllAgreements] = useFetchAllAgreementsLazyQuery({
+    onCompleted: (data) => {
+      if (data) {
+        const { fetchAllAgreements } = data || {}
+        const { agreements, response } = fetchAllAgreements || {}
+        const { status } = response || {}
+        if (status === 200) {
+          if (agreements) {
+            dispatch({ type: ActionType.SET_AGREEMENTS, agreements: agreements as AgreementsPayload['agreements'] })
+            const signature = agreements?.some(({ signatureRequired }) => signatureRequired)
+            dispatch({ type: ActionType.SET_SIGNATURE, isSignature: signature })
+          }
+        }
+      }
+    },
+    onError: () => { }
+  })
+
+  const [createPatientConsent] = useCreatePatientConsentMutation({
+    onCompleted: () => { },
+    onError: () => { }
+  })
 
   const fetchDoctor = useCallback(async () => {
     try {
@@ -135,8 +166,8 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
-                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.Male, 
-                usualProviderId: doctorId, practiceId: practiceId || '',
+                sexAtBirth: selectedSexAtBirth ? selectedSexAtBirth as Genderidentity : Genderidentity.DeclineToSpecify,
+                usualProviderId: doctorId
               },
             }
           }
@@ -144,6 +175,77 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
       } else Alert.error(DOCTOR_NOT_FOUND)
     }
   }
+
+  const createPatientConsentHandler = async (patientId: string, id: string) => {
+    try {
+      const arr = agreements?.map(({ body, id }) => {
+        return {
+          id,
+          body
+        }
+      })
+      const body = JSON.stringify({ agreements: arr })
+      await createPatientConsent({
+        variables: {
+          createPatientConsentInputs: {
+            appointmentId: id,
+            patientId,
+            body
+          }
+        }
+      })
+    } catch (error) { }
+  }
+
+  const fetchAllAgreements = useCallback(async () => {
+    try {
+      await getAllAgreements({
+        variables: {
+          agreementPaginationInput: {
+            agreementFacilityId: facilityId,
+            paginationOptions: { limit: PUBLIC_AGREEMENTS_PAGE_LIMIT, page: 1 }
+          }
+        }
+      })
+    } catch (error) { }
+  }, [facilityId, getAllAgreements])
+
+  const onSignatureEnd = (file: File | null) => setValue('signature', file)
+
+  const signatureUploadHandler = async (id: string, patientId: string) => {
+    setLoading(true)
+
+    const formData = new FormData();
+    patientId && formData.append("typeId", patientId);
+    formData.append("title", ATTACHMENT_TITLES.Signature);
+    signature && formData.append("file", signature);
+
+    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`,
+      formData, {
+      headers: {
+        pathname: window.location.pathname
+      }
+    }
+    ).then((response) => {
+      const { status } = response
+      if (status !== 201) Alert.error("Something went wrong!");
+      else {
+        createPatientConsentHandler(patientId, id)
+        reset()
+        history.push(`${APPOINTMENT_PAYMENT}/${id}`)
+      }
+      setLoading(false)
+    }).catch(error => {
+      const { response: { data: { error: errorMessage } } } = error || {}
+      Alert.error(errorMessage);
+      setLoading(false)
+    });
+  }
+
+  useEffect(() => {
+    facilityId && fetchAllAgreements()
+  }, [facilityId, fetchAllAgreements])
+
 
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
@@ -157,7 +259,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
               <Typography variant="h4">{BOOK_YOUR_APPOINTMENT}</Typography>
 
-              <Button variant="contained" type="submit" color="primary" disabled={!agreed}>{BOOK_APPOINTMENT}</Button>
+              <Button variant="contained" type="submit" color="primary" disabled={!agreed || loading}>{BOOK_APPOINTMENT}</Button>
             </Box>
 
             <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
@@ -229,9 +331,17 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
                   <Box pt={3} />
 
                   <CardComponent cardTitle={AGREEMENT_HEADING}>
-                    <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
-                    </Box>
+                    {agreements?.map((agreement) => {
+                      const { body } = agreement || {}
+                      return (<Box maxHeight={400} pl={2} mb={3} overflow="auto">
+                        {body && <Typography variant="subtitle1" component="p" dangerouslySetInnerHTML={{ __html: body }} ></Typography>}
+                      </Box>)
+                    })}
+                    {isSignature &&
+                      <Box width="50%" pb={2}>
+                        <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
+                      </Box>
+                    }
                   </CardComponent>
 
                   <Box bgcolor={WHITE} mt={-1} p={3.75} className={classes.agreement_box}>

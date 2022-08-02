@@ -14,7 +14,9 @@ import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
-import { checkPermission, formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh } from "../../../../utils";
+import {
+  checkPermission, formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+} from "../../../../utils";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";
@@ -97,7 +99,12 @@ const StaffTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-            await fetchAllStaff();
+
+            if (!!allStaff && allStaff.length) {
+              await fetchAllStaff();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, allStaff?.length || 0) })
+            }
           }
         }
       } catch (error) { }
@@ -138,7 +145,7 @@ const StaffTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
+        <Box mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 

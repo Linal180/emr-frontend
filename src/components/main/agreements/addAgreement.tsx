@@ -1,57 +1,66 @@
 // packages
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router';
-import { Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography } from '@material-ui/core';
-import { CKEditor, CKEditorEventPayload } from 'ckeditor4-react';
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
+import {
+  Box, Button, Card, Checkbox, CircularProgress, FormControlLabel, FormGroup, Grid, Typography
+} from '@material-ui/core';
 //components
-import InputController from '../../../controller';
 import Alert from '../../common/Alert';
 import BackButton from '../../common/BackButton';
-import DropzoneImage from '../../common/DropZoneImage';
 import PageHeader from '../../common/PageHeader';
+import InputController from '../../../controller';
+import DropzoneImage from '../../common/DropZoneImage';
 import ViewDataLoader from '../../common/ViewDataLoader';
 //constants, types, interfaces, utils
-import {
-  ADD_AGREEMENT,
-  AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY, ATTACHMENT_TITLES,
-  CREATE_AGREEMENT_MESSAGE, DASHBOARD_BREAD, DETAILS, EDIT_AGREEMENT, REQUIRE_AGREEMENT_BEFORE_AGREEING, REQUIRE_SIGNATURE,
-  SAVE_TEXT, TITLE, UPDATE_AGREEMENT_MESSAGE
-} from '../../../constants';
-import { AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation } from '../../../generated/graphql';
 import history from '../../../history';
-import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
-import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
-import { useChartingStyles } from '../../../styles/chartingStyles';
 import { GRAY_SIX } from '../../../theme';
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
-import { createAgreementSchema } from '../../../validationSchemas';
 import { AuthContext } from '../../../context';
+import { createAgreementSchema } from '../../../validationSchemas';
+import { useChartingStyles } from '../../../styles/chartingStyles';
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
+import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
+import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
+import {
+  AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation
+} from '../../../generated/graphql';
+import {
+  AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY,
+  ATTACHMENT_TITLES, CREATE_AGREEMENT_MESSAGE, DASHBOARD_BREAD, DETAILS, EDIT_AGREEMENT, REQUIRE_SIGNATURE,
+  SAVE_TEXT, TITLE, UPDATE_AGREEMENT_MESSAGE, REQUIRE_AGREEMENT_BEFORE_AGREEING, DESCRIPTION_TYPE,
+  AGREEMENT_BODY_REQUIRED, FILE_REQUIRED, ADD_AGREEMENT, PLEASE_SELECT_MEDIA,
+} from '../../../constants';
 
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
-  const chartingClasses = useChartingStyles()
-  const descriptionTypes = ['Text Editor', 'File Upload']
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
-  const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing, descriptionType, isLoaded, withFile, files } = state
   const { id } = useParams<ParamsType>()
-
   const { user } = useContext(AuthContext)
+
+  const chartingClasses = useChartingStyles()
+  const descriptionTypes = ['Text Editor', 'File Upload'];
+
   const { roles, facility } = user || {};
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
+  const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
+    descriptionType, isLoaded, withFile, files, bodyStatus
+  } = state
+
   const { id: facilityId, practice } = facility || {};
   const { id: practiceId } = practice || {}
-
   const isSuper = isSuperAdmin(roles)
-  const isPrac = isPracticeAdmin(roles)
-  const isFac= isFacilityAdmin(roles)
 
+  const isPractice = isPracticeAdmin(roles)
+  const isFac = isFacilityAdmin(roles)
   const dropZoneRef = useRef<FormForwardRef>(null)
 
   const methods = useForm<CreateAgreementFormProps>({
     mode: "all",
     resolver: yupResolver(createAgreementSchema)
   });
-  const { reset, handleSubmit, setValue } = methods
+  const { reset, handleSubmit, setValue, formState: { errors } } = methods
+  const validated = !!Object.keys(errors).length
 
   const [createAgreement, { loading: createAgreementLoading }] = useCreateAgreementMutation({
     onError({ message }) {
@@ -133,9 +142,9 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   }, [findAgreement, id])
 
   const onSubmit: SubmitHandler<CreateAgreementFormProps> = async ({ title }) => {
-    const agreementInputs = isSuper ? { practiceId: '', facilityId: '' } : 
-                            isPrac ? { practiceId,  facilityId: '' } :
-                            isFac ?  { practiceId, facilityId } : undefined
+    const agreementInputs = isSuper ? { practiceId: null, facilityId: null } :
+      isPractice ? { practiceId, facilityId: null } :
+        isFac ? { practiceId, facilityId } : undefined
     if (id) {
       if (withFile) {
         return await updateAgreement({
@@ -145,7 +154,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               title: title,
               signatureRequired,
               viewAgreementBeforeAgreeing,
-              ...(agreementInputs ? agreementInputs: {})
+              ...(agreementInputs ? agreementInputs : {})
             }
           },
         });
@@ -160,15 +169,19 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               body: agreementBody,
               signatureRequired,
               viewAgreementBeforeAgreeing,
-              ...(agreementInputs ? agreementInputs: {})
+              ...(agreementInputs ? agreementInputs : {})
             }
           },
         });
       }
     }
+    if ((descriptionType === descriptionTypes[0] && !agreementBody.length)) {
+      dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
+    }
 
-    if ((descriptionType === descriptionTypes[0] && !agreementBody.length) || (descriptionType === descriptionTypes[1] && !files?.length)) {
-      return
+    if ((descriptionType === descriptionTypes[1] && !files?.length)) {
+      dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
+      return Alert.error(PLEASE_SELECT_MEDIA)
     }
 
     await createAgreement({
@@ -178,13 +191,15 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
           title: title,
           signatureRequired,
           viewAgreementBeforeAgreeing,
-          ...(agreementInputs ? agreementInputs: {})
+          ...(agreementInputs ? agreementInputs : {})
         }
       },
     });
   };
 
-  const onEditorChange = ({ editor }: CKEditorEventPayload<"change">) => dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: editor.getData() });
+  const onEditorChange = (editor: ClassicEditor) =>
+    dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: editor.getData() });
+
   return (
     <>
       <FormProvider {...methods}>
@@ -193,7 +208,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
             <BackButton to={`${AGREEMENTS_ROUTE}`} />
 
             <Box ml={2}>
-              <PageHeader title={id ? EDIT_AGREEMENT : ADD_AGREEMENT} path={[DASHBOARD_BREAD, AGREEMENTS_BREAD, id ? AGREEMENTS_EDIT_BREAD : AGREEMENTS_NEW_BREAD]} />
+              <PageHeader title={id ? EDIT_AGREEMENT : ADD_AGREEMENT}
+                path={[DASHBOARD_BREAD, AGREEMENTS_BREAD, id ?
+                  AGREEMENTS_EDIT_BREAD : AGREEMENTS_NEW_BREAD]
+                }
+              />
             </Box>
 
           </Box>
@@ -201,66 +220,73 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
             <Typography variant="h4" color='textPrimary'>{AGREEMENTS}</Typography>
 
             <Box display="flex" alignItems="center">
-              <Button type="submit" variant="contained" color="primary" disabled={createAgreementLoading || updateAgreementLoading}>
+              <Button type="submit" variant="contained" color="primary"
+                disabled={createAgreementLoading || updateAgreementLoading}
+              >
                 {SAVE_TEXT}
-                {(createAgreementLoading || updateAgreementLoading) && <CircularProgress size={20} color="inherit" />}
+
+                {(createAgreementLoading || updateAgreementLoading) &&
+                  <CircularProgress size={20} color="inherit" />
+                }
               </Button>
             </Box>
           </Box>
 
           <Card>
-            {
-              id && isLoaded ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
-                <Box p={3}>
-                  <Box pb={2} mb={4} borderBottom={`1px solid ${GRAY_SIX}`}>
-                    <Typography variant='h6'>{DETAILS}</Typography>
-                  </Box>
-                  <Grid container spacing={3}>
-                    <Grid item md={4} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="title"
-                        controllerLabel={TITLE}                         
-                      />
-                    </Grid>
-                    {!id ? <Grid item md={12} sm={12} xs={12}>
-                      <Typography variant='body1'>Description Type</Typography>
+            {id && isLoaded ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> :
+              <Box p={3}>
+                <Box pb={2} mb={4} borderBottom={`1px solid ${GRAY_SIX}`}>
+                  <Typography variant='h6'>{DETAILS}</Typography>
+                </Box>
 
-                      <Box className={chartingClasses.toggleProblem}>
-                        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                          {descriptionTypes.map(type =>
-                            <Box onClick={() => dispatch({ type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: type })}
-                              className={type === descriptionType ? 'selectedBox selectBox' : 'selectBox'}
-                            >
-                              <Typography variant='h6'>{type}</Typography>
-                            </Box>
-                          )}
-                        </Box>
+                <Grid container spacing={3}>
+                  <Grid item md={4} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      isRequired
+                      controllerName="title"
+                      controllerLabel={TITLE}
+                    />
+                  </Grid>
+
+                  {!id && <Grid item md={12} sm={12} xs={12}>
+                    <Typography variant='body1'>{DESCRIPTION_TYPE}</Typography>
+
+                    <Box className={chartingClasses.toggleProblem}>
+                      <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                        {descriptionTypes.map(type =>
+                          <Box
+                            className={type === descriptionType ? 'selectedBox selectBox' : 'selectBox'}
+                            onClick={() => {
+                              dispatch({ type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: type })
+                              type === descriptionTypes[1] && dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: '' })
+                            }}
+                          >
+                            <Typography variant='h6'>{type}</Typography>
+                          </Box>
+                        )}
                       </Box>
-                    </Grid> : null}
+                    </Box>
+                  </Grid>}
 
-                    {descriptionType === descriptionTypes[0] && !withFile && <Grid item md={12} sm={12} xs={12}>
-                      <Typography>{AGREEMENT_BODY}</Typography>
-                      <Box p={0.5} />
-                      {
-                        id ? !isLoaded &&
-                          <CKEditor
-                            name="agreementBody"
-                            initData={agreementBody}
-                            onChange={onEditorChange}
-                          /> :
-                          <CKEditor
-                            name="agreementBody"
-                            initData={agreementBody}
-                            onChange={onEditorChange}
-                          />
-                      }
-                      {!agreementBody.length ? <Typography className='danger' variant="caption">Agreement Body is a required Field</Typography> : ''}
-                    </Grid>}
+                  {descriptionType === descriptionTypes[0] && !withFile && <Grid item md={12} sm={12} xs={12}>
+                    <Typography>{AGREEMENT_BODY}</Typography>
+                    <Box p={0.5} />
 
-                    <Box p={2} />
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={agreementBody}
+                      onChange={(_: any, editor: ClassicEditor) => onEditorChange(editor)}
+                    />
 
-                    {!id ? descriptionType === descriptionTypes[1] && <Grid item md={12} sm={12} xs={12}>
+                    {bodyStatus &&
+                      <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography>}
+                  </Grid>}
+
+                  <Box p={2} />
+
+                  {!id && descriptionType === descriptionTypes[1] &&
+                    <Grid item md={12} sm={12} xs={12}>
                       <DropzoneImage
                         isEdit={false}
                         ref={dropZoneRef}
@@ -277,37 +303,50 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         setFiles={(files: File[]) => dispatch({ type: ActionType.SET_FILES, files: files })}
                         acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
                       />
-                      {!files?.length ? <Typography className='danger' variant="caption">Please select atleast one file</Typography> : ''}
-                    </Grid> : null}
-                    <Grid item md={12} sm={12} xs={12}>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Box>
-                              <Checkbox color="primary" checked={signatureRequired} onChange={({ currentTarget: { checked } }) => dispatch({ type: ActionType.SET_SIGNATURE_REQUIRED, signatureRequired: checked })} />
-                            </Box>
-                          }
 
-                          label={<Typography variant="h6">{REQUIRE_SIGNATURE}</Typography>}
-                        />
-                      </FormGroup>
-                    </Grid>
+                      {validated && !!!files?.length &&
+                        <Typography className='danger' variant="caption">{FILE_REQUIRED}</Typography>
+                      }
+                    </Grid>}
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Box>
-                              <Checkbox color="primary" checked={viewAgreementBeforeAgreeing} onChange={({ currentTarget: { checked } }) => dispatch({ type: ActionType.SET_VIEW_AGREEMENT_BEFORE_AGREEING, viewAgreementBeforeAgreeing: checked })} />
-                            </Box>
-                          }
+                  <Grid item md={12} sm={12} xs={12}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Box>
+                            <Checkbox color="primary" checked={signatureRequired}
+                              onChange={({ currentTarget: { checked } }) =>
+                                dispatch({ type: ActionType.SET_SIGNATURE_REQUIRED, signatureRequired: checked })}
+                            />
+                          </Box>
+                        }
 
-                          label={<Typography variant="h6">{REQUIRE_AGREEMENT_BEFORE_AGREEING}</Typography>}
-                        />
-                      </FormGroup>
-                    </Grid>
+                        label={<Typography variant="h6">{REQUIRE_SIGNATURE}</Typography>}
+                      />
+                    </FormGroup>
                   </Grid>
-                </Box>
+
+                  <Grid item md={12} sm={12} xs={12}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Box>
+                            <Checkbox color="primary" checked={viewAgreementBeforeAgreeing}
+                              onChange={({ currentTarget: { checked } }) =>
+                                dispatch({
+                                  type: ActionType.SET_VIEW_AGREEMENT_BEFORE_AGREEING,
+                                  viewAgreementBeforeAgreeing: checked
+                                })}
+                            />
+                          </Box>
+                        }
+
+                        label={<Typography variant="h6">{REQUIRE_AGREEMENT_BEFORE_AGREEING}</Typography>}
+                      />
+                    </FormGroup>
+                  </Grid>
+                </Grid>
+              </Box>
             }
           </Card>
         </form>
@@ -316,4 +355,4 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   )
 }
 
-export default AddAgreementComponent
+export default AddAgreementComponent;

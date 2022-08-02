@@ -1,34 +1,41 @@
 // packages block
-import { useParams } from 'react-router';
 import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { useParams } from 'react-router';
 import DropIn from 'braintree-web-drop-in-react';
+import { Box, Button, Grid, Toolbar, Typography } from '@material-ui/core';
 import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload,
 } from 'braintree-web-drop-in';
 // components block
 import Alert from '../../../common/Alert';
-import BackdropLoader from '../../../common/Backdrop';
-// constants and types block
-import history from '../../../../history';
-import { GREY } from '../../../../theme';
-import { AIMEDLOGO } from '../../../../assets/svgs';
-import { ParamsType } from '../../../../interfacesTypes';
-import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
-  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER, PAY_VIA_ACH,
-} from '../../../../constants';
-import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
-import { 
-  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, 
-} from '../../../../generated/graphql';
 import ACHPaymentComponent from '../achPayment'
+import Loader from '../../../common/Loader';
+// constants and types block
+import { GREY, WHITE } from '../../../../theme';
+import history from '../../../../history';
+import { ACHIcon, AIMEDLOGO, PayLaterIcon } from '../../../../assets/svgs';
+import { ParamsType } from '../../../../interfacesTypes';
 import { appointmentChargesDescription } from '../../../../utils';
+import { useHeaderStyles } from '../../../../styles/headerStyles';
+import {
+  externalPaymentReducer, Action, initialState, State, ActionType
+} from '../../../../reducers/externalPaymentReducer';
+import {
+  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus,
+} from '../../../../generated/graphql';
+import {
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, PAY_VIA_ACH,
+  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER,
+} from '../../../../constants';
 
 const ExternalPaymentComponent = (): JSX.Element => {
+  const classes = useHeaderStyles()
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
-  const { appointmentPaymentToken, price, patientId, facilityId, providerId, showPayBtn, instance, achPayment } = state;
+
+  const {
+    appointmentPaymentToken, price, patientId, facilityId, providerId, showPayBtn, instance, achPayment
+  } = state;
 
   const moveNext = () => history.push(`${SLOT_CONFIRMATION}/${id}`)
 
@@ -80,9 +87,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
     },
 
     async onCompleted(data) {
-      const {
-        getAppointment: { response, appointment },
-      } = data;
+      const { getAppointment: { response, appointment } } = data;
 
       if (response) {
         const { status } = response;
@@ -168,100 +173,115 @@ const ExternalPaymentComponent = (): JSX.Element => {
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
   return (
-    <Box bgcolor={GREY} minHeight='100vh' padding='30px 30px 30px 60px'>
-      <AIMEDLOGO />
-      <Box mt={3} mb={1}>
-        <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
+    <>
+      <Box className={classes.appBar}>
+        <Toolbar>
+          <AIMEDLOGO />
+        </Toolbar>
       </Box>
 
-      <Typography variant='body1'>
-        {appointmentChargesDescription(price || '0')}
-      </Typography>
+      <Box bgcolor={GREY} minHeight="calc(100vh - 80px)" width='100vw' overflow='hidden'>
+        <Box pt={5} textAlign="center">
+          <Typography variant='h2'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
 
-      <Grid container spacing={3} justifyContent='center' alignItems='center'>
-        <Grid item md={6} sm={12} xs={12}>
-          <Box mt={5} p={5} className="paypal-card-wrap">
-            {appointmentPaymentToken ? (
-              <Box>
-                {!achPayment && (<Fragment>
-                  <DropIn
-                    options={{
-                      authorization: appointmentPaymentToken,
-                      translations: {
-                        PayPal: PAY_VIA_PAYPAL,
-                        Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
-                        chooseAWayToPay: '',
-                      },
+          <Typography variant='h6'>
+            {appointmentChargesDescription(price || '0')}
+          </Typography>
+        </Box>
 
-                      paypal: {
-                        flow: CHECKOUT,
-                        currency: USD,
-                        amount: price,
-                        commit: true,
-                        buttonStyle: {
-                          tagline: false,
+        <Grid container spacing={3} justifyContent='center' alignItems='center'>
+          <Grid item md={6} sm={12} xs={12}>
+            <Box mt={5} p={5} className="paypal-card-wrap">
+              {appointmentPaymentToken ? (
+                <Box>
+                  {!achPayment && (<Fragment>
+                    <DropIn
+                      options={{
+                        authorization: appointmentPaymentToken,
+                        translations: {
+                          PayPal: PAY_VIA_PAYPAL,
+                          Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
+                          chooseAWayToPay: '',
                         },
-                      },
 
-                      card: {
-                        cardholderName: true,
-                        overrides: {
-                          styles: {
-                            input: {
-                              'font-size': '18px',
-                            },
-                            '.number': {
-                              color: 'green',
-                            },
-                            '.invalid': {
-                              color: 'red',
+                        paypal: {
+                          flow: CHECKOUT,
+                          currency: USD,
+                          amount: price,
+                          commit: true,
+                          buttonStyle: {
+                            tagline: false,
+                          },
+                        },
+
+                        card: {
+                          cardholderName: true,
+                          overrides: {
+                            styles: {
+                              input: {
+                                'font-size': '18px',
+                              },
+                              '.number': {
+                                color: 'green',
+                              },
+                              '.invalid': {
+                                color: 'red',
+                              },
                             },
                           },
                         },
-                      },
 
-                      threeDSecure: { amount: price },
-                      dataCollector: true,
-                      paymentOptionPriority: ['paypal', 'card'],
-                    }}
+                        threeDSecure: { amount: price },
+                        dataCollector: true,
+                        paymentOptionPriority: ['paypal', 'card'],
+                      }}
 
-                    onPaymentMethodRequestable={onPaymentMethodRequestable}
-                    onPaymentOptionSelected={onPaymentOptionSelected}
-                    onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
-                  />
-                  <Grid container>
-                    {showPayBtn && (
-                      <Grid item>
-                        <Box pr={2}>
-                          <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
-                            {PAY}
-                          </Button>
+                      onPaymentMethodRequestable={onPaymentMethodRequestable}
+                      onPaymentOptionSelected={onPaymentOptionSelected}
+                      onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
+                    />
+
+                    {!showPayBtn && <Grid container>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <ACHIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
                         </Box>
                       </Grid>
-                    )}
 
-                    <Grid item>
-                      <Box pr={2}>
-                        <Button variant='contained' onClick={achClickHandler} color={'primary'}>{PAY_VIA_ACH}</Button>
-                      </Box>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={moveNext} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <PayLaterIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_LATER}</Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>}
+
+                    <Grid container justifyContent='flex-end'>
+                      {showPayBtn && (
+                        <Grid item md={12} sm={12}>
+                          <Box pr={2}>
+                            <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
+                              {PAY}
+                            </Button>
+                          </Box>
+                        </Grid>
+                      )}
                     </Grid>
-                    <Grid item>
-                      <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-                    </Grid>
-                  </Grid>
-                </Fragment>)}
-                {achPayment && <ACHPaymentComponent
-                  token={appointmentPaymentToken}
-                  dispatcher={dispatch} states={state} moveNext={moveNext} />}
-              </Box>
-            ) : (
-              <BackdropLoader loading={true} />
-            )}
-          </Box>
+                  </Fragment>)}
+
+                  {achPayment && <ACHPaymentComponent
+                    token={appointmentPaymentToken}
+                    dispatcher={dispatch} states={state} moveNext={moveNext} />}
+                </Box>
+              ) : <Loader loading={true} />}
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-
-    </Box>
+      </Box>
+    </>
   );
 };
 

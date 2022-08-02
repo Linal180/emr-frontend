@@ -1,0 +1,21 @@
+query FindAllModifiers($findAllModifierInput: FindAllModifierInput!) {
+  findAllModifiers(findAllModifierInput: $findAllModifierInput) {
+    modifiers {
+      id
+      code
+      description
+
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}

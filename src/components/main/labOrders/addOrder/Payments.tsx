@@ -1,64 +1,67 @@
 // packages block
-import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import moment from "moment";
+import { useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AddCircleOutline, } from '@material-ui/icons';
-import { GREY_NINE, GREY_SEVEN, GREY_THREE, WHITE } from "../../../../theme";
-import { Box, colors, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
-//components block
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+// components block
 import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
-import CodesTable from "../../../common/CodesTable";
-import CopayModal from "../../../common/CopayModal";
-import DatePicker from "../../../common/DatePicker";
-import InputController from '../../../../controller';
-import TableSelector from "../../../common/Selector/TableSelector";
-
-// interface, utils
+import Loader from "../../../common/Loader";
+// constants block
 import history from "../../../../history";
-import { formatValue, setRecord } from "../../../../utils";
 import { createBillingSchema } from "../../../../validationSchemas";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { convertDateFromUnix, formatEnumMember, getCharFromNumber, getNumberFromChar, setRecord } from "../../../../utils";
 import {
-  BillingComponentProps, CodeTablesData, CodeTypeInterface, CreateBillingProps, ParamsType
+  Action, ActionType, billingReducer, initialState, State
+} from "../../../../reducers/billingReducer";
+import {
+  BillingComponentProps, CodeTablesData, CreateBillingProps, ParamsType
 } from "../../../../interfacesTypes";
 import {
-  Code, CodesInput, CodeType, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientBillingStatus,
-  PatientPaymentType, useCreateBillingMutation, useFetchBillingDetailsByAppointmentIdLazyQuery,
-  useFetchPatientInsurancesLazyQuery
-} from "../../../../generated/graphql";
-
-//constants block
-import {
-  ADD_ANOTHER_PATIENT_PAYMENT, AMOUNT_DOLLAR, AUTO_ACCIDENT, BILLING_STATUS, CPT_CODES, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  EMPLOYMENT, EMPTY_OPTION, FORBIDDEN_EXCEPTION, HCFA_DESC, ICD_TEN_CODES, ITEM_MODULE, MAPPED_ONSET_DATE_TYPE,
-  MAPPED_OTHER_DATE_TYPE, MAPPED_PATIENT_BILLING_STATUS, MAPPED_PATIENT_PAYMENT_TYPE, NO, ONSET_DATE, ONSET_DATE_TYPE,
-  OTHER_ACCIDENT, OTHER_DATE, OTHER_DATE_TYPE, PAYMENT_TYPE, TABLE_SELECTOR_MODULES, VIEW_APPOINTMENTS_ROUTE, YES
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, VIEW_APPOINTMENTS_ROUTE
 } from "../../../../constants";
+import {
+  CodeType, DoctorPatientRelationType, OnsetDateType, OrderOfBenefitType, OtherDateType,
+  PatientPaymentType, useCreateBillingMutation, useCreateClaimMutation, useGetPatientProvidersLazyQuery,
+  useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
+  useFetchBillingDetailsByAppointmentIdLazyQuery,
+  useGenerateClaimNoLazyQuery,
+  useFindPatientLastAppointmentLazyQuery,
+} from "../../../../generated/graphql";
+import BillingForm from "../../billing/addBill/BillingForm";
 
-const PaymentsComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, labOrderNumber }) => {
-  const classesToggle = usePublicAppointmentStyles();
+const Payments: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
-  const [employment, setEmployment] = useState(false);
-  const [autoAccident, setAutoAccident] = useState(false);
-  const [otherAccident, setOtherAccident] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [insuranceId, setInsuranceId] = useState<string>('')
-  const [billingCodes, setBillingCodes] = useState<CodeTypeInterface>({})
-  const [tableCodesData, setTableCodesData] = useState<CodeTablesData>({})
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
+  const { employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout } = state
 
   const methods = useForm<CreateBillingProps>({
     mode: "all",
+    defaultValues: {
+      claimDate: moment().format('MM-DD-YYYY') || ''
+    },
     resolver: yupResolver(createBillingSchema)
   });
-  const { handleSubmit, setValue, control, watch } = methods;
-  const { paymentType } = watch()
-  const { id: paymentTypeId } = paymentType ?? {}
-  const shouldShowInsuranceFields = paymentTypeId === PatientPaymentType.NoInsurance
+  const { setValue, watch } = methods;
 
-  const [createBilling] = useCreateBillingMutation({
+  const [createBilling, { loading: createBillingLoading }] = useCreateBillingMutation({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
+    onCompleted() {
+      if (labOrderNumber) {
+        history.push(`/patients/${id}/details/10`)
+        return
+      }
+
+      shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
+    }
+  });
+
+  const [createClaim, { loading: createClaimLoading }] = useCreateClaimMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -67,131 +70,41 @@ const PaymentsComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, labOr
     },
 
     onCompleted(data) {
-      if (labOrderNumber) {
-        history.push(`/patients/${id}/details/10`)
-        return
+      if (data) {
+        const { createClaim } = data || {}
+        const { response, claimStatus } = createClaim || {}
+        const { status } = response || {}
+        if (status === 200) {
+          const { id, statusId, statusName } = claimStatus || {}
+          id && setValue('claimStatus', { id, name: statusName, statusName: statusId })
+        }
       }
-      history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
     }
   });
 
-  const [fetchBillingDetailsByAppointmentId] = useFetchBillingDetailsByAppointmentIdLazyQuery({
+  const [getClaimFile, { loading: getClaimFileLoading }] = useGetClaimFileLazyQuery({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
+
     onCompleted(data) {
       if (data) {
-        const { fetchBillingDetailsByAppointmentId } = data ?? {}
-        const { billing } = fetchBillingDetailsByAppointmentId ?? {}
-        const { onsetDateType, otherDateType, patientBillingStatus, patientPaymentType,
-          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount } = billing ?? {}
+        const { getClaimFile } = data
+        const { claimFile } = getClaimFile || {}
 
-        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
-          const codeType = codeValues.codeType
-          const codeData = {
-            id: codeValues.id,
-            code: codeValues.code ?? '',
-            description: codeValues.description ?? '',
-            price: codeValues.price ?? ''
-          }
-
-          if (acc[codeType]) {
-            acc[codeType]?.push(codeData)
-            return acc
-          }
-
-          acc[codeType] = [codeData]
-          return acc
-        }, {})
-
-        setTableCodesData(transformedCodes ?? {})
-
-        setOtherAccident(otherAccident ?? false)
-        setAutoAccident(autoAccident ?? false)
-        setEmployment(employment ?? false)
-        setValue('billingStatus', setRecord(patientBillingStatus, patientBillingStatus))
-        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
-        setValue('otherDateType', setRecord(otherDateType, otherDateType))
-        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
-        setValue('otherDate', otherDate ?? '')
-        setValue('onsetDate', onsetDate ?? '')
-        setValue('amount', amount ?? '')
+        const buffer = Buffer.from(claimFile || [])
+        const blob = new Blob([new Uint8Array(buffer)], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob)
+        var win = window.open();
+        win?.document.write('<iframe src="' + url + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>')
       }
     }
-  })
+  });
 
-  const fetchBillingDetails = useCallback(async () => {
-    try {
-      fetchBillingDetailsByAppointmentId({
-        variables: {
-          appointmentId: appointmentId ?? ''
-        }
-      })
-    } catch (error) { }
-  }, [appointmentId, fetchBillingDetailsByAppointmentId])
-
-  useEffect(() => {
-    shouldDisableEdit && fetchBillingDetails();
-  }, [fetchBillingDetails, shouldDisableEdit]);
-
-  const getCodeType = (codeName: TABLE_SELECTOR_MODULES) => {
-    switch (codeName) {
-      case TABLE_SELECTOR_MODULES.icdCodes:
-        return CodeType.Icd_10Code
-      case TABLE_SELECTOR_MODULES.hcpcsCode:
-        return CodeType.HcpcsCode
-      case TABLE_SELECTOR_MODULES.customCode:
-        return CodeType.CustomCode
-      case TABLE_SELECTOR_MODULES.cptCode:
-        return CodeType.CptCode
-      default:
-        break;
-    }
-  }
-
-  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
-    if (shouldDisableEdit) {
-      history.push(VIEW_APPOINTMENTS_ROUTE)
-    } else {
-      const { amount, billingStatus, paymentType, onsetDate, onsetDateType, otherDate, otherDateType } = values
-      const { id: onSetDateTypeId } = onsetDateType ?? {}
-      const { id: otherDateTypeId } = otherDateType ?? {}
-      const { id: billingStatusId } = billingStatus ?? {}
-      const { id: paymentTypeId } = paymentType ?? {}
-
-      const transformedBillingCodes = billingCodes && Object.keys(billingCodes).reduce<CodesInput[]>((acc, key) => {
-        const billingCodeValues = billingCodes[key as keyof CodeTypeInterface] ?? []
-        const transformedBillingCodeValues = billingCodeValues.map((billingCodeValue) => {
-          const { id, ...billingCodeToCreate } = billingCodeValue ?? {}
-          return billingCodeToCreate
-        })
-        acc.push(...transformedBillingCodeValues)
-        return acc
-      }, [])
-
-      const createBillingInput = {
-        ...(appointmentId && { appointmentId: appointmentId || '' }),
-        autoAccident: autoAccident,
-        employment: employment,
-        otherAccident: otherAccident,
-        onsetDate: onsetDate,
-        otherDate: otherDate,
-        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
-        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
-        amount: amount,
-        patientBillingStatus: billingStatusId as PatientBillingStatus,
-        patientPaymentType: paymentTypeId as PatientPaymentType,
-        patientId: id ?? '',
-        codes: transformedBillingCodes,
-        ...(labOrderNumber && { labOrderNumber: labOrderNumber })
-      }
-
-      createBilling({
-        variables: {
-          createBillingInput
-        }
-      })
-    }
-  }
-
-  const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
+  const [fetchPatientInsurances, { loading: fetchPatientInsurancesLoading }] = useFetchPatientInsurancesLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -211,251 +124,420 @@ const PaymentsComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, labOr
               return acc += copay.amount ? +copay.amount : 0
             }, 0)
             setValue('amount', String(totalAmount ?? ''))
-            setInsuranceId(id ?? "")
+            id && dispatch({ type: ActionType.SET_INSURANCE_ID, insuranceId: id })
           }
         }
       }
     }
   });
 
-  useEffect(() => {
-    fetchPatientInsurances()
-  }, [fetchPatientInsurances])
+  const [fetchPatientAppointment, { loading: fetchPatientAppointmentLoading }] = useFindPatientLastAppointmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: ({
+      lastVisitedAppointmentInput: {
+        patientId: id
+      }
+    }),
 
-  const toggleHandleChange = ({ target: { checked } }: ChangeEvent<HTMLInputElement>, name: string) => {
-    switch (name) {
-      case 'employment':
-        setEmployment(checked)
-        break;
-      case 'autoAccident':
-        setAutoAccident(checked)
-        break;
-      case 'otherAccident':
-        setOtherAccident(checked)
-        break;
-      default:
-        break;
+    onCompleted(data) {
+      const { findPatientLastAppointment } = data || {}
+
+      if (findPatientLastAppointment) {
+        const { appointment, response } = findPatientLastAppointment
+        if (response && response.status === 200) {
+          const { scheduleStartDateTime } = appointment || {}
+          scheduleStartDateTime && setValue('otherDate', convertDateFromUnix(scheduleStartDateTime))
+        }
+      }
     }
-  };
+  });
 
-  const handleCodes = useCallback((type: TABLE_SELECTOR_MODULES, codes: Code[]) => {
-    setBillingCodes(prevValue => ({
-      ...prevValue,
-      [type]: codes.map((codeValues) => {
+  const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      const { getAppointment: { response, appointment } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (appointment && status && status === 200) {
+          const { scheduleStartDateTime, facility } = appointment || {}
+          const { id } = facility || {}
+
+          id && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: id })
+          setValue('serviceDate', convertDateFromUnix(scheduleStartDateTime))
+        }
+      }
+    }
+  });
+
+  const [getPatientProviders, { loading: getPatientProvidersLoading }] = useGetPatientProvidersLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() { },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatientProviders } = data;
+
+        if (getPatientProviders) {
+
+          const { providers } = getPatientProviders;
+          const primaryProvider = providers?.find((provider) => provider?.relation === DoctorPatientRelationType.PrimaryProvider)
+          const renderingProvider = providers?.find((provider) => provider?.relation === DoctorPatientRelationType.RenderingProvider)
+
+          primaryProvider && setValue('servicingProvider', setRecord(primaryProvider?.doctorId || '', `${primaryProvider?.doctor?.firstName} ${primaryProvider?.doctor?.lastName}`))
+          renderingProvider && setValue('renderingProvider', setRecord(renderingProvider?.doctorId || '', `${renderingProvider?.doctor?.firstName} ${renderingProvider?.doctor?.lastName}`))
+        }
+      }
+    },
+  });
+
+  const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() { },
+
+    onCompleted(data) {
+      const { getFacility } = data || {};
+      const { facility } = getFacility || {}
+      const { serviceCode, id, name, practice } = facility || {}
+      const { name: practiceName, id: practiceId } = practice || {}
+
+      id && name && setValue('facility', setRecord(id, name))
+      practiceName && setValue('practice', practiceName)
+      practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
+      serviceCode && setValue('pos', setRecord(serviceCode, formatEnumMember(serviceCode)))
+    }
+  });
+
+  const [generateClaimNo, { loading: generateClaimNoLoading }] = useGenerateClaimNoLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() { },
+
+    onCompleted(data) {
+      const { generateClaimNo } = data || {};
+      const { claimNumber } = generateClaimNo || {}
+      dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNumber || '' })
+    }
+  });
+
+  const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
+    onCompleted(data) {
+      if (data) {
+        const { fetchBillingDetailsByAppointmentId } = data ?? {}
+        const { billing } = fetchBillingDetailsByAppointmentId ?? {}
+
+        const { onsetDateType, otherDateType, patientPaymentType,
+          autoAccident, codes, employment, onsetDate, otherDate, otherAccident, amount, claimDate, facility,
+          pos, renderingProvider, serviceDate, servicingProvider, claimNo, uncoveredAmount, claimStatus, to, from,
+          feeSchedule, claim
+        } = billing ?? {}
+
+        const { practice } = facility || {}
+        const { name: practiceName, id: practiceId } = practice || {}
+        const transformedCodes = codes?.reduce<CodeTablesData>((acc, codeValues) => {
+          const { codeType, code, diagPointer, price, unit, description, m1, m2, m3, m4 } = codeValues
+          const codeData = {
+            id: codeValues.id,
+            codeId: codeValues?.code || '',
+            code: code ?? '',
+            description: description ?? '',
+            price: price ?? '',
+            codeType,
+            m1: setRecord(m1 || '', m1 || ''),
+            m2: setRecord(m2 || '', m2 || ''),
+            m3: setRecord(m3 || '', m3 || ''),
+            m4: setRecord(m4 || '', m4 || ''),
+            unit: unit ?? '',
+            diagPointer: diagPointer ?? '',
+            diag1: diagPointer ? String(getNumberFromChar(diagPointer, 0)) : '',
+            diag2: diagPointer ? String(getNumberFromChar(diagPointer, 1)) : '',
+            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : '',
+            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
+          }
+
+          if (acc[codeType]) {
+            acc[codeType]?.push(codeData)
+            return acc
+          }
+
+          acc[codeType] = [codeData]
+          return acc
+        }, {})
+
+        transformedCodes && Object.keys(transformedCodes).forEach((key) => {
+          if (key === CodeType.Icd_10Code) {
+            transformedCodes && setValue(ITEM_MODULE.icdCodes, transformedCodes?.ICD_10_CODE || [], { shouldValidate: true })
+            return
+          }
+
+          if (key === CodeType.CptCode) {
+            transformedCodes && setValue(ITEM_MODULE.cptFeeSchedule, transformedCodes.CPT_CODE || [])
+            return
+          }
+        })
+        transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
+
+        otherAccident && dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: otherAccident })
+        autoAccident && dispatch({ type: ActionType.SET_AUTO_ACCIDENT, autoAccident: autoAccident })
+        employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
+        claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
+        practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
+
+        setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
+        setValue('otherDateType', setRecord(otherDateType, otherDateType))
+        setValue('onsetDateType', setRecord(onsetDateType, onsetDateType))
+        setValue('otherDate', otherDate ?? '')
+        setValue('onsetDate', onsetDate ?? '')
+        setValue('amount', amount ?? '')
+        setValue('uncoveredAmount', uncoveredAmount ?? '')
+        setValue('claimDate', claimDate ?? '')
+        setValue('serviceDate', serviceDate ?? '')
+        setValue('to', to ?? '')
+        setValue('from', from ?? '')
+        pos && setValue('pos', setRecord(pos, formatEnumMember(pos)))
+        claimStatus?.id && setValue('claimStatus', { id: claimStatus?.id, name: claimStatus?.statusName || '', statusName: claimStatus?.statusId })
+        facility?.id && setValue('facility', setRecord(facility.id, facility.name))
+        feeSchedule?.id && setValue('feeSchedule', setRecord(feeSchedule.id, feeSchedule.name || ''))
+        practiceName && setValue('practice', practiceName)
+        servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
+        renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
+        dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
+      }
+    }
+  })
+
+  const createClaimCallback = useCallback((claimMethod?: boolean) => {
+    try {
+      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to } = watch()
+      const { id: onSetDateTypeId } = onsetDateType ?? {}
+      const { id: otherDateTypeId } = otherDateType ?? {}
+
+      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
+      const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
+        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
+        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
+        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
+        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
+        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
+        const cptVariables = {
+          diagPointer: diagPointer,
+          m1: m1?.name,
+          m2: m2?.name,
+          m3: m3?.name,
+          m4: m4?.name,
+          unit
+        }
         return {
-          ...codeValues,
-          codeType: getCodeType(type) as CodeType
+          ...billingCodeToCreate,
+          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+        }
+      }) : []
+
+      const createClaimInput = {
+        appointmentId,
+        autoAccident,
+        codes: transformedBillingCodes,
+        employment,
+        onsetDate,
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        otherAccident,
+        otherDate,
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        patientId: id,
+        from,
+        to
+      }
+
+      const getClaimFileInput = {
+        appointmentId,
+        autoAccident,
+        codes: transformedBillingCodes,
+        employment,
+        onsetDate,
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        otherAccident,
+        otherDate,
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        patientId: id,
+        from,
+        to
+      }
+
+      !claimMethod ? createClaim({ variables: { createClaimInput } }) : getClaimFile({ variables: { getClaimFileInput } })
+
+    } catch (error) { }
+  }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
+
+  const fetchBillingDetails = useCallback(async () => {
+    try {
+      fetchBillingDetailsByAppointmentId({
+        variables: {
+          appointmentId: appointmentId ?? ''
         }
       })
-    }))
-  }, [])
+    } catch (error) { }
+  }, [appointmentId, fetchBillingDetailsByAppointmentId])
+
+  const fetchAppointment = useCallback(async () => {
+    try {
+      appointmentId && await getAppointment({
+        variables: { getAppointment: { id: appointmentId } }
+      })
+    } catch (error) { }
+  }, [getAppointment, appointmentId])
+
+  const fetchFacility = useCallback(async () => {
+    try {
+      facilityId && await getFacility({
+        variables: { getFacility: { id: facilityId } }
+      })
+    } catch (error) { }
+  }, [facilityId, getFacility])
+
+  const fetchAllPatientsProviders = useCallback(async () => {
+    try {
+      id && await getPatientProviders({
+        variables: {
+          getPatient: { id }
+        }
+      })
+    } catch (error) { }
+  }, [id, getPatientProviders])
+
+  const fetchClaimNumber = useCallback(async () => {
+    try {
+      await generateClaimNo()
+    } catch (error) { }
+  }, [generateClaimNo])
+
+  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
+    if (shouldDisableEdit) {
+      history.push(VIEW_APPOINTMENTS_ROUTE)
+    } else {
+      const { amount, paymentType, onsetDate, onsetDateType, otherDate,
+        otherDateType, cptFeeSchedule, IcdCodes, facility, claimDate, pos, serviceDate, renderingProvider,
+        servicingProvider, uncoveredAmount, claimStatus, from, to, feeSchedule } = values
+      const { id: onSetDateTypeId } = onsetDateType ?? {}
+      const { id: otherDateTypeId } = otherDateType ?? {}
+      const { id: paymentTypeId } = paymentType ?? {}
+      const { id: facilityId } = facility ?? {}
+      const { id: renderingProviderId } = renderingProvider ?? {}
+      const { id: servicingProviderId } = servicingProvider ?? {}
+      const { id: posId } = pos ?? {}
+      const { id: claimStatusId } = claimStatus ?? {}
+      const { id: feeScheduleId } = feeSchedule ?? {}
+
+      const billingCodes = [...cptFeeSchedule, ...IcdCodes]
+      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
+        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+        const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
+        const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
+        const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
+        const diagD = diag4 ? getCharFromNumber(Number(diag4) - 1) : ''
+        const diagPointer = `${diagA}${diagB}${diagC}${diagD}`
+        const cptVariables = {
+          diagPointer: diagPointer,
+          ...(m1?.id && { m1: m1?.id }),
+          ...(m2?.id && { m2: m2?.id }),
+          ...(m3?.id && { m3: m3?.id }),
+          ...(m4?.id && { m4: m4?.id }),
+          unit
+        }
+        return {
+          ...billingCodeToCreate,
+          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+        }
+      })
+
+      const createBillingInput = {
+        ...(appointmentId && { appointmentId: appointmentId || '' }),
+        ...(facilityId && { facilityId: facilityId || '' }),
+        ...(renderingProviderId && { renderingProviderId: renderingProviderId || '' }),
+        ...(servicingProviderId && { servicingProviderId: servicingProviderId || '' }),
+        ...(claimStatusId && { claimStatusId: claimStatusId || '' }),
+        ...(feeScheduleId && { feeScheduleId: feeScheduleId || '' }),
+        ...(onSetDateTypeId && { onsetDateType: onSetDateTypeId as OnsetDateType }),
+        ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
+        ...(paymentTypeId && { patientPaymentType: paymentTypeId as PatientPaymentType }),
+        ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
+        autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
+        onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
+        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
+      }
+
+      createBilling({
+        variables: {
+          createBillingInput
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (shouldDisableEdit) {
+      fetchBillingDetails()
+    } else {
+      fetchPatientInsurances()
+      fetchAppointment()
+      fetchAllPatientsProviders()
+      fetchFacility()
+      fetchClaimNumber()
+      fetchPatientAppointment()
+      fetchBillingDetails()
+    }
+  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment])
+
+  const isLoading = shouldDisableEdit ? fetchBillingDetailsLoading
+    : fetchPatientInsurancesLoading || getAppointmentLoading || getPatientProvidersLoading || getFacilityLoading || generateClaimNoLoading || fetchPatientAppointmentLoading
+
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Billing Details...' />
+  }
+
+  if (createBillingLoading) {
+    return <Loader loading loaderText='Saving Billing Details...' />
+  }
+
+  if (getClaimFileLoading) {
+    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
+  }
+
+  if (getClaimFileLoading) {
+    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
+  }
 
   return (
-    <>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box paddingX={3} paddingY={2}>
-            <Grid container spacing={1}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Selector
-                  disabled={shouldDisableEdit}
-                  isRequired
-                  name="billingStatus"
-                  label={BILLING_STATUS}
-                  value={EMPTY_OPTION}
-                  options={MAPPED_PATIENT_BILLING_STATUS}
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <Grid container spacing={3} direction='row'>
-                  <Grid item md={8} sm={12} xs={12}>
-                    <Selector
-                      disabled={shouldDisableEdit}
-                      isRequired
-                      name="paymentType"
-                      label={PAYMENT_TYPE}
-                      value={EMPTY_OPTION}
-                      options={MAPPED_PATIENT_PAYMENT_TYPE}
-                    />
-                  </Grid>
-
-                  {
-                    !shouldShowInsuranceFields && (
-                      <Grid item md={4} sm={12} xs={12}>
-                        <InputController
-                          disabled={shouldDisableEdit}
-                          fieldType="text"
-                          controllerName="amount"
-                          controllerLabel={AMOUNT_DOLLAR}
-                        />
-                      </Grid>
-                    )
-                  }
-                </Grid>
-              </Grid>
-            </Grid>
-
-            {
-              !shouldShowInsuranceFields && (
-                <Grid container spacing={1}>
-                  <Grid item md={12} sm={12} xs={12}>
-                    {!shouldDisableEdit && <Box>
-                      <Box pb={2}
-                        onClick={() => setIsModalOpen(!isModalOpen)}
-                        className="billing-box" display="flex" alignItems="center"
-                      >
-                        <AddCircleOutline color='inherit' />
-
-                        <Typography>{ADD_ANOTHER_PATIENT_PAYMENT}</Typography>
-                      </Box>
-                    </Box>}
-                  </Grid>
-
-                  <Grid item md={12} sm={12} xs={12}>
-                    <Box color={GREY_THREE} mb={4}>
-                      <Typography variant="h5">{HCFA_DESC}</Typography>
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={12} sm={12} xs={12}>
-                    <Grid container spacing={3} direction='row'>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          disabled={shouldDisableEdit}
-                          name="onsetDateType"
-                          label={ONSET_DATE_TYPE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_ONSET_DATE_TYPE}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker
-                          disabled={shouldDisableEdit}
-                          name="onsetDate"
-                          label={ONSET_DATE}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-
-                  <Grid item md={12} sm={12} xs={12}>
-                    <Grid container spacing={3} direction='row'>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          disabled={shouldDisableEdit}
-                          name="otherDateType"
-                          label={OTHER_DATE_TYPE}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_OTHER_DATE_TYPE}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker
-                          disabled={shouldDisableEdit}
-                          name="otherDate"
-                          label={OTHER_DATE}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-
-                  <Grid item md={12} sm={12} xs={12}>
-                    <Grid container spacing={3} direction='row'>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <Controller
-                          name='employment'
-                          control={control}
-                          render={() => (
-                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                              <InputLabel shrink>{EMPLOYMENT}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={employment ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                <AntSwitch checked={employment} onChange={(event) => { toggleHandleChange(event, 'employment') }} name='employment' />
-                                <Box color={employment ? GREY_SEVEN : WHITE}>{NO}</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
-                      </Grid>
-
-                      <Grid item md={4} sm={12} xs={12}>
-                        <Controller
-                          name='autoAccident'
-                          control={control}
-                          render={() => (
-                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                              <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={autoAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                <AntSwitch checked={autoAccident} onChange={(event) => { toggleHandleChange(event, 'autoAccident') }} name='autoAccident' />
-                                <Box color={autoAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
-                      </Grid>
-
-                      <Grid item md={4} sm={12} xs={12}>
-                        <Controller
-                          name='otherAccident'
-                          control={control}
-                          render={() => (
-                            <FormControl disabled={shouldDisableEdit} fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                              <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={otherAccident ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                <AntSwitch checked={otherAccident} onChange={(event) => { toggleHandleChange(event, 'otherAccident') }} name='otherAccident' />
-                                <Box color={otherAccident ? GREY_SEVEN : WHITE}>{NO}</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              )
-            }
-          </Box>
-
-          <Box bgcolor={GREY_NINE} p={3} mt={2}>
-            <Grid container spacing={1}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Box border={`1px solid ${colors.grey[300]}`} borderRadius={8}>
-                  {
-                    shouldDisableEdit ?
-                      <CodesTable title={formatValue(CodeType.Icd_10Code)} tableData={tableCodesData.ICD_10_CODE} /> :
-                      <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.icdCodes} title={ICD_TEN_CODES} />
-                  }
-                </Box>
-              </Grid>
-
-              <Box p={1} />
-
-              <Grid item md={12} sm={12} xs={12}>
-                <Box border={`1px solid ${colors.grey[300]}`} borderRadius={8}>
-                  {
-                    shouldDisableEdit ?
-                      <CodesTable title={formatValue(CodeType.CptCode)} shouldShowPrice tableData={tableCodesData.CPT_CODE} /> :
-                      <TableSelector handleCodes={handleCodes} moduleName={ITEM_MODULE.cptCode} title={CPT_CODES} shouldShowPrice />
-                  }
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </form>
-
-        <CopayModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} insuranceId={insuranceId} />
-      </FormProvider>
-    </>
+    <BillingForm
+      createBillingLoading={createBillingLoading}
+      dispatch={dispatch}
+      methods={methods}
+      onSubmit={onSubmit}
+      state={state}
+      shouldDisableEdit={shouldDisableEdit}
+      submitButtonText={submitButtonText}
+      createClaimCallback={createClaimCallback}
+      claimNumber={claimNumber}
+      createClaimLoading={createClaimLoading}
+    />
   )
 }
 
-export default PaymentsComponent;
-
+export default Payments;

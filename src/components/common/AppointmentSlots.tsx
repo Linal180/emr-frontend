@@ -1,8 +1,7 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useFormContext } from "react-hook-form";
 import { Box, colors, Typography } from "@material-ui/core";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // components block
 import CardComponent from "./CardComponent";
 import ViewDataLoader from "./ViewDataLoader";
@@ -21,8 +20,7 @@ import {
 const AppointmentSlots: FC<AppointmentSlotsProps> = ({ facilityId, providerId, dispatcher }) => {
   const classes = usePublicAppointmentStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { availableSlots, offset } = state;
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
+  const { availableSlots, offset, date } = state;
   const { watch, setValue } = useFormContext()
   const { serviceId } = watch()
   const { value: selectedService } = serviceId || {}
@@ -88,7 +86,7 @@ const AppointmentSlots: FC<AppointmentSlotsProps> = ({ facilityId, providerId, d
 
   return (
     <CardComponent cardTitle="Available Slots">
-      <AppointmentDatePicker date={date} setDate={setDate} />
+      <AppointmentDatePicker date={date} setDate={() => dispatcher({ type: ActionType.SET_DATE, date})} />
 
       <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>

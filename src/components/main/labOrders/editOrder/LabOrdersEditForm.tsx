@@ -1,31 +1,35 @@
 // packages block
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { Box, Card, colors, Grid, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
-import Selector from '../../../common/Selector';
-import InputController from '../../../../controller';
-// interfaces, graphql, constants block
-import { GeneralFormProps, LabOrdersCreateFormInput, multiOptionType, ParamsType } from "../../../../interfacesTypes";
-import {
-  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, DIAGNOSES, EDIT_LAB_ORDER, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION,
-  REMOVE_TEST, SAVE_TEXT, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
-} from '../../../../constants';
-import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
-import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
-import TestsSelector from '../../../common/Selector/TestSelector';
-import DatePicker from '../../../common/DatePicker';
-import LabOrdersSpecimenTypeForm from '../addOrder/LabOrdersSpecimenTypeForm';
-import { createLabOrdersSchema } from '../../../../validationSchemas';
-import { yupResolver } from '@hookform/resolvers/yup';
-import TimePicker from '../../../common/TimePicker';
-import {
-  LabTestStatus, useCreateLabTestMutation, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestMutation, useUpdateLabTestMutation
-} from '../../../../generated/graphql';
-import { useParams } from 'react-router';
-import history from '../../../../history';
 import Alert from '../../../common/Alert';
+import Selector from '../../../common/Selector';
+import TimePicker from '../../../common/TimePicker';
+import DatePicker from '../../../common/DatePicker';
+import InputController from '../../../../controller';
+import TestsSelector from '../../../common/Selector/TestSelector';
+import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
+import LabOrdersSpecimenTypeForm from '../addOrder/LabOrdersSpecimenTypeForm';
+import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
+// interfaces, graphql, constants block
+import history from '../../../../history';
+import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { convertDateFromUnix, formatValue, getFormatDateString } from '../../../../utils';
+import {
+  GeneralFormProps, LabOrdersCreateFormInput, multiOptionType, ParamsType
+} from "../../../../interfacesTypes";
+import {
+  LabTestStatus, useCreateLabTestMutation, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestMutation,
+  useUpdateLabTestMutation
+} from '../../../../generated/graphql';
+import {
+  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, DIAGNOSES, EDIT_LAB_ORDER, EMPTY_OPTION, LAB_TEST_STATUSES,
+  NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, SOMETHING_WENT_WRONG, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES,
+  TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from '../../../../constants';
 
 const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
@@ -100,6 +104,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
               id: id ?? '',
               name: `${loincNum} | ${component}`
             },
+
             testDate: testDate ?? '',
             testTime: testTime ?? '',
             testNotes: testNotes ?? '',
@@ -112,28 +117,27 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  const fetchlabTests = useCallback(async () => {
+  const fetchLabTests = useCallback(async () => {
     try {
-      await findLabTestsByOrderNum({
+      orderNum ? await findLabTestsByOrderNum({
         variables: {
           labTestByOrderNumInput: {
-            orderNumber: orderNum ?? ''
+            orderNumber: orderNum
           }
         }
-      });
+      }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
   }, [findLabTestsByOrderNum, orderNum])
 
   useEffect(() => {
-    fetchlabTests()
-  }, [fetchlabTests])
+    fetchLabTests()
+  }, [fetchLabTests])
 
   const [createLabTest, { loading: createLoading }] = useCreateLabTestMutation({
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
   });
 
@@ -141,8 +145,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
   });
 
@@ -150,8 +153,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted() {
@@ -159,7 +161,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testField" });
+  const { fields: testFields, remove: removeTestField, append: appendTestField } =
+    useFieldArray({ control: control, name: "testField" });
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
     const { appointment, labTestStatus, diagnosesIds, testField } = values
@@ -172,12 +175,9 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
       const createLabTestItemInput = {
         patientId: patientId ?? '',
         ...(appointmentId && { appointmentId }),
-        status: testStatus as LabTestStatus,
-        testNotes,
+        status: testStatus as LabTestStatus, testNotes, testTime,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
-        testTime,
-        orderNumber: orderNum,
-        accessionNumber: accessionNumber
+        orderNumber: orderNum, accessionNumber: accessionNumber
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined
@@ -187,6 +187,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         createSpecimenItemInput = specimenTypeField.reduce((acc, specimenTypeFieldValues) => {
           const { collectionDate, collectionTime, specimenNotes, specimenType } = specimenTypeFieldValues
           const { id: testSpecimen } = specimenType
+
           acc.push({
             testSpecimen,
             specimenNotes,
@@ -249,10 +250,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         patientId: patientId ?? '',
         ...(appointmentId && { appointmentId }),
         status: testStatus as LabTestStatus,
-        testNotes,
+        testNotes, testTime, id: testId ?? '',
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
-        testTime,
-        id: testId ?? ''
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined
@@ -264,10 +263,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { id: testSpecimen } = specimenType
           acc.push({
             id: specimenId ?? '',
-            testSpecimen,
-            specimenNotes,
+            testSpecimen, specimenNotes, collectionTime,
             collectionDate: getFormatDateString(collectionDate, 'MM-DD-YYYY'),
-            collectionTime
           })
 
           return acc
@@ -300,17 +297,20 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Card className='overflowVisible'>
               <Box p={2}>
-                <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                <Box py={2} mb={4} display='flex' justifyContent='space-between'
+                  alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                >
                   <Typography variant='h4'>{EDIT_LAB_ORDER}</Typography>
                 </Box>
 
                 <Grid container spacing={3}>
                   <Grid item md={5} sm={12} xs={12}>
                     <AppointmentSelector
-                      label={APPOINTMENT_TEXT}
+                      addEmpty
+                      disabled
                       name="appointment"
                       patientId={patientId}
-                      addEmpty
+                      label={APPOINTMENT_TEXT}
                     />
                   </Grid>
 
@@ -342,7 +342,9 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                 <Box mb={4}>
                   <Card>
                     <Box p={2}>
-                      <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                      <Box py={2} mb={5} display='flex' justifyContent='space-between'
+                        alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                      >
                         <Typography variant='h4'>{TEST}</Typography>
 
                         {!!(testFields.length > 1 && index !== 0) && <Button onClick={() => {
@@ -394,12 +396,16 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             })}
 
             <Box display='flex' justifyContent='flex-end'>
-              <Button onClick={() => appendTestField({ ...TEST_FIELD_INITIAL_VALUES, newTest: true })} type="submit" variant="outlined" color="secondary">
+              <Button onClick={() => appendTestField({ ...TEST_FIELD_INITIAL_VALUES, newTest: true })}
+                type="submit" variant="outlined" color="secondary"
+              >
                 {ADD_ANOTHER_TEST}
               </Button>
             </Box>
 
-            <Button type="submit" variant="contained" color="primary" disabled={createLoading || updateLoading || removeLoading}>
+            <Button type="submit" variant="contained" color="primary"
+              disabled={createLoading || updateLoading || removeLoading}
+            >
               {SAVE_TEXT} {(createLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
             </Button>
           </form>

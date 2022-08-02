@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 // components block
 import Alert from "../Alert";
 import ScheduleBox from "./ScheduleBox";
@@ -22,12 +22,17 @@ import {
 } from "../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE, FACILITY_SCHEDULE,
+  DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_SCHEDULE, FACILITY_SCHEDULE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
+import { AuthContext } from "../../../context";
 
-const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId }) => {
+const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId, doctorId }) => {
   const { id } = useParams<ParamsType>();
   const classes = useDoctorScheduleStyles();
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {}
+
+  const { id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(scheduleReducer, initialState)
   const { openModal, byDaySchedules, isEdit, scheduleId, openDelete } = state;
 
@@ -122,58 +127,70 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId 
 
   const fetchSchedules = useCallback(async () => {
     try {
-      isDoctor ? await getDoctorSchedule({ variables: { getDoctorSchedule: { id } } })
-        : await getFacilitySchedule({ variables: { getFacilitySchedule: { id } } })
+      if (id || doctorId || facilityId) {
+        isDoctor ?
+          (id || doctorId) &&
+          await getDoctorSchedule({
+            variables: {
+              getDoctorSchedule: { id: doctorId ? doctorId : id }
+            }
+          })
+          : (id || facilityId) &&
+          await getFacilitySchedule({
+            variables: {
+              getFacilitySchedule: { id: id ? id : facilityId || '' }
+            }
+          })
+      } else Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
+  }, [doctorId, facilityId, getDoctorSchedule, getFacilitySchedule, id, isDoctor]);
 
   useEffect(() => {
-    id ? fetchSchedules() : Alert.error(DOCTOR_NOT_FOUND)
-  }, [fetchSchedules, id])
+    fetchSchedules()
+  }, [doctorId, fetchSchedules, id])
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
 
   return (
-    <Grid container spacing={3}>
-      <Grid item md={6}>
-        <CardComponent cardTitle={AVAILABILITY_TEXT}>
-          {getLoading ?
-            <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
-              <Grid container spacing={3}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                    <AddSlotIcon />
+    <>
+      <CardComponent cardTitle={AVAILABILITY_TEXT}>
+        <Grid container spacing={3}>
+          <Grid item md={12} sm={12} xs={12}>
+            <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+              <AddSlotIcon />
 
-                    <Typography>
-                      {ADD_MORE_RECORDS_TEXT}
-                    </Typography>
-                  </Box>
+              <Typography>
+                {ADD_MORE_RECORDS_TEXT}
+              </Typography>
+            </Box>
 
-                  <Box>
-                    {byDaySchedules?.map((schedule: DaySchedule) => {
-                      const { day, slots } = schedule || {}
+            {getLoading ?
+              <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
+                <Box>
+                  {byDaySchedules?.map((schedule: DaySchedule) => {
+                    const { day, slots } = schedule || {}
 
-                      return slots && slots.length > 0
-                        && (
-                          <Box key={day} className={classes.viewSlots} mb={3}>
-                            <Typography className={classes.heading}>
-                              {day}
-                            </Typography>
+                    return slots && slots.length > 0
+                      && (
+                        <Box key={day} className={classes.viewSlots} mb={3}>
+                          <Typography className={classes.heading}>
+                            {day}
+                          </Typography>
 
-                            {slots.map(slot => slot &&
-                              <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
-                            )}
-                          </Box>
-                        )
-                    })}
-                  </Box>
-                </Grid>
-              </Grid>
-            )}
-        </CardComponent>
-      </Grid>
+                          {slots.map(slot => slot &&
+                            <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
+                          )}
+                        </Box>
+                      )
+                  })}
+                </Box>
+              )}
+          </Grid>
+        </Grid>
+      </CardComponent>
 
       <ScheduleModal
+        state={state}
         id={scheduleId}
         isEdit={isEdit}
         isOpen={openModal}
@@ -193,7 +210,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId 
           type: ActionType.SET_OPEN_DELETE, openDelete: open
         })}
       />
-    </Grid>
+    </>
   );
 };
 
