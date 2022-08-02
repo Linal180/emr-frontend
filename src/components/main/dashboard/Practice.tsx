@@ -22,7 +22,7 @@ import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../.
 import {
   EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, VIEW_FACILITIES,
   VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE,
-  PRACTICE_DETAILS_ROUTE, APPOINTMENTS_PER_FACILITY, ADD_FACILITY,
+  PRACTICE_DETAILS_ROUTE, APPOINTMENTS_PER_FACILITY, ADD_FACILITY, AUDIT_LOG_ROUTE,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -210,9 +210,11 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
             >
               <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
 
-              <IconButton>
-                <RedirectIcon />
-              </IconButton>
+              <Link to={AUDIT_LOG_ROUTE}>
+                <IconButton>
+                  <RedirectIcon />
+                </IconButton>
+              </Link>
             </Box>
 
             <RecentActivities />
