@@ -100,7 +100,7 @@ const FeeTable: FC = (): JSX.Element => {
       const paginationOptions = { page, limit: EXTENDED_PAGE_LIMIT }
       const findAllFeeScheduleInput = isSuper ?
         { paginationOptions, searchString: searchQuery }
-        : { paginationOptions, practiceId, searchString: searchQuery }
+        : { paginationOptions, practiceId, searchString: searchQuery.trim() }
 
       await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
     } catch (error) { }
@@ -109,7 +109,7 @@ const FeeTable: FC = (): JSX.Element => {
   const handleFetchFeeSchedule = async (id: string) => {
     try {
       const paginationOptions = { page, limit: EXTENDED_PAGE_LIMIT }
-      const findAllFeeScheduleInput = { paginationOptions, practiceId: id, searchString: searchQuery }
+      const findAllFeeScheduleInput = { paginationOptions, practiceId: id, searchString: searchQuery.trim() }
 
       await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
     } catch (error) { }
