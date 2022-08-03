@@ -1591,6 +1591,7 @@ export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric i
 export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not acceptable";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
+export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;

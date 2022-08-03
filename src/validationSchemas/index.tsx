@@ -20,7 +20,7 @@ import {
   APPOINTMENT, PATIENT, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PROVIDER, PREFERRED_LANGUAGE,
   OLD_PASSWORD, ROLE_NAME, FORM_TYPE, FORM_NAME, OTP_CODE, DATE_VALIDATION_MESSAGE, PULSE_TEXT,
   RESPIRATORY_RATE_TEXT, OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE,
-  NO_WHITE_SPACE_ALLOWED, TEST_FIELD_VALIDATION_MESSAGE, PHONE_NUMBER,
+  NO_WHITE_SPACE_ALLOWED, TEST_FIELD_VALIDATION_MESSAGE, PHONE_NUMBER, TESTS_FIELD_VALIDATION_MESSAGE, NPI,
   INSURANCE_PAYER_NAME, ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, SYSTEM_ROLES,
   COPAY_TYPE, REFERRING_PROVIDER, ITEM_MODULE, INVALID_END_TIME, CLAIM_STATUS, ATTACHMENT_NAME,
   POLICY_HOLDER_ID_CERTIFICATION_NUMBER, EMPLOYER, LEGAL_SEX, BANK_ACCOUNT, US_BANK_ACCOUNT_REGEX,
@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, NPI, TESTS_FIELD_VALIDATION_MESSAGE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, 
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -135,6 +135,7 @@ const npiSchema = (isRequired: boolean = false) => {
       .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
   }
 }
+
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)) }
@@ -609,8 +610,8 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
-  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
   facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
+  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
 export const updatePracticeSchema = yup.object({
@@ -1054,9 +1055,9 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
   amount: yup.string()
-    .test('', requiredMessage(AMOUNT), value => !!value)
-    .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
-    .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
+  .test('', requiredMessage(AMOUNT), value => !!value)
+  .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
+  .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
 })
 
 export const createBillingSchema = yup.object({
@@ -1112,6 +1113,10 @@ export const feeScheduleSchema = yup.object({
   practiceId: selectorSchema(PRACTICE),
   name: yup.string().required(requiredMessage(NAME))
     .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
+
+  expiryDate: yup.string().test('', INVALID_EXPIRATION_DATE_ERROR_MESSAGE,
+    (value, { parent: { effectiveDate } }) => !value
+      ? !value : dateValidation(value, effectiveDate))
 })
 
 export const cptFeeScheduleSchema = yup.object({
