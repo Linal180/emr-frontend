@@ -608,17 +608,17 @@ export const createPracticeSchema = yup.object({
   ...npiSchema(true),
   ...registerUserSchema,
   ...practiceFacilitySchema,
-  facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
   address: addressValidation(ADDRESS, true),
-  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
+  facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
+  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
 export const updatePracticeSchema = yup.object({
   ...npiSchema(true),
   ...practiceFacilitySchema,
-  taxId: yup.string().required(),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
+  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
 export const updatePasswordSchema = yup.object({
