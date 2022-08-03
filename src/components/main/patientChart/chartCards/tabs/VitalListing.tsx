@@ -110,7 +110,7 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             ) : <Box className={classes.cardBox}>
               <FormProvider {...methods}>
                 <form>
-                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box px={2} pb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant='h3'>{VITALS_TEXT}</Typography>
 
                     {!shouldDisableEdit &&

@@ -15,7 +15,7 @@ const CardComponent: FC<CardComponentType> = ({
   const { activeStep } = state || {}
 
   return (
-    <Card className={`overflow-visible ${isFullHeight && true ? 'fullMinHeight card-box-shadow' : 'card-box-shadow'}`}>
+    <Card className={`${isFullHeight && true ? 'fullMinHeight card-box-shadow' : 'card-box-shadow'}`}>
       <CardHeader
         action={
           hasEdit ? (
