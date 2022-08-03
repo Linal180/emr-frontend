@@ -48,7 +48,11 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       testId: '',
       test: data,
       testDate: moment().toString(),
-      testTime: moment().format('HH:mm:ss')
+      testTime: moment().format('HH:mm:ss'),
+      diagnosesIds: [],
+      specimenTypeField: [],
+      testNotes: '',
+      newTest: true
     })
 
     testFieldValues && setValue('testFieldValues', [...testFieldValues, {
