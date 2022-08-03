@@ -31,14 +31,16 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
     if (zipCode && city && address) {
       const { id } = inputState
       const data = await verifyAddress(zipCode, city, id, address, address2);
-      dispatch && dispatch({ type: ActionType.SET_USER_DATA, userData: ({ ...userData, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` }) })
+      dispatch && dispatch({
+        type: ActionType.SET_USER_DATA,
+        userData: ({ ...userData, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` })
+      })
       const { status, options } = data || {}
 
       if (status) {
         dispatch && dispatch({ type: ActionType.SET_DATA, data: options })
         dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
-      }
-      else {
+      } else {
         dispatch && dispatch({ type: ActionType.SET_DATA, data: [] })
         dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: false })
       }
@@ -73,7 +75,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
           </Grid>
 
           <Grid item md={3} sm={6} xs={12}>
-            <PhoneField isRequired name="phone" label={PHONE} loading={getFacilityLoading} />
+            <PhoneField name="phone" label={PHONE} loading={getFacilityLoading} />
           </Grid>
 
           <Grid item md={3} sm={6} xs={12}>

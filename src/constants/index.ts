@@ -1095,6 +1095,7 @@ export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
 export const COPAY_TEXT = "COPAY";
+export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -1205,6 +1206,7 @@ export const YES_CHECKOUT = "Yes, Check Out";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const NEW_LAB_ORDER = "New Lab Order";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const PATIENT_PHONE = 'Patient Phone';
@@ -1568,6 +1570,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
+export const TESTS_FIELD_VALIDATION_MESSAGE = "Atleast one test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
@@ -3069,6 +3072,7 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   testDate: moment().toString(),
   testNotes: '',
   testTime: moment().format('HH:mm:ss'),
+  diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
@@ -3099,6 +3103,11 @@ export const ADD_INSURANCE_STEPS = [
 
 export const LAB_ORDER_STEPS = [
   LAB_ORDER, PROVIDER_DETAILS, PAYMENT
+];
+
+export const LAB_ORDER_SIDEDRAWER_STEPS = [
+  LAB_ORDER, TESTS, 
+  // PAYMENTS
 ];
 
 export const FacilityMenuNav = [

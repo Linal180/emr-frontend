@@ -3,7 +3,7 @@ import { FC, useCallback } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import {
-  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography,
 } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
