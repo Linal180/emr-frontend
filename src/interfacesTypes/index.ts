@@ -41,7 +41,7 @@ import {
   PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput, RolesPayload,
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, LabTests,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -383,6 +383,7 @@ export interface PatientSelectorProps extends SelectorProps {
 
 export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string;
+  filteredOptions?: SelectorOption[]
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -806,6 +807,22 @@ export interface LabOrderCreateProps {
   appointmentInfo?: SelectorOption
   handleStep?: Function
   shouldDisableEdit?: boolean
+  toggleSideDrawer?: Function
+  isEdit?: boolean
+  labTestsToEdit?: LabTests[]
+  orderNumber?: string
+}
+
+export interface LabOrdersTableProps {
+  appointmentInfo?: SelectorOption
+}
+
+export interface LabOrderInitialScreenProps extends LabOrderCreateProps {
+  setTestsToRemove?: Function
+}
+
+export interface LabTestComponentProps {
+  currentTest: number
 }
 
 export interface LabOrderProviderProps {
@@ -920,13 +937,20 @@ export interface TestOption {
   testNotes: string
   newTest?: boolean
   specimenTypeField?: SpecimenTypeOption[]
+  diagnosesIds: multiOptionType[]
 }
 
 export interface LabOrdersCreateFormInput {
   appointment?: SelectorOption,
   labTestStatus?: SelectorOption,
   diagnosesIds: multiOptionType[]
-  testField: TestOption[]
+  testField: SelectorOption
+  testFieldValues: TestOption[]
+  referringProviderId?: SelectorOption
+  primaryProviderId?: SelectorOption
+  providerNotes?: string
+  orderNum?: string
+  accessionNumber?: string
 };
 
 export interface LabOrdersSpecimenTypeInput {
@@ -1154,6 +1178,12 @@ export interface CopayModalProps {
   billingStatus?: string
 }
 
+export interface RejectedModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  handleClose?: () => void
+}
+
 export interface ClaimStatusModalProps extends GeneralFormProps {
   isOpen: boolean;
   setIsOpen: Function;
@@ -1167,6 +1197,18 @@ export interface CheckoutModalProps {
   insuranceId?: string;
   billingStatus?: string
   handleSubmit: Function
+}
+
+export interface RejectedModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+}
+
+export interface FacilityScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  facilityDispatcher: Dispatch<FacilityAction>;
+  facilityId: string | undefined;
 }
 
 export interface DaySchedule {
@@ -1860,8 +1902,9 @@ export interface DoctorAppointmentsAndPatientsProps {
 }
 
 export interface FeeScheduleFormProps {
-  state: FeeScheduleState,
+  state: FeeScheduleState;
   dispatcher: Dispatch<FeeScheduleAction>
+  reload?: Function;
 }
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {

@@ -33,6 +33,7 @@ export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/; 
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -597,6 +598,7 @@ export const PRICING = "Pricing";
 export const DOCTOR_ID = "provider id";
 export const PATIENT_ID = "patient id";
 export const DEA_NUMBER = "DEA Number";
+export const BILLED_AMOUNT = "Billed Amount";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DECEASED_DATE = "Deceased Date";
 export const DEA_TERM_DATE = "DEA Term Date";
@@ -697,6 +699,7 @@ export const CVV = "CVV";
 export const PAY = "Pay";
 export const SSN = "SSN";
 export const ZIP = "Zip";
+export const OKAY = "Okay";
 export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
@@ -715,6 +718,7 @@ export const INS_1 = "Ins 1";
 export const INS = "Ins";
 export const VALUE = "Value";
 export const VISIT = "Visit";
+export const ISSUES = "Issues";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";
 export const INS_BAL = "Ins Bal";
@@ -740,9 +744,11 @@ export const SET = "Set Password";
 export const EIGHT_PAGE_LIMIT = 8;
 export const SECURITY = "Security";
 export const ORDER_NUM = "Order #";
+export const REJECTED = "Rejected";
 export const USERNAME = "Username";
+export const PAYER_ID = "Payer ID";
 export const SIGN_OFF = "Sign Off";
-export const EXTENDED_PAGE_LIMIT = 12;
+export const ELEVEN_PAGE_LIMIT = 11;
 export const ADD_BILL = "Add Bill";
 export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
@@ -755,6 +761,7 @@ export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
 export const CLAIM_BAL = "Claim Bal";
 export const FROM_DATE = "From Date";
+export const EXTENDED_PAGE_LIMIT = 12;
 export const REACTION_PAGE_LIMIT = 50;
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const USER_LOG_PAGE_LIMIT = 50;
@@ -770,9 +777,9 @@ export const DRUG = "Drug";
 export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
+export const PAYER = "Payer";
 export const STAGE = "Stage";
 export const CANCEL = "Cancel";
-export const DOCTOR = "Provider";
 export const BILLED = "Billed";
 export const RESULT = "Result";
 export const ACTIVE = "Active";
@@ -781,9 +788,8 @@ export const USER_TEXT = "User";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Action";
 export const USER_ID = "User ID";
+export const DOCTOR = "Provider";
 export const PATIENT = "Patient";
-export const PAYER = "Payer";
-export const PAYER_ID = "Payer ID";
 export const SUCCESS = "success";
 export const CLAIMED = "Claimed";
 export const SERVICE = "Service";
@@ -1053,6 +1059,7 @@ export const AVAILABLE_USERS = "Available Users";
 export const ACTIVE_PROVIDERS = "Active Providers";
 export const USD = "USD";
 export const SEX = "Sex";
+export const SYNC = "Sync";
 export const SIZE = "Size";
 export const RACE = "Race";
 export const IP_TEXT = "IP";
@@ -1149,6 +1156,7 @@ export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
 export const SUBSCRIBER = "Subscriber";
 export const COPAY_TYPE = "Copay Type";
+export const OFFICE_EIN = "Office EIN";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
 export const UPDATED_ON = "Updated On:";
@@ -1188,7 +1196,7 @@ export const DEMOGRAPHICS = "Demographics";
 export const ADDRESS_CTA = "Address (CTA)";
 export const MANUAL_ENTRY = "Manual Entry";
 export const MY_ACCOUNT_TEXT = "My Account";
-export const CLAIM_FEED_TEXT = "Live Claim Feed";
+export const APP_NAME_FORMAT = 'First Last';
 export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
@@ -1211,19 +1219,18 @@ export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
-export const OFFICE_EIN = "Office EIN";
 export const OFFICE_PHONE = "Office Phone";
 export const DATE_OF_BIRTH = "Date of Birth";
 export const REVOKE_ACCESS = "Revoke Access";
 export const FORMER_SMOKER = "Former Smoker";
 export const PRICE_WITH_DOLLAR = "Price ($)";
 export const POLICY_NAME_TEXT = "POLICY NAME";
+export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const DECREASED_DATE = "Deceased Date";
 export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
-export const SYNC = "Sync";
 export const PREFERRED_NAME = "Preferred Name";
 export const EDIT_INSURANCE = "Edit Insurance";
 export const EDIT_AGREEMENT = "Edit Agreement";
@@ -1250,7 +1257,6 @@ export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
 export const BUILD_FEE_DOLLAR = "Build Fee ($)";
-export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
@@ -1265,6 +1271,7 @@ export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
 export const USER_ROLE_PLACEHOLDER = "User Role";
+export const CLAIM_FEED_TEXT = "Live Claim Feed";
 export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
@@ -1282,7 +1289,6 @@ export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const DOCUMENT_DETAILS = "Document Details";
 export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
-export const APP_NAME_FORMAT = 'First Middle Last';
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
 export const MEMBERSHIP_PLANS = "Membership Plans";
@@ -1316,6 +1322,7 @@ export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
+export const FEE_SCHEDULE_LISTING = "Fee Schedule Listing";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
 export const ADD_UPLOAD_IMAGES = "Add & Upload Images";
 export const REFERRING_PROVIDER = "Referring Provider";
@@ -1494,6 +1501,7 @@ export const AGREEMENTS_ROUTE = "/agreements";
 export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
+export const CLAIM_STATUS_ROUTE = "/claim-status";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
@@ -1562,6 +1570,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
+export const TESTS_FIELD_VALIDATION_MESSAGE = "Atleast one test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
@@ -1679,6 +1688,7 @@ export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ORDER_DELETION_MESSAGE = "Order is deleted successfully";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
+export const NO_FILE_ASSOCIATED = 'No File Associated with agreement';
 export const TWO_FA_ENABLED_SUCCESSFULLY = "2FA enabled successfully";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
@@ -1853,6 +1863,10 @@ export const BILLING_MENU_ITEMS = [
   {
     name: LIVE_CLAIM_FEED,
     link: CLAIM_FEED_ROUTE
+  },
+  {
+    name: CLAIM_STATUS,
+    link: CLAIM_STATUS_ROUTE
   }
 ];
 
@@ -2155,6 +2169,8 @@ export const SERVICES_BREAD = (facilityId: string) => {
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
 export const ELIGIBILITY_BREAD = { text: ELIGIBILITY_LISTING, link: ELIGIBILITY_ROUTE, };
 export const COVERAGE_BREAD = { text: COVERAGE_DETAILS, link: COVERAGE_ROUTE, };
+
+export const FEE_SCHEDULE_BREAD = { text: FEE_SCHEDULE_LISTING, link: FEE_SCHEDULE_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
@@ -3056,6 +3072,7 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   testDate: moment().toString(),
   testNotes: '',
   testTime: moment().format('HH:mm:ss'),
+  diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
@@ -3089,7 +3106,8 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS, PAYMENTS
+  LAB_ORDER, TESTS, 
+  // PAYMENTS
 ];
 
 export const FacilityMenuNav = [
@@ -4153,6 +4171,65 @@ export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
   {
     name: 'Provider Phone',
     value: '+1765345267542',
+  },
+]
+
+export const CLAIM_STATUS_DUMMY_DATA = [
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
+  },
+  {
+    id: '3398',
+    patient: 'Courtney Henry',
+    date: '5/30/14',
+    payer: 'Hochheim Prairie Farm Mutual Insurance',
+    amount: '$450.54',
+  },
+  {
+    id: '13671',
+    patient: 'Leslie Alexander',
+    date: '5/7/16',
+    payer: 'Pharma International',
+    amount: '$219.78',
   },
 ]
 

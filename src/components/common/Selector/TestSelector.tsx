@@ -6,10 +6,10 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@materi
 // utils and interfaces/types block
 import { renderTests, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { FacilitySelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { LoincCodesPayload, useFindAllLoincCodesLazyQuery } from "../../../generated/graphql";
 
-const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty }): JSX.Element => {
+const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions }): JSX.Element => {
   const { control } = useFormContext()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [loincCodes, setLoincCodes] = useState<LoincCodesPayload['loincCodes']>([])
@@ -35,9 +35,9 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
 
   const fetchAllLoincCodes = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page:1, limit: DROPDOWN_PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllLoincCodes({
-        variables: { searchLoincCodesInput: { ...pageInputs, searchTerm: searchQuery} }
+        variables: { searchLoincCodesInput: { ...pageInputs, searchTerm: searchQuery } }
       })
     } catch (error) { }
   }, [findAllLoincCodes, searchQuery])
@@ -47,6 +47,14 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
       fetchAllLoincCodes()
     }
   }, [searchQuery, fetchAllLoincCodes]);
+
+  const filterOptions = (options: SelectorOption[]) => {
+    if (filteredOptions) {
+      return options.filter((value) => !filteredOptions.some(option => option.id === value.id))
+    }
+
+    return options
+  }
 
   return (
     <Controller
@@ -61,7 +69,9 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
             value={field.value}
             disabled={disabled}
             disableClearable
+            filterOptions={filterOptions}
             getOptionLabel={(option) => option.name || ""}
+            getOptionSelected={(option, value) => option.id === value.id}
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
@@ -81,7 +91,11 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
-            onChange={(_, data) => field.onChange(data)}
+            onChange={(_, data) => {
+              field.onChange(data)
+              onSelect && onSelect(data)
+              return
+            }}
           />
         );
       }}

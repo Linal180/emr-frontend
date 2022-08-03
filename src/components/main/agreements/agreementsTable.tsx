@@ -26,7 +26,7 @@ import {
 } from '../../../generated/graphql';
 import {
   ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, NAME, PAGE_LIMIT,
-  DELETE_AGREEMENT_DESCRIPTION,
+  DELETE_AGREEMENT_DESCRIPTION, SOMETHING_WENT_WRONG, NO_FILE_ASSOCIATED,
 } from '../../../constants';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
@@ -162,6 +162,8 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           if (preSignedUrl) {
             dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: preSignedUrl })
             dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: true })
+          } else {
+            Alert.info(NO_FILE_ASSOCIATED)
           }
         }
       }
@@ -169,14 +171,13 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   })
 
   const handleTitleClick = async (id: string) => {
-    await getAttachments({
+    id ? await getAttachments({
       variables: {
         getAttachmentsByAgreementId: {
-          agreementId: id,
-          typeId: id
+          agreementId: id, typeId: id
         }
       },
-    })
+    }) : Alert.error(SOMETHING_WENT_WRONG)
   }
 
   const handleModalClose = () => {

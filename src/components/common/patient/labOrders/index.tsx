@@ -1,35 +1,32 @@
 // packages block
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useParams } from 'react-router';
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Add } from '@material-ui/icons';
 import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, IconButton, } from "@material-ui/core";
+import { useParams } from 'react-router';
 // components block
 import Alert from "../../Alert";
-import Search from "../../Search";
-import Selector from "../../Selector";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
-// constant, utils and styles block
-import history from "../../../../history";
-import { OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { LabOrderInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
-import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
-import {
-  LabTestPayload, LabTestsPayload, useFindAllLabTestLazyQuery, useUpdateLabTestMutation, LabTestStatus
-} from "../../../../generated/graphql";
-import {
-  MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, RESULTS, PAGE_LIMIT,
-  ADD_LAB_ORDERS_RESULTS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ORDER_NUM, EMPTY_OPTION, LAB_TEST_STATUSES,
-  NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE, RESULTS_ENTERED
-} from "../../../../constants";
+import Search from "../../Search";
 import SideDrawer from "../../SideDrawer";
-import { AddLabOrders } from "../../../../pages/main/labOrders/addOrder";
-import TableLoader from "../../TableLoader";
+import Selector from "../../Selector";
+import history from "../../../../history";
+import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
+// constant, utils and styles block
+import { OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
+import {
+  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
+  ORDER_NUM, PAGE_LIMIT, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from "../../../../constants";
+import {
+  LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestMutation
+} from "../../../../generated/graphql";
+import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 
-const LabOrdersTable = (): JSX.Element => {
+const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Element => {
   const classes = useTableStyles();
   const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>([])
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -39,6 +36,7 @@ const LabOrdersTable = (): JSX.Element => {
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
   const { textColor } = appointmentStatus('' || '')
+  const [labTestsToEdit, setLabTestsToEdit] = useState<LabTests[]>()
   const { id } = useParams<ParamsType>()
   const [searchQuery, setSearchQuery] = useState<string>('')
 
@@ -93,17 +91,22 @@ const LabOrdersTable = (): JSX.Element => {
       return []
     }
 
-    return labOrders.reduce<Record<string, any>>((acc, labOrder) => {
+    return labOrders.reduce<Record<string, LabTests[]>>((acc, labOrder) => {
       const orderNum = labOrder?.orderNumber ?? ''
+      const shouldFilterRecords = appointmentInfo ? appointmentInfo.id !== labOrder?.appointmentId : false
+      if (shouldFilterRecords) {
+        return acc
+      }
+      const transformedLabOrder = labOrder ? labOrder : []
       if (acc[orderNum]) {
-        acc[orderNum] = [...acc[orderNum], labOrder]
+        acc[orderNum] = [...acc[orderNum], transformedLabOrder as LabTests]
         return acc
       }
 
-      acc[orderNum] = [labOrder]
+      acc[orderNum] = [transformedLabOrder as LabTests]
       return acc
     }, {})
-  }, [labOrders])
+  }, [appointmentInfo, labOrders])
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
 
@@ -156,7 +159,20 @@ const LabOrdersTable = (): JSX.Element => {
     setOrderNum('')
     setLabTestIds([])
   }
-   const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+
+  const handleReload = () => {
+    setDrawerOpened(false)
+    fetchLabTests()
+    setOrderNum('')
+    setLabTestsToEdit([])
+  }
+  const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
+    setLabTestsToEdit(labOrder)
+    setOrderNum(orderNumber)
+    toggleSideDrawer()
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -165,10 +181,6 @@ const LabOrdersTable = (): JSX.Element => {
             <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
               <Search search={search} />
 
-              {/* <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={`${CREATE_LAB_ORDERS_ROUTE}/${id}`}>
-                {MANUAL_ENTRY}
-              </Button> */}
-
               <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
                 {MANUAL_ENTRY}
               </Button>
@@ -176,9 +188,15 @@ const LabOrdersTable = (): JSX.Element => {
 
 
             <SideDrawer
-                  drawerOpened={drawerOpened}
-                  toggleSideDrawer={toggleSideDrawer} >
-                  <AddLabOrders />
+              drawerOpened={drawerOpened}
+              toggleSideDrawer={toggleSideDrawer} >
+              {drawerOpened && <AddLabOrdersComponent
+                toggleSideDrawer={handleReload}
+                isEdit={!!labTestsToEdit?.length}
+                labTestsToEdit={labTestsToEdit}
+                orderNumber={orderNum}
+                appointmentInfo={appointmentInfo}
+              />}
             </SideDrawer>
 
 
@@ -198,73 +216,111 @@ const LabOrdersTable = (): JSX.Element => {
 
                 <TableBody>
                   {
-                    (loading) ? (
-                      <TableRow>
-                        <TableCell colSpan={10}>
-                          <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={7} />
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      Object.values(transformedLabOrders).map((labOrders) => {
-                        const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
-                        const { appointmentType, scheduleStartDateTime } = appointment ?? {}
+                    // (loading) ? (
+                    //   <TableRow>
+                    //     <TableCell scope="row">
+                    //       <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
+                    //         {orderNumber}
+                    //       </Link>
+                    //     </TableCell>
+                    //     <TableCell scope="row">
+                    //       {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                    //     </TableCell>
+                    //     <TableCell scope="row">
+                    //       <ul>
+                    //         {labOrders.map((labOrder: LabTestPayload['labTest']) => (
+                    //           <li>{labOrder?.test?.loincNum ?? '- -'}</li>
+                    //         ))}
+                    //       </ul>
+                    //     </TableCell>
+                    //     <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm:ss a')}</TableCell>
+                    //     <TableCell scope="row">
+                    //       {isEdit && orderNum === orderNumber ? <>
+                    //         <Selector
+                    //           name="status"
+                    //           label=""
+                    //           value={EMPTY_OPTION}
+                    //           options={LAB_TEST_STATUSES}
+                    //           onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
+                    //         />
+                    //       </>
+                    //         :
+                    //         <Box className={classes.status} component='span' color={textColor}
+                    //           onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
+                    //         >
+                    //           {formatValue(labTestStatus ?? '')}
+                    //         </Box>
+                    //       }
+                    //     <TableCell colSpan={10}>
+                    //       <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={7} />
+                    //     </TableCell>
+                    //   </TableRow>
+                    // ) : (
+                    Object.values(transformedLabOrders).map((labOrders) => {
+                      const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
+                      const { appointmentType, scheduleStartDateTime } = appointment ?? {}
 
-                        return (
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
+                      return (
+                        <TableRow>
+                          <TableCell scope="row">
+                            <Box className="pointer-cursor" onClick={() => handleLabOrderEdit(orderNumber || '', labOrders)}>
+                              <Typography color='secondary'>
                                 {orderNumber}
-                              </Link>
-                            </TableCell>
-                            <TableCell scope="row">
-                              {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
-                            </TableCell>
-                            <TableCell scope="row">
-                              <ul>
-                                {labOrders.map((labOrder: LabTestPayload['labTest']) => (
-                                  <li>{labOrder?.test?.loincNum ?? '- -'}</li>
-                                ))}
-                              </ul>
-                            </TableCell>
-                            <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm:ss a')}</TableCell>
-                            <TableCell scope="row">
-                              {isEdit && orderNum === orderNumber ? <>
-                                <Selector
-                                  name="status"
-                                  label=""
-                                  value={EMPTY_OPTION}
-                                  options={LAB_TEST_STATUSES}
-                                  onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
-                                />
-                              </>
-                                :
-                                <Box className={classes.status} component='span' color={textColor}
-                                  onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
-                                >
-                                  {formatValue(labTestStatus ?? '')}
-                                </Box>
-                              }
-                            </TableCell>
-                            <TableCell scope="row">
-                              {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
-                            </TableCell>
-                            <TableCell scope="row">
-                              <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                                <OutlinedAddIcon />
-                              </IconButton>
+                              </Typography>
+                            </Box>
+                            {/* <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
+                              {orderNumber}
+                            </Link> */}
+                          </TableCell>
+                          <TableCell scope="row">
+                            {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                          </TableCell>
+                          <TableCell scope="row">
+                            <ul>
+                              {labOrders.map((labOrder: LabTestPayload['labTest']) => (
+                                <li>{labOrder?.test?.loincNum ?? '- -'}</li>
+                              ))}
+                            </ul>
+                          </TableCell>
+                          <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm:ss a')}</TableCell>
+                          <TableCell scope="row">
+                            {isEdit && orderNum === orderNumber ? <>
+                              <Selector
+                                name="status"
+                                label=""
+                                value={EMPTY_OPTION}
+                                options={LAB_TEST_STATUSES}
+                                onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
+                              />
+                            </>
+                              :
+                              <Box className={classes.status} component='span' color={textColor}
+                                onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
+                              >
+                                {formatValue(labTestStatus ?? '')}
+                              </Box>
+                            }
+                          </TableCell>
+                          <TableCell scope="row">
+                            {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
+                          </TableCell>
+                          <TableCell scope="row">
+                            <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                              <OutlinedAddIcon />
+                            </IconButton>
 
-                              {/* <IconButton>
+                            {/* <IconButton>
                                 <EyeIcon />
                               </IconButton> */}
 
-                              <IconButton onClick={() => window.print()}>
-                                <PrinterIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })
-                    )
+                            <IconButton onClick={() => window.print()}>
+                              <PrinterIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })
+                    // )
                   }
                 </TableBody>
               </Table>
@@ -273,7 +329,7 @@ const LabOrdersTable = (): JSX.Element => {
         </FormProvider>
       </Box>
 
-      {((!loading && labOrders?.length === 0) || error) && (
+      {((!loading && Object.keys(transformedLabOrders)?.length === 0) || error) && (
         <Box display="flex" justifyContent="center" pb={12} pt={5}>
           <NoDataFoundComponent />
         </Box>
