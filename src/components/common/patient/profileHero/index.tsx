@@ -91,7 +91,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         const { getPatient } = data;
 
         if (getPatient) {
-
           const { patient } = getPatient;
           const { attachments } = patient || {}
           const profilePicture = attachments && attachments.filter(attachment =>
