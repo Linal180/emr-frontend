@@ -201,15 +201,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       const { firstName, lastName } = doctor ?? {}
 
       providerName = `${firstName} ${lastName}`
-    } else {
-      const currentDoctorPatients = doctorPatients[0]
-
-      if (currentDoctorPatients) {
-        const { doctor } = currentDoctorPatients || {};
-        const { firstName, lastName } = doctor ?? {}
-
-        providerName = `${firstName} ${lastName}`
-      }
     }
   }
 

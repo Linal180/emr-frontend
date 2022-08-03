@@ -231,7 +231,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             type: ActionType.SET_AVAILABLE_SLOTS,
             availableSlots: filterSlots(slots, appStartDate ? appStartDate : date) as SlotsPayload['slots']
           })
-
         } else { dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] }); }
       }
     }
@@ -346,8 +345,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     } = inputs;
 
     const dateToFormat = appStartDate ? appStartDate : date
-    const transformedStartTime = moment(`${moment(dateToFormat).format("MM-DD-YYYY")} ${moment(scheduleStartDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
-    const transformedEndTime = moment(`${moment(dateToFormat).format("MM-DD-YYYY")} ${moment(scheduleEndDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
+    const transformedStartTime = moment(`${moment(dateToFormat)
+      .format("MM-DD-YYYY")} ${moment(scheduleStartDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
+    
+      const transformedEndTime = moment(`${moment(dateToFormat)
+        .format("MM-DD-YYYY")} ${moment(scheduleEndDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
@@ -366,12 +368,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: transformedStartTime, practiceId, status: AppointmentStatus.Scheduled,
-        scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: transformedStartTime, practiceId, patientId: selectedPatient,
+        scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false, notes, 
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
-        notes, facilityId: isHigherAdmin ? selectedFacility : userFacilityId, patientId: selectedPatient,
+        facilityId: isHigherAdmin ? selectedFacility : userFacilityId, billingStatus: BillingStatus.Due,
         appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
-        billingStatus: BillingStatus.Due, appointmentCreateType: appointmentType as AppointmentCreateType
+        appointmentCreateType: appointmentType as AppointmentCreateType
       };
 
       const payload = onlyDoctor ? { ...appointmentInput, providerId: currentDoctor } : selectedProvider ?
@@ -382,7 +384,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           cancelAppStatus ?
             Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
             : await updateAppointment({
-              variables: { updateAppointmentInput: { id, ...payload } }
+              variables: { updateAppointmentInput: { id, ...payload, status: AppointmentStatus.Scheduled } }
             }) : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
@@ -395,6 +397,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
+
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -420,15 +423,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [pId, pName, setValue])
 
   const setScheduleEmpty = useCallback(() => {
-    if (isEdit && date) {
-      setValue('scheduleEndDateTime', '')
-      setValue('scheduleStartDateTime', '')
-    }
-    else {
-      setValue('scheduleEndDateTime', '')
-      setValue('scheduleStartDateTime', '')
-    }
-  }, [setValue, isEdit, date])
+    setValue('scheduleEndDateTime', '')
+    setValue('scheduleStartDateTime', '')
+  }, [setValue])
 
   useEffect(() => {
     setScheduleEmpty()
@@ -608,12 +605,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                         const { startTime, endTime } = slot || {}
                         const startDateTime = getStandardTime(new Date(startTime || '').getTime().toString())
+                        const isSelected = startDateTime === scheduleStartTime
 
                         return (
                           <li key={index}>
                             <Box py={1.375} textAlign={'center'} border={`1px solid ${GRAY_ONE}`} borderRadius={6}
-                              bgcolor={startDateTime === scheduleStartTime ? GREY_TWO : WHITE}
-                              color={startDateTime === scheduleStartTime ? WHITE : BLACK_FOUR}
+                              bgcolor={isSelected ? GREY_TWO : WHITE}
+                              color={isSelected ? WHITE : BLACK_FOUR}
                               className={classes.timeSlot}
                               onClick={() => handleSlot(slot)}>
                               {getStandardTime(new Date(startTime || '').getTime().toString())} -{' '}
