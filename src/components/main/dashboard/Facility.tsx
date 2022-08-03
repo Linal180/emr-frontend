@@ -6,7 +6,6 @@ import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 import ScheduleListing from "../../common/scheduling/Listing";
 import PercentagePie from "../../common/charts/PercentagePie";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
-import MedicalBillingComponent from "../../common/Dashboard/medicalBilling";
 import FacilityDoctorPatients from "../../common/Dashboard/FacilityDoctorPatients";
 import UpcomingAppointments from "../../common/Dashboard/DoctorAppointmentsAndPatients";
 // svgs, styles, nad constant block
@@ -235,7 +234,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
           <Box p={1} />
 
           <Grid container spacing={2}>
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid item md={12} sm={12} xs={12}>
               <Card>
                 <Box px={3} pb={2}>
                   <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
@@ -253,13 +252,117 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               </Card>
             </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
+            {/* <Grid item md={6} sm={12} xs={12}>
               <MedicalBillingComponent />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
 
         <Grid item md={4} sm={12} xs={12}>
+          <Card>
+            <Box className={classes.blueCard}>
+              <Box color={WHITE}>
+                <Typography variant="h5">{QUICK_ACTIONS}</Typography>
+              </Box>
+            </Box>
+
+            <Box className={classes.cardContainer}>
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Link to={`${APPOINTMENTS_ROUTE}/new`}>
+                  <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
+                    <CalendarBlackIcon />
+
+                    <Box p={0.7} />
+
+                    <Typography variant="h6">{NEW_APPOINTMENT}</Typography>
+                  </Box>
+                </Link>
+
+                <Box p={1} />
+
+                <Link to={`${PATIENTS_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
+
+                    <Box p={0.7} />
+
+                    <Typography variant="h6">{NEW_PATIENT}</Typography>
+                  </Box>
+                </Link>
+              </Box>
+
+              <Box p={1} />
+
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Link to={`${DOCTORS_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
+
+                    <Box p={0.7} />
+
+                    <Typography variant="h6">{NEW_PROVIDER}</Typography>
+                  </Box>
+                </Link>
+
+                <Box p={1} />
+
+                <Link to={`${STAFF_ROUTE}/new`}>
+                  <Box className={classes.cardBox}>
+                    <UserBlackIcon />
+
+                    <Box p={0.2} />
+
+                    <Typography variant="h6">{NEW_STAFF}</Typography>
+                  </Box>
+                </Link>
+              </Box>
+            </Box>
+          </Card>
+
+          {/* <Card>
+            <Box p={3}>
+              <Grid container spacing={3}>
+                <Grid item md={8} sm={12} xs={12}>
+                  <Box display="flex">
+                    <UserOutlinedIcon />
+
+                    <Box ml={2}>
+                      <Typography variant="h5">{totalUsers}</Typography>
+
+                      <Box mt={0.5} color={GREEN_ONE}>
+                        <Typography variant="inherit">{TOTAL_NUMBER_OF_USERS}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  <Box display="flex" mt={2.5}>
+                    <PracticeActiveIcon />
+
+                    <Box ml={2}>
+                      <Typography variant="h5">{totalUsers - 1}</Typography>
+
+                      <Box mt={0.5} color={BLUE_SEVEN}>
+                        <Typography variant="inherit">{AVAILABLE_USERS}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid item md={4} sm={12} xs={12}>
+                  {!staffLoading &&
+                    <PercentagePie
+                      completed={1}
+                      total={totalUsers - 1}
+                      className='chartContainerSmall'
+                    />
+                  }
+                </Grid>
+              </Grid>
+            </Box>
+          </Card> */}
+
+          <Box p={1} />
+
           <Card>
             <Box px={3} py={2}>
               <Typography variant="h5">{PATIENT_DISCHARGED}</Typography>
@@ -318,110 +421,6 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                   </Box>
                 </Grid>
               </Grid>
-            </Box>
-          </Card>
-
-          {/* <Card>
-            <Box p={3}>
-              <Grid container spacing={3}>
-                <Grid item md={8} sm={12} xs={12}>
-                  <Box display="flex">
-                    <UserOutlinedIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">{totalUsers}</Typography>
-
-                      <Box mt={0.5} color={GREEN_ONE}>
-                        <Typography variant="inherit">{TOTAL_NUMBER_OF_USERS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  <Box display="flex" mt={2.5}>
-                    <PracticeActiveIcon />
-
-                    <Box ml={2}>
-                      <Typography variant="h5">{totalUsers - 1}</Typography>
-
-                      <Box mt={0.5} color={BLUE_SEVEN}>
-                        <Typography variant="inherit">{AVAILABLE_USERS}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid item md={4} sm={12} xs={12}>
-                  {!staffLoading &&
-                    <PercentagePie
-                      completed={1}
-                      total={totalUsers - 1}
-                      className='chartContainerSmall'
-                    />
-                  }
-                </Grid>
-              </Grid>
-            </Box>
-          </Card> */}
-
-          <Box p={1} />
-
-          <Card>
-            <Box className={classes.blueCard}>
-              <Box color={WHITE}>
-                <Typography variant="h5">{QUICK_ACTIONS}</Typography>
-              </Box>
-            </Box>
-
-            <Box className={classes.cardContainer}>
-              <Box display='flex' justifyContent='center' alignItems='center'>
-                <Link to={`${APPOINTMENTS_ROUTE}/new`}>
-                  <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
-                    <CalendarBlackIcon />
-
-                    <Box p={0.7} />
-
-                    <Typography variant="h6">{NEW_APPOINTMENT}</Typography>
-                  </Box>
-                </Link>
-
-                <Box p={1} />
-
-                <Link to={`${PATIENTS_ROUTE}/new`}>
-                  <Box className={classes.cardBox}>
-                    <UserBlackIcon />
-
-                    <Box p={0.7} />
-
-                    <Typography variant="h6">{NEW_PATIENT}</Typography>
-                  </Box>
-                </Link>
-              </Box>
-
-              <Box p={1} />
-
-              <Box display='flex' justifyContent='center' alignItems='center'>
-                <Link to={`${DOCTORS_ROUTE}/new`}>
-                  <Box className={classes.cardBox}>
-                    <UserBlackIcon />
-
-                    <Box p={0.7} />
-
-                    <Typography variant="h6">{NEW_PROVIDER}</Typography>
-                  </Box>
-                </Link>
-
-                <Box p={1} />
-
-                <Link to={`${STAFF_ROUTE}/new`}>
-                  <Box className={classes.cardBox}>
-                    <UserBlackIcon />
-
-                    <Box p={0.2} />
-
-                    <Typography variant="h6">{NEW_STAFF}</Typography>
-                  </Box>
-                </Link>
-              </Box>
             </Box>
           </Card>
 

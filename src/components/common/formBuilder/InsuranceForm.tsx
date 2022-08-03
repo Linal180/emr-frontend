@@ -38,7 +38,11 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
   const getAllInsurances = useCallback(async () => {
     try {
       await fetchAllInsurances({
-        variables: { insuranceInput: { paginationOptions: { limit: 10, page: 1 }, searchString: searchQuery } }
+        variables: {
+          insuranceInput: {
+            paginationOptions: { limit: 10, page: 1 }, searchString: searchQuery.trim()
+          }
+        }
       })
     } catch (error) { }
   }, [fetchAllInsurances, searchQuery])

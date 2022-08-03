@@ -65,7 +65,7 @@ const LogsPatientSelector: FC<LogsPatientSelectorProps> = ({
       patientsInputs && await findAllPatient({
         variables: {
           patientInput: {
-            ...patientsInputs, searchString: searchQuery,
+            ...patientsInputs, searchString: searchQuery.trim(),
           }
         }
       })

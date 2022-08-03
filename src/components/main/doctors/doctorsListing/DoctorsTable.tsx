@@ -99,7 +99,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       }
 
       doctorInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery, ...searchFilterInputs } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery.trim(), ...searchFilterInputs } }
       })
     } catch (error) { }
   }, [
