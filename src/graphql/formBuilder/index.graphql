@@ -307,3 +307,24 @@ mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
     }
   }
 }
+
+query FindAllPublicFacility($facilityInput: FacilityInput!) {
+  findAllPublicFacility(facilityInput: $facilityInput) {
+    
+    facilities {
+      id
+      name
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}

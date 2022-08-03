@@ -1154,6 +1154,12 @@ export interface CopayModalProps {
   billingStatus?: string
 }
 
+export interface RejectedModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  handleClose?: () => void
+}
+
 export interface ClaimStatusModalProps extends GeneralFormProps {
   isOpen: boolean;
   setIsOpen: Function;
@@ -1167,6 +1173,18 @@ export interface CheckoutModalProps {
   insuranceId?: string;
   billingStatus?: string
   handleSubmit: Function
+}
+
+export interface RejectedModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+}
+
+export interface FacilityScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  facilityDispatcher: Dispatch<FacilityAction>;
+  facilityId: string | undefined;
 }
 
 export interface DaySchedule {
@@ -1860,8 +1878,9 @@ export interface DoctorAppointmentsAndPatientsProps {
 }
 
 export interface FeeScheduleFormProps {
-  state: FeeScheduleState,
+  state: FeeScheduleState;
   dispatcher: Dispatch<FeeScheduleAction>
+  reload?: Function;
 }
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {

@@ -4,19 +4,22 @@ import { Pagination } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import {
-  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography
+  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button,
 } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
 import FeeScheduleForm from './feeScheduleForm';
 import SideDrawer from '../../common/SideDrawer';
+import BackButton from "../../common/BackButton";
+import PageHeader from "../../common/PageHeader";
 import TableLoader from "../../common/TableLoader";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import PracticeSelector from "../../common/Selector/PracticeSelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../context";
+import { SelectorOption } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon, EyeIcon } from "../../../assets/svgs";
 import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
@@ -25,19 +28,23 @@ import {
   feeScheduleReducer, initialState, Action, State, ActionType
 } from "../../../reducers/feeScheduleReducer";
 import {
-  ACTION, EFFECTIVE_DATE, EXPIRY_DATE, EXTENDED_PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT,
+  ACTION, EFFECTIVE_DATE, EXPIRY_DATE, ELEVEN_PAGE_LIMIT, FEE_SCHEDULE, ADD_NEW_TEXT, TOTAL_CODES,
   DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, NAME, PRACTICE, FEE_SCHEDULE_ROUTE,
-  TOTAL_CODES,
+  FEE_SCHEDULE_BREAD, SETTINGS_ROUTE,
 } from "../../../constants";
+
 
 const FeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const methods = useForm({ mode: "all" });
+  const methods = useForm<{ selectedPractice: SelectorOption }>({ mode: "all" });
+  const { watch } = methods
+
+  const { selectedPractice } = watch();
+  const { id: selectedPracticeId } = selectedPractice || {}
   const history = useHistory()
-
   const { user } = useContext(AuthContext);
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
 
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
   const { page, totalPages, feeSchedules, drawerOpened, delFeeId, openDel, searchQuery } = state
   const { roles, facility } = user || {}
   const { practiceId } = facility || {}
@@ -85,9 +92,12 @@ const FeeTable: FC = (): JSX.Element => {
             if (status === 200) {
               message && Alert.success(message);
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
-              await fetchFeeSchedule();
-            } else {
-              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
+
+              if (!!feeSchedules && feeSchedules.length) {
+                fetchFeeSchedule();
+              } else {
+                dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
+              }
             }
           } catch (error) { }
         }
@@ -97,36 +107,31 @@ const FeeTable: FC = (): JSX.Element => {
 
   const fetchFeeSchedule = useCallback(async () => {
     try {
-      const paginationOptions = { page, limit: EXTENDED_PAGE_LIMIT }
-      const findAllFeeScheduleInput = isSuper ?
-        { paginationOptions, searchString: searchQuery }
-        : { paginationOptions, practiceId, searchString: searchQuery }
+      const paginationOptions = { page, limit: ELEVEN_PAGE_LIMIT }
+      const feeScheduleInput = isSuper ? { practiceId: selectedPracticeId } : { practiceId }
 
-      await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
+      await findAllFeeSchedule({
+        variables: {
+          findAllFeeScheduleInput: {
+            paginationOptions, ...feeScheduleInput, searchString: searchQuery.trim()
+          }
+        }
+      })
     } catch (error) { }
-  }, [page, practiceId, isSuper, findAllFeeSchedule, searchQuery])
-
-  const handleFetchFeeSchedule = async (id: string) => {
-    try {
-      const paginationOptions = { page, limit: EXTENDED_PAGE_LIMIT }
-      const findAllFeeScheduleInput = { paginationOptions, practiceId: id, searchString: searchQuery }
-
-      await findAllFeeSchedule({ variables: { findAllFeeScheduleInput } })
-    } catch (error) { }
-  }
+  }, [page, isSuper, selectedPracticeId, practiceId, findAllFeeSchedule, searchQuery])
 
   useEffect(() => {
     fetchFeeSchedule()
-  }, [fetchFeeSchedule, page])
+  }, [fetchFeeSchedule, page, selectedPracticeId])
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
 
-    if (searchQuery?.length >= 3 || searchQuery?.length <= 0) {
-      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
-    }
+    // if (searchQuery?.length >= 3 || searchQuery?.length <= 0) {
+    //   dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
+    // }
   }
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
@@ -168,8 +173,18 @@ const FeeTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{FEE_SCHEDULE}</Typography>
+      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Box display='flex'>
+          <BackButton to={SETTINGS_ROUTE} />
+
+          <Box ml={2} />
+
+          <PageHeader
+            title={FEE_SCHEDULE}
+            path={[FEE_SCHEDULE_BREAD]}
+          />
+        </Box>
+
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >
@@ -190,9 +205,9 @@ const FeeTable: FC = (): JSX.Element => {
                   <PracticeSelector
                     addEmpty
                     label=""
+                    name="selectedPractice"
                     isLabelDisplay={false}
-                    name="practiceId"
-                    handleFeeSchedule={handleFetchFeeSchedule}
+                    onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </FormProvider>
               </Grid>}
@@ -216,7 +231,7 @@ const FeeTable: FC = (): JSX.Element => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={EXTENDED_PAGE_LIMIT} numberOfColumns={5} />
+                    <TableLoader numberOfRows={ELEVEN_PAGE_LIMIT} numberOfColumns={5} />
                   </TableCell>
                 </TableRow>
               ) : feeSchedules?.map((item) => {
@@ -273,7 +288,7 @@ const FeeTable: FC = (): JSX.Element => {
       )}
 
       <SideDrawer drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer}>
-        <FeeScheduleForm dispatcher={dispatch} state={state} />
+        <FeeScheduleForm dispatcher={dispatch} state={state} reload={() => fetchFeeSchedule()} />
       </SideDrawer>
 
       <ConfirmationModal
