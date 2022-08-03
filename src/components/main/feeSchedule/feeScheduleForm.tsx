@@ -181,7 +181,6 @@ const FeeScheduleForm = ({ dispatcher, state, reload }: FeeScheduleFormProps) =>
                 <Grid container spacing={3} direction="row">
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
-                      disablePast
                       name="effectiveDate"
                       label={EFFECTIVE_DATE}
                       disableFuture={false}
@@ -190,7 +189,6 @@ const FeeScheduleForm = ({ dispatcher, state, reload }: FeeScheduleFormProps) =>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
-                      disablePast
                       name="expiryDate"
                       label={EXPIRATION_DATE}
                       disableFuture={false}

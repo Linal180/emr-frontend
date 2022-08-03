@@ -35,7 +35,7 @@ import {
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
   INVALID_DEA_DATE_ERROR_MESSAGE,
-  NPI,
+  INVALID_EXPIRATION_DATE_ERROR_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -129,12 +129,9 @@ const nameValidationSchema = (label: string, required: boolean) => yup.string()
 
 const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
 const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGEX) }
-const npiSchema = (isRequired: boolean = false) => {
-  return {
-    npi: yup.string()
-      .test('', requiredMessage(NPI), value => isRequired ? !!value : true)
-      .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
-  }
+const npiSchema = {
+  npi: yup.string().required()
+    .test('', NPI_MESSAGE, value => !!value ? checkNpi(value) : true)
 }
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -339,7 +336,7 @@ export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boole
 })
 
 export const facilitySchema = (practiceRequired: boolean) => yup.object({
-  ...npiSchema(),
+  ...npiSchema,
   ...contactSchema,
   ...mammographySchema,
   ...cliaIdNumberSchema,
@@ -357,8 +354,8 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
 
 export const basicDoctorSchema = {
   ...ssnSchema,
+  ...npiSchema,
   ...upinSchema,
-  ...npiSchema(),
   ...deaDateSchema,
   ...licenseDateSchema,
   ...firstLastNameSchema,
@@ -605,20 +602,20 @@ const practiceFacilitySchema = {
 }
 
 export const createPracticeSchema = yup.object({
-  ...npiSchema(true),
   ...registerUserSchema,
   ...practiceFacilitySchema,
-  address: addressValidation(ADDRESS, true),
-  taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
-  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
   facilityName: generalNameSchema(true, FACILITY_NAME, true, false),
+  address: addressValidation(ADDRESS, true),
+  ...npiSchema,
+  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
+  taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
 })
 
 export const updatePracticeSchema = yup.object({
-  ...npiSchema(true),
   ...practiceFacilitySchema,
+  ...npiSchema,
+  taxId: yup.string().required(),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
-  taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
 export const updatePasswordSchema = yup.object({
@@ -1012,8 +1009,8 @@ export const businessAchSchema = yup.object({
 
 export const basicPatientDoctorSchema = {
   ...ssnSchema,
+  ...npiSchema,
   ...upinSchema,
-  ...npiSchema(),
   ...deaDateSchema,
   ...licenseDateSchema,
   ...taxonomyCodeSchema,
@@ -1051,10 +1048,7 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 })
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
-  amount: yup.string()
-    .test('', requiredMessage(AMOUNT), value => !!value)
-    .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
-    .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
+  amount: yup.number().typeError(requiredMessage(AMOUNT))
 })
 
 export const createBillingSchema = yup.object({
@@ -1110,6 +1104,10 @@ export const feeScheduleSchema = yup.object({
   practiceId: selectorSchema(PRACTICE),
   name: yup.string().required(requiredMessage(NAME))
     .min(3, MinLength(NAME, 3)).max(26, MaxLength(NAME, 26)),
+
+  expiryDate: yup.string().test('', INVALID_EXPIRATION_DATE_ERROR_MESSAGE,
+    (value, { parent: { effectiveDate } }) => !value
+      ? !value : dateValidation(value, effectiveDate))
 })
 
 export const cptFeeScheduleSchema = yup.object({
