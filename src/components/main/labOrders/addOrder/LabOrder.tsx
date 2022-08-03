@@ -15,9 +15,11 @@ import { GREY_THREE } from '../../../../theme';
 import { CrossIcon } from '../../../../assets/svgs';
 import { renderItem, setRecord } from '../../../../utils';
 import { ContactType, DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
-import { LabOrderInitialScreenProps, LabOrdersCreateFormInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
-  APPOINTMENT_TEXT, EMPTY_OPTION, GUARANTOR, LAB_TEST_STATUSES, N_A, PRIMARY_PROVIDER, REFERRING_PROVIDER, 
+  LabOrderInitialScreenProps, LabOrdersCreateFormInput, ParamsType, SelectorOption
+} from "../../../../interfacesTypes";
+import {
+  APPOINTMENT_TEXT, EMPTY_OPTION, GUARANTOR, LAB_TEST_STATUSES, N_A, PRIMARY_PROVIDER, REFERRING_PROVIDER,
   STATUS, TEST, TESTS_FIELD_VALIDATION_MESSAGE
 } from '../../../../constants';
 
@@ -30,8 +32,8 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
   const { setValue, control, watch } = methods
   const { testFieldValues } = watch()
 
-  const { 
-    fields: testFieldValuesFields, append: appendTestFieldValuesFields, remove: removeTestFieldValuesFields 
+  const {
+    fields: testFieldValuesFields, append: appendTestFieldValuesFields, remove: removeTestFieldValuesFields
   } = useFieldArray({ control: control, name: 'testFieldValues' });
 
   const handleLabTests = (data: SelectorOption) => {
@@ -47,7 +49,11 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       test: data,
       testDate: moment().toString(),
       testTime: moment().format('HH:mm:ss'),
+      diagnosesIds: [],
+      testNotes: '',
+      specimenTypeField: []
     })
+
     testFieldValues && setValue('testFieldValues', [...testFieldValues, {
       testId: '',
       test: data,

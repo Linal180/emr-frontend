@@ -26,6 +26,7 @@ const CareTeamComponent = ({
     patientDispatcher && patientDispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })
     patientDispatcher && patientDispatcher({ type: ActionType.SET_DOCTOR_NAME, doctorName: doctorName })
     onEdit && onEdit(id, providerId)
+
     handleSlider()
   }
 
@@ -33,6 +34,7 @@ const CareTeamComponent = ({
     patientDispatcher && patientDispatcher({ type: ActionType.SET_IS_EDIT, isEdit: false })
     handleSlider()
   }
+
   return (
     <Card className="card-box-shadow">
       <Box p={4}>
