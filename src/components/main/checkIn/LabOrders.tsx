@@ -7,7 +7,7 @@ import { ChevronRight } from "@material-ui/icons";
 //constants, types, interfaces, utils import
 import { TO_BILLING } from "../../../constants";
 import { LabOrderCreateProps } from "../../../interfacesTypes";
-import LabOrdersCreateForm from "../labOrders/addOrder/LabOrdersCreateForm";
+import LabOrdersTable from '../../common/patient/labOrders';
 
 const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => {
   return (
@@ -15,14 +15,14 @@ const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => 
       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant="h4">Lab Order</Typography>
 
-        <Button variant="contained" color="primary" onClick={()=>handleStep && handleStep(5)}>
+        <Button variant="contained" color="primary" onClick={() => handleStep && handleStep(5)}>
           {TO_BILLING}
           <ChevronRight />
         </Button>
       </Box>
 
       <Box>
-        <LabOrdersCreateForm appointmentInfo={appointmentInfo} />
+        <LabOrdersTable appointmentInfo={appointmentInfo} />
       </Box>
     </Card>
   )

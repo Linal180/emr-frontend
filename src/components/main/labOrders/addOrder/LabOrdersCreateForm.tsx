@@ -29,7 +29,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
     defaultValues: {
-      testField: [TEST_FIELD_INITIAL_VALUES],
+      testFieldValues: [TEST_FIELD_INITIAL_VALUES],
       appointment: EMPTY_OPTION,
       diagnosesIds: [EMPTY_MULTISELECT_OPTION],
       labTestStatus: setRecord(LabTestStatus.OrderEntered, LabTestStatus.OrderEntered)
@@ -41,7 +41,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
   const { control, handleSubmit, reset } = methods
 
-  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testField" });
+  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testFieldValues" });
 
   const [createLabTest, { loading }] = useCreateLabTestMutation({
     onError({ message }) {
@@ -66,7 +66,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
   const onSubmit: SubmitHandler<LabOrdersCreateFormInput> = async (values) => {
     const orderNumber = generateString()
     const accessionNumber = generateString(6)
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     let appointmentId = ''
     if (appointmentInfo) {
       appointmentId = appointmentInfo.id
@@ -76,8 +76,8 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
     const { id: testStatus } = labTestStatus ?? {}
 
-    testField.forEach(async (testFieldValues) => {
-      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValues
+    testFieldValues.forEach(async (testFieldValue) => {
+      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValue
 
       const createLabTestItemInput = {
         patientId: patientId ?? '',

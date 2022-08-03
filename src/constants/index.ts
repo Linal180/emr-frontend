@@ -1570,6 +1570,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
+export const TESTS_FIELD_VALIDATION_MESSAGE = "Atleast one test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
@@ -3071,6 +3072,7 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   testDate: moment().toString(),
   testNotes: '',
   testTime: moment().format('HH:mm:ss'),
+  diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
@@ -3104,7 +3106,8 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS, PAYMENTS
+  LAB_ORDER, TESTS, 
+  // PAYMENTS
 ];
 
 export const FacilityMenuNav = [
