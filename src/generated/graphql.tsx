@@ -512,13 +512,6 @@ export enum BillingStatus {
   Refund = 'REFUND'
 }
 
-export type BillingsPayload = {
-  __typename?: 'BillingsPayload';
-  billings: Array<Billing>;
-  pagination?: Maybe<PaginationPayload>;
-  response?: Maybe<Response>;
-};
-
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
   clientToken: Scalars['String'];
@@ -1854,16 +1847,6 @@ export type FeeSchedulePayload = {
   __typename?: 'FeeSchedulePayload';
   feeSchedule?: Maybe<FeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
-};
-
-export type FetchBillingClaimStatusesInput = {
-  claimId?: Maybe<Scalars['String']>;
-  claimStatusId?: Maybe<Scalars['String']>;
-  facilityId?: Maybe<Scalars['String']>;
-  from?: Maybe<Scalars['String']>;
-  paginationOptions: PaginationInput;
-  patientId?: Maybe<Scalars['String']>;
-  to?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -4225,7 +4208,6 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
-  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4375,11 +4357,6 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
-};
-
-
-export type QueryFetchBillingClaimStatusesArgs = {
-  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 

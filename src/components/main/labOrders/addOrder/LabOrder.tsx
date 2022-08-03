@@ -15,7 +15,9 @@ import { GREY_THREE } from '../../../../theme';
 import { CrossIcon } from '../../../../assets/svgs';
 import { renderItem, setRecord } from '../../../../utils';
 import { ContactType, DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
-import { LabOrderInitialScreenProps, LabOrdersCreateFormInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import {
+  LabOrderInitialScreenProps, LabOrdersCreateFormInput, ParamsType, SelectorOption
+} from "../../../../interfacesTypes";
 import {
   APPOINTMENT_TEXT, EMPTY_OPTION, GUARANTOR, LAB_TEST_STATUSES, N_A, PRIMARY_PROVIDER, REFERRING_PROVIDER,
   STATUS, TEST, TESTS_FIELD_VALIDATION_MESSAGE
@@ -52,6 +54,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       testNotes: '',
       newTest: true
     })
+
     testFieldValues && setValue('testFieldValues', [...testFieldValues, {
       testId: '',
       test: data,
