@@ -61,6 +61,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
             value={field.value}
             disabled={disabled}
             disableClearable
+            getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (

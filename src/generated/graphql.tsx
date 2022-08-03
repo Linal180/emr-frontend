@@ -512,13 +512,6 @@ export enum BillingStatus {
   Refund = 'REFUND'
 }
 
-export type BillingsPayload = {
-  __typename?: 'BillingsPayload';
-  billings: Array<Billing>;
-  pagination?: Maybe<PaginationPayload>;
-  response?: Maybe<Response>;
-};
-
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
   clientToken: Scalars['String'];
@@ -1854,16 +1847,6 @@ export type FeeSchedulePayload = {
   __typename?: 'FeeSchedulePayload';
   feeSchedule?: Maybe<FeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
-};
-
-export type FetchBillingClaimStatusesInput = {
-  claimId?: Maybe<Scalars['String']>;
-  claimStatusId?: Maybe<Scalars['String']>;
-  facilityId?: Maybe<Scalars['String']>;
-  from?: Maybe<Scalars['String']>;
-  paginationOptions: PaginationInput;
-  patientId?: Maybe<Scalars['String']>;
-  to?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -4225,7 +4208,6 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
-  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4375,11 +4357,6 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
-};
-
-
-export type QueryFetchBillingClaimStatusesArgs = {
-  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 
@@ -7372,7 +7349,7 @@ export type FindAllLabTestQueryVariables = Exact<{
 }>;
 
 
-export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllLoincCodesQueryVariables = Exact<{
   searchLoincCodesInput: SearchLoincCodesInput;
@@ -14311,12 +14288,14 @@ export const FindAllLabTestDocument = gql`
     labTests {
       id
       orderNumber
+      accessionNumber
       labTestStatus
       testDate
       testTime
       patientId
       createdAt
       testNotes
+      appointmentId
       patient {
         doctorPatients {
           doctor {
@@ -14328,6 +14307,7 @@ export const FindAllLabTestDocument = gql`
         firstName
       }
       diagnoses {
+        id
         code
         description
       }
@@ -14335,6 +14315,26 @@ export const FindAllLabTestDocument = gql`
         id
         loincNum
         component
+      }
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
       }
       testObservations {
         createdAt

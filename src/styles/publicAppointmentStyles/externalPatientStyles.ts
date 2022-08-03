@@ -284,7 +284,7 @@ export const AntSwitch = withStyles(() =>
       left: 0,
       top: 0,
     },
-
+    
     thumb: {
       width: 70,
       height: 34,
@@ -295,29 +295,29 @@ export const AntSwitch = withStyles(() =>
       transform: "translateX(93%)",
       transition: "all .3s ease-in",
     },
-
+    
     switchBase: {
       padding: 4,
       transform: "none !important",
-
+      
       "&$checked": {
         "& + $track": {
           opacity: 0.8,
           backgroundColor: "transparent",
           borderColor: "none",
         },
-
+        
         "& .MuiSwitch-thumb": {
           backgroundColor: GREY_TWO,
           transform: "translateX(0)",
         },
       },
-
+      
       "&:hover": {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
       }
     },
-
+    
     track: {
       border: `none`,
       backgroundColor: WHITE,
