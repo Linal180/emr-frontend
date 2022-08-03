@@ -24,7 +24,7 @@ import { BillingsPayload, useFetchBillingClaimStatusesLazyQuery } from "../../..
 import { State, Action, claimStatusReducer, ActionType, initialState } from "../../../../reducers/claimStatusReducer";
 import {
   APPLY_FILTER, BILLED_AMOUNT, CLAIM_ID, CLAIM_STATUS, DATE_OF_SERVICE, FACILITY, FROM_DATE,
-  ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, STATUS, TO_DATE, UPDATE_FILTER
+  ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, RESET, STATUS, TO_DATE, UPDATE_FILTER
 } from "../../../../constants";
 
 const ClaimStatusTable: FC = (): JSX.Element => {
@@ -36,7 +36,7 @@ const ClaimStatusTable: FC = (): JSX.Element => {
   const { facilityId: userFacility, roles } = user || {}
   const isAdmin = isUserAdmin(roles)
 
-  const { watch } = methods;
+  const { watch, setValue } = methods;
   const { claimNo, claimStatus, facility, from, patient, to } = watch()
   const { isRejectedModalOpen, openAdvancedSearch, page, totalPages, claimStatuses } = state;
 
@@ -96,6 +96,15 @@ const ClaimStatusTable: FC = (): JSX.Element => {
         variables: { fetchBillingClaimStatusesInput }
       })
     } catch (error) { }
+  }
+
+  const handleReset = () => {
+    setValue('to', null)
+    setValue('from', null)
+    setValue('claimNo', '')
+    setValue('patient', { id: '', name: '' })
+    setValue('facility', { id: '', name: '' })
+    setValue('claimStatus', { id: '', name: '' })
   }
 
 
@@ -171,12 +180,19 @@ const ClaimStatusTable: FC = (): JSX.Element => {
                       </Grid>
 
                       <Grid item xs={12} sm={12} md={3}>
-                        <Box pt={2.5}>
-                          <Button variant="contained" color="secondary" className={classes.btnWrap} onClick={filterHandler}>
-                            {UPDATE_FILTER}
-                          </Button>
+                        <Box display='flex' justifyContent='flex-start' alignItems='center' pt={2.5}>
+                          <Box>
+                            <Button variant="contained" color="secondary" className={classes.btnWrap} onClick={filterHandler}>
+                              {UPDATE_FILTER}
+                            </Button>
+                          </Box>
+
+                          <Box pl={2.5}>
+                            <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
+                          </Box>
                         </Box>
                       </Grid>
+
                     </Grid>
                   </Box>
                 </FormProvider>
