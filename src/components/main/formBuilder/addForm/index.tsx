@@ -493,7 +493,9 @@ const AddForm = () => {
                 placeholder: values?.placeholder,
                 required: values?.required,
                 options: values?.options,
-                regex: values?.regex
+                regex: values?.regex,
+                futureEnable: values?.futureEnable,
+                pastEnable: values?.pastEnable
               }
               : field
           );

@@ -33,7 +33,7 @@ export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
-export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/; 
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -87,6 +87,8 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const FILE_REQUIRED = 'Please select at least one file'
+export const FUTURE_DATE = 'Disable Past Date'
+export const PAST_DATE = 'Disable Future Date'
 export const STATUS_NAME = 'Status Name'
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
@@ -3058,7 +3060,9 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
-  regex: ''
+  regex: '',
+  pastEnable: true,
+  futureEnable: true
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
@@ -3107,7 +3111,7 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS, 
+  LAB_ORDER, TESTS,
   // PAYMENTS
 ];
 
