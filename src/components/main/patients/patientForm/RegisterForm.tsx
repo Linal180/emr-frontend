@@ -28,9 +28,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
       case !shouldShowBread ? 0 : Infinity:
-        return (<>
-          <InsuranceComponent />
-        </>)
+        return <InsuranceComponent />
 
       case !shouldShowBread ? 1 : 0:
         return (<>
