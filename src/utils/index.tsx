@@ -14,8 +14,9 @@ import {
 import client from "../apollo";
 import history from "../history";
 import {
-  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption, LoaderProps, ModifiersSelectorOption,
-  multiOptionType, Order, SelectorOption, StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption,
+  LoaderProps, ModifiersSelectorOption, multiOptionType, Order, SelectorOption, StageStatusType,
+  TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -38,7 +39,8 @@ import {
   PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
-  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule, AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
