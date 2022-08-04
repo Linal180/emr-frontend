@@ -852,8 +852,8 @@ export const setCTPCode = (id: string, name: string, description: string, longDe
   return { id, name: value, description, longDescription, shortDescription };
 };
 
-export const formatPhone = (phone: string): string =>
-  phone && phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : '';
+export const formatPhone = (phone: string | undefined | null): string =>
+   !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
