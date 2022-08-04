@@ -3138,9 +3138,6 @@ export const RegisterPatientMenuNav = [
     title: DEMOGRAPHICS,
   },
   {
-    title: CONTACT_INFORMATION,
-  },
-  {
     title: PRIVACY,
   },
   {
