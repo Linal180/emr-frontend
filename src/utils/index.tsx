@@ -312,7 +312,11 @@ export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
 export const getDocumentDate = (date: string) =>
-  moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+  moment(new Date(date), 'x').format(`YYYY-MM-DD`)
+
+
+  export const getDocumentDateFromTimestamps = (date: string) =>
+  moment(new Date(parseInt(date)), 'x').format(`YYYY-MM-DD`)
 
 export const dateDifference = (startingDate: string) => {
   let startDate = new Date(startingDate)
