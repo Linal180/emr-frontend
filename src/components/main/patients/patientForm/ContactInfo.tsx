@@ -72,15 +72,16 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
   return (
     <>
       <CardComponent
-        saveBtn
-        state={state}
-        isEdit={isEdit}
-        disableSubmit={disableSubmit}
+        // saveBtn
+        // state={state}
+        // isEdit={isEdit}
+        // disableSubmit={disableSubmit}
         cardTitle={CONTACT_INFORMATION}
       >
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              isRequired
               disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="basicAddress"
@@ -105,6 +106,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             <Grid container spacing={1} alignItems={'center'}>
               <Grid item md={9} sm={10} xs={10}>
                 <InputController
+                  isRequired
                   disabled={shouldDisableEdit}
                   fieldType="text"
                   controllerName="basicZipCode"
@@ -134,6 +136,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
           <Grid item lg={2} md={4}>
             <InputController
+              isRequired
               fieldType="text"
               controllerLabel={CITY}
               controllerName="basicCity"
@@ -144,7 +147,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
           <Grid item lg={2} md={4}>
             <Selector
-              addEmpty
+              isRequired
               label={STATE}
               name="basicState"
               options={MAPPED_STATES}

@@ -14,19 +14,23 @@ import PatientDemographicsCard from "./Demographics";
 import EmergencyContactCard from './EmergencyContact';
 import RegistrationDatesCard from './RegistrationDates';
 // utils. interfaces, constants
-import { RegisterPatientMenuNav } from '../../../../constants';
+import { INSURANCE, RegisterPatientMenuNav } from '../../../../constants';
 import { PatientCardsProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import InsuranceComponent from '../patientDetail/insurance';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
-  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit
+  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
 }) => {
   const classes = useExternalPatientStyles()
   const { activeStep } = state || {}
 
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
-      case 0:
+      case !shouldShowBread ? 0 : Infinity:
+        return <InsuranceComponent />
+
+      case !shouldShowBread ? 1 : 0:
         return (<>
           <Box mb={3}>
             <IdentificationCard
@@ -39,13 +43,23 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             />
           </Box>
 
-          <RegistrationDatesCard
-            getPatientLoading={getPatientLoading}
+          <Box mb={3}>
+            <RegistrationDatesCard
+              getPatientLoading={getPatientLoading}
+              shouldDisableEdit={shouldDisableEdit}
+            />
+          </Box>
+
+          <ContactInfoCard
+            isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
             shouldDisableEdit={shouldDisableEdit}
+            getPatientLoading={getPatientLoading}
           />
         </>)
 
-      case 1:
+      case !shouldShowBread ? 2 : 1:
         return (
           <PatientDemographicsCard
             isEdit={isEdit}
@@ -55,17 +69,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             shouldDisableEdit={shouldDisableEdit}
           />)
 
-      case 2:
-        return (
-          <ContactInfoCard
-            isEdit={isEdit}
-            disableSubmit={disableSubmit}
-            state={state} dispatch={dispatch}
-            shouldDisableEdit={shouldDisableEdit}
-            getPatientLoading={getPatientLoading}
-          />)
-
-      case 3:
+      case !shouldShowBread ? 3 : 2:
         return (
           <PatientPrivacyCard
             isEdit={isEdit}
@@ -110,12 +114,14 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
     }
   }
 
+  const stepperData = !shouldShowBread ? [{ title: INSURANCE }, ...RegisterPatientMenuNav] : RegisterPatientMenuNav
+
   return (
     <Box display="flex" flexWrap="wrap" gridGap={20}>
       <Box flex={1} className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
           <StepperCard
-            stepperData={RegisterPatientMenuNav}
+            stepperData={stepperData}
             activeStep={activeStep as number}
             dispatch={dispatch}
           />
