@@ -185,7 +185,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const fetchAppointments = useCallback(async () => {
     try {
       dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-      const pageInputs = { paginationOptions: { page, limit: 1 || EIGHT_PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
       const inputs = isSuper
         ? { facilityId: filterFacilityId }
         : isPracticeUser
