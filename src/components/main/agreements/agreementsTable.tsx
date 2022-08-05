@@ -214,7 +214,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                   const { title, createdAt, id, body } = agreement ?? {}
                   return (
                     <TableRow>
-                      <TableCell scope="row" >
+                      <TableCell scope="row">
                         {title}
                       </TableCell>
 
