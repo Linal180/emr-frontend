@@ -26,7 +26,7 @@ import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  getDocumentDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
+  getDocumentDate, getDocumentDateFromTimestamps, getTimestamps, isSuperAdmin, renderTh, signedDateTime
 } from "../../../../utils";
 import {
   AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useUpdateAttachmentDataMutation,
@@ -108,11 +108,6 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
         const { attachments, pagination } = getAttachments
 
         if (attachments) {
-          // const documents = attachments.filter(
-          //   attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
-          //     && !!attachment.attachmentMetadata?.signedBy === isSignedTab
-          // )
-
           dispatch({
             type: ActionType.SET_ATTACHMENTS_DATA,
             attachmentsData: attachments as AttachmentsPayload['attachments']
@@ -188,9 +183,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     variables: {
       getAttachment: {
         paginationOptions: { limit: PAGE_LIMIT, page },
-        typeId: id,
-        attachmentName: searchQuery,
-        signedBy: isSignedTab,
+        typeId: id, attachmentName: searchQuery, signedBy: isSignedTab,
       }
     }
   }), [getAttachments, id, isSignedTab, page, searchQuery])
@@ -372,7 +365,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                     </TableRow>
                   ) : (
                     attachmentsData?.map((attachment) => {
-                      const { id, attachmentName, attachmentMetadata } = attachment || {};
+                      const { id, attachmentName, attachmentMetadata, createdAt } = attachment || {};
                       const { signedAt, signedBy, documentType, documentDate } = attachmentMetadata || {}
                       const { type } = documentType || {}
 
@@ -397,7 +390,12 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                                 <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
                             </>
                           }
-                          <TableCell scope="row">{documentDate ? getDocumentDate(documentDate || '') : ''}</TableCell>
+                          <TableCell scope="row">
+                            {documentDate ?
+                              getDocumentDate(documentDate) :
+                              createdAt ? getDocumentDateFromTimestamps(createdAt) : ''}
+                          </TableCell>
+
                           <TableCell scope="row">
                             <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                               {!isSignedTab &&
