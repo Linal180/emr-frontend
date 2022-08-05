@@ -106,7 +106,6 @@ export const useDropzoneStyles = makeStyles((theme: Theme) => ({
     "& .MuiGrid-spacing-xs-8": {
       margin: 0,
       padding: 0,
-      border: '1px solid green',
     }
   } 
 

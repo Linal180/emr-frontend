@@ -260,7 +260,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     dangerBg: {
       backgroundColor: RED,
-    }
+    },
     
   })
 );
