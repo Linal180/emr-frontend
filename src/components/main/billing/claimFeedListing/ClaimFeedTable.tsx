@@ -232,10 +232,12 @@ const ClaimFeedTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{CLAIM_FEED_TEXT}</Typography>
+      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap">
+        <Box pb={2}>
+          <Typography variant="h4" color="textPrimary">{CLAIM_FEED_TEXT}</Typography>
+        </Box>
 
-        <Box display='flex'>
+        <Box display='flex' pb={2}>
           <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
             filename={`live_claim_feed_data_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
             <Button variant="contained" startIcon={<DownloadIconWhite />} color="secondary">
@@ -360,7 +362,7 @@ const ClaimFeedTable: FC = (): JSX.Element => {
               </Collapse>
 
               <Box mt={3} className="table-overflow">
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classes.table}>
                   <TableHead>
                     <TableRow>
                       {/* {renderTh(INFO)} */}

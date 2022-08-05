@@ -424,7 +424,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
         <Box className={classes.mainTableContainer}>
           <Box className="table-overflow appointment-view-list">
-            <Table aria-label="customized table">
+            <Table aria-label="customized table" className={classes.table}>
               <TableHead>
                 <TableRow>
                   {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}
