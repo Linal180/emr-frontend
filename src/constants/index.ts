@@ -33,7 +33,7 @@ export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
-export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/; 
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -755,6 +755,9 @@ export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
+export const NO_INSURANCE = "No Insurance";
+export const INTERNATIONAL_TRAVELER = "International Traveler";
+export const CONTRACT = "Contract";
 export const MODIFIERS = "Modifiers";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
@@ -1088,6 +1091,7 @@ export const MISSING = "Missing";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
+export const INSURANCE_SELECTION = "Insurance Selection";
 export const PAYMENT = "Payment";
 export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
@@ -1253,6 +1257,7 @@ export const PAY_VIA_PAYPAL = "Pay via PayPal";
 export const USUAL_PROVIDER = "Usual Provider";
 export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const NOTICE_ON_FILE = "Notices on file";
+export const INSURANCE_DISCLAIMER = "How will you be covering your visit?";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
@@ -3107,7 +3112,7 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS, 
+  LAB_ORDER, TESTS,
   // PAYMENTS
 ];
 

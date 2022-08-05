@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, 
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -979,7 +979,7 @@ export const createInsuranceSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(LEGAL_SEX), ({ id }) => !!id),
-  zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...dobSchema,
   ...issueAndExpireSchema,
   ...ssnSchema,
@@ -1055,9 +1055,9 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
   amount: yup.string()
-  .test('', requiredMessage(AMOUNT), value => !!value)
-  .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
-  .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
+    .test('', requiredMessage(AMOUNT), value => !!value)
+    .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
+    .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
 })
 
 export const createBillingSchema = yup.object({

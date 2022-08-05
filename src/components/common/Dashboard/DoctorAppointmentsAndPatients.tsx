@@ -6,7 +6,7 @@ import Avatar from "../Avatar";
 import ViewDataLoader from "../ViewDataLoader";
 // history, constant and styles block
 import { NoDataIcon } from "../../../assets/svgs";
-import { DESC, NO_RECORDS } from "../../../constants";
+import { DESC, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../constants";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
 import { getStandardTime, sortingArray, isCurrentDay } from "../../../utils";
 import { DoctorAppointmentsAndPatientsProps } from "../../../interfacesTypes";
@@ -44,7 +44,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
           && appointment?.status !== AppointmentStatus.Discharged
           && isCurrentDay(appointment?.scheduleStartDateTime || '')
         )
-        
+
         setCount && setCount(todayAppointments?.length || 0)
         const sorted = sortingArray<typeof todayAppointments>(todayAppointments,
           'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
@@ -63,7 +63,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     const query = patientId ? { patientId } : { providerId }
 
     await findAllAppointments({
-      variables: { upComingAppointmentsInput: { ...query } }
+      variables: { upComingAppointmentsInput: { ...query, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } } }
     })
   }, [findAllAppointments, patientId, providerId])
 

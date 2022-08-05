@@ -28,6 +28,7 @@ import {
   useFetchBillingDetailsByAppointmentIdLazyQuery,
   useGenerateClaimNoLazyQuery,
   useFindPatientLastAppointmentLazyQuery,
+  useFindAppointmentInsuranceStatusLazyQuery,
 } from "../../../../generated/graphql";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
@@ -428,6 +429,33 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     } catch (error) { }
   }, [generateClaimNo])
 
+  const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onCompleted(data) {
+      const { findAppointmentInsuranceStatus } = data || {};
+
+      if (findAppointmentInsuranceStatus) {
+        const { insuranceStatus } = findAppointmentInsuranceStatus
+        const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
+        insuranceStatus && setValue('paymentType', patientPaymentType)
+      }
+    }
+  });
+
+  const findInsuranceStatus = useCallback(async () => {
+    try {
+      await findAppointmentInsuranceStatus({
+        variables: {
+          appointmentId: appointmentId || ''
+        }
+      })
+    } catch (error) { }
+  }, [appointmentId, findAppointmentInsuranceStatus])
+
+
   const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
@@ -502,8 +530,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       fetchClaimNumber()
       fetchPatientAppointment()
       fetchBillingDetails()
+      findInsuranceStatus()
     }
-  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment])
+  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment, findInsuranceStatus])
 
   const isLoading = shouldDisableEdit ? fetchBillingDetailsLoading
     : fetchPatientInsurancesLoading || getAppointmentLoading || getPatientProvidersLoading || getFacilityLoading || generateClaimNoLoading || fetchPatientAppointmentLoading

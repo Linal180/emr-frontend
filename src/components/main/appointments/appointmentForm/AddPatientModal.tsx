@@ -92,10 +92,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
       firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId, usualProviderId
-    } = inputs;
-     
-    console.log("ASD", inputs);
-    
+    } = inputs;    
 
     if (user) {
       const { id: userId } = user;

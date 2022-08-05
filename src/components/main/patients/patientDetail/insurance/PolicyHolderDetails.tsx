@@ -122,6 +122,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
       <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             loading={loading}
             controllerName="zipCode"

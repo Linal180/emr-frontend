@@ -224,6 +224,7 @@ export type Appointment = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
+  insuranceStatus?: Maybe<Scalars['String']>;
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
@@ -273,6 +274,13 @@ export type AppointmentInput = {
   relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
   sortBy?: Maybe<Scalars['String']>;
+};
+
+export type AppointmentInsuranceStatus = {
+  __typename?: 'AppointmentInsuranceStatus';
+  id: Scalars['String'];
+  insuranceStatus?: Maybe<Scalars['String']>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type AppointmentPayload = {
@@ -513,6 +521,13 @@ export enum BillingStatus {
   Refund = 'REFUND'
 }
 
+export type BillingsPayload = {
+  __typename?: 'BillingsPayload';
+  billings: Array<Billing>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
+};
+
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
   clientToken: Scalars['String'];
@@ -626,6 +641,7 @@ export type Claim = {
   diag_11?: Maybe<Scalars['String']>;
   diag_12?: Maybe<Scalars['String']>;
   employment_related?: Maybe<Scalars['String']>;
+  errorMessages?: Maybe<Array<Scalars['String']>>;
   facilityDateOfService?: Maybe<Scalars['String']>;
   facility_addr_1?: Maybe<Scalars['String']>;
   facility_addr_2?: Maybe<Scalars['String']>;
@@ -1849,6 +1865,16 @@ export type FeeSchedulePayload = {
   __typename?: 'FeeSchedulePayload';
   feeSchedule?: Maybe<FeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FetchBillingClaimStatusesInput = {
+  claimNo?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -4210,6 +4236,7 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4251,6 +4278,7 @@ export type Query = {
   findAllUpcomingAppointments: AppointmentsPayload;
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
+  findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
   findClaimStatus: ClaimStatusPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
@@ -4359,6 +4387,11 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchBillingClaimStatusesArgs = {
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 
@@ -4559,6 +4592,11 @@ export type QueryFindAllUserLogsArgs = {
 
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindAppointmentInsuranceStatusArgs = {
+  appointmentId: Scalars['String'];
 };
 
 
@@ -5624,10 +5662,19 @@ export enum UnitType {
 }
 
 export type UpComingAppointmentsInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
+  appointmentNumber?: Maybe<Scalars['String']>;
+  appointmentStatus?: Maybe<Scalars['String']>;
+  appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
+  relationTable?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
+  shouldFetchPast?: Maybe<Scalars['Boolean']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type UpdateAgreementInput = {
@@ -5668,6 +5715,7 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
+  insuranceStatus?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
@@ -6552,6 +6600,13 @@ export type GetPatientNearestAppointmentsQueryVariables = Exact<{
 
 
 export type GetPatientNearestAppointmentsQuery = { __typename?: 'Query', getPatientPastUpcomingAppointment: { __typename?: 'PatientPastUpcomingAppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: { __typename?: 'PatientPastUpcomingAppointment', pastAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null, upcomingAppointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null } | null } | null } };
+
+export type FindAppointmentInsuranceStatusQueryVariables = Exact<{
+  appointmentId: Scalars['String'];
+}>;
+
+
+export type FindAppointmentInsuranceStatusQuery = { __typename?: 'Query', findAppointmentInsuranceStatus: { __typename?: 'AppointmentInsuranceStatus', id: string, insuranceStatus?: string | null, response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
 
 export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
   upComingAppointmentsInput: UpComingAppointmentsInput;
@@ -8569,6 +8624,45 @@ export function useGetPatientNearestAppointmentsLazyQuery(baseOptions?: Apollo.L
 export type GetPatientNearestAppointmentsQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsQuery>;
 export type GetPatientNearestAppointmentsLazyQueryHookResult = ReturnType<typeof useGetPatientNearestAppointmentsLazyQuery>;
 export type GetPatientNearestAppointmentsQueryResult = Apollo.QueryResult<GetPatientNearestAppointmentsQuery, GetPatientNearestAppointmentsQueryVariables>;
+export const FindAppointmentInsuranceStatusDocument = gql`
+    query FindAppointmentInsuranceStatus($appointmentId: String!) {
+  findAppointmentInsuranceStatus(appointmentId: $appointmentId) {
+    response {
+      status
+    }
+    id
+    insuranceStatus
+  }
+}
+    `;
+
+/**
+ * __useFindAppointmentInsuranceStatusQuery__
+ *
+ * To run a query within a React component, call `useFindAppointmentInsuranceStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAppointmentInsuranceStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAppointmentInsuranceStatusQuery({
+ *   variables: {
+ *      appointmentId: // value for 'appointmentId'
+ *   },
+ * });
+ */
+export function useFindAppointmentInsuranceStatusQuery(baseOptions: Apollo.QueryHookOptions<FindAppointmentInsuranceStatusQuery, FindAppointmentInsuranceStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAppointmentInsuranceStatusQuery, FindAppointmentInsuranceStatusQueryVariables>(FindAppointmentInsuranceStatusDocument, options);
+      }
+export function useFindAppointmentInsuranceStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAppointmentInsuranceStatusQuery, FindAppointmentInsuranceStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAppointmentInsuranceStatusQuery, FindAppointmentInsuranceStatusQueryVariables>(FindAppointmentInsuranceStatusDocument, options);
+        }
+export type FindAppointmentInsuranceStatusQueryHookResult = ReturnType<typeof useFindAppointmentInsuranceStatusQuery>;
+export type FindAppointmentInsuranceStatusLazyQueryHookResult = ReturnType<typeof useFindAppointmentInsuranceStatusLazyQuery>;
+export type FindAppointmentInsuranceStatusQueryResult = Apollo.QueryResult<FindAppointmentInsuranceStatusQuery, FindAppointmentInsuranceStatusQueryVariables>;
 export const FindAllUpcomingAppointmentsDocument = gql`
     query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!) {
   findAllUpcomingAppointments(

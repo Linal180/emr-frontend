@@ -206,6 +206,7 @@ export interface CardComponentType extends Children {
   state?: PatientState;
   disableSubmit?: boolean;
   className?: string
+  onSubmitClick?: Function
 }
 
 export interface ChartingCardComponentType {
@@ -1137,6 +1138,14 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
   loading?: boolean
+}
+
+export interface InsuranceSelectionProps extends GeneralFormProps {
+  shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
+  setSelection?: Function
+  selection?: string
+  state?: PatientState
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
