@@ -75,7 +75,7 @@ const generalNameSchema = (
   yup.string()
     .test('', requiredMessage(label), value => isRequired ? !!value : true)
     .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
-      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
+      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : true)
     .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
       value => allowSpecial ? true : value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
     .test('', NO_NUMBER_ERROR_MESSAGE,
@@ -495,6 +495,7 @@ export const extendedPatientSchema = (
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
+  middleName: generalNameSchema(false, MIDDLE_NAME, false, false),
   basicZipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...(isSuperAdminOrPracticeAdmin ? { facilityId: selectorSchema(FACILITY) } : {}),
   ...(isDoctor ? {} : { usualProviderId: selectorSchema(USUAL_PROVIDER_ID) }),
