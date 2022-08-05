@@ -86,6 +86,7 @@ export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are m
 export const FUTURE_DATE = 'Disable Past Date'
 export const PAST_DATE = 'Disable Future Date'
 export const STATUS_NAME = 'Status Name';
+export const REQUIRED = 'Required';
 export const FILE_REQUIRED = 'Please select at least one file';
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
