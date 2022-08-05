@@ -64,7 +64,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
     const shouldShowInsuranceStep = selection === 'insurance' ? true : false
     switch (step) {
       case !shouldShowBread ? 0 : Infinity:
-        return <InsuranceSelectionCard setSelection={setSelection} selection={selection} state={state} />
+        return <InsuranceSelectionCard setSelection={setSelection} selection={selection} state={state} dispatch={dispatch} />
 
       case shouldShowInsuranceStep ? 1 : Infinity:
         return <InsuranceComponent />
