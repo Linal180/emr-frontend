@@ -77,10 +77,12 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
 
+  const resetPage = () => dispatch({ type: ActionType.SET_PAGE, page: 1 })
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
     setValue('appointmentDate', date)
     dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
+    resetPage()
   };
 
   const getPreviousDate = () => {
@@ -91,6 +93,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const getNextDate = () => {
     const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
     setDate(nextDate)
+    resetPage()
   }
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
@@ -168,7 +171,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!appointments && appointments.length) {
+            if (!!appointments && appointments.length > 1) {
               await fetchAppointments()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, appointments?.length || 0) })
@@ -182,7 +185,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const fetchAppointments = useCallback(async () => {
     try {
       dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
-      const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: 1 || EIGHT_PAGE_LIMIT } }
       const inputs = isSuper
         ? { facilityId: filterFacilityId }
         : isPracticeUser

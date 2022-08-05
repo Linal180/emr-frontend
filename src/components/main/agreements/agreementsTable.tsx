@@ -114,7 +114,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           try {
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!agreements && agreements.length) {
+            if (!!agreements && agreements.length > 1) {
               await fetchAgreements()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, agreements?.length || 0) })
