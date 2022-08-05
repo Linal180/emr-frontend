@@ -86,10 +86,10 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
-export const FILE_REQUIRED = 'Please select at least one file'
 export const FUTURE_DATE = 'Disable Past Date'
 export const PAST_DATE = 'Disable Future Date'
-export const STATUS_NAME = 'Status Name'
+export const STATUS_NAME = 'Status Name';
+export const FILE_REQUIRED = 'Please select at least one file';
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
