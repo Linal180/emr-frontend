@@ -16,6 +16,10 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({
+  table: {
+    minWidth : 1200
+  },
+  
   searchBox: {
     backgroundColor: GREY,
     borderRadius: 4,

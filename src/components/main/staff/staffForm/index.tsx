@@ -272,7 +272,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
                     {isEdit && roleType ?
                       getStaffLoading ? renderLoading(ROLE) : renderItem(ROLE, formatValue(roleType.name || ''))
                       : <RoleSelector
@@ -286,7 +286,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   </Grid>
 
                   {selectedRole === SYSTEM_ROLES.PracticeAdmin ?
-                    <Grid item md={6}>
+                    <Grid item lg={6} md={6} sm={12} xs={12}>
                       {isAdminUser ?
                         <PracticeSelector
                           addEmpty
@@ -298,7 +298,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         : renderItem(PRACTICE, currentPracticeName)
                       }
                     </Grid> :
-                    <Grid item md={6}>
+                    <Grid item lg={6} md={6} sm={12} xs={12}>
                       {isAdminUser || isPractice ?
                         <FacilitySelector
                           addEmpty
