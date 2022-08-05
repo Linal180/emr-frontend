@@ -41,7 +41,7 @@ import {
   useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
 } from "../../generated/graphql";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
@@ -551,9 +551,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                             {status === AppointmentStatus.Cancelled &&
                               appointmentCreateType === AppointmentCreateType.Telehealth &&
                               <Box className={classes.iconsBackgroundDisabled}>
-                                <IconButton onMouseEnter={() => {
-                                  Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                                }}>
+                                <IconButton>
                                   <VideoIcon />
                                 </IconButton>
                               </Box>

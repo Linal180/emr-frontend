@@ -349,7 +349,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
             <Typography variant='h3'>{isEdit ? EDIT_LAB_ORDER : NEW_LAB_ORDER}</Typography>
 
             <Box display='flex' alignItems='center'>
-              <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>
+              {activeStep > 0 && <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>}
               <Box p={1} />
               <Button
                 type="submit"
