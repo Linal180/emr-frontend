@@ -8,7 +8,7 @@ import TextLoader from "./TextLoader";
 import { CheckboxControllerProps } from "../../interfacesTypes";
 
 const CheckboxController: FC<CheckboxControllerProps> = ({
-  controllerName, controllerLabel, error, margin, isHelperText, title, loading, defaultValue
+  controllerName, controllerLabel, error, margin, isHelperText, title, loading, defaultValue, className = ''
 }): JSX.Element => {
   const { control } = useFormContext();
 
@@ -23,8 +23,9 @@ const CheckboxController: FC<CheckboxControllerProps> = ({
           {title && <FormLabel component="legend">{title}</FormLabel>}
 
           <FormControlLabel
-            control={<Checkbox name={controllerName} id={controllerName} checked={value} onChange={onChange}/>}
-            label={loading ? <TextLoader  width="300px" rows={[{ column: 1, size: 8 }]} /> : controllerLabel || ''}
+            className={className}
+            control={<Checkbox name={controllerName} id={controllerName} checked={value} onChange={onChange} />}
+            label={loading ? <TextLoader width="300px" rows={[{ column: 1, size: 8 }]} /> : controllerLabel || ''}
             value={value}
             onChange={onChange}
             onBlur={onBlur}
