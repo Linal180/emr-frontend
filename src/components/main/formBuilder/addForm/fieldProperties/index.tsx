@@ -32,7 +32,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
 
   //set form values
   const setFormInitialValues = useCallback(() => {
-    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea, regex } = selected;
+    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea, regex, pastEnable, futureEnable } = selected;
     setValue("name", name)
     setValue("label", label)
     setValue("required", required)
@@ -47,6 +47,8 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
     setValue("options", options)
     setValue("textArea", textArea)
     setValue("regex", regex)
+    setValue("pastEnable", pastEnable)
+    setValue("futureEnable", futureEnable)
     setIsChecked(required)
   }, [setValue, selected])
 

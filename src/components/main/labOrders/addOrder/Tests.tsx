@@ -1,5 +1,5 @@
 // packages block
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { FormProvider, useFormContext, } from 'react-hook-form';
 import { Box, Grid, Typography, } from '@material-ui/core';
 // components block
@@ -15,11 +15,17 @@ import { LabOrdersCreateFormInput, LabTestComponentProps, } from "../../../../in
 const TestsComponent: FC<LabTestComponentProps> = ({ currentTest }): JSX.Element => {
   const methods = useFormContext<LabOrdersCreateFormInput>();
 
-  const { watch } = methods
+  const { watch, setValue } = methods
   const { testFieldValues } = watch()
   const getTestFieldValues = testFieldValues.find((_, index) => index === currentTest)
-  const { test, diagnosesIds } = getTestFieldValues || {}
+  const { test, diagnosesIds, testDate, testNotes, testTime } = getTestFieldValues || {}
   const { name } = test || {}
+  
+  useEffect(() => {
+    setValue(`testFieldValues.${currentTest}.testDate`, testDate || '')
+    setValue(`testFieldValues.${currentTest}.testNotes`, testNotes || '')
+    setValue(`testFieldValues.${currentTest}.testTime`, testTime || '')
+  }, [currentTest, setValue, testDate, testNotes, testTime])
 
   return (
     <Box px={3} py={2} minHeight="calc(100vh - 170px)" className="overflowY-auto">
