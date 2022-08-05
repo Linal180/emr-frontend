@@ -108,7 +108,9 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
             controllerLabel={MIDDLE_NAME}
           />
         </Grid>
+      </Grid>
 
+      <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
@@ -117,9 +119,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
             controllerLabel={LAST_NAME}
           />
         </Grid>
-      </Grid>
 
-      <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
             isRequired
@@ -129,7 +129,9 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
             controllerLabel={ZIP_CODE}
           />
         </Grid>
+      </Grid>
 
+      <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <InputController
             fieldType="text"

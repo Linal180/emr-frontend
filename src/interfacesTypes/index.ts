@@ -758,6 +758,10 @@ export interface GeneralFormProps {
   loading?: boolean;
 }
 
+export interface NoDataComponentProps {
+  message?: string
+}
+
 export interface CoverageDetailsHeaderProps {
   patient: PolicyEligibilityWithPatientPayload['patient'] | undefined
   policyHolder: PolicyEligibilityWithPatientPayload['policyHolder'] | undefined
