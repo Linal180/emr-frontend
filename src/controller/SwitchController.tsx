@@ -3,10 +3,10 @@ import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, makeStyles } from "@material-ui/core";
 // interfaces block
-import { SwitchControllerProps } from "../interfacesTypes";
-import { GRAY_SIX, GREY_SEVEN, WHITE } from "../theme";
-import { AntSwitch } from "../styles/publicAppointmentStyles/externalPatientStyles";
 import { NO_TEXT, YES_TEXT } from "../constants";
+import { GRAY_SIX, GREY_SEVEN, WHITE } from "../theme";
+import { SwitchControllerProps } from "../interfacesTypes";
+import { AntSwitch } from "../styles/publicAppointmentStyles/externalPatientStyles";
 
 export const styles = makeStyles(() => (
   {
@@ -58,11 +58,9 @@ export const styles = makeStyles(() => (
   }
 ))
 
-const SwitchController: FC<SwitchControllerProps> = ({
-  controllerName, controllerLabel, error, margin, isHelperText,
-}): JSX.Element => {
+const SwitchController: FC<SwitchControllerProps> = ({ controllerName, controllerLabel }): JSX.Element => {
+  const classes = styles();
   const { control } = useFormContext();
-  const classes = styles()
 
   return (
     <Controller

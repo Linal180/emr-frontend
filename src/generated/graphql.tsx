@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -513,6 +512,13 @@ export enum BillingStatus {
   Refund = 'REFUND'
 }
 
+export type BillingsPayload = {
+  __typename?: 'BillingsPayload';
+  billings: Array<Billing>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
+};
+
 export type BraintreePayload = {
   __typename?: 'BraintreePayload';
   clientToken: Scalars['String'];
@@ -626,6 +632,7 @@ export type Claim = {
   diag_11?: Maybe<Scalars['String']>;
   diag_12?: Maybe<Scalars['String']>;
   employment_related?: Maybe<Scalars['String']>;
+  errorMessages?: Maybe<Array<Scalars['String']>>;
   facilityDateOfService?: Maybe<Scalars['String']>;
   facility_addr_1?: Maybe<Scalars['String']>;
   facility_addr_2?: Maybe<Scalars['String']>;
@@ -1851,6 +1858,16 @@ export type FeeSchedulePayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FetchBillingClaimStatusesInput = {
+  claimNo?: Maybe<Scalars['String']>;
+  claimStatusId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  from?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
 export type FieldOptionsInputType = {
   name: Scalars['String'];
   value: Scalars['String'];
@@ -1870,10 +1887,12 @@ export type FieldsInputs = {
   defaultValue: Scalars['String'];
   errorMsg: Scalars['String'];
   fieldId: Scalars['String'];
+  futureEnable?: Maybe<Scalars['Boolean']>;
   isMultiSelect?: Maybe<Scalars['Boolean']>;
   label: Scalars['String'];
   name: Scalars['String'];
   options: Array<FieldOptionsInputType>;
+  pastEnable?: Maybe<Scalars['Boolean']>;
   placeholder: Scalars['String'];
   regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
@@ -1892,10 +1911,12 @@ export type FieldsTypes = {
   defaultValue: Scalars['String'];
   errorMsg: Scalars['String'];
   fieldId: Scalars['String'];
+  futureEnable?: Maybe<Scalars['Boolean']>;
   isMultiSelect?: Maybe<Scalars['Boolean']>;
   label: Scalars['String'];
   name: Scalars['String'];
   options: Array<FieldOptionsType>;
+  pastEnable?: Maybe<Scalars['Boolean']>;
   placeholder: Scalars['String'];
   regex?: Maybe<Scalars['String']>;
   required: Scalars['Boolean'];
@@ -4210,6 +4231,7 @@ export type Query = {
   fetchAllPolicyHolders: PolicyHoldersPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchBillingClaimStatuses: BillingsPayload;
   fetchBillingDetailsByAppointmentId: BillingPayload;
   fetchDocumentType: DocumentTypesPayload;
   fetchDocumentTypeByName: DocumentTypePayload;
@@ -4359,6 +4381,11 @@ export type QueryFetchAllPolicyHoldersArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchBillingClaimStatusesArgs = {
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
 };
 
 
@@ -5624,10 +5651,19 @@ export enum UnitType {
 }
 
 export type UpComingAppointmentsInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
+  appointmentNumber?: Maybe<Scalars['String']>;
+  appointmentStatus?: Maybe<Scalars['String']>;
+  appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
+  relationTable?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
+  shouldFetchPast?: Maybe<Scalars['Boolean']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type UpdateAgreementInput = {
@@ -7232,7 +7268,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, futureEnable?: boolean | null, pastEnable?: boolean | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -13355,6 +13391,8 @@ export const GetPublicFormDocument = gql`
               apiCall
               tableContactType
               regex
+              futureEnable
+              pastEnable
               options {
                 name
                 value

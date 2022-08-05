@@ -100,7 +100,7 @@ const ServicesTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!services && services.length) {
+          if (!!services && services.length > 1) {
             fetchServices();
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, services?.length || 0) })

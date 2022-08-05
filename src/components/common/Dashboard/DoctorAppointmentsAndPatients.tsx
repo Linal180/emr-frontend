@@ -44,7 +44,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
           && appointment?.status !== AppointmentStatus.Discharged
           && isCurrentDay(appointment?.scheduleStartDateTime || '')
         )
-        
+
         setCount && setCount(todayAppointments?.length || 0)
         const sorted = sortingArray<typeof todayAppointments>(todayAppointments,
           'scheduleStartDateTime', DESC) as AppointmentsPayload['appointments']
@@ -63,7 +63,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     const query = patientId ? { patientId } : { providerId }
 
     await findAllAppointments({
-      variables: { upComingAppointmentsInput: { ...query } }
+      variables: { upComingAppointmentsInput: { ...query, paginationOptions: { limit: 10, page: 1 } } }
     })
   }, [findAllAppointments, patientId, providerId])
 

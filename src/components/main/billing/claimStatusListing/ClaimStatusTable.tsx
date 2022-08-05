@@ -28,9 +28,7 @@ const ClaimStatusTable: FC = (): JSX.Element => {
     mode: "all",
   });
 
-  const handleClickOpen = () => {
-    setIsRejectedModalOpen(true)
-  }
+  const handleClickOpen = () => setIsRejectedModalOpen(true)
 
   return (
     <>

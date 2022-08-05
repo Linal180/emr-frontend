@@ -1,12 +1,12 @@
 //packages block
-import { Phone as PhoneIcon } from '@material-ui/icons';
-import moment from "moment-timezone";
 import states from "states-us";
 import { v4 as uuid } from "uuid";
-//assets
-import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
-import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
-import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
+import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+// graphql and interfaces block
+import {
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
+} from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
   TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
@@ -23,17 +23,12 @@ import {
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
   SpecimenTypeOption, StepLabelType, TestOption
 } from "../interfacesTypes";
-// graphql and interfaces block
-import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
-} from "../utils";
 
 // regex
 export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
-export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/; 
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -46,6 +41,7 @@ export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/;
 export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\-\s]+$/;
 export const ALPHABETS_REGEX = /^([A-Za-z]+\s)*[A-Za-z]+$/;
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
@@ -86,6 +82,8 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const FUTURE_DATE = 'Disable Past Date'
+export const PAST_DATE = 'Disable Future Date'
 export const STATUS_NAME = 'Status Name';
 export const FILE_REQUIRED = 'Please select at least one file';
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
@@ -2332,99 +2330,6 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Sunday, name: DAYS.Sunday },
 ];
 
-export const dummyVitalsChartingList = [
-  {
-    id: 1,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    specialty: "Pharmacist",
-    code: 65065,
-  },
-  {
-    id: 3,
-    firstName: "Ala",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    specialty: "Periodontics",
-    code: 25525,
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    specialty: "Pediatric Dentist",
-    code: 88025,
-  },
-  {
-    id: 5,
-    firstName: "Chris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    specialty: "Pediatric Dermatology",
-    code: 12025,
-  },
-  {
-    id: 6,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    specialty: "Neurology",
-    code: 67025,
-  },
-  {
-    id: 7,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    specialty: "Gastroenterology",
-    code: 33325,
-  },
-  {
-    id: 8,
-    firstName: "Hymen",
-    lastName: "Stoke",
-    email: "stoke@alxtel.com",
-    phone: +16102458766,
-    specialty: "Neurology",
-    code: 19825,
-  },
-  {
-    id: 9,
-    firstName: "Black",
-    lastName: "Pointer",
-    email: "pointer@alxtel.com",
-    phone: +15854380126,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 10,
-    firstName: "Mira",
-    lastName: "Khan",
-    email: "khan39@alxtel.com",
-    phone: +16102458766,
-    specialty: "Pediatric Dentist",
-    code: 89025,
-  },
-];
-
 export const dummyAppointmentData = {
   appTime: "16:30 - 17:00",
   timeVariant: "PM",
@@ -2435,119 +2340,10 @@ export const dummyAppointmentData = {
   patientElg: "Eligibility Issue",
 };
 
-export const PATIENT_CHARTING_DATA = [
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-];
-
 export const DUMMY_OPTION = {
   id: ADD_PATIENT_MODAL,
   name: ADD_PATIENT_MODAL
 }
-
-export const DUMMY_APPOINTMENTS = [
-  {
-    id: 1,
-    title: "Website Re-Design Plan",
-    startDate: "2022-02-24T04:30:00.000Z",
-    endDate: "2022-02-24T06:30:00.000Z",
-  },
-  {
-    id: 2,
-    title: "Book Flights to San Fran for Sales Trip",
-    startDate: "2022-02-24T07:00:00.000Z",
-    endDate: "2022-02-24T08:00:00.000Z",
-  },
-  {
-    id: 3,
-    title: "Install New Router in Dev Room",
-    startDate: "2022-02-24T09:30:00.000Z",
-    endDate: "2022-02-24T10:30:00.000Z",
-  },
-  {
-    id: 4,
-    title: "Approve Personal Computer Upgrade Plan",
-    startDate: "2018-07-24T05:00:00.000Z",
-    endDate: "2018-07-24T06:00:00.000Z",
-  },
-  {
-    id: 5,
-    title: "Final Budget Review",
-    startDate: "2018-07-24T07:00:00.000Z",
-    endDate: "2018-07-24T08:35:00.000Z",
-  },
-  {
-    id: 6,
-    title: "New Brochures",
-    startDate: "2018-07-24T09:30:00.000Z",
-    endDate: "2018-07-24T10:45:00.000Z",
-  },
-  {
-    id: 7,
-    title: "Install New Database",
-    startDate: "2018-07-25T04:45:00.000Z",
-    endDate: "2018-07-25T06:15:00.000Z",
-  },
-  {
-    id: 8,
-    title: "Approve New Online Marketing Strategy",
-    startDate: "2018-07-25T07:00:00.000Z",
-    endDate: "2018-07-25T09:00:00.000Z",
-  },
-  {
-    id: 9,
-    title: "Upgrade Personal Computers",
-    startDate: "2018-07-25T10:15:00.000Z",
-    endDate: "2018-07-25T11:30:00.000Z",
-  },
-  {
-    id: 10,
-    title: "Customer Workshop",
-    startDate: "2018-07-26T06:00:00.000Z",
-    endDate: "2018-07-26T07:00:00.000Z",
-  },
-  {
-    id: 11,
-    title: "Prepare 2015 Marketing Plan",
-    startDate: "2018-07-26T06:00:00.000Z",
-    endDate: "2018-07-26T08:30:00.000Z",
-  },
-  {
-    id: 12,
-    title: "Brochure Design Review",
-    startDate: "2018-07-26T09:00:00.000Z",
-    endDate: "2018-07-26T10:30:00.000Z",
-  },
-  {
-    id: 13,
-    title: "Create Icons for Website",
-    startDate: "2018-07-27T05:00:00.000Z",
-    endDate: "2018-07-27T06:30:00.000Z",
-  },
-];
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
@@ -2567,25 +2363,6 @@ export enum TABLE_SELECTOR_MODULES {
   hcpcsCode = 'HCPCSCode',
   customCode = 'CustomCode'
 }
-
-export const DUMMY_ENCOUNTERS = [
-  {
-    id: 1,
-    serviceName: "Sick Visit",
-    scheduleDateTime: "March 16, 2022 at 3:15 PM",
-    duration: "50 Minutes",
-    doctorName: 'Dr. Jenny Wilson',
-    hospitalName: 'Community Hospital'
-  },
-  {
-    id: 2,
-    serviceName: "Sick Visit",
-    scheduleDateTime: "March 16, 2022 at 3:15 PM",
-    duration: "50 Minutes",
-    doctorName: 'Dr. Jenny Wilson',
-    hospitalName: 'Community Hospital'
-  }
-];
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
@@ -2671,33 +2448,6 @@ export const MAPPED_STATUS = [
     title: "Vacation",
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
-  },
-];
-
-export const PORTAL_DUMMY_DATA = [
-  {
-    email: "willie.jennings@example.com",
-    enabledByName: "Leslie Alexander",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Dr. Harrold Wixen",
-    disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    email: "bill.sanders@example.com",
-    enabledByName: "Bessie Cooper",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Dr. A. H. John",
-    disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    email: "georgia.young@example.com",
-    enabledByName: "Floyd Miles",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Floyd Miles",
-    disabledDate: "On: March 15, 2022. 2:18AM",
   },
 ];
 
@@ -3058,7 +2808,9 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
-  regex: ''
+  regex: '',
+  pastEnable: true,
+  futureEnable: true
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
@@ -3107,7 +2859,7 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS, 
+  LAB_ORDER, TESTS,
   // PAYMENTS
 ];
 
@@ -3173,48 +2925,6 @@ export const MAPPED_WEEK_DAYS = [
   {
     id: "Sunday",
     name: "Sunday",
-  },
-];
-
-export const APPOINTMENT_INFO_DATA = [
-  {
-    name: APPOINTMENT_TYPE,
-    description: GENERAL,
-  },
-  {
-    name: FACILITY_LOCATION,
-    description: "Clay County Hospital",
-  },
-  {
-    name: PROVIDER_NAME,
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    name: REASON,
-    description: "High temperature",
-  },
-  {
-    name: "Checked in at",
-    description: "3:44 PM",
-  },
-  {
-    name: "Self Check in",
-    description: "No",
-  },
-  {
-    name: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
-
-export const ICD_TEN_CODES_DATA = [
-  {
-    code: "S00.00XA ",
-    description: "Unspecified superficial injury of scalp, initial encounter",
-  },
-  {
-    code: "M00.09 ",
-    description: "Staphylococcal poly arthritis",
   },
 ];
 
@@ -3524,64 +3234,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "7", name: '7 Days', time: 604800 * 1000 },
 ]
 
-export const EMERGENCY_LOG_LIST = [
-  {
-    shortName: 'AW',
-    fullName: "Andrew Williams",
-    hospitalName: "National Hospital",
-    activatedDate: '24/2/2022',
-    imageUrl: EMERGENCY_LOG_WILLIAMS
-  },
-  {
-    shortName: 'OM',
-    fullName: "Obaid McCoy",
-    hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate: '17/10/2022',
-    imageUrl: EMERGENCY_LOG_OBD
-  },
-  {
-    shortName: 'MP',
-    fullName: "Micheal Phelps",
-    hospitalName: "City Medical Center",
-    activatedDate: '2/6/2022',
-    imageUrl: EMERGENCY_LOG_PHLEPS
-  },
-  {
-    shortName: 'ND',
-    fullName: "Novac Dominic",
-    hospitalName: "National Hospital",
-    activatedDate: '30/2/2022',
-    imageUrl: ''
-  },
-]
-
-export const RECENT_ACTIVITY_LIST = [
-  {
-    shortName: 'AW',
-    fullName: "Andrew Williams",
-    hospitalName: "National Hospital",
-    activatedDate: '24/2/2022'
-  },
-  {
-    shortName: 'OM',
-    fullName: "Obaid McCoy",
-    hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate: '17/10/2022'
-  },
-  {
-    shortName: 'MP',
-    fullName: "Micheal Phelps",
-    hospitalName: "City Medical Center",
-    activatedDate: '2/6/2022'
-  },
-  {
-    shortName: 'ND',
-    fullName: "Novac Dominic",
-    hospitalName: "National Hospital",
-    activatedDate: '30/2/2022'
-  },
-]
-
 export enum VITAL_LABELS {
   createdAt = "",
   pulseRate = 'Pulse (bpm)',
@@ -3596,51 +3248,6 @@ export enum VITAL_LABELS {
   patientHeadCircumference = 'Head Circumference',
   patientTemperature = 'Temperature',
 }
-
-export const UPCOMING_APPOINTMENT_LIST = [
-  {
-    fullName: 'Andrew Williams',
-    visitType: "Sick Visit",
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    appointmentTime: '11:00 AM'
-  },
-  {
-    fullName: 'Arlene McCoy',
-    visitType: "Ortho Check up",
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'AM',
-    appointmentTime: '11:15 AM'
-  },
-  {
-    fullName: 'Marvin McKinney',
-    visitType: "Endoscopy",
-    imageUrl: EMERGENCY_LOG_PHLEPS,
-    shortName: 'MM',
-    appointmentTime: '11:30 AM'
-  },
-  {
-    fullName: 'Darlene Robertson',
-    visitType: "CT Scan",
-    imageUrl: '',
-    shortName: 'DR',
-    appointmentTime: '12:00 PM'
-  },
-  {
-    fullName: 'Bessie Cooper',
-    visitType: "Sick Visit",
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'BC',
-    appointmentTime: '12:15 PM'
-  },
-  {
-    fullName: 'Cameron Williamson',
-    visitType: "MRI",
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'CW',
-    appointmentTime: '12:30 PM'
-  },
-]
 
 export const ACH_PAYMENT_TABS = [
   {
@@ -3851,327 +3458,8 @@ export enum FormBuilderPaymentTypes {
 }
 
 export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
-
 export const BILLING_MODIFIERS_DATA = ['M1', 'M2', 'M3', 'M4']
-
 export const DIAGNOSIS_POINTERS_DATA = ['ICD-1', 'ICD-2', 'ICD-3', 'ICD-4']
-
-export const AUDIT_LOG_TABLE_DUMMY_DATA = [
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-]
-
-export const ELIGIBILITY_TABLE_DUMMY_DATA = [
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '17 Oct, 2020, 08:00 AM',
-    status: 'Pending',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '24 May, 2020, 9:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '17 Oct, 2020, 08:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '1 Feb, 2020, 11:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '22 Oct, 2020, 09:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '8 Sep, 2020, 08:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'ACTNA',
-    time: '21 Sep, 2020 , 11:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '24 May, 2020 12:00 PM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '21 Sep, 2020 , 11:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'ACTNA',
-    time: '21 Sep, 2020, 04:00 PM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-]
-
-export const PATIENT_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Relationship',
-    value: 'Self',
-  },
-  {
-    name: 'First Name',
-    value: 'Ariana',
-  },
-  {
-    name: 'Middle Name',
-    value: '-',
-  },
-  {
-    name: 'Last Name',
-    value: 'Cornwell',
-  },
-  {
-    name: 'SSN',
-    value: '-',
-  },
-  {
-    name: 'DOB',
-    value: '01/28/1978',
-  },
-  {
-    name: 'Sex',
-    value: 'F',
-  },
-  {
-    name: 'Street',
-    value: '7704 Suraci CT Apt 303',
-  },
-  {
-    name: 'City/State/Zip',
-    value: 'Annandale. VA 220023',
-  },
-]
-
-export const SUBSCRIBER_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'First Name',
-    value: 'Ariana',
-  },
-  {
-    name: 'Middle Name',
-    value: '-',
-  },
-  {
-    name: 'Last Name',
-    value: 'Cornwell',
-  },
-  {
-    name: 'Member ID',
-    value: '117185225',
-  },
-  {
-    name: 'SSN',
-    value: '-',
-  },
-  {
-    name: 'DOB',
-    value: '01/28/1978',
-  },
-  {
-    name: 'Sex',
-    value: 'F',
-  },
-  {
-    name: 'Street',
-    value: '7704 Suraci CT Apt 303',
-  },
-  {
-    name: 'City/State/Zip',
-    value: 'Annandale. VA 220023',
-  },
-]
-
-export const PLAN_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Payer Name',
-    value: 'United Health Care',
-  },
-  {
-    name: 'Plan Name',
-    value: 'VA Medicaid Expension Adults',
-  },
-  {
-    name: 'Plan Number',
-    value: 'AX63762',
-  },
-  {
-    name: 'Plan Begin Date',
-    value: '01/01/2022',
-  },
-  {
-    name: 'Plan End Date',
-    value: '12/31/2022',
-  },
-  {
-    name: 'Group Name',
-    value: 'Premium Plus',
-  },
-  {
-    name: 'Group Number',
-    value: 'VAMDN',
-  },
-]
-
-export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Provider Name',
-    value: 'Dr. Mitchell Thomson',
-  },
-  {
-    name: 'Provider Phone',
-    value: '+1765345267542',
-  },
-]
-
 export const CLAIM_STATUS_DUMMY_DATA = [
   {
     id: '3398',
@@ -4228,153 +3516,6 @@ export const CLAIM_STATUS_DUMMY_DATA = [
     date: '5/7/16',
     payer: 'Pharma International',
     amount: '$219.78',
-  },
-]
-
-export const CLAIM_FEED_DUMMY_DATA = [
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
   },
 ]
 
