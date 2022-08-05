@@ -1,12 +1,12 @@
 //packages block
-import { Phone as PhoneIcon } from '@material-ui/icons';
-import moment from "moment-timezone";
 import states from "states-us";
 import { v4 as uuid } from "uuid";
-//assets
-import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png';
-import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png';
-import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png';
+import moment from "moment-timezone";
+import { Phone as PhoneIcon } from '@material-ui/icons';
+// graphql and interfaces block
+import {
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
+} from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
   TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
@@ -23,10 +23,6 @@ import {
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
   SpecimenTypeOption, StepLabelType, TestOption
 } from "../interfacesTypes";
-// graphql and interfaces block
-import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
-} from "../utils";
 
 // regex
 export const TID_REGEX = /^\d{9}$/;
@@ -45,6 +41,7 @@ export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/;
 export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\-\s]+$/;
 export const ALPHABETS_REGEX = /^([A-Za-z]+\s)*[A-Za-z]+$/;
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
@@ -85,8 +82,12 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
-export const FILE_REQUIRED = 'Please select at least one file'
-export const STATUS_NAME = 'Status Name'
+export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
+export const FUTURE_DATE = 'Disable Past Date'
+export const PAST_DATE = 'Disable Future Date'
+export const STATUS_NAME = 'Status Name';
+export const REQUIRED = 'Required';
+export const FILE_REQUIRED = 'Please select at least one file';
 export const AGREEMENT_BODY_REQUIRED = 'Agreement body is a required field'
 export const DESCRIPTION_TYPE = 'Description Type';
 export const PUBLIC_AGREEMENTS_PAGE_LIMIT = 25;
@@ -268,6 +269,7 @@ export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
 export const TELEHEALTH = "Telehealth";
+export const INSURANCES = "Insurances";
 export const START_TELEHEALTH = "Start Telehealth";
 export const LINK_COPIED = "Link Copied";
 export const BILLING_PROFILE = "Billing Profile";
@@ -747,12 +749,16 @@ export const REJECTED = "Rejected";
 export const USERNAME = "Username";
 export const PAYER_ID = "Payer ID";
 export const SIGN_OFF = "Sign Off";
+export const ELEVEN_PAGE_LIMIT = 11;
 export const ADD_BILL = "Add Bill";
 export const CLAIM_ID = "Claim ID";
 export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
+export const NO_INSURANCE = "No Insurance";
+export const INTERNATIONAL_TRAVELER = "International Traveler";
+export const CONTRACT = "Contract";
 export const MODIFIERS = "Modifiers";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
@@ -1057,6 +1063,7 @@ export const AVAILABLE_USERS = "Available Users";
 export const ACTIVE_PROVIDERS = "Active Providers";
 export const USD = "USD";
 export const SEX = "Sex";
+export const SYNC = "Sync";
 export const SIZE = "Size";
 export const RACE = "Race";
 export const IP_TEXT = "IP";
@@ -1085,6 +1092,8 @@ export const MISSING = "Missing";
 export const ACTIONS = "Actions";
 export const BILLING = "Billing";
 export const PRIVACY = "Privacy";
+export const INSURANCE_SELECTION = "Insurance Selection";
+export const NO_INSURANCE_ADDED = "No Insurance Added";
 export const PAYMENT = "Payment";
 export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
@@ -1092,6 +1101,7 @@ export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
 export const COPAY_TEXT = "COPAY";
+export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
@@ -1152,6 +1162,7 @@ export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
 export const SUBSCRIBER = "Subscriber";
 export const COPAY_TYPE = "Copay Type";
+export const OFFICE_EIN = "Office EIN";
 export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
 export const UPDATED_ON = "Updated On:";
@@ -1191,7 +1202,7 @@ export const DEMOGRAPHICS = "Demographics";
 export const ADDRESS_CTA = "Address (CTA)";
 export const MANUAL_ENTRY = "Manual Entry";
 export const MY_ACCOUNT_TEXT = "My Account";
-export const CLAIM_FEED_TEXT = "Live Claim Feed";
+export const APP_NAME_FORMAT = 'First Last';
 export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
@@ -1201,6 +1212,7 @@ export const YES_CHECKOUT = "Yes, Check Out";
 export const PATIENT_CHART = "Patient Chart";
 export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
+export const NEW_LAB_ORDER = "New Lab Order";
 export const EDIT_PROVIDER = "Edit Provider";
 export const ADD_INSURANCE = "Add Insurance";
 export const PATIENT_PHONE = 'Patient Phone';
@@ -1213,19 +1225,18 @@ export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
 export const PROVIDER_NAME = "Provider Name";
-export const OFFICE_EIN = "Office EIN";
 export const OFFICE_PHONE = "Office Phone";
 export const DATE_OF_BIRTH = "Date of Birth";
 export const REVOKE_ACCESS = "Revoke Access";
 export const FORMER_SMOKER = "Former Smoker";
 export const PRICE_WITH_DOLLAR = "Price ($)";
 export const POLICY_NAME_TEXT = "POLICY NAME";
+export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const DECREASED_DATE = "Deceased Date";
 export const ELIGIBILITY_TEXT = "ELIGIBILITY";
 export const ADD_DOCUMENT = "Upload Document";
 export const OUTSTANDING_TEXT = "Outstanding";
 export const EXPORT_TO_FILE = "Export To File";
-export const SYNC = "Sync";
 export const PREFERRED_NAME = "Preferred Name";
 export const EDIT_INSURANCE = "Edit Insurance";
 export const EDIT_AGREEMENT = "Edit Agreement";
@@ -1248,11 +1259,11 @@ export const PAY_VIA_PAYPAL = "Pay via PayPal";
 export const USUAL_PROVIDER = "Usual Provider";
 export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const NOTICE_ON_FILE = "Notices on file";
+export const INSURANCE_DISCLAIMER = "How will you be covering your visit?";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const CANCELLATION_TEXT = "Cancellation";
 export const EMAIL_FORMAT = 'example@email.com';
 export const BUILD_FEE_DOLLAR = "Build Fee ($)";
-export const BILL_FEE_DOLLAR = "Bill Fee ($)";
 export const FIRST_NAME_USED = "First Name Used";
 export const PATIENT_ADDRESS = "Patient Address";
 export const PATIENT_CONTACT = "Patient Contact";
@@ -1267,6 +1278,7 @@ export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
 export const USER_ROLE_PLACEHOLDER = "User Role";
+export const CLAIM_FEED_TEXT = "Live Claim Feed";
 export const MAILING_ADDRESS = "Mailing address";
 export const CONSENT_TO_CALL = "Consent To call";
 export const EXPIRATION_DATE = "Expiration Date";
@@ -1284,7 +1296,6 @@ export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const DOCUMENT_DETAILS = "Document Details";
 export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
-export const APP_NAME_FORMAT = 'First Middle Last';
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
 export const MEMBERSHIP_PLANS = "Membership Plans";
@@ -1318,6 +1329,7 @@ export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
+export const FEE_SCHEDULE_LISTING = "Fee Schedule Listing";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
 export const ADD_UPLOAD_IMAGES = "Add & Upload Images";
 export const REFERRING_PROVIDER = "Referring Provider";
@@ -1565,6 +1577,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const DATE_VALIDATION_MESSAGE = "Date is invalid";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
+export const TESTS_FIELD_VALIDATION_MESSAGE = "Atleast one test is required";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
@@ -1585,6 +1598,7 @@ export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric i
 export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not acceptable";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
+export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
@@ -1682,6 +1696,7 @@ export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ORDER_DELETION_MESSAGE = "Order is deleted successfully";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
+export const NO_FILE_ASSOCIATED = 'No File Associated with agreement';
 export const TWO_FA_ENABLED_SUCCESSFULLY = "2FA enabled successfully";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
@@ -2163,6 +2178,8 @@ export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROU
 export const ELIGIBILITY_BREAD = { text: ELIGIBILITY_LISTING, link: ELIGIBILITY_ROUTE, };
 export const COVERAGE_BREAD = { text: COVERAGE_DETAILS, link: COVERAGE_ROUTE, };
 
+export const FEE_SCHEDULE_BREAD = { text: FEE_SCHEDULE_LISTING, link: FEE_SCHEDULE_ROUTE, };
+
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
   link: FACILITY_SERVICES_ROUTE,
@@ -2322,99 +2339,6 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Sunday, name: DAYS.Sunday },
 ];
 
-export const dummyVitalsChartingList = [
-  {
-    id: 1,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    specialty: "Pharmacist",
-    code: 65065,
-  },
-  {
-    id: 3,
-    firstName: "Ala",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    specialty: "Periodontics",
-    code: 25525,
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    specialty: "Pediatric Dentist",
-    code: 88025,
-  },
-  {
-    id: 5,
-    firstName: "Chris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    specialty: "Pediatric Dermatology",
-    code: 12025,
-  },
-  {
-    id: 6,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    specialty: "Neurology",
-    code: 67025,
-  },
-  {
-    id: 7,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    specialty: "Gastroenterology",
-    code: 33325,
-  },
-  {
-    id: 8,
-    firstName: "Hymen",
-    lastName: "Stoke",
-    email: "stoke@alxtel.com",
-    phone: +16102458766,
-    specialty: "Neurology",
-    code: 19825,
-  },
-  {
-    id: 9,
-    firstName: "Black",
-    lastName: "Pointer",
-    email: "pointer@alxtel.com",
-    phone: +15854380126,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 10,
-    firstName: "Mira",
-    lastName: "Khan",
-    email: "khan39@alxtel.com",
-    phone: +16102458766,
-    specialty: "Pediatric Dentist",
-    code: 89025,
-  },
-];
-
 export const dummyAppointmentData = {
   appTime: "16:30 - 17:00",
   timeVariant: "PM",
@@ -2425,119 +2349,10 @@ export const dummyAppointmentData = {
   patientElg: "Eligibility Issue",
 };
 
-export const PATIENT_CHARTING_DATA = [
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-  {
-    title: "Allergies",
-    description: "Lorem ipsum",
-    date: "25-11-22",
-  },
-];
-
 export const DUMMY_OPTION = {
   id: ADD_PATIENT_MODAL,
   name: ADD_PATIENT_MODAL
 }
-
-export const DUMMY_APPOINTMENTS = [
-  {
-    id: 1,
-    title: "Website Re-Design Plan",
-    startDate: "2022-02-24T04:30:00.000Z",
-    endDate: "2022-02-24T06:30:00.000Z",
-  },
-  {
-    id: 2,
-    title: "Book Flights to San Fran for Sales Trip",
-    startDate: "2022-02-24T07:00:00.000Z",
-    endDate: "2022-02-24T08:00:00.000Z",
-  },
-  {
-    id: 3,
-    title: "Install New Router in Dev Room",
-    startDate: "2022-02-24T09:30:00.000Z",
-    endDate: "2022-02-24T10:30:00.000Z",
-  },
-  {
-    id: 4,
-    title: "Approve Personal Computer Upgrade Plan",
-    startDate: "2018-07-24T05:00:00.000Z",
-    endDate: "2018-07-24T06:00:00.000Z",
-  },
-  {
-    id: 5,
-    title: "Final Budget Review",
-    startDate: "2018-07-24T07:00:00.000Z",
-    endDate: "2018-07-24T08:35:00.000Z",
-  },
-  {
-    id: 6,
-    title: "New Brochures",
-    startDate: "2018-07-24T09:30:00.000Z",
-    endDate: "2018-07-24T10:45:00.000Z",
-  },
-  {
-    id: 7,
-    title: "Install New Database",
-    startDate: "2018-07-25T04:45:00.000Z",
-    endDate: "2018-07-25T06:15:00.000Z",
-  },
-  {
-    id: 8,
-    title: "Approve New Online Marketing Strategy",
-    startDate: "2018-07-25T07:00:00.000Z",
-    endDate: "2018-07-25T09:00:00.000Z",
-  },
-  {
-    id: 9,
-    title: "Upgrade Personal Computers",
-    startDate: "2018-07-25T10:15:00.000Z",
-    endDate: "2018-07-25T11:30:00.000Z",
-  },
-  {
-    id: 10,
-    title: "Customer Workshop",
-    startDate: "2018-07-26T06:00:00.000Z",
-    endDate: "2018-07-26T07:00:00.000Z",
-  },
-  {
-    id: 11,
-    title: "Prepare 2015 Marketing Plan",
-    startDate: "2018-07-26T06:00:00.000Z",
-    endDate: "2018-07-26T08:30:00.000Z",
-  },
-  {
-    id: 12,
-    title: "Brochure Design Review",
-    startDate: "2018-07-26T09:00:00.000Z",
-    endDate: "2018-07-26T10:30:00.000Z",
-  },
-  {
-    id: 13,
-    title: "Create Icons for Website",
-    startDate: "2018-07-27T05:00:00.000Z",
-    endDate: "2018-07-27T06:30:00.000Z",
-  },
-];
 
 export enum ITEM_MODULE {
   snoMedCode = 'SnoMedCode',
@@ -2557,25 +2372,6 @@ export enum TABLE_SELECTOR_MODULES {
   hcpcsCode = 'HCPCSCode',
   customCode = 'CustomCode'
 }
-
-export const DUMMY_ENCOUNTERS = [
-  {
-    id: 1,
-    serviceName: "Sick Visit",
-    scheduleDateTime: "March 16, 2022 at 3:15 PM",
-    duration: "50 Minutes",
-    doctorName: 'Dr. Jenny Wilson',
-    hospitalName: 'Community Hospital'
-  },
-  {
-    id: 2,
-    serviceName: "Sick Visit",
-    scheduleDateTime: "March 16, 2022 at 3:15 PM",
-    duration: "50 Minutes",
-    doctorName: 'Dr. Jenny Wilson',
-    hospitalName: 'Community Hospital'
-  }
-];
 
 export enum CARD_LAYOUT_MODAL {
   Allergies = 'Allergies',
@@ -2664,33 +2460,6 @@ export const MAPPED_STATUS = [
   },
 ];
 
-export const PORTAL_DUMMY_DATA = [
-  {
-    email: "willie.jennings@example.com",
-    enabledByName: "Leslie Alexander",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Dr. Harrold Wixen",
-    disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    email: "bill.sanders@example.com",
-    enabledByName: "Bessie Cooper",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Dr. A. H. John",
-    disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-  {
-    email: "georgia.young@example.com",
-    enabledByName: "Floyd Miles",
-    enabledByDate: "On: March 15, 2022. 2:18AM",
-    activatedOn: "March 15, 2022. 2:18AM",
-    disabledName: "Floyd Miles",
-    disabledDate: "On: March 15, 2022. 2:18AM",
-  },
-];
-
 export const INVENTORY_ITEMS = [
   {
     name: ICT_TEN,
@@ -2743,19 +2512,6 @@ export const CLINICAL_ITEMS = [
     link: AUDIT_LOG_ROUTE,
     desc: AUDIT_LOG_DESCRIPTION,
   },
-];
-
-export const MISCELLANEOUS_SETTINGS_ITEMS = [
-  {
-    name: AGREEMENTS,
-    link: AGREEMENTS_ROUTE,
-    desc: AGREEMENTS_DESCRIPTION,
-  },
-  {
-    name: CLAIM_STATUSES,
-    link: CLAIM_STATUSES_ROUTE,
-    desc: CLAIM_STATUSES_DESCRIPTION,
-  }
 ];
 
 export const COL_TYPES: ColumnTypes = {
@@ -3048,7 +2804,9 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   defaultValue: "",
   textArea: false,
   options: [],
-  regex: ''
+  regex: '',
+  pastEnable: true,
+  futureEnable: true
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
@@ -3063,6 +2821,7 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   testDate: moment().toString(),
   testNotes: '',
   testTime: moment().format('HH:mm:ss'),
+  diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
@@ -3095,6 +2854,11 @@ export const LAB_ORDER_STEPS = [
   LAB_ORDER, PROVIDER_DETAILS, PAYMENT
 ];
 
+export const LAB_ORDER_SIDEDRAWER_STEPS = [
+  LAB_ORDER, TESTS,
+  // PAYMENTS
+];
+
 export const FacilityMenuNav = [
   {
     title: FACILITY_INFO,
@@ -3120,9 +2884,6 @@ export const RegisterPatientMenuNav = [
   },
   {
     title: DEMOGRAPHICS,
-  },
-  {
-    title: CONTACT_INFORMATION,
   },
   {
     title: PRIVACY,
@@ -3160,48 +2921,6 @@ export const MAPPED_WEEK_DAYS = [
   {
     id: "Sunday",
     name: "Sunday",
-  },
-];
-
-export const APPOINTMENT_INFO_DATA = [
-  {
-    name: APPOINTMENT_TYPE,
-    description: GENERAL,
-  },
-  {
-    name: FACILITY_LOCATION,
-    description: "Clay County Hospital",
-  },
-  {
-    name: PROVIDER_NAME,
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    name: REASON,
-    description: "High temperature",
-  },
-  {
-    name: "Checked in at",
-    description: "3:44 PM",
-  },
-  {
-    name: "Self Check in",
-    description: "No",
-  },
-  {
-    name: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
-
-export const ICD_TEN_CODES_DATA = [
-  {
-    code: "S00.00XA ",
-    description: "Unspecified superficial injury of scalp, initial encounter",
-  },
-  {
-    code: "M00.09 ",
-    description: "Staphylococcal poly arthritis",
   },
 ];
 
@@ -3368,6 +3087,20 @@ export const PRACTICE_SETTINGS_ITEMS = [
   }
 ];
 
+export const MISCELLANEOUS_SETTINGS_ITEMS = [
+  {
+    name: AGREEMENTS,
+    link: AGREEMENTS_ROUTE,
+    desc: AGREEMENTS_DESCRIPTION,
+    permission: USER_PERMISSIONS.fetchAllAgreements,
+  },
+  {
+    name: CLAIM_STATUSES,
+    link: CLAIM_STATUSES_ROUTE,
+    desc: CLAIM_STATUSES_DESCRIPTION,
+  }
+];
+
 export const TELEHEALTH_URL = 'https://doxy.me'
 
 //Form Builder API urls
@@ -3511,64 +3244,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "7", name: '7 Days', time: 604800 * 1000 },
 ]
 
-export const EMERGENCY_LOG_LIST = [
-  {
-    shortName: 'AW',
-    fullName: "Andrew Williams",
-    hospitalName: "National Hospital",
-    activatedDate: '24/2/2022',
-    imageUrl: EMERGENCY_LOG_WILLIAMS
-  },
-  {
-    shortName: 'OM',
-    fullName: "Obaid McCoy",
-    hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate: '17/10/2022',
-    imageUrl: EMERGENCY_LOG_OBD
-  },
-  {
-    shortName: 'MP',
-    fullName: "Micheal Phelps",
-    hospitalName: "City Medical Center",
-    activatedDate: '2/6/2022',
-    imageUrl: EMERGENCY_LOG_PHLEPS
-  },
-  {
-    shortName: 'ND',
-    fullName: "Novac Dominic",
-    hospitalName: "National Hospital",
-    activatedDate: '30/2/2022',
-    imageUrl: ''
-  },
-]
-
-export const RECENT_ACTIVITY_LIST = [
-  {
-    shortName: 'AW',
-    fullName: "Andrew Williams",
-    hospitalName: "National Hospital",
-    activatedDate: '24/2/2022'
-  },
-  {
-    shortName: 'OM',
-    fullName: "Obaid McCoy",
-    hospitalName: "Horizon Eye Care and Medical Center",
-    activatedDate: '17/10/2022'
-  },
-  {
-    shortName: 'MP',
-    fullName: "Micheal Phelps",
-    hospitalName: "City Medical Center",
-    activatedDate: '2/6/2022'
-  },
-  {
-    shortName: 'ND',
-    fullName: "Novac Dominic",
-    hospitalName: "National Hospital",
-    activatedDate: '30/2/2022'
-  },
-]
-
 export enum VITAL_LABELS {
   createdAt = "",
   pulseRate = 'Pulse (bpm)',
@@ -3583,51 +3258,6 @@ export enum VITAL_LABELS {
   patientHeadCircumference = 'Head Circumference',
   patientTemperature = 'Temperature',
 }
-
-export const UPCOMING_APPOINTMENT_LIST = [
-  {
-    fullName: 'Andrew Williams',
-    visitType: "Sick Visit",
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'AW',
-    appointmentTime: '11:00 AM'
-  },
-  {
-    fullName: 'Arlene McCoy',
-    visitType: "Ortho Check up",
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'AM',
-    appointmentTime: '11:15 AM'
-  },
-  {
-    fullName: 'Marvin McKinney',
-    visitType: "Endoscopy",
-    imageUrl: EMERGENCY_LOG_PHLEPS,
-    shortName: 'MM',
-    appointmentTime: '11:30 AM'
-  },
-  {
-    fullName: 'Darlene Robertson',
-    visitType: "CT Scan",
-    imageUrl: '',
-    shortName: 'DR',
-    appointmentTime: '12:00 PM'
-  },
-  {
-    fullName: 'Bessie Cooper',
-    visitType: "Sick Visit",
-    imageUrl: EMERGENCY_LOG_OBD,
-    shortName: 'BC',
-    appointmentTime: '12:15 PM'
-  },
-  {
-    fullName: 'Cameron Williamson',
-    visitType: "MRI",
-    imageUrl: EMERGENCY_LOG_WILLIAMS,
-    shortName: 'CW',
-    appointmentTime: '12:30 PM'
-  },
-]
 
 export const ACH_PAYMENT_TABS = [
   {
@@ -3838,474 +3468,9 @@ export enum FormBuilderPaymentTypes {
 }
 
 export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
-
 export const BILLING_MODIFIERS_DATA = ['M1', 'M2', 'M3', 'M4']
-
 export const DIAGNOSIS_POINTERS_DATA = ['ICD-1', 'ICD-2', 'ICD-3', 'ICD-4']
 
-export const AUDIT_LOG_TABLE_DUMMY_DATA = [
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-  {
-    date: '1/8/2020',
-    time: '01:34:24 pm',
-    patient: 'Philip Richards',
-    user: 'PhilipR',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Appointment',
-    ip: '161.25.240.35',
-  },
-  {
-    date: '10/11/2020',
-    time: '11:49:00 pm',
-    patient: 'Darrell Fox',
-    user: 'Darrell1298',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '164.102.123.48',
-  },
-  {
-    date: '11/20/2019',
-    time: '04:15:03 am',
-    patient: 'Ronald Lane',
-    user: 'RonalddA2',
-    type: 'Account',
-    action: 'Update',
-    detail: 'Patient name changed from Daniel Victor To Daniel Peter',
-    ip: '227.18.220.55',
-  },
-  {
-    date: '5/18/2020',
-    time: '05:14:33 pm',
-    patient: 'Courtney Fox',
-    user: 'Fox2123',
-    type: 'Navigation View',
-    action: 'Read',
-    detail: 'accessed Dashboard',
-    ip: '92.188.192.32',
-  },
-]
-
-export const ELIGIBILITY_TABLE_DUMMY_DATA = [
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '17 Oct, 2020, 08:00 AM',
-    status: 'Pending',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '24 May, 2020, 9:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '17 Oct, 2020, 08:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '1 Feb, 2020, 11:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '22 Oct, 2020, 09:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '8 Sep, 2020, 08:30 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'ACTNA',
-    time: '21 Sep, 2020 , 11:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '24 May, 2020 12:00 PM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'UNITED HEALTH CARE',
-    time: '21 Sep, 2020 , 11:00 AM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-  {
-    insurance: 'ACTNA',
-    time: '21 Sep, 2020, 04:00 PM',
-    status: 'Accepted',
-    action: 'Coverage Details',
-  },
-]
-
-export const PATIENT_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Relationship',
-    value: 'Self',
-  },
-  {
-    name: 'First Name',
-    value: 'Ariana',
-  },
-  {
-    name: 'Middle Name',
-    value: '-',
-  },
-  {
-    name: 'Last Name',
-    value: 'Cornwell',
-  },
-  {
-    name: 'SSN',
-    value: '-',
-  },
-  {
-    name: 'DOB',
-    value: '01/28/1978',
-  },
-  {
-    name: 'Sex',
-    value: 'F',
-  },
-  {
-    name: 'Street',
-    value: '7704 Suraci CT Apt 303',
-  },
-  {
-    name: 'City/State/Zip',
-    value: 'Annandale. VA 220023',
-  },
-]
-
-export const SUBSCRIBER_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'First Name',
-    value: 'Ariana',
-  },
-  {
-    name: 'Middle Name',
-    value: '-',
-  },
-  {
-    name: 'Last Name',
-    value: 'Cornwell',
-  },
-  {
-    name: 'Member ID',
-    value: '117185225',
-  },
-  {
-    name: 'SSN',
-    value: '-',
-  },
-  {
-    name: 'DOB',
-    value: '01/28/1978',
-  },
-  {
-    name: 'Sex',
-    value: 'F',
-  },
-  {
-    name: 'Street',
-    value: '7704 Suraci CT Apt 303',
-  },
-  {
-    name: 'City/State/Zip',
-    value: 'Annandale. VA 220023',
-  },
-]
-
-export const PLAN_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Payer Name',
-    value: 'United Health Care',
-  },
-  {
-    name: 'Plan Name',
-    value: 'VA Medicaid Expension Adults',
-  },
-  {
-    name: 'Plan Number',
-    value: 'AX63762',
-  },
-  {
-    name: 'Plan Begin Date',
-    value: '01/01/2022',
-  },
-  {
-    name: 'Plan End Date',
-    value: '12/31/2022',
-  },
-  {
-    name: 'Group Name',
-    value: 'Premium Plus',
-  },
-  {
-    name: 'Group Number',
-    value: 'VAMDN',
-  },
-]
-
-export const PRIMARY_CARE_COVERAGE_DUMMY_DATA = [
-  {
-    name: 'Provider Name',
-    value: 'Dr. Mitchell Thomson',
-  },
-  {
-    name: 'Provider Phone',
-    value: '+1765345267542',
-  },
-]
-
-
-export const CLAIM_FEED_DUMMY_DATA = [
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-  {
-    info: 'CPT',
-    id: '13671',
-    patient: 'Leslie Alexander',
-    dateOfService: '5/7/16',
-    facility: 'Crown Point',
-    billed: '$219.78',
-    allowed: '$943.65',
-    adjustment: '$202.87',
-    ins1Paid: '$854.08',
-    ins2Paid: '$710.68',
-    ptPaid: '$219.78',
-    insBal: '$782.01',
-    ptLineItemBal: '$219.78',
-    claimBal: '$576.28',
-    expReimbursement: '$576.28',
-    ins1: 'SEBACIC OMAN SAOC',
-  },
-  {
-    info: 'ICD',
-    id: '61391',
-    patient: 'Darrell Steward',
-    dateOfService: '5/7/16',
-    facility: 'High Bank Gardens',
-    billed: '$169.43',
-    allowed: '$928.41',
-    adjustment: '$328.85',
-    ins1Paid: '$943.65',
-    ins2Paid: '$928.41',
-    ptPaid: '$293.01',
-    insBal: '$948.55',
-    ptLineItemBal: '$406.27',
-    claimBal: '$710.68',
-    expReimbursement: '$778.35',
-    ins1: 'Hawaii Employers Mutual Insurance',
-  },
-]
 
 export const MODULE_LOGS_TYPES = [
   "Agreement",

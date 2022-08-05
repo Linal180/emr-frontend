@@ -35,7 +35,7 @@ const TaxonomySelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       await getTaxonomy({
-        variables: { taxonomyInput: { ...pageInputs, searchString: searchQuery } }
+        variables: { taxonomyInput: { ...pageInputs, searchString: searchQuery.trim() } }
       })
     } catch (error) { }
   }, [getTaxonomy, searchQuery])

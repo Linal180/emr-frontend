@@ -54,6 +54,8 @@ query findAllForms($formInput: FormInput!) {
               apiCall
               tableContactType
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -125,6 +127,8 @@ query getForm($getForm: GetForm!) {
               tableContactType
               apiCall
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -194,6 +198,8 @@ query getPublicForm($getForm: GetForm!) {
               apiCall
               tableContactType
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -304,6 +310,26 @@ mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
 
     form {
       id
+    }
+  }
+}
+
+query FindAllPublicFacility($facilityInput: FacilityInput!) {
+  findAllPublicFacility(facilityInput: $facilityInput) {
+    facilities {
+      id
+      name
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
     }
   }
 }

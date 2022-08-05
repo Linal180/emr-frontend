@@ -175,10 +175,11 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
   )
 }
 //date component
-export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) => {
+export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentProps) => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const [date, setDate] = useState<Date | null>(null)
   const { name, value, onChange } = field || {}
+  const { futureEnable, pastEnable } = item || {}
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -195,6 +196,8 @@ export const DateFieldComponent = ({ field, isCreating }: FieldComponentProps) =
         value={isCreating ? date : value}
         onClick={() => setOpenPicker(!openPicker)}
         onClose={() => setOpenPicker(!openPicker)}
+        disableFuture={!!!futureEnable}
+        disablePast={!!!pastEnable}
         onChange={(date) => {
           isCreating ? setDate(date) : onChange && date && onChange(getTimestamps(date?.toString()))
         }}

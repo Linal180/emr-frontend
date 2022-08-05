@@ -19,9 +19,10 @@ import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
 import { useFindAllCptFeeScheduleLazyQuery, useGetFeeScheduleLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import {
-  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, MODIFIER, PAGE_LIMIT, FEE_SCHEDULE,
-  DELETE_FEE_SCHEDULE_DESCRIPTION, CANT_DELETE_FEE_SCHEDULE, REVENUE_CODE, ADD_NEW_TEXT
+  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, MODIFIER, PAGE_LIMIT, FEE_SCHEDULE, DELETE_FEE_SCHEDULE_DESCRIPTION,
+  CANT_DELETE_FEE_SCHEDULE, REVENUE_CODE, ADD_NEW_TEXT, FEE_SCHEDULE_ROUTE,
 } from "../../../constants";
+import BackButton from "../../common/BackButton";
 
 const CptFeeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -29,7 +30,7 @@ const CptFeeTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(feeScheduleReducer, initialState);
 
   const {
-    page, totalPages, cptFeeSchedules, drawerOpened, getFeeSchedule, delFeeId, openDel, searchQuery, feeScheduleName
+    page, totalPages, cptFeeSchedules, drawerOpened, delFeeId, openDel, searchQuery, feeScheduleName
   } = state
 
   const [findAllCptFeeSchedule, { loading, error }] = useFindAllCptFeeScheduleLazyQuery({
@@ -99,15 +100,15 @@ const CptFeeTable: FC = (): JSX.Element => {
   const fetchCptFeeSchedule = useCallback(async () => {
     try {
       const paginationOptions = { page, limit: PAGE_LIMIT }
-      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: false })
-      const findAllCptFeeScheduleInput = { paginationOptions, searchString: searchQuery, feeScheduleId }
+      const findAllCptFeeScheduleInput = { paginationOptions, searchString: searchQuery.trim(), feeScheduleId }
+
       await findAllCptFeeSchedule({ variables: { findAllCptFeeScheduleInput } })
     } catch (error) { }
   }, [page, findAllCptFeeSchedule, searchQuery, feeScheduleId])
 
   useEffect(() => {
-    feeScheduleId && getFeeSchedule && fetchCptFeeSchedule()
-  }, [fetchCptFeeSchedule, getFeeSchedule, feeScheduleId])
+    feeScheduleId && fetchCptFeeSchedule()
+  }, [fetchCptFeeSchedule, feeScheduleId, page])
 
 
   const fetchFeeScheduleDetail = useCallback(async () => {
@@ -131,10 +132,6 @@ const CptFeeTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
-
-    if (searchQuery?.length >= 3 || searchQuery?.length <= 0) {
-      dispatch({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
-    }
   }
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
@@ -173,13 +170,21 @@ const CptFeeTable: FC = (): JSX.Element => {
   return (
     <>
       <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{feeScheduleName}</Typography>
+        <Box display='flex' alignItems='center'>
+          <BackButton to={FEE_SCHEDULE_ROUTE} />
+
+          <Box ml={2} />
+
+          <Typography variant="h4" color="textPrimary">{feeScheduleName}</Typography>
+        </Box>
+
         <Button variant="contained" startIcon={<AddWhiteIcon />} color="primary"
           onClick={toggleSideDrawer}
         >
           {ADD_NEW_TEXT}
         </Button>
       </Box>
+
       <Box className={classes.mainTableContainer}>
         <Box mt={2} mb={1}>
           <Grid container spacing={3}>
@@ -251,7 +256,7 @@ const CptFeeTable: FC = (): JSX.Element => {
             variant="outlined"
             page={page}
             count={totalPages}
-            onChange={handleChange}
+            onChange={(event, value) => handleChange(event, value)}
           />
         </Box>
       )}

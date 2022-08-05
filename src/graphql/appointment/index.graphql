@@ -270,6 +270,17 @@ query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppoi
   }
 }
 
+query FindAppointmentInsuranceStatus($appointmentId: String!){
+  findAppointmentInsuranceStatus(appointmentId: $appointmentId){
+    response {
+      status
+    }
+    
+    id
+    insuranceStatus
+  }
+}
+
 query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
   findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
     response {

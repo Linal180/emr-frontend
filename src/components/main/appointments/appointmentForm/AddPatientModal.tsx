@@ -15,7 +15,9 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
-import { checkPermission, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem } from "../../../../utils";
+import {
+  checkPermission, getTimestampsForDob, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem
+} from "../../../../utils";
 import {
   extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema
 } from "../../../../validationSchemas";
@@ -26,7 +28,8 @@ import {
 import {
   EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX,
   MAPPED_GENDER_IDENTITY, DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR, USUAL_PROVIDER_ID,
+  PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR,
+  USUAL_PROVIDER_ID,
 } from "../../../../constants";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
 
@@ -34,9 +37,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   const { userPermissions, user, currentDoctor } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { name: facilityName, id: selectedFacilityId } = facility || {};
-  const { firstName, lastName,  id: selectedDoctorId } = currentDoctor || {}
+  const { firstName, lastName, id: selectedDoctorId } = currentDoctor || {}
+  
   const doctorName = `${firstName} ${lastName}`
-
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctorRole = isOnlyDoctor(roles)
 
@@ -102,17 +105,19 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         suffix: '', firstName, middleName: '', lastName, firstNameUsed: '', prefferedName: '', previousFirstName: '',
         facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId,
         usualProviderId: isDoctorRole ? selectedDoctorId : selectedUsualProvider,
-        callToConsent: false, privacyNotice: false, releaseOfInfoBill: false,
+        callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, 
+        genderIdentity: selectedSexAtBirth as Genderidentity,
         medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
-        email: basicEmail, pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.Male,
-        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male, genderIdentity: Genderidentity.Male,
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White, 
+        gender: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
+        sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
         maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None,
         statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '', holdStatement: Holdstatement.None,
       };
 
       const contactInput = {
-        email: basicEmail, city: '', zipCode: '', state: '', facilityId:selectedFacility, phone: basicPhone,
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: '', address: '', contactType: ContactType.Self,
         country: '', primaryContact: true,
       };

@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
-import BillingForm from "./BillingForm";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
 // constants block
@@ -28,10 +27,10 @@ import {
   useFetchBillingDetailsByAppointmentIdLazyQuery,
   useGenerateClaimNoLazyQuery,
   useFindPatientLastAppointmentLazyQuery,
-  useFindAppointmentInsuranceStatusLazyQuery,
 } from "../../../../generated/graphql";
+import BillingForm from "../../billing/addBill/BillingForm";
 
-const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
+const Payments: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
   const { employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout } = state
@@ -429,33 +428,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     } catch (error) { }
   }, [generateClaimNo])
 
-  const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onCompleted(data) {
-      const { findAppointmentInsuranceStatus } = data || {};
-
-      if (findAppointmentInsuranceStatus) {
-        const { insuranceStatus } = findAppointmentInsuranceStatus
-        const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
-        insuranceStatus && setValue('paymentType', patientPaymentType)
-      }
-    }
-  });
-
-  const findInsuranceStatus = useCallback(async () => {
-    try {
-      await findAppointmentInsuranceStatus({
-        variables: {
-          appointmentId: appointmentId || ''
-        }
-      })
-    } catch (error) { }
-  }, [appointmentId, findAppointmentInsuranceStatus])
-
-
   const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
@@ -530,9 +502,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       fetchClaimNumber()
       fetchPatientAppointment()
       fetchBillingDetails()
-      findInsuranceStatus()
     }
-  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment, findInsuranceStatus])
+  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment])
 
   const isLoading = shouldDisableEdit ? fetchBillingDetailsLoading
     : fetchPatientInsurancesLoading || getAppointmentLoading || getPatientProvidersLoading || getFacilityLoading || generateClaimNoLoading || fetchPatientAppointmentLoading
@@ -569,4 +540,4 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   )
 }
 
-export default BillingComponent;
+export default Payments;

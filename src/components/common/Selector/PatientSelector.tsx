@@ -80,7 +80,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
-            ...patientsInputs, searchString: searchQuery,
+            ...patientsInputs, searchString: searchQuery.trim(),
             ...(isDoctor ? { doctorId: doctorId } : {})
           }
         }
