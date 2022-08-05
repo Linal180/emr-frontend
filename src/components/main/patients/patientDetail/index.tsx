@@ -207,7 +207,7 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Box className='masonry-box'>
                 <Grid container spacing={2}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <Box width="100%" className='card-chart'>
+                    <Box width="100%" className={classes.cardChart}>
                       <Box display="flex" justifyContent="space-between" p={3}>
                         <BloodPressureIcon />
 
@@ -219,24 +219,24 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Box>
                       </Box>
 
-                      <Box className='bloodPressure-measurement'>
+                      <Box className={classes.bloodPressureMeasurement}>
                         <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
                           <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
                         </Typography>
 
-                        <Typography className='measure-frequency primary' component="span">
+                        <Typography className={`${classes.measureFrequency} ${classes.primary}`} component="span">
                           {BLOOD_PRESSURE_RANGES.Normal}
                         </Typography>
                       </Box>
 
-                      <Box className='areaBloodPressureChart areaChartContainer'>
+                      <Box className={`${classes.areaBloodPressureChart} ${classes.areaChartContainer}`}>
                         <AreaChartComponent data={areaChartOne} />
                       </Box>
                     </Box>
                   </Grid>
 
                   <Grid item md={6} xs={12} sm={12}>
-                    <Box width="100%" className='card-chart'>
+                    <Box width="100%" className={classes.cardChart}>
                       <Box display="flex" justifyContent="space-between" p={3}>
                         <HeartRateIcon />
 
@@ -249,17 +249,17 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Box>
                       </Box>
 
-                      <Box className='heartRate-measurement'>
+                      <Box className={classes.heartRateMeasurement}>
                         <Typography variant="h2">{HEART_RATE_VALUE}
                           <span className='measure-unit'>{HEART_RATE_UNIT}</span>
                         </Typography>
 
-                        <Typography className='measure-frequency danger-bg' component="span">
+                        <Typography className={`${classes.measureFrequency} ${classes.dangerBg}`} component="span">
                           {Heart_RATE_RANGES.Abnormal}
                         </Typography>
                       </Box>
 
-                      <Box className='areaBloodPressureChart areaChartContainer'>
+                      <Box className={`${classes.areaBloodPressureChart} ${classes.areaChartContainer}`}>
                         <AreaChartComponent data={areaChartTwo} />
                       </Box>
                     </Box>

@@ -84,6 +84,7 @@ export const WHITE = "#FFFFFF";
 
 export const RED = "#DD1010";
 export const RED_ONE = "#F64E60";
+export const RED_TWO = "#CA6B6E";
 
 export const PURPLE = "purple";
 export const PURPLE_ONE = "#7239EA";

@@ -276,7 +276,7 @@ const ProblemModal: FC<AddModalProps> = ({
             <Typography variant='body1'>{STATUS}</Typography>
 
             {loading ? renderLoading('') :
-              <Box className={chartingClasses.toggleProblem}>
+              <Box mt={0.5} className={chartingClasses.toggleProblem}>
                 <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                   {statuses.map(status =>
                     <Box onClick={() => handleStatus(status)}
@@ -296,7 +296,7 @@ const ProblemModal: FC<AddModalProps> = ({
             <Typography variant='body1'>{TYPE}</Typography>
 
             {loading ? renderLoading('') :
-              <Box className={chartingClasses.toggleProblem}>
+              <Box mt={0.5} className={chartingClasses.toggleProblem}>
                 <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                   {severities.map(type =>
                     <Box onClick={() => handleSeverity(type)}

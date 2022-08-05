@@ -91,13 +91,14 @@ const Billing: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch, 
     <CardComponent cardTitle={BILLING_PROFILE}>
       <>
         <Collapse in={!addBilling} mountOnEnter unmountOnExit>
-          <Box pb={3}
-            onClick={() => dispatch && dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
-            className="billing-box" display="flex" alignItems="center"
-          >
-            <AddCircleOutline color='inherit' />
-
-            <Typography>{ADD_FACILITY_BILLING}</Typography>
+          <Box pb={3} display="flex" alignItems="center">
+            <Button variant="text"
+              onClick={() => dispatch && dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
+            >
+              <AddCircleOutline color='secondary' />
+              <Box ml={1} />
+              <Typography color="secondary">{ADD_FACILITY_BILLING}</Typography>
+            </Button>
           </Box>
         </Collapse>
 

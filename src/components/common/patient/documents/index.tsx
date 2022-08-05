@@ -304,13 +304,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
             <Box display='flex'
               ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
-              <Typography className={isSignedTab ? 'selectBox' : 'selectedBox  selectBox'}
+              <Typography className={isSignedTab ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
                 onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
               >
                 {PENDING}
               </Typography>
 
-              <Typography className={isSignedTab ? 'selectedBox selectBox' : 'selectBox'}
+              <Typography className={isSignedTab ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox }
                 onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
               >
                 {SIGNED}

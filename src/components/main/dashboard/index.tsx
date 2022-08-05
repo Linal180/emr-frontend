@@ -17,7 +17,7 @@ const DashboardComponent: FC = (): JSX.Element => (
       <Typography component="h3" variant="h3">{LOGIN_SUCCESSFULLY}</Typography>
     </Box>
 
-    <Box className="subHeading">{LOREM_TEXT_15}</Box>
+    <Box>{LOREM_TEXT_15}</Box>
 
     <Link to={`${CALENDAR_ROUTE}`}>
       <Button variant="contained" color="secondary">{CALENDAR}</Button>

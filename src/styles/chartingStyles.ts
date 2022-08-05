@@ -141,21 +141,23 @@ export const useChartingStyles = makeStyles({
     marginTop: 10,
 
     "& .MuiBox-root": {
-    border: `1px solid ${GRAY_SIX}`, 
-    borderRadius: 6,
-    display: 'flex',
-    alignItems: 'center',
-    width: 'fit-content',
-    padding: '5px 10px',
+      border: `1px solid ${GRAY_SIX}`,
+      borderRadius: 6,
+      display: 'flex',
+      alignItems: 'center',
+      width: 'fit-content',
+      padding: '5px 10px',
 
-    "& .selectedBox": {
-      backgroundColor: BLUE,
-      border: 'none',
-    },
+      "& .selectedBox": {
+        backgroundColor: BLUE,
+        color: WHITE,
+        border: 'none',
+      },
 
-    "& .selectBox": {
-      border: 'none',
-    },
+      "& .selectBox": {
+        border: 'none',
+        cursor: 'pointer',
+      },
     },
   },
 
@@ -245,5 +247,14 @@ export const useChartingStyles = makeStyles({
     "& .MuiAccordionDetails-root": {
       display: 'block',
     },
+  },
+
+  hoverClass: {
+    padding: '5px 10px !important',
+    borderRadius: 4,
+
+    "&:hover": {
+      backgroundColor: GREY,
+    }
   }
 });

@@ -185,30 +185,30 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
         <Grid item md={8} sm={12} xs={12}>
           <Grid container spacing={2} direction="row">
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} minHeight={180} bgcolor={BLUE_SEVEN} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={BLUE_SEVEN} color={WHITE} borderRadius={8}>
                 <CalendarWhiteIcon />
                 <Box p={2} />
 
-                <Typography variant="h3" className="whiteColor">{todayAppointment}</Typography>
-                <Typography variant="body2" className="whiteColor">{TODAYS_APPOINTMENTS}</Typography>
+                <Typography variant="h3" color="inherit">{todayAppointment}</Typography>
+                <Typography variant="body2" color="inherit">{TODAYS_APPOINTMENTS}</Typography>
               </Box>
             </Grid>
 
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} minHeight={180} bgcolor={GREEN} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={GREEN} color={WHITE} borderRadius={8}>
                 <ProviderWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">{providerCount}</Typography>
-                <Typography variant="body2" className="whiteColor">{ACTIVE_PROVIDERS}</Typography>
+                <Typography variant="h3" color="inherit">{providerCount}</Typography>
+                <Typography variant="body2" color="inherit">{ACTIVE_PROVIDERS}</Typography>
               </Box>
             </Grid>
 
             <Grid item md={4} sm={12} xs={12}>
-              <Box p={3} minHeight={180} bgcolor={PURPLE_ONE} borderRadius={8}>
+              <Box p={3} minHeight={180} bgcolor={PURPLE_ONE} color={WHITE} borderRadius={8}>
                 <StaffWhiteIcon />
                 <Box p={2} />
-                <Typography variant="h3" className="whiteColor">{staffCount}</Typography>
-                <Typography variant="body2" className="whiteColor">{ACTIVE_STAFF}</Typography>
+                <Typography variant="h3" color="inherit">{staffCount}</Typography>
+                <Typography variant="body2" color="inherit">{ACTIVE_STAFF}</Typography>
               </Box>
             </Grid>
           </Grid>

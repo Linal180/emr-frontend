@@ -58,7 +58,7 @@ const InputController: FC<CustomInputControlProps> = ({
                 variant="outlined"
                 multiline={multiline}
                 minRows={3}
-                className={`${className} ${!!multiline ? 'multiline-input' : ''}`}
+                className={`${className} ${!!multiline ? classes.multilineInput : ''}`}
                 required={isHtmlValidate && isRequired}
                 disabled={disabled}
                 onChange={(event) => {

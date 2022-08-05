@@ -442,7 +442,7 @@ export const theme = createTheme({
       root: {
         background: WHITE,
         borderRadius: 12,
-        boxShadow: 'none'
+        boxShadow: 'none',
       }
     },
 

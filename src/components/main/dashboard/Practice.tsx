@@ -129,7 +129,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Box px={2} mb={2} fontWeight="bold" display='flex'
                   justifyContent='space-between' alignItems='center'
                 >
-                  <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
+                  <Typography variant="h5">{RECENT_ACTIVITIES}</Typography>
 
                   <Link to={AUDIT_LOG_ROUTE}>
                     <IconButton>
