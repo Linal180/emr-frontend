@@ -6,7 +6,7 @@ import Avatar from "../Avatar";
 import ViewDataLoader from "../ViewDataLoader";
 // history, constant and styles block
 import { NoDataIcon } from "../../../assets/svgs";
-import { DESC, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../constants";
+import { DESC, NO_RECORDS } from "../../../constants";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
 import { getStandardTime, sortingArray, isCurrentDay } from "../../../utils";
 import { DoctorAppointmentsAndPatientsProps } from "../../../interfacesTypes";
@@ -63,7 +63,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     const query = patientId ? { patientId } : { providerId }
 
     await findAllAppointments({
-      variables: { upComingAppointmentsInput: { ...query, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } } }
+      variables: { upComingAppointmentsInput: { ...query, paginationOptions: { limit: 10, page: 1 } } }
     })
   }, [findAllAppointments, patientId, providerId])
 

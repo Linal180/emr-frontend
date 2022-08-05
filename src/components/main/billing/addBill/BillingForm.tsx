@@ -101,7 +101,6 @@ const BillingForm: FC<BillingFormProps> = ({
         Alert.error(SELECT_ANOTHER_STATUS)
       }
     }
-
   }
 
   const shouldShowCopay = paymentType?.id === PatientPaymentType.Insurance
