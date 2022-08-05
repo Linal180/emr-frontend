@@ -5,14 +5,14 @@ import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
-  Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step
+  Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step, colors
 } from '@material-ui/core';
 // components block
 import Alert from '../../../common/Alert';
 import { StepContext } from './StepContext';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, reducers, utils, constants block
-import { GREY } from '../../../../theme';
+import { GREY, WHITE } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
@@ -247,107 +247,116 @@ const PublicFormPreview = () => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
   return (
-    <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
-      <AIMEDLOGO />
-      {!loader ?
-        <Fragment>
-          <Box mb={3} />
-          {isActive ?
-            <Box>
-              <FormProvider {...methods}>
-                <form onSubmit={handleSubmit(submitHandler)}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" marginY={2}>
-                    <Box>
-                      <Typography variant='h4'>
-                        {formName}
-                      </Typography>
-                    </Box>
+    <Box bgcolor={GREY}>
+      <Box bgcolor={WHITE} borderBottom={`1px solid ${colors.grey[300]}`} padding="20px 30px">
+        <AIMEDLOGO />
+      </Box>
 
-                    <Box display={'flex'} justifyContent={'flex-end'}>
-                      <Box marginX={2}>
-                        <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
-                          {BACK_TEXT}
-                        </Button>
-                      </Box>
+      <Box px={5} mt={2}>
 
+        {/* <AIMEDLOGO /> */}
+        {!loader ?
+          <Fragment>
+            <Box mb={3} />
+            {isActive ?
+              <Box>
+                <FormProvider {...methods}>
+                  <form onSubmit={handleSubmit(submitHandler)}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" marginY={2}>
                       <Box>
-                        {(loading || uploadImage || signatureLoader) && <CircularProgress size={20} color="inherit" />}
-                        <Button
-                          type={'submit'}
-                          variant={'contained'} color={'primary'}
-                          disabled={loading || uploadImage || signatureLoader}
-                        >
-                          {isSubmit ? FORM_SUBMIT_TEXT : NEXT}
-                        </Button>
+                        <Typography variant='h4'>
+                          {formName}
+                        </Typography>
+                      </Box>
+
+                      <Box display={'flex'} justifyContent={'flex-end'}>
+                        <Box marginX={2}>
+                          <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
+                            {BACK_TEXT}
+                          </Button>
+                        </Box>
+
+                        <Box>
+                          {(loading || uploadImage || signatureLoader) && <CircularProgress size={20} color="inherit" />}
+                          <Button
+                            type={'submit'}
+                            variant={'contained'} color={'primary'}
+                            disabled={loading || uploadImage || signatureLoader}
+                          >
+                            {isSubmit ? FORM_SUBMIT_TEXT : NEXT}
+                          </Button>
+                        </Box>
                       </Box>
                     </Box>
-                  </Box>
 
-                  {formValues?.length > 1 ?
-                    <Grid container spacing={3}>
-                      <Grid item xs={2}>
-                        <Stepper activeStep={activeStep} orientation="vertical">
-                          {formValues?.map((tab, index) => {
-                            const { name, id } = tab || {}
+                    <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+                      {formValues?.length > 1 ?
+                        <Grid container spacing={2}>
+                          <Grid item xs={2}>
+                            <Stepper activeStep={activeStep} orientation="vertical">
+                              {formValues?.map((tab, index) => {
+                                const { name, id } = tab || {}
 
-                            return <Step key={`${id}-${index}`}>
-                              <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
-                            </Step>
+                                return <Step key={`${id}-${index}`}>
+                                  <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
+                                </Step>
+                              }
+                              )}
+                            </Stepper>
+                          </Grid>
+
+                          <Grid item xs={10}>
+                            {formValues?.map((tab, index) => {
+                              const { sections, name, id } = tab || {}
+
+                              return <Fragment key={`${id}-${name}`}>
+                                {activeStep === index &&
+                                  <StepContext sections={sections} state={state} dispatch={dispatch} />
+                                }
+                              </Fragment>
+                            }
+                            )}
+                          </Grid>
+                        </Grid> :
+                        <Fragment>
+                          {formValues?.map((tab) => {
+                            const { sections, name, id } = tab || {}
+
+                            return <Fragment key={`${id}-${name}`}>
+                              <StepContext sections={sections} state={state} dispatch={dispatch} />
+                            </Fragment>
                           }
                           )}
-                        </Stepper>
-                      </Grid>
-
-                      <Grid item xs={10}>
-                        {formValues?.map((tab, index) => {
-                          const { sections, name, id } = tab || {}
-
-                          return <Fragment key={`${id}-${name}`}>
-                            {activeStep === index &&
-                              <StepContext sections={sections} state={state} dispatch={dispatch} />
-                            }
-                          </Fragment>
-                        }
-                        )}
-                      </Grid>
-                    </Grid> :
-                    <Fragment>
-                      {formValues?.map((tab) => {
-                        const { sections, name, id } = tab || {}
-
-                        return <Fragment key={`${id}-${name}`}>
-                          <StepContext sections={sections} state={state} dispatch={dispatch} />
                         </Fragment>
                       }
-                      )}
-                    </Fragment>
-                  }
-                </form>
-              </FormProvider>
-            </Box>
-            :
-            <Grid container>
-              <Grid item xs={false} sm={false} md={4} />
-
-              <Grid item xs={12} sm={12} md={4}>
-                <Card>
-                  <Box minHeight="400px" display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Box maxWidth="700px">
-                      <Typography component="h3" variant="h3">
-                        {FORM_NOT_PUBLISHED}
-                        <br />
-                        <br />
-                        {CONTACT_SUPPORT_TEAM}
-                      </Typography>
                     </Box>
-                  </Box>
-                </Card>
-              </Grid>
+                  </form>
+                </FormProvider>
+              </Box>
+              :
+              <Grid container>
+                <Grid item xs={false} sm={false} md={4} />
 
-              <Grid item xs={false} sm={false} md={4} />
-            </Grid>
-          } </Fragment> :
-        <ViewDataLoader rows={5} columns={6} hasMedia={false} />}
+                <Grid item xs={12} sm={12} md={4}>
+                  <Card>
+                    <Box minHeight="400px" display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                      <Box maxWidth="700px">
+                        <Typography component="h3" variant="h3">
+                          {FORM_NOT_PUBLISHED}
+                          <br />
+                          <br />
+                          {CONTACT_SUPPORT_TEAM}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={false} sm={false} md={4} />
+              </Grid>
+            } </Fragment> :
+          <ViewDataLoader rows={5} columns={6} hasMedia={false} />}
+      </Box>
     </Box>
   );
 };
