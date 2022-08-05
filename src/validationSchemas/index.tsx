@@ -491,6 +491,7 @@ export const extendedPatientSchema = (
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   ...basicContactSchema,
+  middleName : nameSchema(MIDDLE_NAME),
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
