@@ -3,12 +3,12 @@ import { createContext, FC, useCallback, useReducer, Reducer, useEffect, useCont
 import { pluck } from "underscore"
 // graphql, interfaces/types, reducer and constants block
 import { TOKEN } from "../constants";
+import { AuthContext } from "./authContext";
 import { ChartContextInterface } from "../interfacesTypes";
 import { ReactionsPayload, useFindAllReactionsLazyQuery } from "../generated/graphql";
 import {
   Action, ActionType, initialState, chartReducer, State as LocalState
 } from '../reducers/chartReducer';
-import { AuthContext } from "./authContext";
 
 export const ChartContext = createContext<ChartContextInterface>({
   reactionList: [],

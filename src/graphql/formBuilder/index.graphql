@@ -54,6 +54,8 @@ query findAllForms($formInput: FormInput!) {
               apiCall
               tableContactType
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -125,6 +127,8 @@ query getForm($getForm: GetForm!) {
               tableContactType
               apiCall
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name

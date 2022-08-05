@@ -35,7 +35,7 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
     } as SeriesOptionsType]
   });
 
-  const [getPracticesByYear, { loading }] = useGetPracticeByYearLazyQuery({
+  const [getPracticesByYear] = useGetPracticeByYearLazyQuery({
     onError() { },
 
     async onCompleted(data) {
@@ -78,13 +78,9 @@ const PracticesByYear: FC<dashboardInputsProps> = ({ year }): JSX.Element => {
   }, [fetchPracticesByYear, year])
 
   return (
-    <>
-      {!loading &&
-        <Box className="barChart2Container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
-    </>
+    <Box className="barChart2Container">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </Box>
   )
 };
 

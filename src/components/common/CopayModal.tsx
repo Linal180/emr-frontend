@@ -117,7 +117,7 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
           </DialogActions>
         </form>
       </FormProvider>
-    </Dialog >
+    </Dialog>
   );
 };
 

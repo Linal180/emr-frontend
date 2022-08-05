@@ -93,7 +93,7 @@ const FeeTable: FC = (): JSX.Element => {
               message && Alert.success(message);
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
 
-              if (!!feeSchedules && feeSchedules.length) {
+              if (!!feeSchedules && feeSchedules.length > 1) {
                 fetchFeeSchedule();
               } else {
                 dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
