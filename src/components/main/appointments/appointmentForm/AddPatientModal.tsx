@@ -93,9 +93,6 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
     const {
       firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId, usualProviderId
     } = inputs;
-     
-    console.log("ASD", inputs);
-    
 
     if (user) {
       const { id: userId } = user;

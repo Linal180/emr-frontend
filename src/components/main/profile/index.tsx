@@ -24,7 +24,7 @@ import {
 } from '../../../generated/graphql';
 import {
   ADDRESS, ADMIN, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION,
-  FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
+  FIRST_NAME, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, N_A, PROFILE_TEXT, PROFILE_UPDATE, SAVE_TEXT,
   STATE, SUPER, SYSTEM_ROLES, UPLOAD_PICTURE, ZIP_CODE
 } from "../../../constants";
 import {
@@ -38,16 +38,16 @@ const ProfileComponent = (): JSX.Element => {
     user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment
   } = useContext(AuthContext);
 
-  const { email, userType, userId, phone: userPhone, roles } = user || {}
+  const { email, userType, userId, phone, roles } = user || {}
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
-  const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
+  const { firstName: staffFirstName, lastName: staffLastName } = currentStaff || {}
 
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const {
-    address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId
+    address, city, state: doctorState, zipCode, country, id: contactId
   } = primaryContact || {}
-  const isSuper = isSuperAdmin(roles)
 
+  const isSuper = isSuperAdmin(roles)
   const [mediaState, mediaDispatch] =
     useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
   const { attachmentUrl, attachmentId, attachmentData, isEdit } = mediaState
@@ -138,15 +138,15 @@ const ProfileComponent = (): JSX.Element => {
 
   const doctorPreview = () => {
     setValue('city', city || '')
+    setValue('phone', phone || '')
     setValue('zipCode', zipCode || '')
     setValue('addressNumber', address || '')
-    setValue('phone', phone || doctorPhone || '')
     contactId && setValue('contactId', contactId)
     country && setValue('country', setRecord(country, country))
     doctorState && setValue('state', setRecord(doctorState, doctorState))
   }
 
-  const staffPreview = () => setValue('phone', phone || userPhone || '')
+  const staffPreview = () => setValue('phone', phone || '')
 
   const editHandler = () => {
     setValue('email', email || '')
@@ -242,14 +242,14 @@ const ProfileComponent = (): JSX.Element => {
                             <Grid item md={6} sm={12} xs={12}>
                               {isSuper ?
                                 renderItem(FIRST_NAME, SUPER) :
-                                renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')
+                                renderItem(FIRST_NAME, doctorFirstName || staffFirstName || N_A)
                               }
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
                               {isSuper ?
                                 renderItem(LAST_NAME, ADMIN) :
-                                renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')
+                                renderItem(LAST_NAME, doctorLastName || staffLastName || N_A)
                               }
                             </Grid>
                           </Grid>
@@ -262,9 +262,7 @@ const ProfileComponent = (): JSX.Element => {
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone))
-                                || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')
-                              }
+                              {renderItem(CONTACT_NUMBER, formatPhone(phone))}
                             </Grid>
                           </Grid>
 
@@ -272,23 +270,23 @@ const ProfileComponent = (): JSX.Element => {
                             <Fragment>
                               <Grid container spacing={5}>
                                 <Grid item md={12} sm={12} xs={12}>
-                                  {renderItem(ADDRESS, address || 'N/A')}
+                                  {renderItem(ADDRESS, address || N_A)}
                                 </Grid>
                               </Grid>
 
                               <Grid container spacing={5}>
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(CITY, city || 'N/A')}
+                                  {renderItem(CITY, city || N_A)}
                                 </Grid>
 
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(STATE, doctorState || 'N/A')}
+                                  {renderItem(STATE, doctorState || N_A)}
                                 </Grid>
                               </Grid>
 
                               <Grid container spacing={5}>
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(ZIP_CODE, zipCode || 'N/A')}
+                                  {renderItem(ZIP_CODE, zipCode || N_A)}
                                 </Grid>
 
                                 <Grid item md={6} sm={12} xs={12}>

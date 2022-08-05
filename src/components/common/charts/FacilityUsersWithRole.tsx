@@ -72,7 +72,7 @@ const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Elem
     ]
   });
 
-  const [findPracticeUsersWithRoles, { loading }] = useGetPracticeUsersWithRolesLazyQuery({
+  const [findPracticeUsersWithRoles] = useGetPracticeUsersWithRolesLazyQuery({
     onError() {
       return null;
     },
@@ -125,13 +125,9 @@ const FacilityUsersWithRole: FC<PracticeChartProps> = ({ practiceId }): JSX.Elem
   }, [fetchPracticeUsers])
 
   return (
-    <>
-      {!loading &&
-        <Box className="practice-users-chart-container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
-    </>
+    <Box className="practice-users-chart-container">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </Box>
   )
 };
 
