@@ -20,8 +20,8 @@ import {
   OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation
 } from "../../../../../generated/graphql";
 import {
-  ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT, 
-  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE, 
+  ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT,
+  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED,
 } from "../../../../../constants";
 
@@ -169,7 +169,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
             {((!fetchAllPoliciesLoading && policies?.length === 0)) && (
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                <NoDataComponent message={NO_INSURANCE_ADDED}/>
+                <NoDataComponent message={NO_INSURANCE_ADDED} />
               </Box>
             )}
 
@@ -215,7 +215,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                       <Box minWidth={200} mr={10} my={2}>
                         <Typography variant="h6">{COPAY_TEXT}</Typography>
-                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : `$${amount}`}</Typography>
+                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : amount ? `$${amount}` : '- -'}</Typography>
                       </Box>
 
                       <Box minWidth={200} mr={10} my={2}>
