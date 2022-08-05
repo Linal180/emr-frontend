@@ -3,9 +3,9 @@ import { Box, Button, Step, StepIconProps, StepLabel, Stepper, Typography } from
 import { Check, ChevronRight } from '@material-ui/icons';
 import clsx from 'clsx';
 import { FC, useEffect, useState } from 'react';
-import { 
-  BACK_TEXT, EDIT_LAB_ORDER, LAB_ORDER_SIDEDRAWER_STEPS, NEW_LAB_ORDER, NEXT, NOT_FOUND_EXCEPTION, 
-  SUBMIT, USER_NOT_FOUND_EXCEPTION_MESSAGE 
+import {
+  BACK_TEXT, EDIT_LAB_ORDER, LAB_ORDER_SIDEDRAWER_STEPS, NEW_LAB_ORDER, NEXT, NOT_FOUND_EXCEPTION,
+  SUBMIT, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import { useLabOrderStyles } from '../../../../styles/labOrderStyles';
@@ -349,7 +349,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
             <Typography variant='h3'>{isEdit ? EDIT_LAB_ORDER : NEW_LAB_ORDER}</Typography>
 
             <Box display='flex' alignItems='center'>
-              <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>
+              {activeStep > 0 && <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>}
               <Box p={1} />
               <Button
                 type="submit"
@@ -366,7 +366,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
             <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
               {LAB_ORDER_SIDEDRAWER_STEPS.map((label, index) => (
                 <Step key={label}>
-                  <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                  <StepLabel onClick={() => { setActiveStep(index); setCurrentTest(0) }} StepIconComponent={CheckInStepIcon}>
                     <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                       {label}
                       <Box p={0.5} />

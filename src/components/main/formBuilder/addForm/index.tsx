@@ -38,7 +38,7 @@ import {
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
   FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
   CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
-  PRE_DEFINED, ITEMS_ID, PRACTICE, DRAG_FIELD,
+  PRE_DEFINED, ITEMS_ID, PRACTICE, DRAG_FIELD, REMOVE_FACILITY_FIELD,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -432,7 +432,29 @@ const AddForm = () => {
       return sections?.some((item) => item?.fields?.length > 0);
     })
 
-    if (isFieldFound) {
+    const { isPractice } = values
+
+    let isFacilityExist: null | boolean = null
+    formValues?.map((tab) => {
+      const { sections } = tab || {}
+      return sections?.map((item) => {
+        const { fields } = item || {}
+        fields?.map((field) => {
+          if (field?.columnName === "facilityId") {
+            isFacilityExist = true
+          }
+          return field
+        });
+        return item
+      }
+      );
+    })
+
+    if (!isPractice && !!isFacilityExist) {
+      Alert.error(REMOVE_FACILITY_FIELD)
+    }
+
+    else if (isFieldFound) {
       const { name, type, facilityId: selectedFacility, isPractice, practiceId: { id } } = values || {};
       const { id: typeId } = type;
       const { id: facility } = selectedFacility;
@@ -467,12 +489,12 @@ const AddForm = () => {
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea, regex } = item;
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea, regex, futureEnable, pastEnable } = item;
 
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg,
-        defaultValue, list: id, options, textArea, regex
+        defaultValue, list: id, options, textArea, regex, futureEnable, pastEnable
       }
     })
   };
@@ -493,7 +515,9 @@ const AddForm = () => {
                 placeholder: values?.placeholder,
                 required: values?.required,
                 options: values?.options,
-                regex: values?.regex
+                regex: values?.regex,
+                futureEnable: values?.futureEnable,
+                pastEnable: values?.pastEnable
               }
               : field
           );
@@ -512,7 +536,7 @@ const AddForm = () => {
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId: '', label: "", type: ElementType.Text, name: "", css: "", column: 12, placeholder: "", required: false,
-        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false, regex: ''
+        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false, regex: '', futureEnable: true, pastEnable: true
       }
     })
   }

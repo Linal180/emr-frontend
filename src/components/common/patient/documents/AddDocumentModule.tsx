@@ -11,7 +11,7 @@ import InputController from "../../../../controller";
 // import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
 import { GREY_SIXTEEN } from "../../../../theme";
-import { mediaType, setRecord } from "../../../../utils";
+import { getDocumentDateFromTimestamps, mediaType, setRecord } from "../../../../utils";
 import { AttachmentType } from "../../../../generated/graphql";
 import { ActionType } from "../../../../reducers/mediaReducer";
 import { addDocumentSchema } from "../../../../validationSchemas";
@@ -54,12 +54,12 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   }
 
   const setPreview = useCallback(() => {
-    const { attachmentMetadata, attachmentName } = attachment ?? {}
+    const { attachmentMetadata, attachmentName, createdAt } = attachment ?? {}
     const { comments, documentDate, documentType } = attachmentMetadata ?? {}
     const { id, type } = documentType ?? {}
 
     comments && setValue('comments', comments)
-    documentDate && setValue('date', documentDate)
+    setValue('date', documentDate ? documentDate : getDocumentDateFromTimestamps(createdAt || ''))
     attachmentName && setValue('attachmentName', attachmentName)
 
     if (id && type) {

@@ -1,61 +1,60 @@
 // packages block
-import {
-  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
-} from 'react';
-import moment from 'moment';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography
 } from "@material-ui/core";
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import moment from 'moment';
+import {
+  ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
+} from 'react';
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
-import Alert from "../../../common/Alert";
-import AddPatientModal from './AddPatientModal';
-import PageHeader from '../../../common/PageHeader';
-import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
+import Alert from "../../../common/Alert";
+import BackButton from '../../../common/BackButton';
 import CardComponent from "../../../common/CardComponent";
-import ViewDataLoader from '../../../common/ViewDataLoader';
 import NoSlotsComponent from '../../../common/NoSlotsComponent';
+import PageHeader from '../../../common/PageHeader';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
-import FacilitySelector from '../../../common/Selector/FacilitySelector';
+import ViewDataLoader from '../../../common/ViewDataLoader';
+import AddPatientModal from './AddPatientModal';
 // interfaces, graphql, constants block
-import history from "../../../../history";
-import { useChartingStyles } from '../../../../styles/chartingStyles';
+import {
+  ADD_APPOINTMENT, ADD_PATIENT_MODAL, APPOINTMENT, APPOINTMENT_BOOKED_SUCCESSFULLY,
+  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, APPOINTMENT_NOT_FOUND, APPOINTMENT_SLOT_ERROR_MESSAGE,
+  APPOINTMENT_TYPE, APPOINTMENT_UPDATED_SUCCESSFULLY, AUTO_ACCIDENT, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  CANT_BOOK_APPOINTMENT, CANT_UPDATE_APPOINTMENT, CONFLICT_EXCEPTION, CREATE_APPOINTMENT, DASHBOARD_BREAD, DAYS,
+  EDIT_APPOINTMENT, EMPLOYMENT, EMPTY_OPTION, FACILITY, INFORMATION, NO, NOTES, OTHER_ACCIDENT, PATIENT, PATIENT_CONDITION,
+  PROVIDER, REASON, SLOT_ALREADY_BOOKED, TYPE, UPDATE_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_ROUTE, YES
+} from '../../../../constants';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
-import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
+import {
+  AppointmentCreateType, AppointmentStatus, BillingStatus,
+  PaymentType, Slots, useCreateAppointmentMutation,
+  useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
+} from "../../../../generated/graphql";
+import history from "../../../../history";
 import {
   ExtendedAppointmentInputProps, GeneralFormProps, multiOptionType
 } from "../../../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from '../../../../reducers/appointmentReducer';
+import { useChartingStyles } from '../../../../styles/chartingStyles';
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import {
-  filterSlots, getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
+  getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
   isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
-import {
-  AppointmentCreateType, AppointmentStatus, BillingStatus,
-  PaymentType, Slots, SlotsPayload, useCreateAppointmentMutation,
-  useGetAppointmentLazyQuery, useGetSlotsLazyQuery, useUpdateAppointmentMutation
-} from "../../../../generated/graphql";
-import {
-  CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, CANT_BOOK_APPOINTMENT, OTHER_ACCIDENT, PATIENT, REASON,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
-  APPOINTMENT_NOT_FOUND, DAYS, EMPTY_OPTION, APPOINTMENT_SLOT_ERROR_MESSAGE, AUTO_ACCIDENT,
-  CANT_UPDATE_APPOINTMENT, ADD_PATIENT_MODAL, EDIT_APPOINTMENT, DASHBOARD_BREAD, NOTES, PROVIDER,
-  APPOINTMENT_EDIT_BREAD, APPOINTMENT_NEW_BREAD, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, TYPE,
-  FACILITY, APPOINTMENT_TYPE, INFORMATION, CANCELLED_APPOINTMENT_EDIT_MESSAGE,
-  PATIENT_CONDITION, EMPLOYMENT, APPOINTMENT, VIEW_APPOINTMENTS_BREAD, ADD_APPOINTMENT, YES, NO,
-} from '../../../../constants';
+import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user, currentUser } = useContext(AuthContext)
@@ -229,7 +228,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (slots) {
           dispatch({
             type: ActionType.SET_AVAILABLE_SLOTS,
-            availableSlots: filterSlots(slots, appStartDate ? appStartDate : date) as SlotsPayload['slots']
+            availableSlots: slots
           })
         } else { dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] }); }
       }
@@ -310,14 +309,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         variables: {
           getSlots: selectedProvider || onlyDoctor ?
             { providerId: onlyDoctor ? currentDoctor : selectedProvider, ...slotsInput }
-            : { facilityId: selectedFacility, ...slotsInput }
+            : { facilityId: isHigherAdmin ? selectedFacility : userFacilityId || '', ...slotsInput }
         }
       })
     }
-  }, [
-    currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch,
-    getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor
-  ])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor, isHigherAdmin, userFacilityId])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -347,9 +343,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     const dateToFormat = appStartDate ? appStartDate : date
     const transformedStartTime = moment(`${moment(dateToFormat)
       .format("MM-DD-YYYY")} ${moment(scheduleStartDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
-    
-      const transformedEndTime = moment(`${moment(dateToFormat)
-        .format("MM-DD-YYYY")} ${moment(scheduleEndDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
+
+    const transformedEndTime = moment(`${moment(dateToFormat)
+      .format("MM-DD-YYYY")} ${moment(scheduleEndDateTime).format("HH:mm:ss a")}`, 'MM-DD-YYYY HH:mm:ss a').toISOString()
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
@@ -369,7 +365,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       const appointmentInput = {
         reason, scheduleStartDateTime: transformedStartTime, practiceId, patientId: selectedPatient,
-        scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false, notes, 
+        scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false, notes,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         facilityId: isHigherAdmin ? selectedFacility : userFacilityId, billingStatus: BillingStatus.Due,
         appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,

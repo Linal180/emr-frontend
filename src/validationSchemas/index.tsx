@@ -31,10 +31,10 @@ import {
   DURATION, USUAL_OCCUPATION, RELATIONSHIP, PREFERRED_PHARMACY, FACILITY_NAME, CONTACT_NUMBER, TITLE,
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
-  CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, NO_SPACE_REGEX, INVALID_LICENSE_DATE_ERROR_MESSAGE,
-  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_ERROR_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+  CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, 
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -110,8 +110,9 @@ const notRequiredOTP = (label: string, isRequired: boolean) => {
 const documentNameSchema = (label: string, isRequired: boolean) => {
   return yup.string()
     .test('', requiredMessage(label), value => isRequired ? !!value : true)
-    .min(6, MinLength(label, 6)).max(30, MaxLength(label, 30))
-    .test('', NO_WHITE_SPACING_ERROR_MESSAGE, value => value ? NO_SPACE_REGEX.test(value) : false)
+    .min(6, MinLength(label, 6)).max(50, MaxLength(label, 50))
+    .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+      value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
 }
 
 const optionalEmailSchema = (isOptional: boolean) => {
@@ -285,7 +286,6 @@ const contactSchema = {
 
 export const basicContactSchema = {
   basicState: stateSchema(true),
-  basicCountry: countrySchema(true),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
   basicCity: requiredStringOnly(CITY, 2, 20),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
@@ -490,11 +490,12 @@ export const extendedPatientSchema = (
   ...guardianPatientSchema,
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
-  middleName: nameSchema(MIDDLE_NAME),
+  ...basicContactSchema,
+  middleName : nameSchema(MIDDLE_NAME),
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
-  basicZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  basicZipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...(isSuperAdminOrPracticeAdmin ? { facilityId: selectorSchema(FACILITY) } : {}),
   ...(isDoctor ? {} : { usualProviderId: selectorSchema(USUAL_PROVIDER_ID) }),
 })
@@ -980,7 +981,7 @@ export const createInsuranceSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(LEGAL_SEX), ({ id }) => !!id),
-  zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...dobSchema,
   ...issueAndExpireSchema,
   ...ssnSchema,
@@ -1056,9 +1057,9 @@ export const updatePatientProviderRelationSchema = (isOtherRelation: boolean) =>
 export const createCopaySchema = yup.object({
   copayType: selectorSchema(COPAY_TYPE),
   amount: yup.string()
-  .test('', requiredMessage(AMOUNT), value => !!value)
-  .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
-  .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
+    .test('', requiredMessage(AMOUNT), value => !!value)
+    .test('', invalidMessage(AMOUNT), value => parseInt(value || '') > 0)
+    .matches(NUMBER_REGEX, ValidMessage(AMOUNT)),
 })
 
 export const createBillingSchema = yup.object({

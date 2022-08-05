@@ -10,7 +10,7 @@ import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 import {
   requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading,
-  sortingValue, isStaff
+  sortingValue, isStaff, isOnlyDoctor
 } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -31,6 +31,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const isFacAdmin = isFacilityAdmin(roles);
   const isSuperOrPractice = isSuper || isPractice
   const isStaffUser = isStaff(roles)
+  const isDoctor = isOnlyDoctor(roles)
   const inputLabel = isRequired ? requiredLabel(label) : label
 
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
@@ -66,7 +67,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorsInputs = isSuper ? { ...pageInputs } :
         isPractice ? { practiceId, ...pageInputs } :
-          isFacAdmin || isStaffUser ? { facilityId, ...pageInputs } : undefined
+          isFacAdmin || isStaffUser ? { facilityId, ...pageInputs } : isDoctor ? { selfId: user?.id, ...pageInputs } : undefined
 
       if (shouldOmitFacilityId) {
         doctorsInputs && await findAllDoctor({
@@ -94,10 +95,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
         }
       })
     } catch (error) { }
-  }, [
-    page, isSuper, isPractice, practiceId, isFacAdmin, isStaffUser, facilityId, shouldOmitFacilityId,
-    isSuperOrPractice, selectedFacilityId, findAllDoctor, searchQuery
-  ])
+  }, [page, isSuper, isPractice, practiceId, isFacAdmin, isStaffUser, facilityId, isDoctor, user?.id, shouldOmitFacilityId, isSuperOrPractice, selectedFacilityId, findAllDoctor, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {

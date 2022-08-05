@@ -216,26 +216,24 @@ const CheckInComponent = (): JSX.Element => {
   // 1- PATIENT-INFO
   const PatientInfo = () =>
     <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{PATIENT_INFO}</Typography>
+      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-          <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-            {TO_CHART}
-            <ChevronRight />
-          </Button>
-        </Box>
+        <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
+          {TO_CHART}
+          <ChevronRight />
+        </Button>
+      </Box>
 
-        <Box p={3}>
-          <PatientForm
-            id={patientId}
-            isEdit
-            shouldShowBread={false}
-            ref={patientRef}
-            shouldDisableEdit={shouldDisableEdit}
-          />
-        </Box>
-      </Card>
+      <Box p={3}>
+        <PatientForm
+          id={patientId}
+          isEdit
+          shouldShowBread={false}
+          ref={patientRef}
+          shouldDisableEdit={shouldDisableEdit}
+        />
+      </Box>
     </>
 
   // 2- INSURANCE

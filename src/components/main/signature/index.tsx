@@ -19,25 +19,30 @@ import {
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON, DRAW_SIGNATURE, PAGE_LIMIT,
+  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON,
+  DRAW_SIGNATURE, PAGE_LIMIT,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
   const { currentUser, user } = useContext(AuthContext);
   const { id, attachments } = currentUser || {}
   const { roles } = user || {}
+
   const userType = currentUser?.__typename
   const [signAttachment, setSignAttachment] = useState<AttachmentPayload['attachment']>(
     attachments?.filter(attachment =>
       attachment.title === ATTACHMENT_TITLES.Signature)[0]
   )
+
   const [error, setError] = useState(false)
   const classes = useHeaderStyles();
   let data = ''
   let signCanvas = useRef<any>({});
+  
   const [open, setOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [signatureUrl, setSignatureUrl] = useState<string>('')
+
   const token = getToken();
   let moduleRoute = "";
 

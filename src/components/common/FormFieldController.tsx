@@ -9,7 +9,7 @@ import { FieldComponentProps } from '../../interfacesTypes';
 import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
-import PaymentForm from './formBuilder/PaymentForm'
+// import PaymentForm from './formBuilder/PaymentForm'
 import ConsentForm from './formBuilder/ConsentForm';
 import ContractForm from "./formBuilder/ContractForm"
 import InsuranceForm from './formBuilder/InsuranceForm'
@@ -40,7 +40,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       case FormBuilderPaymentTypes.CONTRACT:
         return <ContractForm />
       case FormBuilderPaymentTypes.NO_INSURANCE:
-        return <PaymentForm dispatcher={dispatcher} state={state} />
+        // return <PaymentForm dispatcher={dispatcher} state={state} />
+        return <></>
       default:
         return <></>
     }

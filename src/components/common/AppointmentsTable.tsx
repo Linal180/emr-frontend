@@ -41,7 +41,7 @@ import {
   useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
 } from "../../generated/graphql";
 import {
-  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE, APPOINTMENT_CANCELLED_TEXT,
+  ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
@@ -77,10 +77,12 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
 
+  const resetPage = () => dispatch({ type: ActionType.SET_PAGE, page: 1 })
   const setDate = (newDate?: string) => {
     const date = newDate || moment().format('MM-DD-YYYY');
     setValue('appointmentDate', date)
     dispatch({ type: ActionType.SET_SELECT_DATE, selectDate: date });
+    resetPage()
   };
 
   const getPreviousDate = () => {
@@ -91,6 +93,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
   const getNextDate = () => {
     const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
     setDate(nextDate)
+    resetPage()
   }
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
@@ -168,7 +171,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!appointments && appointments.length) {
+            if (!!appointments && appointments.length > 1) {
               await fetchAppointments()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, appointments?.length || 0) })
@@ -548,9 +551,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                             {status === AppointmentStatus.Cancelled &&
                               appointmentCreateType === AppointmentCreateType.Telehealth &&
                               <Box className={classes.iconsBackgroundDisabled}>
-                                <IconButton onMouseEnter={() => {
-                                  Alert.info(APPOINTMENT_CANCELLED_TEXT)
-                                }}>
+                                <IconButton>
                                   <VideoIcon />
                                 </IconButton>
                               </Box>

@@ -1,34 +1,28 @@
 // packages block
 import {
-  Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography
+  Box, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // components block
 import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
-import Search from "../../../../../common/Search";
+import CardComponent from "../../../../../common/CardComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
-  ACTION, COVERAGE_DETAILS, COVERAGE_ROUTE, INSURANCE, PAGE_LIMIT, STATUS, TIME_OF_CHECK
+  ACTION, COVERAGE_DETAILS, COVERAGE_ROUTE, ELIGIBILITY_LISTING, INSURANCE, PAGE_LIMIT, STATUS, TIME_OF_CHECK
 } from "../../../../../../constants";
 import {
   PolicyEligibilitiesPayload, useGetPoliciesEligibilitiesLazyQuery
 } from "../../../../../../generated/graphql";
 import { GeneralFormProps } from "../../../../../../interfacesTypes";
-import { useTableStyles } from "../../../../../../styles/tableStyles";
 import { convertDateFromUnix, renderTh } from "../../../../../../utils";
 
 const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
-  const classes = useTableStyles()
   const [policyEligibilities, setPolicyEligibilities] = useState<PolicyEligibilitiesPayload['policyEligibilities']>()
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
-  const [searchQuery, setSearchQuery] = useState('')
 
-  const search = (query: string) => {
-    setSearchQuery(query)
-  }
   const handleChange = (_: ChangeEvent<unknown>, page: number) => setPage(page)
 
   const [getPolicyEligibilities, { loading: getPolicyEligibilitiesLoading, error }] = useGetPoliciesEligibilitiesLazyQuery({
@@ -40,8 +34,9 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
 
       if (getPoliciesEligibilities) {
         const { policyEligibilities, pagination } = getPoliciesEligibilities
+        const sortedPolicyEligibilities = policyEligibilities && policyEligibilities?.sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt))
 
-        policyEligibilities && setPolicyEligibilities(policyEligibilities as PolicyEligibilitiesPayload['policyEligibilities'])
+        policyEligibilities && setPolicyEligibilities(sortedPolicyEligibilities as PolicyEligibilitiesPayload['policyEligibilities'])
         if (pagination) {
           const { totalPages } = pagination
           typeof totalPages === 'number' && setTotalPages(totalPages)
@@ -57,12 +52,11 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
           policyEligibilityInput: {
             patientId: id,
             paginationOptions: { page, limit: PAGE_LIMIT },
-            searchTerm: searchQuery
           }
         }
       })
     } catch (error) { }
-  }, [getPolicyEligibilities, id, page, searchQuery])
+  }, [getPolicyEligibilities, id, page])
 
   useEffect(() => {
     fetchPolicyEligibilities()
@@ -70,14 +64,20 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
-        <Grid container spacing={3}>
-          <Grid item md={4} sm={12} xs={12}>
-            <Box mt={2}>
-              <Search search={search} />
-            </Box>
-          </Grid>
-        </Grid>
+      <CardComponent
+        // saveBtn
+        // state={state}
+        // isEdit={isEdit}
+        // disableSubmit={disableSubmit}
+        cardTitle={ELIGIBILITY_LISTING}>
+        {/* <Box className={classes.mainTableContainer}> */}
+        {/* <Grid container spacing={3}>
+            <Grid item md={4} sm={12} xs={12}>
+              <Box mt={2}>
+                <Search search={search} />
+              </Box>
+            </Grid>
+          </Grid> */}
 
         <Box className="table-overflow" mt={4}>
           <Table aria-label="customized table">
@@ -115,21 +115,22 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
             </Box>
           )}
         </Box>
-      </Box>
+        {/* </Box> */}
 
-      {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" p={3}>
-          <Pagination
-            count={totalPages}
-            shape="rounded"
-            variant="outlined"
-            page={page}
-            onChange={handleChange}
-          />
-        </Box>
-      )}
+        {totalPages > 1 && (
+          <Box display="flex" justifyContent="flex-end" p={3}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
+          </Box>
+        )}
 
-      <Box p={2} />
+        <Box p={2} />
+      </CardComponent>
     </>
   )
 }

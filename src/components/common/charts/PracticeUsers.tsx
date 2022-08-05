@@ -25,7 +25,7 @@ const PracticeUsers: FC = (): JSX.Element => {
     } as SeriesOptionsType]
   });
 
-  const [getPracticeUsers, { loading }] = useGetPracticeUserLazyQuery({
+  const [getPracticeUsers] = useGetPracticeUserLazyQuery({
     onError() { },
 
     onCompleted(data) {
@@ -58,15 +58,11 @@ const PracticeUsers: FC = (): JSX.Element => {
   useEffect(() => {
     fetchPracticeUser()
   }, [fetchPracticeUser])
-  
+
   return (
-    <>
-      {!loading &&
-        <Box className="practice-bar-chart-container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
-    </>
+    <Box className="practice-bar-chart-container">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </Box>
   )
 };
 

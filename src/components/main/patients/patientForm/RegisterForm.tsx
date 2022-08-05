@@ -1,5 +1,6 @@
 // package block
-import { FC } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { Box, Card } from '@material-ui/core';
 // component block
 import GuarantorCard from './Guarantor';
@@ -13,20 +14,62 @@ import PatientGuardianCard from './Guardian';
 import PatientDemographicsCard from "./Demographics";
 import EmergencyContactCard from './EmergencyContact';
 import RegistrationDatesCard from './RegistrationDates';
+import InsuranceSelectionCard from './InsuranceSelection';
+import InsuranceComponent from '../patientDetail/insurance';
 // utils. interfaces, constants
-import { RegisterPatientMenuNav } from '../../../../constants';
-import { PatientCardsProps } from '../../../../interfacesTypes';
+import { INSURANCE, INSURANCE_SELECTION, RegisterPatientMenuNav } from '../../../../constants';
+import { ParamsType, PatientCardsProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
-  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit
+  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
 }) => {
   const classes = useExternalPatientStyles()
+  const { appointmentId } = useParams<ParamsType>()
   const { activeStep } = state || {}
+  const [selection, setSelection] = useState('')
+
+  const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onCompleted(data) {
+      const { findAppointmentInsuranceStatus } = data || {};
+
+      if (findAppointmentInsuranceStatus) {
+        const { insuranceStatus } = findAppointmentInsuranceStatus
+        insuranceStatus && setSelection(insuranceStatus)
+      }
+    }
+  });
+
+  const findInsuranceStatus = useCallback(async () => {
+    try {
+      await findAppointmentInsuranceStatus({
+        variables: {
+          appointmentId: appointmentId || ''
+        }
+      })
+    } catch (error) { }
+  }, [appointmentId, findAppointmentInsuranceStatus])
+
+  useEffect(() => {
+    appointmentId && findInsuranceStatus()
+  }, [appointmentId, findInsuranceStatus])
+
 
   const getActiveComponent = (step: number | undefined) => {
+    const shouldShowInsuranceStep = selection === 'insurance' ? true : false
     switch (step) {
-      case 0:
+      case !shouldShowBread ? 0 : Infinity:
+        return <InsuranceSelectionCard setSelection={setSelection} selection={selection} state={state} />
+
+      case shouldShowInsuranceStep ? 1 : Infinity:
+        return <InsuranceComponent />
+
+      case shouldShowInsuranceStep ? 2 : !shouldShowBread ? 1 : 0:
         return (<>
           <Box mb={3}>
             <IdentificationCard
@@ -39,13 +82,23 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             />
           </Box>
 
-          <RegistrationDatesCard
-            getPatientLoading={getPatientLoading}
+          <Box mb={3}>
+            <RegistrationDatesCard
+              getPatientLoading={getPatientLoading}
+              shouldDisableEdit={shouldDisableEdit}
+            />
+          </Box>
+
+          <ContactInfoCard
+            isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
             shouldDisableEdit={shouldDisableEdit}
+            getPatientLoading={getPatientLoading}
           />
         </>)
 
-      case 1:
+      case shouldShowInsuranceStep ? 3 : 1:
         return (
           <PatientDemographicsCard
             isEdit={isEdit}
@@ -55,17 +108,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             shouldDisableEdit={shouldDisableEdit}
           />)
 
-      case 2:
-        return (
-          <ContactInfoCard
-            isEdit={isEdit}
-            disableSubmit={disableSubmit}
-            state={state} dispatch={dispatch}
-            shouldDisableEdit={shouldDisableEdit}
-            getPatientLoading={getPatientLoading}
-          />)
-
-      case 3:
+      case shouldShowInsuranceStep ? 4 : 2:
         return (
           <PatientPrivacyCard
             isEdit={isEdit}
@@ -110,12 +153,16 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
     }
   }
 
+  const stepperDataWithInsurance = selection === 'insurance' ? [{ title: INSURANCE }, ...RegisterPatientMenuNav] : RegisterPatientMenuNav
+
+  const stepperData = !shouldShowBread ? [{ title: INSURANCE_SELECTION }, ...stepperDataWithInsurance] : RegisterPatientMenuNav
+
   return (
     <Box display="flex" flexWrap="wrap" gridGap={20}>
       <Box flex={1} className={classes.stepperGrid}>
         <Card className={classes.stepperContainer}>
           <StepperCard
-            stepperData={RegisterPatientMenuNav}
+            stepperData={stepperData}
             activeStep={activeStep as number}
             dispatch={dispatch}
           />

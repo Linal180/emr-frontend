@@ -31,7 +31,7 @@ const FacilityAppointments: FC<PracticeChartProps> = ({ practiceId }): JSX.Eleme
     }]
   });
 
-  const [findPracticeFacilityAppointments, { loading }] = useGetPracticeFacilityAppointmentsLazyQuery({
+  const [findPracticeFacilityAppointments] = useGetPracticeFacilityAppointmentsLazyQuery({
     onError() {
       return null;
     },
@@ -78,11 +78,9 @@ const FacilityAppointments: FC<PracticeChartProps> = ({ practiceId }): JSX.Eleme
 
   return (
     <>
-      {!loading &&
-        <Box className="practice-bar-chart-container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
+      <Box className="practice-bar-chart-container">
+        <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+      </Box>
     </>
   )
 };

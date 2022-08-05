@@ -3,7 +3,7 @@ import {
   useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState
 } from "react";
 import classNames from "clsx";
-import { Box, Card, CircularProgress } from "@material-ui/core";
+import { Box, Card } from "@material-ui/core";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
@@ -37,6 +37,7 @@ import {
 import {
   CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG
 } from "../../../constants";
+import Loader from "../../common/Loader";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -155,6 +156,9 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     fetchAppointments()
   }, [fetchAppointments]);
 
+  if (fetchAllAppointmentsLoading) {
+    return <Loader loading loaderText="Fetching Appointments..." />
+  }
 
   return (
     <>
@@ -168,10 +172,6 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
       <Card>
         <Box className={classes.customCalender}>
-          {fetchAllAppointmentsLoading &&
-            <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
-          }
-
           <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
             <Scheduler data={mapAppointmentData(appointments)}>
               <ViewState

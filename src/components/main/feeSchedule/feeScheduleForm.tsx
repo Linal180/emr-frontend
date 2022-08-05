@@ -46,7 +46,6 @@ const FeeScheduleForm = ({ dispatcher, state, reload }: FeeScheduleFormProps) =>
         dispatcher({ type: ActionType.SET_EDIT, isEdit: false })
         dispatcher({ type: ActionType.SET_GET_FEE_ID, getFeeId: '' })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
-        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
         
         reload && reload()
       }
@@ -67,7 +66,6 @@ const FeeScheduleForm = ({ dispatcher, state, reload }: FeeScheduleFormProps) =>
         message && Alert.success(message)
         dispatcher({ type: ActionType.SET_PAGE, page: 1 })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
-        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
         
         reload && reload()
       }
