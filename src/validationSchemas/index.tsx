@@ -77,10 +77,10 @@ const generalNameSchema = (
     .test('', NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
       value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : true)
     .test('', NO_SPECIAL_CHAR_ERROR_MESSAGE,
-      value => allowSpecial ? true : value ? NO_SPECIAL_CHAR_REGEX.test(value) : false)
+      value => allowSpecial ? true : value ? NO_SPECIAL_CHAR_REGEX.test(value) : true)
     .test('', NO_NUMBER_ERROR_MESSAGE,
-      value => allowNumber ? true : value ? STRING_REGEX.test(value) : false)
-    .min(3, MinLength(SERVICE_NAME_TEXT, 3)).max(50, MaxLength(SERVICE_NAME_TEXT, 50))
+      value => allowNumber ? true : value ? STRING_REGEX.test(value) : true)
+    .min(isRequired ? 3 : 0, MinLength(label, 3)).max(50, MaxLength(label, 50))
 )
 
 const nameSchema = (label: string) => {
@@ -485,13 +485,12 @@ export const extendedPatientSchema = (
   ...ssnSchema,
   ...dobSchema,
   ...kinPatientSchema,
+  ...basicContactSchema,
   ...firstLastNameSchema,
   ...employerPatientSchema,
   ...guardianPatientSchema,
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
-  ...basicContactSchema,
-  middleName : nameSchema(MIDDLE_NAME),
   basicEmail: optionalEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
