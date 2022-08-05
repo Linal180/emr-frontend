@@ -1,16 +1,16 @@
 // packages block
-import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
+import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "react";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import FormPreviewModal from '../previewModal';
+import ShareModal from "../../../common/ShareModal";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import ShareModal from "../../../common/ShareModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { GREEN, MODERATE } from "../../../../theme";
 import { AuthContext, ListContext } from "../../../../context";
@@ -113,7 +113,6 @@ const FormBuilderTable: FC = (): JSX.Element => {
     } catch (error) { }
   }, [page, isSuper, isPracticeUser, practiceId, facilityId, findAllForms, searchQuery])
 
-
   useEffect(() => {
     fetchAllForms()
   }, [page, searchQuery, fetchAllForms]);
@@ -171,7 +170,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
     setOpenShare(true)
   }
 
-  const search = (query: string) => { 
+  const search = (query: string) => {
     setSearchQuery(query)
   }
 

@@ -194,6 +194,8 @@ query getPublicForm($getForm: GetForm!) {
               apiCall
               tableContactType
               regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -310,7 +312,6 @@ mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
 
 query FindAllPublicFacility($facilityInput: FacilityInput!) {
   findAllPublicFacility(facilityInput: $facilityInput) {
-    
     facilities {
       id
       name

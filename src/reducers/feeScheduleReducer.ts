@@ -9,7 +9,6 @@ export interface State {
   totalPages: number;
   searchQuery: string;
   drawerOpened: boolean;
-  getFeeSchedule: boolean;
   feeScheduleName: string;
   feeSchedules: AllFeeSchedulesPayload['feeSchedules'];
   cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules'];
@@ -26,7 +25,6 @@ export const initialState: State = {
   feeSchedules: [],
   drawerOpened: false,
   cptFeeSchedules: [],
-  getFeeSchedule: true,
   feeScheduleName: ''
 }
 
@@ -40,7 +38,6 @@ export enum ActionType {
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_FEE_SCHEDULES = 'setFeeSchedules',
-  SET_FEE_SCHEDULE_GET = 'setGetFeeSchedule',
   SET_CPT_FEE_SCHEDULES = 'setCptFeeSchedules',
   SET_FEE_SCHEDULE_NAME = 'setFeeScheduleName',
 }
@@ -54,7 +51,6 @@ export type Action =
   | { type: ActionType.SET_DRAWER; drawerOpened: boolean }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
-  | { type: ActionType.SET_FEE_SCHEDULE_GET; getFeeSchedule: boolean }
   | { type: ActionType.SET_FEE_SCHEDULE_NAME; feeScheduleName: string }
   | { type: ActionType.SET_FEE_SCHEDULES; feeSchedules: AllFeeSchedulesPayload['feeSchedules']; }
   | { type: ActionType.SET_CPT_FEE_SCHEDULES; cptFeeSchedules: AllCptFeeSchedulesPayload['cptFeeSchedules']; }
@@ -96,12 +92,6 @@ export const feeScheduleReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isEdit: action.isEdit
-      }
-
-    case ActionType.SET_FEE_SCHEDULE_GET:
-      return {
-        ...state,
-        getFeeSchedule: action.getFeeSchedule
       }
 
     case ActionType.SET_DEL_FEE_ID:
