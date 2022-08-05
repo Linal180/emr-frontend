@@ -2505,19 +2505,6 @@ export const CLINICAL_ITEMS = [
   },
 ];
 
-export const MISCELLANEOUS_SETTINGS_ITEMS = [
-  {
-    name: AGREEMENTS,
-    link: AGREEMENTS_ROUTE,
-    desc: AGREEMENTS_DESCRIPTION,
-  },
-  {
-    name: CLAIM_STATUSES,
-    link: CLAIM_STATUSES_ROUTE,
-    desc: CLAIM_STATUSES_DESCRIPTION,
-  }
-];
-
 export const COL_TYPES: ColumnTypes = {
   COL_1: "col-1",
   COL_2: "col-2",
@@ -3088,6 +3075,20 @@ export const PRACTICE_SETTINGS_ITEMS = [
     link: FEE_SCHEDULE_ROUTE,
     desc: FEE_SCHEDULE_DESCRIPTION,
     permission: USER_PERMISSIONS.createStaff // NEED TO UPDATE THIS *****************************
+  }
+];
+
+export const MISCELLANEOUS_SETTINGS_ITEMS = [
+  {
+    name: AGREEMENTS,
+    link: AGREEMENTS_ROUTE,
+    desc: AGREEMENTS_DESCRIPTION,
+    permission: USER_PERMISSIONS.fetchAllAgreements,
+  },
+  {
+    name: CLAIM_STATUSES,
+    link: CLAIM_STATUSES_ROUTE,
+    desc: CLAIM_STATUSES_DESCRIPTION,
   }
 ];
 

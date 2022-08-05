@@ -315,7 +315,7 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD`)
 
 
-  export const getDocumentDateFromTimestamps = (date: string) =>
+export const getDocumentDateFromTimestamps = (date: string) =>
   moment(new Date(parseInt(date)), 'x').format(`YYYY-MM-DD`)
 
 export const dateDifference = (startingDate: string) => {
@@ -853,7 +853,7 @@ export const setCTPCode = (id: string, name: string, description: string, longDe
 };
 
 export const formatPhone = (phone: string | undefined | null): string =>
-   !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
+  !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
@@ -1061,6 +1061,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
+    const rawStatus = status
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
     return {
       token,
@@ -1081,6 +1082,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       appointmentStatus,
       appointmentCreateType,
       scheduleStartDateTime,
+      rawStatus,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
