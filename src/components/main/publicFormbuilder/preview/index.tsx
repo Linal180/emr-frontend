@@ -1,9 +1,9 @@
 // packages block
-import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
   Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step, colors
 } from '@material-ui/core';
@@ -27,7 +27,7 @@ import {
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
   PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG, APPOINTMENT_BOOKED_SUCCESSFULLY,
 } from '../../../../constants';
 
 const initialValues = {};
@@ -112,7 +112,9 @@ const PublicFormPreview = () => {
               setValue('patientId', patientId)
               dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
             }
-
+            if (activeStep === 0 && formType === FormType.Appointment) {
+              Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY)
+            }
             nextStepHandler()
           }
         } else {
