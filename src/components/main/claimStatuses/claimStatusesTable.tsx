@@ -72,7 +72,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
       await getClaimStatuses({
         variables: {
           claimStatusPaginationInput: {
-            paginationOptions: { page, limit: PAGE_LIMIT },
+            paginationOptions: { page, limit: 3 || PAGE_LIMIT },
             searchString: searchQuery.trim(),
           }
         }
