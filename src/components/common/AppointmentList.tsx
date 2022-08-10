@@ -51,7 +51,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
   return (
     <Box>
       {appointments?.map(appointment => {
-        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility, appointmentCreateType } = appointment || {};
+        const { id, scheduleStartDateTime, scheduleEndDateTime, appointmentType, provider, facility, appointmentCreateType, status } = appointment || {};
         const { firstName, lastName } = provider || {};
         const { name: facilityName } = facility || {};
         const { name: serviceName } = appointmentType || {};
@@ -87,7 +87,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
                     <VideocamOutlined />&nbsp; {START_TELEHEALTH}
                   </Button>
 
-                  : <Button type="submit" variant="contained" color="secondary"
+                  : status === AppointmentStatus.Scheduled && < Button type="submit" variant="contained" color="secondary"
                     onClick={() => handlePatientCheckIn(id || '')}
                     disabled={updateAppointmentLoading}
                   >
@@ -98,7 +98,7 @@ const AppointmentList: FC<AppointmentListProps> = ({ appointments, type }) => {
           </Box>
         )
       })}
-    </Box>
+    </Box >
   )
 }
 

@@ -26,7 +26,7 @@ import {
 } from "../../../../../constants";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
   const { user } = useContext(AuthContext)
 
@@ -64,7 +64,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
       if (getEligibilityAndCoverage) {
         const { policyEligibility } = getEligibilityAndCoverage
         const { id } = policyEligibility || {}
-        history.push(`${COVERAGE_ROUTE}/${id}/${patientId}`)
+        history.push(appointmentId ? `${COVERAGE_ROUTE}/${id}/${patientId}/${appointmentId}` : `${COVERAGE_ROUTE}/${id}/${patientId}`)
       }
     }
   });
@@ -256,7 +256,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         </Box>
 
         <Box mt={3}>
-          <EligibilityTableComponent id={patientId} />
+          <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
         </Box>
       </>
   );

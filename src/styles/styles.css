@@ -245,11 +245,6 @@ input[type="email"] {
   /* width: 42px; */
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
-  /* height: 42px; */
-  /* width: 42px; */
-}
-
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected {
   background-color: #204ECF;
 }
@@ -1154,4 +1149,8 @@ input[type=number] {
 
 .ck-content {
   height: 320px;
+}
+
+.not-link {
+  text-decoration: none !important;
 }

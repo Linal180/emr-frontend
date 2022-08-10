@@ -317,11 +317,17 @@ const AppointmentsTable: FC = (): JSX.Element => {
         return onDeleteClick(id)
       }
 
-      moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
-        ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
-        : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-          ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-          : onDeleteClick(id || '')
+      if (isSuper) {
+        onDeleteClick(id || '')
+      } else {
+        const remainingTime = moment(getISOTime(scheduleStartDateTime || ''))
+
+        remainingTime.isBefore(moment(), 'hours')
+          ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+          : remainingTime.diff(moment(), 'hours') <= 1
+            ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+            : onDeleteClick(id || '')
+      }
     }
   };
 
