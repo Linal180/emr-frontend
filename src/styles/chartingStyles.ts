@@ -1,5 +1,8 @@
 import { makeStyles, } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
+import { 
+  BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO,  
+  GREY, GREY_FOUR, WHITE, WHITE_FOUR 
+} from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -255,6 +258,12 @@ export const useChartingStyles = makeStyles({
 
     "&:hover": {
       backgroundColor: GREY,
+    }
+  },
+
+  tabPanelPadding: {
+    "& .MuiTabPanel-root": {
+      paddingTop: 0,
     }
   }
 });

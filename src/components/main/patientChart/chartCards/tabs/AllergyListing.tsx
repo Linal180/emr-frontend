@@ -142,7 +142,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} pb={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
                 {!shouldDisableEdit &&

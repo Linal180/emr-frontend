@@ -49,24 +49,26 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
           </Grid>
 
           <Grid item lg={10} md={9} sm={12} xs={12}>
-            <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-              <TabPanel value="1">
-                <VitalTab shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
-            </Box>
+            <Box className={classes.tabPanelPadding}>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="1">
+                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
 
-            <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-              <TabPanel value="2">
-                <ProblemTab shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
-            </Box>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="2">
+                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
 
-            <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-              <TabPanel value="3">
-                <ChartContextProvider>
-                  <AllergyTab shouldDisableEdit={shouldDisableEdit} />
-                </ChartContextProvider>
-              </TabPanel>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="3">
+                  <ChartContextProvider>
+                    <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
             </Box>
           </Grid>
         </Grid>
