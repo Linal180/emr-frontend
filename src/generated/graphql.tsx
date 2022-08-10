@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -4316,6 +4317,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientLatestVital: PatientVitalPayload;
   getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientProvider: PatientDoctorPayload;
@@ -4760,6 +4762,11 @@ export type QueryGetPatientAllergyArgs = {
 
 export type QueryGetPatientAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientLatestVitalArgs = {
+  patientId: Scalars['String'];
 };
 
 
@@ -6952,6 +6959,13 @@ export type GetPatientVitalQueryVariables = Exact<{
 
 
 export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null, diastolicBloodPressure?: string | null, systolicBloodPressure?: string | null, respiratoryRate?: string | null, oxygenSaturation?: string | null, PatientHeight?: string | null, PatientWeight?: string | null, PatientBMI?: string | null, PainRange?: string | null, patientHeadCircumference?: string | null, vitalCreationDate?: string | null, patientId?: string | null, appointmentId?: string | null, createdAt?: string | null, updatedAt?: string | null } | null } };
+
+export type GetPatientLatestVitalQueryVariables = Exact<{
+  patientId: Scalars['String'];
+}>;
+
+
+export type GetPatientLatestVitalQuery = { __typename?: 'Query', getPatientLatestVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, pulseRate?: string | null, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null, diastolicBloodPressure?: string | null, systolicBloodPressure?: string | null, respiratoryRate?: string | null, oxygenSaturation?: string | null, PatientHeight?: string | null, PatientWeight?: string | null, PatientBMI?: string | null, PainRange?: string | null, patientHeadCircumference?: string | null, vitalCreationDate?: string | null, patientId?: string | null, appointmentId?: string | null, createdAt?: string | null, updatedAt?: string | null } | null } };
 
 export type FindAllPatientVitalsQueryVariables = Exact<{
   patientVitalInput: PatientVitalInput;
@@ -11048,6 +11062,70 @@ export function useGetPatientVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPatientVitalQueryHookResult = ReturnType<typeof useGetPatientVitalQuery>;
 export type GetPatientVitalLazyQueryHookResult = ReturnType<typeof useGetPatientVitalLazyQuery>;
 export type GetPatientVitalQueryResult = Apollo.QueryResult<GetPatientVitalQuery, GetPatientVitalQueryVariables>;
+export const GetPatientLatestVitalDocument = gql`
+    query GetPatientLatestVital($patientId: String!) {
+  getPatientLatestVital(patientId: $patientId) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      pulseRate
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientLatestVitalQuery__
+ *
+ * To run a query within a React component, call `useGetPatientLatestVitalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientLatestVitalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientLatestVitalQuery({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useGetPatientLatestVitalQuery(baseOptions: Apollo.QueryHookOptions<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>(GetPatientLatestVitalDocument, options);
+      }
+export function useGetPatientLatestVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>(GetPatientLatestVitalDocument, options);
+        }
+export type GetPatientLatestVitalQueryHookResult = ReturnType<typeof useGetPatientLatestVitalQuery>;
+export type GetPatientLatestVitalLazyQueryHookResult = ReturnType<typeof useGetPatientLatestVitalLazyQuery>;
+export type GetPatientLatestVitalQueryResult = Apollo.QueryResult<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>;
 export const FindAllPatientVitalsDocument = gql`
     query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
   findAllPatientVitals(patientVitalInput: $patientVitalInput) {

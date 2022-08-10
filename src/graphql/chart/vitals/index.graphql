@@ -33,6 +33,42 @@ query getPatientVital($getPatientVital: GetPatientVital!) {
   }
 }
 
+query GetPatientLatestVital($patientId: String!) {
+  getPatientLatestVital(patientId: $patientId) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patientVital {
+      id
+      unitType
+      pulseRate
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+
 query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
   findAllPatientVitals(patientVitalInput: $patientVitalInput) {
     response {

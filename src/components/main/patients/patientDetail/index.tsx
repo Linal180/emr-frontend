@@ -1,46 +1,43 @@
 // packages block
-import { ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
-import { Link } from "react-router-dom";
-import { useParams } from 'react-router';
+import { Box, Button, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { Box, Button, Grid, Tab, Typography } from "@material-ui/core";
+import { ChangeEvent, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { useParams } from 'react-router';
+import { Link } from "react-router-dom";
 //components block
-import Insurance from './insurance';
-import AreaChartComponent from './charts';
-import CareTeamComponent from './careTeam';
-import PortalAccessCard from './portalAccessCard';
-import SideDrawer from '../../../common/SideDrawer';
-import CareTeamProvider from './careTeam/sideDrawer';
 import CardComponent from '../../../common/CardComponent';
+import SideDrawer from '../../../common/SideDrawer';
+import CareTeamComponent from './careTeam';
+import CareTeamProvider from './careTeam/sideDrawer';
+import Insurance from './insurance';
+import PortalAccessCard from './portalAccessCard';
 // import PortalTable from '../../../common/patient/portal';
 import AppointmentList from '../../../common/AppointmentList';
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataComponent from '../../../common/NoDataComponent';
 import DocumentsTable from '../../../common/patient/documents';
 import LabOrdersTable from '../../../common/patient/labOrders';
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import EncounterList from '../../patients/patientDetail/encounters';
 import PatientProfileHero from '../../../common/patient/profileHero';
+import EncounterList from '../../patients/patientDetail/encounters';
+import VitalCard from './vitalCard';
 // import PracticesByYear from '../../../common/charts/PracticesByYear';
 // constants, history, styling block
-import { ParamsType } from "../../../../interfacesTypes";
-import { getFormattedDate, hasEncounter } from '../../../../utils';
-import { BloodPressureIcon, HeartRateIcon } from '../../../../assets/svgs';
 import {
-  areaChartOne, areaChartTwo, BLOOD_PRESSURE_LAST_READ, BLOOD_PRESSURE_RANGES, BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT,
-  BLOOD_PRESSURE_VALUE, CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, HEART_RATE_LAST_READ,
-  Heart_RATE_RANGES, HEART_RATE_TEXT, HEART_RATE_UNIT, HEART_RATE_VALUE, LAST_READING_TEXT, LIST_PAGE_LIMIT, PAST_APPOINTMENTS, PATIENTS_ROUTE,
+  CHART_ROUTE, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, LIST_PAGE_LIMIT, PAST_APPOINTMENTS, PATIENTS_ROUTE,
   PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, VIEW_CHART_TEXT
 } from "../../../../constants";
 import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload,
   PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
+import { ParamsType } from "../../../../interfacesTypes";
 import {
   Action as appointmentAction, ActionType as appointmentActionType, appointmentReducer, initialState as appointmentInitialState, State as appointmentState
 } from "../../../../reducers/appointmentReducer";
 import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../../reducers/mediaReducer";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { getFormattedDate, hasEncounter } from '../../../../utils';
 // import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -205,69 +202,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <Box mb={2} pb={4} className='masonry-container'>
               <Box className='masonry-box'>
-                <Grid container spacing={2}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Box width="100%" className='card-chart'>
-                      <Box display="flex" justifyContent="space-between" p={3}>
-                        <BloodPressureIcon />
-
-                        <Box>
-                          <Typography variant="h2" align='right'>{BLOOD_PRESSURE_TEXT}</Typography>
-                          <Typography component="span" align='right'>
-                            {LAST_READING_TEXT}: {BLOOD_PRESSURE_LAST_READ}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box className='bloodPressure-measurement'>
-                        <Typography variant="h2">{BLOOD_PRESSURE_VALUE}
-                          <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
-                        </Typography>
-
-                        <Typography className='measure-frequency primary' component="span">
-                          {BLOOD_PRESSURE_RANGES.Normal}
-                        </Typography>
-                      </Box>
-
-                      <Box className='areaBloodPressureChart areaChartContainer'>
-                        <AreaChartComponent data={areaChartOne} />
-                      </Box>
-                    </Box>
-                  </Grid>
-
-                  <Grid item md={6} xs={12} sm={12}>
-                    <Box width="100%" className='card-chart'>
-                      <Box display="flex" justifyContent="space-between" p={3}>
-                        <HeartRateIcon />
-
-                        <Box>
-                          <Typography variant="h2" align='right'>{HEART_RATE_TEXT}</Typography>
-
-                          <Typography component="span" align='right'>
-                            {LAST_READING_TEXT}: {HEART_RATE_LAST_READ}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box className='heartRate-measurement'>
-                        <Typography variant="h2">{HEART_RATE_VALUE}
-                          <span className='measure-unit'>{HEART_RATE_UNIT}</span>
-                        </Typography>
-
-                        <Typography className='measure-frequency danger-bg' component="span">
-                          {Heart_RATE_RANGES.Abnormal}
-                        </Typography>
-                      </Box>
-
-                      <Box className='areaBloodPressureChart areaChartContainer'>
-                        <AreaChartComponent data={areaChartTwo} />
-                      </Box>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-
-              <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
                   <Box pb={3}>
                     <AppointmentList appointments={upComing} type={AppointmentStatus.Scheduled} />
@@ -280,6 +214,8 @@ const PatientDetailsComponent = (): JSX.Element => {
                   )}
                 </CardComponent>
               </Box>
+
+              <VitalCard />
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>

@@ -69,16 +69,13 @@ export enum SYSTEM_ROLES {
 // Blood Pressure Ranges
 export enum BLOOD_PRESSURE_RANGES {
   Normal = "Normal",
-  Low = "Low",
-  High = "Hight",
+  Abnormal = "Abnormal",
 }
 
 // Heart Rate Ranges
 export enum Heart_RATE_RANGES {
   Abnormal = "Abnormal",
   Normal = "Normal",
-  Low = "Low",
-  High = "Hight",
 }
 
 // constants
