@@ -758,6 +758,10 @@ export interface GeneralFormProps {
   loading?: boolean;
 }
 
+export interface EligibilityTableComponentProps extends GeneralFormProps {
+  appointmentId?: string
+}
+
 export interface NoDataComponentProps {
   message?: string
 }
