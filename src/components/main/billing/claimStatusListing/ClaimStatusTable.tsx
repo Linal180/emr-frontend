@@ -114,7 +114,7 @@ const ClaimStatusTable: FC = (): JSX.Element => {
               </Collapse>
 
               <Box mt={3} className="table-overflow">
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classes.table}>
                   <TableHead>
                     <TableRow>
                       {renderTh(CLAIM_ID)}

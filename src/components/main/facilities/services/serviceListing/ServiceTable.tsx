@@ -152,7 +152,7 @@ const ServicesTable: FC = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

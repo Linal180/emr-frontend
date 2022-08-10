@@ -171,9 +171,10 @@ const AppointmentsTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!appointments && appointments.length > 1) {
+            if (!!appointments && appointments.length >= 1) {
               await fetchAppointments()
             } else {
+
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, appointments?.length || 0) })
             }
           } catch (error) { }
@@ -316,11 +317,17 @@ const AppointmentsTable: FC = (): JSX.Element => {
         return onDeleteClick(id)
       }
 
-      moment(getISOTime(scheduleStartDateTime || '')).isBefore(moment(), 'hours')
-        ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
-        : moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-          ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-          : onDeleteClick(id || '')
+      if (isSuper) {
+        onDeleteClick(id || '')
+      } else {
+        const remainingTime = moment(getISOTime(scheduleStartDateTime || ''))
+
+        remainingTime.isBefore(moment(), 'hours')
+          ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+          : remainingTime.diff(moment(), 'hours') <= 1
+            ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+            : onDeleteClick(id || '')
+      }
     }
   };
 
@@ -424,7 +431,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
 
         <Box className={classes.mainTableContainer}>
           <Box className="table-overflow appointment-view-list">
-            <Table aria-label="customized table">
+            <Table aria-label="customized table" className={classes.table}>
               <TableHead>
                 <TableRow>
                   {renderTh(TIME, undefined, undefined, undefined, undefined, renderIcon)}

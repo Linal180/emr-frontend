@@ -2,14 +2,16 @@
 import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
+import {
+  Button, Dialog, Grid, CircularProgress, DialogTitle, DialogContent, DialogContentText, DialogActions
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from "../../../common/PhoneInput";
 import InputController from "../../../../controller";
-import CardComponent from "../../../common/CardComponent";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // interfaces/types block, theme, svgs and constants
 import history from "../../../../history";
@@ -31,14 +33,13 @@ import {
   PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR,
   USUAL_PROVIDER_ID,
 } from "../../../../constants";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
 
 const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
   const { userPermissions, user, currentDoctor } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { name: facilityName, id: selectedFacilityId } = facility || {};
   const { firstName, lastName, id: selectedDoctorId } = currentDoctor || {}
-  
+
   const doctorName = `${firstName} ${lastName}`
   const isSuperAdminOrPracticeAdmin = isSuperAdmin(roles) || isPracticeAdmin(roles);
   const isDoctorRole = isOnlyDoctor(roles)
@@ -105,11 +106,11 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         suffix: '', firstName, middleName: '', lastName, firstNameUsed: '', prefferedName: '', previousFirstName: '',
         facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId,
         usualProviderId: isDoctorRole ? selectedDoctorId : selectedUsualProvider,
-        callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, 
+        callToConsent: false, privacyNotice: false, releaseOfInfoBill: false,
         genderIdentity: selectedSexAtBirth as Genderidentity,
         medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
-        email: basicEmail, pronouns: Pronouns.None, race: Race.White, 
+        email: basicEmail, pronouns: Pronouns.None, race: Race.White,
         gender: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.Male,
         maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None,
@@ -170,102 +171,104 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
+      <DialogTitle id="alert-dialog-title">{ADD_PATIENT}</DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardComponent cardTitle={ADD_PATIENT}>
-            <Grid container spacing={3}>
-              <Grid item md={4} sm={12} xs={12}>
-                {!isSuperAdminOrPracticeAdmin
-                  ? renderItem(FACILITY, facilityName)
-                  : <FacilitySelector
-                    addEmpty
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Grid container spacing={0}>
+                <Grid item md={6} sm={12} xs={12}>
+                  {!isSuperAdminOrPracticeAdmin
+                    ? renderItem(FACILITY, facilityName)
+                    : <FacilitySelector
+                      addEmpty
+                      isRequired
+                      label={FACILITY}
+                      name="facilityId"
+                      onSelect={onSelect}
+                    />
+                  }
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  {isDoctorRole
+                    ? renderItem(DOCTOR, doctorName)
+                    : <DoctorSelector
+                      addEmpty
+                      isRequired
+                      label={USUAL_PROVIDER_ID}
+                      name="usualProviderId"
+                      facilityId={selectedFacility}
+                    />}
+                </Grid>
+
+                <Grid item md={(isSuperAdminOrPracticeAdmin) ? 4 : 12} sm={12} xs={12}>
+                  <InputController
                     isRequired
-                    label={FACILITY}
-                    name="facilityId"
-                    onSelect={onSelect}
+                    fieldType="text"
+                    controllerName="basicEmail"
+                    controllerLabel={EMAIL}
                   />
-                }
+                </Grid>
               </Grid>
 
-              <Grid item md={4} sm={12} xs={12}>
-                {isDoctorRole
-                  ? renderItem(DOCTOR, doctorName)
-                  : <DoctorSelector
-                    addEmpty
+              <Grid container>
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
                     isRequired
-                    label={USUAL_PROVIDER_ID}
-                    name="usualProviderId"
-                    facilityId={selectedFacility}
-                  />}
+                    fieldType="text"
+                    controllerName="firstName"
+                    controllerLabel={FIRST_NAME}
+                  />
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    isRequired
+                    fieldType="text"
+                    controllerName="lastName"
+                    controllerLabel={LAST_NAME}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item md={(isSuperAdminOrPracticeAdmin) ? 4 : 12} sm={12} xs={12}>
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="basicEmail"
-                  controllerLabel={EMAIL}
-                />
-              </Grid>
-            </Grid>
+              <Grid container>
+                <Grid item md={6} sm={12} xs={12}>
+                  <DatePicker
+                    isRequired
+                    name="dob"
+                    label={DOB_TEXT}
+                  />
+                </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="firstName"
-                  controllerLabel={FIRST_NAME}
-                />
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="lastName"
-                  controllerLabel={LAST_NAME}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <DatePicker
-                  isRequired
-                  name="dob"
-                  label={DOB_TEXT}
-                />
+                <Grid item md={6} sm={12} xs={12}>
+                  <Selector
+                    isRequired
+                    name="sexAtBirth"
+                    label={SEX}
+                    value={EMPTY_OPTION}
+                    options={MAPPED_GENDER_IDENTITY}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item md={6} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  name="sexAtBirth"
-                  label={SEX}
-                  value={EMPTY_OPTION}
-                  options={MAPPED_GENDER_IDENTITY}
-                />
-              </Grid>
-            </Grid>
+              <Grid container>
+                <Grid item md={6} sm={12} xs={12}>
+                  <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
+                </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
+                <Grid item md={6} sm={12} xs={12}>
+                  <PhoneField name="basicMobile" label={MOBILE_PHONE} />
+                </Grid>
               </Grid>
+            </DialogContentText>
+          </DialogContent>
 
-              <Grid item md={6} sm={12} xs={12}>
-                <PhoneField name="basicMobile" label={MOBILE_PHONE} />
-              </Grid>
-            </Grid>
-          </CardComponent>
-
-          <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center' pr={4}>
+          <DialogActions>
             <Button onClick={handleClose} color="default">
               {CANCEL}
             </Button>
-
-            <Box p={1} />
 
             <Button type="submit" variant="contained" color="primary"
               disabled={createPatientLoading}
@@ -274,7 +277,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
               {createPatientLoading && <CircularProgress size={20} color="inherit" />}
             </Button>
-          </Box>
+          </DialogActions>
         </form>
       </FormProvider>
     </Dialog>

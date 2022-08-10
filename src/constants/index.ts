@@ -2237,6 +2237,7 @@ export const USERS_BREAD = { text: USERS_TEXT, link: "" };
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: "" };
 export const SCHEDULE_BREAD = { text: SCHEDULE_TEXT, link: "" };
 export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
+export const EMERGENCY_ACCESS_BREAD = { text: EMERGENCY_ACCESS, link: '' };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
@@ -2404,6 +2405,7 @@ export enum MODULE_TYPES {
   Schedules = "Schedules",
   Permission = "Permission",
   Agreements = 'Agreements',
+  Attachments = 'Attachments',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
@@ -2421,6 +2423,7 @@ export const MODULES = [
   "Schedule",
   'Agreements',
   "Lab Orders",
+  'Attachments',
   "Patient Charting",
 ];
 
