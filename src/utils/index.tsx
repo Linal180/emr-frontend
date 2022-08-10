@@ -2189,8 +2189,11 @@ export const getClaimBtnText = (statusName: string) => {
       default:
         return UPDATE_CLAIM
     }
-  }
-  else {
+  } else {
     return CREATE_CLAIM
   }
+}
+
+export const isLast = (count: number, page: number) => {
+  return count === 1 && page === 1
 }

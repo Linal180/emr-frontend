@@ -22,7 +22,7 @@ import { AuthContext } from "../../../context";
 import { SelectorOption } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon, EyeIcon } from "../../../assets/svgs";
-import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
+import { getFeeScheduleDate, getPageNumber, isLast, isSuperAdmin, renderTh } from "../../../utils";
 import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import {
   feeScheduleReducer, initialState, Action, State, ActionType
@@ -93,7 +93,7 @@ const FeeTable: FC = (): JSX.Element => {
               message && Alert.success(message);
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
 
-              if (!!feeSchedules && feeSchedules.length > 1) {
+              if (!!feeSchedules && (feeSchedules.length > 1 || isLast(feeSchedules.length, page))) {
                 fetchFeeSchedule();
               } else {
                 dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })

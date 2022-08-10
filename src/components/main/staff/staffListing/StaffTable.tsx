@@ -15,7 +15,7 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
 import {
-  checkPermission, formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  checkPermission, formatPhone, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
@@ -100,7 +100,7 @@ const StaffTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!allStaff && allStaff.length) {
+            if (!!allStaff && (allStaff.length > 1 || isLast(allStaff?.length, page))) {
               await fetchAllStaff();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, allStaff?.length || 0) })

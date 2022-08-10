@@ -23,7 +23,7 @@ import {
 } from "../../../../reducers/doctorReducer";
 import {
   checkPermission, formatPhone, formatToLeadingCode, isFacilityAdmin, isPracticeAdmin, isSuperAdmin,
-  isUser, renderTh, getPageNumber
+  isUser, renderTh, getPageNumber, isLast
 } from "../../../../utils";
 import {
   AllDoctorPayload, DoctorPayload, Speciality, useFindAllDoctorLazyQuery, useRemoveDoctorMutation
@@ -122,7 +122,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!doctors && doctors.length > 1) {
+          if (!!doctors && (doctors.length > 1 || isLast(doctors.length, page))) {
             fetchAllDoctors()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, doctors?.length || 0) })
