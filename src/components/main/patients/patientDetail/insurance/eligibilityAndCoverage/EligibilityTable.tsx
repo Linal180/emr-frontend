@@ -15,10 +15,10 @@ import {
 import {
   PolicyEligibilitiesPayload, useGetPoliciesEligibilitiesLazyQuery
 } from "../../../../../../generated/graphql";
-import { GeneralFormProps } from "../../../../../../interfacesTypes";
+import { EligibilityTableComponentProps } from "../../../../../../interfacesTypes";
 import { convertDateFromUnix, renderTh } from "../../../../../../utils";
 
-const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
+const EligibilityTableComponent: FC<EligibilityTableComponentProps> = ({ id, appointmentId }) => {
   const [policyEligibilities, setPolicyEligibilities] = useState<PolicyEligibilitiesPayload['policyEligibilities']>()
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -64,21 +64,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
 
   return (
     <>
-      <CardComponent
-        // saveBtn
-        // state={state}
-        // isEdit={isEdit}
-        // disableSubmit={disableSubmit}
-        cardTitle={ELIGIBILITY_LISTING}>
-        {/* <Box className={classes.mainTableContainer}> */}
-        {/* <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
-              <Box mt={2}>
-                <Search search={search} />
-              </Box>
-            </Grid>
-          </Grid> */}
-
+      <CardComponent cardTitle={ELIGIBILITY_LISTING}>
         <Box className="table-overflow" mt={4}>
           <Table aria-label="customized table">
             <TableHead>
@@ -99,7 +85,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
                     <TableCell scope="row">{convertDateFromUnix(createdAt, 'DD MMM,YYYY hh:mm a')}</TableCell>
                     <TableCell scope="row">{'Accepted'}</TableCell>
                     <TableCell scope="row">
-                      <Link to={`${COVERAGE_ROUTE}/${eligibilityId}/${id}`}>
+                      <Link to={appointmentId ? `${COVERAGE_ROUTE}/${eligibilityId}/${id}/${appointmentId}`: `${COVERAGE_ROUTE}/${eligibilityId}/${id}`}>
                         <Typography color="secondary" className="text-underline">{COVERAGE_DETAILS}</Typography>
                       </Link>
                     </TableCell>
