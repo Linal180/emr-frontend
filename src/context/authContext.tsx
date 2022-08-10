@@ -38,19 +38,19 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
-  const {setFacilityList, setRoleList} = useContext(ListContext)
+  const { setFacilityList, setRoleList } = useContext(ListContext)
   const hasToken = localStorage.getItem(TOKEN);
   const [user, setUser] = useState<User | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
-  const [practiceName, setPracticeName] = useState<string>('');
 
+  const [practiceName, setPracticeName] = useState<string>('');
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
-  const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
 
+  const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
-  const [profileUrl, setProfileUrl] = useState('')
+  const [profileUrl, setProfileUrl] = useState<string>('')
   const [profileAttachment, setProfileAttachment] = useState<null | Attachment>(null)
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
@@ -134,13 +134,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
               const roleName = getUserRole(roles as RolesPayload['roles'])
 
               if (roleName === 'doctor') {
-                getDoctor({
-                  variables: { getDoctor: { id: userId } }
-                })
+                getDoctor({ variables: { getDoctor: { id: userId } } })
               } else {
-                getStaff({
-                  variables: { getStaff: { id: userId } }
-                })
+                getStaff({ variables: { getStaff: { id: userId } } })
               }
 
               if (facility) {
@@ -230,7 +226,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   }, [profileAttachment, getAttachment])
 
   useEffect(() => {
-    profileAttachment && fetchAttachment()
+    !!profileAttachment && fetchAttachment()
   }, [profileAttachment, fetchAttachment])
 
   return (
