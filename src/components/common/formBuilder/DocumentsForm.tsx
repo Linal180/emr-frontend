@@ -1,4 +1,4 @@
-import { FC, useEffect, useCallback } from 'react'
+import { FC, useEffect, useCallback, useMemo } from 'react';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 import { DefaultExtensionType, FileIcon, defaultStyles } from 'react-file-icon';
@@ -10,7 +10,7 @@ import { GREEN } from '../../../theme';
 import { getDocumentByType } from '../../../utils'
 import { FieldComponentProps } from '../../../interfacesTypes';
 import { useDropzoneStyles } from '../../../styles/dropzoneStyles';
-import { ActionType } from '../../../reducers/externalFormBuilderReducer'
+import { ActionType } from '../../../reducers/externalFormBuilderReducer';
 import {
   ATTACHMENT_DELETED, ATTACHMENT_TITLES, BACK_SIDE, FormBuilderApiSelector, FRONT_SIDE, PAGE_LIMIT
 } from '../../../constants'
@@ -19,7 +19,7 @@ import {
 } from '../../../generated/graphql';
 
 const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JSX.Element => {
-  const { label, apiCall } = item || {}
+  const { label, apiCall, required } = item || {}
   const { patientId, drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = state || {}
 
   const dropzoneClasses = useDropzoneStyles()
@@ -119,6 +119,11 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
     patientId && fetchDocuments()
   }, [patientId, fetchDocuments])
 
+  useMemo(() => {
+    if (required) {
+      dispatcher && dispatcher({ type: ActionType.SET_ERROR, isError: true })
+    }
+  }, [required, dispatcher])
 
   return (
     <Box py={2}>

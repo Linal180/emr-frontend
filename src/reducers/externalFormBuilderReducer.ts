@@ -5,6 +5,7 @@ import { FormType, FormTabsInputs, AgreementsPayload, Attachment } from "../gene
 export interface State {
   loader: boolean;
   formName: string;
+  isError: boolean;
   isActive: boolean;
   serviceId: string;
   patientId: string;
@@ -37,6 +38,7 @@ export const initialState: State = {
   practiceId: "",
   facilityId: '',
   agreements: [],
+  isError: false,
   paymentType: '',
   isActive: false,
   serviceTypeId: "",
@@ -55,6 +57,7 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_ERROR = 'setError',
   SET_LOADER = 'setLoader',
   SET_ACTIVE = 'setIsActive',
   SET_PATIENT_ID = 'patientId',
@@ -77,10 +80,11 @@ export enum ActionType {
   SET_INSURANCE_CARD_1 = 'SET_INSURANCE_CARD_1',
   SET_INSURANCE_CARD_2 = 'SET_INSURANCE_CARD_2',
   SET_DRIVING_LICENSE_1 = 'SET_DRIVING_LICENSE_1',
-  SET_DRIVING_LICENSE_2 = 'SET_DRIVING_LICENSE_2'
+  SET_DRIVING_LICENSE_2 = 'SET_DRIVING_LICENSE_2',
 }
 
 export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
+{ type: ActionType.SET_ERROR; isError: boolean } |
 { type: ActionType.SET_LOADER; loader: boolean } |
 { type: ActionType.SET_FORM_NAME; formName: string } |
 { type: ActionType.SET_FORM_TYPE; formType: FormType } |
@@ -242,6 +246,12 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
       return {
         ...state,
         insuranceCard2: action.insuranceCard2
+      }
+
+    case ActionType.SET_ERROR:
+      return {
+        ...state,
+        isError: action.isError
       }
   }
 }
