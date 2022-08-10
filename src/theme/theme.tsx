@@ -443,6 +443,7 @@ export const theme = createTheme({
         background: WHITE,
         borderRadius: 12,
         boxShadow: 'none',
+        overflow: 'visible',
       }
     },
 
