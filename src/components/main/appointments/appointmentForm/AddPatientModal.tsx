@@ -2,14 +2,16 @@
 import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, Box, Grid, CircularProgress, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
+import {
+  Button, Dialog, Grid, CircularProgress, DialogTitle, DialogContent, DialogContentText, DialogActions
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from "../../../common/PhoneInput";
 import InputController from "../../../../controller";
-import CardComponent from "../../../common/CardComponent";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // interfaces/types block, theme, svgs and constants
 import history from "../../../../history";
@@ -31,7 +33,6 @@ import {
   PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY, DOCTOR,
   USUAL_PROVIDER_ID,
 } from "../../../../constants";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
 
 const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
   const { userPermissions, user, currentDoctor } = useContext(AuthContext)
