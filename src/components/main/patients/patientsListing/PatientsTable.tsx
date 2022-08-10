@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber
+  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber, isLast
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
