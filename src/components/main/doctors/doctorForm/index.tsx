@@ -424,7 +424,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       loading={getDoctorLoading}
                     />
                   </Grid> */}
-                </Grid >
+                </Grid>
 
                 {/* <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
@@ -445,7 +445,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
                 </Grid> */}
-              </CardComponent >
+              </CardComponent>
 
               <Box pb={3} />
 
@@ -575,7 +575,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   </Grid>
                 </Grid>
               </CardComponent>
-            </Grid >
+            </Grid>
 
             <Grid md={6} item>
               <CardComponent cardTitle={CONTACT_INFORMATION}>
@@ -829,10 +829,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
               </CardComponent>
             </Grid>
-          </Grid >
-        </Box >
-      </form >
-    </FormProvider >
+          </Grid>
+        </Box>
+      </form>
+    </FormProvider>
   );
 };
 

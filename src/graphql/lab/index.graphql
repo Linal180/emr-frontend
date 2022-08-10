@@ -3,12 +3,14 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
     labTests{
       id
       orderNumber
+      accessionNumber
       labTestStatus
       testDate
       testTime
       patientId
       createdAt
       testNotes
+      appointmentId
       patient{
         doctorPatients{
           doctor{
@@ -20,15 +22,39 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
         firstName
       }
       
-      diagnoses{
+      diagnoses {
+        id
         code
         description
       }
       
-      test{
+      test {
         id
         loincNum
         component
+      }
+
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
       }
       
       testObservations{

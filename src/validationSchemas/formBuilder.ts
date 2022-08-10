@@ -7,7 +7,7 @@ import { invalidMessage, requiredMessage } from "../utils";
 import { ElementType, FormTabsInputs, Maybe } from "../generated/graphql";
 import {
   COMPANY_NAME, CONTRACT_NO, FormBuilderApiSelector, FormBuilderPaymentTypes, GROUP_NUMBER, MEMBER_ID,
-  ORGANIZATION_NAME, SIGNATURE_TEXT
+  ORGANIZATION_NAME, REQUIRED,
 } from "../constants";
 
 const stringValidation = (required: boolean, regex: Maybe<string> | undefined, label: string): yup.AnySchema => {
@@ -108,9 +108,9 @@ export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentT
               break;
 
             case FormBuilderApiSelector.TERMS_CONDITIONS:
-              validation[fieldId] = yup.boolean().oneOf([true, null], requiredMessage(label))
+              validation[fieldId] = yup.boolean().oneOf([true, null], REQUIRED)
               validation['signature'] = yup.mixed()
-                .test('', requiredMessage(SIGNATURE_TEXT), (value) => value ? !!value?.type && !!value?.name : false)
+                // .test('', requiredMessage(SIGNATURE_TEXT), (value) => value ? !!value?.type && !!value?.name : false)
                 .nullable()
               break;
 

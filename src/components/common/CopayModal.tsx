@@ -1,9 +1,9 @@
 // packages block
 import { FC, useCallback } from "react";
-import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
 import {
-  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography,
 } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
@@ -11,8 +11,8 @@ import Selector from "./Selector";
 import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
 import { createCopaySchema } from "../../validationSchemas";
-import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
 import { CopayType, useCreateCopayMutation } from "../../generated/graphql";
+import { CopayFields, CopayModalProps, CreateBillingProps } from "../../interfacesTypes";
 import {
   ADD_COPAY, AMOUNT_WITH_DOLLAR, CANCEL, COPAY_TYPE, CREATE_COPAY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FORBIDDEN_EXCEPTION, MAPPED_COPAY_TYPE
@@ -117,7 +117,7 @@ const CopayModal: FC<CopayModalProps> = ({ isOpen, setIsOpen, insuranceId }): JS
           </DialogActions>
         </form>
       </FormProvider>
-    </Dialog >
+    </Dialog>
   );
 };
 

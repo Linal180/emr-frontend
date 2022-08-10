@@ -22,7 +22,7 @@ import {
   useCreateFeeScheduleMutation, useGetFeeScheduleLazyQuery, useUpdateFeeScheduleMutation
 } from '../../../generated/graphql';
 
-const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
+const FeeScheduleForm = ({ dispatcher, state, reload }: FeeScheduleFormProps) => {
   const { user } = useContext(AuthContext)
   const methods = useForm<CreateFeeSchedule>({ mode: "all", resolver: yupResolver(feeScheduleSchema) });
   const { setValue, handleSubmit } = methods
@@ -46,7 +46,8 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         dispatcher({ type: ActionType.SET_EDIT, isEdit: false })
         dispatcher({ type: ActionType.SET_GET_FEE_ID, getFeeId: '' })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
-        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
+        
+        reload && reload()
       }
     },
     onError(error) {
@@ -65,7 +66,8 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
         message && Alert.success(message)
         dispatcher({ type: ActionType.SET_PAGE, page: 1 })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
-        dispatcher({ type: ActionType.SET_FEE_SCHEDULE_GET, getFeeSchedule: true })
+        
+        reload && reload()
       }
     },
     onError(error) {
@@ -75,20 +77,23 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
   })
 
   const [getFeeSchedule, { loading: getLoading }] = useGetFeeScheduleLazyQuery({
+    onError() { },
+    
     onCompleted(data) {
       const { getFeeSchedule } = data || {}
       const { feeSchedule, response } = getFeeSchedule || {}
       const { status } = response || {}
+
       if (status === 200) {
         const { effectiveDate, expiryDate, name, practice } = feeSchedule || {}
         const { id, name: practiceName } = practice || {}
+
         name && setValue('name', name)
-        effectiveDate && setValue('effectiveDate', effectiveDate)
         expiryDate && setValue('expiryDate', expiryDate)
+        effectiveDate && setValue('effectiveDate', effectiveDate)
         id && practiceName && setValue('practiceId', setRecord(id, practiceName))
       }
-    },
-    onError() { }
+    }
   })
 
   useMemo(() => {
@@ -96,9 +101,10 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
   }, [isSuper, setValue, id, name, isEdit])
 
   const submitHandler = async (values: CreateFeeSchedule) => {
-    const { practiceId, effectiveDate, expiryDate, name } = values;
-    const { id: practice } = practiceId
     try {
+      const { practiceId, effectiveDate, expiryDate, name } = values;
+      const { id: practice } = practiceId
+
       if (isEdit && getFeeId) {
         updateFeeSchedule({
           variables: {
@@ -107,8 +113,7 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
             }
           }
         })
-      }
-      else {
+      } else {
         await createFeeSchedule({
           variables: {
             createFeeScheduleInput: {
@@ -174,7 +179,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
                 <Grid container spacing={3} direction="row">
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
-                      disablePast
                       name="effectiveDate"
                       label={EFFECTIVE_DATE}
                       disableFuture={false}
@@ -183,7 +187,6 @@ const FeeScheduleForm = ({ dispatcher, state }: FeeScheduleFormProps) => {
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DatePicker
-                      disablePast
                       name="expiryDate"
                       label={EXPIRATION_DATE}
                       disableFuture={false}

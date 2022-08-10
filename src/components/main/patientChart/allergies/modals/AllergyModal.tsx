@@ -193,9 +193,7 @@ const AllergyModal: FC<AddModalProps> = ({
           }
         })
       }
-    }
-
-    else {
+    } else {
       Alert.info(REACTION_SELECTION_REQUIRED)
     }
   }

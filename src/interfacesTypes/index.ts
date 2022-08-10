@@ -41,7 +41,7 @@ import {
   PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput, RolesPayload,
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, LabTests,
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -206,6 +206,7 @@ export interface CardComponentType extends Children {
   state?: PatientState;
   disableSubmit?: boolean;
   className?: string
+  onSubmitClick?: Function
 }
 
 export interface ChartingCardComponentType {
@@ -383,6 +384,7 @@ export interface PatientSelectorProps extends SelectorProps {
 
 export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string;
+  filteredOptions?: SelectorOption[]
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -756,6 +758,10 @@ export interface GeneralFormProps {
   loading?: boolean;
 }
 
+export interface NoDataComponentProps {
+  message?: string
+}
+
 export interface CoverageDetailsHeaderProps {
   patient: PolicyEligibilityWithPatientPayload['patient'] | undefined
   policyHolder: PolicyEligibilityWithPatientPayload['policyHolder'] | undefined
@@ -806,6 +812,22 @@ export interface LabOrderCreateProps {
   appointmentInfo?: SelectorOption
   handleStep?: Function
   shouldDisableEdit?: boolean
+  toggleSideDrawer?: Function
+  isEdit?: boolean
+  labTestsToEdit?: LabTests[]
+  orderNumber?: string
+}
+
+export interface LabOrdersTableProps {
+  appointmentInfo?: SelectorOption
+}
+
+export interface LabOrderInitialScreenProps extends LabOrderCreateProps {
+  setTestsToRemove?: Function
+}
+
+export interface LabTestComponentProps {
+  currentTest: number
 }
 
 export interface LabOrderProviderProps {
@@ -920,13 +942,20 @@ export interface TestOption {
   testNotes: string
   newTest?: boolean
   specimenTypeField?: SpecimenTypeOption[]
+  diagnosesIds: multiOptionType[]
 }
 
 export interface LabOrdersCreateFormInput {
   appointment?: SelectorOption,
   labTestStatus?: SelectorOption,
   diagnosesIds: multiOptionType[]
-  testField: TestOption[]
+  testField: SelectorOption
+  testFieldValues: TestOption[]
+  referringProviderId?: SelectorOption
+  primaryProviderId?: SelectorOption
+  providerNotes?: string
+  orderNum?: string
+  accessionNumber?: string
 };
 
 export interface LabOrdersSpecimenTypeInput {
@@ -1113,6 +1142,15 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
   loading?: boolean
+}
+
+export interface InsuranceSelectionProps extends GeneralFormProps {
+  shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
+  setSelection?: Function
+  selection?: string
+  dispatch?: Dispatch<PatientAction>
+  state?: PatientState
 }
 
 export interface FacilityCardsProps extends GeneralFormProps {
@@ -1878,8 +1916,9 @@ export interface DoctorAppointmentsAndPatientsProps {
 }
 
 export interface FeeScheduleFormProps {
-  state: FeeScheduleState,
+  state: FeeScheduleState;
   dispatcher: Dispatch<FeeScheduleAction>
+  reload?: Function;
 }
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {

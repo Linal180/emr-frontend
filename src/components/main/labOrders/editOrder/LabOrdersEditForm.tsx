@@ -79,7 +79,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         setAccessionNumber(accessionNumber || '')
 
         const transformedLabTests = labTests?.map((labTest) => {
-          const { test, testNotes, testTime, testDate, testSpecimens, id: testId } = labTest ?? {}
+          const { test, testNotes, testTime, testDate, testSpecimens, id: testId, diagnoses } = labTest ?? {}
           const { id, loincNum, component } = test ?? {}
 
           const transformedTestSpecimens = testSpecimens?.map((testSpecimen) => {
@@ -108,11 +108,17 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             testDate: testDate ?? '',
             testTime: testTime ?? '',
             testNotes: testNotes ?? '',
-            specimenTypeField: transformedTestSpecimens
+            specimenTypeField: transformedTestSpecimens,
+            diagnosesIds: diagnoses?.map((value) => {
+              return {
+                label: `${value?.code} | ${value?.description}`,
+                value: value?.id || ''
+              }
+            }) ?? []
           }
         }) ?? []
 
-        setValue('testField', transformedLabTests)
+        setValue('testFieldValues', transformedLabTests)
       }
     }
   });
@@ -161,16 +167,17 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  const { fields: testFields, remove: removeTestField, append: appendTestField } =
-    useFieldArray({ control: control, name: "testField" });
+  // const { fields: testFields, remove: removeTestField, append: appendTestField } =
+  //   useFieldArray({ control: control, name: "testField" });
+  const { fields: testFieldValues, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testFieldValues" });
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     const { id: appointmentId } = appointment ?? {}
     const { id: testStatus } = labTestStatus ?? {}
 
-    testField.forEach(async (testFieldValues) => {
-      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValues
+    testFieldValues.forEach(async (testFieldValue) => {
+      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValue
 
       const createLabTestItemInput = {
         patientId: patientId ?? '',
@@ -230,15 +237,15 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
       })
     }
 
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     const { id: appointmentId } = appointment ?? {}
     const { id: testStatus } = labTestStatus ?? {}
 
-    const newTests = testField.filter((testFieldValues) => !!testFieldValues?.newTest)
-    const oldTests = testField.filter((testFieldValues) => !testFieldValues?.newTest)
+    const newTests = testFieldValues.filter((testFieldValue) => !!testFieldValue?.newTest)
+    const oldTests = testFieldValues.filter((testFieldValue) => !testFieldValue?.newTest)
 
     if (newTests.length) {
-      handleTestCreation({ ...values, testField: newTests })
+      handleTestCreation({ ...values, testFieldValues: newTests })
     }
 
 
@@ -337,7 +344,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
             <Box p={2} />
 
-            {testFields.map((testField, index) => {
+            {testFieldValues.map((testField, index) => {
               return (
                 <Box mb={4}>
                   <Card>
@@ -347,7 +354,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                       >
                         <Typography variant='h4'>{TEST}</Typography>
 
-                        {!!(testFields.length > 1 && index !== 0) && <Button onClick={() => {
+                        {!!(testFieldValues.length > 1 && index !== 0) && <Button onClick={() => {
                           setTestsToRemove([...testsToRemove, testField?.testId ?? ''])
                           removeTestField(index)
                         }} type="submit" variant="outlined" color="inherit" className='danger'>

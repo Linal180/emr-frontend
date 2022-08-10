@@ -24,7 +24,7 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
-import { CodeType, OnsetDateType } from "../../../../generated/graphql";
+import { CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
@@ -44,7 +44,7 @@ const BillingForm: FC<BillingFormProps> = ({
   const classesToggle = usePublicAppointmentStyles();
   const { appointmentId } = useParams<ParamsType>()
   const { handleSubmit, trigger, watch, setValue } = methods
-  const { onsetDateType, practice, feeSchedule, claimStatus } = watch()
+  const { onsetDateType, practice, feeSchedule, claimStatus, paymentType } = watch()
   const { id: onsetDateTypeId } = onsetDateType || {}
   const { statusName } = claimStatus || {}
   const {
@@ -101,8 +101,9 @@ const BillingForm: FC<BillingFormProps> = ({
         Alert.error(SELECT_ANOTHER_STATUS)
       }
     }
-
   }
+
+  const shouldShowCopay = paymentType?.id === PatientPaymentType.Insurance
 
   return (
     <FormProvider {...methods}>
@@ -234,43 +235,44 @@ const BillingForm: FC<BillingFormProps> = ({
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
+                    {shouldShowCopay &&
+                      <>
+                        < Grid item md={12} sm={12} xs={12}>
+                          <Grid container spacing={3} direction="row">
+                            <Grid item lg={6} md={12} sm={12} xs={12}>
+                              <InputController
+                                key='amount'
+                                fieldType="text"
+                                controllerName="amount"
+                                controllerLabel={COPAY_AMOUNT}
+                                disabled={shouldDisableEdit}
+                              />
+                            </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Grid container spacing={3} direction="row">
-                        <Grid item lg={6} md={12} sm={12} xs={12}>
-                          <InputController
-                            key='amount'
-                            fieldType="text"
-                            controllerName="amount"
-                            controllerLabel={COPAY_AMOUNT}
-                            disabled={shouldDisableEdit}
-                          />
+                            <Grid item lg={6} md={12} sm={12} xs={12}>
+                              <InputController
+                                fieldType="number"
+                                key='uncoveredAmount'
+                                controllerName="uncoveredAmount"
+                                controllerLabel={UNCOVERED_AMT}
+                                disabled={shouldDisableEdit}
+                              />
+                            </Grid>
+                          </Grid>
                         </Grid>
+                        {
+                          !shouldDisableEdit && <Box display="flex" justifyContent="flex-end" pr={2} width="100%">
+                            <Button variant="text"
+                              onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
+                            >
+                              <AddCircleOutline color='secondary' />
+                              <Box ml={1} />
+                              <Typography color="secondary">{ADD_ANOTHER}</Typography>
+                            </Button>
+                          </Box>
+                        }
 
-                        <Grid item lg={6} md={12} sm={12} xs={12}>
-                          <InputController
-                            fieldType="number"
-                            key='uncoveredAmount'
-                            controllerName="uncoveredAmount"
-                            controllerLabel={UNCOVERED_AMT}
-                            disabled={shouldDisableEdit}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    {
-                      !shouldDisableEdit && <Box display="flex" justifyContent="flex-end" pr={2} width="100%">
-                        <Button variant="text"
-                          onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
-                        >
-                          <AddCircleOutline color='secondary' />
-                          <Box ml={1} />
-                          <Typography color="secondary">{ADD_ANOTHER}</Typography>
-                        </Button>
-                      </Box>
-                    }
-
-                    {/* <Grid item md={12} sm={12} xs={12}>
+                        {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="resource"
                         label={RESOURCE}
@@ -278,6 +280,8 @@ const BillingForm: FC<BillingFormProps> = ({
                         addEmpty
                       />
                     </Grid> */}
+                      </>
+                    }
                   </Grid>
                 </Box>
               </Grid>
@@ -438,7 +442,7 @@ const BillingForm: FC<BillingFormProps> = ({
               </Grid>
             </Grid>
           </Box>
-        </Card>
+        </Card >
 
         <Box p={1} />
 
@@ -495,7 +499,7 @@ const BillingForm: FC<BillingFormProps> = ({
             </Box>
           </TabContext>
         </Box>
-      </form>
+      </form >
 
       {
         isModalOpen &&

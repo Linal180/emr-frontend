@@ -16,7 +16,8 @@ a {
   color: #3f51b5;
 }
 
-img, svg {
+img,
+svg {
   max-width: 100%;
   max-width: -webkit-fill-available;
 }
@@ -522,6 +523,21 @@ input[type=number] {
   pointer-events: none;
 }
 
+.toggle-main .MuiSwitch-thumb {
+  background-color: #204ECF !important;
+}
+
+.dialog-box {
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.MuiSkeleton-text {
+  height: 30px !important;
+}
+
 .makeStyles-chartModalBox-137 .MuiSkeleton-text {
   transform: scale(1, 1) !important;
 }
@@ -629,6 +645,7 @@ input[type=number] {
   transition: 0.9s linear !important;
   transform: rotate(0deg);
 }
+
 .rotate-Icon.to-180 {
   transform: rotateX(180deg);
 }
@@ -722,6 +739,6 @@ input[type=number] {
   color: inherit;
 }
 
-.ck-content{
+.ck-content {
   height: 320px;
 }

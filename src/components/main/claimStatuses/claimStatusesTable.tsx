@@ -72,11 +72,8 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
       await getClaimStatuses({
         variables: {
           claimStatusPaginationInput: {
-            paginationOptions: {
-              page,
-              limit: PAGE_LIMIT
-            },
-            searchString: searchQuery,
+            paginationOptions: { page, limit: PAGE_LIMIT },
+            searchString: searchQuery.trim(),
           }
         }
       })

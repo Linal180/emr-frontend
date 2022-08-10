@@ -72,9 +72,9 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
               </Box>
             </FormGroup>
           </FormControl>
-          </Box>
+        </Box>
 
-          <Box>
+        <Box>
           <FormControl component="fieldset">
             <FormGroup>
               <Box>

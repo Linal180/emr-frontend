@@ -43,9 +43,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => dispatch({ type: ActionType.SET_TAB, selectedTab: newValue })
 
-
   const delFieldHandler = (index: number, sectionIndex: number, tabIndex: number) => {
-
     const arr = formValues?.map((tab, tabsIndex) => {
       if (tabIndex === tabsIndex) {
         const { sections } = tab || {}

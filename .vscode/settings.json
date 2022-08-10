@@ -28,6 +28,7 @@
     "notistack",
     "referer",
     "Requestable",
+    "SIDEDRAWER",
     "SIGNOFF",
     "smartystreets",
     "snomed",
@@ -37,5 +38,6 @@
     "Videocam",
     "Xrange",
     "Zipcode"
-  ]
+  ],
+  "merge-conflict.diffViewPosition": "Beside"
 }

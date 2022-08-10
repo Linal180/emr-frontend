@@ -285,7 +285,7 @@ const PatientsTable: FC = (): JSX.Element => {
         </Collapse>
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(PRN)}

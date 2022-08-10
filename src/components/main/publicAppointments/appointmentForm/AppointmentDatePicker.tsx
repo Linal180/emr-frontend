@@ -13,7 +13,6 @@ const AppointmentDatePicker: FC<AppointmentDatePickerProps> = ({ date, setDate }
       value={date}
       autoOk
       fullWidth
-      disablePast
       disableToolbar
       onChange={currentDate => currentDate && setDate(currentDate)}
     />

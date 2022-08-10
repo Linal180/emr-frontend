@@ -222,7 +222,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Grid container spacing={2}>
         {/* <Grid item md={4} sm={12} xs={12}>
           <MedicalBillingComponent />
-        </Grid> */}
+        </Grid>*/}
       </Grid>
     </>
   )

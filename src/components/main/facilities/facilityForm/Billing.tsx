@@ -45,15 +45,15 @@ const Billing: FC<FacilityCardsProps> = ({ getFacilityLoading, state, dispatch, 
         billingPhone, billingState, billingZipCode
       } = billingData || {}
 
-      billingFax && setValue("billingFax", billingFax)
-      billingCity && setValue("billingCity", billingCity)
-      billingPhone && setValue("billingPhone", billingPhone)
-      billingEmail && setValue("billingEmail", billingEmail)
-      billingAddress && setValue("billingAddress", billingAddress)
-      billingZipCode && setValue("billingZipCode", billingZipCode)
-      billingCountry && setValue("billingCountry", billingCountry)
-      billingAddress2 && setValue("billingAddress2", billingAddress2)
-      billingState && setValue("billingState", setRecord(billingState, billingState))
+      setValue("billingFax", billingFax || '')
+      setValue("billingCity", billingCity || '')
+      setValue("billingPhone", billingPhone || '')
+      setValue("billingEmail", billingEmail || '')
+      setValue("billingAddress", billingAddress || '')
+      setValue("billingZipCode", billingZipCode || '')
+      setValue("billingCountry", billingCountry || USA)
+      setValue("billingAddress2", billingAddress2 || '')
+      setValue("billingState", setRecord(billingState || '', billingState || ''))
     } else {
       setValue("billingFax", '')
       setValue("billingCity", '')

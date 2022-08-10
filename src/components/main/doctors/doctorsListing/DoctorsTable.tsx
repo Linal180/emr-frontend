@@ -99,7 +99,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       }
 
       doctorInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery, ...searchFilterInputs } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery.trim(), ...searchFilterInputs } }
       })
     } catch (error) { }
   }, [
@@ -122,7 +122,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!doctors && doctors.length) {
+          if (!!doctors && doctors.length > 1) {
             fetchAllDoctors()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, doctors?.length || 0) })

@@ -1,11 +1,12 @@
 // packages block
+import { Box, Typography } from "@material-ui/core";
 import { FC } from "react";
-import { Typography, Box } from "@material-ui/core";
 // constants block
-import { NO_DATA_FOUND } from "../../constants";
 import { NoDataIcon } from "../../assets/svgs";
+import { NO_DATA_FOUND } from "../../constants";
+import { NoDataComponentProps } from "../../interfacesTypes";
 
-const NoDataComponent: FC = (): JSX.Element => {
+const NoDataComponent: FC<NoDataComponentProps> = ({ message }): JSX.Element => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box color="#E3EEFA" fontSize={120} display="flex" alignItems="center">
@@ -14,7 +15,7 @@ const NoDataComponent: FC = (): JSX.Element => {
 
       <Box mt={1}>
         <Typography component="h5" variant="h5">
-          {NO_DATA_FOUND}
+          {message ? message : NO_DATA_FOUND}
         </Typography>
       </Box>
     </Box>

@@ -17,19 +17,19 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import LogsPatientSelector from "../../../common/userLogs/PatientSelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
 import { DownloadIconWhite } from "../../../../assets/svgs";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { getArrayOfObjSum, getFormatDateString, renderTh } from "../../../../utils";
+import { ClaimFeedAdvanceSearchInputProps, ClaimFeedAdvanceSearchProps } from "../../../../interfacesTypes";
+import {
+  LiveClaimFeedPayload, useCreateLiveClaimFeedMutation, useFindAllLiveClaimFeedsLazyQuery
+} from "../../../../generated/graphql";
 import {
   ADJUSTMENT, ALLOWED, APPLY_FILTER, BILLED, CLAIM_FEED_TEXT, CLAIM_ID, CLEAR_FILTER, DATE_OF_SERVICE, EMPTY_OPTION,
-  EXPORT_TO_FILE, FACILITY, FROM_DATE, INS, INS_1, INS_PAID, ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, PT_PAID, SYNC, 
+  EXPORT_TO_FILE, FACILITY, FROM_DATE, INS, INS_1, INS_PAID, ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, PT_PAID, SYNC,
   TOTALS, TO_DATE, UPDATE_FILTER
 } from "../../../../constants";
-import { 
-  LiveClaimFeedPayload, useCreateLiveClaimFeedMutation, useFindAllLiveClaimFeedsLazyQuery 
-} from "../../../../generated/graphql";
-import { ClaimFeedAdvanceSearchInputProps, ClaimFeedAdvanceSearchProps } from "../../../../interfacesTypes";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
-import { getArrayOfObjSum, getFormatDateString, renderTh } from "../../../../utils";
 
 const headers = [
   { label: CLAIM_ID, key: "claimId" },
@@ -232,10 +232,12 @@ const ClaimFeedTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
-        <Typography variant="h4" color="textPrimary">{CLAIM_FEED_TEXT}</Typography>
+      <Box mb={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap">
+        <Box pb={2}>
+          <Typography variant="h4" color="textPrimary">{CLAIM_FEED_TEXT}</Typography>
+        </Box>
 
-        <Box display='flex'>
+        <Box display='flex' pb={2}>
           <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
             filename={`live_claim_feed_data_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
             <Button variant="contained" startIcon={<DownloadIconWhite />} color="secondary">
@@ -360,7 +362,7 @@ const ClaimFeedTable: FC = (): JSX.Element => {
               </Collapse>
 
               <Box mt={3} className="table-overflow">
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classes.table}>
                   <TableHead>
                     <TableRow>
                       {/* {renderTh(INFO)} */}

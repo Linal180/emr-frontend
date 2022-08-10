@@ -10,7 +10,7 @@ import { StepContextProps } from '../../../../interfacesTypes'
 
 export const StepContext: FC<StepContextProps> = memo(({ sections, state, dispatch }) => {
   const { facilityId, practiceId } = state
-  return (<Grid container spacing={3} alignItems='stretch'>
+  return (<Grid container spacing={2} direction="row">
     {sections?.map((item, index) => {
       const { col, fields, id, name } = item
 

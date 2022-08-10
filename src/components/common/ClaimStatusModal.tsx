@@ -151,7 +151,7 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
           </DialogActions>
         </form>
       </FormProvider>
-    </Dialog >
+    </Dialog>
   );
 };
 

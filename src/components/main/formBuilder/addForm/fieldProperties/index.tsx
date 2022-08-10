@@ -1,11 +1,12 @@
 //packages block
-import { useState, useEffect, ChangeEvent, useCallback } from 'react';
+import { useState, useEffect, ChangeEvent, useCallback, Fragment } from 'react';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm, } from 'react-hook-form'
 import { Grid, Box, Button, FormControl, InputLabel, IconButton, colors, Typography, } from '@material-ui/core';
 //components block
 import Selector from '../../../../common/Select';
 import InputController from '../../../../../controller';
 import LabeledInputController from '../../../../../controller';
+import SwitchController from '../../../../../controller/SwitchController';
 //constants & interfaces
 import { Add as AddIcon } from '@material-ui/icons';
 import { GREY_SEVEN, WHITE } from '../../../../../theme';
@@ -14,7 +15,7 @@ import { ElementType } from '../../../../../generated/graphql';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import {
   ACTION, COLUMN_LENGTH, CSS_CLASSES, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT,
-  REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, SAVE_TEXT, REGEX_LABEL
+  REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, SAVE_TEXT, REGEX_LABEL, FUTURE_DATE, PAST_DATE
 } from '../../../../../constants';
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
@@ -25,12 +26,13 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
   const [isChecked, setIsChecked] = useState(false);
   const classes = usePublicAppointmentStyles();
   const methods = useForm<FormInitialType>({ defaultValues: FIELD_EDIT_INITIAL_VALUES });
-  const { setValue, handleSubmit, control, reset } = methods;
+  const { setValue, handleSubmit, control, reset, watch } = methods;
   const { fields, remove, append } = useFieldArray({ control: control, name: "options" });
+  const { type } = watch()
 
   //set form values
   const setFormInitialValues = useCallback(() => {
-    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea, regex } = selected;
+    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea, regex, pastEnable, futureEnable } = selected;
     setValue("name", name)
     setValue("label", label)
     setValue("required", required)
@@ -45,6 +47,8 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
     setValue("options", options)
     setValue("textArea", textArea)
     setValue("regex", regex)
+    setValue("pastEnable", pastEnable)
+    setValue("futureEnable", futureEnable)
     setIsChecked(required)
   }, [setValue, selected])
 
@@ -156,6 +160,25 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 key={'column'}
               />
             </Grid>
+
+            {type === ElementType.Date &&
+              <Fragment>
+                <Grid item md={12}>
+                  <SwitchController
+                    controllerName="futureEnable"
+                    controllerLabel={FUTURE_DATE}
+                    key={FUTURE_DATE}
+                  />
+                </Grid>
+                <Grid item md={12}>
+                  <SwitchController
+                    controllerName="pastEnable"
+                    controllerLabel={PAST_DATE}
+                    key={PAST_DATE}
+                  />
+                </Grid>
+              </Fragment>
+            }
 
             {fields?.length > 0 &&
               <Grid item md={12}>
