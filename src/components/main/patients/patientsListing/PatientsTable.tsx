@@ -137,7 +137,7 @@ const PatientsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!patients && patients.length > 1) {
+          if (!!patients && (patients.length > 1 || isLast(patients.length, page))) {
             fetchAllPatients();
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0) })

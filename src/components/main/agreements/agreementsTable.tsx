@@ -19,7 +19,7 @@ import {
   Action, ActionType, agreementReducer, initialState, State
 } from '../../../reducers/agreementReducer';
 import {
-  convertDateFromUnix, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  convertDateFromUnix, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, renderTh
 } from '../../../utils';
 import {
   useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation
@@ -114,7 +114,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
           try {
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!agreements && agreements.length > 1) {
+            if (!!agreements && (agreements.length > 1 || isLast(agreements.length, page))) {
               await fetchAgreements()
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, agreements?.length || 0) })
