@@ -34,8 +34,9 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
 
       if (getPoliciesEligibilities) {
         const { policyEligibilities, pagination } = getPoliciesEligibilities
+        const sortedPolicyEligibilities = policyEligibilities && policyEligibilities?.sort((a, b) => Number(b?.createdAt) - Number(a?.createdAt))
 
-        policyEligibilities && setPolicyEligibilities(policyEligibilities as PolicyEligibilitiesPayload['policyEligibilities'])
+        policyEligibilities && setPolicyEligibilities(sortedPolicyEligibilities as PolicyEligibilitiesPayload['policyEligibilities'])
         if (pagination) {
           const { totalPages } = pagination
           typeof totalPages === 'number' && setTotalPages(totalPages)
@@ -70,7 +71,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
         // disableSubmit={disableSubmit}
         cardTitle={ELIGIBILITY_LISTING}>
         {/* <Box className={classes.mainTableContainer}> */}
-          {/* <Grid container spacing={3}>
+        {/* <Grid container spacing={3}>
             <Grid item md={4} sm={12} xs={12}>
               <Box mt={2}>
                 <Search search={search} />
@@ -78,42 +79,42 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
             </Grid>
           </Grid> */}
 
-          <Box className="table-overflow" mt={4}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {renderTh(INSURANCE)}
-                  {renderTh(TIME_OF_CHECK)}
-                  {renderTh(STATUS)}
-                  {renderTh(ACTION)}
-                </TableRow>
-              </TableHead>
+        <Box className="table-overflow" mt={4}>
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                {renderTh(INSURANCE)}
+                {renderTh(TIME_OF_CHECK)}
+                {renderTh(STATUS)}
+                {renderTh(ACTION)}
+              </TableRow>
+            </TableHead>
 
-              <TableBody>
-                {policyEligibilities?.map((item, index) => {
-                  const { createdAt, payerName, id: eligibilityId } = item || {};
-                  return (
-                    <TableRow key={index}>
-                      <TableCell scope="row"> {payerName}</TableCell>
-                      <TableCell scope="row">{convertDateFromUnix(createdAt, 'DD MMM,YYYY hh:mm a')}</TableCell>
-                      <TableCell scope="row">{'Accepted'}</TableCell>
-                      <TableCell scope="row">
-                        <Link to={`${COVERAGE_ROUTE}/${eligibilityId}/${id}`}>
-                          <Typography color="secondary" className="text-underline">{COVERAGE_DETAILS}</Typography>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <TableBody>
+              {policyEligibilities?.map((item, index) => {
+                const { createdAt, payerName, id: eligibilityId } = item || {};
+                return (
+                  <TableRow key={index}>
+                    <TableCell scope="row"> {payerName}</TableCell>
+                    <TableCell scope="row">{convertDateFromUnix(createdAt, 'DD MMM,YYYY hh:mm a')}</TableCell>
+                    <TableCell scope="row">{'Accepted'}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${COVERAGE_ROUTE}/${eligibilityId}/${id}`}>
+                        <Typography color="secondary" className="text-underline">{COVERAGE_DETAILS}</Typography>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
 
-            {((!(getPolicyEligibilitiesLoading) && !policyEligibilities?.length) || (error)) && (
-              <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                <NoDataFoundComponent />
-              </Box>
-            )}
-          </Box>
+          {((!(getPolicyEligibilitiesLoading) && !policyEligibilities?.length) || (error)) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
+        </Box>
         {/* </Box> */}
 
         {totalPages > 1 && (

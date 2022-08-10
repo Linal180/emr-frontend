@@ -309,14 +309,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         variables: {
           getSlots: selectedProvider || onlyDoctor ?
             { providerId: onlyDoctor ? currentDoctor : selectedProvider, ...slotsInput }
-            : { facilityId: selectedFacility, ...slotsInput }
+            : { facilityId: isHigherAdmin ? selectedFacility : userFacilityId || '', ...slotsInput }
         }
       })
     }
-  }, [
-    currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch,
-    getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor
-  ])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor, isHigherAdmin, userFacilityId])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({

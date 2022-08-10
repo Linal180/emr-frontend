@@ -1,6 +1,6 @@
 //packages block
 import moment from 'moment'
-import { useCallback, useEffect, useState, Fragment } from 'react'
+import { useCallback, useEffect, useState, } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Box, colors, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
@@ -90,7 +90,7 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
 
 
   return (
-    <Fragment>
+    <Box>
       <Box display="flex" justifyContent="center">
         <AppointmentDatePicker date={date} setDate={setDate} />
       </Box>
@@ -118,7 +118,7 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
           )}
         </ul>
       )}
-    </Fragment>
+    </Box>
   )
 }
 

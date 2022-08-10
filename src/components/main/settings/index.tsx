@@ -204,17 +204,30 @@ export const SettingsComponent = () => {
 
         <CardComponent cardTitle={MISCELLANEOUS_SETTINGS}>
           <Box pb={3}>
-            {MISCELLANEOUS_SETTINGS_ITEMS.map(({ name, link, desc }) => {
+            {MISCELLANEOUS_SETTINGS_ITEMS.map(({ name, link, desc, permission }) => {
               return (
-                <Box className={classes.settingContainer}>
-                  <Link key={`${link}-${name}`} to={link}>
-                    <MenuItem>{name}</MenuItem>
-                  </Link>
+                permission ? userPermissions.includes(permission) && (
+                  <Box className={classes.settingContainer}>
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
+                    </Link>
 
-                  <Box pr={2} className={classes.inlinedashes}>-</Box>
+                    <Box pr={2} className={classes.inlinedashes}>-</Box>
 
-                  <Typography variant="body1">{desc}</Typography>
-                </Box>
+                    <Typography variant="body1">{desc}</Typography>
+                  </Box>
+                ) :
+                  (
+                    <Box className={classes.settingContainer}>
+                      <Link key={`${link}-${name}`} to={link}>
+                        <MenuItem>{name}</MenuItem>
+                      </Link>
+
+                      <Box pr={2} className={classes.inlinedashes}>-</Box>
+
+                      <Typography variant="body1">{desc}</Typography>
+                    </Box>
+                  )
               )
             })}
           </Box>

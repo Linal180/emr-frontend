@@ -219,7 +219,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
         <Box maxHeight="calc(100vh - 190px)">
           <Grid container spacing={3}>
-            <Grid md={6} item>
+            <Grid lg={6} md={8} sm={12} xs={12} item>
               <CardComponent cardTitle={SERVICE_INFO}>
                 <Grid container spacing={2}>
                   <Grid item md={6} sm={12} xs={12}>

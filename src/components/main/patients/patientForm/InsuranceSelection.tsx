@@ -1,5 +1,5 @@
 //packages import
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core"
+import { Box, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Radio } from "@material-ui/core"
 import { FC } from "react"
 //components import
 import CardComponent from "../../../common/CardComponent"
@@ -12,9 +12,10 @@ import { useExternalPatientStyles } from "../../../../styles/publicAppointmentSt
 import { useUpdateAppointmentMutation } from "../../../../generated/graphql"
 import Alert from "../../../common/Alert"
 import { useParams } from "react-router"
+import { ActionType } from "../../../../reducers/patientReducer"
 
 const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
-  shouldDisableEdit, selection, setSelection, state
+  shouldDisableEdit, selection, setSelection, state, dispatch
 }) => {
   const classes = useExternalPatientStyles()
   const { appointmentId } = useParams<ParamsType>()
@@ -29,6 +30,12 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
     onError({ message }) {
       Alert.error(message)
     },
+
+    onCompleted(data) {
+      if (data) {
+        dispatch && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: 1 })
+      }
+    }
   });
 
   const handleAppointmentUpdate = async () => {
@@ -52,7 +59,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Checkbox
+                  <Radio
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'insurance'}
@@ -67,7 +74,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Checkbox
+                  <Radio
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'noInsurance'}
@@ -82,7 +89,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Checkbox
+                  <Radio
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'internationalTraveler'}
@@ -97,7 +104,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Checkbox
+                  <Radio
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'contract'}

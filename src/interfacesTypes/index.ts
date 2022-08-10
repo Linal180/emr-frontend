@@ -1149,6 +1149,7 @@ export interface InsuranceSelectionProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   setSelection?: Function
   selection?: string
+  dispatch?: Dispatch<PatientAction>
   state?: PatientState
 }
 

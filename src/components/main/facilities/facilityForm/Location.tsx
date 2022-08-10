@@ -41,6 +41,7 @@ const FacilityLocationCard: FC<FacilityCardsProps> = ({ getFacilityLoading, stat
         dispatch && dispatch({ type: ActionType.SET_DATA, data: options })
         dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       } else {
+        Alert.error('Invalid Address or Inactive Subscription')
         dispatch && dispatch({ type: ActionType.SET_DATA, data: [] })
         dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: false })
       }
