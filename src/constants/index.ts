@@ -2404,6 +2404,7 @@ export enum MODULE_TYPES {
   Schedules = "Schedules",
   Permission = "Permission",
   Agreements = 'Agreements',
+  Attachments = 'Attachments',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
@@ -2421,6 +2422,7 @@ export const MODULES = [
   "Schedule",
   'Agreements',
   "Lab Orders",
+  'Attachments',
   "Patient Charting",
 ];
 
