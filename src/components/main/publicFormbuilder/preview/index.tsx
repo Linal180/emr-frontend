@@ -44,7 +44,7 @@ const PublicFormPreview = () => {
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, getValues } = methods;
   const isSubmit = formValues?.length - 1 === activeStep
 
   const [getForm] = useGetPublicFormLazyQuery({
@@ -114,6 +114,7 @@ const PublicFormPreview = () => {
             }
             if (activeStep === 0 && formType === FormType.Appointment) {
               Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY)
+              isUnder18()
             }
             nextStepHandler()
           }
@@ -247,6 +248,31 @@ const PublicFormPreview = () => {
 
   const backStepHandler = () =>
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
+
+
+  const isUnder18 = () => {
+    if (formType === FormType.Appointment) {
+      let ageFormElement = null;
+      formValues?.find((tab) => {
+        const { sections } = tab || {}
+        sections?.map((section) => {
+          const { fields } = section || {}
+          const dobElement = fields?.find(({ columnName }) => columnName === 'dob')
+          if (dobElement) {
+            const { fieldId } = dobElement || {}
+            ageFormElement = fieldId
+          }
+          return section
+        })
+        return tab
+      })
+      if (ageFormElement) {
+        const value = getValues(ageFormElement)
+        console.log('value', value)
+      }
+
+    }
+  }
 
   return (
     <Box bgcolor={GREY}>
