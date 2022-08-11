@@ -12,7 +12,7 @@ const PatientGuardianCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldD
   return (
     <CardComponent cardTitle={GUARDIAN}>
       <Grid container spacing={3}>
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <InputController
             disabled={shouldDisableEdit}
             fieldType="text"
@@ -22,7 +22,7 @@ const PatientGuardianCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldD
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <InputController
             disabled={shouldDisableEdit}
             fieldType="text"
@@ -32,7 +32,7 @@ const PatientGuardianCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldD
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <InputController
             disabled={shouldDisableEdit}
             fieldType="text"
@@ -42,7 +42,7 @@ const PatientGuardianCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldD
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <InputController
             disabled={shouldDisableEdit}
             fieldType="text"

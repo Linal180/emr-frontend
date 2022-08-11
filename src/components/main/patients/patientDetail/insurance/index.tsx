@@ -150,7 +150,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
       <>
         <Box>
           <Card>
-            <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' justifyContent='space-between' alignItems='center'>
+            <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
               <Typography variant="h3" color="initial">
                 {INSURANCES}
               </Typography>
@@ -181,9 +181,9 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                 return (
                   <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
-                    <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
-                      <Box display='flex' alignItems='center'>
-                        <Box mr={2} display='flex' alignItems='center'>
+                    <Box mb={3} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+                      <Box display='flex' alignItems='center' flexWrap='wrap'>
+                        <Box mr={2} display='flex' alignItems='center' flexWrap='wrap'>
                           <Typography variant="h4">{fetchAllPoliciesLoading ? renderTextLoading() : payerName}</Typography>
 
                           {fetchAllPoliciesLoading ? renderTextLoading() :

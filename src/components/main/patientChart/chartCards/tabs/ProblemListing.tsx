@@ -14,6 +14,7 @@ import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, interfaces ang graphql block
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
@@ -31,7 +32,8 @@ import {
 } from "../../../../../generated/graphql";
 
 const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
-  const classes = useChartingStyles()
+  const classes = useChartingStyles();
+  const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
 
   const [state, dispatch] =
@@ -158,7 +160,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               </Box>
 
               <Box className={classes.tableBox}>
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classesTable.table}>
                   <TableHead>
                     <TableRow>
                       {renderTh(ICD_CODE)}

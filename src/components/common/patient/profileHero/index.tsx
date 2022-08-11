@@ -436,7 +436,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       <Box>
         {renderName()}
 
-        <Box display="flex" alignItems="baseline">
+        <Box display="flex" flexWrap="wrap" alignItems="baseline">
           {renderAge()}
 
           <Box p={1} />
