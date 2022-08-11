@@ -1,8 +1,8 @@
 // packages block
 import { FC } from "react";
 // components block
-import ClaimStatusComponent from "../../../../components/main/billing/claimStatusListing";
+import BillingClaimStatusComponent from "../../../../components/main/billing/listing";
 
-const ClaimStatus: FC = (): JSX.Element => <ClaimStatusComponent />;
+const ClaimStatus: FC = (): JSX.Element => <BillingClaimStatusComponent />;
 
 export default ClaimStatus;

@@ -494,6 +494,7 @@ export interface StepperData {
 }
 
 export interface SearchComponentProps {
+  text?: string;
   info?: boolean;
   placeHolder?: string;
   tooltipData?: TooltipData[]
@@ -756,6 +757,10 @@ export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
   loading?: boolean;
+}
+
+export interface EligibilityTableComponentProps extends GeneralFormProps {
+  appointmentId?: string
 }
 
 export interface NoDataComponentProps {

@@ -245,11 +245,6 @@ input[type="email"] {
   /* width: 42px; */
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
-  /* height: 42px; */
-  /* width: 42px; */
-}
-
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected {
   background-color: #204ECF;
 }
@@ -1156,20 +1151,14 @@ input[type=number] {
   }
 }
 
-@media(max-width : 572px) {
-  .page-hero-box {
-    flex-direction: column;
-  }
-
-  .breadcrumb-list {
-    margin-bottom: 10px;
-  }
-}
-
 .csvLink {
   color: inherit;
 }
 
 .ck-content {
   height: 320px;
+}
+
+.not-link {
+  text-decoration: none !important;
 }

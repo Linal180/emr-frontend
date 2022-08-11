@@ -13,7 +13,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
-import { getPageNumber, renderTh } from "../../../../utils";
+import { getPageNumber, isLast, renderTh } from "../../../../utils";
 import { AuthContext } from "../../../../context";
 import { TrashNewIcon } from "../../../../assets/svgs";
 import { RolesTableProps } from "../../../../interfacesTypes";
@@ -103,7 +103,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: false })
 
-            if (!!roles && roles.length > 1) {
+            if (!!roles && (roles.length > 1 || isLast(roles.length, page))) {
               await findAllRoles();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, roles?.length || 0) })

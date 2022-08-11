@@ -1,5 +1,5 @@
 // packages block
-import { forwardRef, Fragment, useImperativeHandle, useState } from "react";
+import { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from "react";
 import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { useTableStyles } from "../../styles/tableStyles";
@@ -8,10 +8,10 @@ import { FormForwardRef, SearchComponentProps } from "../../interfacesTypes";
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 
 const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(
-  ({ search, info, tooltipData, placeHolder, submit }, searchRef
+  ({ text = '', search, info, tooltipData, placeHolder, submit }, searchRef
   ): JSX.Element => {
     const classes = useTableStyles()
-    const [query, setQuery] = useState<string>('')
+    const [query, setQuery] = useState<string>(text)
     const [open, setOpen] = useState(false);
 
     const handleTooltipClose = () => setOpen(false);
@@ -29,6 +29,10 @@ const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(
         handleClear()
       }
     }));
+
+    useEffect(() => {
+      text && setQuery(text)
+    }, [text])
 
     return (
       <Box className={classes.searchBox}>

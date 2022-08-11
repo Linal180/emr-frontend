@@ -134,7 +134,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             </Grid>
           </Grid>
 
-          <Grid item lg={2} md={4}>
+          <Grid item lg={2} md={4} sm={12} xs={12}>
             <InputController
               isRequired
               fieldType="text"
@@ -145,7 +145,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             />
           </Grid>
 
-          <Grid item lg={2} md={4}>
+          <Grid item lg={2} md={4} sm={12} xs={12}>
             <Selector
               isRequired
               label={STATE}
@@ -156,7 +156,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             />
           </Grid>
 
-          <Grid item lg={2} md={4}>
+          <Grid item lg={2} md={4} sm={12} xs={12}>
             <CountryController loading={getPatientLoading} controllerName="basicCountry" />
           </Grid>
         </Grid>

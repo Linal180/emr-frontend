@@ -28,7 +28,7 @@ import {
 } from "../../../../constants";
 import {
   AppointmentsPayload, AppointmentStatus, AttachmentsPayload, PatientPayload,
-  PatientProviderPayload, useFindAllAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
+  PatientProviderPayload, useFindAllAppointmentsLazyQuery, useFindAllUpcomingAppointmentsLazyQuery, useGetPatientProvidersLazyQuery
 } from '../../../../generated/graphql';
 import { ParamsType } from "../../../../interfacesTypes";
 import {
@@ -37,7 +37,7 @@ import {
 import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../../reducers/mediaReducer";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getFormattedDate, hasEncounter } from '../../../../utils';
+import { hasEncounter } from '../../../../utils';
 // import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -65,14 +65,60 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [routeParamValue])
 
   const [findUpComingAppointments, { loading: upComingLoading, error: upComingError }] =
-    useFindAllAppointmentsLazyQuery({
+    useFindAllUpcomingAppointmentsLazyQuery({
       fetchPolicy: "network-only",
       nextFetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
 
       onError() {
         appointmentDispatch({ type: appointmentActionType.SET_UP_COMING, upComing: [] });
+      },
+
+      onCompleted(data) {
+        const { findAllUpcomingAppointments } = data || {};
+
+        if (findAllUpcomingAppointments) {
+          const { appointments } = findAllUpcomingAppointments
+
+          appointmentDispatch({
+            type: appointmentActionType.SET_UP_COMING,
+            upComing: appointments?.filter((appointment) => appointment?.status && ![AppointmentStatus.Cancelled, AppointmentStatus.Discharged].includes(appointment?.status)) as AppointmentsPayload['appointments']
+          });
+        }
+      }
+    });
+
+  const [findPastAppointments, { loading: pastLoading, error: pastError }] =
+    useFindAllUpcomingAppointmentsLazyQuery({
+      fetchPolicy: "network-only",
+      nextFetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+
+      onError() {
         appointmentDispatch({ type: appointmentActionType.SET_COMPLETED, completed: [] });
+      },
+
+      onCompleted(data) {
+        const { findAllUpcomingAppointments } = data || {};
+
+        if (findAllUpcomingAppointments) {
+          const { appointments } = findAllUpcomingAppointments
+
+          appointmentDispatch({
+            type: appointmentActionType.SET_COMPLETED,
+            completed: appointments as AppointmentsPayload['appointments']
+          });
+        }
+      }
+    });
+
+  const [findEncounters] =
+    useFindAllAppointmentsLazyQuery({
+      fetchPolicy: "network-only",
+      nextFetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+
+      onError() {
         appointmentDispatch({ type: appointmentActionType.SET_ENCOUNTERS, encounters: [] });
       },
 
@@ -83,26 +129,8 @@ const PatientDetailsComponent = (): JSX.Element => {
           const { appointments } = findAllAppointments
 
           appointmentDispatch({
-            type: appointmentActionType.SET_UP_COMING,
-            upComing: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) >
-              new Date() && appointment?.status === AppointmentStatus.Scheduled) as AppointmentsPayload['appointments']
-          });
-
-          appointmentDispatch({
-            type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter(appointment => {
-              const { status } = appointment || {}
-
-              return hasEncounter(status as AppointmentStatus)
-            }) as AppointmentsPayload['appointments']
+            type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter((appointment) => appointment?.status && hasEncounter(appointment?.status)) as AppointmentsPayload['appointments']
           })
-
-          appointmentDispatch({
-            type: appointmentActionType.SET_COMPLETED,
-            completed: appointments?.filter(appointment =>
-              new Date(getFormattedDate(appointment?.scheduleStartDateTime || '')) <
-              new Date()) as AppointmentsPayload['appointments']
-          });
         }
       }
     });
@@ -110,6 +138,38 @@ const PatientDetailsComponent = (): JSX.Element => {
   const fetchComing = useCallback(async () => {
     try {
       id && await findUpComingAppointments({
+        variables: {
+          upComingAppointmentsInput: {
+            patientId: id,
+            shouldFetchPast: false,
+            paginationOptions: {
+              limit: LIST_PAGE_LIMIT, page: pageComing
+            },
+          }
+        }
+      })
+    } catch (error) { }
+  }, [findUpComingAppointments, pageComing, id])
+
+  const fetchPast = useCallback(async () => {
+    try {
+      id && await findPastAppointments({
+        variables: {
+          upComingAppointmentsInput: {
+            patientId: id,
+            shouldFetchPast: true,
+            paginationOptions: {
+              limit: LIST_PAGE_LIMIT, page: pageComing
+            },
+          }
+        }
+      })
+    } catch (error) { }
+  }, [id, findPastAppointments, pageComing])
+
+  const fetchEncounters = useCallback(async () => {
+    try {
+      id && await findEncounters({
         variables: {
           appointmentInput: {
             patientId: id,
@@ -120,7 +180,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [findUpComingAppointments, pageComing, id])
+  }, [id, findEncounters, pageComing])
 
   const handleProviderEdit = (id: string, providerId: string) => {
     dispatch({ type: ActionType.SET_DOCTOR_PATIENT_ID, doctorPatientId: id })
@@ -164,8 +224,12 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [fetchAllPatientsProviders]);
 
   useEffect(() => {
-    id && fetchComing();
-  }, [fetchComing, id]);
+    if (id) {
+      fetchComing();
+      fetchPast();
+      fetchEncounters();
+    }
+  }, [fetchComing, fetchEncounters, fetchPast, id]);
 
   return (
     <Box>
@@ -223,7 +287,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                     <AppointmentList appointments={completed} type={AppointmentStatus.Discharged} />
                   </Box>
 
-                  {((!upComingLoading && completed?.length === 0) || upComingError) && (
+                  {((!pastLoading && completed?.length === 0) || pastError) && (
                     <Box display="flex" justifyContent="center" pb={12} pt={5}>
                       <NoDataComponent />
                     </Box>

@@ -14,7 +14,7 @@ import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 import { FormForwardRef, GeneralFormProps } from '../../../interfacesTypes';
 import { useTableStyles } from '../../../styles/tableStyles';
 import { EditNewIcon, TrashNewIcon } from '../../../assets/svgs';
-import { convertDateFromUnix, renderTh, getPageNumber } from '../../../utils';
+import { convertDateFromUnix, renderTh, getPageNumber, isLast } from '../../../utils';
 import {
   ACTIONS, ADD_CLAIM_STATUS, CANT_DELETE_CLAIM_STATUS, CLAIM_STATUSES, CLAIM_STATUS_NEW_BREAD,
   CREATED_ON, DASHBOARD_BREAD, DELETE_CLAIM_STATUS_DESCRIPTION, NAME, PAGE_LIMIT
@@ -72,7 +72,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
       await getClaimStatuses({
         variables: {
           claimStatusPaginationInput: {
-            paginationOptions: { page, limit: PAGE_LIMIT },
+            paginationOptions: { page, limit: 3 || PAGE_LIMIT },
             searchString: searchQuery.trim(),
           }
         }
@@ -97,7 +97,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
           try {
             setOpenDelete(false)
-            if(claimStatuses && claimStatuses.length > 1){
+            if(!!claimStatuses && (claimStatuses.length > 1 || isLast(claimStatuses.length, page))){
               await fetchClaimStatuses()
             } else {
               setPage(getPageNumber(page, claimStatuses?.length || 0))
@@ -148,7 +148,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

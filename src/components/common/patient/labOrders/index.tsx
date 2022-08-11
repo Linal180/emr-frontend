@@ -178,12 +178,16 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
       <Box className={classes.mainTableContainer}>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(() => { })}>
-            <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-              <Search search={search} />
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center">
+              <Box mb={2}>
+                <Search search={search} />
+              </Box>
 
-              <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
-                {MANUAL_ENTRY}
-              </Button>
+              <Box mb={2}>
+                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
+                  {MANUAL_ENTRY}
+                </Button>
+              </Box>
             </Box>
 
 
@@ -201,7 +205,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
 
 
             <Box className="table-overflow">
-              <Table aria-label="customized table">
+              <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
                     {renderTh(ORDER_NUM)}
