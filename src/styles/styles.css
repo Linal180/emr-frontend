@@ -1133,16 +1133,6 @@ input[type=number] {
   }
 }
 
-@media(max-width : 572px) {
-  .page-hero-box {
-    flex-direction: column;
-  }
-
-  .breadcrumb-list {
-    margin-bottom: 10px;
-  }
-}
-
 .csvLink {
   color: inherit;
 }

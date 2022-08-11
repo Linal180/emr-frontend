@@ -328,7 +328,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
           </Box>
 
           <Box className="table-overflow" maxHeight={410}>
-            <Table aria-label="customized table">
+            <Table aria-label="customized table" className={classes.table}>
               <TableHead>
                 <TableRow>
                   {renderTh(NAME)}

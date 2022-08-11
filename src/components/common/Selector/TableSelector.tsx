@@ -1,6 +1,6 @@
 //packages block
 import {
-  Box, Card, Grid, IconButton, Typography,
+  Box, Card, IconButton, Typography,
   Table, TableBody, TableCell, TableHead, TableRow,
 } from "@material-ui/core";
 import { FC } from "react";
@@ -20,7 +20,6 @@ import { CodeType } from "../../../generated/graphql";
 import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
 import { SearchTooltip } from "../../../styles/searchTooltip";
 import { useTableStyles } from "../../../styles/tableStyles";
-import { GREY_NINE } from "../../../theme";
 import { TrashNewIcon } from "../../../assets/svgs";
 import { renderTh } from "../../../utils";
 
@@ -135,7 +134,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                   <Table aria-label="customized table" className={classes.table}>
                     <TableHead>
                       <TableRow>
-                        {renderTh('SR_NO')}
+                        {renderTh(SR_NO)}
                         {
                           shouldShowPrice ?
                             <>
