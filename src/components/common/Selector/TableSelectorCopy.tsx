@@ -22,7 +22,7 @@ import { SearchTooltip } from "../../../styles/searchTooltip";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { GREY_NINE } from "../../../theme";
 import { TrashNewIcon } from "../../../assets/svgs";
-import { renderTh } from "../../../utils";
+import { renderTh } from '../../../utils'
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice, feeScheduleId }) => {
   const classes = useTableStyles()
@@ -128,14 +128,13 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
               </Box>
             </Box>
 
-
             <Box className={classes.mainTableContainer}>
               <Box className="table-overflow appointment-view-list">
                 <FormProvider {...parentMethods}>
                   <Table aria-label="customized table" className={classes.table}>
                     <TableHead>
                       <TableRow>
-                        {renderTh('SR_NO')}
+                        {renderTh(SR_NO)}
                         {
                           shouldShowPrice ?
                             <>
@@ -144,14 +143,13 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                               {renderTh(BILLED_FEE_DOLLAR)}
                               {renderTh(MODIFIERS)}
                               {renderTh(DIAGNOSIS_POINTERS)}
-
-
-                            </> : <>
                               {renderTh(CODE)}
                               {renderTh(DESCRIPTION)}
+                            </> : <>
+                              {renderTh(CODE)}
+                              {renderTh(ACTIONS, "center")}
                             </>
                         }
-                        {renderTh(ACTIONS)}
                       </TableRow>
                     </TableHead>
 
@@ -159,14 +157,9 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                       {(tableCodeFields)?.map(({
                         code, description, codeId, price
                       }, index) => {
-                        return <>
-                          <TableRow key={index}>
-                            <TableCell scope="row">
-                              <Box>
-                                {index + 1}
-                              </Box>
-                            </TableCell>
-
+                        return (
+                          <TableRow>
+                            <TableCell scope="row">{index + 1}</TableCell>
                             <TableCell scope="row">
                               <SearchTooltip
                                 PopperProps={{
@@ -177,80 +170,17 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                 className={classes.tooltipContainer}
                                 title={description}
                               >
-                                <Box>{code}</Box>
+                                <div>{code}</div>
                               </SearchTooltip>
                             </TableCell>
-
-                            {
-                              shouldShowPrice ?
-                                <>
-                                  <TableCell scope="row">
-                                    <Box maxWidth={100}>
-                                      <InputController
-                                        fieldType="text"
-                                        controllerName={`${moduleName}.${index}.unit`}
-                                        controllerLabel={""}
-                                        margin={'none'}
-                                        onChange={(data: string) => {
-                                          return price && Number(data) >= 1 && setFormValue(`${ITEM_MODULE.cptFeeSchedule}.${index}.price`, String(Number(data) * Number(price)) as never)
-                                        }}
-                                      />
-                                    </Box>
-                                  </TableCell>
-
-                                  <TableCell scope="row">
-                                    <Box maxWidth={200}>
-                                      <InputController
-                                        fieldType="text"
-                                        controllerName={`${moduleName}.${index}.price`}
-                                        controllerLabel={""}
-                                        margin={'none'}
-                                      />
-                                    </Box>
-                                  </TableCell>
-
-                                  <TableCell scope="row">
-                                    <Box display='flex'>
-                                      {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
-                                        return <Box mr={1} flex={1} minWidth={120}>
-                                          <ModifierSelector
-                                            addEmpty
-                                            name={`${moduleName}.${index}.m${modIndex + 1}`}
-                                            label={MODIFIER}
-                                            shouldShowLabel={false}
-                                          />
-                                        </Box>
-                                      })}
-                                    </Box>
-                                  </TableCell>
-
-                                  <TableCell scope="row">
-                                    <Box display='flex'>
-                                      {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
-                                        return <Box mr={1} minWidth={100} maxWidth={100}>
-                                          <InputController
-                                            placeholder={item}
-                                            fieldType="number"
-                                            controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
-                                            controllerLabel={""}
-                                            margin={'none'}
-                                          />
-                                        </Box>
-                                      })}
-                                    </Box>
-                                  </TableCell>
-                                </>
-                                : <TableCell scope="row">
-                                  {description}
-                                </TableCell>
-                            }
-                            <TableCell>
+                          
+                            <TableCell scope="row">
                               <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
                                 <TrashNewIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
-                        </>
+                        )
                       })}
                     </TableBody>
                   </Table>
@@ -258,7 +188,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
               </Box>
             </Box>
 
-            {/* <Box>
+            <Box>
               <Box pl={4} my={2} bgcolor={GREY_NINE}>
                 <Grid container spacing={3} direction="row">
                   <Grid item md={1} sm={1} xs={1}>
@@ -402,7 +332,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                 }
                 )}
               </FormProvider>
-            </Box> */}
+            </Box>
             {(!tableCodeFields?.length) && (
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
                 <NoDataComponent />

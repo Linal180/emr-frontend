@@ -84,7 +84,6 @@ export const useExternalPatientStyles = makeStyles({
 
   stepperContainer: {
     "& .MuiStepper-root": {
-      marginTop: 40,
       padding: 30,
 
       "& .MuiStepConnector-vertical": {

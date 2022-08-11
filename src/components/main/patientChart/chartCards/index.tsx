@@ -28,7 +28,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
         <Grid container spacing={3}>
           <Grid item lg={2} md={3} sm={12} xs={12}>
             <Card>
-              <Box p={3} className={classes.cardBox} minHeight={450}>
+              <Box p={3} className={classes.cardBox} minHeight={250}>
                 <TabList className={classes.tabList}
                   orientation='vertical'
                   onChange={handleChange}

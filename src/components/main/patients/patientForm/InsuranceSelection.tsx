@@ -54,7 +54,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
         <FormControl component="fieldset">
           <FormLabel className={classes.privacyLabelHeader} component="li">{INSURANCE_DISCLAIMER}</FormLabel>
 
-          <Box display="flex" pb={2}>
+          <Box display="flex" flexWrap="wrap" pb={2}>
             <FormGroup className={classes.privacyFormGroup}>
               <FormControlLabel
                 className={classes.privacyLabelDescription}

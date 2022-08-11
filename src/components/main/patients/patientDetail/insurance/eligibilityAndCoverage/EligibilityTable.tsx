@@ -17,11 +17,13 @@ import {
 } from "../../../../../../generated/graphql";
 import { GeneralFormProps } from "../../../../../../interfacesTypes";
 import { convertDateFromUnix, renderTh } from "../../../../../../utils";
+import { useTableStyles } from "../../../../../../styles/tableStyles";
 
 const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
   const [policyEligibilities, setPolicyEligibilities] = useState<PolicyEligibilitiesPayload['policyEligibilities']>()
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
+  const classesTable = useTableStyles();
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) => setPage(page)
 
@@ -80,7 +82,7 @@ const EligibilityTableComponent: FC<GeneralFormProps> = ({ id }) => {
           </Grid> */}
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classesTable.table}>
             <TableHead>
               <TableRow>
                 {renderTh(INSURANCE)}
