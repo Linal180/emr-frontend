@@ -1,23 +1,25 @@
+// packages block
 import { Box, Grid, Typography } from "@material-ui/core";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { BloodPressureIcon, HeartRateIcon } from "../../../../../assets/svgs";
+//components block
+import AreaChartComponent from "../charts";
+// constants, history, styling block
 import {
-  BLOOD_PRESSURE_TEXT,
-  BLOOD_PRESSURE_UNIT, HEART_RATE_TEXT, HEART_RATE_UNIT, LAST_READING_TEXT, N_A
+  BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT, HEART_RATE_TEXT, HEART_RATE_UNIT, LAST_READING_TEXT, N_A
 } from "../../../../../constants";
 import { PatientVitalPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
 import { GeneralFormProps, ParamsType } from "../../../../../interfacesTypes";
-import { getBloodPressureGraphValues, getBloodPressureStatus, getFormatDateString, getHeartBeatStatus, getPulseRateGraphValues } from "../../../../../utils";
-import AreaChartComponent from "../charts";
+import {
+  getBloodPressureGraphValues, getBloodPressureStatus, getFormatDateString, getHeartBeatStatus, getPulseRateGraphValues
+} from "../../../../../utils";
 
 const VitalCard: FC<GeneralFormProps> = () => {
   const [vital, setVital] = useState<PatientVitalPayload['patientVital']>()
   const [bloodPressures, setBloodPressures] = useState<number[]>([])
   const [pulseRates, setPulseRates] = useState<number[]>([])
   const { id } = useParams<ParamsType>()
-
-  console.log("bloodPressures", bloodPressures)
 
   const [getPatientLatestVital] = useFindAllPatientVitalsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -63,7 +65,6 @@ const VitalCard: FC<GeneralFormProps> = () => {
   useEffect(() => {
     fetchAllPatientsLatestVital()
   }, [fetchAllPatientsLatestVital]);
-
 
   const { vitalCreationDate, systolicBloodPressure, diastolicBloodPressure, pulseRate } = vital || {}
   const { color: bloodPressureColor, status: bloodPressureStatus } = getBloodPressureStatus(Number(systolicBloodPressure || 0), Number(diastolicBloodPressure || 0))
@@ -135,4 +136,4 @@ const VitalCard: FC<GeneralFormProps> = () => {
   )
 }
 
-export default VitalCard
+export default VitalCard;

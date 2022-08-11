@@ -3291,10 +3291,11 @@ export const areaChartOne = {
   credits: { enabled: false },
   tooltip: { enabled: false },
   chart: {
-    type: 'area',
+    type: 'areaspline',
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
+    marginBottom: 0,
 
   },
   accessibility: {
@@ -3339,14 +3340,13 @@ export const areaChartOne = {
           }
         },
       },
-      fillColor: '#F6E4E5'
+      fillColor: '#F6E4E5',
     },
     column: {
       pointPadding: 0.4,
       borderWidth: 0,
       borderRadius: 4,
-    }
-
+    },
   },
   series: [{
     name: 'USA',
@@ -3362,9 +3362,10 @@ export const areaChartTwo = {
   credits: { enabled: false },
   tooltip: { enabled: false },
   chart: {
-    type: 'area',
+    type: 'areaspline',
     styledMode: false,
     backgroundColor: "#ffffff",
+    renderTo: 'container',
     marginBottom: 0,
   },
   accessibility: {

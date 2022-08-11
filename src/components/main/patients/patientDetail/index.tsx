@@ -201,6 +201,8 @@ const PatientDetailsComponent = (): JSX.Element => {
             <PortalAccessCard inviteAccepted={Boolean(patientData?.inviteAccepted)} />
 
             <Box mb={2} pb={4} className='masonry-container'>
+              <VitalCard />
+
               <Box className='masonry-box'>
                 <CardComponent cardTitle={UPCOMING_APPOINTMENTS}>
                   <Box pb={3}>
@@ -214,8 +216,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                   )}
                 </CardComponent>
               </Box>
-
-              <VitalCard />
 
               <Box className='masonry-box'>
                 <CardComponent cardTitle={PAST_APPOINTMENTS}>

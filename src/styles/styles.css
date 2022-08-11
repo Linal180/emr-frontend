@@ -729,22 +729,25 @@ input::-webkit-inner-spin-button {
 }
 
 .areaBloodPressureChart .highcharts-container {
-  transform: translate(-60px, 221px) scale(1.5) !important;
+  /* transform: translate(-60px, 221px) scale(1.5) !important; */
+  transform: translate(-32px, 10px) scale(1.2) !important;
 }
 
 .areaChartContainer>div>div {
   height: 300px !important;
+  width: 100% !important;
 }
 
 .areaChartContainer svg {
-  height: 230px !important;
-  transform: scale(1.5) !important;
+  /* height: 230px !important; */
+  transform: scale(1.1) !important;
+  width: 100% !important;
 }
 
 .bloodPressure-measurement {
   position: absolute;
   left: 30px;
-  top: 135px;
+  /* top: 135px; */
   color: #CA6B6E;
   z-index: 1;
 }
@@ -757,7 +760,7 @@ input::-webkit-inner-spin-button {
 .heartRate-measurement {
   position: absolute;
   left: 30px;
-  top: 135px;
+  /* top: 135px; */
   color: #1BC5BD;
   z-index: 1;
 }
