@@ -20,7 +20,7 @@ import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
 import { renderTh, isUserAdmin } from "../../../../utils";
 import { ClaimStatusForm } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { BillingsPayload, useFetchBillingClaimStatusesLazyQuery } from "../../../../generated/graphql";
+import { BillingPayload, BillingsPayload, useFetchBillingClaimStatusesLazyQuery } from "../../../../generated/graphql";
 import { State, Action, claimStatusReducer, ActionType, initialState } from "../../../../reducers/claimStatusReducer";
 import {
   APPLY_FILTER, BILLED_AMOUNT, CLAIM_ID, CLAIM_STATUS, DATE_OF_SERVICE, FACILITY, FROM_DATE,
@@ -38,7 +38,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
 
   const { watch, setValue } = methods;
   const { claimNo, claimStatus, facility, from, patient, to } = watch()
-  const { isRejectedModalOpen, openAdvancedSearch, page, totalPages, claimStatuses } = state;
+  const { isRejectedModalOpen, openAdvancedSearch, page, totalPages, claimStatuses, selectedClaim } = state;
 
   const [fetchBillingClaimStatus, { loading, error }] = useFetchBillingClaimStatusesLazyQuery({
     onCompleted(data) {
@@ -58,7 +58,10 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
     }
   })
 
-  const handleClickOpen = () => dispatch({ type: ActionType.SET_REJECTED_MODAL, isRejectedModalOpen: true });
+  const handleClickOpen = (billingClaim: BillingPayload['billing']) => {
+    dispatch({ type: ActionType.SET_SELECTED_CLAIM, selectedClaim: billingClaim });
+    dispatch({ type: ActionType.SET_REJECTED_MODAL, isRejectedModalOpen: true });
+  }
   const advanceSearchHandler = () => dispatch({ type: ActionType.SET_ADVANCE_MODAL, openAdvancedSearch: !openAdvancedSearch });
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
@@ -105,6 +108,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
     setValue('patient', { id: '', name: '' })
     setValue('facility', { id: '', name: '' })
     setValue('claimStatus', { id: '', name: '' })
+    fetchBillingClaim()
   }
 
 
@@ -240,7 +244,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Button variant="text" onClick={handleClickOpen} size="small">
+                            <Button variant="text" onClick={() => handleClickOpen(item)} size="small">
                               <Typography variant="body2" color="secondary">{statusName}</Typography>
                             </Button>
                           </TableCell>
@@ -263,6 +267,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
           isRejectedModalOpen &&
           <RejectedModal
             isOpen={isRejectedModalOpen}
+            billingClaim={selectedClaim}
             setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_REJECTED_MODAL, isRejectedModalOpen: isOpen })}
           />
         }

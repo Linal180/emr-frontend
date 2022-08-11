@@ -1,17 +1,19 @@
 // packages block
 import { FC } from "react";
 import { FormProvider, useForm, } from "react-hook-form";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from "@material-ui/core";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@material-ui/core";
 // components block
 // interfaces/types block, theme, svgs and constants
+import { ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
 import { CopayFields, RejectedModalProps, } from "../../interfacesTypes";
-import { ISSUES, OKAY, } from "../../constants";
 
-const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, }): JSX.Element => {
+const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, billingClaim }): JSX.Element => {
   const methods = useForm<CopayFields>({
     mode: "all",
   });
   const { reset } = methods;
+  const { claim } = billingClaim || {}
+  const { errorMessages } = claim || {}
 
   const handleClose = () => {
     reset();
@@ -20,7 +22,8 @@ const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, }): JSX.Elem
 
   return (
     <Dialog
-      maxWidth="sm"
+      maxWidth="xs"
+      fullWidth
       open={isOpen}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
@@ -32,11 +35,15 @@ const RejectedModal: FC<RejectedModalProps> = ({ isOpen, setIsOpen, }): JSX.Elem
         <form>
           <DialogContent>
             <Box className="dialogBg">
-              <ul>
-                <li>Insurance ID is not valid</li>
-                <li>CPT code “1b2.2” should be replaces by “1b2.20”</li>
-                <li>Tax ID field is mandatory</li>
-              </ul>
+              {errorMessages && errorMessages?.length ?
+                <ul>
+                  {errorMessages?.map((val) => (
+                    <li>{val}</li>
+                  ))}
+                </ul> : <Typography>
+                  {NO_ERROR_FOUND}
+                </Typography>
+              }
             </Box>
           </DialogContent>
 

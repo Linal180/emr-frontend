@@ -42,7 +42,8 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput
+  FetchBillingClaimStatusesInput,
+  BillingPayload
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -1202,7 +1203,8 @@ export interface CopayModalProps {
 export interface RejectedModalProps {
   isOpen: boolean;
   setIsOpen: Function;
-  handleClose?: () => void
+  handleClose?: () => void;
+  billingClaim: BillingPayload['billing'] | null
 }
 
 export interface ClaimStatusModalProps extends GeneralFormProps {
