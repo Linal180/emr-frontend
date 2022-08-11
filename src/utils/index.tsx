@@ -2202,3 +2202,12 @@ export const getClaimBtnText = (statusName: string) => {
 export const isLast = (count: number, page: number) => {
   return count === 1 && page === 1
 }
+
+
+export const calculateAge = (birthday: string) => {
+  //birthday must be in YYYY-MM-DD format
+  const birthdayDate = new Date(birthday);
+  const ageDifMs = Date.now() - birthdayDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
