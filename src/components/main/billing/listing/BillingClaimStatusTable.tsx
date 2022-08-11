@@ -1,33 +1,30 @@
 // packages block
+import { FC, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import {
   Box, Button, Card, Collapse, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
-import { FC, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 // components block
-import InputController from "../../../../controller";
-import DatePicker from "../../../common/DatePicker";
 import Selector from "../../../common/Selector";
+import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 import RejectedModal from "../../../common/RejectedModal";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { renderTh } from "../../../../utils";
+import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
+import { useTableStyles } from "../../../../styles/tableStyles";
 import {
   APPLY_FILTER, BILLED_AMOUNT, CLAIM_ID, CLAIM_STATUS, CLAIM_STATUS_DUMMY_DATA, DATE_OF_SERVICE,
   EMPTY_OPTION, FACILITY, FROM_DATE, MAPPED_STATES, PATIENT, PAYER, REJECTED, STATUS, TO_DATE, UPDATE_FILTER
 } from "../../../../constants";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
-import { renderTh } from "../../../../utils";
 
-const ClaimStatusTable: FC = (): JSX.Element => {
+const BillingClaimStatusTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false)
   const [openAdvancedSearch, setOpenAdvancedSearch] = useState(false)
 
-  const methods = useForm({
-    mode: "all",
-  });
-
+  const methods = useForm({ mode: "all" });
   const handleClickOpen = () => setIsRejectedModalOpen(true)
 
   return (
@@ -184,4 +181,4 @@ const ClaimStatusTable: FC = (): JSX.Element => {
   );
 };
 
-export default ClaimStatusTable;
+export default BillingClaimStatusTable;

@@ -1227,9 +1227,14 @@ export const formatRoleName = (name: string): string => {
   return formatted?.trim();
 };
 
+export const parseXmGrid = (col: number): GridSize => {
+  return 12;
+}
+
 export const parseColumnGrid = (col: number): GridSize => {
   return col as GridSize;
 }
+
 
 export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
   <Backdrop
@@ -2189,8 +2194,11 @@ export const getClaimBtnText = (statusName: string) => {
       default:
         return UPDATE_CLAIM
     }
-  }
-  else {
+  } else {
     return CREATE_CLAIM
   }
+}
+
+export const isLast = (count: number, page: number) => {
+  return count === 1 && page === 1
 }

@@ -20,7 +20,7 @@ import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
 import {
-  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber
+  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber, isLast
 } from "../../../../../utils";
 import {
   ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, ONSET_DATE, EIGHT_PAGE_LIMIT,
@@ -116,7 +116,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!patientProblems && patientProblems.length) {
+          if (!!patientProblems && (patientProblems.length > 1 || isLast(patientProblems.length, page))) {
             await fetchProblems()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientProblems?.length || 0) })
