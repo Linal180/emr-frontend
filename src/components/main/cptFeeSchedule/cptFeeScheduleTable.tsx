@@ -13,7 +13,7 @@ import ConfirmationModal from "../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { ParamsType } from "../../../interfacesTypes";
-import { getPageNumber, renderTh } from "../../../utils";
+import { getPageNumber, isLast, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
 import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
@@ -67,12 +67,16 @@ const CptFeeTable: FC = (): JSX.Element => {
         if (response) {
           try {
             const { message, status } = response;
+
             if (status === 200) {
               message && Alert.success(message);
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
-              await fetchFeeSchedule();
-            } else {
-              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, cptFeeSchedules?.length || 0) })
+
+              if (!!cptFeeSchedules && (cptFeeSchedules.length > 1 || isLast(cptFeeSchedules.length, page))) {
+                await fetchFeeSchedule();
+              } else {
+                dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, cptFeeSchedules?.length || 0) })
+              }
             }
           } catch (error) { }
         }

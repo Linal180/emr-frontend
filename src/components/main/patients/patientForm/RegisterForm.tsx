@@ -1,7 +1,7 @@
 // package block
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Card } from '@material-ui/core';
+import { Box, Card, Grid } from '@material-ui/core';
 // component block
 import GuarantorCard from './Guarantor';
 import EmploymentCard from './Employment';
@@ -158,21 +158,41 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   const stepperData = !shouldShowBread ? [{ title: INSURANCE_SELECTION }, ...stepperDataWithInsurance] : RegisterPatientMenuNav
 
   return (
-    <Box display="flex" flexWrap="wrap" gridGap={20}>
-      <Box flex={1} className={classes.stepperGrid}>
-        <Card className={classes.stepperContainer}>
-          <StepperCard
-            stepperData={stepperData}
-            activeStep={activeStep as number}
-            dispatch={dispatch}
-          />
-        </Card>
-      </Box>
+    <>
+      {/* <Box display="flex" flexWrap="wrap" gridGap={20}>
+        <Box flex={1} className={classes.stepperGrid}>
+          <Card className={classes.stepperContainer}>
+            <StepperCard
+              stepperData={stepperData}
+              activeStep={activeStep as number}
+              dispatch={dispatch}
+            />
+          </Card>
+        </Box>
 
-      <Box flex={4}>
-        {getActiveComponent(activeStep)}
-      </Box>
-    </Box>
+        <Box flex={4}>
+          {getActiveComponent(activeStep)}
+        </Box>
+      </Box> */}
+
+      <Grid container spacing={2}>
+        <Grid item lg={3} md={4} sm={12} xs={12}>
+          <Box className={classes.stepperGrid}>
+            <Card className={classes.stepperContainer}>
+              <StepperCard
+                stepperData={stepperData}
+                activeStep={activeStep as number}
+                dispatch={dispatch}
+              />
+            </Card>
+          </Box>
+        </Grid>
+
+        <Grid item lg={9} md={8} sm={12} xs={12}>
+          {getActiveComponent(activeStep)}
+        </Grid>
+      </Grid>
+    </>
   )
 }
 

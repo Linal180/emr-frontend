@@ -41,7 +41,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
     <CardComponent cardTitle={REGISTRATION_DATES}>
       <>
         <Grid container spacing={3}>
-          <Grid item md={4} sm={12} xs={12}>
+          <Grid item lg={3} md={6} sm={12} xs={12}>
             {!isSuperAdminOrPracticeAdmin
               ? renderItem(FACILITY, facilityName)
               : <FacilitySelector
@@ -55,7 +55,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
             }
           </Grid>
 
-          <Grid item md={4} sm={12} xs={12}>
+          <Grid item lg={3} md={6} sm={12} xs={12}>
             {isDoctorRole
               ? renderItem(DOCTOR, doctorName)
               : <DoctorSelector
@@ -68,7 +68,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
               />}
           </Grid>
 
-          <Grid item md={2} sm={12} xs={12}>
+          <Grid item lg={3} md={6} sm={12} xs={12}>
             <DatePicker
               name="registrationDate"
               label={REGISTRATION_DATE}
@@ -77,7 +77,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
             />
           </Grid>
 
-          <Grid item md={2} sm={12} xs={12}>
+          <Grid item lg={3} md={6} sm={12} xs={12}>
             <DatePicker
               name="deceasedDate"
               label={DECREASED_DATE}

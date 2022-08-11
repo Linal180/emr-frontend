@@ -17,7 +17,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
 
   return (
     <Card>
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center"
+      <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center"
         borderBottom={`1px solid ${colors.grey[300]}`}
       >
         <Typography variant="h4">{APPOINTMENT_INFO}</Typography>

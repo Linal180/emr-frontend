@@ -74,7 +74,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid item lg={2} md={6} sm={12} xs={12}>
+      <Grid item lg={2} md={4} sm={12} xs={12}>
         <InputController
           disabled={shouldDisableEdit}
           fieldType="text"
@@ -84,7 +84,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid lg={2} md={6} item>
+      <Grid item lg={2} md={4} sm={12} xs={12}>
         <Selector
           addEmpty
           label={STATE}
@@ -95,7 +95,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         />
       </Grid>
 
-      <Grid item md={2}>
+      <Grid item lg={2} md={4} sm={12} xs={12}>
         <CountryController loading={getPatientLoading} controllerName="employerCountry" />
       </Grid>
     </Grid>

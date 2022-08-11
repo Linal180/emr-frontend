@@ -177,7 +177,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <Grid container spacing={0}>
+              <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   {!isSuperAdminOrPracticeAdmin
                     ? renderItem(FACILITY, facilityName)
@@ -202,8 +202,9 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                       facilityId={selectedFacility}
                     />}
                 </Grid>
+                  </Grid>
 
-                <Grid item md={(isSuperAdminOrPracticeAdmin) ? 4 : 12} sm={12} xs={12}>
+                <Grid item md={12} sm={12} xs={12}>
                   <InputController
                     isRequired
                     fieldType="text"
@@ -211,9 +212,8 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                     controllerLabel={EMAIL}
                   />
                 </Grid>
-              </Grid>
 
-              <Grid container>
+              <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     isRequired
@@ -233,7 +233,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                 </Grid>
               </Grid>
 
-              <Grid container>
+              <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <DatePicker
                     isRequired
@@ -253,7 +253,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                 </Grid>
               </Grid>
 
-              <Grid container>
+              <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
                 </Grid>
