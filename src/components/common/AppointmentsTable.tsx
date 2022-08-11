@@ -34,7 +34,7 @@ import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getDateWithDay, getISOTime, getPageNumber,
   getStandardTimeDuration, hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  isUserAdmin, renderTh, setRecord, sortingArray, getStandardTime,
+  isUserAdmin, renderTh, setRecord, sortingArray, getStandardTime, isLast,
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
@@ -171,7 +171,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!appointments && appointments.length >= 1) {
+            if (!!appointments && (appointments.length > 1 || isLast(appointments.length, page))) {
               await fetchAppointments()
             } else {
 
@@ -597,8 +597,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
               </TableBody>
             </Table>
 
-            {((!loading && appointments?.length === 0)
-              || error) &&
+            {((!loading && appointments?.length === 0) || error) &&
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
                 <NoDataFoundComponent />
               </Box>
