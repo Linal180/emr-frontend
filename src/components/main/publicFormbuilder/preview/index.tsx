@@ -1,5 +1,6 @@
 // packages block
 import axios from 'axios';
+import moment from 'moment';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -16,7 +17,7 @@ import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
-import { getUserFormFormattedValues } from '../../../../utils';
+import { calculateAge, getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
 import {
   State, Action, initialState, externalFormBuilderReducer, ActionType
@@ -27,7 +28,7 @@ import {
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
   PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG, APPOINTMENT_BOOKED_SUCCESSFULLY,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG, APPOINTMENT_BOOKED_SUCCESSFULLY, formTemplateTabIds,
 } from '../../../../constants';
 
 const initialValues = {};
@@ -44,7 +45,7 @@ const PublicFormPreview = () => {
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, getValues } = methods;
   const isSubmit = formValues?.length - 1 === activeStep
 
   const [getForm] = useGetPublicFormLazyQuery({
@@ -114,6 +115,7 @@ const PublicFormPreview = () => {
             }
             if (activeStep === 0 && formType === FormType.Appointment) {
               Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY)
+              isUnder18()
             }
             nextStepHandler()
           }
@@ -247,6 +249,53 @@ const PublicFormPreview = () => {
 
   const backStepHandler = () =>
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
+
+
+  const isUnder18 = () => {
+    if (formType === FormType.Appointment) {
+      let ageFormElement = null;
+      formValues?.find((tab) => {
+        const { sections } = tab || {}
+        sections?.map((section) => {
+          const { fields } = section || {}
+          const dobElement = fields?.find(({ columnName }) => columnName === 'dob')
+          if (dobElement) {
+            const { fieldId } = dobElement || {}
+            ageFormElement = fieldId
+          }
+          return section
+        })
+        return tab
+      })
+      if (ageFormElement) {
+        const value = getValues(ageFormElement)
+        const ageFormat = value ? moment(new Date(value)).format('YYYY-MM-DD') : ''
+        const age = ageFormat ? calculateAge(ageFormat) : -1
+        if (age >= 18) {
+          const newArr = formValues?.filter((tab) => {
+            const { tabId, sections } = tab || {}
+            if (tabId === formTemplateTabIds.GUARDIAN_CONTACT) {
+              return false
+            }
+            const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.GUARDIAN_CONTACT)
+            return { ...tab, sections: newSections }
+          })
+          dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
+        } else if (age < 18 && age >= 0) {
+          const newArr = formValues?.filter((tab) => {
+            const { tabId, sections } = tab || {}
+            if (tabId === formTemplateTabIds.EMPLOYMENT_INFO) {
+              return false
+            }
+            const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.EMPLOYMENT_INFO)
+            return { ...tab, sections: newSections }
+          })
+          dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
+        }
+      }
+
+    }
+  }
 
   return (
     <Box bgcolor={GREY_EIGHTEEN} padding={1}>

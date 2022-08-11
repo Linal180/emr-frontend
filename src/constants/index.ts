@@ -3576,3 +3576,19 @@ export enum SystemBillingStatuses {
   REJECTED = 'rejected',
   ACKNOWLEDGED = 'acknowledged'
 }
+
+export const formTemplateTabIds = {
+  CONTACT_INFO: "contact_info",
+  PAYMENT_INFO: "payment_info",
+  PRIVACY_POLICY: "privacy_policy",
+  EMPLOYMENT_INFO: "employment_info",
+  SELECT_SERVICES: "select_services",
+  GUARDIAN_CONTACT: "guardian_contact",
+  PRIVACY_AGREEMENT: "privacy_agreement",
+  GUARANTOR_CONTACT: "guarantor_contact",
+  EMERGENCY_CONTACT: "emergency_contact",
+  DOCUMENT_VERIFICATION: "document_verification",
+  DEMOGRAPHICS: "demographics",
+  PATIENT_INFO: "patient_info",
+  TERMS_CONDITIONS: "terms_conditions"
+}
