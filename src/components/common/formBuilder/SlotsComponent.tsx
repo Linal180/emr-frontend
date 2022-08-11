@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { useCallback, useEffect, useState, } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Box, colors, Typography } from '@material-ui/core'
+import { Box, colors, Grid, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 //components
 import ViewDataLoader from '../ViewDataLoader'
@@ -90,35 +90,41 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
 
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="center">
-        <AppointmentDatePicker date={date} setDate={setDate} />
-      </Box>
-      <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
-      </Box>
+    <Grid container>
+      <Grid item xs={12} sm={12} md={6}>
+        <Box display="flex" justifyContent="center">
+          <AppointmentDatePicker date={date} setDate={setDate} />
+        </Box>
+      </Grid>
+      <Grid item xs={12} sm={12} md={6}>
+        <Box>
+          <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
+          </Box>
 
-      {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-        <ul className={classes.timeSlots}>
-          {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-            const { startTime, endTime } = slot || {}
+          {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+            <ul className={classes.timeSlots}>
+              {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+                const { startTime, endTime } = slot || {}
 
-            return (
-              <li key={index} onClick={() => handleSlot(slot)}>
-                <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
+                return (
+                  <li key={index} onClick={() => handleSlot(slot)}>
+                    <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
-                <label htmlFor={`timeSlot-${index}`}>
-                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                  {getStandardTime(new Date(endTime || '').getTime().toString())}
-                </label>
-              </li>
-            )
-          }) : (
-            <NoSlotsComponent />
+                    <label htmlFor={`timeSlot-${index}`}>
+                      {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                      {getStandardTime(new Date(endTime || '').getTime().toString())}
+                    </label>
+                  </li>
+                )
+              }) : (
+                <NoSlotsComponent />
+              )}
+            </ul>
           )}
-        </ul>
-      )}
-    </Box>
+        </Box>
+      </Grid>
+    </Grid>
   )
 }
 

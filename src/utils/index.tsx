@@ -1227,9 +1227,14 @@ export const formatRoleName = (name: string): string => {
   return formatted?.trim();
 };
 
+export const parseXmGrid = (col: number): GridSize => {
+  return 12;
+}
+
 export const parseColumnGrid = (col: number): GridSize => {
   return col as GridSize;
 }
+
 
 export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
   <Backdrop
