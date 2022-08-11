@@ -12,7 +12,7 @@ import Alert from '../../../common/Alert';
 import { StepContext } from './StepContext';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, reducers, utils, constants block
-import { GREY, WHITE } from '../../../../theme';
+import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
@@ -249,7 +249,7 @@ const PublicFormPreview = () => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
   return (
-    <Box bgcolor={GREY}>
+    <Box bgcolor={GREY_EIGHTEEN} padding={1}>
       <Box bgcolor={WHITE} borderBottom={`1px solid ${colors.grey[300]}`} padding="20px 30px">
         <AIMEDLOGO />
       </Box>
@@ -291,10 +291,10 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
 
-                    <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+                    <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
                       {formValues?.length > 1 ?
                         <Grid container spacing={2}>
-                          <Grid item xs={2}>
+                          <Grid item xs={12} sm={12} md={3} lg={2}>
                             <Stepper activeStep={activeStep} orientation="vertical">
                               {formValues?.map((tab, index) => {
                                 const { name, id } = tab || {}
@@ -307,7 +307,7 @@ const PublicFormPreview = () => {
                             </Stepper>
                           </Grid>
 
-                          <Grid item xs={10}>
+                          <Grid item xs={12} sm={12} md={9} lg={10}>
                             {formValues?.map((tab, index) => {
                               const { sections, name, id } = tab || {}
 
