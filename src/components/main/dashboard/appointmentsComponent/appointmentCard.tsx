@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Close, VideocamOutlined } from '@material-ui/icons';
@@ -12,34 +12,48 @@ import history from '../../../../history';
 import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { DeleteAppointmentIcon, EditAppointmentIcon } from '../../../../assets/svgs';
-import { useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCreateType } from '../../../../generated/graphql';
-import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
-import { appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime } from '../../../../utils';
+import {
+  Action, appointmentReducer, initialState, State, ActionType
+} from '../../../../reducers/appointmentReducer';
+import {
+  useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCreateType
+} from '../../../../generated/graphql';
+import {
+  appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, isSuperAdmin
+} from '../../../../utils';
 import {
   APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS, PRIMARY_INSURANCE,
   CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN_ROUTE, TELEHEALTH_URL, REASON, FACILITY_NAME, APPOINTMENT_TYPE,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, TELEHEALTH,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, TELEHEALTH, CANCEL_TIME_PAST_MESSAGE,
 } from '../../../../constants';
+import { AuthContext } from '../../../../context';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
+  const { user } = useContext(AuthContext)
+  const { roles } = user || {}
   const { visible, onHide, appointmentMeta } = tooltip
-  
+
   const classes = useCalendarStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const { appOpen, openDelete } = state;
+  const isSuper = isSuperAdmin(roles)
 
   const id = appointmentMeta?.data.appointmentId
   const appReason = appointmentMeta?.data?.reason
   const patientName = appointmentMeta?.data.title
+
   const patientId = appointmentMeta?.data.patientId
   const appCancelToken = appointmentMeta?.data.token
   const facilityName = appointmentMeta?.data?.facilityName
+
   const providerName = appointmentMeta?.data?.providerName
   const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
+
   const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
+
   const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
   const appointmentCreateType = appointmentMeta?.data?.appointmentCreateType
   const status = appointmentMeta?.data?.rawStatus
@@ -61,7 +75,10 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
         const { status } = response;
         if (appointment && status && status === 200) {
           const { appointmentCreateType } = appointment;
-          appointmentCreateType && dispatch({ type: ActionType.SET_APPOINTMENT_CREATE_TYPE, appointmentCreateType: appointmentCreateType })
+          appointmentCreateType && dispatch({
+            type: ActionType.SET_APPOINTMENT_CREATE_TYPE,
+            appointmentCreateType: appointmentCreateType
+          })
         }
       }
     },
@@ -129,9 +146,17 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   }, [appointmentDatePassingView, onHide, patientName, setCurrentDate, setCurrentView, visible])
 
   const deleteAppointmentHandler = (scheduleStartDateTime: any) => {
-    moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1
-      ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
-      : onDeleteClick()
+    if (isSuper) {
+      onDeleteClick()
+    } else {
+      const remainingTime = moment(getISOTime(scheduleStartDateTime || ''))
+
+      remainingTime.isBefore(moment(), 'hours')
+        ? Alert.info(CANCEL_TIME_PAST_MESSAGE)
+        : remainingTime.diff(moment(), 'hours') <= 1
+          ? Alert.info(CANCEL_TIME_EXPIRED_MESSAGE)
+          : onDeleteClick()
+    }
   }
 
   return (
@@ -173,8 +198,12 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
                 <Typography variant="body1">{appDate}</Typography>
                 <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
               </Box>
+
               {appointmentCreateType === AppointmentCreateType.Appointment
-                ? <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`} variant="contained" color="primary">{appointmentArrivalStatus}</Button>
+                ? <Button component={Link}
+                  to={`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`}
+                  variant="contained" color="primary"
+                >{appointmentArrivalStatus}</Button>
                 : <Button variant="contained" className="blue-button-New" onClick={() => window.open(TELEHEALTH_URL)}>
                   <VideocamOutlined />&nbsp; {TELEHEALTH}
                 </Button>

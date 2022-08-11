@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
-import { formatPhone, getFormattedDate, getPageNumber, renderTh } from "../../../../utils";
+import { formatPhone, getFormattedDate, getPageNumber, isLast, renderTh } from "../../../../utils";
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -94,7 +94,7 @@ const PracticeTable: FC = (): JSX.Element => {
             setRoleList([])
             fetchAllFacilityList()
 
-            if(!!practices && practices.length){
+            if(!!practices && (practices.length > 1 || isLast(practices.length, page))){
               await findAllPractices();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, practices?.length || 0)})
@@ -136,7 +136,7 @@ const PracticeTable: FC = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

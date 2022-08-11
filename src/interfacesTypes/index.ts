@@ -761,6 +761,10 @@ export interface GeneralFormProps {
   loading?: boolean;
 }
 
+export interface EligibilityTableComponentProps extends GeneralFormProps {
+  appointmentId?: string
+}
+
 export interface NoDataComponentProps {
   message?: string
 }
@@ -1152,6 +1156,7 @@ export interface InsuranceSelectionProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   setSelection?: Function
   selection?: string
+  dispatch?: Dispatch<PatientAction>
   state?: PatientState
 }
 

@@ -276,7 +276,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
+      if (message === FORBIDDEN_EXCEPTION || message === CONFLICT_EXCEPTION) {
         handleUserAlreadyExistedException();
       } else
         Alert.error(message)
@@ -483,7 +483,6 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   const handleUserAlreadyExistedException = () => {
     setValue("basicEmail", '')
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: 2 })
     Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
   }
 

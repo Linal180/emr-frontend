@@ -27,7 +27,7 @@ import {
   ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, RESET, STATUS, TO_DATE, UPDATE_FILTER
 } from "../../../../constants";
 
-const ClaimStatusTable: FC = (): JSX.Element => {
+const BillingClaimStatusTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const methods = useForm<ClaimStatusForm>({ mode: "all" });
   const { user } = useContext(AuthContext)
@@ -199,7 +199,7 @@ const ClaimStatusTable: FC = (): JSX.Element => {
               </Collapse>
 
               <Box mt={3} className="table-overflow">
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classes.table}>
                   <TableHead>
                     <TableRow>
                       {renderTh(CLAIM_ID)}
@@ -283,4 +283,4 @@ const ClaimStatusTable: FC = (): JSX.Element => {
   );
 };
 
-export default ClaimStatusTable;
+export default BillingClaimStatusTable;

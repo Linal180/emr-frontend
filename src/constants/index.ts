@@ -1491,37 +1491,35 @@ export const STAFF_ROUTE = "/staff";
 export const CHART_ROUTE = "/chart";
 export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
+export const DASHBOARD_ROUTE = "/home";
 export const PROFILE_ROUTE = "/profile";
 export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
-export const DASHBOARD_ROUTE = "/home";
-export const SIGNATURE_ROUTE = "/signature";
-export const AUTO_LOGOUT_ROUTE = "/auto-logout";
-export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
-export const MAINTENANCE_ROUTE = "/maintenance";
-export const PAST_APPOINTMENTS = "Past Appointments";
-export const LAB_RESULTS_ROUTE = "/lab-results";
-export const AGREEMENTS_ROUTE = "/agreements";
-export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
+export const SIGNATURE_ROUTE = "/signature";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
-export const CLAIM_STATUS_ROUTE = "/claim-status";
+export const SUPER_BILL_ROUTE = "/super-bill";
+export const AGREEMENTS_ROUTE = "/agreements";
+export const AUTO_LOGOUT_ROUTE = "/auto-logout";
+export const MAINTENANCE_ROUTE = "/maintenance";
+export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
 export const FEE_SCHEDULE_ROUTE = "/fee-schedule";
-export const SUPER_BILL_ROUTE = "/super-bill";
 export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const CALENDAR_ROUTE = "/dashboard/calendar";
+export const PAST_APPOINTMENTS = "Past Appointments";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const ELIGIBILITY_ROUTE = "/check-eligibility";
+export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
@@ -1529,9 +1527,9 @@ export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PUBLIC_FORM_BUILDER_ROUTE = "/public/form";
 export const FORM_BUILDER_RESPONSES = "/form-responses";
-export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
 export const EDIT_LAB_ORDERS_ROUTE = "/lab-orders/edit";
-export const ADD_LAB_ORDERS_RESULTS_ROUTE = "/lab-orders/result/add";
+export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
+export const CLAIM_STATUS_ROUTE = "/billing-claim-status";
 export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
 export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
@@ -1539,7 +1537,9 @@ export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const PATIENT_INFORMATION_ROUTE = "/patient-information";
+export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
+export const ADD_LAB_ORDERS_RESULTS_ROUTE = "/lab-orders/result/add";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const FORM_BUILDER_COPY_TEMPLATE_ROUTE = "/form-builder/template";
@@ -2237,6 +2237,7 @@ export const USERS_BREAD = { text: USERS_TEXT, link: "" };
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: "" };
 export const SCHEDULE_BREAD = { text: SCHEDULE_TEXT, link: "" };
 export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
+export const EMERGENCY_ACCESS_BREAD = { text: EMERGENCY_ACCESS, link: '' };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
@@ -2404,6 +2405,7 @@ export enum MODULE_TYPES {
   Schedules = "Schedules",
   Permission = "Permission",
   Agreements = 'Agreements',
+  Attachments = 'Attachments',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
@@ -2421,6 +2423,7 @@ export const MODULES = [
   "Schedule",
   'Agreements',
   "Lab Orders",
+  'Attachments',
   "Patient Charting",
 ];
 
@@ -3515,4 +3518,20 @@ export enum SystemBillingStatuses {
   READY_TO_CLAIM = 'ready_to_claim',
   REJECTED = 'rejected',
   ACKNOWLEDGED = 'acknowledged'
+}
+
+export const formTemplateTabIds = {
+  CONTACT_INFO: "contact_info",
+  PAYMENT_INFO: "payment_info",
+  PRIVACY_POLICY: "privacy_policy",
+  EMPLOYMENT_INFO: "employment_info",
+  SELECT_SERVICES: "select_services",
+  GUARDIAN_CONTACT: "guardian_contact",
+  PRIVACY_AGREEMENT: "privacy_agreement",
+  GUARANTOR_CONTACT: "guarantor_contact",
+  EMERGENCY_CONTACT: "emergency_contact",
+  DOCUMENT_VERIFICATION: "document_verification",
+  DEMOGRAPHICS: "demographics",
+  PATIENT_INFO: "patient_info",
+  TERMS_CONDITIONS: "terms_conditions"
 }

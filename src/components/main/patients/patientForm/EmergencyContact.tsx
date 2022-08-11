@@ -25,7 +25,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
     >
 
       <Grid container spacing={3}>
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerLabel={NAME}
@@ -35,7 +35,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <Selector
             addEmpty
             label={RELATIONSHIP}
@@ -46,7 +46,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <PhoneField
             name="emergencyPhone"
             label={HOME_PHONE}
@@ -55,7 +55,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
           />
         </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={6} sm={12} xs={12}>
           <PhoneField
             name="emergencyMobile"
             label={MOBILE_PHONE}

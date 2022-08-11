@@ -103,11 +103,13 @@ query getForm($getForm: GetForm!) {
       layout {
         tabs {
           id
+          tabId
           name
           sections {
             id
             col
             name
+            sectionId
 
             fields {
               label
@@ -174,11 +176,13 @@ query getPublicForm($getForm: GetForm!) {
         tabs {
           id
           name
+          tabId
 
           sections {
             id
             col
             name
+            sectionId
 
             fields {
               label

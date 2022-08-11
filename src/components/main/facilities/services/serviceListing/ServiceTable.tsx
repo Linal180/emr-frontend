@@ -15,7 +15,7 @@ import { BLUE_FOUR, RED, } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from "../../../../../assets/svgs";
-import { getPageNumber, isSuperAdmin, renderTh } from "../../../../../utils";
+import { getPageNumber, isLast, isSuperAdmin, renderTh } from "../../../../../utils";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from '../../../../../reducers/serviceReducer';
@@ -100,7 +100,7 @@ const ServicesTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!services && services.length > 1) {
+          if (!!services && (services.length > 1 || isLast(services?.length, page))) {
             fetchServices();
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, services?.length || 0) })
@@ -152,7 +152,7 @@ const ServicesTable: FC = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

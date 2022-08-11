@@ -41,7 +41,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
           />
         </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <InputController
             isRequired
             fieldType="text"

@@ -20,13 +20,13 @@ import {
   OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation
 } from "../../../../../generated/graphql";
 import {
-  ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT, 
-  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE, 
+  ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT,
+  ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
   SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED,
 } from "../../../../../constants";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
   const { user } = useContext(AuthContext)
 
@@ -64,7 +64,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
       if (getEligibilityAndCoverage) {
         const { policyEligibility } = getEligibilityAndCoverage
         const { id } = policyEligibility || {}
-        history.push(`${COVERAGE_ROUTE}/${id}/${patientId}`)
+        history.push(appointmentId ? `${COVERAGE_ROUTE}/${id}/${patientId}/${appointmentId}` : `${COVERAGE_ROUTE}/${id}/${patientId}`)
       }
     }
   });
@@ -150,7 +150,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
       <>
         <Box>
           <Card>
-            <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' justifyContent='space-between' alignItems='center'>
+            <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
               <Typography variant="h3" color="initial">
                 {INSURANCES}
               </Typography>
@@ -169,7 +169,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
             {((!fetchAllPoliciesLoading && policies?.length === 0)) && (
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                <NoDataComponent message={NO_INSURANCE_ADDED}/>
+                <NoDataComponent message={NO_INSURANCE_ADDED} />
               </Box>
             )}
 
@@ -181,9 +181,9 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                 return (
                   <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
-                    <Box mb={3} display='flex' justifyContent='space-between' alignItems='center'>
-                      <Box display='flex' alignItems='center'>
-                        <Box mr={2} display='flex' alignItems='center'>
+                    <Box mb={3} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+                      <Box display='flex' alignItems='center' flexWrap='wrap'>
+                        <Box mr={2} display='flex' alignItems='center' flexWrap='wrap'>
                           <Typography variant="h4">{fetchAllPoliciesLoading ? renderTextLoading() : payerName}</Typography>
 
                           {fetchAllPoliciesLoading ? renderTextLoading() :
@@ -215,7 +215,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
 
                       <Box minWidth={200} mr={10} my={2}>
                         <Typography variant="h6">{COPAY_TEXT}</Typography>
-                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : `$${amount}`}</Typography>
+                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : amount ? `$${amount}` : '- -'}</Typography>
                       </Box>
 
                       <Box minWidth={200} mr={10} my={2}>
@@ -256,7 +256,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         </Box>
 
         <Box mt={3}>
-          <EligibilityTableComponent id={patientId} />
+          <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
         </Box>
       </>
   );

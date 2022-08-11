@@ -16,6 +16,7 @@ import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
 import {
   formatPhone, getPageNumber, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderTh,
   checkPermission,
+  isLast,
 } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -110,7 +111,7 @@ const FacilityTable: FC = (): JSX.Element => {
             deleteFacilityList(deleteFacilityId)
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-            if (!!facilities && facilities.length > 1) {
+            if (!!facilities && (facilities.length > 1 || isLast(facilities.length, page))) {
               await fetchAllFacilities();
             } else {
               dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, facilities?.length || 0) })
@@ -159,7 +160,7 @@ const FacilityTable: FC = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
