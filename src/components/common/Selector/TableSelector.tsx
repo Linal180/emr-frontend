@@ -184,7 +184,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                               shouldShowPrice ?
                                 <>
                                   <TableCell scope="row">
-                                    <Box maxWidth={100}>
+                                    <Box minWidth={100} maxWidth={100}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.unit`}
@@ -198,7 +198,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box maxWidth={200}>
+                                    <Box minWidth={150} maxWidth={150}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.price`}
@@ -209,7 +209,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box display='flex'>
+                                    <Box display='flex' className={classes.modifiers}>
                                       {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
                                         return <Box mr={1} flex={1} minWidth={120}>
                                           <ModifierSelector
