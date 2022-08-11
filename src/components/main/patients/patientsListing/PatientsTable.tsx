@@ -202,7 +202,7 @@ const PatientsTable: FC = (): JSX.Element => {
       <Box className={classes.mainTableContainer}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
-            <Search search={search} info tooltipData={PatientSearchingTooltipData} />
+            <Search search={search} text={searchQuery} info tooltipData={PatientSearchingTooltipData} />
           </Grid>
 
           <Grid item md={2} sm={12} xs={12}>
