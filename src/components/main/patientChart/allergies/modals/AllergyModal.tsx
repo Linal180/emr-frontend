@@ -301,7 +301,7 @@ const AllergyModal: FC<AddModalProps> = ({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                <Box mt={3}>
+                <Box>
                   {loading ?
                     <Grid>
                       <TextLoader height={48} width='100%' rows={[{ column: 1, size: 12 }]} />
