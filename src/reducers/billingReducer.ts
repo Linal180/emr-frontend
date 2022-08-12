@@ -11,7 +11,7 @@ export interface State {
   autoAccident: boolean;
   otherAccident: boolean;
   shouldCheckout: boolean;
-  isClaimCreated: Boolean;
+  isClaimCreated: boolean;
   isCheckoutModalOpen: boolean;
   tableCodesData: CodeTablesData;
 }
@@ -58,7 +58,7 @@ export type Action =
   | { type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: boolean }
   | { type: ActionType.SET_AUTO_ACCIDENT, autoAccident: boolean }
   | { type: ActionType.SET_OTHER_ACCIDENT, otherAccident: boolean }
-  | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: Boolean }
+  | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
   | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }

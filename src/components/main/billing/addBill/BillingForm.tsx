@@ -21,6 +21,7 @@ import TableSelector from "../../../common/Selector/TableSelector";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import SelfPayComponent from "./SelfPayComponent";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
@@ -103,7 +104,7 @@ const BillingForm: FC<BillingFormProps> = ({
     }
   }
 
-  const shouldShowCopay = paymentType?.id === PatientPaymentType.Insurance
+  const isInsurancePayment = paymentType?.id === PatientPaymentType.Insurance
 
   return (
     <FormProvider {...methods}>
@@ -124,27 +125,30 @@ const BillingForm: FC<BillingFormProps> = ({
                 </Button>
               </Box>
 
-              <Box m={0.5}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => createClaimCallback()}
-                  disabled={!!createClaimLoading || (statusName === SystemBillingStatuses.ACKNOWLEDGED)}
-                >
-                  {createClaimLoading && <CircularProgress size={20} color="inherit" />}
-                  {getClaimBtnText(statusName || '')}
-                </Button>
-              </Box>
+              {isInsurancePayment && <>
+                <Box m={0.5}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => createClaimCallback()}
+                    disabled={!!createClaimLoading || (statusName === SystemBillingStatuses.ACKNOWLEDGED)}
+                  >
+                    {createClaimLoading && <CircularProgress size={20} color="inherit" />}
+                    {getClaimBtnText(statusName || '')}
+                  </Button>
+                </Box>
 
-              <Box m={0.5}>
-                <Button
-                  variant="outlined"
-                  color="default"
-                  onClick={() => createClaimCallback(true)}
-                >
-                  {HCFA_1500_FORM}
-                </Button>
-              </Box>
+                <Box m={0.5}>
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    onClick={() => createClaimCallback(true)}
+                  >
+                    {HCFA_1500_FORM}
+                  </Button>
+                </Box>
+              </>
+              }
 
               <Box m={0.5}>
                 <Button
@@ -235,7 +239,7 @@ const BillingForm: FC<BillingFormProps> = ({
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
-                    {shouldShowCopay &&
+                    {isInsurancePayment &&
                       <>
                         < Grid item md={12} sm={12} xs={12}>
                           <Grid container spacing={3} direction="row">
@@ -304,7 +308,7 @@ const BillingForm: FC<BillingFormProps> = ({
                       />
                     </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                    {isInsurancePayment && <Grid item md={12} sm={12} xs={12}>
                       <ItemSelector
                         isEdit
                         label={CLAIM_STATUS}
@@ -313,7 +317,7 @@ const BillingForm: FC<BillingFormProps> = ({
                         modalName={ITEM_MODULE.claimStatus}
                         disabled={shouldDisableEdit}
                       />
-                    </Grid>
+                    </Grid>}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
@@ -447,9 +451,17 @@ const BillingForm: FC<BillingFormProps> = ({
           <TabContext value={selectedTab}>
             <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>
               <TabList onChange={handleChange} aria-label="billing tabs">
-                {BILLING_TABS.map(item => (
-                  <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-                ))}
+                {BILLING_TABS.map(item => {
+                  if (isInsurancePayment && item?.value === '3') {
+                    return <></>
+                  }
+                  if (!isInsurancePayment && item?.value === '2') {
+                    return <></>
+                  }
+                  return (
+                    <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+                  )
+                })}
               </TabList>
             </Box>
 
@@ -493,13 +505,20 @@ const BillingForm: FC<BillingFormProps> = ({
                   </Card>
                 </Box>
               </TabPanel>
+
+              <TabPanel value="3">
+                <Box>
+                  <Card>
+                    <SelfPayComponent />
+                  </Card>
+                </Box>
+              </TabPanel>
             </Box>
           </TabContext>
         </Box>
       </form >
 
-      {
-        isModalOpen &&
+      {isModalOpen &&
         <CopayModal
           isOpen={isModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
@@ -507,8 +526,7 @@ const BillingForm: FC<BillingFormProps> = ({
         />
       }
 
-      {
-        isCheckoutModalOpen &&
+      {isCheckoutModalOpen &&
         <CheckoutModal
           isOpen={isCheckoutModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: isOpen })}

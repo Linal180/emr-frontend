@@ -22,7 +22,7 @@ import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps, ParamsT
 import { personalAchSchema, businessAchSchema } from '../../../../validationSchemas';
 import { useAchPaymentMutation } from '../../../../generated/graphql';
 
-const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPaymentComponentProps) => {
+const ACHPaymentComponent = ({ token, dispatcher, states }: ACHPaymentComponentProps) => {
 
   const { ownershipType, loader, facilityId, patientId, price, providerId } = states
   const { id: appointmentId } = useParams<ParamsType>();
@@ -30,6 +30,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
     mode: "all",
     resolver: yupResolver(ownershipType === 'personal' ? personalAchSchema : businessAchSchema)
   });
+  
   const { handleSubmit, watch } = methods;
   const { firstName, lastName, businessName } = watch()
 
@@ -40,7 +41,6 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
       const { id } = transaction || {}
       if (status === 200 && id) {
         message && Alert.success(message)
-        moveNext()
       }
       else {
         message && Alert.error(message)
@@ -196,7 +196,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
                 </Box>
 
                 <Button variant="contained" color="primary" type='submit' disabled={loader}>
-                {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
+                  {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
                 </Button>
               </Box>
             </Box>

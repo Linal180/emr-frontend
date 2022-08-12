@@ -2326,6 +2326,10 @@ export const BILLING_TABS = [
     title: "Insurance",
     value: "2",
   },
+  {
+    title: "Self Pay",
+    value: "3",
+  },
 ];
 
 export const WEEK_DAYS: SelectorOption[] = [

@@ -1685,7 +1685,7 @@ export interface ACHPaymentComponentProps {
   token: string;
   dispatcher: Dispatch<ExternalPaymentAction>;
   states: ExternalPaymentState;
-  moveNext: Function
+  moveNext?: Function
   formState?: ExternalFormBuilderState
   formDispatch?: Dispatch<PublicFormBuilderAction>
 }
