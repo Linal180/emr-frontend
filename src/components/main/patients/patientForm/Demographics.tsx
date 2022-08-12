@@ -42,44 +42,41 @@ const DemographicsCard: FC<PatientCardsProps> = ({
       <Grid container spacing={3}>
         <Grid item md={3} sm={12} xs={12}>
           <InputController
-            disabled={shouldDisableEdit}
             fieldType="text"
             controllerName="language"
-            controllerLabel={LANGUAGE_SPOKEN}
             loading={getPatientLoading}
+            disabled={shouldDisableEdit}
+            controllerLabel={LANGUAGE_SPOKEN}
           />
         </Grid>
 
         <Grid item md={3} sm={12} xs={12}>
           <Selector
-            disabled={shouldDisableEdit}
             name="race"
             label={RACE}
-            addEmpty
             options={MAPPED_RACE}
             loading={getPatientLoading}
+            disabled={shouldDisableEdit}
           />
         </Grid>
 
         <Grid item md={3} sm={12} xs={12}>
           <Selector
-            disabled={shouldDisableEdit}
             name="ethnicity"
             label={ETHNICITY}
-            addEmpty
             options={MAPPED_ETHNICITY}
             loading={getPatientLoading}
+            disabled={shouldDisableEdit}
           />
         </Grid>
 
         <Grid item md={3} sm={12} xs={12}>
           <Selector
-            disabled={shouldDisableEdit}
             name="maritialStatus"
             label={MARITAL_STATUS}
-            addEmpty
-            options={MAPPED_MARITAL_STATUS}
+            disabled={shouldDisableEdit}
             loading={getPatientLoading}
+            options={MAPPED_MARITAL_STATUS}
           />
         </Grid>
       </Grid>
@@ -91,11 +88,11 @@ const DemographicsCard: FC<PatientCardsProps> = ({
       <Grid container spacing={3}>
         <Grid item md={3} sm={12} xs={12}>
           <Selector
-            disabled={shouldDisableEdit}
             name="sexualOrientation"
             label={SEXUAL_ORIENTATION}
-            options={MAPPED_SEXUAL_ORIENTATION}
             loading={getPatientLoading}
+            disabled={shouldDisableEdit}
+            options={MAPPED_SEXUAL_ORIENTATION}
           />
         </Grid>
 
