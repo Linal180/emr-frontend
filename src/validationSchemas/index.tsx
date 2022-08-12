@@ -89,7 +89,7 @@ const suffixSchema = (label: string) => (
       value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : true)
     .test('', NUMBER_AND_SPECIAL_ERROR_MESSAGE,
       value => value ? SUFFIX_REGEX.test(value) : true)
-    .test('', MinLength(label, 2), value => !!value && value.length > 1)
+    .test('', MinLength(label, 2), value => !value ? true : value.length > 1)
     .max(3, MaxLength(label, 3))
 )
 
