@@ -79,6 +79,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
 export const PAST_DATE = 'Disable Future Date'
@@ -3471,64 +3472,7 @@ export enum FormBuilderPaymentTypes {
 export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
 export const BILLING_MODIFIERS_DATA = ['M1', 'M2', 'M3', 'M4']
 export const DIAGNOSIS_POINTERS_DATA = ['ICD-1', 'ICD-2', 'ICD-3', 'ICD-4']
-export const CLAIM_STATUS_DUMMY_DATA = [
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-]
+
 
 export const MODULE_LOGS_TYPES = [
   "Agreement",

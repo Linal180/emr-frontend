@@ -6874,6 +6874,13 @@ export type RemoveClaimStatusMutationVariables = Exact<{
 
 export type RemoveClaimStatusMutation = { __typename?: 'Mutation', removeClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
 
+export type FetchBillingClaimStatusesQueryVariables = Exact<{
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
+}>;
+
+
+export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string, claimNo?: string | null, serviceDate?: string | null, claimStatus?: { __typename?: 'ClaimStatus', statusName?: string | null } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, claim?: { __typename?: 'Claim', payer_name?: string | null, total_charge?: number | null, errorMessages?: Array<string> | null } | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
 }>;
@@ -10474,6 +10481,67 @@ export function useRemoveClaimStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type RemoveClaimStatusMutationHookResult = ReturnType<typeof useRemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationResult = Apollo.MutationResult<RemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationOptions = Apollo.BaseMutationOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
+export const FetchBillingClaimStatusesDocument = gql`
+    query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!) {
+  fetchBillingClaimStatuses(
+    fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput
+  ) {
+    response {
+      status
+      message
+    }
+    billings {
+      id
+      claimNo
+      serviceDate
+      claimStatus {
+        statusName
+      }
+      patient {
+        firstName
+        lastName
+      }
+      claim {
+        payer_name
+        total_charge
+        errorMessages
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchBillingClaimStatusesQuery__
+ *
+ * To run a query within a React component, call `useFetchBillingClaimStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchBillingClaimStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchBillingClaimStatusesQuery({
+ *   variables: {
+ *      fetchBillingClaimStatusesInput: // value for 'fetchBillingClaimStatusesInput'
+ *   },
+ * });
+ */
+export function useFetchBillingClaimStatusesQuery(baseOptions: Apollo.QueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+      }
+export function useFetchBillingClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+        }
+export type FetchBillingClaimStatusesQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesQuery>;
+export type FetchBillingClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesLazyQuery>;
+export type FetchBillingClaimStatusesQueryResult = Apollo.QueryResult<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {

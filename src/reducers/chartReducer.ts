@@ -82,7 +82,7 @@ export enum ActionType {
 }
 
 export type Action =
-| { type: ActionType.SET_PAGE, page: number }
+  | { type: ActionType.SET_PAGE, page: number }
   | { type: ActionType.SET_ITEM_ID, itemId: string }
   | { type: ActionType.SET_IS_OPEN, isOpen: boolean }
   | { type: ActionType.SET_NEW_RECORD, newRecord: string }
