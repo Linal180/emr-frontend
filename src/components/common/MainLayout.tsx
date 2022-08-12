@@ -11,17 +11,18 @@ import history from "../../history";
 import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
+import { useMainLayoutStyles } from "../../styles/mainLayoutStyles";
 import {
   EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, LOGIN_ROUTE, MAPPED_AUTO_LOGOUT, ROUTE
 } from "../../constants";
-import { useMainLaoutStyles } from "../../styles/mainLayoutStyles";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)
   const { user, userPermissions, isLoggedIn } = useContext(AuthContext);
   const { email, autoLogoutTime } = user || {}
+
   const { pathname } = useLocation()
-  const classes = useMainLaoutStyles()
+  const classes = useMainLayoutStyles()
 
   const onIdle = () => {
     email && localStorage.setItem(EMAIL, email)

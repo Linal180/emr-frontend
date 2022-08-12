@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-export const useMainLaoutStyles = makeStyles((theme) =>
+export const useMainLayoutStyles = makeStyles((theme) =>
   ({
     mainLayoutContainer: {
       display: 'flex',
