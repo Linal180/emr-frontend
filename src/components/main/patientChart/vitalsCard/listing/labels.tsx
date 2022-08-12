@@ -1,27 +1,23 @@
-import { Table, TableBody, TableHead, TableRow, } from "@material-ui/core"
+import { Table, TableBody, TableHead, TableRow } from "@material-ui/core"
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { DATE, VITAL_LABELS } from "../../../../../constants"
-import { VitalsLabelsProps } from "../../../../../interfacesTypes"
-import { renderTh } from "../../../../../utils"
+import { DATE, IN_TEXT, KG_TEXT, VITAL_LABELS } from "../../../../../constants"
+import { TempUnitType } from "../../../../../generated/graphql"
+import { formatValue, renderTh } from "../../../../../utils"
 
-export const VitalsLabels = ({ patientStates }: VitalsLabelsProps) => {
-
-  const { heightUnit: { name: heightName }, weightUnit: { name: weightName }, headCircumferenceUnit: {
-    name: headCircumferenceName }, feverUnit: { name: feverName } } = patientStates;
-
+export const VitalsLabels = () => {
   const getVitalLabel = (label: VITAL_LABELS) => {
     switch (label) {
       case VITAL_LABELS.PatientHeight:
-        return `(${heightName})`;
+        return `(${IN_TEXT})`;
 
       case VITAL_LABELS.PatientWeight:
-        return `(${weightName})`;
+        return `(${KG_TEXT})`;
 
       case VITAL_LABELS.patientHeadCircumference:
-        return `(${headCircumferenceName})`;
+        return `(${IN_TEXT})`;
 
       case VITAL_LABELS.patientTemperature:
-        return `(${feverName})`;
+        return `(${formatValue(TempUnitType.DegF)})`;
 
       default:
         return '';
@@ -41,8 +37,8 @@ export const VitalsLabels = ({ patientStates }: VitalsLabelsProps) => {
           const unit = getVitalLabel(label)
 
           return label && <TableRow className="vitals-column">
-            {renderTh(`${label} ${unit}`,'left',false,'',true)}
-        </TableRow>
+            {renderTh(`${label} ${unit}`, 'left', false, '', true)}
+          </TableRow>
         })}
       </TableBody>
     </Table>
