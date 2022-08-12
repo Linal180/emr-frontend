@@ -30,7 +30,7 @@ import {
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
-  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -2199,6 +2199,55 @@ export const getClaimBtnText = (statusName: string) => {
   }
 }
 
+export const getBloodPressureGraphValues = (bloodPressures: number[]) => {
+  return {
+    ...areaChartOne,
+    series: [{
+      name: 'USA',
+      color: '#CA6B6E',
+      data: bloodPressures
+    }]
+  }
+}
+
+export const getPulseRateGraphValues = (pulseRates: number[]) => {
+  return {
+    ...areaChartTwo,
+    series: [{
+      color: '#1BC5BD',
+      name: 'USSR/Russia',
+      data: pulseRates
+    }]
+  }
+}
+
+export const getBloodPressureStatus = (systolicBloodPressure: number, diastolicBloodPressure: number) => {
+  if ((systolicBloodPressure > 90 && systolicBloodPressure < 140) && (diastolicBloodPressure > 60 && diastolicBloodPressure < 90)) {
+    return {
+      status: BLOOD_PRESSURE_RANGES.Normal,
+      color: 'primary'
+    }
+  }
+
+  return {
+    status: BLOOD_PRESSURE_RANGES.Abnormal,
+    color: 'danger-bg'
+  }
+}
+
+export const getHeartBeatStatus = (pulseRate: number) => {
+  if (pulseRate > 60 && pulseRate < 100) {
+    return {
+      status: Heart_RATE_RANGES.Normal,
+      color: 'primary'
+    }
+  }
+
+  return {
+    status: Heart_RATE_RANGES.Abnormal,
+    color: 'danger-bg'
+  }
+}
 export const isLast = (count: number, page: number) => {
   return count === 1 && page === 1
 }

@@ -497,6 +497,7 @@ export interface StepperData {
 }
 
 export interface SearchComponentProps {
+  text?: string;
   info?: boolean;
   placeHolder?: string;
   tooltipData?: TooltipData[]

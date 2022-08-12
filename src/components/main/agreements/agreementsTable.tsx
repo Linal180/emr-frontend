@@ -193,7 +193,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

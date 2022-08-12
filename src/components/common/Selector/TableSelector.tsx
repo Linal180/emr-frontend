@@ -11,7 +11,7 @@ import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 //constants, interfaces, utils
 import {
   ACTIONS, BILLED_FEE_DOLLAR, BILLING_MODIFIERS_DATA, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
-  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, UNIT
+  DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
 import { renderTh } from "../../../utils";
 import { TrashNewIcon } from "../../../assets/svgs";
@@ -131,7 +131,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                   <Table aria-label="customized table" className={classes.table}>
                     <TableHead>
                       <TableRow>
-                        {renderTh('SR_NO')}
+                        {renderTh(SR_NO)}
                         {
                           shouldShowPrice ?
                             <>
@@ -181,7 +181,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                               shouldShowPrice ?
                                 <>
                                   <TableCell scope="row">
-                                    <Box maxWidth={100}>
+                                    <Box minWidth={100} maxWidth={100}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.unit`}
@@ -195,7 +195,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box maxWidth={200}>
+                                    <Box minWidth={150} maxWidth={150}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.price`}
@@ -206,7 +206,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box display='flex'>
+                                    <Box display='flex' className={classes.modifiers}>
                                       {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
                                         return <Box mr={1} flex={1} minWidth={120}>
                                           <ModifierSelector
