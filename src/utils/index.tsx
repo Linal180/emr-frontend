@@ -253,6 +253,7 @@ export const getUserRole = (roles: RolesPayload['roles']) => {
 }
 
 export const getToken = () => localStorage.getItem(TOKEN);
+export const getLockedEmail = () => localStorage.getItem(EMAIL);
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
