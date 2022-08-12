@@ -98,7 +98,7 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
         <Box>
-          <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Box pb={2} mx={3} mb={2} textAlign='center' borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
           </Box>
 
