@@ -22,11 +22,12 @@ import {
   APPOINTMENT_TEXT, EMPTY_OPTION, GUARANTOR, LAB_TEST_STATUSES, N_A, PRIMARY_PROVIDER, REFERRING_PROVIDER,
   STATUS, TEST, TESTS_FIELD_VALIDATION_MESSAGE
 } from '../../../../constants';
+import Loader from '../../../common/Loader';
 
 const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, setTestsToRemove }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const [guarantorName, setGuarantorName] = useState<string>('')
-
+  const [isLoading, setIsLoading] = useState(true)
 
   const methods = useFormContext<LabOrdersCreateFormInput>();
   const { setValue, control, watch } = methods
@@ -77,6 +78,10 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       }
     },
 
+    onError() {
+      setIsLoading(false)
+    },
+
     onCompleted(data) {
       if (data) {
         const { getPatient } = data ?? {}
@@ -96,6 +101,8 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
         setGuarantorName(guarantorName)
         primaryDoctor && setValue('primaryProviderId', setRecord(primaryDoctor.id, `${primaryDoctor.firstName} ${primaryDoctor.lastName}`))
         referringDoctor && setValue('referringProviderId', setRecord(referringDoctor.id, `${referringDoctor.firstName} ${referringDoctor.lastName}`))
+
+        setIsLoading(false)
       }
     }
   });
@@ -110,6 +117,10 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
     removeTestFieldValuesFields(testIndex)
     setValue('testFieldValues', testFieldValuesFields.filter((_, index) => testIndex !== index))
     setTestsToRemove && setTestsToRemove((prevValue: string[]) => [...prevValue, testFieldValue?.testId || ''])
+  }
+
+  if (isLoading) {
+    return <Loader loaderText='Loading...' loading />
   }
 
   return (
