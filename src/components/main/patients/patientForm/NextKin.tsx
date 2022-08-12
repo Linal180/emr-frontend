@@ -1,6 +1,6 @@
 // packages import
-import { Grid } from "@material-ui/core"
 import { FC } from "react"
+import { Grid } from "@material-ui/core"
 // components import
 import Selector from "../../../common/Selector"
 import PhoneField from "../../../common/PhoneInput"

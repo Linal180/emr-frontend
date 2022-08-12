@@ -1,27 +1,24 @@
 //packages block
-import {
-  Box, Card, IconButton, Typography,
-  Table, TableBody, TableCell, TableHead, TableRow,
-} from "@material-ui/core";
 import { FC } from "react";
 import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { Box, Card, IconButton, Typography, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 //components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
-import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 import ModifierSelector from "./ModifierSelector";
+import InputController from "../../../controller";
+import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 //constants, interfaces, utils
 import {
   ACTIONS, BILLED_FEE_DOLLAR, BILLING_MODIFIERS_DATA, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
   DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
-import InputController from "../../../controller";
-import { CodeType } from "../../../generated/graphql";
-import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
-import { SearchTooltip } from "../../../styles/searchTooltip";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { TrashNewIcon } from "../../../assets/svgs";
 import { renderTh } from "../../../utils";
+import { TrashNewIcon } from "../../../assets/svgs";
+import { CodeType } from "../../../generated/graphql";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { SearchTooltip } from "../../../styles/searchTooltip";
+import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice, feeScheduleId }) => {
   const classes = useTableStyles()
@@ -184,7 +181,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                               shouldShowPrice ?
                                 <>
                                   <TableCell scope="row">
-                                    <Box maxWidth={100}>
+                                    <Box minWidth={100} maxWidth={100}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.unit`}
@@ -198,7 +195,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box maxWidth={200}>
+                                    <Box minWidth={150} maxWidth={150}>
                                       <InputController
                                         fieldType="text"
                                         controllerName={`${moduleName}.${index}.price`}
@@ -209,7 +206,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   </TableCell>
 
                                   <TableCell scope="row">
-                                    <Box display='flex'>
+                                    <Box display='flex' className={classes.modifiers}>
                                       {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
                                         return <Box mr={1} flex={1} minWidth={120}>
                                           <ModifierSelector

@@ -216,4 +216,11 @@ export const useTableStyles = makeStyles(() => ({
   claimTableHead: {
     backgroundColor: GREY_ELEVEN,
   },
+
+  modifiers: {
+    '& .MuiFormControl-marginNormal':{
+      marginBottom : 0,
+      paddingBottom :0
+    }
+  }
 }))

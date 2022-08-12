@@ -73,7 +73,7 @@ const VitalCard: FC<GeneralFormProps> = () => {
   return (
     <Box className='masonry-box'>
       <Grid container spacing={2}>
-        <Grid item md={6} sm={12} xs={12}>
+        <Grid item lg={6} md={12} sm={12} xs={12}>
           <Box width="100%" className='card-chart'>
             <Box display="flex" justifyContent="space-between" p={3}>
               <BloodPressureIcon />
@@ -102,7 +102,7 @@ const VitalCard: FC<GeneralFormProps> = () => {
           </Box>
         </Grid>
 
-        <Grid item md={6} xs={12} sm={12}>
+        <Grid item lg={6} md={12} xs={12} sm={12}>
           <Box width="100%" className='card-chart'>
             <Box display="flex" justifyContent="space-between" p={3}>
               <HeartRateIcon />

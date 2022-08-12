@@ -298,14 +298,12 @@ const PublicFormPreview = () => {
   }
 
   return (
-    <Box bgcolor={GREY_EIGHTEEN} padding={1}>
+    <Box bgcolor={GREY_EIGHTEEN} padding={1} minHeight="100vh">
       <Box bgcolor={WHITE} borderBottom={`1px solid ${colors.grey[300]}`} padding="20px 30px">
         <AIMEDLOGO />
       </Box>
 
       <Box px={5} mt={2}>
-
-        {/* <AIMEDLOGO /> */}
         {!loader ?
           <Fragment>
             <Box mb={3} />
@@ -340,7 +338,7 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
 
-                    <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                    <Box>
                       {formValues?.length > 1 ?
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={12} md={3} lg={2}>
@@ -357,16 +355,18 @@ const PublicFormPreview = () => {
                           </Grid>
 
                           <Grid item xs={12} sm={12} md={9} lg={10}>
-                            {formValues?.map((tab, index) => {
-                              const { sections, name, id } = tab || {}
+                            <Box height="100%" maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                              {formValues?.map((tab, index) => {
+                                const { sections, name, id } = tab || {}
 
-                              return <Fragment key={`${id}-${name}`}>
-                                {activeStep === index &&
-                                  <StepContext sections={sections} state={state} dispatch={dispatch} />
-                                }
-                              </Fragment>
-                            }
-                            )}
+                                return <Fragment key={`${id}-${name}`}>
+                                  {activeStep === index &&
+                                    <StepContext sections={sections} state={state} dispatch={dispatch} />
+                                  }
+                                </Fragment>
+                              }
+                              )}
+                            </Box>
                           </Grid>
                         </Grid> :
                         <Fragment>

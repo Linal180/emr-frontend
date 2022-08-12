@@ -237,6 +237,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         <Box display="flex" justifyContent="space-between" flexWrap="wrap" maxWidth="100%">
           <TabList onChange={handleChange}
             variant="scrollable"
+            scrollButtons="on"
             aria-label="Profile top tabs">
             {PROFILE_TOP_TABS.map(item => (
               <Tab
