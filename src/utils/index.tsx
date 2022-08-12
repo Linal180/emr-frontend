@@ -2261,3 +2261,6 @@ export const calculateAge = (birthday: string) => {
   const ageDate = new Date(ageDifMs);
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+export const getFormEmbeddedLink = (src: string): string =>
+  `<iframe width="560" height="315" src="${src}" frameborder="0" allow="accelerometer; allowfullscreen"></iframe>`
