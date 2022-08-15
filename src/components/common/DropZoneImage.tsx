@@ -233,9 +233,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               </Box>
             )}
 
-            <Box className="dropzone-area-preview-list">
+            <Box className={classes.dropzoneAreaPreviewList}>
               <DropzoneArea
-                previewGridClasses={{ item: 'media-inner-image' }}
+                previewGridClasses={{ item: classes.mediaInnerImage }}
                 filesLimit={filesLimit ?? 1}
                 maxFileSize={5000000}
                 acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}

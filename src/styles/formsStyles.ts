@@ -36,5 +36,10 @@ export const useFormStyles = makeStyles(() => ({
       border: 'none',
       padding: 0,
     },
+  },
+
+  multilineInput: {
+    maxHeight: 200,
+    overflowY: 'auto',
   }
 }));

@@ -110,7 +110,8 @@ const PatientDetailsComponent = (): JSX.Element => {
           });
         }
       }
-    });
+
+    })
 
   const [findEncounters] =
     useFindAllAppointmentsLazyQuery({
@@ -380,3 +381,4 @@ const PatientDetailsComponent = (): JSX.Element => {
 }
 
 export default PatientDetailsComponent;
+

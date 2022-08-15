@@ -261,17 +261,18 @@ const BillingForm: FC<BillingFormProps> = ({
                           </Grid>
                         </Grid>
                         {
-                          !shouldDisableEdit && <Box pr={2} width="100%"
-                            onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
-                            className="billing-box" display="flex" justifyContent="flex-end"
-                          >
-                            <AddCircleOutline color='inherit' />
-                            <Typography>{ADD_ANOTHER}</Typography>
+                          !shouldDisableEdit && <Box display="flex" justifyContent="flex-end" pr={2} width="100%">
+                            <Button variant="text"
+                              onClick={() => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: !isModalOpen })}
+                            >
+                              <AddCircleOutline color='secondary' />
+                              <Box ml={1} />
+                              <Typography color="secondary">{ADD_ANOTHER}</Typography>
+                            </Button>
                           </Box>
                         }
-                      </>
-                    }
-                    {/* <Grid item md={12} sm={12} xs={12}>
+
+                        {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="resource"
                         label={RESOURCE}
@@ -279,6 +280,8 @@ const BillingForm: FC<BillingFormProps> = ({
                         addEmpty
                       />
                     </Grid> */}
+                      </>
+                    }
                   </Grid>
                 </Box>
               </Grid>

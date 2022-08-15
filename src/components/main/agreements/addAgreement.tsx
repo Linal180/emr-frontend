@@ -20,7 +20,7 @@ import history from '../../../history';
 import { GRAY_SIX } from '../../../theme';
 import { AuthContext } from '../../../context';
 import { createAgreementSchema } from '../../../validationSchemas';
-import { useChartingStyles } from '../../../styles/chartingStyles';
+import { useTableStyles } from "../../../styles/tableStyles";
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../../../utils';
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
@@ -38,7 +38,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { id } = useParams<ParamsType>()
   const { user } = useContext(AuthContext)
 
-  const chartingClasses = useChartingStyles()
+  const classes = useTableStyles()
   const descriptionTypes = ['Text Editor', 'File Upload'];
 
   const { roles, facility } = user || {};
@@ -251,11 +251,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                   {!id && <Grid item md={12} sm={12} xs={12}>
                     <Typography variant='body1'>{DESCRIPTION_TYPE}</Typography>
 
-                    <Box className={chartingClasses.toggleProblem}>
+                    <Box mt={1} width="fit-content">
                       <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
                         {descriptionTypes.map(type =>
                           <Box
-                            className={type === descriptionType ? 'selectedBox selectBox' : 'selectBox'}
+                            className={type === descriptionType ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
                             onClick={() => {
                               dispatch({ type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: type })
                               type === descriptionTypes[1] && dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: '' })

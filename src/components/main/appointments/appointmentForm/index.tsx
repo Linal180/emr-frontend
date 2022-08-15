@@ -46,19 +46,19 @@ import {
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from '../../../../reducers/appointmentReducer';
-import { useChartingStyles } from '../../../../styles/chartingStyles';
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
 import {
   getScheduleStartTime, getStandardTime, getStandardTimeByMoment, getTimeFromTimestamps,
   isOnlyDoctor, isUserAdmin, renderItem, setRecord
 } from "../../../../utils";
+import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
+import { useTableStyles } from '../../../../styles/tableStyles';
 import { appointmentSchema, providerAppointmentSchema } from '../../../../validationSchemas';
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, WHITE } from '../../../../theme';
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user, currentUser } = useContext(AuthContext)
-  const chartingClasses = useChartingStyles()
+  const tableClasses = useTableStyles();
   const classes = usePublicAppointmentStyles();
 
   const { facilityList } = useContext(ListContext)
@@ -463,22 +463,19 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Grid item md={8} sm={12} xs={12}>
                 <CardComponent cardTitle={APPOINTMENT}>
                   <Grid container spacing={3}>
-                    {!isEdit &&
-                      <Grid item md={12} sm={12} xs={12}>
-                        <Typography variant='body1'>{TYPE}</Typography>
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Typography variant='body1'>{TYPE}</Typography>
 
-                        <Box className={chartingClasses.toggleProblem}>
-                          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                            {appointmentTypes.map(type =>
-                              <Box onClick={() => handleAppointmentType(type)}
-                                className={type === appointmentType ? 'selectedBox selectBox' : 'selectBox'}
-                              >
-                                <Typography variant='h6'>{type}</Typography>
-                              </Box>
-                            )}
+                      <Box px={1} py={0.8} mt={1} mb={2} width='fit-content' display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                        {appointmentTypes.map(type =>
+                          <Box onClick={() => handleAppointmentType(type)}
+                            className={type === appointmentType ? `${tableClasses.selectedBox} ${tableClasses.selectBox}` : tableClasses.selectBox}
+                          >
+                            <Typography variant='h6'>{type}</Typography>
                           </Box>
-                        </Box>
-                      </Grid>}
+                        )}
+                      </Box>
+                    </Grid>
 
                     <Grid item md={6} sm={12} xs={12}>
                       {isHigherAdmin ?
