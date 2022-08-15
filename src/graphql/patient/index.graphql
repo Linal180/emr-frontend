@@ -91,16 +91,14 @@ query GetPatient($getPatient: GetPatient!) {
       ssn
       gender
       dob
-      phonePermission
       pharmacy
-      medicationHistoryAuthority
+      medicationHistoryConsent
       releaseOfInfoBill
-      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
       callToConsent
-      medicationHistoryAuthority
+      medicationHistoryConsent
       preferredCommunicationMethod
       patientNote
       language
@@ -118,8 +116,15 @@ query GetPatient($getPatient: GetPatient!) {
       statementNoteDateFrom
       statementNoteDateTo
       patientNoteOpen
+      phoneEmailPermission
+      cellPhonePermission
+      medicalPermission
+      resultConsent
+      immunizationConsent
+      medicationHistoryConsent
       createdAt
       updatedAt
+     
 
       doctorPatients {
         id
@@ -261,16 +266,15 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!) {
       ssn
       gender
       dob
-      phonePermission
+      phoneEmailPermission
       pharmacy
-      medicationHistoryAuthority
+      medicationHistoryConsent
       releaseOfInfoBill
-      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
       callToConsent
-      medicationHistoryAuthority
+      medicationHistoryConsent
       preferredCommunicationMethod
       patientNote
       language

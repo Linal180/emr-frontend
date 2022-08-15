@@ -340,6 +340,14 @@ export const HCFA_DESC = "HCFA Box 10:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
 export const CONSENT_TO_MESSAGES = "Consent To messages";
 export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
+export const PHONE_EMAIL_PERMISSION = 'May we phone, email, or send a text to you to confirm appointments?'
+export const CELL_PHONE_PERMISSION = 'May we leave a message on your answering machine at home or on your cell phone?'
+export const MEDICAL_PERMISSION = 'May we discuss your medical condition with any member of your family?'
+export const RESULT_CONSENT = 'I want to receive information to access my results and health data online through patient portal.'
+export const IMMUNIZATION_CONSENT = 'I consent to share my immunization record with a state registry.'
+export const MEDICATION_HISTORY_CONSENT = 'I consent to the clinic pulling my medication history to best treat me.'
+export const PERMISSIONS_TEXT = 'Permissions: I give permissions for the following:'
+export const CONSENTS = 'Consents'
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Provider";
@@ -406,6 +414,7 @@ export const RESOURCE = "Resource";
 export const RENDERING = "Rendering";
 export const ONSET_DATE = "Onset Date";
 export const ADD_ANOTHER = "ADD ANOTHER";
+export const ADD_ANOTHER_COPAY = "ADD ANOTHER COPAY";
 export const SERVICE_DATE = "Service Date";
 export const COPAY_AMOUNT = "Copay Amount";
 export const UNCOVERED_AMT = "Uncovered Amt";
@@ -587,6 +596,8 @@ export const PREFIX = "Prefix";
 export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
 export const CHECK_ELIGIBILITY_TODAY = "Check Eligibility Today";
+export const POLICY_CARDS = "INSURANCE CARDS PICTURES";
+export const INSURANCE_CARDS = "INSURANCE CARDS";
 export const CHECK_PRIOR_DATE_OF_SERVICE = "Check At Prior Date Of Service";
 export const OVERRIDE_PAYER_RETURNED_RESULT = "Override Payer Returned Result";
 export const TAKE_A_PICTURE_OF_INSURANCE =
@@ -2886,13 +2897,13 @@ export const RegisterPatientMenuNav = [
     title: IDENTIFICATION,
   },
   {
+    title: EMERGENCY_CONTACT,
+  },
+  {
     title: DEMOGRAPHICS,
   },
   {
     title: PRIVACY,
-  },
-  {
-    title: EMERGENCY_CONTACT,
   },
 ];
 
