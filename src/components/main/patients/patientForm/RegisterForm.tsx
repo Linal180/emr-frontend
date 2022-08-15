@@ -98,7 +98,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
           />
         </>)
 
-      case shouldShowInsuranceStep ? 3 : 1:
+      case shouldShowInsuranceStep ? 3 : !shouldShowBread ? 2 : 1:
         return (
           <>
             <Box mb={3}>
@@ -132,7 +132,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
           </>
         )
 
-      case shouldShowInsuranceStep ? 4 : 2:
+      case shouldShowInsuranceStep ? 4 : !shouldShowBread ? 3 : 2:
         return (
           <PatientDemographicsCard
             isEdit={isEdit}
