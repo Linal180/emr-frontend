@@ -42,8 +42,7 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput,
-  BillingPayload
+  FetchBillingClaimStatusesInput, BillingPayload
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -485,6 +484,7 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
+  rows?: number
 }
 
 export interface TooltipData {
@@ -751,10 +751,6 @@ export type ExtendedExternalAppointmentInputProps = Pick<
 > & { phone: string } & { sexAtBirth: SelectorOption } & { signature: File | null };
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">;
-
-export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string;
-}
 
 export interface GeneralFormProps {
   id?: string;
