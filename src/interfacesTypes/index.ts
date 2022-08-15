@@ -363,7 +363,7 @@ export interface SelectorProps {
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function;
-  onSelect?: Function;
+  onSelect?: (data: SelectorOption) => void;
   onOutsideClick?: Function;
 }
 
@@ -1938,4 +1938,10 @@ export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
 
 export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
   facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption
+}
+
+export type SendSMSFormType = {
+  mobile: string,
+  message: string,
+  template: SelectorOption,
 }

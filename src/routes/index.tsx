@@ -84,6 +84,7 @@ import { Maintenance } from "../pages/maintenance";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import ClaimStatus from "../pages/main/billing/claimStatusListing";
+import { SendSMS } from "../pages/main/sendSms";
 // constants, contexts and utils
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -100,7 +101,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE,
+  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -201,6 +202,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FORM_BUILDER_RESPONSES}/:id`} component={FormBuilderResponses} />
       <PrivateRoute exact path={`${ELIGIBILITY_ROUTE}/:id`} component={EligibilityTable} />
       <PrivateRoute exact path={`${COVERAGE_ROUTE}/:id/:patientId/:appointmentId?`} component={CoverageDetails} />
+      <PrivateRoute exact path={SEND_SMS_ROUTE} component={SendSMS} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 
