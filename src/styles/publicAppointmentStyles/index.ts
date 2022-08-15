@@ -25,7 +25,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       listStyle: 'none',
       overflowX: 'auto',
       margin: "10px 0 20px",
-      maxHeight: "200px",
+      maxHeight: "210px",
       overflowY: "auto",
 
       '& li': {
@@ -187,6 +187,18 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         minHeight: 354,
         paddingRight: theme.spacing(3),
       },
+    },
+
+    customCalendar: {
+      "& .MuiPickersStaticWrapper-staticWrapperRoot": {
+        marginTop: '-10px',
+        border: '1px solid red',
+      },
+
+      "& .MuiPickersBasePicker-pickerView": {
+        minHeight: 330,
+        justifyContent: 'flex-start'
+      }
     }
   })
 );

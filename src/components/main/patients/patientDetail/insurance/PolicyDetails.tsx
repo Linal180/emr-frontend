@@ -131,12 +131,14 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
 
           <Grid container justifyContent="flex-end">
             <Grid item md={12} sm={12} xs={12}>
-              <Box pb={1}
-                onClick={() => appendCopayField(INITIAL_COPAY_VALUE)}
-                className="billing-box" display="flex" alignItems="center" justifyContent="flex-end"
-              >
-                <AddCircleOutline color='inherit' />
-                <Typography>{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
+              <Box pb={1} display="flex" alignItems="center" justifyContent="flex-end">
+                <Button 
+                  onClick={() => appendCopayField(INITIAL_COPAY_VALUE)}
+                >
+                  <AddCircleOutline color='secondary' />
+                  <Box ml={1} />
+                  <Typography color="secondary">{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
+                </Button>
               </Box>
             </Grid>
           </Grid>

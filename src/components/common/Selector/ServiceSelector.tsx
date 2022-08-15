@@ -28,7 +28,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const isFacAdmin = isFacilityAdmin(roles);
   const inputLabel = isRequired ? requiredLabel(label) : label
 
-  const [findAllService,] = useFindAllServiceListLazyQuery({
+  const [findAllService] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 

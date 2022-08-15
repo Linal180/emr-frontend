@@ -253,6 +253,7 @@ export const getUserRole = (roles: RolesPayload['roles']) => {
 }
 
 export const getToken = () => localStorage.getItem(TOKEN);
+export const getLockedEmail = () => localStorage.getItem(EMAIL);
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
@@ -2260,3 +2261,6 @@ export const calculateAge = (birthday: string) => {
   const ageDate = new Date(ageDifMs);
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+export const getFormEmbeddedLink = (src: string): string =>
+  `<iframe width="560" height="315" src="${src}" frameborder="0" allow="accelerometer; allowfullscreen"></iframe>`

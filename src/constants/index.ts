@@ -32,6 +32,7 @@ export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const SUFFIX_REGEX = /^[.A-Za-z\s]+$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
@@ -1608,6 +1609,7 @@ export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
 export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
+export const NUMBER_AND_SPECIAL_ERROR_MESSAGE = "Numbers and Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;

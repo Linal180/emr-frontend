@@ -270,9 +270,8 @@ const BillingForm: FC<BillingFormProps> = ({
                             <Typography>{ADD_ANOTHER_COPAY}</Typography>
                           </Box>
                         }
-                      </>
-                    }
-                    {/* <Grid item md={12} sm={12} xs={12}>
+
+                        {/* <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         name="resource"
                         label={RESOURCE}
@@ -280,6 +279,8 @@ const BillingForm: FC<BillingFormProps> = ({
                         addEmpty
                       />
                     </Grid> */}
+                      </>
+                    }
                   </Grid>
                 </Box>
               </Grid>

@@ -55,18 +55,20 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
           <Box p={1} />
 
           <Card>
-            <Box px={2} pt={2} color={WHITE} bgcolor={BLUE_TEN}>
-              <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
-            </Box>
+            <Box borderRadius={8} bgcolor={BLUE_TEN}>
+              <Box px={2} pt={2} color={WHITE}>
+                <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
+              </Box>
 
-            <PracticeUsers />
+              <PracticeUsers />
+            </Box>
           </Card>
 
           <Box p={1} />
 
           <Card>
-            <Box className="totalFacilitiesChartContainer">
-              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
+            <Box borderRadius={8} bgcolor={PURPLE_TWO}>
+              <Box px={2} pt={2} color={WHITE}>
                 <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
               </Box>
 
@@ -83,7 +85,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
+            <Box pb={3} className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
               <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
                 <PlusRoundIcon />
                 <Box p={0.7} />
@@ -99,8 +101,6 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
           </Card>
-
-          <Box p={1} />
 
           <Card>
             <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>

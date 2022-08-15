@@ -129,16 +129,17 @@ const LabOrdersSpecimenTypeForm: FC<LabOrdersSpecimenTypeInput> = ({ index }): J
 
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Box pb={3}
-            onClick={() => { appendSpecimenTypeField(SPECIMEN_TYPE_INITIAL_VALUES); setNumberOfSpecimens((prevValue) => prevValue + 1) }}
-          className="billing-box" display="flex" alignItems="center" justifyContent="flex-start"
-          >
-          <AddCircleOutline color='inherit' />
-
-          <Typography>{specimenTypeFields?.length ? ADD_ANOTHER_SPECIMEN : ADD_SPECIMEN}</Typography>
-        </Box>
+          <Box pb={3} display="flex" alignItems="center" justifyContent="flex-end">
+            <Button 
+              onClick={() => { appendSpecimenTypeField(SPECIMEN_TYPE_INITIAL_VALUES); setNumberOfSpecimens((prevValue) => prevValue + 1) }}
+            >
+              <AddCircleOutline color='secondary' />
+              <Box ml={1} />
+              <Typography color="secondary">{specimenTypeFields?.length ? ADD_ANOTHER_SPECIMEN : ADD_SPECIMEN}</Typography>
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
     </>
   );
 };

@@ -60,23 +60,27 @@ const RecentActivities = () => {
     const { email } = user || {}
 
     return (
-      <TimelineItem>
-        <TimelineSeparator>
-          <TimelineDot variant="outlined" color="secondary" />
-          <TimelineConnector />
-        </TimelineSeparator>
+      <Timeline>
+        <TimelineItem>
+          <TimelineSeparator>
+            <TimelineDot variant="outlined" color="secondary" />
+            <TimelineConnector />
+          </TimelineSeparator>
 
-        <TimelineContent className="pt-0">
-          <Typography variant="body1">
-            {!!email && <strong> ”{email}" </strong>}
-            {operationType} {moduleType}
-          </Typography>
+          <TimelineContent>
+            <Typography variant="body1">
+              {!!email && <strong> ”{email}" </strong>}
+              {operationType} {moduleType}
+            </Typography>
 
-          <Typography variant="body2" style={{ color: BLUE }}>
-            {timeDifference(createdAt)}
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
+            <Typography variant="body2" color="inherit">
+              <Box color={BLUE}>
+                {timeDifference(createdAt)}
+              </Box>
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+      </Timeline>
     )
   };
 

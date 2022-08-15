@@ -12,6 +12,7 @@ import { ChartComponentProps } from "../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { ChartContextProvider } from '../../../../context';
+import { WHITE } from '../../../../theme';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
@@ -48,19 +49,27 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
           </Grid>
 
           <Grid item lg={10} md={9} sm={12} xs={12}>
-            <TabPanel value="1" className='tab-panel'>
-              <VitalTab shouldDisableEdit={shouldDisableEdit} />
-            </TabPanel>
+            <Box className={classes.tabPanelPadding}>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="1">
+                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
 
-            <TabPanel value="2" className='tab-panel'>
-              <ProblemTab shouldDisableEdit={shouldDisableEdit} />
-            </TabPanel>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="2">
+                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
 
-            <TabPanel value="3" className='tab-panel'>
-              <ChartContextProvider>
-                <AllergyTab shouldDisableEdit={shouldDisableEdit} />
-              </ChartContextProvider>
-            </TabPanel>
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="3">
+                  <ChartContextProvider>
+                    <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+            </Box>
           </Grid>
         </Grid>
       </TabContext>

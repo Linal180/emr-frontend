@@ -3,7 +3,9 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
-import { Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
+import {
+  Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography
+} from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
@@ -13,14 +15,14 @@ import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-import { dataURLtoFile, getToken, isOnlyDoctor } from '../../../utils';
+import { dataURLtoFile, getAppointmentDateTime, getToken, isOnlyDoctor } from '../../../utils';
 import {
   AttachmentPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
   SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON,
-  DRAW_SIGNATURE, PAGE_LIMIT,
+  DRAW_SIGNATURE, PAGE_LIMIT, SOMETHING_WENT_WRONG,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
@@ -34,11 +36,12 @@ const SignatureComponent = (): JSX.Element => {
       attachment.title === ATTACHMENT_TITLES.Signature)[0]
   )
 
+  const { createdAt } = signAttachment || {}
   const [error, setError] = useState(false)
   const classes = useHeaderStyles();
   let data = ''
   let signCanvas = useRef<any>({});
-  
+
   const [open, setOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [signatureUrl, setSignatureUrl] = useState<string>('')
@@ -108,6 +111,7 @@ const SignatureComponent = (): JSX.Element => {
     setLoading(true)
     const { id: attachmentId } = signAttachment || {}
     const formData = new FormData();
+
     attachmentId && formData.append("id", attachmentId);
     id && formData.append("typeId", id);
     formData.append("title", ATTACHMENT_TITLES.Signature);
@@ -128,7 +132,7 @@ const SignatureComponent = (): JSX.Element => {
     ).then(response => {
       const { status } = response
 
-      if (status !== 201) Alert.error("Something went wrong!");
+      if (status !== 201) Alert.error(SOMETHING_WENT_WRONG);
       fetchAttachments()
       setLoading(false)
       setOpen(false)
@@ -145,6 +149,7 @@ const SignatureComponent = (): JSX.Element => {
     if (signCanvas && signCanvas?.current) {
       const { toDataURL, isEmpty } = signCanvas.current;
       const empty = isEmpty()
+
       if (empty) setError(true)
       else {
         setError(false)
@@ -230,17 +235,25 @@ const SignatureComponent = (): JSX.Element => {
               }
 
               <Box mb={4} display="flex" justifyContent="space-between" alignItems="center">
-                {!signatureUrl && <Button onClick={() => setOpen(!open)} type="submit" disabled={isLoading} variant="outlined" color='secondary'>
-                  {ADD_SIGNATURE}
+                {!signatureUrl &&
+                  <Button onClick={() => setOpen(!open)} type="submit"
+                    disabled={isLoading} variant="outlined" color='secondary'
+                  >
+                    {ADD_SIGNATURE}
 
-                  {isLoading && <CircularProgress size={20} color="inherit" />}
-                </Button>}
+                    {isLoading && <CircularProgress size={20} color="inherit" />}
+                  </Button>}
 
-                <Box display="flex" alignItems="center">
-                  <Typography variant='h5' color='textPrimary'>{UPDATED_ON}</Typography>
-                  <Box p={1} />
-                  <Typography variant='h6' color='secondary'>12:00</Typography>
-                </Box>
+                {!!signAttachment &&
+                  <Box display="flex" alignItems="center">
+                    <Typography variant='h5' color='textPrimary'>{UPDATED_ON}</Typography>
+                    <Box p={1} />
+
+                    {createdAt &&
+                      <Typography variant='h6' color='secondary'>{getAppointmentDateTime(createdAt)}</Typography>
+                    }
+                  </Box>
+                }
               </Box>
             </Collapse>
 

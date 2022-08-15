@@ -1,7 +1,7 @@
 // packages block
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "react";
+import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer } from "react";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -16,14 +16,13 @@ import { GREEN, MODERATE } from "../../../../theme";
 import { AuthContext, ListContext } from "../../../../context";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
-import { getFormatDate, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
+import { useFindAllFormsLazyQuery, useRemoveFormMutation, FormPayload, LayoutJsonType } from "../../../../generated/graphql";
+import { getFormatDate, getFormEmbeddedLink, isPracticeAdmin, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
+import { Action, ActionType, State, initialState, formBuilderListingReducer } from '../../../../reducers/formBuilderListingReducer'
 import {
-  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, LayoutJsonType, FormTabs
-} from "../../../../generated/graphql";
-import {
-  ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
+  ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT, FORM_TYPE, PRACTICE_FORM,
   TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE,
-  FORM_EMBED_TITLE, CREATED_ON, DRAFT_TEXT, PUBLISHED, FORM_BUILDER_RESPONSES, FACILITY_FORM, PRACTICE_FORM, FORM_TYPE
+  FORM_EMBED_TITLE, CREATED_ON, DRAFT_TEXT, PUBLISHED, FORM_BUILDER_RESPONSES, FACILITY_FORM,
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -35,25 +34,18 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
   //states
-  const [formEmbedUrl, setFormEmbedUrl] = useState('')
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [copied, setCopied] = useState<boolean>(false);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openShare, setOpenShare] = useState<boolean>(false);
-  const [deleteFormId, setDeleteFormId] = useState<string>("");
-  const [forms, setForms] = useState<FormsPayload['forms']>([]);
-  const [formPreviewData, setFormPreviewData] = useState<FormTabs[]>([]);
-  const [openPreview, setOpenPreview] = useState<boolean>(false)
-  const [formName, setFormName] = useState<string>('')
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(formBuilderListingReducer, initialState);
+  const {
+    page, formEmbedUrl, totalPages, searchQuery, copied, openDelete, openShare, deleteFormId, forms, formName,
+    openPreview, formPreviewData
+  } = state
   //mutation & query
   const [findAllForms, { loading, error }] = useFindAllFormsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setForms([]);
+      dispatch({ type: ActionType.SET_FORMS, forms: [] })
     },
 
     onCompleted(data) {
@@ -61,14 +53,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
       if (findAllForms) {
         const { forms, pagination } = findAllForms
-        forms && setForms(forms as FormsPayload['forms'])
+        forms && dispatch({ type: ActionType.SET_FORMS, forms })
 
         if (pagination) {
           const { totalPages } = pagination
-          totalPages && setTotalPages(totalPages)
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
       } else {
-        setForms([]);
+        dispatch({ type: ActionType.SET_FORMS, forms: [] })
       }
     }
   });
@@ -79,7 +71,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
     onError() {
       Alert.error(CANT_DELETE_FORM)
-      setOpenDelete(false)
+
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
     },
 
     onCompleted(data) {
@@ -91,7 +85,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
           if (status === 200) {
             message && Alert.success(message);
-            setOpenDelete(false)
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             fetchAllForms();
           }
 
@@ -117,12 +111,12 @@ const FormBuilderTable: FC = (): JSX.Element => {
     fetchAllForms()
   }, [page, searchQuery, fetchAllForms]);
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value });
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteFormId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_FORM_ID, deleteFormId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -138,40 +132,38 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   };
 
-  const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
+  const onViewClick = (layout: LayoutJsonType | undefined, formName: string | undefined) => {
     if (layout) {
       const { tabs } = layout;
-      tabs?.length > 0 && setFormPreviewData(tabs)
-      name && setFormName(name)
-      setOpenPreview(true)
+      tabs?.length > 0 && dispatch({ type: ActionType.SET_PREVIEW_DATA, formPreviewData: tabs })
+      formName && dispatch({ type: ActionType.SET_FORM_NAME, formName })
+      dispatch({ type: ActionType.SET_OPEN_PREVIEW, openPreview: true })
     }
   }
 
-  const previewCloseHandler = () => setOpenPreview(false)
+  const previewCloseHandler = () => dispatch({ type: ActionType.SET_OPEN_PREVIEW, openPreview: false })
 
   const handleClipboard = (id: string) => {
     if (id) {
       navigator.clipboard.writeText(
         `${process.env.REACT_APP_URL}${PUBLIC_FORM_BUILDER_ROUTE}/${id}`
       )
-      setCopied(true)
+      dispatch({ type: ActionType.SET_COPIED, copied: true })
     }
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(
-      `<iframe width="560" height="315" src="${formEmbedUrl}" frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
-    )
-    setOpenShare(false)
+    navigator.clipboard.writeText(getFormEmbeddedLink(formEmbedUrl))
+    dispatch({ type: ActionType.SET_OPEN_SHARE, openShare: false })
   }
 
   const onShareClick = (id: string) => {
-    setFormEmbedUrl(`${process.env.REACT_APP_URL}${PUBLIC_FORM_BUILDER_ROUTE}/${id}`)
-    setOpenShare(true)
+    dispatch({ type: ActionType.SET_FORM_EMBED_URL, formEmbedUrl: `${process.env.REACT_APP_URL}${PUBLIC_FORM_BUILDER_ROUTE}/${id}` })
+    dispatch({ type: ActionType.SET_OPEN_SHARE, openShare: true })
   }
 
-  const search = (query: string) => {
-    setSearchQuery(query)
+  const search = (searchQuery: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery })
   }
 
   return (
@@ -281,11 +273,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
         <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading}
           description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm}
-          setOpen={(open: boolean) => setOpenDelete(open)} />
+          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })} />
 
-        <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
-          description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
-          handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
+        <ShareModal
+          isOpen={openShare}
+          handleCopy={handleCopy}
+          title={FORM_EMBED_TITLE}
+          description={getFormEmbeddedLink(formEmbedUrl)}
+          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_SHARE, openShare: open })} />
 
         <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} formName={formName} />
       </Box>

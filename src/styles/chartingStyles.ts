@@ -1,5 +1,8 @@
 import { makeStyles, } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO, GREY, GREY_FOUR, WHITE, WHITE_FOUR } from "../theme";
+import { 
+  BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO,  
+  GREY, GREY_FOUR, WHITE, WHITE_FOUR 
+} from "../theme";
 
 export const useChartingStyles = makeStyles({
   cardBox: {
@@ -141,21 +144,23 @@ export const useChartingStyles = makeStyles({
     marginTop: 10,
 
     "& .MuiBox-root": {
-    border: `1px solid ${GRAY_SIX}`, 
-    borderRadius: 6,
-    display: 'flex',
-    alignItems: 'center',
-    width: 'fit-content',
-    padding: '5px 10px',
+      border: `1px solid ${GRAY_SIX}`,
+      borderRadius: 6,
+      display: 'flex',
+      alignItems: 'center',
+      width: 'fit-content',
+      padding: '5px 10px',
 
-    "& .selectedBox": {
-      backgroundColor: BLUE,
-      border: 'none',
-    },
+      "& .selectedBox": {
+        backgroundColor: BLUE,
+        color: WHITE,
+        border: 'none',
+      },
 
-    "& .selectBox": {
-      border: 'none',
-    },
+      "& .selectBox": {
+        border: 'none',
+        cursor: 'pointer',
+      },
     },
   },
 
@@ -245,5 +250,20 @@ export const useChartingStyles = makeStyles({
     "& .MuiAccordionDetails-root": {
       display: 'block',
     },
+  },
+
+  hoverClass: {
+    padding: '5px 10px !important',
+    borderRadius: 4,
+
+    "&:hover": {
+      backgroundColor: GREY,
+    }
+  },
+
+  tabPanelPadding: {
+    "& .MuiTabPanel-root": {
+      paddingTop: 0,
+    }
   }
 });
