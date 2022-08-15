@@ -1,17 +1,24 @@
 // constants block
-import { DASHBOARD_BREAD, LAB_RESULTS_BREAD, ADD_RESULT, LAB_RESULTS_ROUTE, LAB_RESULTS_TEXT } from "../../../../constants";
+import { DASHBOARD_BREAD, LAB_RESULTS_BREAD, LAB_RESULTS_TEXT, SYNC_RESULTS } from "../../../../constants";
+import { useSyncLabResultsMutation } from "../../../../generated/graphql";
+import Alert from "../../../common/Alert";
 import PageHeader from "../../../common/PageHeader";
 import LabResultsTable from "./LabResultsTable";
 
 const LabResultsComponent = (): JSX.Element => {
+  const [syncLabResults] = useSyncLabResultsMutation({
+    onError: ({ message }) => {
+      Alert.error(message)
+    }
+  })
+
   return (
     <>
       <PageHeader
         title={LAB_RESULTS_TEXT}
         path={[DASHBOARD_BREAD, LAB_RESULTS_BREAD]}
-        hasComponent
-        buttonText={ADD_RESULT}
-        linkToPage={`${LAB_RESULTS_ROUTE}/new`}
+        buttonText={SYNC_RESULTS}
+        openModal={async () => await syncLabResults()}
       />
 
       <LabResultsTable />

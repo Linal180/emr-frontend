@@ -377,6 +377,7 @@ export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Provider";
 export const ADD_RESULT = "Add Result";
+export const SYNC_RESULTS = "Sync Results";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Provider";
 export const ADD_PATIENT = "Add Patient";
@@ -781,6 +782,10 @@ export const DROPDOWN_PAGE_LIMIT = 10;
 export const USER_LOG_PAGE_LIMIT = 50;
 export const HISTORICAL = "Historical";
 export const TEST_TAKEN = "Test Taken";
+export const TEST_1 = "Test 1";
+export const TEST_2 = "Test 2";
+export const TEST_3 = "Test 3";
+export const TEST_4 = "Test 4";
 export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
@@ -1161,6 +1166,7 @@ export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
+export const LAB_RESULTS_DESCRIPTION = "Patient's Lab Results";
 export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
 export const LAB_ORDERS = "Lab Orders";
 export const SIGNATURE_DATE = "DATE:"
@@ -3112,6 +3118,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
+  },
+  {
+    name: LAB_RESULTS_TEXT,
+    link: LAB_RESULTS_ROUTE,
+    desc: LAB_RESULTS_DESCRIPTION,
   }
 ];
 

@@ -2375,6 +2375,15 @@ export type InvoicesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LabResultPayload = {
+  __typename?: 'LabResultPayload';
+  doctor?: Maybe<Doctor>;
+  facilityInfo?: Maybe<Facility>;
+  labTests?: Maybe<Array<LabTests>>;
+  patientInfo?: Maybe<Patient>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LabTestByOrderNumInput = {
   labTestStatus?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
@@ -2704,6 +2713,7 @@ export type Mutation = {
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
+  syncLabResults: LabTestObservationPayload;
   update2FactorAuth: UserPayload;
   updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
@@ -4291,6 +4301,7 @@ export type Query = {
   findAllUsersForms: UserFormsPayload;
   findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
   findClaimStatus: ClaimStatusPayload;
+  findLabResultInfo: LabResultPayload;
   findLabTestsByOrderNum: LabTestsPayload;
   findLoincCode: LoincCodes;
   findPatientAttachments: PatientAttachmentsPayload;
@@ -4614,6 +4625,11 @@ export type QueryFindAppointmentInsuranceStatusArgs = {
 
 export type QueryFindClaimStatusArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryFindLabResultInfoArgs = {
+  orderNumber: Scalars['String'];
 };
 
 
@@ -7442,7 +7458,7 @@ export type FindAllLabTestQueryVariables = Exact<{
 }>;
 
 
-export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllLoincCodesQueryVariables = Exact<{
   searchLoincCodesInput: SearchLoincCodesInput;
@@ -7472,6 +7488,13 @@ export type FindLabTestsByOrderNumQueryVariables = Exact<{
 
 export type FindLabTestsByOrderNumQuery = { __typename?: 'Query', findLabTestsByOrderNum: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, collectedDate?: string | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, id: string } | null, patient?: { __typename?: 'Patient', firstName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type FindLabResultInfoQueryVariables = Exact<{
+  orderNumber: Scalars['String'];
+}>;
+
+
+export type FindLabResultInfoQuery = { __typename?: 'Query', findLabResultInfo: { __typename?: 'LabResultPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, collectedDate?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, dob?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null, facility?: { __typename?: 'Facility', id: string, cliaIdNumber?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null }> | null } | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null }> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type CreateLabTestMutationVariables = Exact<{
   createLabTestInput: CreateLabTestInput;
 }>;
@@ -7485,6 +7508,11 @@ export type UpdateLabTestMutationVariables = Exact<{
 
 
 export type UpdateLabTestMutation = { __typename?: 'Mutation', updateLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type SyncLabResultsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SyncLabResultsMutation = { __typename?: 'Mutation', syncLabResults: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateLabTestsByOrderNumMutationVariables = Exact<{
   updateLabTestItemInput: CreateLabTestItemInput;
@@ -14562,6 +14590,8 @@ export const FindAllLabTestDocument = gql`
       patientId
       createdAt
       testNotes
+      receivedDate
+      collectedDate
       appointmentId
       patient {
         doctorPatients {
@@ -14572,6 +14602,8 @@ export const FindAllLabTestDocument = gql`
           currentProvider
         }
         firstName
+        dob
+        lastName
       }
       diagnoses {
         id
@@ -14907,6 +14939,117 @@ export function useFindLabTestsByOrderNumLazyQuery(baseOptions?: Apollo.LazyQuer
 export type FindLabTestsByOrderNumQueryHookResult = ReturnType<typeof useFindLabTestsByOrderNumQuery>;
 export type FindLabTestsByOrderNumLazyQueryHookResult = ReturnType<typeof useFindLabTestsByOrderNumLazyQuery>;
 export type FindLabTestsByOrderNumQueryResult = Apollo.QueryResult<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>;
+export const FindLabResultInfoDocument = gql`
+    query FindLabResultInfo($orderNumber: String!) {
+  findLabResultInfo(orderNumber: $orderNumber) {
+    labTests {
+      id
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      receivedDate
+      labName
+      vendorName
+      accessionNumber
+      collectedDate
+      patient {
+        id
+        firstName
+        lastName
+        dob
+        gender
+        contacts {
+          primaryContact
+          phone
+        }
+        facility {
+          id
+          cliaIdNumber
+          contacts {
+            primaryContact
+            address
+            phone
+          }
+        }
+      }
+      diagnoses {
+        id
+        code
+        description
+      }
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+      test {
+        id
+        loincNum
+        component
+        unitsRequired
+      }
+      testObservations {
+        id
+        doctorsSignOff
+        resultUnit
+        resultValue
+        normalRange
+        normalRangeUnit
+        abnormalFlag
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      appointment {
+        id
+        appointmentType {
+          name
+        }
+        scheduleStartDateTime
+      }
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindLabResultInfoQuery__
+ *
+ * To run a query within a React component, call `useFindLabResultInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindLabResultInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindLabResultInfoQuery({
+ *   variables: {
+ *      orderNumber: // value for 'orderNumber'
+ *   },
+ * });
+ */
+export function useFindLabResultInfoQuery(baseOptions: Apollo.QueryHookOptions<FindLabResultInfoQuery, FindLabResultInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindLabResultInfoQuery, FindLabResultInfoQueryVariables>(FindLabResultInfoDocument, options);
+      }
+export function useFindLabResultInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindLabResultInfoQuery, FindLabResultInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindLabResultInfoQuery, FindLabResultInfoQueryVariables>(FindLabResultInfoDocument, options);
+        }
+export type FindLabResultInfoQueryHookResult = ReturnType<typeof useFindLabResultInfoQuery>;
+export type FindLabResultInfoLazyQueryHookResult = ReturnType<typeof useFindLabResultInfoLazyQuery>;
+export type FindLabResultInfoQueryResult = Apollo.QueryResult<FindLabResultInfoQuery, FindLabResultInfoQueryVariables>;
 export const CreateLabTestDocument = gql`
     mutation CreateLabTest($createLabTestInput: CreateLabTestInput!) {
   createLabTest(createLabTestInput: $createLabTestInput) {
@@ -14984,6 +15127,42 @@ export function useUpdateLabTestMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateLabTestMutationHookResult = ReturnType<typeof useUpdateLabTestMutation>;
 export type UpdateLabTestMutationResult = Apollo.MutationResult<UpdateLabTestMutation>;
 export type UpdateLabTestMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
+export const SyncLabResultsDocument = gql`
+    mutation SyncLabResults {
+  syncLabResults {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type SyncLabResultsMutationFn = Apollo.MutationFunction<SyncLabResultsMutation, SyncLabResultsMutationVariables>;
+
+/**
+ * __useSyncLabResultsMutation__
+ *
+ * To run a mutation, you first call `useSyncLabResultsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSyncLabResultsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [syncLabResultsMutation, { data, loading, error }] = useSyncLabResultsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSyncLabResultsMutation(baseOptions?: Apollo.MutationHookOptions<SyncLabResultsMutation, SyncLabResultsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SyncLabResultsMutation, SyncLabResultsMutationVariables>(SyncLabResultsDocument, options);
+      }
+export type SyncLabResultsMutationHookResult = ReturnType<typeof useSyncLabResultsMutation>;
+export type SyncLabResultsMutationResult = Apollo.MutationResult<SyncLabResultsMutation>;
+export type SyncLabResultsMutationOptions = Apollo.BaseMutationOptions<SyncLabResultsMutation, SyncLabResultsMutationVariables>;
 export const UpdateLabTestsByOrderNumDocument = gql`
     mutation UpdateLabTestsByOrderNum($updateLabTestItemInput: CreateLabTestItemInput!) {
   updateLabTestsByOrderNum(updateLabTestItemInput: $updateLabTestItemInput) {

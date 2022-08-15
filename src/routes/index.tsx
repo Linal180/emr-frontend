@@ -102,6 +102,7 @@ import {
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
   SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE,
 } from "../constants";
+import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -169,6 +170,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:appointmentId/:id${CHECK_IN_ROUTE}`} component={CheckIn} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} permission={USER_PERMISSIONS.updateAppointment} />
       <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
+      <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/:orderNum`} component={LabResultDetail} />
       <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
       <PrivateRoute exact path={CLAIM_FEED_ROUTE} component={ClaimFeed} />
       <PrivateRoute exact path={CLAIM_STATUS_ROUTE} component={ClaimStatus} />
