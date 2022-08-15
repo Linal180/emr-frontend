@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -989,6 +990,7 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
+  insuranceStatus?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
@@ -2027,12 +2029,14 @@ export type FormTabs = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   sections: Array<SectionsTypes>;
+  tabId?: Maybe<Scalars['String']>;
 };
 
 export type FormTabsInputs = {
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   sections: Array<SectionsInputs>;
+  tabId?: Maybe<Scalars['String']>;
 };
 
 /** The form's types */
@@ -4316,6 +4320,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientLatestVital: PatientVitalPayload;
   getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientProvider: PatientDoctorPayload;
@@ -4760,6 +4765,11 @@ export type QueryGetPatientAllergyArgs = {
 
 export type QueryGetPatientAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientLatestVitalArgs = {
+  patientId: Scalars['String'];
 };
 
 
@@ -5225,6 +5235,7 @@ export type SectionsInputs = {
   fields: Array<FieldsInputs>;
   id: Scalars['String'];
   name: Scalars['String'];
+  sectionId?: Maybe<Scalars['String']>;
 };
 
 export type SectionsTypes = {
@@ -5233,6 +5244,7 @@ export type SectionsTypes = {
   fields: Array<FieldsTypes>;
   id: Scalars['String'];
   name: Scalars['String'];
+  sectionId?: Maybe<Scalars['String']>;
 };
 
 export type Service = {
@@ -5837,7 +5849,7 @@ export type UpdateContactInput = {
 
 export type UpdateCopayInput = {
   amount?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   policy?: Maybe<CreatePolicyInput>;
   policyId?: Maybe<Scalars['String']>;
   type?: Maybe<CopayType>;
@@ -6862,6 +6874,13 @@ export type RemoveClaimStatusMutationVariables = Exact<{
 
 export type RemoveClaimStatusMutation = { __typename?: 'Mutation', removeClaimStatus: { __typename?: 'ClaimStatusPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatus: { __typename?: 'ClaimStatus', id: string } } };
 
+export type FetchBillingClaimStatusesQueryVariables = Exact<{
+  fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput;
+}>;
+
+
+export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string, claimNo?: string | null, serviceDate?: string | null, claimStatus?: { __typename?: 'ClaimStatus', statusName?: string | null } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, claim?: { __typename?: 'Claim', payer_name?: string | null, total_charge?: number | null, errorMessages?: Array<string> | null } | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
 }>;
@@ -6952,6 +6971,13 @@ export type GetPatientVitalQueryVariables = Exact<{
 
 
 export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null, diastolicBloodPressure?: string | null, systolicBloodPressure?: string | null, respiratoryRate?: string | null, oxygenSaturation?: string | null, PatientHeight?: string | null, PatientWeight?: string | null, PatientBMI?: string | null, PainRange?: string | null, patientHeadCircumference?: string | null, vitalCreationDate?: string | null, patientId?: string | null, appointmentId?: string | null, createdAt?: string | null, updatedAt?: string | null } | null } };
+
+export type GetPatientLatestVitalQueryVariables = Exact<{
+  patientId: Scalars['String'];
+}>;
+
+
+export type GetPatientLatestVitalQuery = { __typename?: 'Query', getPatientLatestVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, pulseRate?: string | null, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null, diastolicBloodPressure?: string | null, systolicBloodPressure?: string | null, respiratoryRate?: string | null, oxygenSaturation?: string | null, PatientHeight?: string | null, PatientWeight?: string | null, PatientBMI?: string | null, PainRange?: string | null, patientHeadCircumference?: string | null, vitalCreationDate?: string | null, patientId?: string | null, appointmentId?: string | null, createdAt?: string | null, updatedAt?: string | null } | null } };
 
 export type FindAllPatientVitalsQueryVariables = Exact<{
   patientVitalInput: PatientVitalInput;
@@ -7276,7 +7302,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, regex?: string | null, futureEnable?: boolean | null, pastEnable?: boolean | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, name?: string | null, type: FormType, facilityId?: string | null, practiceId?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, tabId?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, sectionId?: string | null, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, tableContactType?: string | null, apiCall?: string | null, regex?: string | null, futureEnable?: boolean | null, pastEnable?: boolean | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -7290,7 +7316,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, futureEnable?: boolean | null, pastEnable?: boolean | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null, practiceId?: string | null, name?: string | null, isActive?: boolean | null, layout: { __typename?: 'LayoutJSONType', tabs: Array<{ __typename?: 'FormTabs', id?: string | null, name?: string | null, tabId?: string | null, sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, sectionId?: string | null, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null, columnName?: string | null, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null, apiCall?: string | null, tableContactType?: string | null, regex?: string | null, futureEnable?: boolean | null, pastEnable?: boolean | null, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> }> } } | null } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
@@ -10455,6 +10481,67 @@ export function useRemoveClaimStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type RemoveClaimStatusMutationHookResult = ReturnType<typeof useRemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationResult = Apollo.MutationResult<RemoveClaimStatusMutation>;
 export type RemoveClaimStatusMutationOptions = Apollo.BaseMutationOptions<RemoveClaimStatusMutation, RemoveClaimStatusMutationVariables>;
+export const FetchBillingClaimStatusesDocument = gql`
+    query FetchBillingClaimStatuses($fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!) {
+  fetchBillingClaimStatuses(
+    fetchBillingClaimStatusesInput: $fetchBillingClaimStatusesInput
+  ) {
+    response {
+      status
+      message
+    }
+    billings {
+      id
+      claimNo
+      serviceDate
+      claimStatus {
+        statusName
+      }
+      patient {
+        firstName
+        lastName
+      }
+      claim {
+        payer_name
+        total_charge
+        errorMessages
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchBillingClaimStatusesQuery__
+ *
+ * To run a query within a React component, call `useFetchBillingClaimStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchBillingClaimStatusesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchBillingClaimStatusesQuery({
+ *   variables: {
+ *      fetchBillingClaimStatusesInput: // value for 'fetchBillingClaimStatusesInput'
+ *   },
+ * });
+ */
+export function useFetchBillingClaimStatusesQuery(baseOptions: Apollo.QueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+      }
+export function useFetchBillingClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>(FetchBillingClaimStatusesDocument, options);
+        }
+export type FetchBillingClaimStatusesQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesQuery>;
+export type FetchBillingClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesLazyQuery>;
+export type FetchBillingClaimStatusesQueryResult = Apollo.QueryResult<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
@@ -11048,6 +11135,70 @@ export function useGetPatientVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPatientVitalQueryHookResult = ReturnType<typeof useGetPatientVitalQuery>;
 export type GetPatientVitalLazyQueryHookResult = ReturnType<typeof useGetPatientVitalLazyQuery>;
 export type GetPatientVitalQueryResult = Apollo.QueryResult<GetPatientVitalQuery, GetPatientVitalQueryVariables>;
+export const GetPatientLatestVitalDocument = gql`
+    query GetPatientLatestVital($patientId: String!) {
+  getPatientLatestVital(patientId: $patientId) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      pulseRate
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientLatestVitalQuery__
+ *
+ * To run a query within a React component, call `useGetPatientLatestVitalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientLatestVitalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientLatestVitalQuery({
+ *   variables: {
+ *      patientId: // value for 'patientId'
+ *   },
+ * });
+ */
+export function useGetPatientLatestVitalQuery(baseOptions: Apollo.QueryHookOptions<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>(GetPatientLatestVitalDocument, options);
+      }
+export function useGetPatientLatestVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>(GetPatientLatestVitalDocument, options);
+        }
+export type GetPatientLatestVitalQueryHookResult = ReturnType<typeof useGetPatientLatestVitalQuery>;
+export type GetPatientLatestVitalLazyQueryHookResult = ReturnType<typeof useGetPatientLatestVitalLazyQuery>;
+export type GetPatientLatestVitalQueryResult = Apollo.QueryResult<GetPatientLatestVitalQuery, GetPatientLatestVitalQueryVariables>;
 export const FindAllPatientVitalsDocument = gql`
     query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
   findAllPatientVitals(patientVitalInput: $patientVitalInput) {
@@ -13312,11 +13463,13 @@ export const GetFormDocument = gql`
       layout {
         tabs {
           id
+          tabId
           name
           sections {
             id
             col
             name
+            sectionId
             fields {
               label
               name
@@ -13434,10 +13587,12 @@ export const GetPublicFormDocument = gql`
         tabs {
           id
           name
+          tabId
           sections {
             id
             col
             name
+            sectionId
             fields {
               label
               name

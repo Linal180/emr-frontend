@@ -12,7 +12,7 @@ import BackButton from '../../../../../common/BackButton';
 import CoverageDetailsHeader from './CoverageDetailsHeader';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import {
-  AMOUNT, AUTH_CERT_REQUIRED, CHECK_ELIGIBILITY, CHECK_ELIGIBILITY_BREAD, COVERAGE_LEVEL, COVERAGE_SUMMARY, 
+  AMOUNT, AUTH_CERT_REQUIRED, CHECK_ELIGIBILITY, CHECK_ELIGIBILITY_BREAD, COVERAGE_LEVEL, COVERAGE_SUMMARY,
   COVERAGE_SUMMARY_COLUMNS, DETAILED_COVERAGE_INFORMATION, FACILITY_TYPE, IN_NETWORK, MESSAGE, PATIENTS_BREAD,
   REMAINING, SERVICE_TYPE, TIME_PERIOD, USERS_BREAD, PATIENTS_ROUTE
 } from '../../../../../../constants';
@@ -25,7 +25,7 @@ import { renderTh } from '../../../../../../utils';
 import PageHeader from '../../../../../common/PageHeader';
 
 const CoverageDetailsComponent = () => {
-  const { id, patientId } = useParams<ParamsType>()
+  const { id, patientId, appointmentId } = useParams<ParamsType>()
   const chartingClasses = useChartingStyles()
 
   const [expanded, setExpanded] = useState<string | false>('panel2');
@@ -139,7 +139,7 @@ const CoverageDetailsComponent = () => {
     getPolicyEligibilityLoading ? <Loader loading loaderText='Loading Coverage Details...' /> :
       <>
         <Box mb={2} display='flex'>
-          <BackButton to={`${PATIENTS_ROUTE}/${patientId}/details/2`} />
+          <BackButton to={appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `${PATIENTS_ROUTE}/${patientId}/details/2`} />
 
           <Box ml={2} />
 

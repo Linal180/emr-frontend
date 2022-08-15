@@ -1,15 +1,17 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
 import { FC, useCallback, useEffect, useState } from "react";
+import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
 // utils and interfaces/types block
 import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
 import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
 import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
-  ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes, useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery,
-  useFetchDocumentTypesLazyQuery, useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery, useSearchSnoMedCodesLazyQuery,
+  ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes,
+  useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
+  useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery,
+  useSearchSnoMedCodesLazyQuery,
 } from "../../generated/graphql"
 
 const ItemSelector: FC<ItemSelectorProps> = ({

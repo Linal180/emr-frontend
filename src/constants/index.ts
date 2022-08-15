@@ -32,6 +32,7 @@ export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const SUFFIX_REGEX = /^[.A-Za-z\s]+$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
@@ -69,19 +70,17 @@ export enum SYSTEM_ROLES {
 // Blood Pressure Ranges
 export enum BLOOD_PRESSURE_RANGES {
   Normal = "Normal",
-  Low = "Low",
-  High = "Hight",
+  Abnormal = "Abnormal",
 }
 
 // Heart Rate Ranges
 export enum Heart_RATE_RANGES {
   Abnormal = "Abnormal",
   Normal = "Normal",
-  Low = "Low",
-  High = "Hight",
 }
 
 // constants
+export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
 export const PAST_DATE = 'Disable Future Date'
@@ -1491,37 +1490,35 @@ export const STAFF_ROUTE = "/staff";
 export const CHART_ROUTE = "/chart";
 export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
+export const DASHBOARD_ROUTE = "/home";
 export const PROFILE_ROUTE = "/profile";
 export const DOCTORS_ROUTE = "/providers";
 export const CHECK_IN_ROUTE = "/check-in";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
-export const DASHBOARD_ROUTE = "/home";
-export const SIGNATURE_ROUTE = "/signature";
-export const AUTO_LOGOUT_ROUTE = "/auto-logout";
-export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
-export const MAINTENANCE_ROUTE = "/maintenance";
-export const PAST_APPOINTMENTS = "Past Appointments";
-export const LAB_RESULTS_ROUTE = "/lab-results";
-export const AGREEMENTS_ROUTE = "/agreements";
-export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const AUDIT_LOG_ROUTE = "/audit-log";
+export const SIGNATURE_ROUTE = "/signature";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
-export const CLAIM_STATUS_ROUTE = "/claim-status";
+export const SUPER_BILL_ROUTE = "/super-bill";
+export const AGREEMENTS_ROUTE = "/agreements";
+export const AUTO_LOGOUT_ROUTE = "/auto-logout";
+export const MAINTENANCE_ROUTE = "/maintenance";
+export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FORM_BUILDER_ROUTE = "/form-builder";
 export const FEE_SCHEDULE_ROUTE = "/fee-schedule";
-export const SUPER_BILL_ROUTE = "/super-bill";
 export const COVERAGE_ROUTE = "/coverage-details";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const CALENDAR_ROUTE = "/dashboard/calendar";
+export const PAST_APPOINTMENTS = "Past Appointments";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const ELIGIBILITY_ROUTE = "/check-eligibility";
+export const CLAIM_STATUSES_ROUTE = "/claim-statuses";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
@@ -1529,9 +1526,9 @@ export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PUBLIC_FORM_BUILDER_ROUTE = "/public/form";
 export const FORM_BUILDER_RESPONSES = "/form-responses";
-export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
 export const EDIT_LAB_ORDERS_ROUTE = "/lab-orders/edit";
-export const ADD_LAB_ORDERS_RESULTS_ROUTE = "/lab-orders/result/add";
+export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
+export const CLAIM_STATUS_ROUTE = "/billing-claim-status";
 export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
 export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
@@ -1539,7 +1536,9 @@ export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const PATIENT_INFORMATION_ROUTE = "/patient-information";
+export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
+export const ADD_LAB_ORDERS_RESULTS_ROUTE = "/lab-orders/result/add";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const FORM_BUILDER_COPY_TEMPLATE_ROUTE = "/form-builder/template";
@@ -1600,6 +1599,7 @@ export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
 export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
+export const NUMBER_AND_SPECIAL_ERROR_MESSAGE = "Numbers and Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
@@ -2237,6 +2237,7 @@ export const USERS_BREAD = { text: USERS_TEXT, link: "" };
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: "" };
 export const SCHEDULE_BREAD = { text: SCHEDULE_TEXT, link: "" };
 export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
+export const EMERGENCY_ACCESS_BREAD = { text: EMERGENCY_ACCESS, link: '' };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
@@ -2404,6 +2405,7 @@ export enum MODULE_TYPES {
   Schedules = "Schedules",
   Permission = "Permission",
   Agreements = 'Agreements',
+  Attachments = 'Attachments',
   Appointment = "Appointment",
   EmergencyAccess = "Emergency Access",
 }
@@ -2421,6 +2423,7 @@ export const MODULES = [
   "Schedule",
   'Agreements',
   "Lab Orders",
+  'Attachments',
   "Patient Charting",
 ];
 
@@ -3294,10 +3297,11 @@ export const areaChartOne = {
   credits: { enabled: false },
   tooltip: { enabled: false },
   chart: {
-    type: 'area',
+    type: 'areaspline',
     styledMode: false,
     renderTo: 'container',
     backgroundColor: "#ffffff",
+    marginBottom: 0,
 
   },
   accessibility: {
@@ -3342,14 +3346,13 @@ export const areaChartOne = {
           }
         },
       },
-      fillColor: '#F6E4E5'
+      fillColor: '#F6E4E5',
     },
     column: {
       pointPadding: 0.4,
       borderWidth: 0,
       borderRadius: 4,
-    }
-
+    },
   },
   series: [{
     name: 'USA',
@@ -3365,9 +3368,10 @@ export const areaChartTwo = {
   credits: { enabled: false },
   tooltip: { enabled: false },
   chart: {
-    type: 'area',
+    type: 'areaspline',
     styledMode: false,
     backgroundColor: "#ffffff",
+    renderTo: 'container',
     marginBottom: 0,
   },
   accessibility: {
@@ -3470,64 +3474,7 @@ export enum FormBuilderPaymentTypes {
 export const AUDIT_TIME_ENUMS = ['Day', 'Week', 'Month', 'Year']
 export const BILLING_MODIFIERS_DATA = ['M1', 'M2', 'M3', 'M4']
 export const DIAGNOSIS_POINTERS_DATA = ['ICD-1', 'ICD-2', 'ICD-3', 'ICD-4']
-export const CLAIM_STATUS_DUMMY_DATA = [
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-  {
-    id: '3398',
-    patient: 'Courtney Henry',
-    date: '5/30/14',
-    payer: 'Hochheim Prairie Farm Mutual Insurance',
-    amount: '$450.54',
-  },
-  {
-    id: '13671',
-    patient: 'Leslie Alexander',
-    date: '5/7/16',
-    payer: 'Pharma International',
-    amount: '$219.78',
-  },
-]
+
 
 export const MODULE_LOGS_TYPES = [
   "Agreement",
@@ -3572,4 +3519,20 @@ export enum SystemBillingStatuses {
   READY_TO_CLAIM = 'ready_to_claim',
   REJECTED = 'rejected',
   ACKNOWLEDGED = 'acknowledged'
+}
+
+export const formTemplateTabIds = {
+  CONTACT_INFO: "contact_info",
+  PAYMENT_INFO: "payment_info",
+  PRIVACY_POLICY: "privacy_policy",
+  EMPLOYMENT_INFO: "employment_info",
+  SELECT_SERVICES: "select_services",
+  GUARDIAN_CONTACT: "guardian_contact",
+  PRIVACY_AGREEMENT: "privacy_agreement",
+  GUARANTOR_CONTACT: "guarantor_contact",
+  EMERGENCY_CONTACT: "emergency_contact",
+  DOCUMENT_VERIFICATION: "document_verification",
+  DEMOGRAPHICS: "demographics",
+  PATIENT_INFO: "patient_info",
+  TERMS_CONDITIONS: "terms_conditions"
 }

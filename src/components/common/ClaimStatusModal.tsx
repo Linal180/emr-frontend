@@ -143,8 +143,11 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
 
               <Box p={1} />
 
-              <Button type="submit" variant="contained" color="primary" disabled={createClaimStatusLoading || updateClaimStatusLoading}>
+              <Button type="submit" variant="contained" color="primary"
+                disabled={createClaimStatusLoading || updateClaimStatusLoading}
+              >
                 {!id ? CREATE_CLAIM_STATUS : UPDATE_CLAIM_STATUS}
+
                 {createClaimStatusLoading && updateClaimStatusLoading && <CircularProgress size={20} color="inherit" />}
               </Button>
             </Box>

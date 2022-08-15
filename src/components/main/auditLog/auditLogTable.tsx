@@ -147,7 +147,7 @@ const AuditLogTable = (): JSX.Element => {
 
   return (
     <Fragment>
-      <Box display='flex' justifyContent='space-between' alignItems='center'>
+      <Box display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
         <Box display='flex'>
           <BackButton to={SETTINGS_ROUTE} />
 
@@ -225,7 +225,7 @@ const AuditLogTable = (): JSX.Element => {
 
       <Box mt={2} className={classes.mainTableContainer}>
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(DATE)}

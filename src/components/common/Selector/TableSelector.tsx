@@ -1,24 +1,24 @@
 //packages block
-import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { Box, Card, IconButton, Typography, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 //components
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
-import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 import ModifierSelector from "./ModifierSelector";
+import InputController from "../../../controller";
+import FeeCPTCodesSelector from "./FeeCptCodeSelector";
 //constants, interfaces, utils
 import {
   ACTIONS, BILLED_FEE_DOLLAR, BILLING_MODIFIERS_DATA, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
   DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
-import InputController from "../../../controller";
-import { CodeType } from "../../../generated/graphql";
-import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
-import { SearchTooltip } from "../../../styles/searchTooltip";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { GREY_NINE } from "../../../theme";
+import { renderTh } from "../../../utils";
 import { TrashNewIcon } from "../../../assets/svgs";
+import { CodeType } from "../../../generated/graphql";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { SearchTooltip } from "../../../styles/searchTooltip";
+import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice, feeScheduleId }) => {
   const classes = useTableStyles()
@@ -124,151 +124,281 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
               </Box>
             </Box>
 
-            <Box pl={4} my={2} bgcolor={GREY_NINE}>
-              <Grid container spacing={3} direction="row">
-                <Grid item md={1} sm={1} xs={1}>
-                  <Typography variant="h5" color="textPrimary">{SR_NO}</Typography>
-                </Grid>
+
+            <Box className={classes.mainTableContainer}>
+              <Box className="table-overflow appointment-view-list">
+                <FormProvider {...parentMethods}>
+                  <Table aria-label="customized table" className={classes.table}>
+                    <TableHead>
+                      <TableRow>
+                        {renderTh(SR_NO)}
+                        {
+                          shouldShowPrice ?
+                            <>
+                              {renderTh(CODE)}
+                              {renderTh(UNIT)}
+                              {renderTh(BILLED_FEE_DOLLAR)}
+                              {renderTh(MODIFIERS)}
+                              {renderTh(DIAGNOSIS_POINTERS)}
 
 
+                            </> : <>
+                              {renderTh(CODE)}
+                              {renderTh(DESCRIPTION)}
+                            </>
+                        }
+                        {renderTh(ACTIONS)}
+                      </TableRow>
+                    </TableHead>
 
-                {shouldShowPrice ?
-                  <>
-                    <Grid item md={1} sm={1} xs={1}>
-                      <Typography variant="h5" color="textPrimary">{CODE}</Typography>
-                    </Grid>
+                    <TableBody>
+                      {(tableCodeFields)?.map(({
+                        code, description, codeId, price
+                      }, index) => {
+                        return <>
+                          <TableRow key={index}>
+                            <TableCell scope="row">
+                              <Box>
+                                {index + 1}
+                              </Box>
+                            </TableCell>
 
-                    <Grid item md={1} sm={1} xs={1}>
-                      <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
-                    </Grid>
-
-                    <Grid item md={1} sm={1} xs={1}>
-                      <Typography variant="h5" color="textPrimary">{BILLED_FEE_DOLLAR}</Typography>
-                    </Grid>
-
-                    <Grid item md={4} sm={4} xs={4}>
-                      <Typography variant="h5" color="textPrimary">{MODIFIERS}</Typography>
-                    </Grid>
-
-                    <Grid item md={3} sm={3} xs={3}>
-                      <Typography variant="h5" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
-                    </Grid>
-                  </> :
-                  <>
-                    <Grid item md={3} sm={3} xs={3}>
-                      <Typography variant="h5" color="textPrimary">{CODE}</Typography>
-                    </Grid>
-
-                    <Grid item md={6} sm={6} xs={6}>
-                      <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
-                    </Grid>
-                  </>
-
-                }
-                <Grid item md={1} sm={1} xs={1}>
-                  <Typography variant="h5" color="textPrimary">{ACTIONS}</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-            <FormProvider {...parentMethods}>
-              {(tableCodeFields)?.map(({
-                code, description, codeId, price
-              }, index) => {
-                return (
-                  <Box pl={4} pb={1}>
-                    <Grid container spacing={3} direction="row">
-                      <Grid item md={1} sm={1} xs={1}>
-                        {index + 1}
-                      </Grid>
-
-                      <Grid item md={shouldShowPrice ? 1 : 3} sm={shouldShowPrice ? 1 : 3} xs={shouldShowPrice ? 1 : 3}>
-                        <SearchTooltip
-                          PopperProps={{
-                            disablePortal: true,
-                          }}
-                          arrow
-                          placement="bottom"
-                          className={classes.tooltipContainer}
-                          title={description}
-                        >
-                          <div>{code}</div>
-                        </SearchTooltip>
-                      </Grid>
-
-                      {shouldShowPrice ? (
-                        <>
-                          <Grid item md={1} sm={1} xs={1}>
-                            <Box>
-                              <InputController
-                                fieldType="text"
-                                controllerName={`${moduleName}.${index}.unit`}
-                                controllerLabel={""}
-                                margin={'none'}
-                                onChange={(data: string) => {
-                                  return price && Number(data) >= 1 && setFormValue(`${ITEM_MODULE.cptFeeSchedule}.${index}.price`, String(Number(data) * Number(price)) as never)
+                            <TableCell scope="row">
+                              <SearchTooltip
+                                PopperProps={{
+                                  disablePortal: true,
                                 }}
-                              />
-                            </Box>
-                          </Grid>
+                                arrow
+                                placement="bottom"
+                                className={classes.tooltipContainer}
+                                title={description}
+                              >
+                                <Box>{code}</Box>
+                              </SearchTooltip>
+                            </TableCell>
 
+                            {
+                              shouldShowPrice ?
+                                <>
+                                  <TableCell scope="row">
+                                    <Box minWidth={100} maxWidth={100}>
+                                      <InputController
+                                        fieldType="text"
+                                        controllerName={`${moduleName}.${index}.unit`}
+                                        controllerLabel={""}
+                                        margin={'none'}
+                                        onChange={(data: string) => {
+                                          return price && Number(data) >= 1 && setFormValue(`${ITEM_MODULE.cptFeeSchedule}.${index}.price`, String(Number(data) * Number(price)) as never)
+                                        }}
+                                      />
+                                    </Box>
+                                  </TableCell>
 
-                          <Grid item md={1} sm={1} xs={1}>
-                            <Box>
-                              <InputController
-                                fieldType="text"
-                                controllerName={`${moduleName}.${index}.price`}
-                                controllerLabel={""}
-                                margin={'none'}
-                              />
-                            </Box>
-                          </Grid>
+                                  <TableCell scope="row">
+                                    <Box minWidth={150} maxWidth={150}>
+                                      <InputController
+                                        fieldType="text"
+                                        controllerName={`${moduleName}.${index}.price`}
+                                        controllerLabel={""}
+                                        margin={'none'}
+                                      />
+                                    </Box>
+                                  </TableCell>
 
-                          <Grid item md={4} sm={4} xs={4}>
-                            <Box display='flex'>
-                              {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
-                                return <Box mr={1} className={classes.fullFlex}>
-                                  <ModifierSelector
-                                    addEmpty
-                                    name={`${moduleName}.${index}.m${modIndex + 1}`}
-                                    label={MODIFIER}
-                                    shouldShowLabel={false}
-                                  />
-                                </Box>
-                              })}
-                            </Box>
-                          </Grid>
+                                  <TableCell scope="row">
+                                    <Box display='flex' className={classes.modifiers}>
+                                      {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
+                                        return <Box mr={1} flex={1} minWidth={120}>
+                                          <ModifierSelector
+                                            addEmpty
+                                            name={`${moduleName}.${index}.m${modIndex + 1}`}
+                                            label={MODIFIER}
+                                            shouldShowLabel={false}
+                                          />
+                                        </Box>
+                                      })}
+                                    </Box>
+                                  </TableCell>
 
-                          <Grid item md={3} sm={3} xs={3}>
-                            <Box display='flex'>
-                              {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
-                                return <Box mr={1}>
-                                  <InputController
-                                    placeholder={item}
-                                    fieldType="number"
-                                    controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
-                                    controllerLabel={""}
-                                    margin={'none'}
-                                  />
-                                </Box>
-                              })}
-                            </Box>
-                          </Grid>
+                                  <TableCell scope="row">
+                                    <Box display='flex'>
+                                      {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
+                                        return <Box mr={1} minWidth={100} maxWidth={100}>
+                                          <InputController
+                                            placeholder={item}
+                                            fieldType="number"
+                                            controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
+                                            controllerLabel={""}
+                                            margin={'none'}
+                                          />
+                                        </Box>
+                                      })}
+                                    </Box>
+                                  </TableCell>
+                                </>
+                                : <TableCell scope="row">
+                                  {description}
+                                </TableCell>
+                            }
+                            <TableCell>
+                              <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                                <TrashNewIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
                         </>
-                      ) : <Grid item md={6} sm={6} xs={6}>
-                        {description}
-                      </Grid>}
+                      })}
+                    </TableBody>
+                  </Table>
+                </FormProvider>
+              </Box>
+            </Box>
+
+            {/* <Box>
+              <Box pl={4} my={2} bgcolor={GREY_NINE}>
+                <Grid container spacing={3} direction="row">
+                  <Grid item md={1} sm={1} xs={1}>
+                    <Typography variant="h5" color="textPrimary">{SR_NO}</Typography>
+                  </Grid>
+
+                  {shouldShowPrice ?
+                    <>
+                      <Grid item md={1} sm={1} xs={1}>
+                        <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                      </Grid>
 
                       <Grid item md={1} sm={1} xs={1}>
-                        <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
-                          <TrashNewIcon />
-                        </IconButton>
+                        <Typography variant="h6" color="textPrimary">{UNIT}</Typography>
                       </Grid>
-                    </Grid>
-                  </Box>
-                )
-              }
-              )}
-            </FormProvider>
+
+                      <Grid item md={1} sm={1} xs={1}>
+                        <Typography variant="h5" color="textPrimary">{BILLED_FEE_DOLLAR}</Typography>
+                      </Grid>
+
+                      <Grid item md={4} sm={4} xs={4}>
+                        <Typography variant="h5" color="textPrimary">{MODIFIERS}</Typography>
+                      </Grid>
+
+                      <Grid item md={3} sm={3} xs={3}>
+                        <Typography variant="h5" color="textPrimary">{DIAGNOSIS_POINTERS}</Typography>
+                      </Grid>
+                    </> :
+                    <>
+                      <Grid item md={3} sm={3} xs={3}>
+                        <Typography variant="h5" color="textPrimary">{CODE}</Typography>
+                      </Grid>
+
+                      <Grid item md={6} sm={6} xs={6}>
+                        <Typography variant="h5" color="textPrimary">{DESCRIPTION}</Typography>
+                      </Grid>
+                    </>
+
+                  }
+                  <Grid item md={1} sm={1} xs={1}>
+                    <Typography variant="h5" color="textPrimary">{ACTIONS}</Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+              <FormProvider {...parentMethods}>
+                {(tableCodeFields)?.map(({
+                  code, description, codeId, price
+                }, index) => {
+                  return (
+                    <Box pl={4} pb={1}>
+                      <Grid container spacing={3} direction="row">
+                        <Grid item md={1} sm={1} xs={1}>
+                          {index + 1}
+                        </Grid>
+
+                        <Grid item md={shouldShowPrice ? 1 : 3} sm={shouldShowPrice ? 1 : 3} xs={shouldShowPrice ? 1 : 3}>
+                          <SearchTooltip
+                            PopperProps={{
+                              disablePortal: true,
+                            }}
+                            arrow
+                            placement="bottom"
+                            className={classes.tooltipContainer}
+                            title={description}
+                          >
+                            <div>{code}</div>
+                          </SearchTooltip>
+                        </Grid>
+
+                        {shouldShowPrice ? (
+                          <>
+                            <Grid item md={1} sm={1} xs={1}>
+                              <Box>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName={`${moduleName}.${index}.unit`}
+                                  controllerLabel={""}
+                                  margin={'none'}
+                                  onChange={(data: string) => {
+                                    return price && Number(data) >= 1 && setFormValue(`${ITEM_MODULE.cptFeeSchedule}.${index}.price`, String(Number(data) * Number(price)) as never)
+                                  }}
+                                />
+                              </Box>
+                            </Grid>
+
+
+                            <Grid item md={1} sm={1} xs={1}>
+                              <Box>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName={`${moduleName}.${index}.price`}
+                                  controllerLabel={""}
+                                  margin={'none'}
+                                />
+                              </Box>
+                            </Grid>
+
+                            <Grid item md={4} sm={4} xs={4}>
+                              <Box display='flex'>
+                                {BILLING_MODIFIERS_DATA.map((item, modIndex) => {
+                                  return <Box mr={1} className={classes.fullFlex}>
+                                    <ModifierSelector
+                                      addEmpty
+                                      name={`${moduleName}.${index}.m${modIndex + 1}`}
+                                      label={MODIFIER}
+                                      shouldShowLabel={false}
+                                    />
+                                  </Box>
+                                })}
+                              </Box>
+                            </Grid>
+
+                            <Grid item md={3} sm={3} xs={3}>
+                              <Box display='flex'>
+                                {DIAGNOSIS_POINTERS_DATA.map((item, diagIndex) => {
+                                  return <Box mr={1}>
+                                    <InputController
+                                      placeholder={item}
+                                      fieldType="number"
+                                      controllerName={`${moduleName}.${index}.diag${diagIndex + 1}`}
+                                      controllerLabel={""}
+                                      margin={'none'}
+                                    />
+                                  </Box>
+                                })}
+                              </Box>
+                            </Grid>
+                          </>
+                        ) : <Grid item md={6} sm={6} xs={6}>
+                          {description}
+                        </Grid>}
+
+                        <Grid item md={1} sm={1} xs={1}>
+                          <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                            <TrashNewIcon />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )
+                }
+                )}
+              </FormProvider>
+            </Box> */}
             {(!tableCodeFields?.length) && (
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
                 <NoDataComponent />

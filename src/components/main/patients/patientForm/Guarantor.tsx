@@ -97,7 +97,7 @@ const GuarantorCard: FC<PatientCardsProps> = ({
         <Box pb={2}>
           <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
         </Box>
-        
+
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
             <InputController
@@ -210,7 +210,7 @@ const GuarantorCard: FC<PatientCardsProps> = ({
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item md={2}>
+        <Grid item lg={2} md={4} sm={12} xs={12}>
           <InputController
             fieldType="text"
             controllerLabel={CITY}
@@ -220,7 +220,7 @@ const GuarantorCard: FC<PatientCardsProps> = ({
           />
         </Grid>
 
-        <Grid item md={2}>
+        <Grid item lg={2} md={4} sm={12} xs={12}>
           <Selector
             addEmpty
             label={STATE}
@@ -231,11 +231,11 @@ const GuarantorCard: FC<PatientCardsProps> = ({
           />
         </Grid>
 
-        <Grid item md={2}>
+        <Grid item lg={2} md={4} sm={12} xs={12}>
           <CountryController loading={getPatientLoading} controllerName="guarantorCountry" />
         </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
+        <Grid item lg={6} md={12} sm={12} xs={12}>
           <InputController
             fieldType="email"
             controllerLabel={EMAIL}

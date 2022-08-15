@@ -30,8 +30,8 @@ export const useProfileDetailsStyles = makeStyles(() =>
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
       [theme.breakpoints.down('xs')]: {
-        "& .MuiBox-root-1825" :{
-          flexDirection : 'column'
+        "& .MuiBox-root-1825": {
+          flexDirection: 'column'
         }
       }
     },
@@ -41,6 +41,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 20,
       background: WHITE,
       borderRadius: 12,
+
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column'
+      }
     },
 
     patientProfileCard: {
@@ -94,6 +98,14 @@ export const useProfileDetailsStyles = makeStyles(() =>
       width: '25%',
       fontSize: 14,
       color: GREY_SEVEN,
+
+      [theme.breakpoints.down('md')]: {
+        width: '50%',
+      },
+
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
     },
 
     profileInfoHeading: {

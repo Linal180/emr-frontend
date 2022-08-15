@@ -25,7 +25,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       listStyle: 'none',
       overflowX: 'auto',
       margin: "10px 0 20px",
-      maxHeight: "100px",
+      maxHeight: "210px",
       overflowY: "auto",
 
       '& li': {

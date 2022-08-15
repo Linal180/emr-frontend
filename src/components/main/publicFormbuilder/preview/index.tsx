@@ -1,9 +1,10 @@
 // packages block
-import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
   Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step, colors
 } from '@material-ui/core';
@@ -12,11 +13,11 @@ import Alert from '../../../common/Alert';
 import { StepContext } from './StepContext';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, reducers, utils, constants block
-import { GREY, WHITE } from '../../../../theme';
+import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
-import { getUserFormFormattedValues } from '../../../../utils';
+import { calculateAge, getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
 import {
   State, Action, initialState, externalFormBuilderReducer, ActionType
@@ -27,7 +28,7 @@ import {
 import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, FORM_SUBMIT_TEXT, CONTACT_SUPPORT_TEAM, BACK_TEXT,
   PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_NOT_PUBLISHED,
-  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG,
+  FormBuilderApiSelector, APPOINTMENT_SLOT_ERROR_MESSAGE, NEXT, ATTACHMENT_TITLES, SOMETHING_WENT_WRONG, APPOINTMENT_BOOKED_SUCCESSFULLY, formTemplateTabIds,
 } from '../../../../constants';
 
 const initialValues = {};
@@ -44,7 +45,7 @@ const PublicFormPreview = () => {
     defaultValues: initialValues,
     resolver: yupResolver(getFormBuilderValidation(formValues, paymentType, activeStep))
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, getValues } = methods;
   const isSubmit = formValues?.length - 1 === activeStep
 
   const [getForm] = useGetPublicFormLazyQuery({
@@ -112,7 +113,10 @@ const PublicFormPreview = () => {
               setValue('patientId', patientId)
               dispatch({ type: ActionType.SET_PATIENT_ID, patientId })
             }
-
+            if (activeStep === 0 && formType === FormType.Appointment) {
+              Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY)
+              isUnder18()
+            }
             nextStepHandler()
           }
         } else {
@@ -246,15 +250,60 @@ const PublicFormPreview = () => {
   const backStepHandler = () =>
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
+
+  const isUnder18 = () => {
+    if (formType === FormType.Appointment) {
+      let ageFormElement = null;
+      formValues?.find((tab) => {
+        const { sections } = tab || {}
+        sections?.map((section) => {
+          const { fields } = section || {}
+          const dobElement = fields?.find(({ columnName }) => columnName === 'dob')
+          if (dobElement) {
+            const { fieldId } = dobElement || {}
+            ageFormElement = fieldId
+          }
+          return section
+        })
+        return tab
+      })
+      if (ageFormElement) {
+        const value = getValues(ageFormElement)
+        const ageFormat = value ? moment(new Date(value)).format('YYYY-MM-DD') : ''
+        const age = ageFormat ? calculateAge(ageFormat) : -1
+        if (age >= 18) {
+          const newArr = formValues?.filter((tab) => {
+            const { tabId, sections } = tab || {}
+            if (tabId === formTemplateTabIds.GUARDIAN_CONTACT) {
+              return false
+            }
+            const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.GUARDIAN_CONTACT)
+            return { ...tab, sections: newSections }
+          })
+          dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
+        } else if (age < 18 && age >= 0) {
+          const newArr = formValues?.filter((tab) => {
+            const { tabId, sections } = tab || {}
+            if (tabId === formTemplateTabIds.EMPLOYMENT_INFO) {
+              return false
+            }
+            const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.EMPLOYMENT_INFO)
+            return { ...tab, sections: newSections }
+          })
+          dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
+        }
+      }
+
+    }
+  }
+
   return (
-    <Box bgcolor={GREY}>
+    <Box bgcolor={GREY_EIGHTEEN} padding={1} minHeight="100vh">
       <Box bgcolor={WHITE} borderBottom={`1px solid ${colors.grey[300]}`} padding="20px 30px">
         <AIMEDLOGO />
       </Box>
 
       <Box px={5} mt={2}>
-
-        {/* <AIMEDLOGO /> */}
         {!loader ?
           <Fragment>
             <Box mb={3} />
@@ -289,10 +338,10 @@ const PublicFormPreview = () => {
                       </Box>
                     </Box>
 
-                    <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+                    <Box>
                       {formValues?.length > 1 ?
                         <Grid container spacing={2}>
-                          <Grid item xs={2}>
+                          <Grid item xs={12} sm={12} md={3} lg={2}>
                             <Stepper activeStep={activeStep} orientation="vertical">
                               {formValues?.map((tab, index) => {
                                 const { name, id } = tab || {}
@@ -305,17 +354,19 @@ const PublicFormPreview = () => {
                             </Stepper>
                           </Grid>
 
-                          <Grid item xs={10}>
-                            {formValues?.map((tab, index) => {
-                              const { sections, name, id } = tab || {}
+                          <Grid item xs={12} sm={12} md={9} lg={10}>
+                            <Box height="100%" maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                              {formValues?.map((tab, index) => {
+                                const { sections, name, id } = tab || {}
 
-                              return <Fragment key={`${id}-${name}`}>
-                                {activeStep === index &&
-                                  <StepContext sections={sections} state={state} dispatch={dispatch} />
-                                }
-                              </Fragment>
-                            }
-                            )}
+                                return <Fragment key={`${id}-${name}`}>
+                                  {activeStep === index &&
+                                    <StepContext sections={sections} state={state} dispatch={dispatch} />
+                                  }
+                                </Fragment>
+                              }
+                              )}
+                            </Box>
                           </Grid>
                         </Grid> :
                         <Fragment>

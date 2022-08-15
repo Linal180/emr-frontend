@@ -35,8 +35,8 @@ import {
   ITEM_MODULE, NEXT, ORDER_OF_BENEFIT, SAVE_TEXT
 } from "../../../../../constants";
 import {
-  CopayType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
-  useCreatePolicyMutation, useFetchPolicyLazyQuery, useUpdatePolicyMutation
+  CopayType, DoctorPatientRelationType, OrderOfBenefitType, PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PricingProductType,
+  useCreatePolicyMutation, useFetchPolicyLazyQuery, useGetPatientProvidersLazyQuery, useUpdatePolicyMutation
 } from "../../../../../generated/graphql";
 
 const CheckInStepIcon: FC<StepIconProps> = ({ active, completed }) => {
@@ -112,6 +112,32 @@ const PolicyCard: FC<PolicyCardProps> = ({
         }
       }
     }
+  });
+
+  const [getPatientProviders] = useGetPatientProvidersLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() { },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatientProviders } = data;
+
+        if (getPatientProviders) {
+
+          const { providers } = getPatientProviders;
+          const { doctor: primaryDoctor } = providers?.find((provider) => provider.relation === DoctorPatientRelationType.PrimaryProvider) || {}
+          const { doctor: referringDoctor } = providers?.find((provider) => provider.relation === DoctorPatientRelationType.ReferringProvider) || {}
+
+          primaryDoctor &&
+            setValue('primaryCareProvider', setRecord(primaryDoctor.id, `${primaryDoctor.firstName} ${primaryDoctor.lastName}`))
+
+          referringDoctor &&
+            setValue('referringProvider', setRecord(referringDoctor.id, `${referringDoctor.firstName} ${referringDoctor.lastName}`))
+        }
+      }
+    },
   });
 
   const [fetchPolicy] = useFetchPolicyLazyQuery({
@@ -196,9 +222,20 @@ const PolicyCard: FC<PolicyCardProps> = ({
     } catch (error) { }
   }, [fetchPolicy, id])
 
+  const fetchAllPatientsProviders = useCallback(async () => {
+    try {
+      patientId && await getPatientProviders({
+        variables: {
+          getPatient: { id: patientId }
+        }
+      })
+    } catch (error) { }
+  }, [patientId, getPatientProviders])
+
   useEffect(() => {
+    fetchAllPatientsProviders()
     isEdit && findPolicy()
-  }, [findPolicy, isEdit]);
+  }, [fetchAllPatientsProviders, findPolicy, isEdit]);
 
   const handleStepsValidation = async (step: number) => {
     if (step === 0) {

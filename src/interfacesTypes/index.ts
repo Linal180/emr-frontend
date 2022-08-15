@@ -6,7 +6,7 @@ import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn, UseFormSetValue,
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
@@ -40,8 +40,10 @@ import {
   LoginUserInput, Patient, PatientPayload, PatientProviderPayload, ServicesPayload, Staff,
   PatientsPayload, PermissionsPayload, User, UsersFormsElements, VerifyCodeInput, RolesPayload,
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
-  TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput,
-  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload, LabTests,
+  TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
+  UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
+  FetchBillingClaimStatusesInput,
+  BillingPayload
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -379,7 +381,8 @@ export interface PatientSelectorProps extends SelectorProps {
   isModal?: boolean
   placeholder?: boolean
   handlePatientModal?: Function
-  setValue: UseFormSetValue<ExtendedAppointmentInputProps>
+  setValue?: Function;
+  addNewPatientOption?: boolean
 }
 
 export interface FacilitySelectorProps extends SelectorProps {
@@ -494,6 +497,7 @@ export interface StepperData {
 }
 
 export interface SearchComponentProps {
+  text?: string;
   info?: boolean;
   placeHolder?: string;
   tooltipData?: TooltipData[]
@@ -522,6 +526,7 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
+  format?: string;
   loading?: boolean;
   disabled?: boolean;
   clearable?: boolean;
@@ -756,6 +761,10 @@ export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
   loading?: boolean;
+}
+
+export interface EligibilityTableComponentProps extends GeneralFormProps {
+  appointmentId?: string
 }
 
 export interface NoDataComponentProps {
@@ -1195,7 +1204,8 @@ export interface CopayModalProps {
 export interface RejectedModalProps {
   isOpen: boolean;
   setIsOpen: Function;
-  handleClose?: () => void
+  handleClose?: () => void;
+  billingClaim: BillingPayload['billing'] | null
 }
 
 export interface ClaimStatusModalProps extends GeneralFormProps {
@@ -1923,4 +1933,9 @@ export interface FeeScheduleFormProps {
 
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
   id: string;
+}
+
+
+export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
+  facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption
 }

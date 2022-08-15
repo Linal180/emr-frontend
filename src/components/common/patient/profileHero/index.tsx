@@ -335,7 +335,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
           <Box flex={1}>
             <Box display='flex' className="profile-hero-patient">
               <Box flex={1} flexWrap="wrap">
-                <Box display='flex' alignItems='baseline'>
+                <Box display='flex' flexWrap="wrap" alignItems='center'>
                   {renderName()}
 
                   <IconButton onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
@@ -436,7 +436,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
       <Box>
         {renderName()}
 
-        <Box display="flex" alignItems="baseline">
+        <Box display="flex" flexWrap="wrap" alignItems="baseline">
           {renderAge()}
 
           <Box p={1} />

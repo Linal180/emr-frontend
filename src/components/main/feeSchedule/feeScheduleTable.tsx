@@ -22,7 +22,7 @@ import { AuthContext } from "../../../context";
 import { SelectorOption } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddWhiteIcon, EyeIcon } from "../../../assets/svgs";
-import { getFeeScheduleDate, getPageNumber, isSuperAdmin, renderTh } from "../../../utils";
+import { getFeeScheduleDate, getPageNumber, isLast, isSuperAdmin, renderTh } from "../../../utils";
 import { useFindAllFeeSchedulesLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
 import {
   feeScheduleReducer, initialState, Action, State, ActionType
@@ -93,7 +93,7 @@ const FeeTable: FC = (): JSX.Element => {
               message && Alert.success(message);
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
 
-              if (!!feeSchedules && feeSchedules.length > 1) {
+              if (!!feeSchedules && (feeSchedules.length > 1 || isLast(feeSchedules.length, page))) {
                 fetchFeeSchedule();
               } else {
                 dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, feeSchedules?.length || 0) })
@@ -173,7 +173,7 @@ const FeeTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box display='flex' justifyContent='space-between' alignItems='center'>
+      <Box display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
         <Box display='flex'>
           <BackButton to={SETTINGS_ROUTE} />
 
@@ -195,12 +195,12 @@ const FeeTable: FC = (): JSX.Element => {
       <Box className={classes.mainTableContainer}>
         <Box mt={2} mb={1}>
           <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
               <Search search={search} />
             </Grid>
 
             {isSuper &&
-              <Grid item md={3} sm={12} xs={12}>
+              <Grid item lg={3} md={4} sm={6} xs={12}>
                 <FormProvider {...methods}>
                   <PracticeSelector
                     addEmpty
@@ -215,7 +215,7 @@ const FeeTable: FC = (): JSX.Element => {
         </Box>
 
         <Box className="table-overflow">
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}

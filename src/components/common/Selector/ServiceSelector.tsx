@@ -8,7 +8,9 @@ import { AuthContext } from "../../../context";
 import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
 import { multiOptionType, ServiceSelectorInterface } from "../../../interfacesTypes";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderLoading, renderMultiServices, requiredLabel } from "../../../utils";
+import {
+  isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderLoading, renderMultiServices, requiredLabel
+} from "../../../utils";
 
 const ServicesSelector: FC<ServiceSelectorInterface> = ({
   name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId, loading
@@ -26,7 +28,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const isFacAdmin = isFacilityAdmin(roles);
   const inputLabel = isRequired ? requiredLabel(label) : label
 
-  const [findAllService,] = useFindAllServiceListLazyQuery({
+  const [findAllService] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 

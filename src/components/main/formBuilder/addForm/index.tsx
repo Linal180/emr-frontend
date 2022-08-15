@@ -282,14 +282,15 @@ const AddForm = () => {
       const tab = tabs && (tabs[0] || {})
       const { sections } = tab || {}
       const newSections = sections?.map((section) => {
-        const { fields, name, col } = section;
+        const { fields, name, col,sectionId } = section;
         const newFields = fields?.map((field) => ({ ...field, fieldId: uuid() }))
 
         return ({
           fields: newFields,
           name,
           id: uuid(),
-          col: col || 12
+          col: col || 12,
+          sectionId
         })
       })
       const newFormValues = formValues?.map((tab) => {

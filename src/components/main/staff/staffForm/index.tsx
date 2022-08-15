@@ -172,9 +172,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     firstName, lastName, email, phone, mobile, dob, gender, facilityId, roleType, providerIds, practiceId
   }) => {
     const { id: staffGender } = gender
-    const { id: selectedFacility } = facilityId
-    const { id: selectedPractice } = practiceId
-    const { id: selectedProvider } = providerIds
+    const { id: selectedFacility } = facilityId || {}
+    const { id: selectedPractice } = practiceId || {}
+    const { id: selectedProvider } = providerIds || {}
 
     let transformPracticeId = ''
     let transformFacilityId = ''
@@ -184,11 +184,13 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       transformFacilityId = facility?.id || ''
       transformPracticeId = selectedPractice
     } else {
-      const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
-      const { practiceId: pId } = facility || {};
-
-      transformFacilityId = selectedFacility
-      transformPracticeId = pId || ''
+      if(!!selectedFacility){
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+        
+        transformFacilityId = selectedFacility
+        transformPracticeId = pId || ''
+      }
     }
 
     const staffInputs = {
@@ -341,7 +343,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       isRequired
                       name="gender"
                       label={GENDER}
-                      value={EMPTY_OPTION}
+                      value={MAPPED_GENDER[0]}
                       options={MAPPED_GENDER}
                       loading={getStaffLoading}
                     />

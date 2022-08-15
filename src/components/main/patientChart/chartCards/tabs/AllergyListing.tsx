@@ -15,11 +15,12 @@ import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, styles, interfaces and graphql block
 import { GREEN, RED, WHITE } from "../../../../../theme";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import {
-  formatValue, getFormatDateString, getSeverityColor, renderTh, getPageNumber
+  formatValue, getFormatDateString, getSeverityColor, renderTh, getPageNumber, isLast
 } from "../../../../../utils";
 import {
   Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
@@ -33,7 +34,8 @@ import {
 const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const { id } = useParams<ParamsType>()
   const classes = useChartingStyles()
-
+  const classesTable = useTableStyles();
+  
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const { isSubModalOpen, selectedItem, itemId, allergyDeleteId, patientAllergies, totalPages, page, isOpen, openDelete } = state || {}
@@ -113,7 +115,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           Alert.success(PATIENT_ALLERGY_DELETED);
           dispatch({ type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: '' })
 
-          if (!!patientAllergies && patientAllergies.length) {
+          if (!!patientAllergies && (patientAllergies.length > 1 || isLast(patientAllergies?.length, page))) {
             await fetchAllergies()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientAllergies?.length || 0) })
@@ -156,7 +158,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               </Box>
 
               <Box className={classes.tableBox}>
-                <Table aria-label="customized table">
+                <Table aria-label="customized table" className={classesTable.table}>
                   <TableHead>
                     <TableRow>
                       {renderTh(ALLERGY_TEXT)}

@@ -1,11 +1,14 @@
 // packages block
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import { Pagination } from "@material-ui/lab";
-import { Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import {
+  Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell
+} from "@material-ui/core";
 // component block
 import Alert from "../../common/Alert";
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
+import TableLoader from "../../common/TableLoader";
 import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
 // constants, history, styling block
@@ -13,13 +16,16 @@ import { AuthContext } from "../../../context";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { RolePayloadInterface } from "../../../interfacesTypes";
 import { isFacilityAdmin, isPracticeAdmin, renderTh } from "../../../utils";
-import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
+import {
+  UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation
+} from "../../../generated/graphql";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE,
   EMERGENCY_ACCESS, EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS,
   TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION, EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, REVOKE,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, DEACTIVATE,
   EMERGENCY_ACCESS_REVOKE_ROLES, REVOKE_EMERGENCY_ACCESS_MODE, ACTIVATE, EMERGENCY_ACCESS_ERROR_MESSAGE,
+  SETTINGS_BREAD, EMERGENCY_ACCESS_BREAD, PAGE_LIMIT,
 } from "../../../constants";
 
 const EmergencyAccessComponent = (): JSX.Element => {
@@ -61,6 +67,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
         if (response) {
           const { status } = response;
+
           if (status && status === 200) {
             if (responseUser?.id !== user?.id) {
               Alert.success(EMERGENCY_ACCESS_UPDATE);
@@ -93,7 +100,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
       },
     });
 
-  const [fetchEmergencyAccessUsers] = useFetchEmergencyAccessUserLazyQuery({
+  const [fetchEmergencyAccessUsers, { loading, error }] = useFetchEmergencyAccessUserLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -127,10 +134,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
     if (shouldFetchEmergencyUser) {
       if (isPractice) {
         fetchEmergencyAccessUsers({
-
           variables: {
             emergencyAccessUsersInput: {
-              paginationInput: { page, limit: 10 },
+              paginationInput: { page, limit: PAGE_LIMIT },
               practiceId: user?.facility?.practiceId,
               email: searchTerm
             }
@@ -143,7 +149,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
         fetchEmergencyAccessUsers({
           variables: {
             emergencyAccessUsersInput: {
-              paginationInput: { page, limit: 10 },
+              paginationInput: { page, limit: PAGE_LIMIT },
               facilityId: user?.facilityId,
               email: searchTerm
             }
@@ -155,7 +161,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
       fetchEmergencyAccessUsers({
         variables: {
           emergencyAccessUsersInput: {
-            paginationInput: { page, limit: 10 },
+            paginationInput: { page, limit: PAGE_LIMIT },
             email: searchTerm
           }
         }
@@ -247,7 +253,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   return (
     <>
-      <PageHeader title={EMERGENCY_ACCESS} />
+      <PageHeader title={EMERGENCY_ACCESS}
+        path={[SETTINGS_BREAD, EMERGENCY_ACCESS_BREAD]}
+      />
 
       {!shouldShowRevokePanel && <Card>
         <Box p={4}>
@@ -321,7 +329,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
           </Box>
 
           <Box className="table-overflow" maxHeight={410}>
-            <Table aria-label="customized table">
+            <Table aria-label="customized table" className={classes.table}>
               <TableHead>
                 <TableRow>
                   {renderTh(NAME)}
@@ -330,34 +338,39 @@ const EmergencyAccessComponent = (): JSX.Element => {
                 </TableRow>
               </TableHead>
 
-              {(!!transformedEmergencyAccessUser.length) && (
-                <TableBody>
-                  {transformedEmergencyAccessUser?.map(
-                    ({ email, id, roles }) => (
-                      <TableRow key={id}>
-                        <TableCell scope="row">{email}</TableCell>
-                        <TableCell scope="row">
-                          <Typography variant="body1">{'11/12/2020'}</Typography>
-                        </TableCell>
-                        <TableCell scope="row">
-                          <Button
-                            variant="text"
-                            color="secondary"
-                            className="danger"
-                            onClick={() => onRevokeAccessClick({ id, roles })}
-                          >
-                            {REVOKE_ACCESS}
-                          </Button>
-                          {/* <Typography variant="body2">{drName}</Typography>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={10}>
+                      <TableLoader numberOfRows={PAGE_LIMIT} numberOfColumns={PAGE_LIMIT} />
+                    </TableCell>
+                  </TableRow>
+                ) : (!!transformedEmergencyAccessUser.length && transformedEmergencyAccessUser?.map(
+                  ({ email, id, roles }) => (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">
+                        <Typography variant="body1">{'11/12/2020'}</Typography>
+                      </TableCell>
+                      <TableCell scope="row">
+                        <Button
+                          variant="text"
+                          color="secondary"
+                          className="danger"
+                          onClick={() => onRevokeAccessClick({ id, roles })}
+                        >
+                          {REVOKE_ACCESS}
+                        </Button>
+                        {/* <Typography variant="body2">{drName}</Typography>
                         <Typography variant="body1">{actionDate}</Typography> */}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  )}
-                </TableBody>)}
-
+                      </TableCell>
+                    </TableRow>
+                  )
+                ))}
+              </TableBody>
             </Table>
-            {!transformedEmergencyAccessUser.length &&
+
+            {((!loading && transformedEmergencyAccessUser.length === 0) || error) &&
               <Box display="flex" justifyContent="center" pb={12} pt={5}>
                 <NoDataFoundComponent />
               </Box>}
