@@ -716,8 +716,7 @@ export type ExternalPatientInputProps = {
 } & Pick<
   CreatePatientItemInput,
   | "pharmacy"
-  | "smsPermission"
-  | "phonePermission"
+  | "phoneEmailPermission"
   | "callToConsent"
   | "releaseOfInfoBill"
 > &
@@ -783,6 +782,13 @@ export interface DocumentViewerProps {
   title?: string
   isOpen: boolean
   handleClose: () => void
+}
+
+export interface InsuranceCardsProps {
+  isOpen: boolean
+  handleClose: () => void
+  policyId?: string
+  setPolicyCardId?: Function
 }
 
 export interface AddAllergyModalProps extends GeneralFormProps {

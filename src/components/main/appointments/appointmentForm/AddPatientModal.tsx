@@ -108,7 +108,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
         usualProviderId: isDoctorRole ? selectedDoctorId : selectedUsualProvider,
         callToConsent: false, privacyNotice: false, releaseOfInfoBill: false,
         genderIdentity: selectedSexAtBirth as Genderidentity,
-        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
+        medicationHistoryConsent: false, ethnicity: Ethnicity.None, homeBound: Homebound.No,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '',
         email: basicEmail, pronouns: Pronouns.None, race: Race.White,
         gender: selectedSexAtBirth as Genderidentity || Genderidentity.Male,

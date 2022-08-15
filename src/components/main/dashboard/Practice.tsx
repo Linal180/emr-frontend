@@ -75,12 +75,14 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
       <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
-            <Box px={3} pt={3} mr={0.1} color={WHITE} bgcolor={PINK_TWO}>
-              <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
-            </Box>
+            <Box borderRadius={8} bgcolor={PINK_TWO}>
+              <Box px={3} pt={3} mr={0.1} color={WHITE}>
+                <Typography variant="h4">{APPOINTMENTS_PER_FACILITY}</Typography>
+              </Box>
 
-            <Box>
-              <FacilityAppointments practiceId={practiceId || ''} />
+              <Box borderRadius={8}>
+                <FacilityAppointments practiceId={practiceId || ''} />
+              </Box>
             </Box>
           </Card>
 
@@ -89,56 +91,60 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           <Grid container spacing={2}>
             <Grid item md={6} sm={12} xs={12}>
               <Card>
-                <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
-                  <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
+                <Box>
+                  <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+                    <Typography variant="h5">{RECENTLY_ADDED_FACILITIES}</Typography>
 
-                  <Box>
-                    <Link to={`${FACILITIES_ROUTE}/new`}>
-                      <Button variant="contained" color="primary" size="small">{ADD_FACILITY}</Button>
-                    </Link>
+                    <Box>
+                      <Link to={`${FACILITIES_ROUTE}/new`}>
+                        <Button variant="contained" color="primary" size="small">{ADD_FACILITY}</Button>
+                      </Link>
 
-                    <Link to={FACILITIES_ROUTE}>
-                      <IconButton>
-                        <RedirectIcon />
-                      </IconButton>
-                    </Link>
-                  </Box>
-                </Box>
-
-                {facilities?.map((facility) => {
-                  const { name } = facility || {}
-
-                  return name && (
-                    <Box key={name} px={2} mb={3} display='flex' alignItems='center'>
-                      <Box
-                        bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
-                        justifyContent="center" alignItems="center"
-                      >
-                        <Typography variant="h6">{getShortName(name)}</Typography>
-                      </Box>
-
-                      <Typography variant="body1">{name}</Typography>
+                      <Link to={FACILITIES_ROUTE}>
+                        <IconButton>
+                          <RedirectIcon />
+                        </IconButton>
+                      </Link>
                     </Box>
-                  )
-                })}
+                  </Box>
+
+                  {facilities?.map((facility) => {
+                    const { name } = facility || {}
+
+                    return name && (
+                      <Box key={name} px={2} mb={2} display='flex' alignItems='center'>
+                        <Box
+                          bgcolor={BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex"
+                          justifyContent="center" alignItems="center"
+                        >
+                          <Typography variant="h6">{getShortName(name)}</Typography>
+                        </Box>
+
+                        <Typography variant="body1">{name}</Typography>
+                      </Box>
+                    )
+                  })}
+                </Box>
               </Card>
             </Grid>
 
             <Grid item md={6} sm={12} xs={12}>
               <Card>
-                <Box px={2} mb={2} fontWeight="bold" display='flex'
-                  justifyContent='space-between' alignItems='center'
-                >
-                  <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
+                <Box pb={2}>
+                  <Box px={2} fontWeight="bold" display='flex'
+                    justifyContent='space-between' alignItems='center'
+                  >
+                    <Typography variant="h5">{RECENT_ACTIVITIES}</Typography>
 
-                  <Link to={AUDIT_LOG_ROUTE}>
-                    <IconButton>
-                      <RedirectIcon />
-                    </IconButton>
-                  </Link>
+                    <Link to={AUDIT_LOG_ROUTE}>
+                      <IconButton>
+                        <RedirectIcon />
+                      </IconButton>
+                    </Link>
+                  </Box>
+
+                  <RecentActivities />
                 </Box>
-
-                <RecentActivities />
               </Card>
             </Grid>
           </Grid>
@@ -170,7 +176,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer}>
+            <Box pb={3} className={classes.cardContainer}>
               <Box display='flex' justifyContent='center' alignItems='center'>
                 <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
                   <ViewIcon />

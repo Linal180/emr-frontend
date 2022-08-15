@@ -302,7 +302,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
       {(!loading || error) && (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Card className='overflowVisible'>
+            <Card className='overflow-visible'>
               <Box p={2}>
                 <Box py={2} mb={4} display='flex' justifyContent='space-between'
                   alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}

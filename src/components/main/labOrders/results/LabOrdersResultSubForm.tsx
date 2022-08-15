@@ -99,13 +99,14 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
 
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Box pb={3}
-            onClick={() => appendSubField(ORDERS_RESULT_INITIAL_VALUES_1)}
-            className="billing-box" display="flex" alignItems="center" justifyContent='flex-end'
-          >
-            <AddCircleOutline color='inherit' />
-
-            <Typography>{ADD_ANOTHER_RESULT}</Typography>
+          <Box pb={3} display="flex" alignItems="center" justifyContent='flex-end'>
+            <Button
+              onClick={() => appendSubField(ORDERS_RESULT_INITIAL_VALUES_1)}
+            >
+              <AddCircleOutline color='secondary' />
+              <Box ml={1} />
+              <Typography color='secondary'>{ADD_ANOTHER_RESULT}</Typography>
+            </Button>
           </Box>
         </Grid>
       </Grid>

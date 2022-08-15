@@ -359,7 +359,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
                   </Box>
                 </Grid>
 
-                <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
+                <Grid item lg={3} md={4} sm={6} xs={12} className={classes.customCalendar}>
                   <AppointmentSlots providerId={doctorId} dispatcher={dispatch} />
                 </Grid>
               </Grid>

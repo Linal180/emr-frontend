@@ -80,6 +80,12 @@ export interface State {
   userData: SmartyUserData;
   vitalToEdit: PatientVitalPayload['patientVital'],
   patientVitals: PatientVitalsPayload['patientVitals'],
+  phoneEmailPermission: boolean;
+  cellPhonePermission: boolean;
+  medicalPermission: boolean;
+  resultConsent: boolean;
+  immunizationConsent: boolean;
+  medicationHistoryConsent: boolean;
 }
 
 export const initialState: State = {
@@ -155,6 +161,12 @@ export const initialState: State = {
   weightUnit: { id: WeightType.Kg, name: KG_TEXT },
   headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT },
   feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
+  phoneEmailPermission: false,
+  cellPhonePermission: false,
+  medicalPermission: false,
+  resultConsent: false,
+  immunizationConsent: false,
+  medicationHistoryConsent: false
 }
 
 export enum ActionType {
@@ -228,6 +240,12 @@ export enum ActionType {
   SET_VITAL_TOTAL_PAGES = 'setVitalTotalPages',
   SET_VITAL_TO_EDIT = 'setVitalToEdit',
   SET_PATIENT_VITALS = 'setPatientVitals',
+  SET_PHONE_EMAIL_PERMISSION = 'setPhoneEmailPermission',
+  SET_CELL_PHONE_PERMISSION = 'setCellPhonePermission',
+  SET_MEDICAL_PERMISSION = 'setMedicalPermission',
+  SET_RESULT_CONSENT = 'setResultConsent',
+  SET_IMMUNIZATION_CONSENT = 'setImmunizationConsent',
+  SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent'
 }
 
 export type Action =
@@ -301,6 +319,12 @@ export type Action =
   | { type: ActionType.SET_VITAL_TOTAL_PAGES; vitalTotalPages: number }
   | { type: ActionType.SET_VITAL_TO_EDIT; vitalToEdit: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_VITALS; patientVitals: PatientVitalsPayload['patientVitals'] }
+  | { type: ActionType.SET_PHONE_EMAIL_PERMISSION; phoneEmailPermission: boolean }
+  | { type: ActionType.SET_CELL_PHONE_PERMISSION; cellPhonePermission: boolean }
+  | { type: ActionType.SET_MEDICAL_PERMISSION; medicalPermission: boolean }
+  | { type: ActionType.SET_RESULT_CONSENT; resultConsent: boolean }
+  | { type: ActionType.SET_IMMUNIZATION_CONSENT; immunizationConsent: boolean }
+  | { type: ActionType.SET_MEDICATION_HISTORY_CONSENT; medicationHistoryConsent: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -722,5 +746,42 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         openAdvancedSearch: action.openAdvancedSearch
       }
+
+    case ActionType.SET_PHONE_EMAIL_PERMISSION:
+      return {
+        ...state,
+        phoneEmailPermission: action.phoneEmailPermission
+      }
+
+    case ActionType.SET_CELL_PHONE_PERMISSION:
+      return {
+        ...state,
+        cellPhonePermission: action.cellPhonePermission
+      }
+
+    case ActionType.SET_MEDICAL_PERMISSION:
+      return {
+        ...state,
+        medicalPermission: action.medicalPermission
+      }
+
+    case ActionType.SET_RESULT_CONSENT:
+      return {
+        ...state,
+        resultConsent: action.resultConsent
+      }
+
+    case ActionType.SET_IMMUNIZATION_CONSENT:
+      return {
+        ...state,
+        immunizationConsent: action.immunizationConsent
+      }
+
+    case ActionType.SET_MEDICATION_HISTORY_CONSENT:
+      return {
+        ...state,
+        medicationHistoryConsent: action.medicationHistoryConsent
+      }
+
   }
 };

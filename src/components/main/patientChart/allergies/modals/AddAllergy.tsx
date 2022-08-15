@@ -7,7 +7,7 @@ import {
 // components block
 import AllergyModal from "./AllergyModal";
 //constants, utils, interfaces
-import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+import { GREY_SEVEN, } from "../../../../../theme";
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
@@ -101,13 +101,13 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   }
 
   const renderTabs = () => (
-    <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+    <Box p={1} mb={3} mt={2} display='flex' borderRadius={6} width="fit-content">
       {tabs?.map(tabName =>
         <Box key={tabName}
           className={tab === tabName ? 'selectedBox selectBox' : 'selectBox'}
           onClick={() => handleTabChange(tabName)}
         >
-          <Typography variant='h6'>{tabName}</Typography>
+          <Typography variant='h6' color="inherit">{tabName}</Typography>
         </Box>
       )}
     </Box>
@@ -130,7 +130,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
               <Box key={name} className='pointer-cursor' my={0.2}
                 onClick={() => item && handleOpenForm(item as Allergies)}
               >
-                <Typography variant='body1' className="hoverClass">{name}</Typography>
+                <Typography variant='body1' className={chartingClasses.hoverClass}>{name}</Typography>
               </Box>
             )
           }) :

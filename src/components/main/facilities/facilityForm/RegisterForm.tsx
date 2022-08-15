@@ -60,7 +60,7 @@ const RegisterFormComponent: FC<FacilityCardsProps> = ({
                   <Timeline>
                     <TimelineItem>
                       <TimelineSeparator>
-                        <TimelineDot className={item.title === activeBlock ? 'facilityActive' : ''} />
+                        <TimelineDot className={item.title === activeBlock ? classes.facilityActive : ''} />
 
                         {(index + 1) !== FacilityMenuNav.length && <TimelineConnector />}
                       </TimelineSeparator>

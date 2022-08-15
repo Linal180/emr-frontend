@@ -39,5 +39,6 @@
     "Videocam",
     "Xrange",
     "Zipcode"
-  ]
+  ],
+  "merge-conflict.diffViewPosition": "Beside"
 }
