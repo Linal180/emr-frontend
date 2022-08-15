@@ -266,7 +266,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer}>
+            <Box pb={3} className={classes.cardContainer}>
               <Box display='flex' justifyContent='center' alignItems='center'>
                 <Link to={`${APPOINTMENTS_ROUTE}/new`}>
                   <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
@@ -381,7 +381,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
               />
             }
 
-            <Box px={4} pb={2} display='flex' alignItems='center'>
+            <Box px={4} pb={3} display='flex' alignItems='center'>
               <Grid container spacing={2}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex' alignItems='center' flexWrap='wrap'>

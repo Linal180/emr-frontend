@@ -228,5 +228,12 @@ export const useTableStyles = makeStyles(() => ({
   selectedBox: {
     backgroundColor: BLUE,
     color: WHITE,
+  },
+
+  modifiers: {
+    '& .MuiFormControl-marginNormal':{
+      marginBottom : 0,
+      paddingBottom :0
+    }
   }
 }))
