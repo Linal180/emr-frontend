@@ -3560,15 +3560,15 @@ export const formTemplateTabIds = {
 
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
-    id: `<div><p>pleas register the following link</p><div><a href=${`${process.env.REACT_APP_API_BASE_URL}/login`}>login</a></div></div>`,
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
     name: "Registration Link",
   },
   {
-    id: `<div><p>pleas register the following link</p><div><a href=${`${process.env.REACT_APP_API_BASE_URL}/login`}>login</a></div></div>`,
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
     name: "Telehealth",
   },
   {
-    id: `<div><p>pleas register the following link</p><div><a href=${`${process.env.REACT_APP_API_BASE_URL}/login`}>login</a></div></div>`,
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
     name: "Review",
   },
 ]

@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -2704,6 +2703,7 @@ export type Mutation = {
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
+  sendSms: SmsPayload;
   update2FactorAuth: UserPayload;
   updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
@@ -3156,6 +3156,11 @@ export type MutationSaveUserFormValuesArgs = {
 
 export type MutationSendInviteToPatientArgs = {
   patientInviteInput: PatientInviteInput;
+};
+
+
+export type MutationSendSmsArgs = {
+  sendSmsInput: SendSmsInput;
 };
 
 
@@ -5251,6 +5256,11 @@ export type SectionsTypes = {
   sectionId?: Maybe<Scalars['String']>;
 };
 
+export type SendSmsInput = {
+  message?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
 export type Service = {
   __typename?: 'Service';
   color?: Maybe<Scalars['String']>;
@@ -5427,6 +5437,12 @@ export enum SmokingStatus {
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }
+
+export type SmsPayload = {
+  __typename?: 'SmsPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  sms?: Maybe<Scalars['String']>;
+};
 
 export type SnoMedCodes = {
   __typename?: 'SnoMedCodes';
@@ -7854,6 +7870,13 @@ export type UpdateFacilityTimeZoneMutationVariables = Exact<{
 
 
 export type UpdateFacilityTimeZoneMutation = { __typename?: 'Mutation', updateFacilityTimeZone: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, timeZone?: string | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type SendSmsMutationVariables = Exact<{
+  sendSmsInput: SendSmsInput;
+}>;
+
+
+export type SendSmsMutation = { __typename?: 'Mutation', sendSms: { __typename?: 'SmsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -17592,6 +17615,42 @@ export function useUpdateFacilityTimeZoneMutation(baseOptions?: Apollo.MutationH
 export type UpdateFacilityTimeZoneMutationHookResult = ReturnType<typeof useUpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationResult = Apollo.MutationResult<UpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationOptions = Apollo.BaseMutationOptions<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>;
+export const SendSmsDocument = gql`
+    mutation SendSms($sendSmsInput: SendSmsInput!) {
+  sendSms(sendSmsInput: $sendSmsInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendSmsMutationFn = Apollo.MutationFunction<SendSmsMutation, SendSmsMutationVariables>;
+
+/**
+ * __useSendSmsMutation__
+ *
+ * To run a mutation, you first call `useSendSmsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendSmsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendSmsMutation, { data, loading, error }] = useSendSmsMutation({
+ *   variables: {
+ *      sendSmsInput: // value for 'sendSmsInput'
+ *   },
+ * });
+ */
+export function useSendSmsMutation(baseOptions?: Apollo.MutationHookOptions<SendSmsMutation, SendSmsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendSmsMutation, SendSmsMutationVariables>(SendSmsDocument, options);
+      }
+export type SendSmsMutationHookResult = ReturnType<typeof useSendSmsMutation>;
+export type SendSmsMutationResult = Apollo.MutationResult<SendSmsMutation>;
+export type SendSmsMutationOptions = Apollo.BaseMutationOptions<SendSmsMutation, SendSmsMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {

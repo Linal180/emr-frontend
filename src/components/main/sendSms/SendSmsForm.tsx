@@ -2,14 +2,16 @@ import { FC } from "react";
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 //components
+import Alert from "../../common/Alert";
 import Selector from "../../common/Selector";
 import BackButton from "../../common/BackButton";
 import PageHeader from "../../common/PageHeader";
 import PhoneInput from '../../common/PhoneInput';
-import CKEditorController from '../../../controller/CKEditorController';
+import InputController from '../../../controller';
 //constants
 import { SelectorOption, SendSMSFormType } from "../../../interfacesTypes";
 import { DASHBOARD_BREAD, DASHBOARD_ROUTE, MESSAGE, MOBILE_NUMBER, SELECT_TEMPLATE, SEND_SMS_TEXT, SMS_BREAD, SMS_TEMPLATES } from "../../../constants";
+import { useSendSmsMutation } from "../../../generated/graphql";
 
 const SendSMSForm: FC = (): JSX.Element => {
   const methods = useForm<SendSMSFormType>({
@@ -17,11 +19,25 @@ const SendSMSForm: FC = (): JSX.Element => {
   });
   const { handleSubmit, setValue } = methods;
 
-  const loading = false;
+  const [sendSms, { loading }] = useSendSmsMutation({
+    onCompleted: (data) => {
+      const { sendSms } = data;
+      const { response } = sendSms || {}
+      const { message, status } = response || {}
+      if (status === 200) {
+        message && Alert.success(message)
+      }
+    },
+    onError: (error) => {
+      Alert.error(error?.message)
+    }
+  })
 
-  const onSubmit: SubmitHandler<SendSMSFormType> = (values) => {
+  const onSubmit: SubmitHandler<SendSMSFormType> = async (values) => {
     const { message, mobile } = values;
-    debugger
+    try {
+      await sendSms({ variables: { sendSmsInput: { message, to: `+1${mobile}` } } })
+    } catch (error) { }
   }
 
   const templateHandler = (editor: SelectorOption) => {
@@ -69,8 +85,8 @@ const SendSMSForm: FC = (): JSX.Element => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={12} md={12}>
-              <CKEditorController label={MESSAGE} name="message" isRequired />
+            <Grid item xs={12} sm={12} md={6}>
+              <InputController controllerLabel={MESSAGE} controllerName="message" isRequired multiline />
             </Grid>
           </Grid>
         </Box>
