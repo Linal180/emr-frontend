@@ -100,25 +100,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
       case shouldShowInsuranceStep ? 3 : 1:
         return (
-          <PatientDemographicsCard
-            isEdit={isEdit}
-            disableSubmit={disableSubmit}
-            state={state} dispatch={dispatch}
-            getPatientLoading={getPatientLoading}
-            shouldDisableEdit={shouldDisableEdit}
-          />)
-
-      case shouldShowInsuranceStep ? 4 : 2:
-        return (
-          <PatientPrivacyCard
-            isEdit={isEdit}
-            disableSubmit={disableSubmit}
-            state={state} dispatch={dispatch}
-            getPatientLoading={getPatientLoading}
-            shouldDisableEdit={shouldDisableEdit}
-          />)
-      default:
-        return (
           <>
             <Box mb={3}>
               <EmergencyContactCard
@@ -149,6 +130,27 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
             <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
           </>
+        )
+
+      case shouldShowInsuranceStep ? 4 : 2:
+        return (
+          <PatientDemographicsCard
+            isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
+            getPatientLoading={getPatientLoading}
+            shouldDisableEdit={shouldDisableEdit}
+          />
+        )
+      default:
+        return (
+          <PatientPrivacyCard
+            isEdit={isEdit}
+            disableSubmit={disableSubmit}
+            state={state} dispatch={dispatch}
+            getPatientLoading={getPatientLoading}
+            shouldDisableEdit={shouldDisableEdit}
+          />
         )
     }
   }

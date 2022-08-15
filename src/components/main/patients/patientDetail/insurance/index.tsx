@@ -6,6 +6,7 @@ import { Box, Button, Card, colors, IconButton, Typography } from "@material-ui/
 import PolicyCard from "./PolicyCard";
 import Alert from '../../../../common/Alert';
 import Loader from '../../../../common/Loader';
+import InsuranceCardsModal from './InsuranceCardsModal';
 import SideDrawer from "../../../../common/SideDrawer";
 import NoDataComponent from '../../../../common/NoDataComponent';
 import EligibilityTableComponent from './eligibilityAndCoverage/EligibilityTable';
@@ -22,7 +23,7 @@ import {
 import {
   ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
-  SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED,
+  SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED, POLICY_CARDS,
 } from "../../../../../constants";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
@@ -34,6 +35,8 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
   const isDoctor = isOnlyDoctor(roles)
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
+  const [isCardModalOpen, setIsCardModalOpen] = useState<boolean>(false)
+  const [policyCardId, setPolicyCardId] = useState<string>('')
 
   const [fetchAllPolicies, { loading: fetchAllPoliciesLoading }] = useFetchAllPoliciesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -145,6 +148,11 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     })
   }
 
+  const handleCardModalOpen = (policyId: string) => {
+    setPolicyCardId(policyId)
+    setIsCardModalOpen(true)
+  }
+
   return (
     getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility' /> :
       <>
@@ -234,6 +242,10 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                           <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : CHECK_ELIGIBILITY_TODAY}</Typography>
                         </Button>
                       </Box>
+
+                      <Button onClick={() => handleCardModalOpen(id)}>
+                        <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : POLICY_CARDS}</Typography>
+                      </Button>
                     </Box>
                   </Box>
                 )
@@ -258,6 +270,15 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         <Box mt={3}>
           <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
         </Box>
+
+        {isCardModalOpen &&
+          <InsuranceCardsModal
+            isOpen={isCardModalOpen}
+            handleClose={() => setIsCardModalOpen(false)}
+            policyId={policyCardId}
+            setPolicyCardId={setPolicyCardId}
+          />
+        }
       </>
   );
 };

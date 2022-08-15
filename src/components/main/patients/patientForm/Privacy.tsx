@@ -1,95 +1,67 @@
 //packages import
-import { FC } from "react"
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid } from "@material-ui/core"
+import { FC } from "react"
 //components import
 import CardComponent from "../../../common/CardComponent"
 //constants, interfaces, reducer imports
+import {
+  CELL_PHONE_PERMISSION,
+  CONSENTS, IMMUNIZATION_CONSENT,
+  MEDICAL_PERMISSION, MEDICATION_HISTORY_CONSENT, PERMISSIONS_TEXT, PHONE_EMAIL_PERMISSION, PRIVACY, RESULT_CONSENT
+} from "../../../../constants"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import { useExternalPatientStyles } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
-import {
-  CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT,
-  MEDICATION_HISTORY_AUTHORITY, NOTICE_ON_FILE, PRIVACY, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
-} from "../../../../constants"
 
 const PatientPrivacyCard: FC<PatientCardsProps> = ({
   state, dispatch, shouldDisableEdit, disableSubmit, isEdit
 }) => {
-  const { privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority, smsPermission } = state || {}
+  const { medicalPermission, cellPhonePermission, phoneEmailPermission, resultConsent, immunizationConsent, medicationHistoryConsent } = state || {}
   const classes = useExternalPatientStyles()
 
   return (
     <CardComponent cardTitle={PRIVACY} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
       <Grid item md={12} sm={12} xs={12}>
-        <FormControl component="fieldset">
-          <FormLabel className={classes.privacyLabelHeader} component="li">{NOTICE_ON_FILE}</FormLabel>
-          <FormGroup className={classes.privacyFormGroup}>
-            <FormControlLabel
-              className={classes.privacyLabelDescription}
-              control={
-                <Checkbox
-                  disabled={shouldDisableEdit}
-                  color="primary"
-                  checked={privacyNotice}
-                  onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: event.target.checked })}
-                />
-              }
-              label={PRIVACY_NOTICE}
-            />
-
-            <FormControlLabel
-              className={classes.privacyLabelDescription}
-              control={
-                <Checkbox
-                  disabled={shouldDisableEdit}
-                  color="primary"
-                  checked={releaseOfInfoBill}
-                  onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: event.target.checked })}
-                />
-              }
-              label={RELEASE_OF_BILLING_INFO}
-            />
-          </FormGroup>
-        </FormControl>
-
         <Box>
           <FormControl component="fieldset">
             <FormGroup>
               <Box mr={3} mb={2} mt={2}>
-                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENT_TO_CALL}</FormLabel>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{PERMISSIONS_TEXT}</FormLabel>
                 <FormControlLabel
                   className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
                       color="primary"
-                      checked={callToConsent}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: event.target.checked })}
+                      checked={phoneEmailPermission}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PHONE_EMAIL_PERMISSION, phoneEmailPermission: event.target.checked })}
                     />
                   }
-                  label={GRANTED_TEXT}
+                  label={PHONE_EMAIL_PERMISSION}
                 />
-              </Box>
-            </FormGroup>
-          </FormControl>
-        </Box>
-
-        <Box>
-          <FormControl component="fieldset">
-            <FormGroup>
-              <Box>
-                <FormLabel className={classes.privacyLabelHeader} component="li">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
                 <FormControlLabel
                   className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
                       color="primary"
-                      checked={medicationHistoryAuthority}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY, medicationHistoryAuthority: event.target.checked })}
+                      checked={cellPhonePermission}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CELL_PHONE_PERMISSION, cellPhonePermission: event.target.checked })}
                     />
                   }
-                  label={GRANTED_TEXT}
+                  label={CELL_PHONE_PERMISSION}
+                />
+                <FormControlLabel
+                  className={classes.privacyLabelDescription}
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={medicalPermission}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICAL_PERMISSION, medicalPermission: event.target.checked })}
+                    />
+                  }
+                  label={MEDICAL_PERMISSION}
                 />
               </Box>
             </FormGroup>
@@ -100,18 +72,42 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
           <FormControl component="fieldset">
             <FormGroup>
               <Box mr={3} mb={2} mt={2}>
-                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENT_TO_MESSAGES}</FormLabel>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENTS}</FormLabel>
                 <FormControlLabel
                   className={classes.privacyLabelDescription}
                   control={
                     <Checkbox
                       disabled={shouldDisableEdit}
                       color="primary"
-                      checked={smsPermission}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: event.target.checked })}
+                      checked={resultConsent}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RESULT_CONSENT, resultConsent: event.target.checked })}
                     />
                   }
-                  label={CONSENT_TO_MESSAGES_DESCRIPTION}
+                  label={RESULT_CONSENT}
+                />
+                <FormControlLabel
+                  className={classes.privacyLabelDescription}
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={immunizationConsent}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_IMMUNIZATION_CONSENT, immunizationConsent: event.target.checked })}
+                    />
+                  }
+                  label={IMMUNIZATION_CONSENT}
+                />
+                <FormControlLabel
+                  className={classes.privacyLabelDescription}
+                  control={
+                    <Checkbox
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={medicationHistoryConsent}
+                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_CONSENT, medicationHistoryConsent: event.target.checked })}
+                    />
+                  }
+                  label={MEDICATION_HISTORY_CONSENT}
                 />
               </Box>
             </FormGroup>

@@ -51,8 +51,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission,
-    activeStep, patientId, optionalEmail
+    privacyNotice, callToConsent, releaseOfInfoBill, activeStep, patientId,
+    optionalEmail, phoneEmailPermission, cellPhonePermission, medicalPermission, resultConsent, immunizationConsent, medicationHistoryConsent
   } = state
 
   const methods = useForm<PatientInputProps>({
@@ -87,8 +87,9 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice, releaseOfInfoBill,
             callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer, sexualOrientation,
             genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts, statementDelivereOnline,
-            statementNote, statementNoteDateFrom, statementNoteDateTo, facility, medicationHistoryAuthority,
-            doctorPatients, registrationDate, smsPermission
+            statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
+            doctorPatients, registrationDate, cellPhonePermission, immunizationConsent, medicalPermission,
+            medicationHistoryConsent, phoneEmailPermission, resultConsent
           } = patient;
 
           if (facility) {
@@ -162,12 +163,13 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
           dispatch({ type: ActionType.SET_CALL_TO_CONSENT, callToConsent: callToConsent || false })
           dispatch({ type: ActionType.SET_PRIVACY_NOTICE, privacyNotice: privacyNotice || false })
-          dispatch({ type: ActionType.SET_SMS_PERMISSION, smsPermission: smsPermission || false })
           dispatch({ type: ActionType.SET_RELEASE_OF_INFO_BILL, releaseOfInfoBill: releaseOfInfoBill || false })
-          dispatch({
-            type: ActionType.SET_MEDICATION_HISTORY_AUTHORITY,
-            medicationHistoryAuthority: medicationHistoryAuthority || false
-          })
+          dispatch({ type: ActionType.SET_PHONE_EMAIL_PERMISSION, phoneEmailPermission: phoneEmailPermission || false })
+          dispatch({ type: ActionType.SET_CELL_PHONE_PERMISSION, cellPhonePermission: cellPhonePermission || false })
+          dispatch({ type: ActionType.SET_MEDICAL_PERMISSION, medicalPermission: medicalPermission || false })
+          dispatch({ type: ActionType.SET_RESULT_CONSENT, resultConsent: resultConsent || false })
+          dispatch({ type: ActionType.SET_IMMUNIZATION_CONSENT, immunizationConsent: immunizationConsent || false })
+          dispatch({ type: ActionType.SET_MEDICATION_HISTORY_CONSENT, medicationHistoryConsent: medicationHistoryConsent || false })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -364,8 +366,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: formatEmail(basicEmail), callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
-        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        email: formatEmail(basicEmail), callToConsent, privacyNotice, releaseOfInfoBill,
+        ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         gender: selectedGender as Genderidentity || Genderidentity.DeclineToSpecify,
@@ -381,6 +383,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
         usualProviderId: isDoctor ? selectedDoctorId : selectedUsualProvider,
         facilityId: isSuperAdminOrPracticeAdmin ? selectedFacility : selectedFacilityId,
         dob: !!dob && isValidDate(new Date(dob)) ? dob : new Date().toString(),
+        phoneEmailPermission, cellPhonePermission, medicalPermission, resultConsent, immunizationConsent, medicationHistoryConsent
       };
 
       const contactInput = {

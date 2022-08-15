@@ -29,12 +29,13 @@ import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
-  ADD_ANOTHER, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
+  APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
   POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SystemBillingStatuses,
   SELECT_ANOTHER_STATUS,
+  ADD_ANOTHER_COPAY,
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = ({
@@ -266,7 +267,7 @@ const BillingForm: FC<BillingFormProps> = ({
                             className="billing-box" display="flex" justifyContent="flex-end"
                           >
                             <AddCircleOutline color='inherit' />
-                            <Typography>{ADD_ANOTHER}</Typography>
+                            <Typography>{ADD_ANOTHER_COPAY}</Typography>
                           </Box>
                         }
                       </>
