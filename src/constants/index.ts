@@ -577,6 +577,7 @@ export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
 export const FORM_FIELDS = "Form Fields";
 export const NO_TEMPLATE = "No Template Found";
+export const SELECT_TEMPLATE = "Select Template";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const AUDIT_LOG_DESCRIPTION = "View all logs of different activities";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
@@ -1159,6 +1160,8 @@ export const FEE = "Fee";
 export const DIS = "Dis";
 export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
+export const SEND_SMS_TEXT = "Send SMS";
+export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
@@ -1560,6 +1563,7 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const SEND_SMS_ROUTE = `/send-sms`
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2236,7 +2240,7 @@ export const ROLES_ADD_BREAD = { text: ADD_ROLE_TEXT, link: "" };
 export const FORMS_BREAD = { text: FORMS, link: FORM_BUILDER_ROUTE };
 export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
-
+export const SMS_BREAD = { text: SEND_SMS_TEXT, link: "" };
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
 export const CHECK_ELIGIBILITY_BREAD = { text: CHECK_ELIGIBILITY, link: "" };
 export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
@@ -3112,6 +3116,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
+  },
+  {
+    name: SEND_SMS_TEXT,
+    link: SEND_SMS_ROUTE,
+    desc: SEND_SMS_DESCRIPTION,
   }
 ];
 
@@ -3547,3 +3556,19 @@ export const formTemplateTabIds = {
   PATIENT_INFO: "patient_info",
   TERMS_CONDITIONS: "terms_conditions"
 }
+
+
+export const SMS_TEMPLATES: SelectorOption[] = [
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Registration Link",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Telehealth",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Review",
+  },
+]
