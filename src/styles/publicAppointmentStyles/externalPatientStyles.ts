@@ -182,6 +182,19 @@ export const useExternalPatientStyles = makeStyles({
     }
   },
 
+  privacyLabelNewDescription: {
+    paddingLeft: 5,
+    "& .MuiFormControlLabel-label": {
+      fontSize: 14,
+    },
+
+    "& .MuiCheckbox-root .MuiIconButton-label:before":{
+      width:15,
+      height:15
+    }
+  },
+
+
   privacyFormGroup: {
     display: 'flex',
     flexDirection: 'row'

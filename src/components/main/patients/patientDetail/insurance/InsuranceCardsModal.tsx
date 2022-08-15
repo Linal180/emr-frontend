@@ -1,7 +1,7 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@material-ui/core'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { CLOSE } from '../../../../../constants'
+import { CLOSE, INSURANCE_CARDS } from '../../../../../constants'
 import { AttachmentWithPreSignedUrlPayload, useGetAttachmentsByPolicyIdLazyQuery } from '../../../../../generated/graphql'
 import { InsuranceCardsProps, ParamsType } from '../../../../../interfacesTypes'
 import Loader from '../../../../common/Loader'
@@ -63,28 +63,26 @@ function InsuranceCardsModal({ isOpen, handleClose, policyId, setPolicyCardId }:
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
       <DialogTitle>
-        <Typography variant="h4">Insurance Cards</Typography>
+        <Typography variant="h4">{INSURANCE_CARDS}</Typography>
       </DialogTitle>
 
       <DialogContent>
         {attachments?.map((attachment) => (
-          <Grid item md={3} sm={12} xs={12}>
-            <Box className="card-box">
-              <Box className="card-img">
-                <img src={attachment?.preSignedUrl || ''} alt={attachment?.preSignedUrl || ''} />
-              </Box>
+          <Box className="dialogBg" display="inline-flex">
+            <Box className='card-img' mr={3} width={200} height={200}>
+              <img src={attachment?.preSignedUrl || ''} alt={attachment?.preSignedUrl || ''} />
             </Box>
-          </Grid>
+          </Box>
         ))}
       </DialogContent>
 
       <DialogActions>
         <Box display='flex' justifyContent='flex-end' alignItems='center'>
-          <Button variant='text' color='default' onClick={handleClose}>{CLOSE}</Button>
+          <Button variant='outlined' color='inherit' className='danger' onClick={handleClose}>{CLOSE}</Button>
         </Box>
       </DialogActions>
     </Dialog>
   )
 }
 
-export default InsuranceCardsModal
+export default InsuranceCardsModal;

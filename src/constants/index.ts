@@ -596,6 +596,7 @@ export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
 export const CHECK_ELIGIBILITY_TODAY = "Check Eligibility Today";
 export const POLICY_CARDS = "INSURANCE CARDS PICTURES";
+export const INSURANCE_CARDS = "INSURANCE CARDS";
 export const CHECK_PRIOR_DATE_OF_SERVICE = "Check At Prior Date Of Service";
 export const OVERRIDE_PAYER_RETURNED_RESULT = "Override Payer Returned Result";
 export const TAKE_A_PICTURE_OF_INSURANCE =

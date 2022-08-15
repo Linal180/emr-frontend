@@ -14,7 +14,7 @@ import EligibilityTableComponent from './eligibilityAndCoverage/EligibilityTable
 import history from '../../../../../history';
 import { AuthContext } from '../../../../../context';
 import { ParamsType } from "../../../../../interfacesTypes";
-import { EditNewIcon } from "../../../../../assets/svgs";
+import { EditNewIcon, EyeIcon } from "../../../../../assets/svgs";
 import { PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
 import { getFormatDateString, isOnlyDoctor, renderTextLoading } from '../../../../../utils';
 import {
@@ -23,7 +23,7 @@ import {
 import {
   ADD_INSURANCE, CHECK_ELIGIBILITY_TODAY, COPAY_TEXT, COVERAGE_ROUTE, ELIGIBILITY_ERROR_MESSAGE, ELIGIBILITY_TEXT,
   ID_TEXT, MAPPED_POLICY_ORDER_OF_BENEFIT, EFFECTIVE_TEXT, PAGE_LIMIT, POLICY_NAME_TEXT, PRIMARY_INSURANCE,
-  SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED, POLICY_CARDS,
+  SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED,
 } from "../../../../../constants";
 
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
@@ -207,6 +207,10 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                         }}>
                           <EditNewIcon />
                         </IconButton>}
+
+                        <IconButton onClick={() => handleCardModalOpen(id)}>
+                          <EyeIcon />
+                        </IconButton>
                       </Box>
                     </Box>
 
@@ -243,9 +247,9 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                         </Button>
                       </Box>
 
-                      <Button onClick={() => handleCardModalOpen(id)}>
+                      {/* <Button onClick={() => handleCardModalOpen(id)}>
                         <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : POLICY_CARDS}</Typography>
-                      </Button>
+                      </Button> */}
                     </Box>
                   </Box>
                 )
