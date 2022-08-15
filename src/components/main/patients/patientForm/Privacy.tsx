@@ -21,98 +21,112 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
 
   return (
     <CardComponent cardTitle={PRIVACY} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
-      <Grid item md={12} sm={12} xs={12}>
-        <Box>
-          <FormControl component="fieldset">
-            <FormGroup>
-              <Box mr={3} mb={2} mt={2}>
-                <FormLabel className={classes.privacyLabelHeader} component="li">{PERMISSIONS_TEXT}</FormLabel>
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={phoneEmailPermission}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PHONE_EMAIL_PERMISSION, phoneEmailPermission: event.target.checked })}
-                    />
-                  }
-                  label={PHONE_EMAIL_PERMISSION}
-                />
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={cellPhonePermission}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CELL_PHONE_PERMISSION, cellPhonePermission: event.target.checked })}
-                    />
-                  }
-                  label={CELL_PHONE_PERMISSION}
-                />
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={medicalPermission}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICAL_PERMISSION, medicalPermission: event.target.checked })}
-                    />
-                  }
-                  label={MEDICAL_PERMISSION}
-                />
-              </Box>
-            </FormGroup>
-          </FormControl>
-        </Box>
+      <Grid container spacing={2}>
+        <Grid item md={6} sm={12} xs={12}>
+          <Box>
+            <FormControl component="fieldset">
+              <FormGroup>
+                <Box mb={2}>
+                  <FormLabel className={classes.privacyLabelHeader} component="li">{PERMISSIONS_TEXT}</FormLabel>
 
-        <Box>
-          <FormControl component="fieldset">
-            <FormGroup>
-              <Box mr={3} mb={2} mt={2}>
-                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENTS}</FormLabel>
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={resultConsent}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RESULT_CONSENT, resultConsent: event.target.checked })}
-                    />
-                  }
-                  label={RESULT_CONSENT}
-                />
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={immunizationConsent}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_IMMUNIZATION_CONSENT, immunizationConsent: event.target.checked })}
-                    />
-                  }
-                  label={IMMUNIZATION_CONSENT}
-                />
-                <FormControlLabel
-                  className={classes.privacyLabelDescription}
-                  control={
-                    <Checkbox
-                      disabled={shouldDisableEdit}
-                      color="primary"
-                      checked={medicationHistoryConsent}
-                      onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_CONSENT, medicationHistoryConsent: event.target.checked })}
-                    />
-                  }
-                  label={MEDICATION_HISTORY_CONSENT}
-                />
-              </Box>
-            </FormGroup>
-          </FormControl>
-        </Box>
+                  <Box p={0.5} />
+
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={phoneEmailPermission}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_PHONE_EMAIL_PERMISSION, phoneEmailPermission: event.target.checked })}
+                      />
+                    }
+                    label={PHONE_EMAIL_PERMISSION}
+                  />
+
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={cellPhonePermission}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_CELL_PHONE_PERMISSION, cellPhonePermission: event.target.checked })}
+                      />
+                    }
+                    label={CELL_PHONE_PERMISSION}
+                  />
+                  
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={medicalPermission}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICAL_PERMISSION, medicalPermission: event.target.checked })}
+                      />
+                    }
+                    label={MEDICAL_PERMISSION}
+                  />
+                </Box>
+              </FormGroup>
+            </FormControl>
+          </Box>
+        </Grid>
+
+        <Grid item md={6} sm={12} xs={12}>
+          <Box>
+            <FormControl component="fieldset">
+              <FormGroup>
+                <Box mb={2}>
+                  <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENTS}</FormLabel>
+
+                  <Box p={0.5} />
+
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={resultConsent}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_RESULT_CONSENT, resultConsent: event.target.checked })}
+                      />
+                    }
+                    label={RESULT_CONSENT}
+                  />
+                  
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={immunizationConsent}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_IMMUNIZATION_CONSENT, immunizationConsent: event.target.checked })}
+                      />
+                    }
+                    label={IMMUNIZATION_CONSENT}
+                  />
+                  
+                  <FormControlLabel
+                    className={classes.privacyLabelNewDescription}
+                    control={
+                      <Checkbox
+                        disabled={shouldDisableEdit}
+                        color="primary"
+                        checked={medicationHistoryConsent}
+                        onChange={(event) => dispatch && dispatch({ type: ActionType.SET_MEDICATION_HISTORY_CONSENT, medicationHistoryConsent: event.target.checked })}
+                      />
+                    }
+                    label={MEDICATION_HISTORY_CONSENT}
+                  />
+                </Box>
+              </FormGroup>
+            </FormControl>
+          </Box>
+        </Grid>
       </Grid>
     </CardComponent>
   )
