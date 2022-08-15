@@ -108,29 +108,10 @@ const PatientDetailsComponent = (): JSX.Element => {
             type: appointmentActionType.SET_COMPLETED,
             completed: appointments as AppointmentsPayload['appointments']
           });
-
-  const [findEncounters] =
-    useFindAllAppointmentsLazyQuery({
-      fetchPolicy: "network-only",
-      nextFetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-
-      onError() {
-        appointmentDispatch({ type: appointmentActionType.SET_ENCOUNTERS, encounters: [] });
-      },
-
-      onCompleted(data) {
-        const { findAllAppointments } = data || {};
-
-        if (findAllAppointments) {
-          const { appointments } = findAllAppointments
-
-          appointmentDispatch({
-            type: appointmentActionType.SET_ENCOUNTERS, encounters: appointments?.filter((appointment) => appointment?.status && hasEncounter(appointment?.status)) as AppointmentsPayload['appointments']
-          })
         }
       }
-    });
+
+    })
 
   const [findEncounters] =
     useFindAllAppointmentsLazyQuery({
@@ -400,3 +381,4 @@ const PatientDetailsComponent = (): JSX.Element => {
 }
 
 export default PatientDetailsComponent;
+
