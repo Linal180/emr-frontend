@@ -1,3 +1,4 @@
+import { BillingStatus } from "../generated/graphql";
 import { CodeTablesData } from "../interfacesTypes";
 
 export interface State {
@@ -16,6 +17,7 @@ export interface State {
   isClaimCreated: boolean;
   isCheckoutModalOpen: boolean;
   tableCodesData: CodeTablesData;
+  billingStatus: BillingStatus | null
 }
 
 export const initialState: State = {
@@ -30,6 +32,7 @@ export const initialState: State = {
   tableCodesData: {},
   selfPayModal: false,
   autoAccident: false,
+  billingStatus: null,
   otherAccident: false,
   shouldCheckout: false,
   isClaimCreated: false,
@@ -49,6 +52,7 @@ export enum ActionType {
   SET_CLAIM_CREATED = "SET_CLAIM_CREATED",
   SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
   SET_SELF_PAY_MODAL = 'SET_SELF_PAY_MODAL',
+  SET_BILLING_STATUS = 'SET_BILLING_STATUS',
   SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
@@ -69,6 +73,7 @@ export type Action =
   | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
   | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
+  | { type: ActionType.SET_BILLING_STATUS, billingStatus: BillingStatus | null }
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
 
 
@@ -162,6 +167,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         selfPayModal: action.selfPayModal
+      }
+
+    case ActionType.SET_BILLING_STATUS:
+      return {
+        ...state,
+        billingStatus: action.billingStatus
       }
   }
 };

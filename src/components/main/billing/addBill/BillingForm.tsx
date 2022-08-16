@@ -27,7 +27,7 @@ import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
 import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
+import { BillingStatus, CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
@@ -50,7 +50,7 @@ const BillingForm: FC<BillingFormProps> = ({
   const { statusName } = claimStatus || {}
   const {
     isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident,
-    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal
+    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal, billingStatus
   } = state
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -154,6 +154,7 @@ const BillingForm: FC<BillingFormProps> = ({
                   <Button
                     variant="outlined"
                     color="default"
+                    disabled={billingStatus === BillingStatus.Paid}
                     onClick={() => selfModalHandler(true)}
                   >
                     {SELF_PAY}
