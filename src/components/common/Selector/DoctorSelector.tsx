@@ -1,20 +1,16 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext, useMemo } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
-import { DoctorSelectorProps } from "../../../interfacesTypes";
+import { AuthContext } from "../../../context";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
-import {
-  requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin, isFacilityAdmin, renderLoading,
-  sortingValue, isStaff, isOnlyDoctor
-} from "../../../utils";
-import {
-  doctorReducer, Action, initialState, State, ActionType
-} from "../../../reducers/doctorReducer";
+import { DoctorSelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../reducers/doctorReducer";
+import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isStaff, isSuperAdmin, renderDoctors, renderLoading, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, loading, onSelect,
@@ -39,7 +35,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
-  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
+  const [findAllDoctor, { loading: doctorsLoading }] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -141,6 +137,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
                   options={sortingValue(updatedOptions) ?? []}
                   value={field.value}
                   disabled={disabled}
+                  loading={doctorsLoading}
                   disableClearable
                   getOptionLabel={(option) => option.name || ""}
                   renderOption={(option) => option.name}
@@ -152,15 +149,14 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
                         </InputLabel>
                       </Box>
 
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        error={invalid}
-                        className="selectorClass"
+                      <AutocompleteTextField
+                        invalid={invalid}
                         onChange={(event) => dispatch({
                           type: ActionType.SET_SEARCH_QUERY,
                           searchQuery: event.target.value
                         })}
+                        params={params}
+                        loading={doctorsLoading}
                       />
 
                       <FormHelperText>{message}</FormHelperText>

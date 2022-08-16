@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
+import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
@@ -44,6 +44,7 @@ import {
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
   FetchBillingClaimStatusesInput, BillingPayload
 } from "../generated/graphql";
+import { AutocompleteRenderInputParams } from "@material-ui/lab";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -756,6 +757,13 @@ export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
   loading?: boolean;
+}
+
+export interface AutocompleteTextFieldProps {
+  params: AutocompleteRenderInputParams;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+  invalid: boolean
+  loading: boolean
 }
 
 export interface EligibilityTableComponentProps extends GeneralFormProps {

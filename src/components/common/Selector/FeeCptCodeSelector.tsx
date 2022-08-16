@@ -1,5 +1,5 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -8,6 +8,7 @@ import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { AllCptFeeSchedulesPayload, useFindAllCptFeeScheduleLazyQuery } from "../../../generated/graphql";
 import { ItemSelectorOption, ItemSelectorProps } from "../../../interfacesTypes";
 import { renderFeeCPTCodes, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const FeeCPTCodesSelector: FC<ItemSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, feeScheduleId, onSelect, filteredOptions }): JSX.Element => {
   const { control } = useFormContext()
@@ -15,7 +16,7 @@ const FeeCPTCodesSelector: FC<ItemSelectorProps> = ({ name, label, disabled, isR
   const [searchQuery, setSearchQuery] = useState('')
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderFeeCPTCodes(feeCptCodes ?? [])] : [...renderFeeCPTCodes(feeCptCodes ?? [])]
 
-  const [findAllCptFeeSchedule] = useFindAllCptFeeScheduleLazyQuery({
+  const [findAllCptFeeSchedule, { loading }] = useFindAllCptFeeScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -79,12 +80,11 @@ const FeeCPTCodesSelector: FC<ItemSelectorProps> = ({ name, label, disabled, isR
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={({ target }) => setSearchQuery(target.value)}
+                  params={params}
+                  loading={loading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>
