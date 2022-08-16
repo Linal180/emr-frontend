@@ -36,7 +36,9 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCl
   const [chargePayment] = useChargeAfterAppointmentMutation({
     onCompleted({ chargeAfterAppointment: { appointment, response } }) {
       if (response && appointment) {
+
         Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
+        moveNext()
       } else Alert.error(APPOINTMENT_NOT_EXIST);
     },
 
@@ -128,6 +130,8 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCl
       }
     }
   };
+
+  const moveNext = () => onCloseHandler(!isOpen)
 
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
@@ -244,7 +248,7 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCl
 
                       {achPayment && <ACHPaymentComponent
                         token={appointmentPaymentToken}
-                        dispatcher={dispatch} states={state} />}
+                        dispatcher={dispatch} states={state} moveNext={moveNext} />}
                     </Box>
                   ) : <Loader loading={true} />}
                 </Box>
