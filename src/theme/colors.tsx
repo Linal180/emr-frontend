@@ -31,7 +31,6 @@ export const BLUE_SEVEN = "#3699FF";
 export const BLUE_NINE = "#3f51b5";
 export const BLUE_TEN = "#21E1D8";
 export const BLUE_ELEVEN = "#3F95FF";
-export const BLUE_EIGHT = "#204ECF";
 
 export const LIGHT_GREEN = "lightgreen";
 export const LIGHT_GREEN_ONE = "#56c356"
@@ -85,6 +84,7 @@ export const WHITE = "#FFFFFF";
 
 export const RED = "#DD1010";
 export const RED_ONE = "#F64E60";
+export const RED_TWO = "#CA6B6E";
 
 export const PURPLE = "purple";
 export const PURPLE_ONE = "#7239EA";

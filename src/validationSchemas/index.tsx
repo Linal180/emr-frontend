@@ -32,9 +32,9 @@ import {
   SPECIMEN_FIELD_VALIDATION_MESSAGE, TEMPERATURE_TEXT, BLOOD_PRESSURE_TEXT, POLICY_GROUP_NUMBER,
   AUTHORITY, COMPANY_NAME, USUAL_PROVIDER_ID, BANK_ACCOUNT_VALIDATION_MESSAGE, INDUSTRY,
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
-  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE,
+  DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, LONG_URL_TEXT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -472,7 +472,7 @@ export const guarantorPatientSchema = {
   guarantorAddress2: addressValidation(ADDRESS, false),
   guarantorRelationship: selectorSchema(RELATIONSHIP, false),
   guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
-  guarantorEmployerName: generalNameSchema(false,NAME, false, false, 15),
+  guarantorEmployerName: generalNameSchema(false, NAME, false, false, 15),
   guarantorZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   guarantorLastName: generalNameSchema(false, LAST_NAME, false, false, 15),
   guarantorFirstName: generalNameSchema(false, FIRST_NAME, false, false, 15),
@@ -1134,4 +1134,13 @@ export const cptFeeScheduleSchema = yup.object({
   shortDescription: yup.string(),
   code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
   serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)),
+})
+
+export const sendSmsSchema = yup.object({
+  message: yup.string().required(requiredMessage(MESSAGE)),
+  mobile: requiredPhone(MOBILE_NUMBER)
+})
+
+export const shortUrlSchema = yup.object({
+  longUrl: yup.string().required(requiredMessage(LONG_URL_TEXT)),
 })

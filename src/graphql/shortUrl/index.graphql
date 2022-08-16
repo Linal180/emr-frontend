@@ -1,0 +1,13 @@
+mutation CreateShortUrl($createShortUrlInput: CreateShortUrlInput!) {
+  createShortUrl(createShortUrlInput: $createShortUrlInput) {
+    shortUrl {
+      urlCode
+      shortLink
+    }
+
+    response {
+      status
+      message
+    }
+  }
+}

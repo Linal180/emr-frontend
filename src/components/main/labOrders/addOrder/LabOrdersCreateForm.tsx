@@ -130,7 +130,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className='overflowVisible'>
+          <Card className='overflow-visible'>
             <Box px={2}>
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>

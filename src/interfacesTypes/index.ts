@@ -42,8 +42,7 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput,
-  BillingPayload
+  FetchBillingClaimStatusesInput, BillingPayload
 } from "../generated/graphql";
 
 export type Order = 'ASC' | 'DESC';
@@ -363,7 +362,7 @@ export interface SelectorProps {
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function;
-  onSelect?: Function;
+  onSelect?: (data: SelectorOption) => void;
   onOutsideClick?: Function;
 }
 
@@ -485,6 +484,7 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
+  rows?: number
 }
 
 export interface TooltipData {
@@ -716,8 +716,7 @@ export type ExternalPatientInputProps = {
 } & Pick<
   CreatePatientItemInput,
   | "pharmacy"
-  | "smsPermission"
-  | "phonePermission"
+  | "phoneEmailPermission"
   | "callToConsent"
   | "releaseOfInfoBill"
 > &
@@ -753,10 +752,6 @@ export type ExtendedExternalAppointmentInputProps = Pick<
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">;
 
-export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string;
-}
-
 export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
@@ -783,6 +778,13 @@ export interface DocumentViewerProps {
   title?: string
   isOpen: boolean
   handleClose: () => void
+}
+
+export interface InsuranceCardsProps {
+  isOpen: boolean
+  handleClose: () => void
+  policyId?: string
+  setPolicyCardId?: Function
 }
 
 export interface AddAllergyModalProps extends GeneralFormProps {
@@ -1938,4 +1940,14 @@ export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
 
 export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
   facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption
+}
+
+export type SendSMSFormType = {
+  mobile: string,
+  message: string,
+  template: SelectorOption,
+}
+
+export type ShortUrlFormType = {
+  longUrl: string
 }

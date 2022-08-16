@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, GRAY_ELEVEN, GRAY_SIX, WHITE } from "../theme";
+import { BLACK, BLUE, GRAY_ELEVEN, GRAY_SIX, WHITE } from "../theme";
 
 export const useFacilityStyles = makeStyles(() => ({
   navbar: {
@@ -59,5 +59,9 @@ export const useFacilityStyles = makeStyles(() => ({
       minHeight: 76,
     },
   },
+
+  facilityActive: {
+  backgroundColor: BLUE,
+  }
 
 }));

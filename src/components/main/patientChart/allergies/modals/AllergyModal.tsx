@@ -250,7 +250,7 @@ const AllergyModal: FC<AddModalProps> = ({
                     <FormGroup>
                       <FormControlLabel
                         control={
-                          <Box className='permissionDenied'>
+                          <Box>
                             <Checkbox color="primary" checked={allergyIds.includes(id || '')}
                               onChange={() => handleChangeForCheckBox(id || '')} />
                           </Box>

@@ -345,7 +345,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
                   </Box>
                 </Grid>
 
-                <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
+                <Grid item lg={3} md={4} sm={6} xs={12} className={classes.customCalendar}>
                   <AppointmentSlots facilityId={facilityId} dispatcher={dispatch} />
                 </Grid>
               </Grid>
