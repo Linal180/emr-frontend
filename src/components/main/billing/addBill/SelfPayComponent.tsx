@@ -1,38 +1,37 @@
 // packages block
-import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
 import DropIn from 'braintree-web-drop-in-react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { FC, Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
-  PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload,
+  PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
 } from 'braintree-web-drop-in';
 // components block
 import Alert from '../../../common/Alert';
 import Loader from '../../../common/Loader';
-import ACHPaymentComponent from '../../publicAppointments/achPayment'
+import NoDataComponent from '../../../common/NoDataComponent';
+import ACHPaymentComponent from '../../publicAppointments/achPayment';
 // constants and types block
 import { GREY, WHITE } from '../../../../theme';
 import { ACHIcon } from '../../../../assets/svgs';
-import { ParamsType } from '../../../../interfacesTypes';
 import { appointmentChargesDescription } from '../../../../utils';
+import { SelfPayComponentProps, ParamsType, TableCodesProps } from '../../../../interfacesTypes';
+import { useChargeAfterAppointmentMutation, useGetTokenLazyQuery } from '../../../../generated/graphql';
+import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
 import {
-  externalPaymentReducer, Action, initialState, State, ActionType
-} from '../../../../reducers/externalPaymentReducer';
-import {
-  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus,
-} from '../../../../generated/graphql';
-import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, PAY_VIA_ACH,
-  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, PAY_VIA_ACH, PAY_VIA_PAYPAL, APPOINTMENT_NOT_EXIST,
+  PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, ADD_CPT_AND_ICD_CODES,
 } from '../../../../constants';
 
-const ExternalPaymentComponent = (): JSX.Element => {
-  const { appointmentId } = useParams<ParamsType>();
+const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState }): JSX.Element => {
+  const { appointmentId: aptId, id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
 
   const {
-    appointmentPaymentToken, price, patientId, facilityId, providerId, showPayBtn, instance, achPayment
+    appointmentPaymentToken, price, showPayBtn, instance, achPayment, facilityId, patientId, providerId,
+    appointmentId
   } = state;
+  const isZeroPrice = price === '0' || price === ''
 
   const [chargePayment] = useChargeAfterAppointmentMutation({
     onCompleted({ chargeAfterAppointment: { appointment, response } }) {
@@ -71,54 +70,15 @@ const ExternalPaymentComponent = (): JSX.Element => {
     },
   });
 
-  const [getAppointment] = useGetAppointmentLazyQuery({
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError({ message }) {
-      Alert.error(message);
-    },
-
-    async onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
-
-      if (response) {
-        const { status } = response;
-
-        if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility, billingStatus, } = appointment;
-
-          if (billingStatus === BillingStatus.Due) {
-            const { price } = appointmentType || {};
-            const { id: providerId } = provider || {};
-            const { id: facilityId } = facility || {};
-
-            price && dispatch({ type: ActionType.SET_PRICE, price: price })
-            patientId && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: patientId });
-            providerId && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: providerId });
-            facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId });
-
-            try {
-              await getToken();
-            } catch (error) { }
-          } else if (billingStatus === BillingStatus.Paid) {
-
-          }
-        }
-      }
-    },
-  });
-
-  const fetchAppointment = useCallback(async () => {
+  const fetchToken = useCallback(async () => {
     try {
-      appointmentId && await getAppointment({ variables: { getAppointment: { id: appointmentId } } });
+      appointmentId && await getToken();
     } catch (error) { }
-  }, [getAppointment, appointmentId]);
+  }, [getToken, appointmentId]);
 
   useEffect(() => {
-    fetchAppointment();
-  }, [fetchAppointment]);
+    !isZeroPrice && fetchToken();
+  }, [isZeroPrice, fetchToken]);
 
   const charge = async (token: string) => {
     try {
@@ -171,9 +131,31 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
+  useMemo(() => {
+    const { tableCodesData, facilityId: billingFacility, providerId: billingProvider } = billingState;
+    let priceArr: TableCodesProps[] = []
+    if (tableCodesData?.CPT_CODE) priceArr = [...priceArr, ...tableCodesData?.CPT_CODE]
+    if (tableCodesData?.ICD_10_CODE) priceArr = [...priceArr, ...tableCodesData?.ICD_10_CODE]
+    const totalCharges = priceArr.reduce((acc, code) => {
+      return acc += Number(code.price || 0)
+    }, 0)
+
+    totalCharges && dispatch({ type: ActionType.SET_PRICE, price: `${totalCharges}` })
+    billingFacility && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: billingFacility })
+    billingProvider && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: billingProvider })
+    id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
+    aptId && dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: aptId })
+  }, [billingState, id, aptId])
+
+  if (isZeroPrice) {
+    return (<Box display="flex" justifyContent="center" pb={12} pt={5}>
+      <NoDataComponent message={ADD_CPT_AND_ICD_CODES} />
+    </Box>)
+  }
+
   return (
     <>
-      <Box bgcolor={GREY} minHeight="calc(100vh - 80px)" width='100vw' overflow='hidden'>
+      <Box bgcolor={GREY}>
         <Box pt={5} textAlign="center">
           <Typography variant='h2'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
 
@@ -270,4 +252,4 @@ const ExternalPaymentComponent = (): JSX.Element => {
   );
 };
 
-export default ExternalPaymentComponent;
+export default SelfPayComponent;

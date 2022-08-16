@@ -300,6 +300,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
         claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
         practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
+        servicingProvider?.id && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: servicingProvider?.id })
 
         setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
         setValue('otherDateType', setRecord(otherDateType, otherDateType))

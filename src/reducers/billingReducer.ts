@@ -3,6 +3,7 @@ import { CodeTablesData } from "../interfacesTypes";
 export interface State {
   facilityId: string;
   practiceId: string;
+  providerId: string;
   insuranceId: string;
   claimNumber: string;
   employment: boolean;
@@ -19,6 +20,7 @@ export interface State {
 export const initialState: State = {
   facilityId: '',
   practiceId: '',
+  providerId: '',
   claimNumber: '',
   insuranceId: '',
   selectedTab: '1',
@@ -36,6 +38,7 @@ export enum ActionType {
   SET_EMPLOYMENT = 'SET_EMPLOYMENT',
   SET_FACILITY_ID = 'SET_FACILITY_ID',
   SET_PRACTICE_ID = 'SET_PRACTICE_ID',
+  SET_PROVIDER_ID = 'SET_PROVIDER_ID',
   SET_INSURANCE_ID = 'SET_INSURANCE_ID',
   SET_SELECTED_TAB = 'SET_SELECTED_TAB',
   SET_CLAIM_NUMBER = 'SET_CLAIM_NUMBER',
@@ -52,6 +55,7 @@ export type Action =
   | { type: ActionType.SET_EMPLOYMENT, employment: boolean }
   | { type: ActionType.SET_FACILITY_ID, facilityId: string }
   | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
+  | { type: ActionType.SET_PROVIDER_ID, providerId: string }
   | { type: ActionType.SET_INSURANCE_ID, insuranceId: string }
   | { type: ActionType.SET_CLAIM_NUMBER, claimNumber: string }
   | { type: ActionType.SET_SELECTED_TAB, selectedTab: string }
@@ -142,6 +146,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isClaimCreated: action.isClaimCreated
+      }
+
+    case ActionType.SET_PROVIDER_ID:
+      return {
+        ...state,
+        providerId: action.providerId
       }
   }
 };

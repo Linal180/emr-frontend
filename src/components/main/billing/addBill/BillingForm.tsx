@@ -11,6 +11,7 @@ import {
 //components block
 import Alert from "../../../common/Alert";
 import Selector from "../../../common/Selector";
+import SelfPayComponent from "./SelfPayComponent";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
 import CodesTable from "../../../common/CodesTable";
@@ -21,7 +22,6 @@ import TableSelector from "../../../common/Selector/TableSelector";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
-import SelfPayComponent from "./SelfPayComponent";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
@@ -341,15 +341,6 @@ const BillingForm: FC<BillingFormProps> = ({
                         practiceId={practiceId}
                       />
                     </Grid>
-
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        name="resource"
-                        label={RESOURCE}
-                        options={[]}
-                        addEmpty
-                      />
-                    </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
@@ -511,7 +502,7 @@ const BillingForm: FC<BillingFormProps> = ({
               <TabPanel value="3">
                 <Box>
                   <Card>
-                    <SelfPayComponent />
+                    <SelfPayComponent state={state} />
                   </Card>
                 </Box>
               </TabPanel>

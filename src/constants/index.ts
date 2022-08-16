@@ -103,6 +103,7 @@ export const COMPANY_NAME = 'Company Name'
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
+export const ADD_CPT_AND_ICD_CODES = `Please add CPT & ICD Codes`
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";

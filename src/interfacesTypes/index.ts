@@ -1683,13 +1683,13 @@ export interface AccountPaymentInputs {
   authority: boolean
 }
 
-export interface ACHPaymentComponentProps {
+export type ACHPaymentComponentProps = {
   token: string;
-  dispatcher: Dispatch<ExternalPaymentAction>;
+  moveNext?: Function;
   states: ExternalPaymentState;
-  moveNext?: Function
-  formState?: ExternalFormBuilderState
-  formDispatch?: Dispatch<PublicFormBuilderAction>
+  formState?: ExternalFormBuilderState;
+  dispatcher: Dispatch<ExternalPaymentAction>;
+  formDispatch?: Dispatch<PublicFormBuilderAction>;
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
@@ -1950,4 +1950,8 @@ export type SendSMSFormType = {
 
 export type ShortUrlFormType = {
   longUrl: string
+}
+
+export type SelfPayComponentProps = {
+  state: BillingState
 }
