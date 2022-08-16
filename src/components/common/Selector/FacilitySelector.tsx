@@ -1,20 +1,19 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { AuthContext } from "../../../context";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
+import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, facilityReducer, initialState, State } from "../../../reducers/facilityReducer";
 import {
   isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading,
   requiredLabel, sortingValue
 } from "../../../utils";
-import {
-  facilityReducer, Action, initialState, State, ActionType
-} from "../../../reducers/facilityReducer";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const FacilitySelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, onSelect, loading
@@ -36,7 +35,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
 
-  const [findAllFacility,] = useFindAllFacilityListLazyQuery({
+  const [findAllFacility, { loading: facilitiesLoading }] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -108,12 +107,11 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({
                       </InputLabel>
                     </Box>
 
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      error={invalid}
-                      className="selectorClass"
+                    <AutocompleteTextField
+                      invalid={invalid}
                       onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                      params={params}
+                      loading={facilitiesLoading}
                     />
                     <FormHelperText>{message}</FormHelperText>
                   </FormControl>
