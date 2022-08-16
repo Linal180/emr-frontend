@@ -1953,5 +1953,7 @@ export type ShortUrlFormType = {
 }
 
 export type SelfPayComponentProps = {
-  state: BillingState
+  state: BillingState;
+  onCloseHandler: (open: boolean) => void
+  isOpen: boolean
 }

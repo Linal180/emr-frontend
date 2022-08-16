@@ -25,18 +25,17 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
-import { CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
-  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
-  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SystemBillingStatuses,
-  SELECT_ANOTHER_STATUS,
-  ADD_ANOTHER_COPAY,
+  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PRACTICE, POS,
+  PATIENT_PAYMENT_TYPE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SELF_PAY,
+  SystemBillingStatuses, SELECT_ANOTHER_STATUS, ADD_ANOTHER_COPAY,
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = ({
@@ -50,8 +49,8 @@ const BillingForm: FC<BillingFormProps> = ({
   const { id: onsetDateTypeId } = onsetDateType || {}
   const { statusName } = claimStatus || {}
   const {
-    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber,
-    practiceId, selectedTab, isClaimCreated
+    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident,
+    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal
   } = state
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -105,6 +104,8 @@ const BillingForm: FC<BillingFormProps> = ({
     }
   }
 
+  const selfModalHandler = (selfPayModal: boolean) => dispatch({ type: ActionType.SET_SELF_PAY_MODAL, selfPayModal })
+
   const isInsurancePayment = paymentType?.id === PatientPaymentType.Insurance
 
   return (
@@ -126,7 +127,7 @@ const BillingForm: FC<BillingFormProps> = ({
                 </Button>
               </Box>
 
-              {isInsurancePayment && <>
+              {isInsurancePayment ? <>
                 <Box m={0.5}>
                   <Button
                     variant="contained"
@@ -148,8 +149,18 @@ const BillingForm: FC<BillingFormProps> = ({
                     {HCFA_1500_FORM}
                   </Button>
                 </Box>
-              </>
+              </> :
+                <Box m={0.5}>
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    onClick={() => selfModalHandler(true)}
+                  >
+                    {SELF_PAY}
+                  </Button>
+                </Box>
               }
+
 
               <Box m={0.5}>
                 <Button
@@ -292,13 +303,6 @@ const BillingForm: FC<BillingFormProps> = ({
               <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <DoctorSelector
-                        label={BILLING_PROVIDER}
-                        name="billingProvider"
-                        addEmpty
-                      />
-                    </Grid> */}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
@@ -445,12 +449,6 @@ const BillingForm: FC<BillingFormProps> = ({
             <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>
               <TabList onChange={handleChange} aria-label="billing tabs">
                 {BILLING_TABS.map(item => {
-                  if (isInsurancePayment && item?.value === '3') {
-                    return <></>
-                  }
-                  if (!isInsurancePayment && item?.value === '2') {
-                    return <></>
-                  }
                   return (
                     <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
                   )
@@ -499,13 +497,6 @@ const BillingForm: FC<BillingFormProps> = ({
                 </Box>
               </TabPanel>
 
-              <TabPanel value="3">
-                <Box>
-                  <Card>
-                    <SelfPayComponent state={state} />
-                  </Card>
-                </Box>
-              </TabPanel>
             </Box>
           </TabContext>
         </Box>
@@ -525,6 +516,10 @@ const BillingForm: FC<BillingFormProps> = ({
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: isOpen })}
           handleSubmit={handleSubmit(onSubmit)}
         />
+      }
+
+      {selfPayModal &&
+        <SelfPayComponent state={state} onCloseHandler={(open) => selfModalHandler(open)} isOpen={selfPayModal} />
       }
     </FormProvider >
   )

@@ -10,6 +10,7 @@ export interface State {
   selectedTab: string;
   isModalOpen: boolean;
   autoAccident: boolean;
+  selfPayModal: boolean;
   otherAccident: boolean;
   shouldCheckout: boolean;
   isClaimCreated: boolean;
@@ -27,6 +28,7 @@ export const initialState: State = {
   employment: false,
   isModalOpen: false,
   tableCodesData: {},
+  selfPayModal: false,
   autoAccident: false,
   otherAccident: false,
   shouldCheckout: false,
@@ -46,6 +48,7 @@ export enum ActionType {
   SET_IS_MODAL_OPEN = 'SET_IS_MODAL_OPEN',
   SET_CLAIM_CREATED = "SET_CLAIM_CREATED",
   SET_OTHER_ACCIDENT = 'SET_OTHER_ACCIDENT',
+  SET_SELF_PAY_MODAL = 'SET_SELF_PAY_MODAL',
   SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
@@ -61,6 +64,7 @@ export type Action =
   | { type: ActionType.SET_SELECTED_TAB, selectedTab: string }
   | { type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: boolean }
   | { type: ActionType.SET_AUTO_ACCIDENT, autoAccident: boolean }
+  | { type: ActionType.SET_SELF_PAY_MODAL, selfPayModal: boolean }
   | { type: ActionType.SET_OTHER_ACCIDENT, otherAccident: boolean }
   | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
@@ -152,6 +156,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         providerId: action.providerId
+      }
+
+    case ActionType.SET_SELF_PAY_MODAL:
+      return {
+        ...state,
+        selfPayModal: action.selfPayModal
       }
   }
 };

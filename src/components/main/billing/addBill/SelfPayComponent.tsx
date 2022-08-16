@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from 'react-router';
 import DropIn from 'braintree-web-drop-in-react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, DialogTitle, Grid, Typography } from '@material-ui/core';
 import { FC, Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
@@ -23,7 +23,7 @@ import {
   PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, ADD_CPT_AND_ICD_CODES,
 } from '../../../../constants';
 
-const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState }): JSX.Element => {
+const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCloseHandler, isOpen }): JSX.Element => {
   const { appointmentId: aptId, id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
 
@@ -147,108 +147,113 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState }): J
     aptId && dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: aptId })
   }, [billingState, id, aptId])
 
-  if (isZeroPrice) {
-    return (<Box display="flex" justifyContent="center" pb={12} pt={5}>
-      <NoDataComponent message={ADD_CPT_AND_ICD_CODES} />
-    </Box>)
-  }
-
   return (
-    <>
-      <Box bgcolor={GREY}>
-        <Box pt={5} textAlign="center">
-          <Typography variant='h2'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
+    <Dialog
+      open={isOpen}
+      onClose={() => onCloseHandler(!isOpen)}
+      maxWidth={'md'}
+      fullWidth
+    >
+      <DialogTitle id="alert-dialog-title">{CHOOSE_YOUR_PAYMENT_METHOD}</DialogTitle>
+      <Box p={2}>
+        <Box bgcolor={GREY} mb={1}>
+          {isZeroPrice ? <Box display="flex" justifyContent="center" pb={12} pt={5}>
+            <NoDataComponent message={ADD_CPT_AND_ICD_CODES} />
+          </Box> : <>
+            <Box pt={5} textAlign="center">
 
-          <Typography variant='h6'>
-            {appointmentChargesDescription(price || '0')}
-          </Typography>
-        </Box>
+              <Typography variant='h6'>
+                {appointmentChargesDescription(price || '0')}
+              </Typography>
+            </Box>
 
-        <Grid container spacing={3} justifyContent='center' alignItems='center'>
-          <Grid item md={6} sm={12} xs={12}>
-            <Box mt={5} p={5} className="paypal-card-wrap">
-              {appointmentPaymentToken ? (
-                <Box>
-                  {!achPayment && (<Fragment>
-                    <DropIn
-                      options={{
-                        authorization: appointmentPaymentToken,
-                        translations: {
-                          PayPal: PAY_VIA_PAYPAL,
-                          Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
-                          chooseAWayToPay: '',
-                        },
+            <Grid container spacing={3} justifyContent='center' alignItems='center'>
+              <Grid item md={12} sm={12} xs={12}>
+                <Box p={5} className="paypal-card-wrap">
+                  {appointmentPaymentToken ? (
+                    <Box>
+                      {!achPayment && (<Fragment>
+                        <DropIn
+                          options={{
+                            authorization: appointmentPaymentToken,
+                            translations: {
+                              PayPal: PAY_VIA_PAYPAL,
+                              Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
+                              chooseAWayToPay: '',
+                            },
 
-                        paypal: {
-                          flow: CHECKOUT,
-                          currency: USD,
-                          amount: price,
-                          commit: true,
-                          buttonStyle: {
-                            tagline: false,
-                          },
-                        },
-
-                        card: {
-                          cardholderName: true,
-                          overrides: {
-                            styles: {
-                              input: {
-                                'font-size': '18px',
-                              },
-                              '.number': {
-                                color: 'green',
-                              },
-                              '.invalid': {
-                                color: 'red',
+                            paypal: {
+                              flow: CHECKOUT,
+                              currency: USD,
+                              amount: price,
+                              commit: true,
+                              buttonStyle: {
+                                tagline: false,
                               },
                             },
-                          },
-                        },
 
-                        threeDSecure: { amount: price },
-                        dataCollector: true,
-                        paymentOptionPriority: ['paypal', 'card'],
-                      }}
+                            card: {
+                              cardholderName: true,
+                              overrides: {
+                                styles: {
+                                  input: {
+                                    'font-size': '18px',
+                                  },
+                                  '.number': {
+                                    color: 'green',
+                                  },
+                                  '.invalid': {
+                                    color: 'red',
+                                  },
+                                },
+                              },
+                            },
 
-                      onPaymentMethodRequestable={onPaymentMethodRequestable}
-                      onPaymentOptionSelected={onPaymentOptionSelected}
-                      onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
-                    />
+                            threeDSecure: { amount: price },
+                            dataCollector: true,
+                            paymentOptionPriority: ['paypal', 'card'],
+                          }}
 
-                    {!showPayBtn && <Grid container>
-                      <Grid item md={12} sm={12} xs={12}>
-                        <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
-                          <ACHIcon />
-                          <Box m={2} />
-                          <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
-                        </Box>
-                      </Grid>
-                    </Grid>}
+                          onPaymentMethodRequestable={onPaymentMethodRequestable}
+                          onPaymentOptionSelected={onPaymentOptionSelected}
+                          onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
+                        />
 
-                    <Grid container justifyContent='flex-end'>
-                      {showPayBtn && (
-                        <Grid item md={12} sm={12}>
-                          <Box pr={2}>
-                            <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
-                              {PAY}
-                            </Button>
-                          </Box>
+                        {!showPayBtn && <Grid container>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                              <ACHIcon />
+                              <Box m={2} />
+                              <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
+                            </Box>
+                          </Grid>
+                        </Grid>}
+
+                        <Grid container justifyContent='flex-end'>
+                          {showPayBtn && (
+                            <Grid item md={12} sm={12}>
+                              <Box pr={2}>
+                                <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
+                                  {PAY}
+                                </Button>
+                              </Box>
+                            </Grid>
+                          )}
                         </Grid>
-                      )}
-                    </Grid>
-                  </Fragment>)}
+                      </Fragment>)}
 
-                  {achPayment && <ACHPaymentComponent
-                    token={appointmentPaymentToken}
-                    dispatcher={dispatch} states={state} />}
+                      {achPayment && <ACHPaymentComponent
+                        token={appointmentPaymentToken}
+                        dispatcher={dispatch} states={state} />}
+                    </Box>
+                  ) : <Loader loading={true} />}
                 </Box>
-              ) : <Loader loading={true} />}
-            </Box>
-          </Grid>
-        </Grid>
+              </Grid>
+            </Grid>
+          </>}
+        </Box>
       </Box>
-    </>
+    </Dialog>
   );
 };
 

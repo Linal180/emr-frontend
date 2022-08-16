@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
@@ -2345,10 +2346,6 @@ export const BILLING_TABS = [
   {
     title: "Insurance",
     value: "2",
-  },
-  {
-    title: "Self Pay",
-    value: "3",
   },
 ];
 
