@@ -1,5 +1,5 @@
 // packages block
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { withRouter } from "react-router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import Alert from "../../common/Alert";
 import LoginController from "../login/LoginController";
 // history, context, constants, graphql, and utils
 import history from "../../../history";
-import { requiredLabel } from "../../../utils";
+import { getLockedEmail, getToken, requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
@@ -18,7 +18,7 @@ import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, LOGOUT_TEXT, UNLOCK_TEXT, ROUTE,
+  SOMETHING_WENT_WRONG, LOGOUT_TEXT, UNLOCK_TEXT, ROUTE, ROOT_ROUTE,
 } from "../../../constants";
 
 const LockComponent = (): JSX.Element => {
@@ -58,9 +58,11 @@ const LockComponent = (): JSX.Element => {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
               fetchAllFacilityList();
+              localStorage.removeItem(EMAIL)
 
               const existingRoute = sessionStorage.getItem(ROUTE)
                 ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
+
               existingRoute && history.push(existingRoute);
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
@@ -80,6 +82,12 @@ const LockComponent = (): JSX.Element => {
       variables: { loginUser: data }
     });
   };
+
+  useEffect(() => {
+    if(getToken() || !getLockedEmail()){
+      history.push(ROOT_ROUTE)
+    }
+  }, [])
 
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
 

@@ -32,6 +32,7 @@ export const NO_SPACE_REGEX = /^[^\s]+$/;
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const SUFFIX_REGEX = /^[.A-Za-z\s]+$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
@@ -339,6 +340,14 @@ export const HCFA_DESC = "HCFA Box 10:";
 // export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
 export const CONSENT_TO_MESSAGES = "Consent To messages";
 export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
+export const PHONE_EMAIL_PERMISSION = 'May we phone, email, or send a text to you to confirm appointments?'
+export const CELL_PHONE_PERMISSION = 'May we leave a message on your answering machine at home or on your cell phone?'
+export const MEDICAL_PERMISSION = 'May we discuss your medical condition with any member of your family?'
+export const RESULT_CONSENT = 'I want to receive information to access my results and health data online through patient portal.'
+export const IMMUNIZATION_CONSENT = 'I consent to share my immunization record with a state registry.'
+export const MEDICATION_HISTORY_CONSENT = 'I consent to the clinic pulling my medication history to best treat me.'
+export const PERMISSIONS_TEXT = 'Permissions: I give permissions for the following:'
+export const CONSENTS = 'Consents'
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Provider";
@@ -405,6 +414,7 @@ export const RESOURCE = "Resource";
 export const RENDERING = "Rendering";
 export const ONSET_DATE = "Onset Date";
 export const ADD_ANOTHER = "ADD ANOTHER";
+export const ADD_ANOTHER_COPAY = "ADD ANOTHER COPAY";
 export const SERVICE_DATE = "Service Date";
 export const COPAY_AMOUNT = "Copay Amount";
 export const UNCOVERED_AMT = "Uncovered Amt";
@@ -567,6 +577,7 @@ export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
 export const FORM_FIELDS = "Form Fields";
 export const NO_TEMPLATE = "No Template Found";
+export const SELECT_TEMPLATE = "Select Template";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const AUDIT_LOG_DESCRIPTION = "View all logs of different activities";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
@@ -586,6 +597,8 @@ export const PREFIX = "Prefix";
 export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
 export const CHECK_ELIGIBILITY_TODAY = "Check Eligibility Today";
+export const POLICY_CARDS = "INSURANCE CARDS PICTURES";
+export const INSURANCE_CARDS = "INSURANCE CARDS";
 export const CHECK_PRIOR_DATE_OF_SERVICE = "Check At Prior Date Of Service";
 export const OVERRIDE_PAYER_RETURNED_RESULT = "Override Payer Returned Result";
 export const TAKE_A_PICTURE_OF_INSURANCE =
@@ -1147,6 +1160,8 @@ export const FEE = "Fee";
 export const DIS = "Dis";
 export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
+export const SEND_SMS_TEXT = "Send SMS";
+export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
@@ -1548,6 +1563,7 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const SEND_SMS_ROUTE = `/send-sms`
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -1569,6 +1585,8 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const LONG_URL_TEXT = "Long URL";
+export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
@@ -1598,6 +1616,7 @@ export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
 export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
+export const NUMBER_AND_SPECIAL_ERROR_MESSAGE = "Numbers and Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
@@ -2223,7 +2242,7 @@ export const ROLES_ADD_BREAD = { text: ADD_ROLE_TEXT, link: "" };
 export const FORMS_BREAD = { text: FORMS, link: FORM_BUILDER_ROUTE };
 export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
-
+export const SMS_BREAD = { text: SEND_SMS_TEXT, link: "" };
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
 export const CHECK_ELIGIBILITY_BREAD = { text: CHECK_ELIGIBILITY, link: "" };
 export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
@@ -2888,13 +2907,13 @@ export const RegisterPatientMenuNav = [
     title: IDENTIFICATION,
   },
   {
+    title: EMERGENCY_CONTACT,
+  },
+  {
     title: DEMOGRAPHICS,
   },
   {
     title: PRIVACY,
-  },
-  {
-    title: EMERGENCY_CONTACT,
   },
 ];
 
@@ -3103,6 +3122,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
+  },
+  {
+    name: SEND_SMS_TEXT,
+    link: SEND_SMS_ROUTE,
+    desc: SEND_SMS_DESCRIPTION,
   }
 ];
 
@@ -3538,3 +3562,19 @@ export const formTemplateTabIds = {
   PATIENT_INFO: "patient_info",
   TERMS_CONDITIONS: "terms_conditions"
 }
+
+
+export const SMS_TEMPLATES: SelectorOption[] = [
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Registration Link",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Telehealth",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Review",
+  },
+]

@@ -131,7 +131,7 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box className={classes.tableBox}>
                 <Box display="flex">
                   <Box flex={1}>
-                    <VitalsLabels patientStates={patientStates} />
+                    <VitalsLabels />
                   </Box>
 
                   <Box flex={3}>

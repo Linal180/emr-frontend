@@ -53,7 +53,7 @@ const PortalAccessCard: FC<PortalCardProps> = ({ inviteAccepted }) => {
 
   return (
     <Box
-      className='overflow-visible card-box-shadow'
+      className='card-box-shadow'
       display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" bgcolor={WHITE}
       p={3} mb={2.5} borderRadius={8}
     >

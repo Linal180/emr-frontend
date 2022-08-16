@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -1366,6 +1365,7 @@ export type CreatePatientInput = {
 export type CreatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
+  cellPhonePermission?: Maybe<Scalars['Boolean']>;
   deceasedDate?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
@@ -1377,17 +1377,19 @@ export type CreatePatientItemInput = {
   genderIdentity?: Maybe<Genderidentity>;
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
+  immunizationConsent?: Maybe<Scalars['Boolean']>;
   inviteAccepted?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
-  medicationHistoryAuthority?: Maybe<Scalars['Boolean']>;
+  medicalPermission?: Maybe<Scalars['Boolean']>;
+  medicationHistoryConsent?: Maybe<Scalars['Boolean']>;
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission?: Maybe<Scalars['Boolean']>;
+  phoneEmailPermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -1399,9 +1401,9 @@ export type CreatePatientItemInput = {
   registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<Scalars['String']>;
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  resultConsent?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
-  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -1483,6 +1485,10 @@ export type CreateServiceInput = {
   price: Scalars['String'];
   /** Service type */
   serviceType?: Maybe<ServiceType>;
+};
+
+export type CreateShortUrlInput = {
+  longLink?: Maybe<Scalars['String']>;
 };
 
 export type CreateSpecimenItemInput = {
@@ -2226,6 +2232,10 @@ export type GetService = {
   id: Scalars['String'];
 };
 
+export type GetShortUrlInput = {
+  urlCode?: Maybe<Scalars['String']>;
+};
+
 export type GetSlots = {
   currentDate: Scalars['String'];
   day?: Maybe<Scalars['String']>;
@@ -2659,6 +2669,7 @@ export type Mutation = {
   createRole: RolePayload;
   createSchedule: SchedulePayload;
   createService: ServicePayload;
+  createShortUrl: ShortUrlResponse;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
   disableDoctor: DoctorPayload;
@@ -2701,6 +2712,7 @@ export type Mutation = {
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
+  sendSms: SmsPayload;
   update2FactorAuth: UserPayload;
   updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
@@ -2951,6 +2963,11 @@ export type MutationCreateServiceArgs = {
 };
 
 
+export type MutationCreateShortUrlArgs = {
+  createShortUrlInput: CreateShortUrlInput;
+};
+
+
 export type MutationCreateStaffArgs = {
   createStaffInput: CreateStaffInput;
 };
@@ -3153,6 +3170,11 @@ export type MutationSaveUserFormValuesArgs = {
 
 export type MutationSendInviteToPatientArgs = {
   patientInviteInput: PatientInviteInput;
+};
+
+
+export type MutationSendSmsArgs = {
+  sendSmsInput: SendSmsInput;
 };
 
 
@@ -3459,6 +3481,7 @@ export type Patient = {
   attachments?: Maybe<Array<Attachment>>;
   billings?: Maybe<Array<Billing>>;
   callToConsent: Scalars['Boolean'];
+  cellPhonePermission?: Maybe<Scalars['Boolean']>;
   consent?: Maybe<PatientConsent>;
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
@@ -3477,12 +3500,14 @@ export type Patient = {
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
+  immunizationConsent?: Maybe<Scalars['Boolean']>;
   inviteAccepted?: Maybe<Scalars['Boolean']>;
   labTests?: Maybe<Array<LabTests>>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
-  medicationHistoryAuthority: Scalars['Boolean'];
+  medicalPermission?: Maybe<Scalars['Boolean']>;
+  medicationHistoryConsent?: Maybe<Scalars['Boolean']>;
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
@@ -3492,7 +3517,7 @@ export type Patient = {
   patientRecord?: Maybe<Scalars['String']>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission?: Maybe<Scalars['Boolean']>;
+  phoneEmailPermission?: Maybe<Scalars['Boolean']>;
   policies?: Maybe<Array<Policy>>;
   policyHolder?: Maybe<PolicyHolder>;
   policyHolderId?: Maybe<Scalars['String']>;
@@ -3507,9 +3532,9 @@ export type Patient = {
   race?: Maybe<Race>;
   registrationDate?: Maybe<Scalars['String']>;
   releaseOfInfoBill: Scalars['Boolean'];
+  resultConsent?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
-  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -3619,10 +3644,8 @@ export type PatientInfoItemInput = {
   language?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   race?: Maybe<Race>;
-  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
 };
 
@@ -4338,6 +4361,7 @@ export type Query = {
   getRole: RolePayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
+  getShortUrl: ShortUrlResponse;
   getSlots: SlotsPayload;
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
@@ -4848,6 +4872,11 @@ export type QueryGetServiceArgs = {
 };
 
 
+export type QueryGetShortUrlArgs = {
+  getShortUrlInput: GetShortUrlInput;
+};
+
+
 export type QueryGetSlotsArgs = {
   getSlots: GetSlots;
 };
@@ -5247,6 +5276,11 @@ export type SectionsTypes = {
   sectionId?: Maybe<Scalars['String']>;
 };
 
+export type SendSmsInput = {
+  message?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
 export type Service = {
   __typename?: 'Service';
   color?: Maybe<Scalars['String']>;
@@ -5402,6 +5436,22 @@ export type ServicesPayload = {
   services?: Maybe<Array<Maybe<Service>>>;
 };
 
+export type ShortUrl = {
+  __typename?: 'ShortUrl';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  longLink?: Maybe<Scalars['String']>;
+  shortLink?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+  urlCode?: Maybe<Scalars['String']>;
+};
+
+export type ShortUrlResponse = {
+  __typename?: 'ShortUrlResponse';
+  response?: Maybe<ResponsePayloadResponse>;
+  shortUrl?: Maybe<ShortUrl>;
+};
+
 export type Slots = {
   __typename?: 'Slots';
   endTime?: Maybe<Scalars['String']>;
@@ -5423,6 +5473,12 @@ export enum SmokingStatus {
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }
+
+export type SmsPayload = {
+  __typename?: 'SmsPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  sms?: Maybe<Scalars['String']>;
+};
 
 export type SnoMedCodes = {
   __typename?: 'SnoMedCodes';
@@ -6074,6 +6130,7 @@ export type UpdatePatientInput = {
 export type UpdatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
+  cellPhonePermission?: Maybe<Scalars['Boolean']>;
   deceasedDate?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
@@ -6086,17 +6143,19 @@ export type UpdatePatientItemInput = {
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
+  immunizationConsent?: Maybe<Scalars['Boolean']>;
   inviteAccepted?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
-  medicationHistoryAuthority?: Maybe<Scalars['Boolean']>;
+  medicalPermission?: Maybe<Scalars['Boolean']>;
+  medicationHistoryConsent?: Maybe<Scalars['Boolean']>;
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission?: Maybe<Scalars['Boolean']>;
+  phoneEmailPermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -6108,9 +6167,9 @@ export type UpdatePatientItemInput = {
   registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<Scalars['String']>;
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  resultConsent?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
-  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -7533,7 +7592,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, country?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, email?: string | null, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, facilityId?: string | null, inviteAccepted?: boolean | null, patientRecord?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, registrationDate?: string | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, pharmacy?: string | null, medicationHistoryConsent?: boolean | null, releaseOfInfoBill: boolean, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, patientNoteOpen?: boolean | null, phoneEmailPermission?: boolean | null, cellPhonePermission?: boolean | null, medicalPermission?: boolean | null, resultConsent?: boolean | null, immunizationConsent?: boolean | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, city?: string | null, state?: string | null, country?: string | null, zipCode?: string | null, address?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -7561,7 +7620,7 @@ export type SendInviteToPatientMutationVariables = Exact<{
 }>;
 
 
-export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, inviteAccepted?: boolean | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phonePermission?: boolean | null, pharmacy?: string | null, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
+export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, middleName?: string | null, lastName?: string | null, suffix?: string | null, firstNameUsed?: string | null, prefferedName?: string | null, previousFirstName?: string | null, previouslastName?: string | null, motherMaidenName?: string | null, inviteAccepted?: boolean | null, ssn?: string | null, gender: Genderidentity, dob?: string | null, phoneEmailPermission?: boolean | null, pharmacy?: string | null, medicationHistoryConsent?: boolean | null, releaseOfInfoBill: boolean, deceasedDate?: string | null, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null, language?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, maritialStatus?: Maritialstatus | null, sexualOrientation?: Sexualorientation | null, genderIdentity?: Genderidentity | null, sexAtBirth?: Genderidentity | null, pronouns?: Pronouns | null, homeBound?: Homebound | null, holdStatement?: Holdstatement | null, statementDelivereOnline?: boolean | null, statementNote?: string | null, statementNoteDateFrom?: string | null, statementNoteDateTo?: string | null, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, createdAt: string, updatedAt: string } | null }> | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null, ssn?: string | null, city?: string | null, email?: string | null, pager?: string | null, phone?: string | null, mobile?: string | null, address?: string | null, address2?: string | null, state?: string | null, zipCode?: string | null, country?: string | null, name?: string | null, suffix?: string | null, firstName?: string | null, primaryContact?: boolean | null, middleName?: string | null, lastName?: string | null, serviceCode?: ServiceCodes | null, employerName?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, createdAt: string, updatedAt: string }> | null, employer?: { __typename?: 'Employer', id: string, name?: string | null, email?: string | null, phone?: string | null, mobile?: string | null, industry?: string | null, usualOccupation?: string | null, createdAt: string, updatedAt: string } | null, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null, serviceCode?: ServiceCode | null, updatedAt?: string | null } | null } | null } };
 
 export type UpdatePatientNoteInfoMutationVariables = Exact<{
   updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
@@ -7847,6 +7906,20 @@ export type UpdateFacilityTimeZoneMutationVariables = Exact<{
 
 
 export type UpdateFacilityTimeZoneMutation = { __typename?: 'Mutation', updateFacilityTimeZone: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, timeZone?: string | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type CreateShortUrlMutationVariables = Exact<{
+  createShortUrlInput: CreateShortUrlInput;
+}>;
+
+
+export type CreateShortUrlMutation = { __typename?: 'Mutation', createShortUrl: { __typename?: 'ShortUrlResponse', shortUrl?: { __typename?: 'ShortUrl', urlCode?: string | null, shortLink?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
+export type SendSmsMutationVariables = Exact<{
+  sendSmsInput: SendSmsInput;
+}>;
+
+
+export type SendSmsMutation = { __typename?: 'Mutation', sendSms: { __typename?: 'SmsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -15320,16 +15393,14 @@ export const GetPatientDocument = gql`
       ssn
       gender
       dob
-      phonePermission
       pharmacy
-      medicationHistoryAuthority
+      medicationHistoryConsent
       releaseOfInfoBill
-      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
       callToConsent
-      medicationHistoryAuthority
+      medicationHistoryConsent
       preferredCommunicationMethod
       patientNote
       language
@@ -15347,6 +15418,12 @@ export const GetPatientDocument = gql`
       statementNoteDateFrom
       statementNoteDateTo
       patientNoteOpen
+      phoneEmailPermission
+      cellPhonePermission
+      medicalPermission
+      resultConsent
+      immunizationConsent
+      medicationHistoryConsent
       createdAt
       updatedAt
       doctorPatients {
@@ -15592,16 +15669,15 @@ export const SendInviteToPatientDocument = gql`
       ssn
       gender
       dob
-      phonePermission
+      phoneEmailPermission
       pharmacy
-      medicationHistoryAuthority
+      medicationHistoryConsent
       releaseOfInfoBill
-      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
       callToConsent
-      medicationHistoryAuthority
+      medicationHistoryConsent
       preferredCommunicationMethod
       patientNote
       language
@@ -17582,6 +17658,82 @@ export function useUpdateFacilityTimeZoneMutation(baseOptions?: Apollo.MutationH
 export type UpdateFacilityTimeZoneMutationHookResult = ReturnType<typeof useUpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationResult = Apollo.MutationResult<UpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationOptions = Apollo.BaseMutationOptions<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>;
+export const CreateShortUrlDocument = gql`
+    mutation CreateShortUrl($createShortUrlInput: CreateShortUrlInput!) {
+  createShortUrl(createShortUrlInput: $createShortUrlInput) {
+    shortUrl {
+      urlCode
+      shortLink
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateShortUrlMutationFn = Apollo.MutationFunction<CreateShortUrlMutation, CreateShortUrlMutationVariables>;
+
+/**
+ * __useCreateShortUrlMutation__
+ *
+ * To run a mutation, you first call `useCreateShortUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateShortUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createShortUrlMutation, { data, loading, error }] = useCreateShortUrlMutation({
+ *   variables: {
+ *      createShortUrlInput: // value for 'createShortUrlInput'
+ *   },
+ * });
+ */
+export function useCreateShortUrlMutation(baseOptions?: Apollo.MutationHookOptions<CreateShortUrlMutation, CreateShortUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateShortUrlMutation, CreateShortUrlMutationVariables>(CreateShortUrlDocument, options);
+      }
+export type CreateShortUrlMutationHookResult = ReturnType<typeof useCreateShortUrlMutation>;
+export type CreateShortUrlMutationResult = Apollo.MutationResult<CreateShortUrlMutation>;
+export type CreateShortUrlMutationOptions = Apollo.BaseMutationOptions<CreateShortUrlMutation, CreateShortUrlMutationVariables>;
+export const SendSmsDocument = gql`
+    mutation SendSms($sendSmsInput: SendSmsInput!) {
+  sendSms(sendSmsInput: $sendSmsInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendSmsMutationFn = Apollo.MutationFunction<SendSmsMutation, SendSmsMutationVariables>;
+
+/**
+ * __useSendSmsMutation__
+ *
+ * To run a mutation, you first call `useSendSmsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendSmsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendSmsMutation, { data, loading, error }] = useSendSmsMutation({
+ *   variables: {
+ *      sendSmsInput: // value for 'sendSmsInput'
+ *   },
+ * });
+ */
+export function useSendSmsMutation(baseOptions?: Apollo.MutationHookOptions<SendSmsMutation, SendSmsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendSmsMutation, SendSmsMutationVariables>(SendSmsDocument, options);
+      }
+export type SendSmsMutationHookResult = ReturnType<typeof useSendSmsMutation>;
+export type SendSmsMutationResult = Apollo.MutationResult<SendSmsMutation>;
+export type SendSmsMutationOptions = Apollo.BaseMutationOptions<SendSmsMutation, SendSmsMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {

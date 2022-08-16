@@ -1,6 +1,7 @@
 import { makeStyles, Theme, Tooltip, withStyles } from "@material-ui/core";
 import {
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN, GREY_FOUR, theme, WHITE, WHITE_THREE
+  BLACK_TWO, BLUE, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN, 
+  GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -215,6 +216,18 @@ export const useTableStyles = makeStyles(() => ({
 
   claimTableHead: {
     backgroundColor: GREY_ELEVEN,
+  },
+
+  selectBox: {
+    color: BLUE,
+    padding: '5px 10px',
+    borderRadius: 6,
+    cursor: 'pointer',
+  },
+
+  selectedBox: {
+    backgroundColor: BLUE,
+    color: WHITE,
   },
 
   modifiers: {

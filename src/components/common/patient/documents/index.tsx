@@ -290,20 +290,22 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center">
-            <Search search={search} />
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center">
+          <Box display="flex" alignItems="center" mb={2}>
+            <Box>
+              <Search search={search} />
+            </Box>
 
             <Box display='flex'
               ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
-              <Typography className={isSignedTab ? 'selectBox' : 'selectedBox  selectBox'}
+              <Typography className={isSignedTab ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
                 onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: false })}
               >
                 {PENDING}
               </Typography>
 
-              <Typography className={isSignedTab ? 'selectedBox selectBox' : 'selectBox'}
+              <Typography className={isSignedTab ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox }
                 onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
               >
                 {SIGNED}
@@ -329,17 +331,19 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
             />
           </SideDrawer>
 
-          {!isSignedTab && <Button onClick={handleUpload} variant="contained"
-            startIcon={<UploadIcon />} color="primary"
-          >
-            {UPLOAD}
-          </Button>}
+          {!isSignedTab && <Box mb={2}>
+            <Button onClick={handleUpload} variant="contained"
+              startIcon={<UploadIcon />} color="primary"
+            >
+              {UPLOAD}
+            </Button>
+          </Box>}
         </Box>
 
         <Box className="table-overflow">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Table aria-label="customized table">
+              <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
                     {renderTh(TITLE)}

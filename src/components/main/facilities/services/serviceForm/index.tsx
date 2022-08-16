@@ -14,7 +14,7 @@ import CheckboxController from '../../../../common/CheckboxController';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
 import { serviceSchema } from '../../../../../validationSchemas';
-import { excludeLeadingZero, renderItem, renderLoading } from '../../../../../utils';
+import { excludeLeadingZero, renderItem, renderLoading, renderTextLoading } from '../../../../../utils';
 import { extendedServiceInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
   useCreateServiceMutation, useGetCurrentFacilityLazyQuery, useGetServiceLazyQuery,
@@ -35,6 +35,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
   const methods = useForm<extendedServiceInput>({
     mode: "all",
+    defaultValues: { isActive: true },
     resolver: yupResolver(serviceSchema)
   });
   const { setValue, handleSubmit, watch } = methods;
@@ -66,7 +67,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             // price && setValue('price', price)
             color && setValue('color', color)
             duration && setValue('duration', duration)
-            isActive && setValue('isActive', isActive as boolean)
+            setValue('isActive', isActive as boolean)
 
             !!facility && setFacility(facility)
           }
@@ -164,7 +165,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     duration, name, price, color, isActive
   }) => {
     const serviceInput = {
-      name: name || '', duration: excludeLeadingZero(duration) || "", isActive: isActive,
+      name: name || '', duration: excludeLeadingZero(duration) || "", isActive,
       price: excludeLeadingZero(price) || "", facilityId: currentFacility || '', color: color || 'black'
     };
 
@@ -272,11 +273,13 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
 
                 <Grid md={12} item>
-                  <CheckboxController
-                    controllerName="isActive"
-                    controllerLabel={ACTIVE_TEXT}
-                    defaultValue={isActive as boolean}
-                  />
+                  {getServiceLoading ? renderTextLoading() :
+                    <CheckboxController
+                      controllerName="isActive"
+                      controllerLabel={ACTIVE_TEXT}
+                      defaultValue={isActive as boolean}
+                    />
+                  }
                 </Grid>
               </CardComponent>
             </Grid>
