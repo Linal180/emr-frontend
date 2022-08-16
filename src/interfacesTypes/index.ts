@@ -1947,3 +1947,7 @@ export type SendSMSFormType = {
   message: string,
   template: SelectorOption,
 }
+
+export type ShortUrlFormType = {
+  longUrl: string
+}
