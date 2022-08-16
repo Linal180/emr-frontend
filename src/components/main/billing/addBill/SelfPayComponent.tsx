@@ -84,7 +84,7 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState }): J
     try {
       appointmentId && await chargePayment({
         variables: {
-          paymentInput: { price, patientId, providerId, facilityId, appointmentId, clientIntent: token },
+          paymentInput: { price, patientId, providerId: providerId ? providerId : null, facilityId, appointmentId, clientIntent: token },
         },
       });
     }
