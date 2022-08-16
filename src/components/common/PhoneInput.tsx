@@ -20,7 +20,7 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired, disabled, lo
           name={name}
           control={control}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-            return <FormControl fullWidth margin='normal' error={invalid} style={{border:'1px solid red'}}>
+            return <FormControl fullWidth margin='normal' error={invalid}>
               <InputLabel id={`${name}-autocomplete`} shrink>
                 {inputLabel}
               </InputLabel>
