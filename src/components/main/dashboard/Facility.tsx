@@ -19,15 +19,15 @@ import {
   useFindAllStaffListLazyQuery
 } from "../../../generated/graphql";
 import {
-  CalendarBlackIcon, CalendarNewIcon, CalendarWhiteIcon, ProviderWhiteIcon, RedirectIcon,
+  CalendarBlackIcon, CalendarNewIcon, CalendarWhiteIcon, MessageIcon, ProviderWhiteIcon, RedirectIcon,
   StaffWhiteIcon, UserBlackIcon, UserBlackIconTwo,
 } from "../../../assets/svgs";
 import {
   QUICK_ACTIONS, FACILITIES_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, ACTIVE_STAFF,
   TODAYS_APPOINTMENTS, ACTIVE_PROVIDERS, NEW_APPOINTMENT, NEW_PROVIDER, SOMETHING_WENT_WRONG,
-  TOTAL_APPOINTMENTS, NEW_STAFF, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS, APPOINTMENTS_ROUTE,
-  AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, RECENTLY_ADDED_PATIENTS, STAFF_ROUTE,
-  DOCTORS_ROUTE,
+  TOTAL_APPOINTMENTS, NEW_PATIENT, TOTAL_DISCHARGED_PATIENTS, APPOINTMENTS_ROUTE, SEND_SMS_ROUTE,
+  AGAINST_TOTAL_APPOINTMENTS, PATIENT_DISCHARGED, RECENTLY_ADDED_PATIENTS, DOCTORS_ROUTE, SEND_SMS,
+  
 } from "../../../constants";
 
 const FacilityDashboardComponent: FC = (): JSX.Element => {
@@ -306,13 +306,13 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
 
                 <Box p={1} />
 
-                <Link to={`${STAFF_ROUTE}/new`}>
+                <Link to={`${SEND_SMS_ROUTE}`}>
                   <Box className={classes.cardBox}>
-                    <UserBlackIcon />
+                    <MessageIcon />
 
                     <Box p={0.2} />
 
-                    <Typography variant="h6">{NEW_STAFF}</Typography>
+                    <Typography variant="h6">{SEND_SMS}</Typography>
                   </Box>
                 </Link>
               </Box>

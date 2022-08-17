@@ -922,6 +922,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Home";
 export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
+export const SEND_SMS = "Send SMS";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
@@ -1587,7 +1588,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
-export const LONG_URL_TEXT = "Long URL";
+export const LONG_URL_TEXT = "URL";
 export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
