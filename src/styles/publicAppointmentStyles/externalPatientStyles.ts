@@ -184,6 +184,11 @@ export const useExternalPatientStyles = makeStyles({
 
   privacyLabelNewDescription: {
     paddingLeft: 5,
+    alignItems : 'flex-start',
+    "& .privacyCheckBox": {
+      padding: '2px 8px'
+    },
+
     "& .MuiFormControlLabel-label": {
       fontSize: 14,
     },
