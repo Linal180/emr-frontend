@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
@@ -99,10 +100,11 @@ export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
-export const COMPANY_NAME = 'Company Name'
+export const COMPANY_NAME = 'Insurance Company Name'
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
+export const ADD_CPT_AND_ICD_CODES = `Please add CPT & ICD Codes`
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
@@ -920,6 +922,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Home";
 export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
+export const SEND_SMS = "Send SMS";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
@@ -1585,7 +1588,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
-export const LONG_URL_TEXT = "Long URL";
+export const LONG_URL_TEXT = "URL";
 export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";

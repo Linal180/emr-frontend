@@ -1,18 +1,20 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
+//components block
+import AutocompleteTextField from "./AutocompleteTextField";
 // utils and interfaces/types block
 import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
-import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
-import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
   ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes,
   useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
   useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery,
-  useSearchSnoMedCodesLazyQuery,
-} from "../../generated/graphql"
+  useSearchSnoMedCodesLazyQuery
+} from "../../generated/graphql";
+import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
+import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 
 const ItemSelector: FC<ItemSelectorProps> = ({
   name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
@@ -24,7 +26,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   const [options, setOptions] = useState<ItemSelectorOption[]>([])
   const inputLabel = isRequired ? requiredLabel(label) : label
 
-  const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
+  const [getSnoMedCodes, { loading: snoMedCodesLoading }] = useSearchSnoMedCodesLazyQuery({
     variables: {
       searchSnoMedCodesInput: {
         paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
@@ -50,7 +52,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
-  const [findAllFeeSchedule] = useFindAllFeeSchedulesLazyQuery({
+  const [findAllFeeSchedule, { loading: feeScheduleLoading }] = useFindAllFeeSchedulesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
     variables: {
@@ -79,7 +81,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   });
 
-  const [findAllCptFeeSchedule] = useFindAllCptFeeScheduleLazyQuery({
+  const [findAllCptFeeSchedule, { loading: cptFeeSchedulesLoading }] = useFindAllCptFeeScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
     variables: {
@@ -109,7 +111,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
 
   });
 
-  const [getClaimStatuses] = useFetchAllClaimStatusesLazyQuery({
+  const [getClaimStatuses, { loading: claimStatusesLoading }] = useFetchAllClaimStatusesLazyQuery({
     variables: {
       claimStatusPaginationInput: {
         paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
@@ -135,7 +137,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
-  const [getInsurances] = useFetchAllInsurancesLazyQuery({
+  const [getInsurances, { loading: insurancesLoading }] = useFetchAllInsurancesLazyQuery({
     variables: {
       insuranceInput: {
         paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
@@ -161,7 +163,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
-  const [fetchDocumentTypes] = useFetchDocumentTypesLazyQuery({
+  const [fetchDocumentTypes, { loading: documentTypesLoading }] = useFetchDocumentTypesLazyQuery({
     variables: {
       documentTypeInput: {
         paginationOptions: { page: 1, limit: 30 },
@@ -187,7 +189,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     },
   })
 
-  const [searchIcdCodes] = useFetchIcdCodesLazyQuery({
+  const [searchIcdCodes, { loading: icdCodesLoading }] = useFetchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -259,6 +261,14 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     return options
   }
 
+  const itemSelectorLoading = snoMedCodesLoading ||
+    feeScheduleLoading ||
+    cptFeeSchedulesLoading ||
+    claimStatusesLoading ||
+    insurancesLoading ||
+    documentTypesLoading ||
+    icdCodesLoading
+
   return (
     <>
       {loading ? renderLoading(inputLabel || '') :
@@ -286,12 +296,11 @@ const ItemSelector: FC<ItemSelectorProps> = ({
                       </InputLabel>
                     </Box>
 
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      error={invalid}
-                      className="selectorClass"
+                    <AutocompleteTextField
+                      invalid={invalid}
                       onChange={({ target: { value } }) => setQuery(value)}
+                      params={params}
+                      loading={itemSelectorLoading}
                     />
 
                     <FormHelperText>{message}</FormHelperText>

@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react";
-import { Box, Grid } from "@material-ui/core";
+import { Box, Card, Grid } from "@material-ui/core";
 //component
 import SendSmsForm from './SendSmsForm';
 import ShortUrlForm from './ShortUrlForm';
@@ -7,6 +7,7 @@ import BackButton from "../../common/BackButton";
 import PageHeader from "../../common/PageHeader";
 //constants
 import { DASHBOARD_BREAD, DASHBOARD_ROUTE, SEND_SMS_TEXT, SMS_BREAD } from "../../../constants";
+import CardComponent from "../../common/CardComponent";
 
 const SendSMS: FC = (): JSX.Element => {
   return (
@@ -23,18 +24,25 @@ const SendSMS: FC = (): JSX.Element => {
           />
         </Box>
       </Box>
-      <Box p={3} pb={0}>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6}>
-            <SendSmsForm />
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={6}>
-            <ShortUrlForm />
-          </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={12} md={8}>
+          <Card>
+            <Box p={3}>
+              <SendSmsForm />
+            </Box>
+          </Card>
         </Grid>
-      </Box>
+
+        <Grid item xs={12} sm={12} md={4}>
+          <CardComponent cardTitle={"URL Shortener"}>
+            <Box p={3}>
+              <ShortUrlForm />
+            </Box>
+          </CardComponent>
+
+        </Grid>
+      </Grid>
     </Fragment>
   )
 }

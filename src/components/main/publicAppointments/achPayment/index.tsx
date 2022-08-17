@@ -1,5 +1,4 @@
 //packages blocks
-import { useParams } from 'react-router';
 import { ChangeEvent, Fragment } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Grid, Tab } from '@material-ui/core';
@@ -18,18 +17,18 @@ import {
   COMPANY_NAME, FIRST_NAME, LAST_NAME, LOCALITY, MAPPED_REGIONS, ROUTING_NUMBER, STATE, STREET_ADDRESS, SUBMIT,
   ZIP_CODE
 } from '../../../../constants';
-import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps, ParamsType } from '../../../../interfacesTypes';
+import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps } from '../../../../interfacesTypes';
 import { personalAchSchema, businessAchSchema } from '../../../../validationSchemas';
 import { useAchPaymentMutation } from '../../../../generated/graphql';
 
 const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPaymentComponentProps) => {
 
-  const { ownershipType, loader, facilityId, patientId, price, providerId } = states
-  const { id: appointmentId } = useParams<ParamsType>();
+  const { ownershipType, loader, facilityId, patientId, price, providerId, appointmentId } = states
   const methods = useForm<AccountPaymentInputs>({
     mode: "all",
     resolver: yupResolver(ownershipType === 'personal' ? personalAchSchema : businessAchSchema)
   });
+
   const { handleSubmit, watch } = methods;
   const { firstName, lastName, businessName } = watch()
 
@@ -40,7 +39,9 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
       const { id } = transaction || {}
       if (status === 200 && id) {
         message && Alert.success(message)
-        moveNext()
+        if (moveNext) {
+          moveNext()
+        }
       }
       else {
         message && Alert.error(message)
@@ -56,7 +57,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
       await chargeAccount({
         variables: {
           achPaymentInputs: {
-            token, facilityId, appointmentId, patientId, price, doctorId: providerId, company: businessName,
+            token, facilityId, appointmentId, patientId, price, doctorId: providerId ? providerId : null, company: businessName,
             lastName, firstName, deviceData
           }
         }
@@ -150,33 +151,63 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
         </TabList>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form>
 
             <Box bgcolor={'white'} p={2} pt={4}>
 
-              <InputController controllerName='routingNumber' controllerLabel={ROUTING_NUMBER} fieldType={'number'} notStep />
-              <InputController controllerName='accountNumber' controllerLabel={BANK_ACCOUNT} fieldType={'number'} notStep />
+              <InputController
+                notStep
+                isRequired
+                fieldType={'number'}
+                controllerName='routingNumber'
+                controllerLabel={ROUTING_NUMBER}
+              />
+
+              <InputController
+                notStep
+                isRequired
+                fieldType={'number'}
+                controllerName='accountNumber'
+                controllerLabel={BANK_ACCOUNT}
+              />
+
               <Selector name='accountType' options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={ACCOUNT_TYPE} />
 
               <TabPanel value="personal">
                 <Grid container spacing={2}>
-                  <Grid item xs={6}><InputController controllerName='firstName' controllerLabel={FIRST_NAME} /></Grid>
-                  <Grid item xs={6}><InputController controllerName='lastName' controllerLabel={LAST_NAME} /></Grid>
+                  <Grid item xs={6}>
+                    <InputController isRequired controllerName='firstName' controllerLabel={FIRST_NAME} />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <InputController isRequired controllerName='lastName' controllerLabel={LAST_NAME} />
+                  </Grid>
+
                 </Grid>
               </TabPanel>
 
               <TabPanel value="business">
-                <InputController controllerName='businessName' controllerLabel={COMPANY_NAME} />
+                <InputController isRequired controllerName='businessName' controllerLabel={COMPANY_NAME} />
               </TabPanel>
 
               <Grid container spacing={2}>
 
-                <Grid item xs={6}><InputController controllerName='streetAddress' controllerLabel={STREET_ADDRESS} /></Grid>
-
-                <Grid item xs={6}><InputController controllerName='locality' controllerLabel={LOCALITY} /></Grid>
+                <Grid item xs={6}>
+                  <InputController isRequired controllerName='streetAddress' controllerLabel={STREET_ADDRESS} />
+                </Grid>
 
                 <Grid item xs={6}>
-                  <InputController controllerName='postalCode' controllerLabel={ZIP_CODE} fieldType={'number'} notStep />
+                  <InputController controllerName='locality' controllerLabel={LOCALITY} />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <InputController
+                    notStep
+                    isRequired
+                    fieldType={'number'}
+                    controllerLabel={ZIP_CODE}
+                    controllerName='postalCode'
+                  />
                 </Grid>
 
                 <Grid item xs={6}><Selector name='region' options={MAPPED_REGIONS} label={STATE} /></Grid>
@@ -195,8 +226,8 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext }: ACHPayment
                   </Button>
                 </Box>
 
-                <Button variant="contained" color="primary" type='submit' disabled={loader}>
-                {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
+                <Button variant="contained" color="primary" type='button' onClick={handleSubmit(onSubmit)} disabled={loader}>
+                  {!!loader && <CircularProgress size={20} color="inherit" />}  {SUBMIT}
                 </Button>
               </Box>
             </Box>

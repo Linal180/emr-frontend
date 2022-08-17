@@ -1,14 +1,15 @@
 // packages block
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { ModifierSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { useFindAllModifiersLazyQuery } from "../../../generated/graphql";
+import { ModifierSelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, initialState, modifiersReducer, State } from "../../../reducers/modifiersReducer";
 import { renderModifiers, requiredLabel, sortingValue } from "../../../utils";
-import { modifiersReducer, Action, initialState, State, ActionType } from "../../../reducers/modifiersReducer";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, shouldShowLabel = true }): JSX.Element => {
 
@@ -17,7 +18,7 @@ const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
   const { page, searchQuery, modifiers } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderModifiers(modifiers ?? [])] : [...renderModifiers(modifiers ?? [])]
 
-  const [findAllModifiers] = useFindAllModifiersLazyQuery({
+  const [findAllModifiers, { loading }] = useFindAllModifiersLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -77,12 +78,12 @@ const ModifierSelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>}
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={loading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

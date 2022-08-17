@@ -17,11 +17,11 @@ import { AuthContext } from "../../../context";
 import { BLUE, WHITE, PINK_TWO } from "../../../theme";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
-import { ActionIcon, LockIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
+import { ActionIcon, MessageIcon, PatientsIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
 import {
-  EMERGENCY_ACCESS, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, VIEW_FACILITIES,
-  VIEW_PATIENTS, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE,
-  PRACTICE_DETAILS_ROUTE, APPOINTMENTS_PER_FACILITY, ADD_FACILITY, AUDIT_LOG_ROUTE,
+  PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, VIEW_FACILITIES,
+  VIEW_PATIENTS, RECENT_ACTIVITIES, FACILITIES_ROUTE, PATIENTS_ROUTE, AUDIT_LOG_ROUTE,
+  PRACTICE_DETAILS_ROUTE, APPOINTMENTS_PER_FACILITY, ADD_FACILITY, SEND_SMS, SEND_SMS_ROUTE,
 } from "../../../constants";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
@@ -210,12 +210,12 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
 
                 <Box p={1} />
 
-                <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
-                  <LockIcon />
+                <Box className={classes.cardBox} onClick={() => history.push(SEND_SMS_ROUTE)}>
+                  <MessageIcon />
 
                   <Box p={0.2} />
 
-                  <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>
+                  <Typography variant="h6">{SEND_SMS}</Typography>
                 </Box>
               </Box>
             </Box>

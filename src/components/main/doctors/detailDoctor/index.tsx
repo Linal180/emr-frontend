@@ -23,7 +23,7 @@ const DoctorDetailComponent = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
 
   const { currentTab, doctor } = state;
-  const { facilityId: doctorFacilityId } = doctor || {}
+  const { facilityId: doctorFacilityId, id: doctorId } = doctor || {}
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
@@ -66,7 +66,7 @@ const DoctorDetailComponent = (): JSX.Element => {
 
           <TabPanel value="3">
             <Grid>
-              <AppointmentsTable />
+              <AppointmentsTable doctorId={doctorId} />
             </Grid>
           </TabPanel>
         </Box>

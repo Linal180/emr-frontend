@@ -50,8 +50,7 @@ const SendSMSForm: FC = (): JSX.Element => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
-
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid item xs={12} sm={12} md={6}>
             <Selector
               addEmpty
               name="template"
@@ -61,14 +60,16 @@ const SendSMSForm: FC = (): JSX.Element => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid item xs={12} sm={12} md={6}>
             <PhoneInput
               label={MOBILE_NUMBER}
               name="mobile"
               isRequired
             />
           </Grid>
+        </Grid>
 
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12}>
             <InputController
               multiline

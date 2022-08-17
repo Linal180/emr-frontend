@@ -1,13 +1,14 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderTests, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { LoincCodesPayload, useFindAllLoincCodesLazyQuery } from "../../../generated/graphql";
+import { FacilitySelectorProps, SelectorOption } from "../../../interfacesTypes";
+import { renderTests, requiredLabel } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions }): JSX.Element => {
   const { control } = useFormContext()
@@ -15,7 +16,7 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
   const [loincCodes, setLoincCodes] = useState<LoincCodesPayload['loincCodes']>([])
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderTests(loincCodes ?? [])] : [...renderTests(loincCodes ?? [])]
 
-  const [findAllLoincCodes] = useFindAllLoincCodesLazyQuery({
+  const [findAllLoincCodes, { loading }] = useFindAllLoincCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -80,12 +81,12 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => setSearchQuery(event.target.value)}
+                  params={params}
+                  loading={loading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

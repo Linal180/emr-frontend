@@ -1,19 +1,17 @@
 // packages block
-import {
-  AppBar, Box, Fade, IconButton, Menu, MenuItem, Toolbar, Typography
-} from '@material-ui/core';
+import { Link } from "react-router-dom";
 import { Menu as MenuIcon } from "@material-ui/icons";
 import { FC, MouseEvent, useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { BLACK } from "../../theme";
+import { AppBar, Box, Fade, IconButton, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
+import { BLACK } from "../../theme";
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
 import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
@@ -212,6 +210,14 @@ const Header: FC = (): JSX.Element => {
           <Box className={classes.grow} />
 
           <Box display="flex" alignItems="center">
+            {/* <Link to={SEND_SMS_ROUTE}>
+              <Box pt={0.8} />
+
+              <MessageIcon />
+            </Link>
+
+            <Box px={2} /> */}
+
             <Link to={SETTINGS_ROUTE}>
               <Box pt={0.8} />
 
