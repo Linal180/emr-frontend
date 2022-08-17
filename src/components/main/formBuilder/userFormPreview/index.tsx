@@ -23,28 +23,31 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
                 <Typography variant='h4'>{NAME}</Typography>
               </Box>
             </Grid>
+
             <Grid item xs={6}>
               <Box mb={2}>
                 <Typography variant='h4'>{VALUE}</Typography>
               </Box>
             </Grid>
           </Grid>
+
           <Grid container spacing={2} alignItems='stretch'>
             <Grid item xs={6}>
               {formLabels?.map((ele) => {
                 const { label, name } = ele || {}
                 return (
-                  <Box mb={2} maxHeight={200} minHeight={20}>
+                  <Box mb={2} maxHeight={30} minHeight={30}>
                     <Typography variant='h5'>{label || name}</Typography>
                   </Box>
                 )
               })}
             </Grid>
+            
             <Grid item xs={6}>
               {userForms?.map((responseElement, index) => {
                 const { arrayOfStrings, FormsElementsId, value, id: responseId, arrayOfObjects } = responseElement;
                 return (
-                  <Box key={`${FormsElementsId}-FormsElementsId-${formId}`} mb={2} maxHeight={200} minHeight={20} className={classes.tableCell}>
+                  <Box key={`${FormsElementsId}-FormsElementsId-${formId}`} mb={2} maxHeight={30} minHeight={30} className={classes.tableCell}>
                     {(value?.includes(`form builder/${formId}`) ?
                       <Box color={theme.palette.primary.main} pl={2} onClick={() => imagePreviewHandler(value)} className={responsesClasses.viewBtn}>
                         {VIEW}
