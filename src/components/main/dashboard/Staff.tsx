@@ -6,15 +6,20 @@ import CalendarComponent from "./calendar";
 import AppointmentsComponent from "../appointments/appointmentsListing";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 // constant block
-import { APPOINTMENTS_TEXT } from "../../../constants";
+import { APPOINTMENTS_TEXT, QUICK_ACTIONS, SEND_SMS, SEND_SMS_ROUTE } from "../../../constants";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
+import { WHITE } from "../../../theme";
+import { Link } from "react-router-dom";
+import { MessageIcon } from "../../../assets/svgs";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
+  const classes = useDashboardStyles();
   return (
     <>
       <PatientSearchComponent />
 
       <Grid container spacing={2}>
-        <Grid item md={12} sm={12} xs={12}>
+        <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={3} pt={3}>
               <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
@@ -22,6 +27,40 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
               <Box p={2} />
 
               <AppointmentsComponent showHeader={false} />
+            </Box>
+          </Card>
+
+          <Box p={1} />
+
+          <Card>
+            <Box px={3} py={3}>
+              <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
+
+              <CalendarComponent showHeader={false} />
+            </Box>
+          </Card>
+        </Grid>
+
+        <Grid item md={4} sm={12} xs={12}>
+          <Card>
+            <Box className={classes.blueCard}>
+              <Box color={WHITE}>
+                <Typography variant="h5">{QUICK_ACTIONS}</Typography>
+              </Box>
+            </Box>
+
+            <Box pb={3} className={classes.cardContainer}>
+              <Box display='flex' justifyContent='center' alignItems='center'>
+                <Link to={`${SEND_SMS_ROUTE}`}>
+                  <Box className={classes.cardBox}>
+                    <MessageIcon />
+
+                    <Box p={0.2} />
+
+                    <Typography variant="h6">{SEND_SMS}</Typography>
+                  </Box>
+                </Link>
+              </Box>
             </Box>
           </Card>
         </Grid>
@@ -165,18 +204,6 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
       </FormProvider> 
 
       <Box p={1.5} />*/}
-
-      <Grid container spacing={2}>
-        <Grid item md={12} sm={12} xs={12}>
-          <Card>
-            <Box px={3} pt={3}>
-              <Typography variant="h5">{APPOINTMENTS_TEXT}</Typography>
-
-              <CalendarComponent showHeader={false} />
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
     </>
   )
 };
