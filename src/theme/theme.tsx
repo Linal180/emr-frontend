@@ -190,9 +190,9 @@ export const theme = createTheme({
           padding: 20,
         },
 
-        "& .MuiCardContent-root": {
-          padding: '0 0 0 15px'
-        },
+        // "& .MuiCardContent-root": {
+        //   padding: '0 0 0 15px'
+        // },
 
         "& h4": {
           fontWeight: 'bold',
