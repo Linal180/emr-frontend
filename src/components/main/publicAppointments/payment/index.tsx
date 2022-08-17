@@ -93,7 +93,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
         const { status } = response;
 
         if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility, billingStatus, } = appointment;
+          const { appointmentType, patientId, provider, facility, billingStatus, id } = appointment;
 
           if (billingStatus === BillingStatus.Due) {
             const { price } = appointmentType || {};
@@ -104,7 +104,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
             patientId && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: patientId });
             providerId && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: providerId });
             facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId });
-
+            id && dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
             try {
               await getToken();
             } catch (error) { }
@@ -117,7 +117,9 @@ const ExternalPaymentComponent = (): JSX.Element => {
   });
 
   const fetchAppointment = useCallback(async () => {
-    id && await getAppointment({ variables: { getAppointment: { id } } });
+    try {
+      id && await getAppointment({ variables: { getAppointment: { id } } });
+    } catch (error) { }
   }, [getAppointment, id]);
 
   useEffect(() => {

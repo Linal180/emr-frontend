@@ -25,9 +25,7 @@ import {
   CodeType, DoctorPatientRelationType, OnsetDateType, OrderOfBenefitType, OtherDateType,
   PatientPaymentType, useCreateBillingMutation, useCreateClaimMutation, useGetPatientProvidersLazyQuery,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
-  useFetchBillingDetailsByAppointmentIdLazyQuery,
-  useGenerateClaimNoLazyQuery,
-  useFindPatientLastAppointmentLazyQuery,
+  useFetchBillingDetailsByAppointmentIdLazyQuery, useGenerateClaimNoLazyQuery, useFindPatientLastAppointmentLazyQuery,
   useFindAppointmentInsuranceStatusLazyQuery,
 } from "../../../../generated/graphql";
 
@@ -171,11 +169,12 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { status } = response
 
         if (appointment && status && status === 200) {
-          const { scheduleStartDateTime, facility } = appointment || {}
+          const { scheduleStartDateTime, facility, billingStatus: billStatus } = appointment || {}
           const { id } = facility || {}
 
           id && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: id })
           setValue('serviceDate', convertDateFromUnix(scheduleStartDateTime))
+          billStatus && dispatch({ type: ActionType.SET_BILLING_STATUS, billingStatus: billStatus })
         }
       }
     }
@@ -300,6 +299,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         employment && dispatch({ type: ActionType.SET_EMPLOYMENT, employment: employment })
         claimNo && dispatch({ type: ActionType.SET_CLAIM_NUMBER, claimNumber: claimNo })
         practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
+        servicingProvider?.id && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: servicingProvider?.id })
 
         setValue('paymentType', setRecord(patientPaymentType, patientPaymentType))
         setValue('otherDateType', setRecord(otherDateType, otherDateType))

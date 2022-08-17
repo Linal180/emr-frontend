@@ -40,7 +40,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states, moveNext, formDispatch
       if (status === 200 && id) {
         message && Alert.success(message)
         formDispatch && formDispatch({ type: FormActionType.SET_TRANSACTION_ID, transactionId: id })
-        moveNext()
+        moveNext && moveNext()
       }
       else {
         message && Alert.error(message)

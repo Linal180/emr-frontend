@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
@@ -103,6 +104,7 @@ export const COMPANY_NAME = 'Company Name'
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
+export const ADD_CPT_AND_ICD_CODES = `Please add CPT & ICD Codes`
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
