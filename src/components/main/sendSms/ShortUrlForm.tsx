@@ -1,15 +1,17 @@
 import { FC, useState, } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, IconButton, Typography } from "@material-ui/core";
 //components
 import Alert from "../../common/Alert";
 import InputController from "../../../controller";
 //interfaces, schemas
 import { ShortUrlFormType } from "../../../interfacesTypes";
 import { shortUrlSchema } from "../../../validationSchemas";
-import { LONG_URL_TEXT, SHORT_URL_TEXT } from "../../../constants";
+import { LONG_URL_TEXT, SHORT_URL_TEXT, } from "../../../constants";
 import { useCreateShortUrlMutation } from "../../../generated/graphql";
+import { BLUE, GREY_EIGHTEEN } from "../../../theme";
+import { CopyIcon } from "../../../assets/svgs";
 
 const ShortUrlForm: FC = (): JSX.Element => {
   const [link, setLink] = useState<string>('');
@@ -43,11 +45,14 @@ const ShortUrlForm: FC = (): JSX.Element => {
     } catch (error) { }
   }
 
+  const copyHandler = (id: string) => {
+    navigator.clipboard.writeText(id)
+  }
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
             <InputController
               isRequired
@@ -56,14 +61,22 @@ const ShortUrlForm: FC = (): JSX.Element => {
               controllerName="longUrl"
             />
           </Grid>
+
           {link && <Grid item xs={12} sm={12} md={12}>
-            <Typography>
-              {link}
-            </Typography>
+            <Box pl={2} display='flex' justifyContent='space-between' alignItems='center' bgcolor={GREY_EIGHTEEN} borderRadius={4} color={BLUE}>
+              <Typography color="inherit">
+                {link}
+              </Typography>
+
+              <IconButton onClick={() => copyHandler(link || '')}>
+                <CopyIcon />
+              </IconButton>
+            </Box>
           </Grid>}
+
           <Grid item xs={12} sm={12} md={12}>
-            <Box display='flex' justifyContent='flex-start' alignItems="baseline">
-              <Button type='submit' variant='contained' color='primary' disabled={loading}>
+            <Box mt={2} display='flex' justifyContent='flex-start' alignItems="baseline">
+              <Button type='submit' variant='contained' color='secondary' disabled={loading}>
                 {(loading) && <CircularProgress size={20} color="inherit" />} {SHORT_URL_TEXT}
               </Button>
             </Box>

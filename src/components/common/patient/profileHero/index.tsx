@@ -34,7 +34,7 @@ import {
 } from "../../../../reducers/appointmentReducer";
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({
-  setPatient, setAttachmentsData, isCheckIn, isChart
+  setPatient, setAttachmentsData, isCheckIn, isChart, patientProvidersData
 }) => {
   const noteRef = useRef(null)
   const { id } = useParams<ParamsType>();
@@ -191,7 +191,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
   let providerName = ""
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
-  if (doctorPatients) {
+  if (patientProvidersData) {
+    const doesPrimaryProviderExist = patientProvidersData.find(({ relation }) =>
+      relation === DoctorPatientRelationType.PrimaryProvider)
+
+    if (doesPrimaryProviderExist) {
+      const { doctor } = doesPrimaryProviderExist ?? {}
+      const { firstName, lastName } = doctor ?? {}
+
+      providerName = `${firstName} ${lastName}`
+    }
+  } else if (doctorPatients) {
     const doesPrimaryProviderExist = doctorPatients.find(({ relation }) =>
       relation === DoctorPatientRelationType.PrimaryProvider)
 
