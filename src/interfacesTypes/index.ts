@@ -1590,6 +1590,10 @@ export interface PatientProfileHeroProps {
   patientProvidersData?: PatientProviderPayload['providers']
 }
 
+export interface AppointmentsTableProps {
+  doctorId?: string;
+}
+
 export interface DoctorProfileHeroProps {
   setDoctor: Function;
   setAttachmentsData: Function;
