@@ -366,7 +366,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
             <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
               {LAB_ORDER_SIDEDRAWER_STEPS.map((label, index) => (
                 <Step key={label}>
-                  <StepLabel onClick={() => { setActiveStep(index); setCurrentTest(0) }} StepIconComponent={CheckInStepIcon}>
+                  <StepLabel onClick={testFieldValues?.length ? () => { setActiveStep(index); setCurrentTest(0) } : () => { }} StepIconComponent={CheckInStepIcon}>
                     <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                       {label}
                       <Box p={0.5} />

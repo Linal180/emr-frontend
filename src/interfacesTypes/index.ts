@@ -1587,6 +1587,7 @@ export interface PatientProfileHeroProps {
   isCheckIn?: boolean;
   setPatient: Function;
   setAttachmentsData: Function;
+  patientProvidersData?: PatientProviderPayload['providers']
 }
 
 export interface DoctorProfileHeroProps {
