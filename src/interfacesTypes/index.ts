@@ -1589,6 +1589,10 @@ export interface PatientProfileHeroProps {
   setAttachmentsData: Function;
 }
 
+export interface AppointmentsTableProps {
+  doctorId?: string;
+}
+
 export interface DoctorProfileHeroProps {
   setDoctor: Function;
   setAttachmentsData: Function;
