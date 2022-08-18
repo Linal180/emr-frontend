@@ -366,7 +366,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         patientId: id,
         from,
         to,
-        patientPaymentType
+        patientPaymentType: patientPaymentType as PatientPaymentType
       }
 
       const getClaimFileInput = {
