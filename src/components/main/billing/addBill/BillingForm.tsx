@@ -34,8 +34,8 @@ import {
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
   MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PRACTICE, POS,
-  PATIENT_PAYMENT_TYPE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SELF_PAY,
-  SystemBillingStatuses, SELECT_ANOTHER_STATUS, ADD_ANOTHER_COPAY,
+  PATIENT_PAYMENT_TYPE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, ADD_ANOTHER_COPAY,
+  SystemBillingStatuses, SELECT_ANOTHER_STATUS
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = ({
@@ -50,7 +50,7 @@ const BillingForm: FC<BillingFormProps> = ({
   const { statusName } = claimStatus || {}
   const {
     isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident,
-    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal, billingStatus
+    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal, billingStatus, insuranceStatus
   } = state
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -78,7 +78,16 @@ const BillingForm: FC<BillingFormProps> = ({
     dispatch({ type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: shouldCheckout })
     if (isValid) {
       if (shouldCheckout) {
-        dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+        if (insuranceStatus === PatientPaymentType.Insurance) {
+          dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: !isCheckoutModalOpen })
+        }
+        else {
+          if (insuranceStatus === PatientPaymentType.NoInsurance) {
+            if (billingStatus !== BillingStatus.Paid) {
+              selfModalHandler(true)
+            }
+          }
+        }
       } else {
         handleSubmit(onSubmit)()
       }
@@ -104,6 +113,11 @@ const BillingForm: FC<BillingFormProps> = ({
     }
   }
 
+  const insuranceStatusHandler = (data: SelectorOption) => {
+    const { id } = data || {}
+    id ? dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: id }) : dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: '' })
+  }
+
   const selfModalHandler = (selfPayModal: boolean) => dispatch({ type: ActionType.SET_SELF_PAY_MODAL, selfPayModal })
 
   const isInsurancePayment = paymentType?.id === PatientPaymentType.Insurance
@@ -127,7 +141,7 @@ const BillingForm: FC<BillingFormProps> = ({
                 </Button>
               </Box>
 
-              {isInsurancePayment ? <>
+              {isInsurancePayment && <>
                 <Box m={0.5}>
                   <Button
                     variant="contained"
@@ -149,18 +163,7 @@ const BillingForm: FC<BillingFormProps> = ({
                     {HCFA_1500_FORM}
                   </Button>
                 </Box>
-              </> :
-                <Box m={0.5}>
-                  <Button
-                    variant="outlined"
-                    color="default"
-                    disabled={billingStatus === BillingStatus.Paid}
-                    onClick={() => selfModalHandler(true)}
-                  >
-                    {SELF_PAY}
-                  </Button>
-                </Box>
-              }
+              </>}
 
 
               <Box m={0.5}>
@@ -215,6 +218,7 @@ const BillingForm: FC<BillingFormProps> = ({
                       <Selector
                         addEmpty
                         name="paymentType"
+                        onSelect={insuranceStatusHandler}
                         label={PATIENT_PAYMENT_TYPE}
                         options={MAPPED_PATIENT_PAYMENT_TYPE}
                         disabled={shouldDisableEdit}
@@ -520,7 +524,7 @@ const BillingForm: FC<BillingFormProps> = ({
       }
 
       {selfPayModal &&
-        <SelfPayComponent state={state} onCloseHandler={(open) => selfModalHandler(open)} isOpen={selfPayModal} />
+        <SelfPayComponent state={state} onCloseHandler={(open) => selfModalHandler(open)} isOpen={selfPayModal} checkOutHandler={handleSubmit(onSubmit)} />
       }
     </FormProvider >
   )
