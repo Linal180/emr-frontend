@@ -266,7 +266,7 @@ const CptFeeTable: FC = (): JSX.Element => {
       )}
 
       <SideDrawer drawerOpened={drawerOpened} toggleSideDrawer={toggleSideDrawer}>
-        <CptFeeScheduleForm dispatcher={dispatch} state={state} id={feeScheduleId} />
+        <CptFeeScheduleForm dispatcher={dispatch} state={state} id={feeScheduleId} reload={async () => await fetchCptFeeSchedule()} />
       </SideDrawer>
 
       <ConfirmationModal
