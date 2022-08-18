@@ -17,6 +17,7 @@ export interface State {
   isClaimCreated: boolean;
   isCheckoutModalOpen: boolean;
   tableCodesData: CodeTablesData;
+  insuranceStatus: string;
   billingStatus: BillingStatus | null
 }
 
@@ -35,6 +36,7 @@ export const initialState: State = {
   billingStatus: null,
   otherAccident: false,
   shouldCheckout: false,
+  insuranceStatus: '',
   isClaimCreated: false,
   isCheckoutModalOpen: false,
 }
@@ -56,6 +58,7 @@ export enum ActionType {
   SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
+  SET_INSURANCE_STATUS = 'SET_INSURANCE_STATUS'
 }
 
 export type Action =
@@ -72,6 +75,7 @@ export type Action =
   | { type: ActionType.SET_OTHER_ACCIDENT, otherAccident: boolean }
   | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
+  | { type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: string }
   | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
   | { type: ActionType.SET_BILLING_STATUS, billingStatus: BillingStatus | null }
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
@@ -173,6 +177,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         billingStatus: action.billingStatus
+      }
+
+    case ActionType.SET_INSURANCE_STATUS:
+      return {
+        ...state,
+        insuranceStatus: action.insuranceStatus
       }
   }
 };

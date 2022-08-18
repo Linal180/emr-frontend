@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, LONG_URL_TEXT,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, LONG_URL_TEXT, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1072,8 +1072,9 @@ export const createCopaySchema = yup.object({
 
 export const createBillingSchema = yup.object({
   // billingStatus: selectorSchema(BILLING_STATUS),
-  // paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
   amount: yup.string(),
+  paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
+  feeSchedule: selectorSchema(FEE_SCHEDULE),
   [ITEM_MODULE.icdCodes]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0),

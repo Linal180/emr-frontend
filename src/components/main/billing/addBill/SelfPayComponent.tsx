@@ -23,7 +23,7 @@ import {
   PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, ADD_CPT_AND_ICD_CODES,
 } from '../../../../constants';
 
-const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCloseHandler, isOpen }): JSX.Element => {
+const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCloseHandler, isOpen, checkOutHandler }): JSX.Element => {
   const { appointmentId: aptId, id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
 
@@ -131,7 +131,10 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCl
     }
   };
 
-  const moveNext = () => onCloseHandler(!isOpen)
+  const moveNext = () => {
+    checkOutHandler()
+    onCloseHandler(!isOpen)
+  }
 
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
