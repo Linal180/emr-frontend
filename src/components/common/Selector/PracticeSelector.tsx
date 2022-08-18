@@ -1,15 +1,16 @@
 // packages block
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
-import { PracticeSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { AuthContext } from "../../../context";
 import { PracticesPayload, useFindAllPracticeListLazyQuery } from "../../../generated/graphql";
+import { PracticeSelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, initialState, practiceReducer, State } from "../../../reducers/practiceReducer";
 import { isSuperAdmin, renderLoading, renderPractices, requiredLabel, sortingValue } from "../../../utils";
-import { practiceReducer, Action, initialState, State, ActionType } from "../../../reducers/practiceReducer";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const PracticeSelector: FC<PracticeSelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, loading, isLabelDisplay = true, handleFeeSchedule
@@ -27,7 +28,7 @@ const PracticeSelector: FC<PracticeSelectorProps> = ({
     [EMPTY_OPTION, ...renderPractices(practices ?? [])]
     : [...renderPractices(practices ?? [])]
 
-  const [findAllPractice] = useFindAllPracticeListLazyQuery({
+  const [findAllPractice, { loading: practicesLoading }] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -99,21 +100,21 @@ const PracticeSelector: FC<PracticeSelectorProps> = ({
                       </InputLabel>
                     </Box>}
 
-                    <TextField
-                      {...params}
-                      error={invalid}
-                      variant="outlined"
-                      className="selectorClass"
+                    <AutocompleteTextField
+                      invalid={invalid}
                       onChange={(event) =>
                         dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                      params={params}
+                      loading={practicesLoading}
                     />
                     <FormHelperText>{message}</FormHelperText>
                   </FormControl>
                 )}
 
                 onChange={(_, data) => {
-                 handleFeeSchedule && handleFeeSchedule(data?.id)
-                  field.onChange(data)}}
+                  handleFeeSchedule && handleFeeSchedule(data?.id)
+                  field.onChange(data)
+                }}
               />
             );
           }}

@@ -1,20 +1,19 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
-import { pluck } from "underscore"
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
+import { pluck } from "underscore";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { AuthContext } from "../../../context";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
+import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, initialState, roleReducer, State } from "../../../reducers/roleReducer";
 import {
   renderLoading, renderStaffRoles, requiredLabel, sortingValue
 } from "../../../utils";
-import {
-  roleReducer, Action, initialState, State, ActionType
-} from "../../../reducers/roleReducer";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const RoleSelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, loading }): JSX.Element => {
@@ -30,7 +29,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderStaffRoles(roles ?? [], userRole)] : [...renderStaffRoles(roles ?? [], userRole)]
 
-  const [findAllRole] = useFindAllRoleListLazyQuery({
+  const [findAllRole, { loading: rolesLoading }] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -92,13 +91,13 @@ const RoleSelector: FC<FacilitySelectorProps> = ({
                         {isRequired ? requiredLabel(label) : label}
                       </InputLabel>
                     </Box>
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      error={invalid}
-                      className="selectorClass"
+
+                    <AutocompleteTextField
+                      invalid={invalid}
                       onChange={(event) =>
                         dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                      params={params}
+                      loading={rolesLoading}
                     />
 
                     <FormHelperText>{message}</FormHelperText>

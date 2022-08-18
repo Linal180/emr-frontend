@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
+import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
@@ -42,9 +42,9 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput,
-  BillingPayload
+  FetchBillingClaimStatusesInput, BillingPayload
 } from "../generated/graphql";
+import { AutocompleteRenderInputParams } from "@material-ui/lab";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -363,7 +363,7 @@ export interface SelectorProps {
   options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function;
-  onSelect?: Function;
+  onSelect?: (data: SelectorOption) => void;
   onOutsideClick?: Function;
 }
 
@@ -485,6 +485,7 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
+  rows?: number
 }
 
 export interface TooltipData {
@@ -752,14 +753,17 @@ export type ExtendedExternalAppointmentInputProps = Pick<
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">;
 
-export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string;
-}
-
 export interface GeneralFormProps {
   id?: string;
   isEdit?: boolean;
   loading?: boolean;
+}
+
+export interface AutocompleteTextFieldProps {
+  params: AutocompleteRenderInputParams;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+  invalid: boolean
+  loading: boolean
 }
 
 export interface EligibilityTableComponentProps extends GeneralFormProps {
@@ -1585,6 +1589,11 @@ export interface PatientProfileHeroProps {
   isCheckIn?: boolean;
   setPatient: Function;
   setAttachmentsData: Function;
+  patientProvidersData?: PatientProviderPayload['providers']
+}
+
+export interface AppointmentsTableProps {
+  doctorId?: string;
 }
 
 export interface DoctorProfileHeroProps {
@@ -1689,13 +1698,13 @@ export interface AccountPaymentInputs {
   authority: boolean
 }
 
-export interface ACHPaymentComponentProps {
+export type ACHPaymentComponentProps = {
   token: string;
-  dispatcher: Dispatch<ExternalPaymentAction>;
+  moveNext?: Function;
   states: ExternalPaymentState;
-  moveNext: Function
-  formState?: ExternalFormBuilderState
-  formDispatch?: Dispatch<PublicFormBuilderAction>
+  formState?: ExternalFormBuilderState;
+  dispatcher: Dispatch<ExternalPaymentAction>;
+  formDispatch?: Dispatch<PublicFormBuilderAction>;
 }
 
 export interface CheckboxControllerProps extends IControlLabel {
@@ -1946,4 +1955,20 @@ export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
 
 export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
   facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption
+}
+
+export type SendSMSFormType = {
+  mobile: string,
+  message: string,
+  template: SelectorOption,
+}
+
+export type ShortUrlFormType = {
+  longUrl: string
+}
+
+export type SelfPayComponentProps = {
+  state: BillingState;
+  onCloseHandler: (open: boolean) => void
+  isOpen: boolean
 }

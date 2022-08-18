@@ -13,10 +13,10 @@ import Alert from '../../../common/Alert';
 import { StepContext } from './StepContext';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, reducers, utils, constants block
-import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import history from '../../../../history';
 import { AIMEDLOGO, } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes'
+import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import { calculateAge, getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
 import {

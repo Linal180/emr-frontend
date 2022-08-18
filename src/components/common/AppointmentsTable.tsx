@@ -25,7 +25,7 @@ import FacilitySelector from "./Selector/FacilitySelector";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
-import { SelectorOption, StatusInputProps } from "../../interfacesTypes";
+import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
 import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import {
   Action, ActionType, appointmentReducer, initialState, State
@@ -50,7 +50,7 @@ import {
 
 dotenv.config()
 
-const AppointmentsTable: FC = (): JSX.Element => {
+const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles();
   const { user, currentUser, userPermissions } = useContext(AuthContext)
 
@@ -188,12 +188,12 @@ const AppointmentsTable: FC = (): JSX.Element => {
       dispatch({ type: ActionType.SET_SORT_BY, sortBy: ASC })
       const pageInputs = { paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
       const inputs = isSuper
-        ? { facilityId: filterFacilityId }
+        ? { facilityId: filterFacilityId, providerId: doctorId }
         : isPracticeUser
-          ? { practiceId, facilityId: filterFacilityId }
+          ? { practiceId, facilityId: filterFacilityId, providerId: doctorId }
           : isDoctor
             ? { providerId }
-            : { facilityId }
+            : { facilityId, providerId: doctorId }
 
       inputs && await findAllAppointments({
         variables: {
@@ -205,10 +205,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
         },
       })
     } catch (error) { }
-  }, [
-    isDoctor, providerId, page, isSuper, isPracticeUser, practiceId, facilityId,
-    findAllAppointments, searchQuery, filterFacilityId, appointmentTypeId, selectDate
-  ])
+  }, [page, isSuper, filterFacilityId, doctorId, isPracticeUser, practiceId, isDoctor, providerId, facilityId, findAllAppointments, searchQuery, appointmentTypeId, selectDate])
 
   useEffect(() => {
     fetchAppointments();

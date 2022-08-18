@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -1488,6 +1487,10 @@ export type CreateServiceInput = {
   serviceType?: Maybe<ServiceType>;
 };
 
+export type CreateShortUrlInput = {
+  longLink?: Maybe<Scalars['String']>;
+};
+
 export type CreateSpecimenItemInput = {
   collectionDate?: Maybe<Scalars['String']>;
   collectionTime?: Maybe<Scalars['String']>;
@@ -2229,6 +2232,10 @@ export type GetService = {
   id: Scalars['String'];
 };
 
+export type GetShortUrlInput = {
+  urlCode?: Maybe<Scalars['String']>;
+};
+
 export type GetSlots = {
   currentDate: Scalars['String'];
   day?: Maybe<Scalars['String']>;
@@ -2671,6 +2678,7 @@ export type Mutation = {
   createRole: RolePayload;
   createSchedule: SchedulePayload;
   createService: ServicePayload;
+  createShortUrl: ShortUrlResponse;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
   disableDoctor: DoctorPayload;
@@ -2713,7 +2721,11 @@ export type Mutation = {
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
+<<<<<<< HEAD
   syncLabResults: LabTestObservationPayload;
+=======
+  sendSms: SmsPayload;
+>>>>>>> 94d8d420633e153862914999360b6af750f23b14
   update2FactorAuth: UserPayload;
   updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
@@ -2964,6 +2976,11 @@ export type MutationCreateServiceArgs = {
 };
 
 
+export type MutationCreateShortUrlArgs = {
+  createShortUrlInput: CreateShortUrlInput;
+};
+
+
 export type MutationCreateStaffArgs = {
   createStaffInput: CreateStaffInput;
 };
@@ -3169,8 +3186,13 @@ export type MutationSendInviteToPatientArgs = {
 };
 
 
+<<<<<<< HEAD
 export type MutationSyncLabResultsArgs = {
   updateObservationInput: UpdateObservationInput;
+=======
+export type MutationSendSmsArgs = {
+  sendSmsInput: SendSmsInput;
+>>>>>>> 94d8d420633e153862914999360b6af750f23b14
 };
 
 
@@ -4358,6 +4380,7 @@ export type Query = {
   getRole: RolePayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
+  getShortUrl: ShortUrlResponse;
   getSlots: SlotsPayload;
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
@@ -4873,6 +4896,11 @@ export type QueryGetServiceArgs = {
 };
 
 
+export type QueryGetShortUrlArgs = {
+  getShortUrlInput: GetShortUrlInput;
+};
+
+
 export type QueryGetSlotsArgs = {
   getSlots: GetSlots;
 };
@@ -5272,6 +5300,11 @@ export type SectionsTypes = {
   sectionId?: Maybe<Scalars['String']>;
 };
 
+export type SendSmsInput = {
+  message?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
 export type Service = {
   __typename?: 'Service';
   color?: Maybe<Scalars['String']>;
@@ -5427,6 +5460,22 @@ export type ServicesPayload = {
   services?: Maybe<Array<Maybe<Service>>>;
 };
 
+export type ShortUrl = {
+  __typename?: 'ShortUrl';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  longLink?: Maybe<Scalars['String']>;
+  shortLink?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+  urlCode?: Maybe<Scalars['String']>;
+};
+
+export type ShortUrlResponse = {
+  __typename?: 'ShortUrlResponse';
+  response?: Maybe<ResponsePayloadResponse>;
+  shortUrl?: Maybe<ShortUrl>;
+};
+
 export type Slots = {
   __typename?: 'Slots';
   endTime?: Maybe<Scalars['String']>;
@@ -5448,6 +5497,12 @@ export enum SmokingStatus {
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }
+
+export type SmsPayload = {
+  __typename?: 'SmsPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  sms?: Maybe<Scalars['String']>;
+};
 
 export type SnoMedCodes = {
   __typename?: 'SnoMedCodes';
@@ -7899,6 +7954,20 @@ export type UpdateFacilityTimeZoneMutationVariables = Exact<{
 
 
 export type UpdateFacilityTimeZoneMutation = { __typename?: 'Mutation', updateFacilityTimeZone: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, timeZone?: string | null } | null, response?: { __typename?: 'ResponsePayload', name?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type CreateShortUrlMutationVariables = Exact<{
+  createShortUrlInput: CreateShortUrlInput;
+}>;
+
+
+export type CreateShortUrlMutation = { __typename?: 'Mutation', createShortUrl: { __typename?: 'ShortUrlResponse', shortUrl?: { __typename?: 'ShortUrl', urlCode?: string | null, shortLink?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
+export type SendSmsMutationVariables = Exact<{
+  sendSmsInput: SendSmsInput;
+}>;
+
+
+export type SendSmsMutation = { __typename?: 'Mutation', sendSms: { __typename?: 'SmsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -17795,6 +17864,82 @@ export function useUpdateFacilityTimeZoneMutation(baseOptions?: Apollo.MutationH
 export type UpdateFacilityTimeZoneMutationHookResult = ReturnType<typeof useUpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationResult = Apollo.MutationResult<UpdateFacilityTimeZoneMutation>;
 export type UpdateFacilityTimeZoneMutationOptions = Apollo.BaseMutationOptions<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>;
+export const CreateShortUrlDocument = gql`
+    mutation CreateShortUrl($createShortUrlInput: CreateShortUrlInput!) {
+  createShortUrl(createShortUrlInput: $createShortUrlInput) {
+    shortUrl {
+      urlCode
+      shortLink
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateShortUrlMutationFn = Apollo.MutationFunction<CreateShortUrlMutation, CreateShortUrlMutationVariables>;
+
+/**
+ * __useCreateShortUrlMutation__
+ *
+ * To run a mutation, you first call `useCreateShortUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateShortUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createShortUrlMutation, { data, loading, error }] = useCreateShortUrlMutation({
+ *   variables: {
+ *      createShortUrlInput: // value for 'createShortUrlInput'
+ *   },
+ * });
+ */
+export function useCreateShortUrlMutation(baseOptions?: Apollo.MutationHookOptions<CreateShortUrlMutation, CreateShortUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateShortUrlMutation, CreateShortUrlMutationVariables>(CreateShortUrlDocument, options);
+      }
+export type CreateShortUrlMutationHookResult = ReturnType<typeof useCreateShortUrlMutation>;
+export type CreateShortUrlMutationResult = Apollo.MutationResult<CreateShortUrlMutation>;
+export type CreateShortUrlMutationOptions = Apollo.BaseMutationOptions<CreateShortUrlMutation, CreateShortUrlMutationVariables>;
+export const SendSmsDocument = gql`
+    mutation SendSms($sendSmsInput: SendSmsInput!) {
+  sendSms(sendSmsInput: $sendSmsInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendSmsMutationFn = Apollo.MutationFunction<SendSmsMutation, SendSmsMutationVariables>;
+
+/**
+ * __useSendSmsMutation__
+ *
+ * To run a mutation, you first call `useSendSmsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendSmsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendSmsMutation, { data, loading, error }] = useSendSmsMutation({
+ *   variables: {
+ *      sendSmsInput: // value for 'sendSmsInput'
+ *   },
+ * });
+ */
+export function useSendSmsMutation(baseOptions?: Apollo.MutationHookOptions<SendSmsMutation, SendSmsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendSmsMutation, SendSmsMutationVariables>(SendSmsDocument, options);
+      }
+export type SendSmsMutationHookResult = ReturnType<typeof useSendSmsMutation>;
+export type SendSmsMutationResult = Apollo.MutationResult<SendSmsMutation>;
+export type SendSmsMutationOptions = Apollo.BaseMutationOptions<SendSmsMutation, SendSmsMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {

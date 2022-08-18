@@ -14,11 +14,11 @@ import {
   practiceReducer, Action, initialState, State
 } from "../../../reducers/practiceReducer";
 import {
-  BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
+  MessageIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
 } from "../../../assets/svgs";
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS,
-  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, RECENT_PRACTICES,
+  ACTIVE, CREATE_PRACTICE, INACTIVE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS, SEND_SMS, 
+  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, RECENT_PRACTICES, SEND_SMS_ROUTE,
 } from "../../../constants";
 import { Link } from "react-router-dom";
 
@@ -94,10 +94,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
               <Box p={1} />
 
-              <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
-                <BillingCardIcon />
-                <Box p={1} />
-                <Typography variant="h6">{VIEW_BILLING}</Typography>
+              <Box className={classes.cardBox} onClick={() => history.push(SEND_SMS_ROUTE)}>
+                <MessageIcon />
+                <Box p={0.7} />
+                <Typography variant="h6">{SEND_SMS}</Typography>
               </Box>
             </Box>
           </Card>

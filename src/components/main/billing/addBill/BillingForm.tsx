@@ -11,6 +11,7 @@ import {
 //components block
 import Alert from "../../../common/Alert";
 import Selector from "../../../common/Selector";
+import SelfPayComponent from "./SelfPayComponent";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
 import CodesTable from "../../../common/CodesTable";
@@ -24,18 +25,17 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
 import { GREY_THREE } from "../../../../theme";
 import { ActionType } from "../../../../reducers/billingReducer";
-import { CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { BillingStatus, CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, UNCOVERED_AMT, SUPER_BILL_ROUTE, TO,
-  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE,
-  POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SystemBillingStatuses,
-  SELECT_ANOTHER_STATUS,
-  ADD_ANOTHER_COPAY,
+  MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PRACTICE, POS,
+  PATIENT_PAYMENT_TYPE, RENDERING_PROVIDER, SAVE_TEXT, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SELF_PAY,
+  SystemBillingStatuses, SELECT_ANOTHER_STATUS, ADD_ANOTHER_COPAY,
 } from "../../../../constants";
 
 const BillingForm: FC<BillingFormProps> = ({
@@ -49,8 +49,8 @@ const BillingForm: FC<BillingFormProps> = ({
   const { id: onsetDateTypeId } = onsetDateType || {}
   const { statusName } = claimStatus || {}
   const {
-    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident, claimNumber,
-    practiceId, selectedTab, isClaimCreated
+    isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident,
+    claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal, billingStatus
   } = state
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
@@ -104,7 +104,9 @@ const BillingForm: FC<BillingFormProps> = ({
     }
   }
 
-  const shouldShowCopay = paymentType?.id === PatientPaymentType.Insurance
+  const selfModalHandler = (selfPayModal: boolean) => dispatch({ type: ActionType.SET_SELF_PAY_MODAL, selfPayModal })
+
+  const isInsurancePayment = paymentType?.id === PatientPaymentType.Insurance
 
   return (
     <FormProvider {...methods}>
@@ -125,27 +127,41 @@ const BillingForm: FC<BillingFormProps> = ({
                 </Button>
               </Box>
 
-              <Box m={0.5}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => createClaimCallback()}
-                  disabled={!!createClaimLoading || (statusName === SystemBillingStatuses.ACKNOWLEDGED)}
-                >
-                  {createClaimLoading && <CircularProgress size={20} color="inherit" />}
-                  {getClaimBtnText(statusName || '')}
-                </Button>
-              </Box>
+              {isInsurancePayment ? <>
+                <Box m={0.5}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => createClaimCallback()}
+                    disabled={!!createClaimLoading || (statusName === SystemBillingStatuses.ACKNOWLEDGED)}
+                  >
+                    {createClaimLoading && <CircularProgress size={20} color="inherit" />}
+                    {getClaimBtnText(statusName || '')}
+                  </Button>
+                </Box>
 
-              <Box m={0.5}>
-                <Button
-                  variant="outlined"
-                  color="default"
-                  onClick={() => createClaimCallback(true)}
-                >
-                  {HCFA_1500_FORM}
-                </Button>
-              </Box>
+                <Box m={0.5}>
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    onClick={() => createClaimCallback(true)}
+                  >
+                    {HCFA_1500_FORM}
+                  </Button>
+                </Box>
+              </> :
+                <Box m={0.5}>
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    disabled={billingStatus === BillingStatus.Paid}
+                    onClick={() => selfModalHandler(true)}
+                  >
+                    {SELF_PAY}
+                  </Button>
+                </Box>
+              }
+
 
               <Box m={0.5}>
                 <Button
@@ -236,7 +252,7 @@ const BillingForm: FC<BillingFormProps> = ({
                         disabled={shouldDisableEdit}
                       />
                     </Grid>
-                    {shouldShowCopay &&
+                    {isInsurancePayment &&
                       <>
                         < Grid item md={12} sm={12} xs={12}>
                           <Grid container spacing={3} direction="row">
@@ -288,13 +304,6 @@ const BillingForm: FC<BillingFormProps> = ({
               <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <DoctorSelector
-                        label={BILLING_PROVIDER}
-                        name="billingProvider"
-                        addEmpty
-                      />
-                    </Grid> */}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
@@ -306,7 +315,7 @@ const BillingForm: FC<BillingFormProps> = ({
                       />
                     </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                    {isInsurancePayment && <Grid item md={12} sm={12} xs={12}>
                       <ItemSelector
                         isEdit
                         label={CLAIM_STATUS}
@@ -315,7 +324,7 @@ const BillingForm: FC<BillingFormProps> = ({
                         modalName={ITEM_MODULE.claimStatus}
                         disabled={shouldDisableEdit}
                       />
-                    </Grid>
+                    </Grid>}
 
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
@@ -337,15 +346,6 @@ const BillingForm: FC<BillingFormProps> = ({
                         practiceId={practiceId}
                       />
                     </Grid>
-
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                      <Selector
-                        name="resource"
-                        label={RESOURCE}
-                        options={[]}
-                        addEmpty
-                      />
-                    </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
@@ -449,9 +449,11 @@ const BillingForm: FC<BillingFormProps> = ({
           <TabContext value={selectedTab}>
             <Box width='100%' display='flex' alignItems='center' justifyContent='space-between' flexWrap='wrap'>
               <TabList onChange={handleChange} aria-label="billing tabs">
-                {BILLING_TABS.map(item => (
-                  <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-                ))}
+                {BILLING_TABS.map(item => {
+                  return (
+                    <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+                  )
+                })}
               </TabList>
             </Box>
 
@@ -495,13 +497,13 @@ const BillingForm: FC<BillingFormProps> = ({
                   </Card>
                 </Box>
               </TabPanel>
+
             </Box>
           </TabContext>
         </Box>
       </form >
 
-      {
-        isModalOpen &&
+      {isModalOpen &&
         <CopayModal
           isOpen={isModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_MODAL_OPEN, isModalOpen: isOpen })}
@@ -509,13 +511,16 @@ const BillingForm: FC<BillingFormProps> = ({
         />
       }
 
-      {
-        isCheckoutModalOpen &&
+      {isCheckoutModalOpen &&
         <CheckoutModal
           isOpen={isCheckoutModalOpen}
           setIsOpen={(isOpen: boolean) => dispatch({ type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: isOpen })}
           handleSubmit={handleSubmit(onSubmit)}
         />
+      }
+
+      {selfPayModal &&
+        <SelfPayComponent state={state} onCloseHandler={(open) => selfModalHandler(open)} isOpen={selfPayModal} />
       }
     </FormProvider >
   )

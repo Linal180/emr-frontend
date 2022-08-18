@@ -593,6 +593,12 @@ export const BillingCardIcon = () => (
   </svg>
 )
 
+export const MessageIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M26 13.3334C26.0046 15.0932 25.5934 16.8292 24.8 18.4C23.8592 20.2824 22.413 21.8656 20.6233 22.9724C18.8335 24.0792 16.771 24.6659 14.6667 24.6667C12.9068 24.6713 11.1708 24.2601 9.6 23.4667L2 26L4.53333 18.4C3.73991 16.8292 3.32875 15.0932 3.33333 13.3334C3.33415 11.229 3.92082 9.16651 5.02763 7.37677C6.13444 5.58704 7.71767 4.14079 9.6 3.20004C11.1708 2.40661 12.9068 1.99545 14.6667 2.00004H15.3333C18.1125 2.15336 20.7374 3.32639 22.7055 5.29452C24.6737 7.26265 25.8467 9.88757 26 12.6667V13.3334Z" stroke="#5E6278" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)
+
 export const PracticeActiveIcon = () => (
   <svg width="46" height="44" viewBox="0 0 46 44" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="45.7177" height="44" rx="4" fill="#F9FAFB" />

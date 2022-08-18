@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
@@ -99,10 +100,11 @@ export const PRE_DEFINED_COMPONENT_PAGE_LIMIT = 25;
 export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
-export const COMPANY_NAME = 'Company Name'
+export const COMPANY_NAME = 'Insurance Company Name'
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
+export const ADD_CPT_AND_ICD_CODES = `Please add CPT & ICD Codes`
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
@@ -578,6 +580,7 @@ export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
 export const FORM_FIELDS = "Form Fields";
 export const NO_TEMPLATE = "No Template Found";
+export const SELECT_TEMPLATE = "Select Template";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const AUDIT_LOG_DESCRIPTION = "View all logs of different activities";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
@@ -924,6 +927,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Home";
 export const ADD_PROBLEMS = "Add Problems";
 export const VIEW_BILLING = "View Billing";
+export const SEND_SMS = "Send SMS";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
@@ -1164,6 +1168,8 @@ export const FEE = "Fee";
 export const DIS = "Dis";
 export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
+export const SEND_SMS_TEXT = "Send SMS";
+export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const LAB_RESULTS_DESCRIPTION = "Patient's Lab Results";
@@ -1567,6 +1573,7 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const SEND_SMS_ROUTE = `/send-sms`
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -1588,6 +1595,8 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const LONG_URL_TEXT = "URL";
+export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
@@ -2243,7 +2252,7 @@ export const ROLES_ADD_BREAD = { text: ADD_ROLE_TEXT, link: "" };
 export const FORMS_BREAD = { text: FORMS, link: FORM_BUILDER_ROUTE };
 export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
-
+export const SMS_BREAD = { text: SEND_SMS_TEXT, link: "" };
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
 export const CHECK_ELIGIBILITY_BREAD = { text: CHECK_ELIGIBILITY, link: "" };
 export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
@@ -3124,6 +3133,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: LAB_RESULTS_TEXT,
     link: LAB_RESULTS_ROUTE,
     desc: LAB_RESULTS_DESCRIPTION,
+  },
+  {
+    name: SEND_SMS_TEXT,
+    link: SEND_SMS_ROUTE,
+    desc: SEND_SMS_DESCRIPTION,
   }
 ];
 
@@ -3559,3 +3573,19 @@ export const formTemplateTabIds = {
   PATIENT_INFO: "patient_info",
   TERMS_CONDITIONS: "terms_conditions"
 }
+
+
+export const SMS_TEMPLATES: SelectorOption[] = [
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Registration Link",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Telehealth",
+  },
+  {
+    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    name: "Review",
+  },
+]

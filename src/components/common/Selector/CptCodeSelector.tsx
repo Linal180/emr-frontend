@@ -1,14 +1,15 @@
 // packages block
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { CPTCodesSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { renderCPTCodes, requiredLabel, sortingValue } from "../../../utils";
 import { AllCptCodePayload, useFindAllCptCodesLazyQuery } from "../../../generated/graphql";
-import { cptCodesReducer, Action, initialState, State, ActionType } from "../../../reducers/cptCodesReducer";
+import { CPTCodesSelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, cptCodesReducer, initialState, State } from "../../../reducers/cptCodesReducer";
+import { renderCPTCodes, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, valueSetter }): JSX.Element => {
 
@@ -17,7 +18,7 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
   const { page, searchQuery, cptCodes } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderCPTCodes(cptCodes ?? [])] : [...renderCPTCodes(cptCodes ?? [])]
 
-  const [findAllCptCodes] = useFindAllCptCodesLazyQuery({
+  const [findAllCptCodes, { loading: cptCodesLoading }] = useFindAllCptCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -79,12 +80,12 @@ const CPTCodesSelector: FC<CPTCodesSelectorProps> = ({ name, label, disabled, is
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={cptCodesLoading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

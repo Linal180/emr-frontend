@@ -260,6 +260,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             setAttachmentsData={(attachments: AttachmentsPayload['attachments']) =>
               mediaDispatcher({ type: mediaActionType.SET_ATTACHMENTS_DATA, attachmentsData: attachments })
             }
+            patientProvidersData={patientProvidersData}
           />
 
           <TabPanel value="1">

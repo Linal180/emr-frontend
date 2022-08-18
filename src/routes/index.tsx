@@ -84,6 +84,7 @@ import { Maintenance } from "../pages/maintenance";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import ClaimStatus from "../pages/main/billing/claimStatusListing";
+import { SendSMS } from "../pages/main/sendSms";
 // constants, contexts and utils
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -100,7 +101,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, LAB_RESULTS_INFO,
+  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE
 } from "../constants";
 import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
@@ -112,23 +113,23 @@ const Routes: FC = (): JSX.Element => {
     <Switch>
       <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
       <PublicRoute path={LOCK_ROUTE} component={Lock} exact />
-      <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
+      <PublicRoute path={FORGET_PASSWORD_ROUTE}  component={ForgetPassword} exact />
       <PublicRoute path={SET_PASSWORD_ROUTE} component={SetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
-      <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
-      <PublicRoute path={`${PATIENT_INFORMATION_ROUTE}/:id`} component={PatientForm} exact />
-      <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
-      <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
-      <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} component={CancelAppointment} exact />
-      <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} component={ExternalPayment} exact />
+      <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} allow component={AppointmentSuccess} exact />
+      <PublicRoute path={`${PATIENT_INFORMATION_ROUTE}/:id`} allow component={PatientForm} exact />
+      <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} allow component={AppointmentConfirmation} exact />
+      <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} allow component={AppointmentCancel} exact />
+      <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} allow component={CancelAppointment} exact />
+      <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} allow component={ExternalPayment} exact />
       <PublicRoute path={`${LAB_RESULTS_INFO}/:orderNum`} component={LabResultDetail} exact />
-      <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
-      <PublicRoute path={`${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={FacilityPublicAppointment} exact />
-      <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={DoctorPublicAppointment} exact />
-      <PublicRoute exact path={`${PUBLIC_FORM_BUILDER_ROUTE}/:id`} component={PublicFormPreview} />
-      <PublicRoute exact path={PUBLIC_FORM_BUILDER_FAIL_ROUTE} component={PublicFormFail} />
-      <PublicRoute exact path={TWO_FA_AUTHENTICATION_ROUTE} component={TwoFaAuthentication} />
-      <PublicRoute exact path={PUBLIC_FORM_BUILDER_SUCCESS_ROUTE} component={PublicFormSuccessComponent} />
+      <PublicRoute path={PATIENT_APPOINTMENT_FAIL} allow component={AppointmentFail} exact />
+      <PublicRoute path={`${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/:id`} allow component={FacilityPublicAppointment} exact />
+      <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} allow component={DoctorPublicAppointment} exact />
+      <PublicRoute exact path={`${PUBLIC_FORM_BUILDER_ROUTE}/:id`} allow component={PublicFormPreview} />
+      <PublicRoute exact path={PUBLIC_FORM_BUILDER_FAIL_ROUTE} allow component={PublicFormFail} />
+      <PublicRoute exact path={TWO_FA_AUTHENTICATION_ROUTE} allow component={TwoFaAuthentication} />
+      <PublicRoute exact path={PUBLIC_FORM_BUILDER_SUCCESS_ROUTE} allow component={PublicFormSuccessComponent} />
 
       <Route exact path={ROOT_ROUTE}>
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
@@ -204,8 +205,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FORM_BUILDER_RESPONSES}/:id`} component={FormBuilderResponses} />
       <PrivateRoute exact path={`${ELIGIBILITY_ROUTE}/:id`} component={EligibilityTable} />
       <PrivateRoute exact path={`${COVERAGE_ROUTE}/:id/:patientId/:appointmentId?`} component={CoverageDetails} />
+      <PrivateRoute exact path={SEND_SMS_ROUTE} component={SendSMS} />
 
-      <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
+      <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} allow exact />
 
       <Route component={PageNotFound} />
     </Switch>

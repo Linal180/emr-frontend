@@ -21,13 +21,14 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
   }
   //render
   return (
-    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'md'}>
+    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'lg'}>
       <DialogTitle>{formName}</DialogTitle>
+
       <DialogContent dividers>
         <Box className={classes.main}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(submitHandler)}>
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 {data?.map((tab, i) => {
                   const { sections } = tab || {}
 
@@ -36,7 +37,7 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
                     return (
                       <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
                         <CardComponent cardTitle={name}>
-                          <Grid container spacing={3}>
+                          <Grid container spacing={3} direction="row">
                             {fields?.map((field) => {
                               const { fieldId, column } = field
                               return (
@@ -54,7 +55,6 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
                         </CardComponent>
                       </Grid>
                     )
-
                   })
                 }
                 )}

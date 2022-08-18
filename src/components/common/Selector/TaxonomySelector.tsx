@@ -1,5 +1,5 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -8,6 +8,7 @@ import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { TaxonomyPayload, useFindAllTaxonomyLazyQuery } from "../../../generated/graphql";
 import { ModifierSelectorProps } from "../../../interfacesTypes";
 import { renderTaxonomies, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const TaxonomySelector: FC<ModifierSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, shouldShowLabel = true }): JSX.Element => {
   const { control } = useFormContext()
@@ -15,7 +16,7 @@ const TaxonomySelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
   const [searchQuery, setSearchQuery] = useState('')
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderTaxonomies(taxonomies ?? [])] : [...renderTaxonomies(taxonomies ?? [])]
 
-  const [getTaxonomy] = useFindAllTaxonomyLazyQuery({
+  const [getTaxonomy, { loading: taxonomiesLoading }] = useFindAllTaxonomyLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -66,12 +67,12 @@ const TaxonomySelector: FC<ModifierSelectorProps> = ({ name, label, disabled, is
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>}
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => setSearchQuery(event.target.value)}
+                  params={params}
+                  loading={taxonomiesLoading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>
