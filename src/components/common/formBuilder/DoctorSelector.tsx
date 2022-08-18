@@ -1,17 +1,16 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
-import { FormDoctorSelectorProps } from "../../../interfacesTypes";
-import { requiredLabel, renderDoctors, sortingValue } from "../../../utils";
-import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
-import {
-  doctorReducer, Action, initialState, State, ActionType
-} from "../../../reducers/doctorReducer";
+import { FormDoctorSelectorProps } from "../../../interfacesTypes";
+import { Action, ActionType, doctorReducer, initialState, State } from "../../../reducers/doctorReducer";
+import { ActionType as FormActionType } from "../../../reducers/externalFormBuilderReducer";
+import { renderDoctors, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const DoctorSelector: FC<FormDoctorSelectorProps> = (
   { name, label, disabled, isRequired = false, addEmpty, facilityId, formDispatch, formState }
@@ -24,7 +23,7 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
-  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
+  const [findAllDoctor, { loading: doctorsLoading }] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -94,12 +93,11 @@ const DoctorSelector: FC<FormDoctorSelectorProps> = (
                   </InputLabel>
                 </Box>
 
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={doctorsLoading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>
