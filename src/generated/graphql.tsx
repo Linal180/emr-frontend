@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -2721,11 +2722,8 @@ export type Mutation = {
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
-<<<<<<< HEAD
-  syncLabResults: LabTestObservationPayload;
-=======
   sendSms: SmsPayload;
->>>>>>> 94d8d420633e153862914999360b6af750f23b14
+  syncLabResults: LabTestObservationPayload;
   update2FactorAuth: UserPayload;
   updateAgreement: AgreementPayload;
   updateAppointment: AppointmentPayload;
@@ -3186,13 +3184,13 @@ export type MutationSendInviteToPatientArgs = {
 };
 
 
-<<<<<<< HEAD
-export type MutationSyncLabResultsArgs = {
-  updateObservationInput: UpdateObservationInput;
-=======
 export type MutationSendSmsArgs = {
   sendSmsInput: SendSmsInput;
->>>>>>> 94d8d420633e153862914999360b6af750f23b14
+};
+
+
+export type MutationSyncLabResultsArgs = {
+  updateObservationInput: UpdateObservationInput;
 };
 
 
