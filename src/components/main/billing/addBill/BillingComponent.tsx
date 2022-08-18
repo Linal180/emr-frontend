@@ -326,9 +326,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const createClaimCallback = useCallback((claimMethod?: boolean) => {
     try {
-      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to } = watch()
+      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to, paymentType } = watch()
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
+      const { id: patientPaymentType } = paymentType || {}
 
       const billingCodes = [...cptFeeSchedule, ...IcdCodes]
       const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
@@ -364,7 +365,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
         patientId: id,
         from,
-        to
+        to,
+        patientPaymentType
       }
 
       const getClaimFileInput = {

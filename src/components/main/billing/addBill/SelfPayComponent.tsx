@@ -1,5 +1,6 @@
 // packages block
 import { useParams } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 import DropIn from 'braintree-web-drop-in-react';
 import { Box, Button, Dialog, DialogTitle, Grid, Typography } from '@material-ui/core';
 import { FC, Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
@@ -15,7 +16,7 @@ import ACHPaymentComponent from '../../publicAppointments/achPayment';
 import { GREY, WHITE } from '../../../../theme';
 import { ACHIcon } from '../../../../assets/svgs';
 import { appointmentChargesDescription } from '../../../../utils';
-import { SelfPayComponentProps, ParamsType, TableCodesProps } from '../../../../interfacesTypes';
+import { SelfPayComponentProps, ParamsType, TableCodesProps, CreateBillingProps } from '../../../../interfacesTypes';
 import { useChargeAfterAppointmentMutation, useGetTokenLazyQuery } from '../../../../generated/graphql';
 import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
 import {
@@ -26,6 +27,9 @@ import {
 const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCloseHandler, isOpen, checkOutHandler }): JSX.Element => {
   const { appointmentId: aptId, id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
+  const { watch } = useFormContext<CreateBillingProps>();
+  const { IcdCodes, cptFeeSchedule } = watch()
+  const { facilityId: billingFacility, providerId: billingProvider } = billingState;
 
   const {
     appointmentPaymentToken, price, showPayBtn, instance, achPayment, facilityId, patientId, providerId,
@@ -139,20 +143,22 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ state: billingState, onCl
   const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
   useMemo(() => {
-    const { tableCodesData, facilityId: billingFacility, providerId: billingProvider } = billingState;
-    let priceArr: TableCodesProps[] = []
-    if (tableCodesData?.CPT_CODE) priceArr = [...priceArr, ...tableCodesData?.CPT_CODE]
-    if (tableCodesData?.ICD_10_CODE) priceArr = [...priceArr, ...tableCodesData?.ICD_10_CODE]
-    const totalCharges = priceArr.reduce((acc, code) => {
-      return acc += Number(code.price || 0)
-    }, 0)
 
-    totalCharges && dispatch({ type: ActionType.SET_PRICE, price: `${totalCharges}` })
     billingFacility && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: billingFacility })
     billingProvider && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: billingProvider })
     id && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: id })
     aptId && dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: aptId })
-  }, [billingState, id, aptId])
+  }, [id, aptId, billingProvider, billingFacility])
+
+  useMemo(() => {
+    let priceArr: TableCodesProps[] = []
+    if (IcdCodes?.length) priceArr = [...priceArr, ...IcdCodes]
+    if (cptFeeSchedule?.length) priceArr = [...priceArr, ...cptFeeSchedule]
+    const totalCharges = priceArr.reduce((acc, code) => {
+      return acc += Number(code.price || 0)
+    }, 0)
+    totalCharges && dispatch({ type: ActionType.SET_PRICE, price: `${totalCharges}` })
+  }, [IcdCodes, cptFeeSchedule,])
 
   return (
     <Dialog

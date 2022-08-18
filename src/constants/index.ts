@@ -3566,15 +3566,15 @@ export const formTemplateTabIds = {
 
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
     name: "Registration Link",
   },
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Your appointment is schedule at 7:30 on 08/31/2022.`,
     name: "Telehealth",
   },
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Please give us a review at: https://www.google.com`,
     name: "Review",
   },
 ]
