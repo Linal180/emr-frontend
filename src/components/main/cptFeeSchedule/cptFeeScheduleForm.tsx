@@ -22,7 +22,7 @@ import {
   SHORT_DESCRIPTION
 } from '../../../constants';
 
-const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeScheduleFormProps) => {
+const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId, reload }: CptFeeScheduleFormProps) => {
 
   const methods = useForm<CreateCptFeeSchedule>({ mode: "all", resolver: yupResolver(cptFeeScheduleSchema) });
   const { setValue, handleSubmit } = methods
@@ -41,6 +41,7 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         dispatcher({ type: ActionType.SET_EDIT, isEdit: false })
         dispatcher({ type: ActionType.SET_GET_FEE_ID, getFeeId: '' })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+        reload && reload()
       }
     },
     onError(error) {
@@ -59,6 +60,7 @@ const CptFeeScheduleForm = ({ dispatcher, state, id: feeScheduleId }: CptFeeSche
         message && Alert.success(message)
         dispatcher({ type: ActionType.SET_PAGE, page: 1 })
         dispatcher({ type: ActionType.SET_DRAWER, drawerOpened: !drawerOpened })
+        reload && reload()
       }
     },
     onError(error) {

@@ -55,8 +55,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         history.push(`/patients/${id}/details/10`)
         return
       }
-
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
+      fetchBillingDetails()
     }
   });
 
@@ -441,6 +441,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { insuranceStatus } = findAppointmentInsuranceStatus
         const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
         insuranceStatus && setValue('paymentType', patientPaymentType)
+        insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
       }
     }
   });
@@ -508,7 +509,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
         autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
         onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
-        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
+        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
+        uncoveredAmount, from, to, shouldCheckout
       }
 
       createBilling({

@@ -35,6 +35,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={phoneEmailPermission}
@@ -48,6 +49,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={cellPhonePermission}
@@ -56,11 +58,12 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     }
                     label={CELL_PHONE_PERMISSION}
                   />
-                  
+
                   <FormControlLabel
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={medicalPermission}
@@ -88,6 +91,7 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={resultConsent}
@@ -96,11 +100,12 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     }
                     label={RESULT_CONSENT}
                   />
-                  
+
                   <FormControlLabel
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={immunizationConsent}
@@ -109,11 +114,12 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
                     }
                     label={IMMUNIZATION_CONSENT}
                   />
-                  
+
                   <FormControlLabel
                     className={classes.privacyLabelNewDescription}
                     control={
                       <Checkbox
+                        className='privacyCheckBox'
                         disabled={shouldDisableEdit}
                         color="primary"
                         checked={medicationHistoryConsent}
