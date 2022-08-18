@@ -2,7 +2,7 @@
 import { Box } from '@material-ui/core';
 import { FC } from 'react';
 import { useParams } from 'react-router';
-import { DASHBOARD_BREAD, LAB_ORDER, LAB_RESULTS_BREAD, PATIENTS_BREAD } from '../../../../constants';
+import { DASHBOARD_BREAD, EDIT_LAB_RESULTS_BREAD, LAB_ORDER, PATIENTS_BREAD } from '../../../../constants';
 import { ParamsType } from '../../../../interfacesTypes';
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
@@ -19,7 +19,7 @@ const ResultsLabOrdersComponent: FC = (): JSX.Element => {
         <Box ml={2}>
           <PageHeader
             title={`${LAB_ORDER}: ${orderNum}`}
-            path={[DASHBOARD_BREAD, PATIENTS_BREAD, LAB_RESULTS_BREAD]}
+            path={[DASHBOARD_BREAD, PATIENTS_BREAD, EDIT_LAB_RESULTS_BREAD]}
           />
         </Box>
       </Box>

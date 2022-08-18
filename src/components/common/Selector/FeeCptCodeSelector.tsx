@@ -91,8 +91,11 @@ const FeeCPTCodesSelector: FC<ItemSelectorProps> = ({ name, label, disabled, isR
               </FormControl>
             )}
             onChange={(_, data) => {
-              onSelect && onSelect(data)
               field.onChange(data)
+              if (onSelect) {
+                onSelect(data)
+                setSearchQuery('')
+              }
             }}
           />
         );

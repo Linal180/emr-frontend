@@ -82,7 +82,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   useEffect(() => {
     if (isEdit) {
       if (defaultValues) {
-        setValue('diagnosesIds', defaultValues)
+        setValue('serviceId', defaultValues)
         setOptions(defaultValues)
         setValues(defaultValues)
       }
@@ -90,9 +90,15 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   }, [defaultValues, isEdit, setValue])
 
   const updateValues = (newValues: multiOptionType[]) => {
-    setValue('diagnosesIds', newValues)
+    setValue('serviceId', newValues)
     setValues(newValues as multiOptionType[])
   }
+
+  useEffect(() => {
+    setValue('serviceId', [])
+    setOptions([])
+    setValues([])
+  }, [defaultValues, facilityId, setValue])
 
   const multiSelectProps = isMulti ? {
     isMulti: isMulti,
