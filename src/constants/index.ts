@@ -1522,6 +1522,7 @@ export const AGREEMENTS_ROUTE = "/agreements";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
+export const LAB_RESULTS_INFO = "/lab-results-info";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";

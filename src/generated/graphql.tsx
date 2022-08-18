@@ -3169,6 +3169,11 @@ export type MutationSendInviteToPatientArgs = {
 };
 
 
+export type MutationSyncLabResultsArgs = {
+  updateObservationInput: UpdateObservationInput;
+};
+
+
 export type MutationUpdate2FactorAuthArgs = {
   twoFactorInput: TwoFactorInput;
 };
@@ -6066,6 +6071,16 @@ export type UpdateModifierInput = {
   name?: Maybe<Scalars['String']>;
 };
 
+export type UpdateObservationInput = {
+  UpdateObservationItemInput?: Maybe<Array<UpdateObservationItemInput>>;
+};
+
+export type UpdateObservationItemInput = {
+  orderNumber?: Maybe<Scalars['String']>;
+  result?: Maybe<Scalars['String']>;
+  testName?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -7493,7 +7508,7 @@ export type FindLabResultInfoQueryVariables = Exact<{
 }>;
 
 
-export type FindLabResultInfoQuery = { __typename?: 'Query', findLabResultInfo: { __typename?: 'LabResultPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, collectedDate?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, dob?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null, facility?: { __typename?: 'Facility', id: string, cliaIdNumber?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null }> | null } | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null }> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindLabResultInfoQuery = { __typename?: 'Query', findLabResultInfo: { __typename?: 'LabResultPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, orderNumber?: string | null, collectedDate?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, dob?: string | null, patientRecord?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null, facility?: { __typename?: 'Facility', id: string, name: string, cliaIdNumber?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, phone?: string | null }> | null } | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null }> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type CreateLabTestMutationVariables = Exact<{
   createLabTestInput: CreateLabTestInput;
@@ -7509,7 +7524,9 @@ export type UpdateLabTestMutationVariables = Exact<{
 
 export type UpdateLabTestMutation = { __typename?: 'Mutation', updateLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
-export type SyncLabResultsMutationVariables = Exact<{ [key: string]: never; }>;
+export type SyncLabResultsMutationVariables = Exact<{
+  updateObservationInput: UpdateObservationInput;
+}>;
 
 
 export type SyncLabResultsMutation = { __typename?: 'Mutation', syncLabResults: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
@@ -14954,12 +14971,14 @@ export const FindLabResultInfoDocument = gql`
       labName
       vendorName
       accessionNumber
+      orderNumber
       collectedDate
       patient {
         id
         firstName
         lastName
         dob
+        patientRecord
         gender
         contacts {
           primaryContact
@@ -14967,10 +14986,14 @@ export const FindLabResultInfoDocument = gql`
         }
         facility {
           id
+          name
           cliaIdNumber
           contacts {
             primaryContact
             address
+            city
+            state
+            zipCode
             phone
           }
         }
@@ -15128,8 +15151,8 @@ export type UpdateLabTestMutationHookResult = ReturnType<typeof useUpdateLabTest
 export type UpdateLabTestMutationResult = Apollo.MutationResult<UpdateLabTestMutation>;
 export type UpdateLabTestMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
 export const SyncLabResultsDocument = gql`
-    mutation SyncLabResults {
-  syncLabResults {
+    mutation SyncLabResults($updateObservationInput: UpdateObservationInput!) {
+  syncLabResults(updateObservationInput: $updateObservationInput) {
     response {
       error
       status
@@ -15153,6 +15176,7 @@ export type SyncLabResultsMutationFn = Apollo.MutationFunction<SyncLabResultsMut
  * @example
  * const [syncLabResultsMutation, { data, loading, error }] = useSyncLabResultsMutation({
  *   variables: {
+ *      updateObservationInput: // value for 'updateObservationInput'
  *   },
  * });
  */

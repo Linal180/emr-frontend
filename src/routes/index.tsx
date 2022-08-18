@@ -100,7 +100,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE,
+  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, LAB_RESULTS_INFO,
 } from "../constants";
 import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
@@ -121,6 +121,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
       <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} component={CancelAppointment} exact />
       <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} component={ExternalPayment} exact />
+      <PublicRoute path={`${LAB_RESULTS_INFO}/:orderNum`} component={LabResultDetail} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={FacilityPublicAppointment} exact />
       <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={DoctorPublicAppointment} exact />

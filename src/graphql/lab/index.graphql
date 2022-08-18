@@ -249,6 +249,7 @@ query FindLabResultInfo($orderNumber: String!) {
       labName
       vendorName
       accessionNumber
+      orderNumber
       collectedDate
 
       patient {
@@ -256,6 +257,7 @@ query FindLabResultInfo($orderNumber: String!) {
         firstName
         lastName
         dob
+        patientRecord
         gender
       
         contacts {
@@ -265,11 +267,15 @@ query FindLabResultInfo($orderNumber: String!) {
 
         facility {
           id
+          name
           cliaIdNumber
         
           contacts {
             primaryContact
             address
+            city
+            state
+            zipCode
             phone
           }
         }
@@ -351,8 +357,8 @@ mutation UpdateLabTest($updateLabTestInput: UpdateLabTestInput!){
   }
 }
 
-mutation SyncLabResults {
-  syncLabResults {
+mutation SyncLabResults($updateObservationInput: UpdateObservationInput!) {
+  syncLabResults(updateObservationInput: $updateObservationInput) {
     response {
       error
       status
