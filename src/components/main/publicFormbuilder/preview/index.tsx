@@ -250,7 +250,6 @@ const PublicFormPreview = () => {
   const backStepHandler = () =>
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
 
-
   const isUnder18 = () => {
     if (formType === FormType.Appointment) {
       let ageFormElement = null;
@@ -296,6 +295,8 @@ const PublicFormPreview = () => {
 
     }
   }
+
+  
 
   return (
     <Box bgcolor={GREY_EIGHTEEN} padding={1} minHeight="100vh">

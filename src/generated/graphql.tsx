@@ -596,9 +596,9 @@ export type Claim = {
   __typename?: 'Claim';
   accept_assign?: Maybe<Scalars['String']>;
   auto_accident?: Maybe<Scalars['String']>;
-  batchId?: Maybe<Scalars['Float']>;
-  billNpi?: Maybe<Scalars['Float']>;
-  billTaxId?: Maybe<Scalars['Float']>;
+  batchId?: Maybe<Scalars['String']>;
+  billNpi?: Maybe<Scalars['String']>;
+  billTaxId?: Maybe<Scalars['String']>;
   bill_addr_1?: Maybe<Scalars['String']>;
   bill_addr_2?: Maybe<Scalars['String']>;
   bill_city?: Maybe<Scalars['String']>;
@@ -621,7 +621,7 @@ export type Claim = {
   chg_facility_state?: Maybe<Scalars['String']>;
   chg_facility_zip?: Maybe<Scalars['String']>;
   claimId?: Maybe<Scalars['String']>;
-  claimMdId?: Maybe<Scalars['Float']>;
+  claimMdId?: Maybe<Scalars['String']>;
   claim_form?: Maybe<Scalars['String']>;
   clia_number?: Maybe<Scalars['String']>;
   cond?: Maybe<OnsetDate>;
@@ -651,7 +651,7 @@ export type Claim = {
   facility_npi?: Maybe<Scalars['String']>;
   facility_state?: Maybe<Scalars['String']>;
   facility_zip?: Maybe<Scalars['String']>;
-  fileId?: Maybe<Scalars['Float']>;
+  fileId?: Maybe<Scalars['String']>;
   fileName?: Maybe<Scalars['String']>;
   from_date_1?: Maybe<Scalars['String']>;
   hosp_from_date?: Maybe<Scalars['String']>;
@@ -669,7 +669,7 @@ export type Claim = {
   ins_sex?: Maybe<Scalars['String']>;
   ins_state?: Maybe<Scalars['String']>;
   ins_zip?: Maybe<Scalars['String']>;
-  insuranceNumber?: Maybe<Scalars['Float']>;
+  insuranceNumber?: Maybe<Scalars['String']>;
   onset?: Maybe<OtherDate>;
   onset_date?: Maybe<Scalars['String']>;
   ord_name_f?: Maybe<Scalars['String']>;
@@ -704,7 +704,7 @@ export type Claim = {
   prov_name_l?: Maybe<Scalars['String']>;
   prov_name_m?: Maybe<Scalars['String']>;
   prov_npi?: Maybe<Scalars['String']>;
-  receivePayerId?: Maybe<Scalars['Float']>;
+  receivePayerId?: Maybe<Scalars['String']>;
   ref_id?: Maybe<Scalars['String']>;
   ref_name_f?: Maybe<Scalars['String']>;
   ref_name_l?: Maybe<Scalars['String']>;
@@ -714,7 +714,7 @@ export type Claim = {
   senderId?: Maybe<Scalars['String']>;
   senderName?: Maybe<Scalars['String']>;
   thru_date?: Maybe<Scalars['String']>;
-  totalCharge?: Maybe<Scalars['Float']>;
+  totalCharge?: Maybe<Scalars['String']>;
   total_charge?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -1074,6 +1074,7 @@ export type CreateClaimInput = {
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
   patientId?: Maybe<Scalars['String']>;
+  patientPaymentType?: Maybe<PatientPaymentType>;
   pos?: Maybe<Scalars['String']>;
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
