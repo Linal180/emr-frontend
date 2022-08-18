@@ -319,7 +319,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
         if (status && status === 200) {
           activeStep && Alert.success(CHANGES_SAVED);
-          activeStep === 4 && history.push(PATIENTS_ROUTE)
+          
+          shouldShowBread && activeStep === 3 && history.push(PATIENTS_ROUTE)
           dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
         }
       }
