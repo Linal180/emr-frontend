@@ -308,7 +308,10 @@ const ItemSelector: FC<ItemSelectorProps> = ({
                 )}
                 onChange={(_, data) => {
                   field.onChange(data)
-                  onSelect && onSelect(data)
+                  if (onSelect) {
+                    onSelect(data)
+                    setQuery('')
+                  }
                 }}
               />
             );

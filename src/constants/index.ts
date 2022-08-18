@@ -2261,6 +2261,7 @@ export const EMERGENCY_ACCESS_BREAD = { text: EMERGENCY_ACCESS, link: '' };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
+export const EDIT_LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: '', };
 export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 export const AGREEMENTS_BREAD = { text: AGREEMENTS, link: AGREEMENTS_ROUTE, };
 export const AUDIT_LOG_BREAD = { text: AUDIT_LOG, link: AUDIT_LOG_ROUTE, };
