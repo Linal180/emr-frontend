@@ -76,7 +76,9 @@ export interface State {
   appointmentCreateType: string
   sortBy: Order;
   agreements: AgreementsPayload['agreements'];
-  isSignature: boolean
+  isSignature: boolean;
+  isReminderModalOpen: boolean
+  reminderId: string
 }
 
 export const initialState: State = {
@@ -149,7 +151,9 @@ export const initialState: State = {
   appointmentCreateType: '',
   sortBy: DESC,
   agreements: [],
-  isSignature: false
+  isSignature: false,
+  isReminderModalOpen: false,
+  reminderId: ''
 }
 
 
@@ -217,6 +221,8 @@ export enum ActionType {
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_REMINDER_MODAL_OPEN = 'setReminderModalOpen',
+  SET_REMINDER_ID = 'setReminderId',
 }
 
 export type Action =
@@ -282,6 +288,8 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_ENCOUNTERS; encounters: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_REMINDER_MODAL_OPEN; isReminderModalOpen: boolean }
+  | { type: ActionType.SET_REMINDER_ID; reminderId: string }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -649,6 +657,18 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         calendarCurrentView: action.calendarCurrentView
+      }
+
+    case ActionType.SET_REMINDER_MODAL_OPEN:
+      return {
+        ...state,
+        isReminderModalOpen: action.isReminderModalOpen
+      }
+
+    case ActionType.SET_REMINDER_ID:
+      return {
+        ...state,
+        reminderId: action.reminderId
       }
   }
 };
