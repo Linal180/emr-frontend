@@ -1786,6 +1786,8 @@ export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
+export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
+  "Appointment reminder is sent successfully";
 export const SLOT_ALREADY_BOOKED =
   "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE =

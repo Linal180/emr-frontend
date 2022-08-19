@@ -7,7 +7,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChevronLeft, ChevronRight, Sort } from "@material-ui/icons";
+import { ChevronLeft, ChevronRight, Sort, NotificationsActiveOutlined } from "@material-ui/icons";
 import {
   Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
@@ -38,15 +38,17 @@ import {
 } from "../../utils";
 import {
   AppointmentCreateType, AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery,
-  useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus,
+  useRemoveAppointmentMutation, useUpdateAppointmentMutation, AppointmentStatus, useSendAppointmentReminderMutation,
 } from "../../generated/graphql";
 import {
   ACTION, APPOINTMENT, AppointmentSearchingTooltipData, APPOINTMENTS_ROUTE,
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY
 } from "../../constants";
+import AreYouSureModal from "./AreYouSureModal";
+import Loader from "./Loader";
 
 dotenv.config()
 
@@ -72,7 +74,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { setValue, watch } = methods
   const {
     page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery,
-    appointments, sortBy, selectDate, filterFacilityId
+    appointments, sortBy, selectDate, filterFacilityId, isReminderModalOpen, reminderId
   } = state;
   const { status, serviceId } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
@@ -153,6 +155,41 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       }
     }
   });
+
+  const clearReminder = () => {
+    dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: false })
+    dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: '' })
+  }
+
+  const [sendAppointmentReminder, { loading: sendAppointmentReminderLoading }] = useSendAppointmentReminderMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { sendAppointmentReminder: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(APPOINTMENT_REMINDER_SENT_SUCCESSFULLY);
+          clearReminder()
+        }
+      }
+    }
+  });
+
+  const sendReminder = async () => {
+    try {
+      await sendAppointmentReminder({
+        variables: { appointmentId: reminderId }
+      })
+    } catch (error) { }
+  }
+
 
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
     onError() {
@@ -347,6 +384,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   >
     <Sort />
   </IconButton>;
+
+  if (sendAppointmentReminderLoading) {
+    return <Loader loading loaderText="Sending Appointment Reminder" />
+  }
 
   return (
     <>
@@ -570,6 +611,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
+                            {
+                              status !== AppointmentStatus.Cancelled && <Box className={`${classes.iconsBackground}`}>
+                                <Button
+                                  onClick={() => {
+                                    id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
+                                    dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
+                                  }}
+                                >
+                                  <NotificationsActiveOutlined />
+                                </Button>
+                              </Box>
+                            }
+
+
                             <Box className={cantUpdate ? classes.iconsBackgroundDisabled : classes.iconsBackground}>
                               <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}
                                 disabled={cantUpdate}
@@ -613,6 +668,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           </Box>
         </Box>
       </Box>
+
+      {isReminderModalOpen &&
+        <AreYouSureModal
+          isOpen={isReminderModalOpen}
+          handleClose={clearReminder}
+          content="Send Reminder to Patient?"
+          handleSubmit={() => sendReminder()}
+        />
+      }
 
       {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" p={3}>
