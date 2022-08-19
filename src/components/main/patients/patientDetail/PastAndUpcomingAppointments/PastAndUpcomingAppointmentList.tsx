@@ -101,7 +101,7 @@ const PastAndUpcomingAppointmentList: FC<PastAndUpcomingAppointmentListProps> = 
   }
 
   return (
-    <Box>
+    <Box pb={2}>
       {appointments?.map(appointment => {
         const {
           id, scheduleStartDateTime, appointmentType, provider, facility, token, status, appointmentCreateType, checkedInAt

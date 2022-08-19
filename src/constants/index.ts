@@ -2305,7 +2305,7 @@ export const PROFILE_TOP_TABS = [
     value: "2",
   },
   {
-    title: "Past And Upcoming Appointments",
+    title: "Appointments",
     value: "3",
   },
   // {

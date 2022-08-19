@@ -167,7 +167,7 @@ const PastAndUpcomingAppointments: FC = (): JSX.Element => {
         </TabList>
 
         <TabPanel value="1">
-          <Box className={classes.searchContainer}>
+          <Box mb={2} maxWidth={450}>
             <Search info search={searchUpcoming} tooltipData={AppointmentSearchingTooltipData} />
           </Box>
 
@@ -180,27 +180,27 @@ const PastAndUpcomingAppointments: FC = (): JSX.Element => {
                   <NoDataFoundComponent />
                 </Box>
               )}
-
-              {
-                totalPagesComing > 1 &&
-                <Box display="flex" justifyContent="flex-end" p={3}>
-                  <Pagination
-                    shape="rounded"
-                    variant="outlined"
-                    page={pageComing}
-                    count={totalPagesComing}
-                    onChange={handleComingChange}
-                  />
-                </Box>
-              }
             </CardComponent>
+
+            {
+              totalPagesComing > 1 &&
+              <Box display="flex" justifyContent="flex-end" pt={3}>
+                <Pagination
+                  shape="rounded"
+                  variant="outlined"
+                  page={pageComing}
+                  count={totalPagesComing}
+                  onChange={handleComingChange}
+                />
+              </Box>
+            }
 
           </Box>
         </TabPanel>
 
         <TabPanel value="2">
           <Box maxHeight={`calc(100vh - 320px)`} overflow='auto'>
-            <Box className={classes.searchContainer}>
+            <Box mb={2} maxWidth={450}>
               <Search search={searchPast} info tooltipData={AppointmentSearchingTooltipData} />
             </Box>
 
@@ -212,20 +212,19 @@ const PastAndUpcomingAppointments: FC = (): JSX.Element => {
                   <NoDataFoundComponent />
                 </Box>
               )}
-
-              {
-                totalPagesCompleted > 1 &&
-                <Box display="flex" justifyContent="flex-end" p={3}>
-                  <Pagination
-                    shape="rounded"
-                    variant="outlined"
-                    page={pageCompleted}
-                    count={totalPagesCompleted}
-                    onChange={handlePastChange}
-                  />
-                </Box>
-              }
             </CardComponent>
+
+            {totalPagesCompleted > 1 &&
+              <Box display="flex" justifyContent="flex-end" pt={3}>
+                <Pagination
+                  shape="rounded"
+                  variant="outlined"
+                  page={pageCompleted}
+                  count={totalPagesCompleted}
+                  onChange={handlePastChange}
+                />
+              </Box>
+            }
           </Box>
         </TabPanel>
       </TabContext>
