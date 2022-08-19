@@ -101,6 +101,7 @@ export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank acc
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
 export const COMPANY_NAME = 'Insurance Company Name'
+export const CHECKED_IN_SUCCESSFULLY = "Checked in successfully!";
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
@@ -1378,6 +1379,7 @@ export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
 export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
+export const CHECKED_IN='CHECKED IN'
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const PRIMARY_CARE_PROVIDER = "Primary Care Provider";
@@ -2189,6 +2191,18 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Document Verification" },
 ];
 
+// Appointment Tabs
+export const APPOINTMENT_TABS = [
+  {
+    title: "Upcoming Appointments",
+    value: "1",
+  },
+  {
+    title: "Past Appointments",
+    value: "2",
+  },
+];
+
 // Breadcrumb links
 export const SERVICES_BREAD = (facilityId: string) => {
   return { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
@@ -2287,10 +2301,10 @@ export const PROFILE_TOP_TABS = [
     title: "Insurance",
     value: "2",
   },
-  // {
-  //   title: "Registration",
-  //   value: "3",
-  // },
+  {
+    title: "Past And Upcoming Appointments",
+    value: "3",
+  },
   // {
   //   title: "Messaging",
   //   value: "4",

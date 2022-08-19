@@ -788,6 +788,12 @@ export interface DocumentViewerProps {
   handleClose: () => void
 }
 
+export type PastAndUpcomingAppointmentListProps = {
+  past?: boolean
+  appointments: AppointmentsPayload['appointments'];
+  reload?: Function;
+};
+
 export interface InsuranceCardsProps {
   isOpen: boolean
   handleClose: () => void

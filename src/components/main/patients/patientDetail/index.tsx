@@ -38,6 +38,7 @@ import { Action as mediaAction, ActionType as mediaActionType, initialState as m
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { hasEncounter } from '../../../../utils';
+import PastAndUpcomingAppointments from "./PastAndUpcomingAppointments";
 // import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -322,6 +323,10 @@ const PatientDetailsComponent = (): JSX.Element => {
 
           <TabPanel value="2">
             <Insurance />
+          </TabPanel>
+
+          <TabPanel value="3">
+            <PastAndUpcomingAppointments />
           </TabPanel>
 
           <TabPanel value="8">
