@@ -1,6 +1,6 @@
 import { makeStyles, Theme, Tooltip, withStyles } from "@material-ui/core";
 import {
-  BLACK_TWO, BLUE, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN, 
+  BLACK_TWO, BLUE, BLUE_TWO, GRAY_ELEVEN, GRAY_SIX, GREEN_TWO, GREY, GREY_EIGHTEEN, GREY_ELEVEN,
   GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
@@ -18,9 +18,9 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 
 export const useTableStyles = makeStyles(() => ({
   table: {
-    minWidth : 1200
+    minWidth: 1200
   },
-  
+
   searchBox: {
     backgroundColor: GREY,
     borderRadius: 4,
@@ -196,10 +196,10 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
-  fullFlex:{
-    flex : 1
+  fullFlex: {
+    flex: 1
   },
-  
+
   firstRowBg: {
     backgroundColor: GREEN_TWO,
   },
@@ -231,9 +231,24 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   modifiers: {
-    '& .MuiFormControl-marginNormal':{
-      marginBottom : 0,
-      paddingBottom :0
+    '& .MuiFormControl-marginNormal': {
+      marginBottom: 0,
+      paddingBottom: 0
     }
+  },
+
+  tab: {
+    flexDirection: "row-reverse"
+  },
+
+  tabWrapper: {
+    '& .MuiTab-root': {
+      maxWidth: '100%',
+      fontSize: '0.875rem',
+
+      '&.Mui-selected': {
+        borderBottom: '2px solid #204ECF'
+      }
+    },
   }
 }))
