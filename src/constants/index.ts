@@ -1588,6 +1588,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const OPEN_CAMERA = "Open Camera"
 export const LONG_URL_TEXT = "URL";
 export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";

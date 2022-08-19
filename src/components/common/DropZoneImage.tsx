@@ -6,8 +6,9 @@ import { DropzoneArea } from "material-ui-dropzone";
 import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
+import CameraComponent from "./Camera";
 // styles, utils, graphql, constants and interfaces/types block
-import { getToken } from "../../utils";
+import { blobToFile, getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
@@ -16,14 +17,13 @@ import {
   MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
 import {
-  ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT, PLEASE_SELECT_MEDIA,
-  SOMETHING_WENT_WRONG
+  ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT, PLEASE_SELECT_MEDIA, SOMETHING_WENT_WRONG
 } from "../../constants";
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles, numberOfFiles
+  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -185,14 +185,28 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         handleModalClose();
         Alert.error(SOMETHING_WENT_WRONG);
       });
-    }): numberOfFiles ? numberOfFiles===0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
+    }) : numberOfFiles ? numberOfFiles === 0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
   const handleUpdateImage = () => setImageEdit(true)
 
+  const sendFileHandler = (blob: Blob | null) => {
+    if (blob) {
+      const file = blobToFile(blob, 'front-end');
+      setFiles([file])
+      setAttachmentFiles && setAttachmentFiles([file])
+    }
+  }
+
+  const invisibleHandler = (open: boolean) => {
+    setCameraOpen(open)
+    setFiles([])
+    setAttachmentFiles && setAttachmentFiles(files)
+  }
+
   return (
     <>
-      {loading && (
+      {!cameraOpen && <>{loading && (
         <Box className={classes.dropZoneUploadedImage}>
           <Box className={classes.loadingText}>
             <CircularProgress size={40} />
@@ -200,57 +214,61 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         </Box>
       )}
 
-      {attachment?.url && !loading && !imageEdit ? (
-        <Box className={classes.dropZoneUploadedImage}>
-          {isDisabled && <Box className={classes.disabledDropzone} />}
-
-          <img src={attachment.url} alt="option icon" />
-          {!isDisabled && (
-            <Box className={classes.updateOverlay}>
-              <Box>
-                <IconButton onClick={handleUpdateImage} aria-label="Edit image">
-                  <Edit />
-                </IconButton>
-              </Box>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        !loading && (
-          <Box position="relative">
+        {attachment?.url && !loading && !imageEdit ? (
+          <Box className={classes.dropZoneUploadedImage}>
             {isDisabled && <Box className={classes.disabledDropzone} />}
 
-            {imageEdit && !isDisabled && (
-              <Box position="absolute" zIndex={3} right={10} top={5}>
-                <Button
-                  className={''}
-                  variant="text"
-                  color="primary"
-                  onClick={() => setImageEdit(false)}
-                >
-                  Go Back
-                </Button>
+            <img src={attachment.url} alt="option icon" />
+            {!isDisabled && (
+              <Box className={classes.updateOverlay}>
+                <Box>
+                  <IconButton onClick={handleUpdateImage} aria-label="Edit image">
+                    <Edit />
+                  </IconButton>
+                </Box>
               </Box>
             )}
-
-            <Box className={classes.dropzoneAreaPreviewList}>
-              <DropzoneArea
-                previewGridClasses={{ item: classes.mediaInnerImage }}
-                filesLimit={filesLimit ?? 1}
-                maxFileSize={5000000}
-                acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
-                onChange={(files) => {
-                  setFiles(files)
-                  setAttachmentFiles && setAttachmentFiles(files)
-                }}
-                alertSnackbarProps={{ autoHideDuration: 3000 }}
-                dropzoneText={imageEdit ?
-                  PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
-              />
-            </Box>
           </Box>
-        )
-      )}
+        ) : (
+          !loading && (
+            <Box position="relative">
+              {isDisabled && <Box className={classes.disabledDropzone} />}
+
+              {imageEdit && !isDisabled && (
+                <Box position="absolute" zIndex={3} right={10} top={5}>
+                  <Button
+                    className={''}
+                    variant="text"
+                    color="primary"
+                    onClick={() => setImageEdit(false)}
+                  >
+                    Go Back
+                  </Button>
+                </Box>
+              )}
+
+              <Box className={classes.dropzoneAreaPreviewList}>
+                <DropzoneArea
+                  previewGridClasses={{ item: classes.mediaInnerImage }}
+                  filesLimit={filesLimit ?? 1}
+                  maxFileSize={5000000}
+                  acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
+                  onChange={(files) => {
+                    setFiles(files)
+                    setAttachmentFiles && setAttachmentFiles(files)
+                  }}
+                  alertSnackbarProps={{ autoHideDuration: 3000 }}
+                  dropzoneText={imageEdit ?
+                    PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
+                />
+              </Box>
+            </Box>
+          )
+        )}
+      </>}
+
+      {cameraOpen && <CameraComponent sendFile={sendFileHandler} open={cameraOpen} invisibleHandler={invisibleHandler} />}
+
     </>
   );
 });

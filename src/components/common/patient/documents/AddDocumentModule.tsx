@@ -1,5 +1,5 @@
 // packages block
-import { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -27,6 +27,8 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
   const { files, documentTypeId } = state || {}
+  const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+
   const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(addDocumentSchema)
@@ -170,6 +172,8 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                   handleClose={handleClose}
                   reload={() => fetchDocuments()}
                   setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
+                  cameraOpen={cameraOpen}
+                  setCameraOpen={setCameraOpen}
                 />
 
                 {validated && !!!files?.length &&

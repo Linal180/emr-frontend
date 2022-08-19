@@ -928,7 +928,9 @@ export interface DropzoneImageType {
   setAttachments: Function;
   acceptableFilesType?: string[]
   setFiles?: Function
-  numberOfFiles?: number
+  numberOfFiles?: number;
+  cameraOpen: boolean
+  setCameraOpen: (open: boolean) => void
 }
 
 interface Message {
@@ -1104,7 +1106,7 @@ export interface MediaCardsType {
   reload: Function;
   btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
-  attachmentMetadata?: any
+  attachmentMetadata?: any,
 }
 
 export interface DropDownItems {
@@ -1120,7 +1122,7 @@ export interface IMediaControl extends IFieldTypes {
   control: Control<ICreateMediaInput, object>;
 }
 
-export interface MediaCardComponentType {
+export type MediaCardComponentType = {
   title: string;
   isEdit: boolean;
   isOpen: boolean;

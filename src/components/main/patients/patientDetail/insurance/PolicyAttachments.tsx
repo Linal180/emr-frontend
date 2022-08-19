@@ -29,7 +29,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
     const { id: patientId } = useParams<ParamsType>()
     const dropZoneRef = useRef<FormForwardRef>(null);
 
-    const [{ documentTypeId, openDelete, policyAttachmentId, attachments }, insuranceDispatch] =
+    const [{ documentTypeId, openDelete, policyAttachmentId, attachments, cameraOpen }, insuranceDispatch] =
       useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
 
     const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
@@ -190,6 +190,8 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
                   })}
                 numberOfFiles={numberOfFiles}
                 acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
+                cameraOpen={cameraOpen}
+                setCameraOpen={(value) => dispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: value })}
               />
             }
 
