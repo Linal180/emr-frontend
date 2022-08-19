@@ -136,6 +136,16 @@ mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!){
   }
 }
 
+mutation SendAppointmentReminder($appointmentId: String!){
+  sendAppointmentReminder(appointmentId: $appointmentId){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
 mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
   updateAppointment(updateAppointmentInput: $updateAppointmentInput){
     response {
@@ -284,32 +294,57 @@ query FindAppointmentInsuranceStatus($appointmentId: String!){
 query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
   findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
     response {
+      error
       status
+      message
     }
     
-		 appointments {
+    appointments {
       id
+      notes
+      reason
+      token
       status
-      scheduleStartDateTime
+      patientId
+      employment
+      paymentType
+      autoAccident
+      otherAccident
+      primaryInsurance
+      secondaryInsurance
       scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentCreateType
+      billingStatus
+      checkedInAt
+      createdAt
+      updatedAt
       
       appointmentType {
         id
         name
+        price
         duration
+        serviceType
       }
       
       provider {
         id
-        firstName
         lastName
+        firstName
+        telehealthLink
       }
-      
+
       patient {
         id
         firstName
         lastName
       }
+    }
+
+    pagination {
+      page
+      totalPages
     }
   }
 }

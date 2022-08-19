@@ -58,6 +58,36 @@ body {
   cursor: pointer !important;
 }
 
+.media-image {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.media-image img {
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.media-image .media-overlay {
+  position: absolute;
+  top: 200px;
+  left: 0;
+  background: rgba(255, 255, 255, 0.7);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .4s ease-in-out;
+}
+
+.media-image:hover .media-overlay {
+  top: 0;
+  z-index: 99;
+}
+
 .overflowY-auto {
   overflow-y: auto;
   overflow-x: hidden;

@@ -1105,6 +1105,7 @@ export const createAgreementSchema = yup.object({
 
 export const profileSchema = yup.object({
   phone: notRequiredPhone(CONTACT_NUMBER),
+  zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 })
 
 

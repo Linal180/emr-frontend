@@ -13,6 +13,7 @@ export interface State {
   insuranceId: SelectorOption
   numberOfFiles: number
   attachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
+  cameraOpen: boolean;
 }
 
 export const initialState: State = {
@@ -26,6 +27,7 @@ export const initialState: State = {
   documentTypeId: '',
   policyAttachmentId: '',
   attachments: [],
+  cameraOpen: false
 }
 
 export enum ActionType {
@@ -38,12 +40,14 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_DOCUMENT_TYPE_ID = 'setDocumentTypeId',
   SET_POLICY_ATTACHMENT_ID = 'setPolicyAttachmentId',
-  SET_ATTACHMENTS = 'setAttachments'
+  SET_ATTACHMENTS = 'setAttachments',
+  SET_CAMERA_OPEN = 'setCameraOpen',
 }
 
 export type Action =
   | { type: ActionType.SET_POLICY_ID, policyId: string }
   | { type: ActionType.SET_ACTIVE_STEP, activeStep: number }
+  | { type: ActionType.SET_CAMERA_OPEN, cameraOpen: boolean }
   | { type: ActionType.SET_IS_FORM_LOADED, isFormLoaded: boolean }
   | { type: ActionType.SET_POLICY_HOLDER_ID, policyHolderId: string }
   | { type: ActionType.SET_INSURANCE_ID, insuranceId: SelectorOption }
@@ -114,6 +118,12 @@ export const insuranceReducer = (state: State, action: Action): State => {
       return {
         ...state,
         attachments: action.attachments
+      }
+
+    case ActionType.SET_CAMERA_OPEN:
+      return {
+        ...state,
+        cameraOpen: action.cameraOpen
       }
   }
 };

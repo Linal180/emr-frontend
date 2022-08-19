@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -2712,6 +2713,7 @@ export type Mutation = {
   resentOTP: UserPayload;
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
+  sendAppointmentReminder: AppointmentPayload;
   sendInviteToPatient: PatientPayload;
   sendSms: SmsPayload;
   update2FactorAuth: UserPayload;
@@ -3166,6 +3168,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationSaveUserFormValuesArgs = {
   createUserFormInput: CreateUserFormInput;
+};
+
+
+export type MutationSendAppointmentReminderArgs = {
+  appointmentId: Scalars['String'];
 };
 
 
@@ -6634,6 +6641,13 @@ export type CreateAppointmentMutationVariables = Exact<{
 
 export type CreateAppointmentMutation = { __typename?: 'Mutation', createAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type SendAppointmentReminderMutationVariables = Exact<{
+  appointmentId: Scalars['String'];
+}>;
+
+
+export type SendAppointmentReminderMutation = { __typename?: 'Mutation', sendAppointmentReminder: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type UpdateAppointmentMutationVariables = Exact<{
   updateAppointmentInput: UpdateAppointmentInput;
 }>;
@@ -6688,7 +6702,7 @@ export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentCreateType?: AppointmentCreateType | null, billingStatus: BillingStatus, checkedInAt?: string | null, createdAt?: string | null, updatedAt?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null, telehealthLink?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type FindPatientLastAppointmentQueryVariables = Exact<{
   lastVisitedAppointmentInput: LastVisitedAppointmentInput;
@@ -8436,6 +8450,43 @@ export function useCreateAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateAppointmentMutationHookResult = ReturnType<typeof useCreateAppointmentMutation>;
 export type CreateAppointmentMutationResult = Apollo.MutationResult<CreateAppointmentMutation>;
 export type CreateAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateAppointmentMutation, CreateAppointmentMutationVariables>;
+export const SendAppointmentReminderDocument = gql`
+    mutation SendAppointmentReminder($appointmentId: String!) {
+  sendAppointmentReminder(appointmentId: $appointmentId) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendAppointmentReminderMutationFn = Apollo.MutationFunction<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
+
+/**
+ * __useSendAppointmentReminderMutation__
+ *
+ * To run a mutation, you first call `useSendAppointmentReminderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendAppointmentReminderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendAppointmentReminderMutation, { data, loading, error }] = useSendAppointmentReminderMutation({
+ *   variables: {
+ *      appointmentId: // value for 'appointmentId'
+ *   },
+ * });
+ */
+export function useSendAppointmentReminderMutation(baseOptions?: Apollo.MutationHookOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>(SendAppointmentReminderDocument, options);
+      }
+export type SendAppointmentReminderMutationHookResult = ReturnType<typeof useSendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationResult = Apollo.MutationResult<SendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationOptions = Apollo.BaseMutationOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
 export const UpdateAppointmentDocument = gql`
     mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!) {
   updateAppointment(updateAppointmentInput: $updateAppointmentInput) {
@@ -8772,28 +8823,52 @@ export const FindAllUpcomingAppointmentsDocument = gql`
     upComingAppointmentsInput: $upComingAppointmentsInput
   ) {
     response {
+      error
       status
+      message
     }
     appointments {
       id
+      notes
+      reason
+      token
       status
-      scheduleStartDateTime
+      patientId
+      employment
+      paymentType
+      autoAccident
+      otherAccident
+      primaryInsurance
+      secondaryInsurance
       scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentCreateType
+      billingStatus
+      checkedInAt
+      createdAt
+      updatedAt
       appointmentType {
         id
         name
+        price
         duration
+        serviceType
       }
       provider {
         id
-        firstName
         lastName
+        firstName
+        telehealthLink
       }
       patient {
         id
         firstName
         lastName
       }
+    }
+    pagination {
+      page
+      totalPages
     }
   }
 }

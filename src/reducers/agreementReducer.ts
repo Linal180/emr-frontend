@@ -18,6 +18,7 @@ export interface State {
   signatureRequired: boolean
   viewAgreementBeforeAgreeing: boolean
   agreements: AgreementsPayload['agreements']
+  cameraOpen: boolean;
 }
 
 export const initialState: State = {
@@ -38,6 +39,7 @@ export const initialState: State = {
   signatureRequired: false,
   descriptionType: 'Text Editor',
   viewAgreementBeforeAgreeing: false,
+  cameraOpen: false
 }
 
 export enum ActionType {
@@ -48,6 +50,7 @@ export enum ActionType {
   SET_WITH_FILE = 'setWithFile',
   SET_AGREEMENTS = 'setAgreements',
   SET_BODY_STATUS = 'setBodyStatus',
+  SET_CAMERA_OPEN = 'setCameraOpen',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_AGREEMENT_ID = 'setAgreementId',
@@ -66,6 +69,7 @@ export type Action =
   | { type: ActionType.SET_FILES, files: File[] }
   | { type: ActionType.SET_IS_LOADED, isLoaded: boolean }
   | { type: ActionType.SET_WITH_FILE, withFile: boolean }
+  | { type: ActionType.SET_CAMERA_OPEN, cameraOpen: boolean }
   | { type: ActionType.SET_OPEN_DELETE, openDelete: boolean }
   | { type: ActionType.SET_BODY_STATUS, bodyStatus: boolean }
   | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
@@ -73,8 +77,8 @@ export type Action =
   | { type: ActionType.SET_AGREEMENT_URL, agreementUrl: string }
   | { type: ActionType.SET_AGREEMENT_BODY, agreementBody: string }
   | { type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: string }
-  | { type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: string }
   | { type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: boolean }
+  | { type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: string }
   | { type: ActionType.SET_SIGNATURE_REQUIRED, signatureRequired: boolean }
   | { type: ActionType.SET_AGREEMENTS, agreements: AgreementsPayload['agreements'] }
   | { type: ActionType.SET_VIEW_AGREEMENT_BEFORE_AGREEING, viewAgreementBeforeAgreeing: boolean }
@@ -181,6 +185,12 @@ export const agreementReducer = (state: State, action: Action): State => {
       return {
         ...state,
         bodyStatus: action.bodyStatus
+      }
+
+    case ActionType.SET_CAMERA_OPEN:
+      return {
+        ...state,
+        cameraOpen: action.cameraOpen
       }
   }
 };
