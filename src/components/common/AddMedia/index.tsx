@@ -12,7 +12,6 @@ import DropzoneImage from "..//DropZoneImage";
 import { mediaType } from "../../../utils";
 import { ADD, ADD_MEDIA, OPEN_CAMERA } from "../../../constants";
 import { TrashNewIcon } from "../../../assets/svgs";
-import { useEditMediaModalStyles } from "../../../styles/editMediaModalStyles";
 import { FormForwardRef, ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { CreateAttachmentInput, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer"
@@ -23,7 +22,6 @@ const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
   title, reload, providerName, filesLimit, attachmentMetadata, btnType = 'button'
 }): JSX.Element => {
-  const classes = useEditMediaModalStyles();
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<ICreateMediaInput>();
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
@@ -108,10 +106,10 @@ const AddImageModal: FC<MediaModalTypes> = ({
       <FormProvider {...methods}>
         <DialogContent>
           {fileUrl ?
-            <Box className={classes.mediaImage}>
+            <Box className="media-image">
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
-              <Box className={classes.mediaOverlay}>
+              <Box className="media-overlay">
                 <IconButton aria-label="delete" color="secondary" onClick={handleDelete}>
                   <TrashNewIcon />
                 </IconButton>
