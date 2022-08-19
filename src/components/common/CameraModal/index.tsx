@@ -3,10 +3,8 @@ import { FC } from 'react';
 import { Dialog } from '@material-ui/core';
 //component
 import CameraComponent from '../Camera';
-
-type CameraModalProps = {
-  open: boolean;
-}
+//interface
+import { CameraModalProps } from '../../../interfacesTypes';
 
 const CameraModal: FC<CameraModalProps> = ({ open }): JSX.Element => {
 

@@ -1981,3 +1981,13 @@ export type SelfPayComponentProps = {
   isOpen: boolean;
   checkOutHandler: Function
 }
+
+export type CameraComponentProps = {
+  sendFile: (blob: Blob | null) => void;
+  invisibleHandler: (open: boolean) => void;
+  open: boolean
+}
+
+export type CameraModalProps = {
+  open: boolean;
+}

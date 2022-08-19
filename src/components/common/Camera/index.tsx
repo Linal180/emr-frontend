@@ -1,12 +1,8 @@
 import { Box, IconButton } from "@material-ui/core";
 import { CameraAlt, Cancel } from "@material-ui/icons";
 import { useCallback, useEffect, useState } from "react";
-
-type CameraComponentProps = {
-  sendFile: (blob: Blob | null) => void;
-  invisibleHandler: (open: boolean) => void;
-  open: boolean
-}
+//interface
+import { CameraComponentProps } from "../../../interfacesTypes";
 
 const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentProps) => {
 
