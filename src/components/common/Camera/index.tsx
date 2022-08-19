@@ -30,7 +30,6 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
 
   const processDevices = useCallback((devices: MediaDeviceInfo[]) => {
     devices.forEach(device => {
-      console.log(device.label);
       setDevice(device);
     });
   }, [setDevice])

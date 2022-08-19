@@ -40,7 +40,6 @@ const CardComponent: FC<CardComponentType> = ({
             </Box>
           ) : saveBtn
             ? typeof activeStep === 'number' &&
-            activeStep < 6 &&
             <Button
               variant="contained" color='primary' type={onSubmitClick ? 'button' : 'submit'}
               disabled={disableSubmit}
