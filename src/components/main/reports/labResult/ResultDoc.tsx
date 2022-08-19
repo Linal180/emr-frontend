@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
-    fontSize: 14,
+    fontSize: 12,
   },
   tableRow: {
     margin: "auto",
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     minHeight: '30px',
     minWidth: '170px',
     padding: '7px',
+    overflow: 'hidden',
     backgroundColor: '#eee',
   },
   fieldTitle2: {
