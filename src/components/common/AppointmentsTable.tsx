@@ -21,6 +21,8 @@ import ConfirmationModal from "./ConfirmationModal";
 import ServicesSelector from "./Selector/ServiceSelector";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 import FacilitySelector from "./Selector/FacilitySelector";
+import AreYouSureModal from "./AreYouSureModal";
+import Loader from "./Loader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import history from "../../history";
 import { AuthContext } from "../../context";
@@ -45,10 +47,8 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER
 } from "../../constants";
-import AreYouSureModal from "./AreYouSureModal";
-import Loader from "./Loader";
 
 dotenv.config()
 
@@ -386,7 +386,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   </IconButton>;
 
   if (sendAppointmentReminderLoading) {
-    return <Loader loading loaderText="Sending Appointment Reminder" />
+    return <Loader loading loaderText={SENDING_APPOINTMENT_REMINDER} />
   }
 
   return (

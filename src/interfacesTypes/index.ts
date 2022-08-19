@@ -781,12 +781,12 @@ export interface CoverageDetailsHeaderProps {
   policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
 }
 
-export interface ViewerProps {
+export type ViewerProps = {
   isOpen: boolean
   handleClose: () => void
 }
 
-export interface AreYouSureModalProps extends ViewerProps {
+export type AreYouSureModalProps = ViewerProps & {
   handleSubmit?: Function
   content?: string
 }

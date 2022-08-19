@@ -831,6 +831,7 @@ export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const SERVICES = "Services";
 export const FACILITY = "Facility";
+export const SENDING_APPOINTMENT_REMINDER = "Sending Appointment Reminder"
 export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";

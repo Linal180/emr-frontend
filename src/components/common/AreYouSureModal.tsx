@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
-import { CANCEL, N_A } from '../../constants'
+import { CANCEL, N_A, SUBMIT } from '../../constants'
 import { AreYouSureModalProps } from '../../interfacesTypes'
 
 function AreYouSureModal({ isOpen, handleClose, handleSubmit, content }: AreYouSureModalProps) {
@@ -24,7 +24,7 @@ function AreYouSureModal({ isOpen, handleClose, handleSubmit, content }: AreYouS
           <Box p={1} />
 
           <Button variant="contained" color="primary" onClick={() => { handleSubmit && handleSubmit() }}>
-            Submit
+            {SUBMIT}
           </Button>
         </Box>
       </DialogActions>
