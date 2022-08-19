@@ -26,7 +26,7 @@ import {
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
-  const { currentUser, user } = useContext(AuthContext);
+  const { currentUser, user, fetchUser } = useContext(AuthContext);
   const { id, attachments } = currentUser || {}
   const { roles } = user || {}
 
@@ -136,6 +136,7 @@ const SignatureComponent = (): JSX.Element => {
       fetchAttachments()
       setLoading(false)
       setOpen(false)
+      fetchUser()
     }).then(() => { })
       .catch(error => {
         const { response: { data: { error: errorMessage } } } = error || {}
