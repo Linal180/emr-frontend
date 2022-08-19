@@ -4,6 +4,8 @@ import {
   CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes,
   FormControlLabel, Checkbox, Typography, Box
 } from "@material-ui/core";
+//components
+import Signature from "./signature";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
@@ -13,7 +15,7 @@ import {
 } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({
-  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar, onSignatureEnd, cancelText
 }): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
@@ -62,15 +64,18 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
       </DialogContent>
 
       <Box display="flex" ml={4} pb={2}>
-        <FormControlLabel
+        {isSign ? <Signature controllerName="signature" onSignatureEnd={(file) => {
+          setChecked(!!file)
+          onSignatureEnd && onSignatureEnd(file)
+        }} isController={false} /> : <FormControlLabel
           control={<Checkbox color="primary" checked={checked} onChange={handleChange} />}
           label={description}
-        />
+        />}
       </Box>
 
       <DialogActions>
         <Button onClick={handleClose} color="default" variant="text">
-          {CANCEL}
+          {cancelText || CANCEL}
         </Button>
 
         <Button onClick={onDelete} disabled={!checked || isLoading} variant="outlined" className={checked ? isSign ? 'success' : 'danger' : ''}>

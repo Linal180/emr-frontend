@@ -285,7 +285,14 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'Admin' : `${firstName} ${lastName}` })
-  }, [admin, firstName, lastName])
+  }, [admin, firstName, lastName]);
+
+
+  const onSignatureEnd = (file: File | null) => {
+    if (!!file) {
+      
+    }
+  }
 
   return (
     <>
@@ -305,7 +312,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                 {PENDING}
               </Typography>
 
-              <Typography className={isSignedTab ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox }
+              <Typography className={isSignedTab ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
                 onClick={() => dispatch({ type: ActionType.SET_IS_SIGNED_TAB, isSignedTab: true })}
               >
                 {SIGNED}
@@ -459,6 +466,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           setOpen={(open: boolean) =>
             dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
           }
+          onSignatureEnd={onSignatureEnd}
         />
 
         {isOpen && <DocumentViewer

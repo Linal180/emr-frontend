@@ -170,6 +170,8 @@ export interface ConfirmationTypes extends DialogTypes {
   learnMoreText?: string
   aboutToText?: string
   isCalendar?: boolean;
+  onSignatureEnd?: (file: File | null) => void;
+  cancelText?: string;
 }
 
 interface ControlLabel {
@@ -1914,9 +1916,11 @@ export interface FormDoctorSelectorProps extends FacilitySelectorProps {
   formDispatch?: Dispatch<PublicFormBuilderAction>
 }
 
-export interface SignatureProps {
+export type SignatureProps = {
   onSignatureEnd: (file: File | null) => void,
-  controllerName: string
+  controllerName: string;
+  title?: string;
+  isController?: boolean;
 }
 
 export interface EncounterPros {
