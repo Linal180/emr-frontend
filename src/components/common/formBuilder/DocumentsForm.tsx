@@ -50,6 +50,7 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
     const fileName = url?.split(/_(.+)/)[1].replaceAll(/%\d./g, "") || '';
     const filteredFileName = fileName.length > 40 ? `${fileName.substr(0, 40)}....` : fileName
     const fileExtension: DefaultExtensionType = url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
+
     if (attachment) {
       return (
         <Box display="flex" alignItems="center" key={attachmentId}
@@ -70,7 +71,9 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
           </IconButton>
         </Box>
       )
-    } else return (
+    }
+
+    return (
       <MediaCards
         title={title}
         reload={() => fetchDocuments()}

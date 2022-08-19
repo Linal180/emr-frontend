@@ -2264,3 +2264,9 @@ export const calculateAge = (birthday: string) => {
 
 export const getFormEmbeddedLink = (src: string): string =>
   `<iframe width="560" height="315" src="${src}" frameborder="0" allow="accelerometer; allowfullscreen"></iframe>`
+
+export const blobToFile = (theBlob: Blob, fileName: string): File => {
+  const lastModified = new Date().getTime()
+  const file = new File([theBlob], `${fileName}.png`, { lastModified, type: 'image/png' });
+  return file
+}
