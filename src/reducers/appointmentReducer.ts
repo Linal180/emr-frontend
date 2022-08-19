@@ -80,6 +80,8 @@ export interface State {
   searchComingQuery: string
   searchPastQuery: string
   tabValue: string
+  isReminderModalOpen: boolean
+  reminderId: string
 }
 
 export const initialState: State = {
@@ -155,7 +157,9 @@ export const initialState: State = {
   isSignature: false,
   searchComingQuery: '',
   searchPastQuery: '',
-  tabValue: '1'
+  tabValue: '1',
+  isReminderModalOpen: false,
+  reminderId: ''
 }
 
 
@@ -225,7 +229,9 @@ export enum ActionType {
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
   SET_SEARCH_COMING_QUERY = 'setSearchComingQuery',
   SET_SEARCH_PAST_QUERY = 'setSearchPastQuery',
-  SET_TAB_VALUE = 'setTabValue'
+  SET_TAB_VALUE = 'setTabValue',
+  SET_REMINDER_MODAL_OPEN = 'setReminderModalOpen',
+  SET_REMINDER_ID = 'setReminderId',
 }
 
 export type Action =
@@ -294,6 +300,8 @@ export type Action =
   | { type: ActionType.SET_SEARCH_COMING_QUERY; searchComingQuery: string }
   | { type: ActionType.SET_SEARCH_PAST_QUERY; searchPastQuery: string }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
+  | { type: ActionType.SET_REMINDER_MODAL_OPEN; isReminderModalOpen: boolean }
+  | { type: ActionType.SET_REMINDER_ID; reminderId: string }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
       id: string,
@@ -679,6 +687,18 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         tabValue: action.tabValue
+      }
+      
+    case ActionType.SET_REMINDER_MODAL_OPEN:
+      return {
+        ...state,
+        isReminderModalOpen: action.isReminderModalOpen
+      }
+
+    case ActionType.SET_REMINDER_ID:
+      return {
+        ...state,
+        reminderId: action.reminderId
       }
   }
 };

@@ -832,6 +832,7 @@ export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const SERVICES = "Services";
 export const FACILITY = "Facility";
+export const SENDING_APPOINTMENT_REMINDER = "Sending Appointment Reminder"
 export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
@@ -1788,6 +1789,8 @@ export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
+export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
+  "Appointment reminder is sent successfully";
 export const SLOT_ALREADY_BOOKED =
   "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE =

@@ -781,9 +781,7 @@ export interface CoverageDetailsHeaderProps {
   policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
 }
 
-export interface DocumentViewerProps {
-  url: string
-  title?: string
+export type ViewerProps = {
   isOpen: boolean
   handleClose: () => void
 }
@@ -793,6 +791,16 @@ export type PastAndUpcomingAppointmentListProps = {
   appointments: AppointmentsPayload['appointments'];
   reload?: Function;
 };
+
+export type AreYouSureModalProps = ViewerProps & {
+  handleSubmit?: Function
+  content?: string
+}
+
+export interface DocumentViewerProps extends ViewerProps {
+  url: string
+  title?: string
+}
 
 export interface InsuranceCardsProps {
   isOpen: boolean

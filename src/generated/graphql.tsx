@@ -6641,6 +6641,13 @@ export type CreateAppointmentMutationVariables = Exact<{
 
 export type CreateAppointmentMutation = { __typename?: 'Mutation', createAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type SendAppointmentReminderMutationVariables = Exact<{
+  appointmentId: Scalars['String'];
+}>;
+
+
+export type SendAppointmentReminderMutation = { __typename?: 'Mutation', sendAppointmentReminder: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type UpdateAppointmentMutationVariables = Exact<{
   updateAppointmentInput: UpdateAppointmentInput;
 }>;
@@ -8443,6 +8450,43 @@ export function useCreateAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateAppointmentMutationHookResult = ReturnType<typeof useCreateAppointmentMutation>;
 export type CreateAppointmentMutationResult = Apollo.MutationResult<CreateAppointmentMutation>;
 export type CreateAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateAppointmentMutation, CreateAppointmentMutationVariables>;
+export const SendAppointmentReminderDocument = gql`
+    mutation SendAppointmentReminder($appointmentId: String!) {
+  sendAppointmentReminder(appointmentId: $appointmentId) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendAppointmentReminderMutationFn = Apollo.MutationFunction<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
+
+/**
+ * __useSendAppointmentReminderMutation__
+ *
+ * To run a mutation, you first call `useSendAppointmentReminderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendAppointmentReminderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendAppointmentReminderMutation, { data, loading, error }] = useSendAppointmentReminderMutation({
+ *   variables: {
+ *      appointmentId: // value for 'appointmentId'
+ *   },
+ * });
+ */
+export function useSendAppointmentReminderMutation(baseOptions?: Apollo.MutationHookOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>(SendAppointmentReminderDocument, options);
+      }
+export type SendAppointmentReminderMutationHookResult = ReturnType<typeof useSendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationResult = Apollo.MutationResult<SendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationOptions = Apollo.BaseMutationOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
 export const UpdateAppointmentDocument = gql`
     mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!) {
   updateAppointment(updateAppointmentInput: $updateAppointmentInput) {
