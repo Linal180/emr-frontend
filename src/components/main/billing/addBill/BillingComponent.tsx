@@ -8,6 +8,7 @@ import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import BillingForm from "./BillingForm";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
+import ClaimErrorModal from "../../../common/ClaimErrorModal";
 // constants block
 import history from "../../../../history";
 import { createBillingSchema } from "../../../../validationSchemas";
@@ -28,7 +29,6 @@ import {
   useFetchBillingDetailsByAppointmentIdLazyQuery, useGenerateClaimNoLazyQuery, useFindPatientLastAppointmentLazyQuery,
   useFindAppointmentInsuranceStatusLazyQuery,
 } from "../../../../generated/graphql";
-import ClaimErrorModal from "../../../common/ClaimErrorModal";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
