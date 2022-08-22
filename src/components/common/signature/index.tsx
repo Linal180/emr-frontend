@@ -34,7 +34,7 @@ const Signature = ({ onSignatureEnd, controllerName, title, isController = true 
   }
 
   return (
-    <Box mt={1} mb={3} p={3} border={`2px dashed ${WHITE_FOUR}`}>
+    <Box mt={1} mb={3} p={3} border={`2px dashed ${WHITE_FOUR}`} width={'100%'}>
       <SignatureCanvas ref={signCanvas} canvasProps={{ className: 'publicSignCanvas' }} clearOnResize
         backgroundColor={GRAY_SEVEN} onEnd={onEnd} />
 

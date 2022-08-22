@@ -63,15 +63,18 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
         </Box>
       </DialogContent>
 
-      <Box display="flex" ml={4} pb={2}>
-        {isSign ? <Signature controllerName="signature" onSignatureEnd={(file) => {
+
+      {isSign ? <Box display="flex" ml={4} pb={2} mr={4}>
+        <Signature controllerName="signature" onSignatureEnd={(file) => {
           setChecked(!!file)
           onSignatureEnd && onSignatureEnd(file)
-        }} isController={false} /> : <FormControlLabel
+        }} isController={false} />
+      </Box> :
+        <Box display="flex" ml={4} pb={2}><FormControlLabel
           control={<Checkbox color="primary" checked={checked} onChange={handleChange} />}
           label={description}
-        />}
-      </Box>
+        />
+        </Box>}
 
       <DialogActions>
         <Button onClick={handleClose} color="default" variant="text">

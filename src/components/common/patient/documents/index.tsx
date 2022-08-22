@@ -1,11 +1,11 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import axios from "axios";
 import { useParams } from "react-router";
+import { Pagination } from "@material-ui/lab";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button
-} from "@material-ui/core";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
@@ -26,7 +26,7 @@ import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  getDocumentDate, getDocumentDateFromTimestamps, getTimestamps, isSuperAdmin, renderTh, signedDateTime
+  getDocumentDate, getDocumentDateFromTimestamps, getTimestamps, getToken, isSuperAdmin, renderTh, signedDateTime
 } from "../../../../utils";
 import {
   AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useUpdateAttachmentDataMutation,
@@ -34,9 +34,11 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD, PREVIEW_IS_NOT_AVAILABLE, PAGE_LIMIT,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, UPLOAD, PREVIEW_IS_NOT_AVAILABLE,
+  PAGE_LIMIT,
+  ATTACHMENT_TITLES,
+  SOMETHING_WENT_WRONG,
 } from "../../../../constants";
-import { Pagination } from "@material-ui/lab";
 
 const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -60,7 +62,8 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
 
   const {
     attachmentsData, attachmentId, openDelete, isSignedTab, deleteAttachmentId, page, searchQuery,
-    openSign, providerName, attachmentData, drawerOpened, isOpen, preSignedUrl, documentName, totalPages
+    openSign, providerName, attachmentData, drawerOpened, isOpen, preSignedUrl, documentName, totalPages,
+    file, loading: signatureUploadLoading
   } = state
 
   const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened })
@@ -287,11 +290,38 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'Admin' : `${firstName} ${lastName}` })
   }, [admin, firstName, lastName]);
 
+  const onSignatureEnd = (file: File | null) => dispatch({ type: ActionType.SET_FILE, file })
 
-  const onSignatureEnd = (file: File | null) => {
-    if (!!file) {
-      
+  const signatureUploadHandler = async () => {
+    dispatch({ type: ActionType.SET_LOADING, loading: true })
+    const formData = new FormData();
+    file && formData.append("file", file);
+    id && formData.append("typeId", id);
+    formData.append("title", ATTACHMENT_TITLES.Signature);
+    attachmentId && formData.append("parentAttachmentId", attachmentId);
+    const token = getToken();
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/patients/upload`, formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            pathname: window.location.pathname
+          },
+        }
+      )
+      const { data, status } = response || {}
+      if (status === 201 && data) {
+        dispatch({ type: ActionType.SET_LOADING, loading: false })
+        await signDocument()
+      } else {
+        Alert.error(SOMETHING_WENT_WRONG)
+        dispatch({ type: ActionType.SET_LOADING, loading: false })
+      }
+    } catch (_) {
+      dispatch({ type: ActionType.SET_LOADING, loading: false })
+      Alert.error(SOMETHING_WENT_WRONG)
     }
+
   }
 
   return (
@@ -459,9 +489,9 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           isSign
           title={DOCUMENT}
           isOpen={openSign}
-          isLoading={updateAttachmentLoading}
+          isLoading={signatureUploadLoading || updateAttachmentLoading}
           description={SIGN_DOCUMENT_DESCRIPTION}
-          handleDelete={signDocument}
+          handleDelete={signatureUploadHandler}
           actionText={SIGN_DOCUMENT}
           setOpen={(open: boolean) =>
             dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
