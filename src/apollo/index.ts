@@ -17,7 +17,7 @@ import { handleLogout } from "../utils";
 import {
   FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE,
   NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
-  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION, REMOTE_IP,
+  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION, REMOTE_IP, BAD_REQUEST_EXCEPTION,
 } from "../constants";
 
 dotenv.config()
@@ -47,6 +47,7 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
         if (extensions) {
           const { exception } = extensions;
 
+
           if (exception) {
             const { response } = exception;
 
@@ -61,9 +62,10 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
               }
 
               if (errorResponse) {
-                const { error: responseError, message } = errorResponse;
-
-                if (
+                const { error: responseError, message, name: errorName } = errorResponse;
+                if (errorName === BAD_REQUEST_EXCEPTION || errorName === 'InternalServerErrorException') {
+                }
+                else if (
                   message && message !== NOT_FOUND_EXCEPTION
                   && message !== FORBIDDEN_EXCEPTION
                   && message !== CONFLICT_EXCEPTION
