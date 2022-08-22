@@ -191,6 +191,7 @@ export const useExternalPatientStyles = makeStyles({
 
     "& .MuiFormControlLabel-label": {
       fontSize: 14,
+      marginBottom: 5
     },
 
     "& .MuiCheckbox-root .MuiIconButton-label:before":{
