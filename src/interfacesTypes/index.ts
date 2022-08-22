@@ -788,6 +788,12 @@ export type ViewerProps = {
   handleClose: () => void
 }
 
+export type PastAndUpcomingAppointmentListProps = {
+  past?: boolean
+  appointments: AppointmentsPayload['appointments'];
+  reload?: Function;
+};
+
 export type AreYouSureModalProps = ViewerProps & {
   handleSubmit?: Function
   content?: string

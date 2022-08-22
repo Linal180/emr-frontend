@@ -11,14 +11,12 @@ import { mediaType } from "../../../utils";
 import { TrashNewIcon } from "../../../assets/svgs";
 import { CANCEL, EDIT_MEDIA, OPEN_CAMERA, UPDATE_MEDIA } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
-import { useEditMediaModalStyles } from "../../../styles/editMediaModalStyles";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
   preSignedUrl, title, providerName, filesLimit
 }): JSX.Element => {
-  const classes = useEditMediaModalStyles();
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
@@ -78,10 +76,10 @@ const EditMediaModel: FC<MediaModalTypes> = ({
         <DialogContent>
 
           {fileUrl ?
-            <Box className={classes.mediaImage}>
+            <Box className="media-image">
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
-              <Box className={classes.mediaOverlay}>
+              <Box className="media-overlay">
                 <IconButton aria-label="delete" onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>

@@ -140,7 +140,6 @@ const ProfileComponent = (): JSX.Element => {
     const { firstName, lastName, addressNumber, city, phone, country, state, zipCode, email } = values || {}
     const { id: stateId } = state;
     const { id: countryId } = country
-
     if (userType === SYSTEM_ROLES.Doctor && userId && contactId) {
       await updateDoctor({
         variables: {

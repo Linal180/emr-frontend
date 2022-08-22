@@ -76,7 +76,10 @@ export interface State {
   appointmentCreateType: string
   sortBy: Order;
   agreements: AgreementsPayload['agreements'];
-  isSignature: boolean;
+  isSignature: boolean
+  searchComingQuery: string
+  searchPastQuery: string
+  tabValue: string
   isReminderModalOpen: boolean
   reminderId: string
 }
@@ -152,6 +155,9 @@ export const initialState: State = {
   sortBy: DESC,
   agreements: [],
   isSignature: false,
+  searchComingQuery: '',
+  searchPastQuery: '',
+  tabValue: '1',
   isReminderModalOpen: false,
   reminderId: ''
 }
@@ -221,6 +227,9 @@ export enum ActionType {
   SET_TOTAL_PAGES_COMPLETED = 'setTotalPagesCompleted',
   SET_APPOINTMENT_CREATE_TYPE = 'setAppointmentCreateType',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_SEARCH_COMING_QUERY = 'setSearchComingQuery',
+  SET_SEARCH_PAST_QUERY = 'setSearchPastQuery',
+  SET_TAB_VALUE = 'setTabValue',
   SET_REMINDER_MODAL_OPEN = 'setReminderModalOpen',
   SET_REMINDER_ID = 'setReminderId',
 }
@@ -288,6 +297,9 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_ENCOUNTERS; encounters: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_SEARCH_COMING_QUERY; searchComingQuery: string }
+  | { type: ActionType.SET_SEARCH_PAST_QUERY; searchPastQuery: string }
+  | { type: ActionType.SET_TAB_VALUE; tabValue: string }
   | { type: ActionType.SET_REMINDER_MODAL_OPEN; isReminderModalOpen: boolean }
   | { type: ActionType.SET_REMINDER_ID; reminderId: string }
   | {
@@ -659,6 +671,24 @@ export const appointmentReducer = (state: State, action: Action): State => {
         calendarCurrentView: action.calendarCurrentView
       }
 
+    case ActionType.SET_SEARCH_COMING_QUERY:
+      return {
+        ...state,
+        searchComingQuery: action.searchComingQuery
+      }
+
+    case ActionType.SET_SEARCH_PAST_QUERY:
+      return {
+        ...state,
+        searchPastQuery: action.searchPastQuery
+      }
+
+    case ActionType.SET_TAB_VALUE:
+      return {
+        ...state,
+        tabValue: action.tabValue
+      }
+      
     case ActionType.SET_REMINDER_MODAL_OPEN:
       return {
         ...state,
