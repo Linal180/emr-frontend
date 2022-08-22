@@ -13,6 +13,7 @@ export interface State {
   loading: boolean
   policyId: string
   openSign: boolean
+  file: File | null
   activeStep: number
   openDelete: boolean
   labResultId: string
@@ -36,12 +37,13 @@ export interface State {
   insuranceCard1: Attachment | undefined
   insuranceCard2: Attachment | undefined
   drivingLicense1: Attachment | undefined
-  drivingLicense2: Attachment | undefined
+  drivingLicense2: Attachment | undefined;
   practiceData: PracticePayload['practice']
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
   labOrderAttachments: AttachmentsPayload['attachments']
   mediaData: Pick<CreateAttachmentInput, "title"> | undefined;
+  signatureAttachmentId: string;
   policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
 }
 
@@ -51,6 +53,7 @@ export const initialState: State = {
   searchQuery: '',
   files: [],
   action: '',
+  file: null,
   fileUrl: '',
   policyId: '',
   activeStep: 0,
@@ -85,6 +88,7 @@ export const initialState: State = {
   insuranceCard2: undefined,
   drivingLicense1: undefined,
   drivingLicense2: undefined,
+  signatureAttachmentId: '',
   insuranceId: { id: "", name: "" },
   documentTypeId: { id: "", name: "" },
 }
@@ -93,6 +97,7 @@ export enum ActionType {
   SET_PAGE = 'SetPage',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_FILE = 'setFile',
   SET_ACTION = 'setAction',
   SET_FILES = 'SET_FILES',
   SET_IS_OPEN = 'setIsOpen',
@@ -139,6 +144,7 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_FILES, files: File[] }
   | { type: ActionType.SET_ACTION, action: string }
+  | { type: ActionType.SET_FILE; file: File | null }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_LOADING; loading: boolean }
@@ -422,6 +428,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         practiceData: action.practiceData
+      }
+
+    case ActionType.SET_FILE:
+      return {
+        ...state,
+        file: action.file
       }
   }
 }

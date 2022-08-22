@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
@@ -1380,7 +1381,7 @@ export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
 export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
-export const CHECKED_IN='CHECKED IN'
+export const CHECKED_IN = 'CHECKED IN'
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const PRIMARY_CARE_PROVIDER = "Primary Care Provider";

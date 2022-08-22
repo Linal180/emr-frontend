@@ -11,10 +11,10 @@ import InputController from "../../../../controller";
 // import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
 import { GREY_SIXTEEN } from "../../../../theme";
-import { getDocumentDateFromTimestamps, mediaType, setRecord } from "../../../../utils";
 import { AttachmentType } from "../../../../generated/graphql";
 import { ActionType } from "../../../../reducers/mediaReducer";
 import { addDocumentSchema } from "../../../../validationSchemas";
+import { getDocumentDateFromTimestamps, mediaType, setRecord } from "../../../../utils";
 import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../../../interfacesTypes";
 import {
   CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, ITEM_MODULE,
