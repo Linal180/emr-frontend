@@ -1228,6 +1228,13 @@ export interface RejectedModalProps {
   billingClaim: BillingPayload['billing'] | null
 }
 
+export type ClaimErrorModalProps = {
+  isOpen: boolean;
+  setIsOpen: Function;
+  handleClose?: () => void;
+  errorMessages?: string[]
+}
+
 export interface ClaimStatusModalProps extends GeneralFormProps {
   isOpen: boolean;
   setIsOpen: Function;
