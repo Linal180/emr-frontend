@@ -1,5 +1,5 @@
 // packages block
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
@@ -166,11 +166,11 @@ const SignatureComponent = (): JSX.Element => {
     signCanvas && signCanvas.current && signCanvas.current.clear && signCanvas.current.clear();
   }
 
-  const fetchAttachments = async () => {
+  const fetchAttachments = useCallback(async () => {
     id && await getAttachments({
       variables: { getAttachment: { typeId: id, paginationOptions: { limit: PAGE_LIMIT, page: 1 } } }
     })
-  }
+  }, [getAttachments, id])
 
   useEffect(() => {
     if (!isOnlyDoctor(roles)) {
@@ -182,7 +182,11 @@ const SignatureComponent = (): JSX.Element => {
     }
   }, [getAttachment, roles, signAttachment?.id])
 
-  const isLoading = attachmentLoading || attachmentsLoading || loading
+  useEffect(() => {
+    fetchAttachments()
+  }, [fetchAttachments])
+
+  const isLoading = !id || attachmentLoading || attachmentsLoading || loading
 
   if (isLoading) {
     return <Loader loading loaderText='Fetching Signature...' />

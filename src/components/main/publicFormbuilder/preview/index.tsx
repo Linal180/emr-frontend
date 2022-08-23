@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Fragment, Reducer, useCallback, useEffect, useMemo, useReducer } from 'react';
+import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import {
   Button, Grid, Box, Typography, CircularProgress, Card, StepLabel, Stepper, Step, colors
 } from '@material-ui/core';
@@ -23,6 +23,7 @@ import {
   State, Action, initialState, externalFormBuilderReducer, ActionType
 } from '../../../../reducers/externalFormBuilderReducer';
 import {
+  FormTabsInputs,
   FormType, useCreatePatientConsentMutation, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation
 } from '../../../../generated/graphql';
 import {
@@ -38,7 +39,7 @@ const PublicFormPreview = () => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   const {
     isActive, loader, uploadImage, formName, formValues, formType, paymentType, activeStep,
-    signatureLoader, agreements
+    signatureLoader, agreements, formJson
   } = state
 
   const methods = useForm<any>({
@@ -77,7 +78,11 @@ const PublicFormPreview = () => {
               practiceId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: practiceId })
               name && dispatch({ type: ActionType.SET_FORM_NAME, formName: name })
               type && dispatch({ type: ActionType.SET_FORM_TYPE, formType: type })
-              tabs?.length > 0 && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: tabs })
+              if (tabs?.length) {
+                dispatch({ type: ActionType.SET_FORM_JSON, formJson: tabs })
+                setFormValues(tabs)
+                setService(tabs)
+              }
             } else {
               dispatch({ type: ActionType.SET_ACTIVE, isActive: false })
             }
@@ -138,23 +143,30 @@ const PublicFormPreview = () => {
     onError: () => { }
   })
 
-  useMemo(() => {
-    if (formValues && formValues?.length > 0) {
-      formValues?.map((tab) => {
-        const { sections } = tab || {}
+  const setFormValues = (tabs: FormTabsInputs[]) => {
+    const newValues = tabs?.filter(({ tabId }) =>
+      tabId !== formTemplateTabIds.EMPLOYMENT_INFO &&
+      tabId !== formTemplateTabIds.GUARANTOR_CONTACT &&
+      tabId !== formTemplateTabIds.GUARDIAN_CONTACT)
 
-        return sections?.map(({ fields }) => fields?.map((field) => {
-          const { apiCall, fieldId } = field
+    dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newValues });
+  }
 
-          if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
-            dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
-          }
+  const setService = (tabs: FormTabsInputs[]) => {
+    tabs?.map((tab) => {
+      const { sections } = tab || {}
 
-          return field
-        }))
-      })
-    }
-  }, [formValues])
+      return sections?.map(({ fields }) => fields?.map((field) => {
+        const { apiCall, fieldId } = field
+
+        if (apiCall === FormBuilderApiSelector.SERVICE_SELECT) {
+          dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: fieldId })
+        }
+
+        return field
+      }))
+    })
+  }
 
   const createPatientConsentHandler = async (patientId: string, id: string) => {
     try {
@@ -253,7 +265,8 @@ const PublicFormPreview = () => {
   const isUnder18 = () => {
     if (formType === FormType.Appointment) {
       let ageFormElement = null;
-      formValues?.find((tab) => {
+
+      formJson?.find((tab) => {
         const { sections } = tab || {}
         sections?.map((section) => {
           const { fields } = section || {}
@@ -266,22 +279,27 @@ const PublicFormPreview = () => {
         })
         return tab
       })
+
       if (ageFormElement) {
         const value = getValues(ageFormElement)
         const ageFormat = value ? moment(new Date(value)).format('YYYY-MM-DD') : ''
         const age = ageFormat ? calculateAge(ageFormat) : -1
         if (age >= 18) {
-          const newArr = formValues?.filter((tab) => {
+          const newArr = formJson?.filter((tab) => {
             const { tabId, sections } = tab || {}
             if (tabId === formTemplateTabIds.GUARDIAN_CONTACT) {
+              return false
+            }
+            if (tabId === formTemplateTabIds.GUARANTOR_CONTACT) {
               return false
             }
             const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.GUARDIAN_CONTACT)
             return { ...tab, sections: newSections }
           })
+
           dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
         } else if (age < 18 && age >= 0) {
-          const newArr = formValues?.filter((tab) => {
+          const newArr = formJson?.filter((tab) => {
             const { tabId, sections } = tab || {}
             if (tabId === formTemplateTabIds.EMPLOYMENT_INFO) {
               return false
@@ -289,14 +307,14 @@ const PublicFormPreview = () => {
             const newSections = sections?.filter(({ sectionId }) => sectionId !== formTemplateTabIds.EMPLOYMENT_INFO)
             return { ...tab, sections: newSections }
           })
+
           dispatch({ type: ActionType.SET_FORM_VALUES, formValues: newArr })
         }
       }
-
     }
   }
 
-  
+
 
   return (
     <Box bgcolor={GREY_EIGHTEEN} padding={1} minHeight="100vh">

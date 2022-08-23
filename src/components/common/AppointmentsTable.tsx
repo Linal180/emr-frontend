@@ -611,19 +611,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
-                            {
-                              status !== AppointmentStatus.Cancelled && <Box className={`${classes.iconsBackground}`}>
-                                <Button
-                                  onClick={() => {
-                                    id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
-                                    dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
-                                  }}
-                                >
-                                  <BellIconNew />
-                                </Button>
-                              </Box>
-                            }
-
+                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
+                              <Button
+                                onClick={() => {
+                                  id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
+                                  dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
+                                }}
+                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
+                              >
+                                <BellIconNew />
+                              </Button>
+                            </Box>
 
                             <Box className={cantUpdate ? classes.iconsBackgroundDisabled : classes.iconsBackground}>
                               <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}

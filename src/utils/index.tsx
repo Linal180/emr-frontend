@@ -856,6 +856,11 @@ export const setCTPCode = (id: string, name: string, description: string, longDe
 export const formatPhone = (phone: string | undefined | null): string =>
   !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
 
+export const formatAddress = (address: string | undefined | null, city: string | undefined | null, state: string | undefined | null, zipCode: string | undefined | null) =>{
+  const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
+  return selfAddress.trim() ? selfAddress : N_A
+}
+
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
     return new Date(endDate) >= new Date(startDate)
@@ -1212,6 +1217,11 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
   return {
     drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
+};
+
+export const getDocumentByDocumentType = (attachmentData: AttachmentsPayload['attachments'], title: ATTACHMENT_TITLES) => {
+  const documentAttachment = attachmentData?.filter(attachment => attachment?.title === title)[0] || undefined
+  return documentAttachment
 };
 
 export const formatPermissionName = (name: string) => {

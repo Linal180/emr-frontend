@@ -109,6 +109,7 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
           message && Alert.success(message);
           fetchSchedules()
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          dispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [] })
         }
       }
     }

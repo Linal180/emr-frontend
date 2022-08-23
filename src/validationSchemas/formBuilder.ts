@@ -104,6 +104,22 @@ export const getFormBuilderValidation = (formSection: FormTabsInputs[], paymentT
               validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
               break;
 
+            case FormBuilderApiSelector.DRIVING_LICENSE_FRONT:
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+              break;
+
+            case FormBuilderApiSelector.DRIVING_LICENSE_BACK:
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+              break
+
+            case FormBuilderApiSelector.INSURANCE_CARD_FRONT:
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+              break
+
+            case FormBuilderApiSelector.INSURANCE_CARD_BACK:
+              validation[fieldId] = required ? yup.string().required(requiredMessage(label)) : yup.string()
+              break
+
             case FormBuilderApiSelector.SERVICE_SLOT:
               break;
 
