@@ -433,7 +433,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex" justifyContent="space-between" flexWrap="wrap" alignItems="flex-start">
+          <Box mb={1} display="flex" justifyContent="space-between" flexWrap="wrap" alignItems="flex-start">
             <Box display="flex">
               <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
 
@@ -458,7 +458,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             </Button>
           </Box>
 
-          <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+          <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid item md={8} sm={12} xs={12}>
                 <CardComponent cardTitle={APPOINTMENT}>

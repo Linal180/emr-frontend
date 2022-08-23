@@ -7,7 +7,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChevronLeft, ChevronRight, Sort, NotificationsActiveOutlined } from "@material-ui/icons";
+import { ChevronLeft, ChevronRight, Sort, } from "@material-ui/icons";
 import {
   Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
@@ -28,7 +28,7 @@ import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
+import { BellIconNew, CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from "../../reducers/appointmentReducer";
@@ -611,7 +611,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
-
                             <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
                               <Button
                                 onClick={() => {
@@ -620,7 +619,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 }}
                                 disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
                               >
-                                <NotificationsActiveOutlined />
+                                <BellIconNew />
                               </Button>
                             </Box>
 

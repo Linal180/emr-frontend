@@ -52,7 +52,7 @@ export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponen
   }, [fetchAllForms]);
 
   return (
-    <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">
+    <Box mt={2} pt={1} maxHeight={650} className="overflowY-auto">
       {loading ? <TableLoader numberOfRows={10} numberOfColumns={5} /> :
         <Droppable droppableId={PRE_DEFINED} isDropDisabled={true}>
           {(provided, snapshot) => (
