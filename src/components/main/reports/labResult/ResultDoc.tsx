@@ -1,7 +1,7 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
 import Logo from "../../../../assets/images/aimed-logo.png";
-import { LAB_RESULTS_INFO } from "../../../../constants";
+import { ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY, FINAL_REPORT, GENDER, LAB_RESULTS_INFO, METHOD, NAME, PATIENT, PATIENT_NO, PHYSICIAN, PRIMARY, PRIMARY_CARE, RECEIVED_DATE, SPECIMEN, TEL, URGENT_CARE, VIRAL_STRAIN } from "../../../../constants";
 import { LabTestsPayload } from "../../../../generated/graphql";
 import { formatAddress, formatPhone, getFormatDateString } from "../../../../utils";
 
@@ -161,29 +161,29 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
 
             <View style={[styles.w70]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>SPECIMEN</Text>
+                <Text style={styles.fieldTitle2}>{SPECIMEN}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Patient No:</Text>
+                  <Text style={styles.fieldTitle}>{PATIENT_NO}:</Text>
                   <Text style={styles.fieldText}>{patientRecord}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Final Report:</Text>
+                  <Text style={styles.fieldTitle}>{FINAL_REPORT}:</Text>
                   <Text style={styles.fieldText}></Text>
                 </View>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Collected Date:</Text>
+                  <Text style={styles.fieldTitle}>{COLLECTED_DATE}:</Text>
                   <Text style={styles.fieldText}>{collectedDate}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Received Date:</Text>
+                  <Text style={styles.fieldTitle}>{RECEIVED_DATE}:</Text>
                   <Text style={styles.fieldText}>{receivedDate}</Text>
                 </View>
               </View>
@@ -194,21 +194,21 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           <View style={styles.tableRow}>
             <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>PATIENT</Text>
+                <Text style={styles.fieldTitle2}>{PATIENT}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>Name:</Text>
+                <Text style={styles.fieldTitle}>{NAME}:</Text>
                 <Text style={styles.fieldText}>{patientFullName}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>DOB:</Text>
+                <Text style={styles.fieldTitle}>{DOB_TEXT}:</Text>
                 <Text style={styles.fieldText}>{getFormatDateString(dob, 'MM-DD-YYYY')}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>Gender:</Text>
+                <Text style={styles.fieldTitle}>{GENDER}:</Text>
                 <Text style={styles.fieldText}>{gender}</Text>
               </View>
 
@@ -218,52 +218,52 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>Tel:</Text>
+                <Text style={styles.fieldTitle}>{TEL}:</Text>
                 <Text style={styles.fieldText}>{formatPhone(phone)}</Text>
               </View>
             </View>
 
             <View style={[styles.w70, styles.borderStyle, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>PHYSICIAN</Text>
+                <Text style={styles.fieldTitle2}>{PHYSICIAN}</Text>
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={styles.fieldTitle}>Facility:</Text>
+                <Text style={styles.fieldTitle}>{FACILITY}:</Text>
                 <Text style={styles.fieldText}>{facilityName}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
-                <Text style={styles.fieldTitle}>CLIA Number:</Text>
+                <Text style={styles.fieldTitle}>{CLIA_ID_NUMBER}:</Text>
                 <Text style={styles.fieldText}>{cliaIdNumber}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Primary Care:</Text>
-                  <Text style={styles.fieldText}>Primary</Text>
+                  <Text style={styles.fieldTitle}>{PRIMARY_CARE}:</Text>
+                  <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Urgent Care:</Text>
-                  <Text style={styles.fieldText}>Primary</Text>
+                  <Text style={styles.fieldTitle}>{URGENT_CARE}:</Text>
+                  <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Attending:</Text>
+                  <Text style={styles.fieldTitle}>{ATTENDING}:</Text>
                   <Text style={styles.fieldText}>Dr. {doctorFullName}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>Tel:</Text>
+                  <Text style={styles.fieldTitle}>{TEL}:</Text>
                   <Text style={styles.fieldText}>{formatPhone(facilityPhone)}</Text>
                 </View>
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={styles.fieldTitle}>Address:</Text>
+                <Text style={styles.fieldTitle}>{ADDRESS}:</Text>
                 <Text style={styles.fieldText}>{formatAddress(address, city, state, zipCode)} </Text>
               </View>
             </View>
@@ -273,7 +273,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           <View style={styles.tableRow}>
             <View style={[styles.w100]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>DIAGNOSIS</Text>
+                <Text style={styles.fieldTitle2}>{DIAGNOSES}</Text>
               </View>
 
               <View style={[styles.bgLightGrey]}>
@@ -286,7 +286,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           <View style={styles.tableRow}>
             <View style={[styles.w20, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>VIRAL STRAIN</Text>
+                <Text style={styles.fieldTitle2}>{VIRAL_STRAIN}</Text>
               </View>
 
               <View>
@@ -300,7 +300,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
 
             <View style={[styles.w50, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>METHOD</Text>
+                <Text style={styles.fieldTitle2}>{METHOD}</Text>
               </View>
 
               <View>
@@ -311,7 +311,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
 
             <View style={[styles.w30, styles.borderStyle, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>VIRAL STRAIN</Text>
+                <Text style={styles.fieldTitle2}>{VIRAL_STRAIN}</Text>
               </View>
 
               <View>
@@ -330,7 +330,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           {/* 5th-row */}
           <View style={styles.tableRow}>
             <View style={[styles.borderStyle, styles.borderTopWidth]}>
-              <Text style={styles.paraText}>COMMENT:</Text>
+              <Text style={styles.paraText}>{COMMENT}:</Text>
 
               <Text style={styles.paraText}>
                 The PKamp™ Respiratory SARS-CoV-2  RT-PCR  Panel  1  is  a  real-time  RT-PCR  multiplexed  test  intended  for  the

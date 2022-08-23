@@ -787,7 +787,7 @@ export type ViewerProps = {
   isOpen: boolean
   handleClose: () => void
 }
-export interface DocumentViewerProps extends ViewerProps{
+export type DocumentViewerProps = ViewerProps & {
   url: string
   title?: string
 }
@@ -801,11 +801,6 @@ export type PastAndUpcomingAppointmentListProps = {
 export type AreYouSureModalProps = ViewerProps & {
   handleSubmit?: Function
   content?: string
-}
-
-export interface DocumentViewerProps extends ViewerProps {
-  url: string
-  title?: string
 }
 
 export interface InsuranceCardsProps {
