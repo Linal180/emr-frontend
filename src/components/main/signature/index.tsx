@@ -9,6 +9,7 @@ import {
 // component block
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
+import Loader from '../../common/Loader';
 // constants, history, styling block
 import history from '../../../history';
 import { AuthContext } from '../../../context';
@@ -182,6 +183,10 @@ const SignatureComponent = (): JSX.Element => {
   }, [getAttachment, roles, signAttachment?.id])
 
   const isLoading = attachmentLoading || attachmentsLoading || loading
+
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Signature...' />
+  }
 
   return (
     <Box mt={5}>

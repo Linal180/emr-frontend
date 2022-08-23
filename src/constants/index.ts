@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
@@ -1376,11 +1377,11 @@ export const PRICING_PRODUCT_TYPE = "Pricing Product Type";
 export const INSURANCE_PAYER_NAME = "Insurance Payer Name";
 export const SEARCH_FOR_ALLERGIES = "Search for Allergies";
 export const SEARCH_FOR_ICD_CODES = "Search for ICD Codes";
-export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
+export const ENABLE_ACCESS_PORTAL = "Enable Portal Access";
 export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
-export const CHECKED_IN='CHECKED IN'
+export const CHECKED_IN = 'CHECKED IN'
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const PRIMARY_CARE_PROVIDER = "Primary Care Provider";
@@ -1449,6 +1450,7 @@ export const MEMBER_ID_CERTIFICATE_NUMBER = "Member ID/Certification Number";
 export const FEE_SCHEDULE_DESCRIPTION = "Manage fee schedule for procedures";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
+export const INTERNAL_SERVER_ERROR_EXCEPTION = "InternalServerErrorException";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
@@ -1752,6 +1754,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
+export const BAD_REQUEST_EXCEPTION = "BadRequestException";
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =

@@ -170,6 +170,8 @@ export interface ConfirmationTypes extends DialogTypes {
   learnMoreText?: string
   aboutToText?: string
   isCalendar?: boolean;
+  onSignatureEnd?: (file: File | null) => void;
+  cancelText?: string;
 }
 
 interface ControlLabel {
@@ -1234,6 +1236,13 @@ export interface RejectedModalProps {
   billingClaim: BillingPayload['billing'] | null
 }
 
+export type ClaimErrorModalProps = {
+  isOpen: boolean;
+  setIsOpen: Function;
+  handleClose?: () => void;
+  errorMessages?: string[]
+}
+
 export interface ClaimStatusModalProps extends GeneralFormProps {
   isOpen: boolean;
   setIsOpen: Function;
@@ -1920,9 +1929,11 @@ export interface FormDoctorSelectorProps extends FacilitySelectorProps {
   formDispatch?: Dispatch<PublicFormBuilderAction>
 }
 
-export interface SignatureProps {
+export type SignatureProps = {
   onSignatureEnd: (file: File | null) => void,
-  controllerName: string
+  controllerName: string;
+  title?: string;
+  isController?: boolean;
 }
 
 export interface EncounterPros {

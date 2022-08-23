@@ -2276,3 +2276,25 @@ export const blobToFile = (theBlob: Blob, fileName: string): File => {
   const file = new File([theBlob], `${fileName}.png`, { lastModified, type: 'image/png' });
   return file
 }
+
+export enum DocumentFileType {
+  IMAGE = 'image',
+  DOCUMENT = 'document'
+}
+
+export const getFileType = (key: string) => {
+  switch (key) {
+    case 'png':
+      return DocumentFileType.IMAGE
+    case 'jpg':
+      return DocumentFileType.IMAGE
+    case 'jpeg':
+      return DocumentFileType.IMAGE
+    case 'svg':
+      return DocumentFileType.IMAGE
+    case 'gif':
+      return DocumentFileType.IMAGE
+    default:
+      return DocumentFileType.DOCUMENT
+  }
+}
