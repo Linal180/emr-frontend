@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
@@ -101,6 +102,7 @@ export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank acc
 export const LOCALITY = 'Locality'
 export const AUTHORITY = 'Authority'
 export const COMPANY_NAME = 'Insurance Company Name'
+export const CHECKED_IN_SUCCESSFULLY = "Checked in successfully!";
 export const ROUTING_NUMBER = 'Routing Number'
 export const ACCOUNT_TYPE = 'Account Type'
 export const PAY_VIA_ACH = 'Pay via ACH';
@@ -836,6 +838,7 @@ export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const SERVICES = "Services";
 export const FACILITY = "Facility";
+export const SENDING_APPOINTMENT_REMINDER = "Sending Appointment Reminder"
 export const END_TIME = "End Time";
 export const LAB_RESULTS_LIMIT = 5;
 export const REMOVE_TEXT = "Remove";
@@ -1380,10 +1383,11 @@ export const PRICING_PRODUCT_TYPE = "Pricing Product Type";
 export const INSURANCE_PAYER_NAME = "Insurance Payer Name";
 export const SEARCH_FOR_ALLERGIES = "Search for Allergies";
 export const SEARCH_FOR_ICD_CODES = "Search for ICD Codes";
-export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
+export const ENABLE_ACCESS_PORTAL = "Enable Portal Access";
 export const ADD_ANOTHER_COPAY_AMOUNT = "Add Another Copay";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
+export const CHECKED_IN = 'CHECKED IN'
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const PRIMARY_CARE_PROVIDER = "Primary Care Provider";
@@ -1452,6 +1456,7 @@ export const MEMBER_ID_CERTIFICATE_NUMBER = "Member ID/Certification Number";
 export const FEE_SCHEDULE_DESCRIPTION = "Manage fee schedule for procedures";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
+export const INTERNAL_SERVER_ERROR_EXCEPTION = "InternalServerErrorException";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
@@ -1595,6 +1600,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const OPEN_CAMERA = "Open Camera"
 export const LONG_URL_TEXT = "URL";
 export const SHORT_URL_TEXT = "Short URL";
 export const MIN_LENGTH_MESSAGE = "Text too short";
@@ -1755,6 +1761,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PATIENT_PROVIDER_UPDATED = "Patient Provider updated successfully!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
+export const BAD_REQUEST_EXCEPTION = "BadRequestException";
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
@@ -1793,6 +1800,8 @@ export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
+export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
+  "Appointment reminder is sent successfully";
 export const SLOT_ALREADY_BOOKED =
   "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE =
@@ -2196,6 +2205,18 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Document Verification" },
 ];
 
+// Appointment Tabs
+export const APPOINTMENT_TABS = [
+  {
+    title: "Upcoming Appointments",
+    value: "1",
+  },
+  {
+    title: "Past Appointments",
+    value: "2",
+  },
+];
+
 // Breadcrumb links
 export const SERVICES_BREAD = (facilityId: string) => {
   return { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
@@ -2268,6 +2289,7 @@ export const EMERGENCY_ACCESS_BREAD = { text: EMERGENCY_ACCESS, link: '' };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
+export const EDIT_LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: '', };
 export const LAB_ORDER_BREAD = { text: LAB_ORDER, link: LAB_ORDER, };
 export const AGREEMENTS_BREAD = { text: AGREEMENTS, link: AGREEMENTS_ROUTE, };
 export const AUDIT_LOG_BREAD = { text: AUDIT_LOG, link: AUDIT_LOG_ROUTE, };
@@ -2293,10 +2315,10 @@ export const PROFILE_TOP_TABS = [
     title: "Insurance",
     value: "2",
   },
-  // {
-  //   title: "Registration",
-  //   value: "3",
-  // },
+  {
+    title: "Appointments",
+    value: "3",
+  },
   // {
   //   title: "Messaging",
   //   value: "4",
@@ -3577,15 +3599,15 @@ export const formTemplateTabIds = {
 
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
     name: "Registration Link",
   },
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Your appointment is schedule at 7:30 on 08/31/2022.`,
     name: "Telehealth",
   },
   {
-    id: `Please register the following link: ${`${process.env.REACT_APP_API_BASE_URL}/login`}`,
+    id: `Please give us a review at: https://www.google.com`,
     name: "Review",
   },
 ]

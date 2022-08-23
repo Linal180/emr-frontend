@@ -1,20 +1,19 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderServices, requiredLabel, sortingValue } from "../../../utils";
-import { ServiceSelectorProps } from "../../../interfacesTypes";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
-import {
-  serviceReducer, serviceAction, initialState, State, ActionType
-} from "../../../reducers/serviceReducer";
+import { ServiceSelectorProps } from "../../../interfacesTypes";
+import { ActionType, initialState, serviceAction, serviceReducer, State } from "../../../reducers/serviceReducer";
+import { renderServices, requiredLabel, sortingValue } from "../../../utils";
 
 import {
   ActionType as FormActionType
 } from "../../../reducers/externalFormBuilderReducer";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId, dispatcher }): JSX.Element => {
   const { control } = useFormContext()
@@ -22,7 +21,7 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
   const { page, searchQuery, services, serviceType } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
 
-  const [findAllService] = useFindAllServiceListLazyQuery({
+  const [findAllService, { loading: servicesLoading }] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -87,12 +86,11 @@ const ServiceSelector: FC<ServiceSelectorProps> = ({ name, label, disabled, isRe
                   </InputLabel>
 
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={servicesLoading}
                 />
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>

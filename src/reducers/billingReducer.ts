@@ -17,7 +17,10 @@ export interface State {
   isClaimCreated: boolean;
   isCheckoutModalOpen: boolean;
   tableCodesData: CodeTablesData;
+  insuranceStatus: string;
   billingStatus: BillingStatus | null
+  claimModalOpen: boolean;
+  claimErrorMessages: string[]
 }
 
 export const initialState: State = {
@@ -35,8 +38,11 @@ export const initialState: State = {
   billingStatus: null,
   otherAccident: false,
   shouldCheckout: false,
+  insuranceStatus: '',
   isClaimCreated: false,
   isCheckoutModalOpen: false,
+  claimModalOpen: false,
+  claimErrorMessages: []
 }
 
 export enum ActionType {
@@ -56,6 +62,9 @@ export enum ActionType {
   SET_SHOULD_CHECKOUT = 'SET_SHOULD_CHECKOUT',
   SET_TABLE_CODES_DATA = 'SET_TABLE_CODES_DATA',
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
+  SET_INSURANCE_STATUS = 'SET_INSURANCE_STATUS',
+  SET_CLAIM_MODAL_OPEN = 'SET_CLAIM_MODAL_OPEN',
+  SET_CLAIM_ERROR_MESSAGES = 'SET_CLAIM_ERROR_MESSAGES'
 }
 
 export type Action =
@@ -72,9 +81,12 @@ export type Action =
   | { type: ActionType.SET_OTHER_ACCIDENT, otherAccident: boolean }
   | { type: ActionType.SET_CLAIM_CREATED, isClaimCreated: boolean }
   | { type: ActionType.SET_SHOULD_CHECKOUT, shouldCheckout: boolean }
+  | { type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: string }
   | { type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: CodeTablesData }
   | { type: ActionType.SET_BILLING_STATUS, billingStatus: BillingStatus | null }
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
+  | { type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: boolean }
+  | { type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: string[] }
 
 
 export const billingReducer = (state: State, action: Action): State => {
@@ -173,6 +185,24 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         billingStatus: action.billingStatus
+      }
+
+    case ActionType.SET_INSURANCE_STATUS:
+      return {
+        ...state,
+        insuranceStatus: action.insuranceStatus
+      }
+
+    case ActionType.SET_CLAIM_MODAL_OPEN:
+      return {
+        ...state,
+        claimModalOpen: action.claimModalOpen
+      }
+
+    case ActionType.SET_CLAIM_ERROR_MESSAGES:
+      return {
+        ...state,
+        claimErrorMessages: action.claimErrorMessages
       }
   }
 };

@@ -8,6 +8,7 @@ import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import BillingForm from "./BillingForm";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
+import ClaimErrorModal from "../../../common/ClaimErrorModal";
 // constants block
 import history from "../../../../history";
 import { createBillingSchema } from "../../../../validationSchemas";
@@ -32,7 +33,7 @@ import {
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
-  const { employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout } = state
+  const { employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout, claimModalOpen, claimErrorMessages } = state
 
   const methods = useForm<CreateBillingProps>({
     mode: "all",
@@ -55,8 +56,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         history.push(`/patients/${id}/details/10`)
         return
       }
-
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
+      fetchBillingDetails()
     }
   });
 
@@ -64,8 +65,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      } else {
+
+        dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: message.split('.') }))
+        dispatch(({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: true }))
+      }
     },
 
     onCompleted(data) {
@@ -76,6 +80,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         if (status === 200) {
           const { id, statusId, statusName } = claimStatus || {}
           id && setValue('claimStatus', { id, name: statusName, statusName: statusId })
+
+          const successMessage = statusId === 'acknowledged' ? 'Claim Submitted Successfully' : 'Claim Created Successfully'
+
+          dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: [successMessage] }))
+          dispatch(({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: true }))
         }
       }
     }
@@ -324,11 +333,12 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   })
 
-  const createClaimCallback = useCallback((claimMethod?: boolean) => {
+  const createClaimCallback = useCallback(async (claimMethod?: boolean) => {
     try {
-      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to } = watch()
+      const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to, paymentType } = watch()
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
+      const { id: patientPaymentType } = paymentType || {}
 
       const billingCodes = [...cptFeeSchedule, ...IcdCodes]
       const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
@@ -364,7 +374,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(otherDateTypeId && { otherDateType: otherDateTypeId as OtherDateType }),
         patientId: id,
         from,
-        to
+        to,
+        patientPaymentType: patientPaymentType as PatientPaymentType
       }
 
       const getClaimFileInput = {
@@ -382,7 +393,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         to
       }
 
-      !claimMethod ? createClaim({ variables: { createClaimInput } }) : getClaimFile({ variables: { getClaimFileInput } })
+      !claimMethod ? await createClaim({ variables: { createClaimInput } }) : await getClaimFile({ variables: { getClaimFileInput } })
 
     } catch (error) { }
   }, [appointmentId, autoAccident, createClaim, employment, getClaimFile, id, otherAccident, watch])
@@ -441,6 +452,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const { insuranceStatus } = findAppointmentInsuranceStatus
         const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
         insuranceStatus && setValue('paymentType', patientPaymentType)
+        insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
       }
     }
   });
@@ -508,7 +520,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
         autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
         onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
-        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber, uncoveredAmount, from, to, shouldCheckout
+        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
+        uncoveredAmount, from, to, shouldCheckout
       }
 
       createBilling({
@@ -549,23 +562,31 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
   }
 
-  if (getClaimFileLoading) {
-    return <Loader loading loaderText='Fetching HCFA-1500 Form...' />
-  }
-
   return (
-    <BillingForm
-      createBillingLoading={createBillingLoading}
-      dispatch={dispatch}
-      methods={methods}
-      onSubmit={onSubmit}
-      state={state}
-      shouldDisableEdit={shouldDisableEdit}
-      submitButtonText={submitButtonText}
-      createClaimCallback={createClaimCallback}
-      claimNumber={claimNumber}
-      createClaimLoading={createClaimLoading}
-    />
+    <>
+      <BillingForm
+        createBillingLoading={createBillingLoading}
+        dispatch={dispatch}
+        methods={methods}
+        onSubmit={onSubmit}
+        state={state}
+        shouldDisableEdit={shouldDisableEdit}
+        submitButtonText={submitButtonText}
+        createClaimCallback={createClaimCallback}
+        claimNumber={claimNumber}
+        createClaimLoading={createClaimLoading}
+      />
+
+      {
+        claimModalOpen &&
+        <ClaimErrorModal
+          isOpen={claimModalOpen}
+          setIsOpen={(open: boolean) => dispatch({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: open })}
+          errorMessages={claimErrorMessages}
+        />
+      }
+    </>
+
   )
 }
 

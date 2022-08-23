@@ -44,7 +44,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { roles, facility } = user || {};
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
-    descriptionType, isLoaded, withFile, files, bodyStatus
+    descriptionType, isLoaded, withFile, files, bodyStatus, cameraOpen
   } = state
 
   const { id: facilityId, practice } = facility || {};
@@ -301,6 +301,8 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         setAttachments={() => { }}
                         setFiles={(files: File[]) => dispatch({ type: ActionType.SET_FILES, files: files })}
                         acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
+                        cameraOpen={cameraOpen}
+                        setCameraOpen={(value) => dispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: value })}
                       />
 
                       {validated && !!!files?.length &&

@@ -184,13 +184,14 @@ export const useExternalPatientStyles = makeStyles({
 
   privacyLabelNewDescription: {
     paddingLeft: 5,
-    alignItems : 'flex-start',
     "& .privacyCheckBox": {
-      padding: '2px 8px'
+      padding: '2px 8px',
+      alignSelf : 'flex-start',
     },
 
     "& .MuiFormControlLabel-label": {
       fontSize: 14,
+      marginBottom: 5
     },
 
     "& .MuiCheckbox-root .MuiIconButton-label:before":{

@@ -9,6 +9,7 @@ import {
 // component block
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
+import Loader from '../../common/Loader';
 // constants, history, styling block
 import history from '../../../history';
 import { AuthContext } from '../../../context';
@@ -26,7 +27,7 @@ import {
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
-  const { currentUser, user } = useContext(AuthContext);
+  const { currentUser, user, fetchUser } = useContext(AuthContext);
   const { id, attachments } = currentUser || {}
   const { roles } = user || {}
 
@@ -136,6 +137,7 @@ const SignatureComponent = (): JSX.Element => {
       fetchAttachments()
       setLoading(false)
       setOpen(false)
+      fetchUser()
     }).then(() => { })
       .catch(error => {
         const { response: { data: { error: errorMessage } } } = error || {}
@@ -181,6 +183,10 @@ const SignatureComponent = (): JSX.Element => {
   }, [getAttachment, roles, signAttachment?.id])
 
   const isLoading = attachmentLoading || attachmentsLoading || loading
+
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Signature...' />
+  }
 
   return (
     <Box mt={5}>

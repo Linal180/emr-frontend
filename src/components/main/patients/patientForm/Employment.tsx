@@ -88,7 +88,7 @@ const EmploymentCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisabl
         <Selector
           addEmpty
           label={STATE}
-          name="guarantorState"
+          name="employerState"
           options={MAPPED_STATES}
           loading={getPatientLoading}
           disabled={shouldDisableEdit}

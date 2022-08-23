@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useCallback, Reducer, useReducer, useRef } from "react";
+import { FC, useEffect, useCallback, Reducer, useReducer, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
@@ -9,18 +9,17 @@ import DropzoneImage from "../DropZoneImage";
 // graphql and interfaces/types block
 import { mediaType } from "../../../utils";
 import { TrashNewIcon } from "../../../assets/svgs";
-import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
+import { CANCEL, EDIT_MEDIA, OPEN_CAMERA, UPDATE_MEDIA } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
-import { useEditMediaModalStyles } from "../../../styles/editMediaModalStyles";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
   preSignedUrl, title, providerName, filesLimit
 }): JSX.Element => {
-  const classes = useEditMediaModalStyles();
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
+  const [cameraOpen, setCameraOpen] = useState<boolean>(false);
   const [{ fileUrl, attachmentId, loading }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -57,15 +56,30 @@ const EditMediaModel: FC<MediaModalTypes> = ({
       aria-labelledby="image-dialog-title"
       aria-describedby="image-dialog-description"
     >
-      <DialogTitle id="image-dialog-title">{EDIT_MEDIA}</DialogTitle>
+      <DialogTitle id="image-dialog-title">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            {EDIT_MEDIA}
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setCameraOpen(true)}
+            >
+              {OPEN_CAMERA}
+            </Button>
+          </Box>
+        </Box>
+      </DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>
 
           {fileUrl ?
-            <Box className={classes.mediaImage}>
+            <Box className="media-image">
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
-              <Box className={classes.mediaOverlay}>
+              <Box className="media-overlay">
                 <IconButton aria-label="delete" onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>
@@ -86,6 +100,8 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
               acceptableFilesType={mediaType(title)}
+              cameraOpen={cameraOpen}
+              setCameraOpen={setCameraOpen}
             />
           }
         </DialogContent>

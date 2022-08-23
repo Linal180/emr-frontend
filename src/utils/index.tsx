@@ -30,7 +30,7 @@ import {
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
-  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -1988,6 +1988,12 @@ export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
 }
 
+export const canCancelAppointment = (status: AppointmentStatus, time: string) => {
+  return moment(getISOTime(time || '')).diff(moment(), 'hours') <= 1
+    ? CANCEL_TIME_EXPIRED_MESSAGE : status !== AppointmentStatus.Scheduled
+      ? `Appointment with status "${formatValue(status || '')}" can't be cancelled!` : ''
+}
+
 export const AppointmentStatusStateMachine = (
   value: AppointmentStatus, id = '', appointmentCreateType?: AppointmentCreateType | null
 ) => {
@@ -2269,3 +2275,31 @@ export const calculateAge = (birthday: string) => {
 
 export const getFormEmbeddedLink = (src: string): string =>
   `<iframe width="560" height="315" src="${src}" frameborder="0" allow="accelerometer; allowfullscreen"></iframe>`
+
+export const blobToFile = (theBlob: Blob, fileName: string): File => {
+  const lastModified = new Date().getTime()
+  const file = new File([theBlob], `${fileName}.png`, { lastModified, type: 'image/png' });
+  return file
+}
+
+export enum DocumentFileType {
+  IMAGE = 'image',
+  DOCUMENT = 'document'
+}
+
+export const getFileType = (key: string) => {
+  switch (key) {
+    case 'png':
+      return DocumentFileType.IMAGE
+    case 'jpg':
+      return DocumentFileType.IMAGE
+    case 'jpeg':
+      return DocumentFileType.IMAGE
+    case 'svg':
+      return DocumentFileType.IMAGE
+    case 'gif':
+      return DocumentFileType.IMAGE
+    default:
+      return DocumentFileType.DOCUMENT
+  }
+}

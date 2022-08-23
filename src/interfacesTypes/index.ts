@@ -170,6 +170,8 @@ export interface ConfirmationTypes extends DialogTypes {
   learnMoreText?: string
   aboutToText?: string
   isCalendar?: boolean;
+  onSignatureEnd?: (file: File | null) => void;
+  cancelText?: string;
 }
 
 interface ControlLabel {
@@ -781,11 +783,27 @@ export interface CoverageDetailsHeaderProps {
   policyEligibility: PolicyEligibilityWithPatientPayload['policyEligibility'] | undefined
 }
 
-export interface ViewerProps {
+export type ViewerProps = {
   isOpen: boolean
   handleClose: () => void
 }
 export interface DocumentViewerProps extends ViewerProps{
+  url: string
+  title?: string
+}
+
+export type PastAndUpcomingAppointmentListProps = {
+  past?: boolean
+  appointments: AppointmentsPayload['appointments'];
+  reload?: Function;
+};
+
+export type AreYouSureModalProps = ViewerProps & {
+  handleSubmit?: Function
+  content?: string
+}
+
+export interface DocumentViewerProps extends ViewerProps {
   url: string
   title?: string
 }
@@ -930,7 +948,9 @@ export interface DropzoneImageType {
   setAttachments: Function;
   acceptableFilesType?: string[]
   setFiles?: Function
-  numberOfFiles?: number
+  numberOfFiles?: number;
+  cameraOpen: boolean
+  setCameraOpen: (open: boolean) => void
 }
 
 interface Message {
@@ -1106,7 +1126,7 @@ export interface MediaCardsType {
   reload: Function;
   btnType?: "button" | "reset" | "submit" | undefined;
   filesLimit?: number;
-  attachmentMetadata?: any
+  attachmentMetadata?: any,
 }
 
 export interface DropDownItems {
@@ -1122,7 +1142,7 @@ export interface IMediaControl extends IFieldTypes {
   control: Control<ICreateMediaInput, object>;
 }
 
-export interface MediaCardComponentType {
+export type MediaCardComponentType = {
   title: string;
   isEdit: boolean;
   isOpen: boolean;
@@ -1218,6 +1238,13 @@ export interface RejectedModalProps {
   setIsOpen: Function;
   handleClose?: () => void;
   billingClaim: BillingPayload['billing'] | null
+}
+
+export type ClaimErrorModalProps = {
+  isOpen: boolean;
+  setIsOpen: Function;
+  handleClose?: () => void;
+  errorMessages?: string[]
 }
 
 export interface ClaimStatusModalProps extends GeneralFormProps {
@@ -1906,9 +1933,11 @@ export interface FormDoctorSelectorProps extends FacilitySelectorProps {
   formDispatch?: Dispatch<PublicFormBuilderAction>
 }
 
-export interface SignatureProps {
+export type SignatureProps = {
   onSignatureEnd: (file: File | null) => void,
-  controllerName: string
+  controllerName: string;
+  title?: string;
+  isController?: boolean;
 }
 
 export interface EncounterPros {
@@ -1970,5 +1999,16 @@ export type ShortUrlFormType = {
 export type SelfPayComponentProps = {
   state: BillingState;
   onCloseHandler: (open: boolean) => void
-  isOpen: boolean
+  isOpen: boolean;
+  checkOutHandler: Function
+}
+
+export type CameraComponentProps = {
+  sendFile: (blob: Blob | null) => void;
+  invisibleHandler: (open: boolean) => void;
+  open: boolean
+}
+
+export type CameraModalProps = {
+  open: boolean;
 }

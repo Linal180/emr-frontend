@@ -597,9 +597,9 @@ export type Claim = {
   __typename?: 'Claim';
   accept_assign?: Maybe<Scalars['String']>;
   auto_accident?: Maybe<Scalars['String']>;
-  batchId?: Maybe<Scalars['Float']>;
-  billNpi?: Maybe<Scalars['Float']>;
-  billTaxId?: Maybe<Scalars['Float']>;
+  batchId?: Maybe<Scalars['String']>;
+  billNpi?: Maybe<Scalars['String']>;
+  billTaxId?: Maybe<Scalars['String']>;
   bill_addr_1?: Maybe<Scalars['String']>;
   bill_addr_2?: Maybe<Scalars['String']>;
   bill_city?: Maybe<Scalars['String']>;
@@ -622,7 +622,7 @@ export type Claim = {
   chg_facility_state?: Maybe<Scalars['String']>;
   chg_facility_zip?: Maybe<Scalars['String']>;
   claimId?: Maybe<Scalars['String']>;
-  claimMdId?: Maybe<Scalars['Float']>;
+  claimMdId?: Maybe<Scalars['String']>;
   claim_form?: Maybe<Scalars['String']>;
   clia_number?: Maybe<Scalars['String']>;
   cond?: Maybe<OnsetDate>;
@@ -652,7 +652,7 @@ export type Claim = {
   facility_npi?: Maybe<Scalars['String']>;
   facility_state?: Maybe<Scalars['String']>;
   facility_zip?: Maybe<Scalars['String']>;
-  fileId?: Maybe<Scalars['Float']>;
+  fileId?: Maybe<Scalars['String']>;
   fileName?: Maybe<Scalars['String']>;
   from_date_1?: Maybe<Scalars['String']>;
   hosp_from_date?: Maybe<Scalars['String']>;
@@ -670,7 +670,7 @@ export type Claim = {
   ins_sex?: Maybe<Scalars['String']>;
   ins_state?: Maybe<Scalars['String']>;
   ins_zip?: Maybe<Scalars['String']>;
-  insuranceNumber?: Maybe<Scalars['Float']>;
+  insuranceNumber?: Maybe<Scalars['String']>;
   onset?: Maybe<OtherDate>;
   onset_date?: Maybe<Scalars['String']>;
   ord_name_f?: Maybe<Scalars['String']>;
@@ -705,7 +705,7 @@ export type Claim = {
   prov_name_l?: Maybe<Scalars['String']>;
   prov_name_m?: Maybe<Scalars['String']>;
   prov_npi?: Maybe<Scalars['String']>;
-  receivePayerId?: Maybe<Scalars['Float']>;
+  receivePayerId?: Maybe<Scalars['String']>;
   ref_id?: Maybe<Scalars['String']>;
   ref_name_f?: Maybe<Scalars['String']>;
   ref_name_l?: Maybe<Scalars['String']>;
@@ -715,7 +715,7 @@ export type Claim = {
   senderId?: Maybe<Scalars['String']>;
   senderName?: Maybe<Scalars['String']>;
   thru_date?: Maybe<Scalars['String']>;
-  totalCharge?: Maybe<Scalars['Float']>;
+  totalCharge?: Maybe<Scalars['String']>;
   total_charge?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -1075,6 +1075,7 @@ export type CreateClaimInput = {
   otherDate?: Maybe<Scalars['String']>;
   otherDateType?: Maybe<OtherDateType>;
   patientId?: Maybe<Scalars['String']>;
+  patientPaymentType?: Maybe<PatientPaymentType>;
   pos?: Maybe<Scalars['String']>;
   renderingProviderId?: Maybe<Scalars['String']>;
   serviceDate?: Maybe<Scalars['String']>;
@@ -2721,6 +2722,7 @@ export type Mutation = {
   resentOTP: UserPayload;
   resetPassword: UserPayload;
   saveUserFormValues: UserFormPayload;
+  sendAppointmentReminder: AppointmentPayload;
   sendInviteToPatient: PatientPayload;
   sendSms: SmsPayload;
   syncLabResults: LabTestObservationPayload;
@@ -3176,6 +3178,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationSaveUserFormValuesArgs = {
   createUserFormInput: CreateUserFormInput;
+};
+
+
+export type MutationSendAppointmentReminderArgs = {
+  appointmentId: Scalars['String'];
 };
 
 
@@ -6665,6 +6672,13 @@ export type CreateAppointmentMutationVariables = Exact<{
 
 export type CreateAppointmentMutation = { __typename?: 'Mutation', createAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
+export type SendAppointmentReminderMutationVariables = Exact<{
+  appointmentId: Scalars['String'];
+}>;
+
+
+export type SendAppointmentReminderMutation = { __typename?: 'Mutation', sendAppointmentReminder: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
 export type UpdateAppointmentMutationVariables = Exact<{
   updateAppointmentInput: UpdateAppointmentInput;
 }>;
@@ -6719,7 +6733,7 @@ export type FindAllUpcomingAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+export type FindAllUpcomingAppointmentsQuery = { __typename?: 'Query', findAllUpcomingAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentCreateType?: AppointmentCreateType | null, billingStatus: BillingStatus, checkedInAt?: string | null, createdAt?: string | null, updatedAt?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null, telehealthLink?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type FindPatientLastAppointmentQueryVariables = Exact<{
   lastVisitedAppointmentInput: LastVisitedAppointmentInput;
@@ -8481,6 +8495,43 @@ export function useCreateAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateAppointmentMutationHookResult = ReturnType<typeof useCreateAppointmentMutation>;
 export type CreateAppointmentMutationResult = Apollo.MutationResult<CreateAppointmentMutation>;
 export type CreateAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateAppointmentMutation, CreateAppointmentMutationVariables>;
+export const SendAppointmentReminderDocument = gql`
+    mutation SendAppointmentReminder($appointmentId: String!) {
+  sendAppointmentReminder(appointmentId: $appointmentId) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type SendAppointmentReminderMutationFn = Apollo.MutationFunction<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
+
+/**
+ * __useSendAppointmentReminderMutation__
+ *
+ * To run a mutation, you first call `useSendAppointmentReminderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendAppointmentReminderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendAppointmentReminderMutation, { data, loading, error }] = useSendAppointmentReminderMutation({
+ *   variables: {
+ *      appointmentId: // value for 'appointmentId'
+ *   },
+ * });
+ */
+export function useSendAppointmentReminderMutation(baseOptions?: Apollo.MutationHookOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>(SendAppointmentReminderDocument, options);
+      }
+export type SendAppointmentReminderMutationHookResult = ReturnType<typeof useSendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationResult = Apollo.MutationResult<SendAppointmentReminderMutation>;
+export type SendAppointmentReminderMutationOptions = Apollo.BaseMutationOptions<SendAppointmentReminderMutation, SendAppointmentReminderMutationVariables>;
 export const UpdateAppointmentDocument = gql`
     mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!) {
   updateAppointment(updateAppointmentInput: $updateAppointmentInput) {
@@ -8817,28 +8868,52 @@ export const FindAllUpcomingAppointmentsDocument = gql`
     upComingAppointmentsInput: $upComingAppointmentsInput
   ) {
     response {
+      error
       status
+      message
     }
     appointments {
       id
+      notes
+      reason
+      token
       status
-      scheduleStartDateTime
+      patientId
+      employment
+      paymentType
+      autoAccident
+      otherAccident
+      primaryInsurance
+      secondaryInsurance
       scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentCreateType
+      billingStatus
+      checkedInAt
+      createdAt
+      updatedAt
       appointmentType {
         id
         name
+        price
         duration
+        serviceType
       }
       provider {
         id
-        firstName
         lastName
+        firstName
+        telehealthLink
       }
       patient {
         id
         firstName
         lastName
       }
+    }
+    pagination {
+      page
+      totalPages
     }
   }
 }
