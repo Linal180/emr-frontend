@@ -7,7 +7,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChevronLeft, ChevronRight, Sort, NotificationsActiveOutlined } from "@material-ui/icons";
+import { ChevronLeft, ChevronRight, Sort, } from "@material-ui/icons";
 import {
   Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
@@ -28,7 +28,7 @@ import history from "../../history";
 import { AuthContext } from "../../context";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps, SelectorOption, StatusInputProps } from "../../interfacesTypes";
-import { CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
+import { BellIconNew, CheckInTickIcon, EditNewIcon, TrashNewIcon, VideoIcon } from "../../assets/svgs";
 import {
   Action, ActionType, appointmentReducer, initialState, State
 } from "../../reducers/appointmentReducer";
@@ -611,19 +611,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
-                            {
-                              status !== AppointmentStatus.Cancelled && <Box className={`${classes.iconsBackground}`}>
-                                <Button
-                                  onClick={() => {
-                                    id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
-                                    dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
-                                  }}
-                                >
-                                  <NotificationsActiveOutlined />
-                                </Button>
-                              </Box>
-                            }
-
+                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
+                              <Button
+                                onClick={() => {
+                                  id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
+                                  dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
+                                }}
+                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
+                              >
+                                <BellIconNew />
+                              </Button>
+                            </Box>
 
                             <Box className={cantUpdate ? classes.iconsBackgroundDisabled : classes.iconsBackground}>
                               <Button component={Link} to={`${APPOINTMENTS_ROUTE}/${id}`}

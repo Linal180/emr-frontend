@@ -6,7 +6,7 @@ import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core'
 import { getUserFormDefaultValue } from '../../utils';
 import { useFormStyles } from '../../styles/formsStyles';
 import { FieldComponentProps } from '../../interfacesTypes';
-import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
+import { ATTACHMENT_TITLES, FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
 // import PaymentForm from './formBuilder/PaymentForm'
@@ -29,7 +29,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const classes = useFormStyles();
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall, defaultValue } = item;
-  const { facilityFieldId, paymentType } = state || {}
+  const { facilityFieldId, paymentType, drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = state || {}
   const { id: facilityField } = facilityFieldId || {}
 
   const getPaymentComponent = (value: string) => {
@@ -84,16 +84,45 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           addEmpty
         />
 
-      case FormBuilderApiSelector.DRIVING_LICENSE:
+      case FormBuilderApiSelector.DRIVING_LICENSE_FRONT:
         return <DocumentsForm
           item={item}
+          state={state}
+          isCreating={isCreating}
           dispatcher={dispatcher}
-          state={state} />
+          documentAttachment={drivingLicense1}
+          documentType={ATTACHMENT_TITLES.DrivingLicense1}
+        />
 
-      case FormBuilderApiSelector.INSURANCE_CARD:
+      case FormBuilderApiSelector.DRIVING_LICENSE_BACK:
         return <DocumentsForm
           item={item}
-          dispatcher={dispatcher} state={state} />
+          state={state}
+          dispatcher={dispatcher}
+          isCreating={isCreating}
+          documentAttachment={drivingLicense2}
+          documentType={ATTACHMENT_TITLES.DrivingLicense2}
+        />
+
+      case FormBuilderApiSelector.INSURANCE_CARD_FRONT:
+        return <DocumentsForm
+          item={item}
+          state={state}
+          isCreating={isCreating}
+          dispatcher={dispatcher}
+          documentAttachment={insuranceCard1}
+          documentType={ATTACHMENT_TITLES.InsuranceCard1}
+        />
+
+      case FormBuilderApiSelector.INSURANCE_CARD_BACK:
+        return <DocumentsForm
+          item={item}
+          state={state}
+          isCreating={isCreating}
+          dispatcher={dispatcher}
+          documentAttachment={insuranceCard2}
+          documentType={ATTACHMENT_TITLES.InsuranceCard2}
+        />
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
         return <>

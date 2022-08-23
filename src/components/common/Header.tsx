@@ -89,11 +89,13 @@ const Header: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <DropdownMenu
-            itemName={BILLING_TEXT}
-            menuItem={BILLING_MENU_ITEMS}
-            current={currentRoute === 'inBilling'}
-          />
+          <Box className={classes.mobileMenuItem}>
+            <DropdownMenu
+              itemName={BILLING_TEXT}
+              menuItem={BILLING_MENU_ITEMS}
+              current={currentRoute === 'inBilling'}
+            />
+          </Box>
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
             <Typography

@@ -2,7 +2,7 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
+import { FormControl, InputLabel, FormHelperText, Box, CircularProgress } from '@material-ui/core'
 // constants and type/interfaces block
 import { REACTION_PAGE_LIMIT } from '../../constants';
 import { renderReactions, requiredLabel } from "../../utils";
@@ -16,7 +16,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({
   const [options, setOptions] = useState<multiOptionType[]>([])
   const [values, setValues] = useState<multiOptionType[]>([])
 
-  const [findAllReactions] = useFindAllReactionsLazyQuery({
+  const [findAllReactions, { loading: reactionsLoading }] = useFindAllReactionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -88,6 +88,8 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({
               id="selectedId"
               options={options}
               value={values}
+              isLoading={reactionsLoading}
+              components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5 }} /> }}
               className={invalid ? 'selectorClassTwoError' : 'selectorClassTwo'}
               onChange={(newValue) => {
                 field.onChange(newValue)

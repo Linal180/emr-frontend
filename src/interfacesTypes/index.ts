@@ -10,7 +10,7 @@ import {
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
-import { ITEM_MODULE } from "../constants";
+import { ATTACHMENT_TITLES, ITEM_MODULE } from "../constants";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action, State as MediaState } from "../reducers/mediaReducer";
@@ -787,6 +787,10 @@ export type ViewerProps = {
   isOpen: boolean
   handleClose: () => void
 }
+export type DocumentViewerProps = ViewerProps & {
+  url: string
+  title?: string
+}
 
 export type PastAndUpcomingAppointmentListProps = {
   past?: boolean
@@ -797,11 +801,6 @@ export type PastAndUpcomingAppointmentListProps = {
 export type AreYouSureModalProps = ViewerProps & {
   handleSubmit?: Function
   content?: string
-}
-
-export interface DocumentViewerProps extends ViewerProps {
-  url: string
-  title?: string
 }
 
 export interface InsuranceCardsProps {
@@ -1374,6 +1373,8 @@ export interface FieldComponentProps {
   state?: ExternalFormBuilderState;
   dispatcher?: Dispatch<PublicFormBuilderAction>;
   fieldState?: ControllerFieldState
+  documentAttachment?: Attachment | undefined
+  documentType?: ATTACHMENT_TITLES
 }
 
 export interface ShareModalTypes extends DialogTypes {

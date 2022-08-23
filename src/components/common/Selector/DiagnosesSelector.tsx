@@ -1,5 +1,5 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
+import { Box, CircularProgress, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import Select from 'react-select';
@@ -14,7 +14,7 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
   const [options, setOptions] = useState<multiOptionType[]>([])
   const [values, setValues] = useState<multiOptionType[]>([])
 
-  const [searchIcdCodes] = useFetchIcdCodesLazyQuery({
+  const [searchIcdCodes, { loading: icdCodesLoading }] = useFetchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -89,6 +89,8 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
               defaultValue={options}
               options={options}
               value={values}
+              isLoading={icdCodesLoading}
+              components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5 }} /> }}
               onChange={(newValue) => {
                 field.onChange(newValue)
                 updateValues(newValue as multiOptionType[])

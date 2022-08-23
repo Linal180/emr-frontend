@@ -282,7 +282,7 @@ const AddForm = () => {
       const tab = tabs && (tabs[0] || {})
       const { sections } = tab || {}
       const newSections = sections?.map((section) => {
-        const { fields, name, col,sectionId } = section;
+        const { fields, name, col, sectionId } = section;
         const newFields = fields?.map((field) => ({ ...field, fieldId: uuid() }))
 
         return ({
@@ -578,7 +578,7 @@ const AddForm = () => {
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
-          <Box py={2} display='flex' justifyContent='space-between'>
+          <Box py={2} display='flex' justifyContent='space-between' flexWrap='wrap'>
             <Box display='flex'>
               <BackButton to={`${FORM_BUILDER_ROUTE}`} />
 
@@ -590,28 +590,30 @@ const AddForm = () => {
               />
             </Box>
 
-            <Box display='flex' justifyContent='flex-start' alignItems="baseline">
-              <Button onClick={clearHandler} variant="outlined" color="default">
-                {CLEAR_TEXT}
-              </Button>
+            <Box display='flex' justifyContent='flex-start' alignItems="baseline" flexWrap='wrap'>
+              <Box m={1}>
+                <Button onClick={clearHandler} variant="outlined" color="default">
+                  {CLEAR_TEXT}
+                </Button>
+              </Box>
 
-              <Box mx={1} />
+              <Box m={1}>
+                <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
+                  {loading && <CircularProgress size={20} color="inherit" />}  {SAVE_DRAFT}
+                </Button>
+              </Box>
 
-              <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
-                {loading && <CircularProgress size={20} color="inherit" />}  {SAVE_DRAFT}
-              </Button>
+              <Box m={1}>
+                <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary" disabled={createTemplateLoading}>
+                  {createTemplateLoading && <CircularProgress size={20} color="inherit" />} {CREATE_TEMPLATE}
+                </Button>
+              </Box>
 
-              <Box mx={1} />
-
-              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary" disabled={createTemplateLoading}>
-                {createTemplateLoading && <CircularProgress size={20} color="inherit" />} {CREATE_TEMPLATE}
-              </Button>
-
-              <Box mx={1} />
-
-              <Button type='submit' variant='contained' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: true })} color='primary' disabled={loading || updateLoading}>
-                {(loading || updateLoading) && <CircularProgress size={20} color="inherit" />} {PUBLISH}
-              </Button>
+              <Box m={1}>
+                <Button type='submit' variant='contained' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: true })} color='primary' disabled={loading || updateLoading}>
+                  {(loading || updateLoading) && <CircularProgress size={20} color="inherit" />} {PUBLISH}
+                </Button>
+              </Box>
             </Box>
           </Box>
 
@@ -670,11 +672,11 @@ const AddForm = () => {
 
             <Box mt={3}>
               <Grid container spacing={2}>
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid item lg={2} md={3} sm={3} xs={12}>
                   <Sidebar dispatch={dispatch} formState={state} />
                 </Grid>
 
-                <Grid item md={7} sm={4} xs={12}>
+                <Grid item lg={7} md={6} sm={6} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
                       <DropContainer
@@ -721,7 +723,7 @@ const AddForm = () => {
                   </Box>
                 </Grid>
 
-                <Grid item md={3} sm={4} xs={12}>
+                <Grid item lg={3} md={3} sm={3} xs={12}>
                   <Box className={classes.main}>
                     <TabProperties formState={state} dispatch={dispatch} />
                     <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />

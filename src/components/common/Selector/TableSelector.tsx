@@ -1,24 +1,24 @@
 //packages block
+import { Box, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from "react-hook-form";
-import { Box, Card, IconButton, Typography, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 //components
+import InputController from "../../../controller";
 import ItemSelector from "../ItemSelector";
 import NoDataComponent from "../NoDataComponent";
-import ModifierSelector from "./ModifierSelector";
-import InputController from "../../../controller";
 import FeeCPTCodesSelector from "./FeeCptCodeSelector";
+import ModifierSelector from "./ModifierSelector";
 //constants, interfaces, utils
+import { TrashNewIcon } from "../../../assets/svgs";
 import {
   ACTIONS, BILLED_FEE_DOLLAR, BILLING_MODIFIERS_DATA, CODE, DESCRIPTION, DIAGNOSIS_POINTERS,
   DIAGNOSIS_POINTERS_DATA, EMPTY_OPTION, ITEM_MODULE, MODIFIER, MODIFIERS, SR_NO, UNIT
 } from "../../../constants";
-import { renderTh } from "../../../utils";
-import { TrashNewIcon } from "../../../assets/svgs";
 import { CodeType } from "../../../generated/graphql";
-import { useTableStyles } from "../../../styles/tableStyles";
+import { CreateBillingProps, ItemSelectorOption, TableCodesProps, TableSelectorProps } from "../../../interfacesTypes";
 import { SearchTooltip } from "../../../styles/searchTooltip";
-import { CreateBillingProps, ItemSelectorOption, TableSelectorProps } from "../../../interfacesTypes";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { renderTh, setRecord } from "../../../utils";
 
 const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPrice, feeScheduleId }) => {
   const classes = useTableStyles()
@@ -75,6 +75,23 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
         }
       ])
     }
+  }
+
+  const handleCodeRemoval = (codeId: string) => {
+    const filteredValues = (moduleData)?.filter((data => data?.codeId !== codeId)) as TableCodesProps[]
+    setFormValue(moduleName, filteredValues)
+    filteredValues.forEach((values, index) => {
+      setFormValue(`cptFeeSchedule.${index}.price`, values.price as never)
+      setFormValue(`cptFeeSchedule.${index}.unit`, values.unit as never)
+      setFormValue(`cptFeeSchedule.${index}.m1`, setRecord(values.m1?.id || '', values.m1?.name || '') as never)
+      setFormValue(`cptFeeSchedule.${index}.m2`, setRecord(values.m2?.id || '', values.m2?.name || '') as never)
+      setFormValue(`cptFeeSchedule.${index}.m3`, setRecord(values.m3?.id || '', values.m3?.name || '') as never)
+      setFormValue(`cptFeeSchedule.${index}.m4`, setRecord(values.m4?.id || '', values.m4?.name || '') as never)
+      setFormValue(`cptFeeSchedule.${index}.diag1`, values.diag1 as never)
+      setFormValue(`cptFeeSchedule.${index}.diag2`, values.diag2 as never)
+      setFormValue(`cptFeeSchedule.${index}.diag3`, values.diag3 as never)
+      setFormValue(`cptFeeSchedule.${index}.diag4`, values.diag4 as never)
+    })
   }
 
   return (
@@ -188,7 +205,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                         controllerLabel={""}
                                         margin={'none'}
                                         onChange={(data: string) => {
-                                          return price && Number(data) >= 1 && setFormValue(`${ITEM_MODULE.cptFeeSchedule}.${index}.price`, String(Number(data) * Number(price)) as never)
+                                          return price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, String(Number(data) * Number(price)) as never)
                                         }}
                                       />
                                     </Box>
@@ -241,7 +258,9 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                 </TableCell>
                             }
                             <TableCell>
-                              <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                              <IconButton
+                                onClick={() => codeId && handleCodeRemoval(codeId)}
+                              >
                                 <TrashNewIcon />
                               </IconButton>
                             </TableCell>
