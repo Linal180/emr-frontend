@@ -1,6 +1,7 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
 import Logo from "../../../../assets/images/aimed-logo.png";
+import { LAB_RESULTS_INFO } from "../../../../constants";
 import { LabTestsPayload } from "../../../../generated/graphql";
 import { formatAddress, formatPhone, getFormatDateString } from "../../../../utils";
 
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
 
 const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
   const canvas = document.createElement('canvas');
-  JsBarcode(canvas, `${process.env.REACT_APP_URL}/${labTest?.[0]?.orderNumber}`);
+  JsBarcode(canvas, `${process.env.REACT_APP_URL}${LAB_RESULTS_INFO}/${labTest?.[0]?.orderNumber}`);
   const barcode = canvas.toDataURL();
 
   const { patient, primaryProvider, collectedDate, receivedDate } = labTest?.[0] || {}

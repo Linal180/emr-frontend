@@ -1,11 +1,9 @@
 // constants block
-import { DASHBOARD_BREAD, LAB_RESULTS_BREAD, LAB_RESULTS_TEXT } from "../../../../constants";
 import PageHeader from "../../../common/PageHeader";
 import LabResultsTable from "./LabResultsTable";
+import { DASHBOARD_BREAD, LAB_RESULTS_BREAD, LAB_RESULTS_TEXT } from "../../../../constants";
 
 const LabResultsComponent = (): JSX.Element => {
- 
-
   return (
     <>
       <PageHeader

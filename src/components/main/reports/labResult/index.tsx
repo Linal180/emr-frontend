@@ -5,8 +5,6 @@ import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../gene
 import { ParamsType } from "../../../../interfacesTypes";
 import ResultDoc from "./ResultDoc";
 
-
-
 // Create Document Component
 function LabResultDetail() {
   const { orderNum } = useParams<ParamsType>()
