@@ -2,7 +2,7 @@
 import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import Select, { GroupBase, OptionsOrGroups } from 'react-select';
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { Box, CircularProgress, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // utils and interfaces/types block
 import { AuthContext } from "../../../context";
 import { DROPDOWN_PAGE_LIMIT } from "../../../constants";
@@ -28,7 +28,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
   const isFacAdmin = isFacilityAdmin(roles);
   const inputLabel = isRequired ? requiredLabel(label) : label
 
-  const [findAllService] = useFindAllServiceListLazyQuery({
+  const [findAllService, { loading: servicesLoading }] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -131,6 +131,8 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
                     name={name}
                     defaultValue={options}
                     value={values}
+                    isLoading={servicesLoading}
+                    components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5 }} /> }}
                     onChange={(newValue) => {
                       field.onChange(newValue)
                       updateValues(newValue as multiOptionType[])

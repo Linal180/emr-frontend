@@ -101,8 +101,9 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE
+  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE
 } from "../constants";
+import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -121,6 +122,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} allow component={AppointmentCancel} exact />
       <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} allow component={CancelAppointment} exact />
       <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} allow component={ExternalPayment} exact />
+      <PublicRoute path={`${LAB_RESULTS_INFO}/:orderNum`} component={LabResultDetail} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} allow component={AppointmentFail} exact />
       <PublicRoute path={`${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/:id`} allow component={FacilityPublicAppointment} exact />
       <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} allow component={DoctorPublicAppointment} exact />
@@ -170,6 +172,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:appointmentId/:id${CHECK_IN_ROUTE}`} component={CheckIn} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} permission={USER_PERMISSIONS.updateAppointment} />
       <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
+      <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/:orderNum`} component={LabResultDetail} />
       <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
       <PrivateRoute exact path={CLAIM_FEED_ROUTE} component={ClaimFeed} />
       <PrivateRoute exact path={CLAIM_STATUS_ROUTE} component={ClaimStatus} />

@@ -21,6 +21,7 @@ export interface State {
   provider: SelectorOption;
   signatureLoader: boolean;
   formValues: FormTabsInputs[];
+  formJson: FormTabsInputs[];
   facilityFieldId: SelectorOption;
   insuranceCard1: Attachment | undefined;
   insuranceCard2: Attachment | undefined;
@@ -53,6 +54,7 @@ export const initialState: State = {
   formType: FormType.Appointment,
   provider: { id: "", name: "" },
   formValues: getFormInitialValues(),
+  formJson: getFormInitialValues(),
   facilityFieldId: { id: "", name: "" },
 }
 
@@ -71,6 +73,7 @@ export enum ActionType {
   SET_FACILITY_ID = 'setFacilityId',
   SET_PRACTICE_ID = 'setPracticeId',
   SET_FORM_VALUES = 'setFormValues',
+  SET_FORM_JSON = 'setFormJson',
   SET_UPLOAD_IMAGE = 'setUploadImage',
   SET_PAYMENT_TYPE = 'setPaymentType',
   SET_TRANSACTION_ID = 'setTransactionId',
@@ -98,6 +101,7 @@ export type Action = { type: ActionType.SET_ACTIVE; isActive: boolean } |
 { type: ActionType.SET_UPLOAD_IMAGE; uploadImage: boolean } |
 { type: ActionType.SET_PROVIDER, provider: SelectorOption } |
 { type: ActionType.SET_TRANSACTION_ID; transactionId: string } |
+{ type: ActionType.SET_FORM_JSON; formJson: FormTabsInputs[] } |
 { type: ActionType.SET_SERVICE_TYPE_ID; serviceTypeId: string } |
 { type: ActionType.SET_FORM_VALUES; formValues: FormTabsInputs[] } |
 { type: ActionType.SET_SIGNATURE_LOADER; signatureLoader: boolean } |
@@ -252,6 +256,12 @@ export const externalFormBuilderReducer = (state: State, action: Action): State 
       return {
         ...state,
         isError: action.isError
+      }
+
+    case ActionType.SET_FORM_JSON:
+      return {
+        ...state,
+        formJson: action.formJson
       }
   }
 }
