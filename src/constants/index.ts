@@ -109,6 +109,8 @@ export const PAY_VIA_ACH = 'Pay via ACH';
 export const ADD_CPT_AND_ICD_CODES = `Please add CPT & ICD Codes`
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
+export const PATIENT_NO = 'Patient No'
+export const FINAL_REPORT = 'Final Report'
 export const PINNED_NOTES = "Pinned Notes";
 export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
@@ -375,12 +377,14 @@ export const ADD_RESULT_FILE = "Add Result File";
 export const ADD_ANOTHER_SPECIMEN = "Add Another Specimen";
 export const ADD_SPECIMEN = "Add a Specimen";
 export const REMOVE_SPECIMEN = "Remove Specimen";
+export const SPECIMEN = 'SPECIMEN'
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
   "May we phone, or send a email to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Provider";
 export const ADD_RESULT = "Add Result";
+export const SYNC_RESULTS = "Sync Results";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Provider";
 export const ADD_PATIENT = "Add Patient";
@@ -638,6 +642,14 @@ export const STATE = "State";
 export const PDF_TEXT = "PDF";
 export const SELECT = "Select";
 export const GENDER = "Gender";
+export const TEL = 'TEL'
+export const PHYSICIAN = 'PHYSICIAN'
+export const PRIMARY_CARE = 'Primary Care'
+export const PRIMARY = 'Primary'
+export const ATTENDING = 'Attending'
+export const VIRAL_STRAIN = 'VIRAL STRAIN'
+export const METHOD = 'METHOD'
+export const UPLOAD_CSV = 'Upload CSV'
 export const ENABLED = "Enabled";
 export const COUNTRY = "Country";
 export const ADDRESS = "Address";
@@ -786,6 +798,10 @@ export const DROPDOWN_PAGE_LIMIT = 10;
 export const USER_LOG_PAGE_LIMIT = 50;
 export const HISTORICAL = "Historical";
 export const TEST_TAKEN = "Test Taken";
+export const TEST_1 = "Test 1";
+export const TEST_2 = "Test 2";
+export const TEST_3 = "Test 3";
+export const TEST_4 = "Test 4";
 export const ENVIRONMENT = "Environment";
 export const ENDING_TIME = "Ending time";
 export const APPOINTMENT = "Appointment";
@@ -1170,6 +1186,7 @@ export const SEND_SMS_TEXT = "Send SMS";
 export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
+export const LAB_RESULTS_DESCRIPTION = "Patient's Lab Results";
 export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
 export const LAB_ORDERS = "Lab Orders";
 export const SIGNATURE_DATE = "DATE:"
@@ -1527,6 +1544,7 @@ export const AGREEMENTS_ROUTE = "/agreements";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
+export const LAB_RESULTS_INFO = "/lab-results-info";
 export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
@@ -3143,6 +3161,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: CLAIM_STATUSES,
     link: CLAIM_STATUSES_ROUTE,
     desc: CLAIM_STATUSES_DESCRIPTION,
+  },
+  {
+    name: LAB_RESULTS_TEXT,
+    link: LAB_RESULTS_ROUTE,
+    desc: LAB_RESULTS_DESCRIPTION,
   },
   {
     name: SEND_SMS_TEXT,
