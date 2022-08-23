@@ -612,7 +612,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             }
 
                             {
-                              status !== AppointmentStatus.Cancelled && <Box className={`${classes.iconsBackground}`}>
+                              (status !== AppointmentStatus.Cancelled && status !== AppointmentStatus.Discharged) && <Box className={`${classes.iconsBackground}`}>
                                 <Button
                                   onClick={() => {
                                     id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
