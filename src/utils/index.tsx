@@ -1214,6 +1214,11 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
   }
 };
 
+export const getDocumentByDocumentType = (attachmentData: AttachmentsPayload['attachments'], title: ATTACHMENT_TITLES) => {
+  const documentAttachment = attachmentData?.filter(attachment => attachment?.title === title)[0] || undefined
+  return documentAttachment
+};
+
 export const formatPermissionName = (name: string) => {
   const [text, ...rest] = name?.split(/(?=[A-Z])/)
   const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `

@@ -10,7 +10,7 @@ import {
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
-import { ITEM_MODULE } from "../constants";
+import { ATTACHMENT_TITLES, ITEM_MODULE } from "../constants";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action, State as MediaState } from "../reducers/mediaReducer";
@@ -1374,6 +1374,8 @@ export interface FieldComponentProps {
   state?: ExternalFormBuilderState;
   dispatcher?: Dispatch<PublicFormBuilderAction>;
   fieldState?: ControllerFieldState
+  documentAttachment?: Attachment | undefined
+  documentType?: ATTACHMENT_TITLES
 }
 
 export interface ShareModalTypes extends DialogTypes {

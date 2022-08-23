@@ -1,28 +1,33 @@
-import { FC, useEffect, useCallback, useMemo } from 'react';
+import { FC, useEffect, useCallback } from 'react';
 import { Close as CloseIcon } from '@material-ui/icons';
-import { Box, Grid, IconButton, Typography } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Box, FormControl, FormHelperText, IconButton, InputLabel, Typography } from '@material-ui/core';
 import { DefaultExtensionType, FileIcon, defaultStyles } from 'react-file-icon';
 //components
 import Alert from '../Alert';
 import MediaCards from '../AddMedia/MediaCards';
+import { TextFieldComponent } from '../FieldRenderer';
 // constants, interfaces, theme, styles
 import { GREEN } from '../../../theme';
-import { getDocumentByType } from '../../../utils'
+import { getDocumentByDocumentType } from '../../../utils'
+import { useFormStyles } from '../../../styles/formsStyles';
 import { FieldComponentProps } from '../../../interfacesTypes';
 import { useDropzoneStyles } from '../../../styles/dropzoneStyles';
 import { ActionType } from '../../../reducers/externalFormBuilderReducer';
 import {
-  ATTACHMENT_DELETED, ATTACHMENT_TITLES, BACK_SIDE, FormBuilderApiSelector, FRONT_SIDE, PAGE_LIMIT
+  ATTACHMENT_DELETED, ATTACHMENT_TITLES, BACK_SIDE, FRONT_SIDE, PAGE_LIMIT
 } from '../../../constants'
 import {
   Attachment, AttachmentsPayload, AttachmentType, useGetAttachmentsLazyQuery, useRemoveAttachmentDataMutation
 } from '../../../generated/graphql';
 
-const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JSX.Element => {
-  const { label, apiCall, required } = item || {}
-  const { patientId, drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = state || {}
+const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state, documentAttachment, isCreating, documentType }): JSX.Element => {
+  const { label, required, fieldId } = item || {}
+  const { patientId } = state || {}
 
   const dropzoneClasses = useDropzoneStyles()
+  const { control, setValue } = useFormContext();
+  const classes = useFormStyles();
 
   const handleRemoveAttachment = async (id: string) => {
     await removeAttachment({
@@ -39,6 +44,7 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
       const { response } = removeAttachmentData
       const { status } = response || {}
       if (status === 200) {
+        setValue(fieldId, '')
         await fetchDocuments()
         Alert.success(ATTACHMENT_DELETED);
       }
@@ -98,14 +104,30 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
 
         if (getAttachments) {
           const { attachments } = getAttachments
-
-          const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } =
-            getDocumentByType(attachments as AttachmentsPayload['attachments'])
-          if (dispatcher) {
-            dispatcher({ type: ActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
-            dispatcher({ type: ActionType.SET_INSURANCE_CARD_2, insuranceCard2: insuranceCard2 || undefined })
-            dispatcher({ type: ActionType.SET_DRIVING_LICENSE_1, drivingLicense1: drivingLicense1 || undefined })
-            dispatcher({ type: ActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
+          if (documentType) {
+            const documentAttachment = getDocumentByDocumentType(attachments as AttachmentsPayload['attachments'], documentType)
+            if (dispatcher && documentType) {
+              switch (documentType) {
+                case ATTACHMENT_TITLES.DrivingLicense1:
+                  dispatcher({ type: ActionType.SET_DRIVING_LICENSE_1, drivingLicense1: documentAttachment })
+                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  break;
+                case ATTACHMENT_TITLES.DrivingLicense2:
+                  dispatcher({ type: ActionType.SET_DRIVING_LICENSE_2, drivingLicense2: documentAttachment })
+                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  break;
+                case ATTACHMENT_TITLES.InsuranceCard1:
+                  dispatcher({ type: ActionType.SET_INSURANCE_CARD_1, insuranceCard1: documentAttachment })
+                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  break;
+                case ATTACHMENT_TITLES.InsuranceCard2:
+                  dispatcher({ type: ActionType.SET_INSURANCE_CARD_2, insuranceCard2: documentAttachment })
+                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  break;
+                default:
+                  break;
+              }
+            }
           }
         }
       }
@@ -122,37 +144,33 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state }): JS
     patientId && fetchDocuments()
   }, [patientId, fetchDocuments])
 
-  useMemo(() => {
-    if (required) {
-      dispatcher && dispatcher({ type: ActionType.SET_ERROR, isError: true })
-    }
-  }, [required, dispatcher])
-
   return (
     <Box py={2}>
       <Typography component="h4" variant="h4">{label}</Typography>
-      {apiCall === FormBuilderApiSelector.DRIVING_LICENSE &&
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            {renderDocument(ATTACHMENT_TITLES.DrivingLicense1, drivingLicense1, patientId || '')}
-          </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            {renderDocument(ATTACHMENT_TITLES.DrivingLicense2, drivingLicense2, patientId || '')}
-          </Grid>
-        </Grid>
-      }
-      {apiCall === FormBuilderApiSelector.INSURANCE_CARD &&
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            {renderDocument(ATTACHMENT_TITLES.InsuranceCard1, insuranceCard1, patientId || '')}
-          </Grid>
-
-          <Grid item md={6} sm={12} xs={12}>
-            {renderDocument(ATTACHMENT_TITLES.InsuranceCard2, insuranceCard2, patientId || '')}
-          </Grid>
-        </Grid>
-      }
+      {renderDocument(documentType || '', documentAttachment, patientId || '')}
+      <Controller
+        rules={{ required: required }}
+        name={fieldId}
+        control={control}
+        defaultValue={''}
+        render={({ field, fieldState }) => {
+          const { invalid, error: { message } = {} } = fieldState
+          return (
+            <FormControl fullWidth margin="normal" error={Boolean(invalid)} id={fieldId}>
+              <Box sx={{ display: 'none' }}>
+                <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
+                  {required ? `${label} *` : label}
+                </InputLabel>
+                <TextFieldComponent item={item} field={field} isCreating={isCreating} />
+              </Box>
+              <FormHelperText>
+                {message}
+              </FormHelperText>
+            </FormControl>
+          )
+        }}
+      />
     </Box>
   )
 }
