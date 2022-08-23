@@ -1,27 +1,26 @@
 // packages block
-import { useParams } from "react-router-dom";
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, } from "react";
-import { Box, Grid, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography } from "@material-ui/core";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { useParams } from "react-router-dom";
 // components block
 import Alert from "../../common/Alert";
+import ConfirmationModal from "../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 import Search from "../../common/Search";
 import SideDrawer from '../../common/SideDrawer';
 import TableLoader from "../../common/TableLoader";
 import CptFeeScheduleForm from './cptFeeScheduleForm';
-import ConfirmationModal from "../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { ParamsType } from "../../../interfacesTypes";
-import { getPageNumber, isLast, renderTh } from "../../../utils";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon, AddWhiteIcon } from "../../../assets/svgs";
-import { feeScheduleReducer, initialState, Action, State, ActionType } from "../../../reducers/feeScheduleReducer";
-import { useFindAllCptFeeScheduleLazyQuery, useGetFeeScheduleLazyQuery, useRemoveFeeScheduleMutation } from "../../../generated/graphql";
+import { AddWhiteIcon, EditNewIcon, TrashNewIcon } from "../../../assets/svgs";
 import {
-  ACTION, CHARGE_DOLLAR, CODE, DESCRIPTION, MODIFIER, PAGE_LIMIT, FEE_SCHEDULE, DELETE_FEE_SCHEDULE_DESCRIPTION,
-  CANT_DELETE_FEE_SCHEDULE, REVENUE_CODE, ADD_NEW_TEXT, FEE_SCHEDULE_ROUTE,
+  ACTION, ADD_NEW_TEXT, CANT_DELETE_FEE_SCHEDULE, CHARGE_DOLLAR, CODE, CPT_FEE_SCHEDULE, DELETE_CPT_FEE_SCHEDULE_DESCRIPTION, DESCRIPTION, FEE_SCHEDULE_ROUTE, MODIFIER, PAGE_LIMIT, REVENUE_CODE
 } from "../../../constants";
+import { useFindAllCptFeeScheduleLazyQuery, useGetFeeScheduleLazyQuery, useRemoveCptFeeScheduleMutation } from "../../../generated/graphql";
+import { ParamsType } from "../../../interfacesTypes";
+import { Action, ActionType, feeScheduleReducer, initialState, State } from "../../../reducers/feeScheduleReducer";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { getPageNumber, isLast, renderTh } from "../../../utils";
 import BackButton from "../../common/BackButton";
 
 const CptFeeTable: FC = (): JSX.Element => {
@@ -59,10 +58,10 @@ const CptFeeTable: FC = (): JSX.Element => {
     }
   });
 
-  const [removeFeeSchedule, { loading: delFeeLoading }] = useRemoveFeeScheduleMutation({
+  const [removeCptFeeSchedule, { loading: delFeeLoading }] = useRemoveCptFeeScheduleMutation({
     async onCompleted(data) {
       if (data) {
-        const { removeFeeSchedule: { response } } = data
+        const { removeCptFeeSchedule: { response } } = data
 
         if (response) {
           try {
@@ -73,7 +72,7 @@ const CptFeeTable: FC = (): JSX.Element => {
               dispatch({ type: ActionType.SET_DEL_OPEN, openDel: false })
 
               if (!!cptFeeSchedules && (cptFeeSchedules.length > 1 || isLast(cptFeeSchedules.length, page))) {
-                await fetchFeeSchedule();
+                await fetchCptFeeSchedule();
               } else {
                 dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, cptFeeSchedules?.length || 0) })
               }
@@ -157,9 +156,9 @@ const CptFeeTable: FC = (): JSX.Element => {
 
   const handleDeleteFeeSchedule = async () => {
     if (delFeeId) {
-      await removeFeeSchedule({
+      await removeCptFeeSchedule({
         variables: {
-          removeFeeScheduleInput: { id: delFeeId }
+          removeCptFeeScheduleInput: { id: delFeeId }
         }
       })
     }
@@ -270,10 +269,10 @@ const CptFeeTable: FC = (): JSX.Element => {
       </SideDrawer>
 
       <ConfirmationModal
-        title={FEE_SCHEDULE}
+        title={CPT_FEE_SCHEDULE}
         isOpen={openDel}
         isLoading={delFeeLoading}
-        description={DELETE_FEE_SCHEDULE_DESCRIPTION}
+        description={DELETE_CPT_FEE_SCHEDULE_DESCRIPTION}
         handleDelete={handleDeleteFeeSchedule}
         setOpen={(open: boolean) =>
           dispatch({ type: ActionType.SET_DEL_OPEN, openDel: open })
