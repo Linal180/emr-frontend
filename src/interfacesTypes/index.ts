@@ -172,6 +172,7 @@ export interface ConfirmationTypes extends DialogTypes {
   isCalendar?: boolean;
   onSignatureEnd?: (file: File | null) => void;
   cancelText?: string;
+  shouldDisplayCancel?: boolean
 }
 
 interface ControlLabel {
