@@ -3523,15 +3523,17 @@ export const PATIENT_CHARTING_TABS = [
 ]
 
 export enum FormBuilderApiSelector {
-  PAYMENT_TYPE = 'paymentType',
   SERVICE_SLOT = 'serviceSlot',
+  PAYMENT_TYPE = 'paymentType',
   SERVICE_SELECT = 'serviceSelect',
-  INSURANCE_CARD = 'insuranceCard',
-  DRIVING_LICENSE = 'drivingLicense',
   PATIENT_CONSENT = 'patientConsent',
   TERMS_CONDITIONS = 'termsConditions',
   FACILITY_PROVIDERS = 'facilityProviders',
+  INSURANCE_CARD_BACK = 'insuranceCardBack',
   PRACTICE_FACILITIES = 'practiceFacilities',
+  DRIVING_LICENSE_BACK = 'drivingLicenseBack',
+  INSURANCE_CARD_FRONT = 'insuranceCardFront',
+  DRIVING_LICENSE_FRONT = 'drivingLicenseFront',
 }
 
 export enum FormBuilderPaymentTypes {
