@@ -1,6 +1,6 @@
 //packages block
 import { useFormContext } from "react-hook-form";
-import { FC, useCallback, useEffect } from "react";
+import { FC, Fragment, useCallback, useEffect } from "react";
 import { Box, Grid, Typography } from "@material-ui/core"
 //components
 import Signature from '../signature'
@@ -55,13 +55,13 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
     (id || facilityId) && fetchAllAgreements()
   }, [id, facilityId, fetchAllAgreements])
 
-  return <Box my={3}>
-    <Box maxHeight={400} pl={2} mb={3} overflow="auto">
+  return <Box>
+    <Box maxHeight={200} px={1.5} mb={3} overflow="auto">
       {agreements?.map((agreement) => {
         const { body } = agreement || {}
-        return (<Box maxHeight={400} pl={2} mb={3} overflow="auto">
+        return (<Fragment>
           {body && <Typography variant="subtitle1" component="p" dangerouslySetInnerHTML={{ __html: body }} ></Typography>}
-        </Box>)
+        </Fragment>)
       })}
     </Box>
 
