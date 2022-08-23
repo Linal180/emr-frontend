@@ -11,7 +11,8 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
 
   loginFormImageContainer: {
-    minWidth: 600,
+    // minWidth: 600,
+    minWidth: '30%',
     alignItems: "center",
     display: "flex",
     flexDirection: 'column',

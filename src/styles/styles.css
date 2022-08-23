@@ -26,6 +26,10 @@ body {
   font-family: Inter, sans-serif;
 }
 
+.MuiTab-root {
+  padding: 12px 15px !important;
+}
+
 .MuiButton-root .MuiCircularProgress-root {
   position: absolute;
   top: 50%;
