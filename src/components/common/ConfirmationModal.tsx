@@ -34,7 +34,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
   }
 
   const buttonColor: PropTypes.Color = success ? "primary" : "secondary"
-  console.log("----------->>.", shouldDisplayCancel)
+
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
