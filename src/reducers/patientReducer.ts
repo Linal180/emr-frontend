@@ -129,7 +129,7 @@ export const initialState: State = {
   sameAddress: false,
   attachmentsData: [],
   deletePatientId: '',
-  openMoreInfo: false,
+  openMoreInfo: true,
   consentAgreed: false,
   optionalEmail: true,
   isAppointment: false,
