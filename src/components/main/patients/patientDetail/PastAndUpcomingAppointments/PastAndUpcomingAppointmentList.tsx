@@ -171,6 +171,8 @@ const PastAndUpcomingAppointmentList: FC<PastAndUpcomingAppointmentListProps> = 
       })}
 
       <ConfirmationModal
+        shouldDisplayCancel={true}
+        actionText={"Cancel Appointment"}
         title={APPOINTMENT}
         isOpen={openDelete}
         isLoading={cancelAppointmentLoading}

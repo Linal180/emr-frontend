@@ -248,9 +248,11 @@ const PatientDetailsComponent = (): JSX.Element => {
             ))}
           </TabList>
 
-          <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
-            <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-          </Link>
+          <Box my={1}>
+            <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
+              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+            </Link>
+          </Box>
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
