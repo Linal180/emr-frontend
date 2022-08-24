@@ -1,23 +1,33 @@
 // packages block
-import { CSVLink } from "react-csv";
-import papaparse from 'papaparse'
 import moment from "moment";
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
+import papaparse from 'papaparse';
+import { CSVLink } from "react-csv";
 import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { 
+  Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
+} from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import CSVReader from "../../../common/CsvReader";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
 import Search from "../../../common/Search";
+import CSVReader from "../../../common/CsvReader";
+import DatePicker from "../../../common/DatePicker";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import history from "../../../../history";
-import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
-import { ACTION, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT, PATIENT, RECEIVED_DATE, TEST_1, TEST_2, TEST_3 } from "../../../../constants";
-import { LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation } from "../../../../generated/graphql";
+import { GRAY_SIX, WHITE } from "../../../../theme";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { getFormatDateString, renderTh } from "../../../../utils";
+import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
+import { 
+  ACTION, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, 
+  PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3 
+} from "../../../../constants";
+import { 
+  LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation 
+} from "../../../../generated/graphql";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
@@ -37,6 +47,11 @@ const LabResultsTable: FC = (): JSX.Element => {
   const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>()
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
+  const [resultReceived, setResultReceived] = useState(false)
+
+  const methods = useForm({
+    mode: "all",
+  });
 
   const [findAllLabTest, { loading, error }] = useFindAllLabTestLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -63,7 +78,7 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   const fetchLabTests = useCallback(async () => {
     try {
-      const pageInputs = { page, limit: PAGE_LIMIT, }
+      const pageInputs = { page, limit: PAGE_LIMIT_EIGHT, }
       await findAllLabTest({
         variables: {
           labTestInput: {
@@ -197,16 +212,50 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
-        filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
-        <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary">
-          {EXPORT_TO_FILE}
-        </Button>
-      </CSVLink>
-      <CSVReader handleFileUpload={handleFileUpload} />
-      <Box className={classes.mainTableContainer}>
-        <Box mb={2} maxWidth={450}>
-          <Search search={search} />
+      <Box bgcolor={WHITE} borderRadius={12} padding={2.5}>
+        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" alignItems="center">
+            <Box m={1} maxWidth={450}>
+              <Search search={search} />
+            </Box>
+
+            <Box display='flex'
+              ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
+            >
+              <Typography className={resultReceived ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
+                onClick={() => setResultReceived(false)}
+              >
+                {RECEIVED}
+              </Typography>
+
+              <Typography className={resultReceived ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
+                onClick={() => setResultReceived(true)}
+              >
+                {PENDING}
+              </Typography>
+            </Box>
+
+            <FormProvider {...methods}>
+              <Box className="date-input-box" ml={2}>
+                <DatePicker label="" name='date' />
+              </Box>
+            </FormProvider>
+          </Box>
+
+          <Box display="flex" alignItems="center">
+            <Box m={0.5} mt={0}>
+              <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
+                filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
+                <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary">
+                  {EXPORT_TO_FILE}
+                </Button>
+              </CSVLink>
+            </Box>
+
+            <Box m={0.5} mt={0}>
+              <CSVReader handleFileUpload={handleFileUpload} />
+            </Box>
+          </Box>
         </Box>
 
         <Box className="table-overflow">
