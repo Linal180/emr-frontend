@@ -230,7 +230,7 @@ const PublicFormPreview = () => {
 
         if (scheduleStartDateTime && scheduleEndDateTime) {
           if (signature && appointmentId && patientId) {
-            signatureUploadHandler(appointmentId, patientId, signature)
+          await  signatureUploadHandler(appointmentId, patientId, signature)
           }
 
           await createUserForm({ variables: { createUserFormInput: data } })
@@ -313,8 +313,6 @@ const PublicFormPreview = () => {
       }
     }
   }
-
-
 
   return (
     <Box bgcolor={GREY_EIGHTEEN} padding={1} minHeight="100vh">

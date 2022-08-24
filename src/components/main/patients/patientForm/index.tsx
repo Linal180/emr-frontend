@@ -22,6 +22,7 @@ import {
 import {
   getDate, getTimestamps, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, isValidDate, setRecord,
   formatEmail,
+  getStateWithAbbreviation,
 } from '../../../../utils';
 import {
   ADD_PATIENT, CHANGES_SAVED, DASHBOARD_BREAD, EMAIL_OR_USERNAME_ALREADY_EXISTS, FAILED_TO_CREATE_PATIENT,
@@ -199,7 +200,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               zipCode && setValue("basicZipCode", zipCode)
               address2 && setValue("basicAddress2", address2)
               country && setValue("basicCountry", country || USA)
-              state && setValue("basicState", setRecord(state, state))
+              state && setValue("basicState", setRecord(state, getStateWithAbbreviation(state), false))
               setValue("basicEmail", (contactEmail ? contactEmail : email) || '')
             }
 
@@ -235,7 +236,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
               firstName && setValue("guarantorFirstName", firstName)
               country && setValue("guarantorCountry", country || USA)
               middleName && setValue("guarantorMiddleName", middleName)
-              state && setValue("guarantorState", setRecord(state, state))
+              state && setValue("guarantorState", setRecord(state, getStateWithAbbreviation(state), false))
               employerName && setValue("guarantorEmployerName", employerName)
               relationship && setValue("guarantorRelationship", setRecord(relationship, relationship))
             }
@@ -267,7 +268,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             address && setValue('employerAddress', address)
             zipCode && setValue("employerZipCode", zipCode)
             industry && setValue('employerIndustry', industry)
-            state && setValue("employerState", setRecord(state, state))
+            state && setValue("employerState", setRecord(state, getStateWithAbbreviation(state), false))
             state && setValue("employerCountry", country || USA)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
           }
@@ -319,7 +320,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
         if (status && status === 200) {
           activeStep && Alert.success(CHANGES_SAVED);
-          
+
           shouldShowBread && activeStep === 3 && history.push(PATIENTS_ROUTE)
           dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
         }

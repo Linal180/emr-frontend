@@ -15,7 +15,7 @@ import {
 } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({
-  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar, onSignatureEnd, cancelText
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar, onSignatureEnd, cancelText, shouldDisplayCancel
 }): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
@@ -38,7 +38,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {isSign ? SIGN_PATIENT_DOCUMENT : isCalendar ? cancelRecordTitle(title || '') : deleteRecordTitle(title || '')}
+        {isSign ? SIGN_PATIENT_DOCUMENT : isCalendar ? cancelRecordTitle(title || '') : shouldDisplayCancel ? cancelRecordTitle(title || '') : deleteRecordTitle(title || '')}
       </DialogTitle>
 
       <DialogContent>
@@ -50,13 +50,13 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
           <Box flex={1}>
             <CardContent>
               <Typography variant="h5">
-                <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
+                <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : shouldDisplayCancel ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
               </Typography>
 
               <Box p={0.5} />
 
               <Typography variant="body1">
-                {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
+                {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : shouldDisplayCancel ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
               </Typography>
             </CardContent>
           </Box>

@@ -42,6 +42,7 @@ const Signature = ({ onSignatureEnd, controllerName, title, isController = true 
         rules={{ required: true }}
         name={controllerName}
         control={control}
+        defaultValue={null}
         render={({ fieldState }) => {
           const { error: { message } = {}, invalid } = fieldState
           return (
