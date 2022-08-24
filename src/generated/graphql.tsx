@@ -2422,6 +2422,8 @@ export type LabTestInput = {
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
+  shouldFetchPending?: Maybe<Scalars['Boolean']>;
+  shouldFetchReceived?: Maybe<Scalars['Boolean']>;
 };
 
 export type LabTestObservationPayload = {
@@ -7857,7 +7859,7 @@ export type FindAllRolesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, description?: string | null, customRole?: boolean | null, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null } };
+export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, description?: string | null, customRole?: boolean | null } | null> | null } };
 
 export type GetRoleQueryVariables = Exact<{
   getRole: GetRole;
@@ -17064,13 +17066,6 @@ export const FindAllRolesDocument = gql`
       role
       description
       customRole
-      rolePermissions {
-        id
-        permission {
-          id
-          name
-        }
-      }
     }
   }
 }
