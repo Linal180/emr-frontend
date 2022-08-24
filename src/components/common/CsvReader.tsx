@@ -15,6 +15,7 @@ export default function CsvReader({ handleFileUpload }: { handleFileUpload: Chan
       <Button
         component="label"
         variant="outlined"
+        color="secondary"
         startIcon={<UploadIcon />}
       >
         {UPLOAD_CSV}
