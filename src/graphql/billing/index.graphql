@@ -149,6 +149,7 @@ query FetchAllClaimStatuses(
       id
       createdAt
       statusName
+      system
     }
   }
 }
