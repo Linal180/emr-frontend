@@ -61,7 +61,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
           <Box>
             {EDIT_MEDIA}
           </Box>
-          <Box>
+          {!fileUrl && <Box>
             <Button
               variant="contained"
               color="secondary"
@@ -69,7 +69,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
             >
               {OPEN_CAMERA}
             </Button>
-          </Box>
+          </Box>}
         </Box>
       </DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>

@@ -325,9 +325,11 @@ export type Attachment = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -383,9 +385,11 @@ export type AttachmentWithPreSignedUrl = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   preSignedUrl?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
@@ -1017,6 +1021,7 @@ export type CreateAttachmentInput = {
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   policyId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
@@ -2405,6 +2410,8 @@ export type LabTestInput = {
   orderNumber?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
 };
 
 export type LabTestObservationPayload = {
@@ -2452,6 +2459,7 @@ export type LabTests = {
   referringProviderId?: Maybe<Scalars['String']>;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
+  testId?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
   testObservations?: Maybe<Array<Observations>>;
   testSpecimens?: Maybe<Array<TestSpecimens>>;
@@ -5851,6 +5859,7 @@ export type UpdateAttachmentInput = {
   documentTypeName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   policyId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
