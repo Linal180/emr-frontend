@@ -2422,6 +2422,8 @@ export type LabTestInput = {
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
+  shouldFetchPending?: Maybe<Scalars['Boolean']>;
+  shouldFetchReceived?: Maybe<Scalars['Boolean']>;
 };
 
 export type LabTestObservationPayload = {
