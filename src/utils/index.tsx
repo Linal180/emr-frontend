@@ -10,6 +10,7 @@ import {
   Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
   Typography, withStyles
 } from "@material-ui/core";
+import states from 'states-us'
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -856,7 +857,7 @@ export const setCTPCode = (id: string, name: string, description: string, longDe
 export const formatPhone = (phone: string | undefined | null): string =>
   !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
 
-export const formatAddress = (address: string | undefined | null, city: string | undefined | null, state: string | undefined | null, zipCode: string | undefined | null) =>{
+export const formatAddress = (address: string | undefined | null, city: string | undefined | null, state: string | undefined | null, zipCode: string | undefined | null) => {
   const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
   return selfAddress.trim() ? selfAddress : N_A
 }
@@ -2307,4 +2308,10 @@ export const getFileType = (key: string) => {
     default:
       return DocumentFileType.DOCUMENT
   }
+}
+
+export const getStateWithAbbreviation = (state: string) => {
+  const stateDetail = states?.find(({ name }) => name === state);
+  if (stateDetail) return `${state} - ${stateDetail?.abbreviation}`;
+  return state;
 }
