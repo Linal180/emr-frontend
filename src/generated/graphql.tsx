@@ -2182,6 +2182,10 @@ export type GetForm = {
   id: Scalars['String'];
 };
 
+export type GetInsuranceInput = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type GetLabTest = {
   id?: Maybe<Scalars['String']>;
 };
@@ -2339,6 +2343,12 @@ export type Insurance = {
 export type InsurancePaginationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
+};
+
+export type InsurancePayload = {
+  __typename?: 'InsurancePayload';
+  insurance?: Maybe<Insurance>;
+  response?: Maybe<Response>;
 };
 
 export type InsurancesPayload = {
@@ -4370,6 +4380,7 @@ export type Query = {
   getFacilitySchedule: SchedulesPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
+  getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getModifier: ModifierPayload;
   getPatient: PatientPayload;
@@ -4801,6 +4812,11 @@ export type QueryGetFeeScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetInsuranceArgs = {
+  getInsuranceInput: GetInsuranceInput;
 };
 
 
@@ -6939,7 +6955,7 @@ export type FetchAllClaimStatusesQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null }> } };
+export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null, system: boolean }> } };
 
 export type FindClaimStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -7473,6 +7489,13 @@ export type FetchAllInsurancesQueryVariables = Exact<{
 
 
 export type FetchAllInsurancesQuery = { __typename?: 'Query', fetchAllInsurances: { __typename?: 'InsurancesPayload', insurances: Array<{ __typename?: 'Insurance', payerName: string, payerId: string, id: string }>, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type GetInsuranceQueryVariables = Exact<{
+  getInsuranceInput: GetInsuranceInput;
+}>;
+
+
+export type GetInsuranceQuery = { __typename?: 'Query', getInsurance: { __typename?: 'InsurancePayload', insurance?: { __typename?: 'Insurance', payerName: string, payerId: string, id: string } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
 
 export type FetchAllPoliciesQueryVariables = Exact<{
   policyInput: PolicyPaginationInput;
@@ -10290,6 +10313,7 @@ export const FetchAllClaimStatusesDocument = gql`
       id
       createdAt
       statusName
+      system
     }
   }
 }
@@ -14150,6 +14174,49 @@ export function useFetchAllInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FetchAllInsurancesQueryHookResult = ReturnType<typeof useFetchAllInsurancesQuery>;
 export type FetchAllInsurancesLazyQueryHookResult = ReturnType<typeof useFetchAllInsurancesLazyQuery>;
 export type FetchAllInsurancesQueryResult = Apollo.QueryResult<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>;
+export const GetInsuranceDocument = gql`
+    query GetInsurance($getInsuranceInput: GetInsuranceInput!) {
+  getInsurance(getInsuranceInput: $getInsuranceInput) {
+    insurance {
+      payerName
+      payerId
+      id
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetInsuranceQuery__
+ *
+ * To run a query within a React component, call `useGetInsuranceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInsuranceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInsuranceQuery({
+ *   variables: {
+ *      getInsuranceInput: // value for 'getInsuranceInput'
+ *   },
+ * });
+ */
+export function useGetInsuranceQuery(baseOptions: Apollo.QueryHookOptions<GetInsuranceQuery, GetInsuranceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInsuranceQuery, GetInsuranceQueryVariables>(GetInsuranceDocument, options);
+      }
+export function useGetInsuranceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInsuranceQuery, GetInsuranceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInsuranceQuery, GetInsuranceQueryVariables>(GetInsuranceDocument, options);
+        }
+export type GetInsuranceQueryHookResult = ReturnType<typeof useGetInsuranceQuery>;
+export type GetInsuranceLazyQueryHookResult = ReturnType<typeof useGetInsuranceLazyQuery>;
+export type GetInsuranceQueryResult = Apollo.QueryResult<GetInsuranceQuery, GetInsuranceQueryVariables>;
 export const FetchAllPoliciesDocument = gql`
     query FetchAllPolicies($policyInput: PolicyPaginationInput!) {
   fetchAllPolicies(policyInput: $policyInput) {
