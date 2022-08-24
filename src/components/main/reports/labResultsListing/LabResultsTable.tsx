@@ -1,20 +1,25 @@
 // packages block
-import { CSVLink } from "react-csv";
-import papaparse from 'papaparse'
 import moment from "moment";
+import papaparse from 'papaparse';
+import { CSVLink } from "react-csv";
+import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
 import { 
   Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
 } from "@material-ui/core";
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Pagination } from "@material-ui/lab";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import CSVReader from "../../../common/CsvReader";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
 import Search from "../../../common/Search";
+import CSVReader from "../../../common/CsvReader";
+import DatePicker from "../../../common/DatePicker";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import history from "../../../../history";
+import { GRAY_SIX, WHITE } from "../../../../theme";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { getFormatDateString, renderTh } from "../../../../utils";
 import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
 import { 
   ACTION, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, 
@@ -23,11 +28,6 @@ import {
 import { 
   LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation 
 } from "../../../../generated/graphql";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { getFormatDateString, renderTh } from "../../../../utils";
-import { GRAY_SIX, WHITE } from "../../../../theme";
-import { FormProvider, useForm } from "react-hook-form";
-import DatePicker from "../../../common/DatePicker";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
