@@ -2420,6 +2420,8 @@ export type LabTestInput = {
   orderNumber?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
 };
 
 export type LabTestObservationPayload = {
@@ -2467,6 +2469,7 @@ export type LabTests = {
   referringProviderId?: Maybe<Scalars['String']>;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
+  testId?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
   testObservations?: Maybe<Array<Observations>>;
   testSpecimens?: Maybe<Array<TestSpecimens>>;
