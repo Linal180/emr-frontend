@@ -1,33 +1,33 @@
 // packages block
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
 import moment from "moment";
 import papaparse from 'papaparse';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
-import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
-import { 
-  Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography 
-} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import Loader from "../../../common/Loader";
-import Search from "../../../common/Search";
 import CSVReader from "../../../common/CsvReader";
 import DatePicker from "../../../common/DatePicker";
+import Loader from "../../../common/Loader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Search from "../../../common/Search";
+import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../../../history";
-import { GRAY_SIX, WHITE } from "../../../../theme";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { getFormatDateString, renderTh } from "../../../../utils";
 import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
-import { 
-  ACTION, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, 
-  PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3 
+import {
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
+  PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
-import { 
-  LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation 
+import { AuthContext } from "../../../../context";
+import {
+  LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
 } from "../../../../generated/graphql";
+import history from "../../../../history";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { GRAY_SIX, WHITE } from "../../../../theme";
+import { getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
@@ -47,11 +47,21 @@ const LabResultsTable: FC = (): JSX.Element => {
   const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>()
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
-  const [resultReceived, setResultReceived] = useState(false)
+  const [resultReceived, setResultReceived] = useState<boolean>(true)
+  const [receivedDate, setReceivedDate] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   const methods = useForm({
     mode: "all",
   });
+  const { setValue } = methods
+  const { user } = useContext(AuthContext)
+
+  const { roles, facility } = user || {}
+  const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
+  const isFacility = isFacilityAdmin(roles)
+  const { practiceId } = facility || {}
 
   const [findAllLabTest, { loading, error }] = useFindAllLabTestLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -77,18 +87,26 @@ const LabResultsTable: FC = (): JSX.Element => {
   });
 
   const fetchLabTests = useCallback(async () => {
+    const practiceInfo = isSuper ? undefined : isPracticeUser || isFacility ?
+      { practiceId: practiceId } : undefined
+
+    const labStatusInfo = resultReceived ? { labTestStatus: 'Results Received' as LabTestStatus, } : {}
+
     try {
       const pageInputs = { page, limit: PAGE_LIMIT_EIGHT, }
       await findAllLabTest({
         variables: {
           labTestInput: {
             paginationOptions: pageInputs,
-            labTestStatus: 'Results Received' as LabTestStatus
+            orderNumber: searchQuery,
+            receivedDate,
+            ...labStatusInfo,
+            ...(practiceInfo && practiceInfo)
           }
         }
       });
     } catch (error) { }
-  }, [findAllLabTest, page])
+  }, [findAllLabTest, isFacility, isPracticeUser, isSuper, page, practiceId, receivedDate, resultReceived, searchQuery])
 
   useEffect(() => {
     fetchLabTests()
@@ -96,7 +114,11 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles()
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    setSearchQuery(query)
+    setPages(0)
+    setPage(1)
+  }
 
   const transformedLabOrders = useMemo(() => {
     if (!labOrders?.length) {
@@ -210,6 +232,11 @@ const LabResultsTable: FC = (): JSX.Element => {
     return <Loader loading loaderText="Uploading Lab Results" />
   }
 
+  const handleClear = () => {
+    setValue('date', null)
+    setReceivedDate('')
+  }
+
   return (
     <>
       <Box bgcolor={WHITE} borderRadius={12} padding={2.5}>
@@ -235,11 +262,20 @@ const LabResultsTable: FC = (): JSX.Element => {
               </Typography>
             </Box>
 
-            <FormProvider {...methods}>
-              <Box className="date-input-box" ml={2}>
-                <DatePicker label="" name='date' />
-              </Box>
-            </FormProvider>
+            {
+              !resultReceived && <FormProvider {...methods}>
+                <Box className="date-input-box" ml={2}>
+                  <DatePicker label="" name='date' onSelect={(date: string) => setReceivedDate(date)} />
+                </Box>
+              </FormProvider>
+            }
+
+            <Box mx={3}>
+              <Button variant="outlined" className="danger" onClick={() => handleClear()} color="inherit">
+                {CLEAR_TEXT}
+              </Button>
+            </Box>
+
           </Box>
 
           <Box display="flex" alignItems="center">
@@ -273,8 +309,14 @@ const LabResultsTable: FC = (): JSX.Element => {
               </TableRow>
             </TableHead>
 
-            <TableBody>
-              {transformedLabOrders.map((labOrders) => {
+            <TableBody>{(loading) ? (
+              <TableRow>
+                <TableCell colSpan={10}>
+                  <TableLoader numberOfRows={PAGE_LIMIT_EIGHT} numberOfColumns={5} />
+                </TableCell>
+              </TableRow>
+            ) : (
+              transformedLabOrders.map((labOrders) => {
                 const { patientName, test, collectedDate, dob, receivedDate, orderNumber } = labOrders
 
                 return (
@@ -311,8 +353,7 @@ const LabResultsTable: FC = (): JSX.Element => {
                     </TableCell>
                   </TableRow>
                 )
-              })
-              }
+              }))}
             </TableBody>
           </Table>
 
