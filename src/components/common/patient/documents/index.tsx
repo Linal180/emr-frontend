@@ -20,7 +20,7 @@ import { GRAY_SIX, } from "../../../../theme";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import { SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
+import { DownloadIcon, SignedIcon, TrashNewIcon, UploadIcon, VisibilityOnIcon, } from "../../../../assets/svgs";
 import { DocumentInputProps, DocumentsTableProps, ParamsType } from "../../../../interfacesTypes";
 import {
   mediaReducer, Action, initialState, State, ActionType
@@ -30,7 +30,7 @@ import {
 } from "../../../../utils";
 import {
   AttachmentPayload, AttachmentsPayload, useGetAttachmentLazyQuery, useUpdateAttachmentDataMutation,
-  useGetAttachmentsLazyQuery, useRemoveAttachmentDataMutation,
+  useRemoveAttachmentDataMutation, useGetPatientAttachmentsLazyQuery,
 } from "../../../../generated/graphql";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
@@ -95,7 +95,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
     },
   });
 
-  const [getAttachments, { loading }] = useGetAttachmentsLazyQuery({
+  const [getAttachments, { loading }] = useGetPatientAttachmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -406,7 +406,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                     </TableRow>
                   ) : (
                     attachmentsData?.map((attachment) => {
-                      const { id, attachmentName, attachmentMetadata, createdAt } = attachment || {};
+                      const { id, attachmentName, attachmentMetadata, createdAt, preSignedUrl } = attachment || {};
                       const { signedAt, signedBy, documentType, documentDate } = attachmentMetadata || {}
                       const { type } = documentType || {}
 
@@ -446,6 +446,13 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
                                   <SignedIcon />
                                 </Box>
                               }
+
+
+                              <Box className={classes.iconsBackground}>
+                                <a href={preSignedUrl || ''} target="_blank" color="inherit" rel="noreferrer" download>
+                                  <DownloadIcon />
+                                </a>
+                              </Box>
 
                               <Box className={classes.iconsBackground}
                                 onClick={() => id && handlePreview(id, filteredFileName || '')}
