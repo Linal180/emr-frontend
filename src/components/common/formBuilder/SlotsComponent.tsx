@@ -10,7 +10,7 @@ import NoSlotsComponent from '../NoSlotsComponent'
 import AppointmentDatePicker from '../../main/publicAppointments/appointmentForm/AppointmentDatePicker'
 //constants, graphql, utils, styles, interfaces
 import { AVAILABLE_SLOTS, DAYS, } from '../../../constants'
-import { getCurrentTimestamps, getStandardTime, } from '../../../utils'
+import { getCurrentTimesFormbuilder, getStandardTime, } from '../../../utils'
 import { Slots, SlotsPayload, useGetSlotsLazyQuery } from '../../../generated/graphql'
 import { usePublicAppointmentStyles } from '../../../styles/publicAppointmentStyles'
 import { SlotsComponentProps } from '../../../interfacesTypes'
@@ -50,8 +50,8 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
-      const startDateTime = getCurrentTimestamps(startTime || '', date)
-      const endDateTime = getCurrentTimestamps(endTime || '', date)
+      const startDateTime = getCurrentTimesFormbuilder(startTime || '', date)
+      const endDateTime = getCurrentTimesFormbuilder(endTime || '', date)
       startTime && setValue('scheduleStartDateTime', startDateTime)
       endTime && setValue('scheduleEndDateTime', endDateTime)
     }
@@ -106,7 +106,6 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
             <ul className={classes.timeSlots}>
               {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                 const { startTime, endTime } = slot || {}
-
                 return (
                   <li key={index} onClick={() => handleSlot(slot)}>
                     <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
