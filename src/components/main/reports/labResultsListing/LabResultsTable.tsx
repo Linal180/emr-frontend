@@ -490,13 +490,11 @@ const LabResultsTable: FC = (): JSX.Element => {
         </Box>
       )}
 
-      {
-        isStickerModalOpen && <LabTestModal
-          handleClose={() => setIsStickerModalOpen(false)}
-          isOpen={isStickerModalOpen}
-          labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
-        />
-      }
+      {isStickerModalOpen && <LabTestModal
+        handleClose={() => setIsStickerModalOpen(false)}
+        isOpen={isStickerModalOpen}
+        labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
+      />}
     </>
   );
 };

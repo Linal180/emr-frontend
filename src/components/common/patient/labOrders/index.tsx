@@ -15,7 +15,7 @@ import Selector from "../../Selector";
 import SideDrawer from "../../SideDrawer";
 import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 // constant, utils and styles block
-import { OutlinedAddIcon } from "../../../../assets/svgs";
+import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
   ORDER_NUM, PAGE_LIMIT, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
@@ -26,6 +26,7 @@ import {
 import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
+import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
 const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Element => {
   const classes = useTableStyles();
@@ -40,6 +41,8 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
   const [labTestsToEdit, setLabTestsToEdit] = useState<LabTests[]>()
   const { id } = useParams<ParamsType>()
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isStickerModalOpen, setIsStickerModalOpen] = useState<boolean>(false)
+  const [stickerOrder, setStickerOrder] = useState<string>('')
 
   const methods = useForm<LabOrderInput>({ mode: "all" });
 
@@ -269,15 +272,25 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                           {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
                         </TableCell>
                         <TableCell scope="row">
-                          <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                            <OutlinedAddIcon />
-                          </IconButton>
+                          <Box display="flex" alignItems="center">
+                            <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                              <OutlinedAddIcon />
+                            </IconButton>
 
-                          {/* <IconButton>
+                            {/* <IconButton>
                                 <EyeIcon />
                               </IconButton> */}
+                            <ResultDownloadLink orderNumber={orderNumber || ''} />
 
-                          <ResultDownloadLink orderNumber={orderNumber || ''} />
+                            <Box>
+                              <IconButton onClick={() => {
+                                setIsStickerModalOpen(true);
+                                setStickerOrder(orderNumber || '')
+                              }}>
+                                <PrintGrayIcon />
+                              </IconButton>
+                            </Box>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     )
@@ -308,6 +321,12 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
           />
         </Box>
       }
+
+      {isStickerModalOpen && <LabTestModal
+        handleClose={() => setIsStickerModalOpen(false)}
+        isOpen={isStickerModalOpen}
+        labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
+      />}
     </>
   );
 };
