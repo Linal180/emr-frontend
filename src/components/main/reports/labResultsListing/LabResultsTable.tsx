@@ -2,10 +2,10 @@
 import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import moment from "moment";
-import papaparse from 'papaparse';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { FormProvider, useForm } from "react-hook-form";
+import * as XLSX from 'xlsx';
 // components block
 import Alert from "../../../common/Alert";
 import CSVReader from "../../../common/CsvReader";
@@ -17,12 +17,12 @@ import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_FORMATS, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
   PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
-  LabTests, LabTestsPayload, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
+  LabTests, LabTestsPayload, UpdateObservationItemInput, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
 } from "../../../../generated/graphql";
 import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
@@ -186,42 +186,93 @@ const LabResultsTable: FC = (): JSX.Element => {
     }
   })
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const parseCSV = (text: string[]) => {
+    const parsedValue = text?.toString().slice(text?.toString().indexOf("\n") + 1).split("\n")
+    const response = parsedValue?.reduce<Record<string, string>[]>((acc, value) => {
+      const row = value.split(',')
+      if (row[0]) {
+        const test = [{
+          testName: row[4],
+          result: row[7],
+          orderNumber: row[0]
+        },
+        {
+          testName: row[5],
+          result: row[8],
+          orderNumber: row[0]
+        },
+        {
+          testName: row[6],
+          result: row[9],
+          orderNumber: row[0]
+        }
+        ]
+        acc.push(...test)
+        return acc
+      }
+
+      return acc
+    }, [])
+
+    return response
+  }
+
+  const promiseFileReaderCSV = async (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const text = event?.target?.result;
+          const response = text && parseCSV(text as unknown as string[])
+
+          resolve(response);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  const promiseFileReaderExcel = async (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const bstr = evt?.target?.result;
+          const wb = XLSX.read(bstr, { type: "binary" });
+          const sheetName = wb.SheetNames[0];
+          const ws = wb.Sheets[sheetName];
+          const data = XLSX.utils.sheet_to_csv(ws, {});
+          const response = data && parseCSV(data as unknown as string[])
+
+          resolve(response);
+          resolve(data);
+        } catch (error) {
+          reject(error);
+        }
+
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsBinaryString(file);
+    });
+  }
+
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      papaparse.parse<string[]>(files[0], {
-        complete: async function (results) {
-          const data = results.data.slice(1, results.data.length - 1)
-          const observationsToUpdate = data.reduce<Record<string, string>[]>((acc, row) => {
-            const test = [{
-              testName: row[3],
-              result: row[6],
-              orderNumber: row[0]
-            },
-            {
-              testName: row[4],
-              result: row[7],
-              orderNumber: row[0]
-            },
-            {
-              testName: row[5],
-              result: row[8],
-              orderNumber: row[0]
-            }
-            ]
+      const observationsToUpdate = (EXCEL_FILE_FORMATS.includes(files?.[0].type || '') ? await promiseFileReaderExcel(files?.[0]) : await promiseFileReaderCSV(files?.[0])) as UpdateObservationItemInput[]
 
-            acc.push(...test)
-            return acc
-          }, [])
-
-          await syncLabResults({
-            variables: {
-              updateObservationInput: {
-                UpdateObservationItemInput: observationsToUpdate
-              }
-            }
-          })
-
+      await syncLabResults({
+        variables: {
+          updateObservationInput: {
+            UpdateObservationItemInput: observationsToUpdate
+          }
         }
       })
     }

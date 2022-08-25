@@ -19,7 +19,7 @@ export default function CsvReader({ handleFileUpload }: { handleFileUpload: Chan
         startIcon={<UploadIconNew />}
       >
         {UPLOAD_CSV}
-        <input type="file" accept=".csv" onClick={onInputClick} hidden onChange={handleFileUpload} />
+        <input type="file" accept=".xlsx, .xls, .csv" onClick={onInputClick} hidden onChange={handleFileUpload} />
       </Button>
     </>
   );
