@@ -22,7 +22,7 @@ import {
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
-  LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
+  LabTests, LabTestsPayload, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
 } from "../../../../generated/graphql";
 import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
@@ -90,8 +90,6 @@ const LabResultsTable: FC = (): JSX.Element => {
     const practiceInfo = isSuper ? undefined : isPracticeUser || isFacility ?
       { practiceId: practiceId } : undefined
 
-    const labStatusInfo = resultReceived ? { labTestStatus: 'Results Received' as LabTestStatus, } : {}
-
     try {
       const pageInputs = { page, limit: PAGE_LIMIT_EIGHT, }
       await findAllLabTest({
@@ -100,7 +98,8 @@ const LabResultsTable: FC = (): JSX.Element => {
             paginationOptions: pageInputs,
             orderNumber: searchQuery,
             receivedDate,
-            ...labStatusInfo,
+            shouldFetchReceived: !resultReceived,
+            shouldFetchPending: resultReceived,
             ...(practiceInfo && practiceInfo)
           }
         }
