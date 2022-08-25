@@ -46,6 +46,7 @@ import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
 import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
 import { AddLabOrders } from "../pages/main/labOrders/addOrder";
 import { EditLabOrders } from "../pages/main/labOrders/editOrder";
+import { AddSpecimen } from "../pages/main/labOrders/addSpecimen";
 import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 import { PatientChart } from "../pages/main/patientChart";
 import AddPatient from "../pages/main/patients/addPatient";
@@ -101,7 +102,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE
+  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE, ADD_TEST_SPECIMEN_ROUTE
 } from "../constants";
 import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
@@ -198,6 +199,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${SUPER_BILL_ROUTE}/:id`} component={SuperBill} />
       <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:id`} component={AddLabOrders} />
       <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
+      <PrivateRoute exact path={`${ADD_TEST_SPECIMEN_ROUTE}/:patientId/:testId`} component={AddSpecimen} />
       <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />

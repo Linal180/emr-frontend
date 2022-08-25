@@ -15,10 +15,10 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
+import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_FORMATS, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
-  PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
+  PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
@@ -28,6 +28,8 @@ import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { GRAY_SIX, WHITE } from "../../../../theme";
 import { getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import ResultDownloadLink from "../labResult/ResultDownloadLink";
+import LabTestModal from "./LabTestModal";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
@@ -50,6 +52,8 @@ const LabResultsTable: FC = (): JSX.Element => {
   const [resultReceived, setResultReceived] = useState<boolean>(true)
   const [receivedDate, setReceivedDate] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isStickerModalOpen, setIsStickerModalOpen] = useState<boolean>(false)
+  const [stickerOrder, setStickerOrder] = useState<string>('')
 
   const methods = useForm({
     mode: "all",
@@ -143,7 +147,12 @@ const LabResultsTable: FC = (): JSX.Element => {
         return acc
       }, {})
 
-      const { patient, receivedDate, collectedDate, orderNumber } = labTests?.[0] || {}
+      const testObservations = labTests.reduce<Record<string, string>>((acc, labTest, index) => {
+        acc[`result${index + 1}`] = labTest?.testObservations?.[0]?.resultValue || ''
+        return acc
+      }, {})
+
+      const { patient, receivedDate, orderNumber, testDate } = labTests?.[0] || {}
       const { firstName, lastName, dob } = patient || {}
 
       return {
@@ -151,8 +160,9 @@ const LabResultsTable: FC = (): JSX.Element => {
         dob: getFormatDateString(dob, 'MM/DD/YYYY'),
         orderNumber: orderNumber || '',
         test: tests,
+        testObservations,
         receivedDate: receivedDate,
-        collectedDate
+        collectedDate: testDate
       }
     })
 
@@ -178,9 +188,9 @@ const LabResultsTable: FC = (): JSX.Element => {
       test1: labOrder.test.test1 || N_A,
       test2: labOrder.test.test2 || N_A,
       test3: labOrder.test.test3 || N_A,
-      result1: 'Fill Result',
-      result2: 'Fill Result',
-      result3: 'Fill Result',
+      result1: labOrder.testObservations.result1 || 'Fill Result',
+      result2: labOrder.testObservations.result2 || 'Fill Result',
+      result3: labOrder.testObservations.result3 || 'Fill Result',
       collectionDate: labOrder.collectedDate,
       receivedDate: labOrder.receivedDate
     }
@@ -287,6 +297,25 @@ const LabResultsTable: FC = (): JSX.Element => {
     setReceivedDate('')
   }
 
+  const exportToXlSX = () => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: EXCEL_FILE_TYPE });
+    const url = window.URL.createObjectURL(
+      data,
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}` + EXCEL_FILE_EXTENSION,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link?.parentNode?.removeChild(link);
+  };
+
   return (
     <>
       <Box bgcolor={WHITE} borderRadius={12} padding={2.5}>
@@ -313,35 +342,45 @@ const LabResultsTable: FC = (): JSX.Element => {
             </Box>
 
             {
-              !resultReceived && <FormProvider {...methods}>
-                <Box className="date-input-box" ml={2}>
-                  <DatePicker label="" name='date' onSelect={(date: string) => setReceivedDate(date)} />
+              !resultReceived && <>
+                <FormProvider {...methods}>
+                  <Box className="date-input-box" ml={2}>
+                    <DatePicker label="" name='date' onSelect={(date: string) => setReceivedDate(date)} />
+                  </Box>
+                </FormProvider>
+
+
+                <Box mx={3}>
+                  <Button variant="outlined" onClick={() => handleClear()} color="inherit">
+                    {CLEAR_TEXT}
+                  </Button>
                 </Box>
-              </FormProvider>
-            }
-
-            <Box mx={3}>
-              <Button variant="outlined" className="danger" onClick={() => handleClear()} color="inherit">
-                {CLEAR_TEXT}
-              </Button>
-            </Box>
-
+              </>}
           </Box>
 
-          <Box display="flex" alignItems="center">
-            <Box m={0.5} mt={0}>
-              <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
-                filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
-                <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary">
-                  {EXPORT_TO_FILE}
+          {
+            !resultReceived &&
+            <Box display="flex" alignItems="center">
+              <Box m={0.5} mt={0}>
+                <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
+                  filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
+                  <Button variant="contained" startIcon={<DownloadIconWhite />} color="secondary">
+                    {EXPORT_TO_CSV}
+                  </Button>
+                </CSVLink>
+              </Box>
+
+              <Box m={0.5} mt={0}>
+                <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary" onClick={() => exportToXlSX()}>
+                  {EXPORT_TO_EXCEL}
                 </Button>
-              </CSVLink>
-            </Box>
+              </Box>
 
-            <Box m={0.5} mt={0}>
-              <CSVReader handleFileUpload={handleFileUpload} />
+              <Box m={0.5} mt={0}>
+                <CSVReader handleFileUpload={handleFileUpload} />
+              </Box>
             </Box>
-          </Box>
+          }
         </Box>
 
         <Box className="table-overflow">
@@ -353,6 +392,9 @@ const LabResultsTable: FC = (): JSX.Element => {
                 {renderTh(TEST_1)}
                 {renderTh(TEST_2)}
                 {renderTh(TEST_3)}
+                {renderTh(RESULT_1)}
+                {renderTh(RESULT_2)}
+                {renderTh(RESULT_3)}
                 {renderTh(COLLECTION_DATE)}
                 {renderTh(RECEIVED_DATE)}
                 {renderTh(ACTION, "center")}
@@ -361,13 +403,13 @@ const LabResultsTable: FC = (): JSX.Element => {
 
             <TableBody>{(loading) ? (
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={PAGE_LIMIT_EIGHT} numberOfColumns={5} />
+                <TableCell colSpan={12}>
+                  <TableLoader numberOfRows={PAGE_LIMIT_EIGHT} numberOfColumns={9} />
                 </TableCell>
               </TableRow>
             ) : (
               transformedLabOrders.map((labOrders) => {
-                const { patientName, test, collectedDate, dob, receivedDate, orderNumber } = labOrders
+                const { patientName, test, collectedDate, dob, receivedDate, orderNumber, testObservations } = labOrders
 
                 return (
                   <TableRow>
@@ -391,15 +433,37 @@ const LabResultsTable: FC = (): JSX.Element => {
                       {(test as any).test3 || N_A}
                     </TableCell>
                     <TableCell scope="row">
+                      {(testObservations as any).result1 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {(testObservations as any).result2 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {(testObservations as any).result3 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
                       {collectedDate || N_A}
                     </TableCell>
                     <TableCell scope="row">
                       {receivedDate || N_A}
                     </TableCell>
                     <TableCell scope="row">
-                      <IconButton onClick={() => history.push(`${LAB_RESULTS_ROUTE}/${orderNumber}`)}>
-                        <EyeIcon />
-                      </IconButton>
+                      <Box display="flex" alignItems="center">
+                        <IconButton onClick={() => history.push(`${LAB_RESULTS_ROUTE}/${orderNumber}`)}>
+                          <EyeIcon />
+                        </IconButton>
+
+                        <ResultDownloadLink orderNumber={orderNumber} />
+
+                        <Box>
+                          <IconButton onClick={() => {
+                            setIsStickerModalOpen(true);
+                            setStickerOrder(orderNumber)
+                          }}>
+                            <PrintGrayIcon />
+                          </IconButton>
+                        </Box>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 )
@@ -425,6 +489,14 @@ const LabResultsTable: FC = (): JSX.Element => {
           />
         </Box>
       )}
+
+      {
+        isStickerModalOpen && <LabTestModal
+          handleClose={() => setIsStickerModalOpen(false)}
+          isOpen={isStickerModalOpen}
+          labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
+        />
+      }
     </>
   );
 };

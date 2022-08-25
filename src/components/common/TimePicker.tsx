@@ -6,7 +6,7 @@ import { FormControl, InputLabel, OutlinedInput, FormHelperText } from '@materia
 import { PickerProps } from "../../interfacesTypes";
 import { renderLoading, requiredLabel } from '../../utils';
 
-const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.Element => {
+const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disabled }): JSX.Element => {
   const { control } = useFormContext()
   const inputLabel = isRequired ? requiredLabel(label) : label
 
@@ -31,6 +31,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.E
                 defaultValue="07:30"
                 error={invalid}
                 inputProps={{ step: 300, }}
+                disabled={disabled}
               />
 
               <FormHelperText>{message}</FormHelperText>

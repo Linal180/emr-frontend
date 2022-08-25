@@ -6,15 +6,16 @@ import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "reac
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
 // components block
+import history from "../../../../history";
+import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
 import Alert from "../../Alert";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 import Search from "../../Search";
-import SideDrawer from "../../SideDrawer";
 import Selector from "../../Selector";
-import history from "../../../../history";
-import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
+import SideDrawer from "../../SideDrawer";
+import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 // constant, utils and styles block
-import { OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
+import { OutlinedAddIcon } from "../../../../assets/svgs";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
   ORDER_NUM, PAGE_LIMIT, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
@@ -276,9 +277,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                                 <EyeIcon />
                               </IconButton> */}
 
-                          <IconButton onClick={() => window.print()}>
-                            <PrinterIcon />
-                          </IconButton>
+                          <ResultDownloadLink orderNumber={orderNumber || ''} />
                         </TableCell>
                       </TableRow>
                     )
