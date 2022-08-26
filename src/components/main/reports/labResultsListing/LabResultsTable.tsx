@@ -17,8 +17,8 @@ import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
-  PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL, 
+  LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {

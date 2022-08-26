@@ -350,7 +350,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   }
 
   return (
-    <Box maxWidth={560}>
+    <Box maxWidth={480}>
       <FormProvider {...methods}>
         <form>
           <Box

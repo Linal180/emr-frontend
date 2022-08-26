@@ -11,7 +11,7 @@ import TestsSelector from '../../../common/Selector/TestSelector';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
 // interfaces, graphql, constants block
-import { GREY_THREE } from '../../../../theme';
+import { BLUE, GREY_THREE } from '../../../../theme';
 import { CrossIcon } from '../../../../assets/svgs';
 import { renderItem, setRecord } from '../../../../utils';
 import { ContactType, DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
@@ -202,8 +202,11 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
                   handleStep && handleStep(1)
                 }}
               >
-                {name}
+                <Box color={BLUE} textAlign="start">
+                  <Typography variant="body2" color="inherit">{name}</Typography>
+                </Box>
               </Button>
+
 
               <IconButton onClick={() => handleLabTestRemove(id)} >
                 <CrossIcon />

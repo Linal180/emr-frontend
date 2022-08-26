@@ -1,32 +1,37 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
-import { ADD_TEST_SPECIMEN_ROUTE, COLLECTED_DATE, DOB_TEXT, NAME, PATIENT, TEST } from "../../../../constants";
+import { ADD_TEST_SPECIMEN_ROUTE, COLLECTED_DATE, DOB_TEXT, NAME, TEST } from "../../../../constants";
 import { LabTestPayload } from "../../../../generated/graphql";
 import { getFormatDateString } from "../../../../utils";
 
 // Create styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column", padding: 15
+    flexDirection: "column",
+    padding: 15,
   },
   table: {
-    width: "auto",
+    // width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
     fontSize: 12,
+    width: '100%',
+    overflow: 'hidden',
   },
   tableRow: {
     margin: "auto",
     flexDirection: "row",
+    padding: '15px 0',
   },
   fieldTitle: {
     minHeight: '30px',
+    minWidth: '20%',
     padding: '7px',
     fontWeight: 'bold',
   },
   fieldText: {
     minHeight: '30px',
-    minWidth: '170px',
+    minWidth: '80%',
     padding: '7px',
     overflow: 'hidden',
     backgroundColor: '#eee',
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
   fieldRow1: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     marginVertical: '7px',
@@ -146,11 +151,7 @@ const StickerDoc = ({ labTest }: { labTest: LabTestPayload['labTest'] }) => {
         <View style={styles.table}>
           {/* 2nd-row */}
           <View style={styles.tableRow}>
-            <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
-              <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>{PATIENT}</Text>
-              </View>
-
+            <View style={[styles.w100, styles.borderStyle,]}>
               <View style={styles.fieldRow1}>
                 <Text style={styles.fieldTitle}>{NAME}:</Text>
                 <Text style={styles.fieldText}>{patientFullName}</Text>

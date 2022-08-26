@@ -28,6 +28,7 @@ function LabTestModal({ handleClose, isOpen, labTests }: LabModalProps) {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">{LAB_TEST_STICKERS}</DialogTitle>
+
       <DialogContent>
         <Box className="dialogBg">
           <FormProvider {...methods}>
@@ -38,16 +39,15 @@ function LabTestModal({ handleClose, isOpen, labTests }: LabModalProps) {
               options={labTestOptions}
             />
 
-            {id && <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
+            {id && <PDFViewer style={{ width: "100%", height: "300px", overflow: 'hidden' }}>
               <StickerDoc labTest={labTests?.find(labTest => labTest?.id === id)} />
             </PDFViewer>}
           </FormProvider>
-
         </Box>
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleClose}>
+        <Button variant="outlined" color="secondary" onClick={handleClose}>
           {CLOSE}
         </Button>
       </DialogActions>
