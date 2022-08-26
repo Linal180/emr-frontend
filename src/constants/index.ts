@@ -80,6 +80,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const TAKE_AGAIN = 'Take again'
 export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
@@ -1628,6 +1629,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const NO_CAMERA_FOUND = "No Camera found"
 export const OPEN_CAMERA = "Open Camera"
 export const LONG_URL_TEXT = "URL";
 export const SHORT_URL_TEXT = "Short URL";

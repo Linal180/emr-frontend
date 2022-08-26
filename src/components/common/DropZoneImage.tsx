@@ -8,7 +8,7 @@ import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 import Alert from "./Alert";
 import CameraComponent from "./Camera";
 // styles, utils, graphql, constants and interfaces/types block
-import { blobToFile, getToken } from "../../utils";
+import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
@@ -23,7 +23,7 @@ import {
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen
+  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen, onUploading
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -84,7 +84,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }
 
       setLoading(true);
-
+      onUploading && onUploading(true)
       await axios.post(
         isEdit ?
           `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
@@ -99,6 +99,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         }
       ).then(response => {
         const { status, data } = response;
+        onUploading && onUploading(false)
 
         if (status === 201 && data) {
           switch (imageModuleType) {
@@ -182,6 +183,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         }
       }).then(data => { }).catch(error => {
         setLoading(false);
+        onUploading && onUploading(false)
         handleModalClose();
         Alert.error(SOMETHING_WENT_WRONG);
       });
@@ -190,9 +192,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
 
   const handleUpdateImage = () => setImageEdit(true)
 
-  const sendFileHandler = (blob: Blob | null) => {
-    if (blob) {
-      const file = blobToFile(blob, 'front-end');
+  const sendFileHandler = (file: File) => {
+    if (file) {
       setFiles([file])
       setAttachmentFiles && setAttachmentFiles([file])
     }

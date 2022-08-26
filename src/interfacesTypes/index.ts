@@ -954,7 +954,8 @@ export interface DropzoneImageType {
   setFiles?: Function
   numberOfFiles?: number;
   cameraOpen: boolean
-  setCameraOpen: (open: boolean) => void
+  setCameraOpen: (open: boolean) => void;
+  onUploading?: (open: boolean) => void
 }
 
 interface Message {
@@ -1798,9 +1799,12 @@ export interface CareTeamsProps {
   isEditable?: boolean
 }
 
+export type SideDrawerCloseReason = "backdropClick" | "escapeKeyDown";
+
 export interface SideDrawerProps {
   drawerOpened: boolean;
   toggleSideDrawer?: Function;
+  sideClickClose?: boolean
 }
 
 export interface PracticeChartProps {
@@ -2010,7 +2014,7 @@ export type SelfPayComponentProps = {
 }
 
 export type CameraComponentProps = {
-  sendFile: (blob: Blob | null) => void;
+  sendFile: (blob: File) => void;
   invisibleHandler: (open: boolean) => void;
   open: boolean
 }

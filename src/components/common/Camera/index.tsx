@@ -1,65 +1,104 @@
-import { Box, IconButton } from "@material-ui/core";
+import Webcam from "react-webcam";
 import { CameraAlt, Cancel } from "@material-ui/icons";
-import { useCallback, useEffect, useState } from "react";
-//interface
+import { Box, Button, Grid, IconButton } from "@material-ui/core";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+//components
+import Alert from "../Alert";
+//interface, utils
+import { dataURLtoFile } from "../../../utils";
 import { CameraComponentProps } from "../../../interfacesTypes";
+import { NO_CAMERA_FOUND, TAKE_AGAIN } from "../../../constants";
 
 const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentProps) => {
 
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-  const [videoPlayer, setVideoPlayer] = useState<HTMLVideoElement | null>(null)
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
+  const [deviceId, setDeviceId] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
 
-  const takePhoto = () => {
-    if (canvas && videoPlayer) {
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.drawImage(videoPlayer, 0, 0, 680, 360);
-        canvas.toBlob(sendFile);
-      }
+  const takePhoto = (picture: string | null) => {
+    if (picture) {
+      setImageUrl(picture)
+      const file = dataURLtoFile(picture, `picture`)
+      file && sendFile(file)
     }
   };
 
-  const setDevice = useCallback(async (device: MediaDeviceInfo) => {
-    const { deviceId } = device;
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId } });
-    if (videoPlayer) {
-      videoPlayer.srcObject = stream;
-      videoPlayer.play();
+  const processDevices = useCallback((mediaDevices: MediaDeviceInfo[]) => {
+    const newDevices = mediaDevices?.filter(({ kind }) => kind === "videoinput")
+    if (newDevices?.length) {
+      setDevices(newDevices)
     }
-  }, [videoPlayer])
+    else {
+      Alert.error(NO_CAMERA_FOUND)
+    }
+  }, [setDevices])
 
-  const processDevices = useCallback((devices: MediaDeviceInfo[]) => {
-    devices.forEach(device => {
-      setDevice(device);
-    });
-  }, [setDevice])
+  useMemo(() => {
+    if (devices?.length) {
+      const { deviceId } = devices[0] || {}
+      setDeviceId(deviceId)
+    }
+  }, [devices, setDeviceId])
 
   const processDevicesCamera = useCallback(async () => {
-    const cameras = await navigator.mediaDevices.enumerateDevices();
-    processDevices(cameras);
+    try {
+      const cameras = await navigator?.mediaDevices?.enumerateDevices();
+      processDevices(cameras);
+    } catch (error) {
+      Alert.error(NO_CAMERA_FOUND)
+    }
   }, [processDevices])
+
+  const deviceSelectHandler = (mediaDevice: MediaDeviceInfo) => {
+    const { deviceId } = mediaDevice
+    setDeviceId(deviceId)
+  }
 
   useEffect(() => {
     processDevicesCamera()
   }, [processDevicesCamera])
 
   return (
-    <Box >
-      <Box>
-        <video ref={ref => setVideoPlayer(ref)} width="100%" height="360" />
-      </Box>
-      <Box display="flex" justifyContent='center'>
-        <Box p={1}>
-          <IconButton onClick={() => invisibleHandler(!open)}><Cancel /></IconButton>
-        </Box>
-        <Box p={1}>
-          <IconButton onClick={takePhoto} color="primary"><CameraAlt /></IconButton>
+    <Fragment>
+      {imageUrl ? <Box>
+        <img src={imageUrl} alt={'selfie'} width="100%" />
+        <Box>
+          <Button variant="contained" onClick={() => setImageUrl('')} color="secondary">{TAKE_AGAIN}</Button>
         </Box>
       </Box>
-      <Box>
-        <canvas width="680" height="360" ref={ref => setCanvas(ref)} />
-      </Box>
-    </Box>
+        :
+        <Box>
+          <Webcam audio={false} videoConstraints={{ deviceId: deviceId }} screenshotFormat="image/png" width={'100%'} >
+            {(values) => {
+              const { getScreenshot } = values
+              return (
+                <Box display="flex" justifyContent='center'>
+                  <Box p={1}>
+                    <IconButton onClick={() => invisibleHandler(!open)}><Cancel /></IconButton>
+                  </Box>
+                  <Box p={1}>
+                    <IconButton onClick={() => {
+                      const imageSrc = getScreenshot()
+                      takePhoto(imageSrc)
+                    }} color="primary"><CameraAlt /></IconButton>
+                  </Box>
+                </Box>
+              )
+            }}
+          </Webcam>
+          {devices?.length > 1 &&
+            <Grid container spacing={3}>{devices?.map((device, key) => {
+              const { label } = device || {}
+              return <Grid item xs={12} sm={6} md={6}>
+                <Button variant="contained" onClick={() => deviceSelectHandler(device)} color="secondary">
+                  {label || `Device ${key + 1}`}
+                </Button>
+              </Grid>
+            })}
+            </Grid>
+          }
+        </Box>}
+    </Fragment>
   );
 }
 
