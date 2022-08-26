@@ -181,6 +181,10 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       }
     },
 
+    checkBox: {
+      width: 40,
+    },
+
     billingCard: {
       [theme.breakpoints.up("md")]: {
         borderRight: `1px solid ${GRAY_SIX}`,

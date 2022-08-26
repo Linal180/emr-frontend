@@ -1,19 +1,19 @@
 // packages block
 import { FC, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Typography, Grid, } from '@material-ui/core';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 //components block
 import Alert from '../../../../../common/Alert';
 import Selector from '../../../../../common/Selector';
 import PhoneField from '../../../../../common/PhoneInput';
+import InputController from '../../../../../../controller';
 import ConfirmModal from '../../../../../common/ConfirmModal';
 import RadioController from '../../../../../../controller/RadioController';
 import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 // constants, history, styling block
 import history from '../../../../../../history';
 import { GREY_SIXTEEN } from '../../../../../../theme';
-import InputController from '../../../../../../controller'
 import { renderItem, setRecord } from '../../../../../../utils';
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
 import {

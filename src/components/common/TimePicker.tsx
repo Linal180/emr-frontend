@@ -1,12 +1,12 @@
 import 'date-fns';
 import { FC } from 'react';
 import { Controller, useFormContext } from "react-hook-form";
-import { FormControl, InputLabel, OutlinedInput, FormHelperText } from '@material-ui/core';
+import { FormControl, InputLabel, FormHelperText, TextField } from '@material-ui/core';
 // interfaces constants and utils block
 import { PickerProps } from "../../interfacesTypes";
 import { renderLoading, requiredLabel } from '../../utils';
 
-const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.Element => {
+const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disabled }): JSX.Element => {
   const { control } = useFormContext()
   const inputLabel = isRequired ? requiredLabel(label) : label
 
@@ -23,7 +23,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.E
                 {inputLabel}
               </InputLabel>
 
-              <OutlinedInput
+              <TextField
                 id={`${name}-dialog`}
                 {...field}
                 className="timePickerIcon"
@@ -31,6 +31,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading}): JSX.E
                 defaultValue="07:30"
                 error={invalid}
                 inputProps={{ step: 300, }}
+                disabled={disabled}
               />
 
               <FormHelperText>{message}</FormHelperText>

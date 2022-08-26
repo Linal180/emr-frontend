@@ -140,6 +140,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
                   loading={doctorsLoading}
                   disableClearable
                   getOptionLabel={(option) => option.name || ""}
+                  getOptionSelected={(option, value) => option.id === value.id}
                   renderOption={(option) => option.name}
                   renderInput={(params) => (
                     <FormControl fullWidth margin='normal' error={Boolean(invalid)}>

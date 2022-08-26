@@ -2323,3 +2323,6 @@ export const getStateWithAbbreviation = (state: string) => {
   if (stateDetail) return `${state} - ${stateDetail?.abbreviation}`;
   return state;
 }
+export const emailRegex = (value: string) => {
+  return /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
+}

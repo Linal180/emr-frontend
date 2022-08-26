@@ -26,7 +26,7 @@ const GuarantorCard: FC<PatientCardsProps> = ({
 }) => {
   const methods = useFormContext<PatientInputProps>()
   const { sameAddress } = state || {}
-  const { watch, setValue } = methods
+  const { watch, setValue, trigger } = methods
   const {
     basicAddress, basicAddress2, basicCity, basicCountry, basicEmail, basicState, basicZipCode
   } = watch()
@@ -57,6 +57,7 @@ const GuarantorCard: FC<PatientCardsProps> = ({
     dispatch && dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
 
     setAddressValues(checked);
+    trigger()
   }
 
   return (

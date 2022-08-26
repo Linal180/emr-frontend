@@ -392,80 +392,82 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   return (
     <>
       <Box>
-        <Grid container spacing={3}>
-          <Grid item md={4} sm={12} xs={12}>
-            <Box mt={2}>
-              <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
-            </Box>
-          </Grid>
+        <Box my={2}>
+          <Grid container spacing={3}>
+            <Grid item md={4} sm={12} xs={12}>
+              <Box mt={2}>
+                <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
+              </Box>
+            </Grid>
 
-          <Grid item md={8} sm={12} xs={12}>
-            <FormProvider {...methods}>
-              <Grid container spacing={3}>
-                {isAdminUser &&
-                  <Grid item md={3} sm={12} xs={12}>
-                    <FacilitySelector
-                      addEmpty
-                      label={FACILITY}
-                      name="facilityId"
-                      onSelect={({ id }: SelectorOption) =>
-                        dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+            <Grid item md={8} sm={12} xs={12}>
+              <FormProvider {...methods}>
+                <Grid container spacing={3}>
+                  {isAdminUser &&
+                    <Grid item md={3} sm={12} xs={12}>
+                      <FacilitySelector
+                        addEmpty
+                        label={FACILITY}
+                        name="facilityId"
+                        onSelect={({ id }: SelectorOption) =>
+                          dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+                      />
+                    </Grid>}
+
+                  <Grid item md={4} sm={12} xs={12}>
+                    <ServicesSelector
+                      name="serviceId"
+                      label={APPOINTMENT_TYPE}
+                      shouldEmitFacilityId={isAdminUser}
                     />
-                  </Grid>}
+                  </Grid>
 
-                <Grid item md={4} sm={12} xs={12}>
-                  <ServicesSelector
-                    name="serviceId"
-                    label={APPOINTMENT_TYPE}
-                    shouldEmitFacilityId={isAdminUser}
-                  />
-                </Grid>
+                  <Grid item md={5} sm={12} xs={12}>
+                    <Box className="date-box-wrap">
+                      <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
-                <Grid item md={5} sm={12} xs={12}>
-                  <Box className="date-box-wrap">
-                    <Typography variant="body1" color="textPrimary">{DATE}</Typography>
+                      <Box className="date-box" display="flex" alignItems="center">
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getPreviousDate}
+                        >
+                          <ChevronLeft />
+                        </Button>
 
-                    <Box className="date-box" display="flex" alignItems="center">
-                      <Button
-                        variant="outlined"
-                        className="btn-icon"
-                        size="small"
-                        color="default"
-                        onClick={getPreviousDate}
-                      >
-                        <ChevronLeft />
-                      </Button>
+                        <Box className="date-input-box" mx={1}>
+                          <DatePicker
+                            label=""
+                            disableFuture={false}
+                            name="appointmentDate"
+                            defaultValue={new Date(selectDate)}
+                            onSelect={(date: string) => setDate(date)}
+                          />
+                        </Box>
 
-                      <Box className="date-input-box" mx={1}>
-                        <DatePicker
-                          label=""
-                          disableFuture={false}
-                          name="appointmentDate"
-                          defaultValue={new Date(selectDate)}
-                          onSelect={(date: string) => setDate(date)}
-                        />
+                        <Button
+                          variant="outlined"
+                          className="btn-icon"
+                          size="small"
+                          color="default"
+                          onClick={getNextDate}
+                        >
+                          <ChevronRight />
+                        </Button>
+
+                        <Box ml={3} />
+
+                        <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>{TODAY}</Button>
                       </Box>
-
-                      <Button
-                        variant="outlined"
-                        className="btn-icon"
-                        size="small"
-                        color="default"
-                        onClick={getNextDate}
-                      >
-                        <ChevronRight />
-                      </Button>
-
-                      <Box ml={3} />
-
-                      <Button variant="outlined" size="small" color="default" onClick={() => setDate()}>{TODAY}</Button>
                     </Box>
-                  </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </FormProvider>
+              </FormProvider>
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
 
         <Box className={classes.mainTableContainer}>
           <Box className="table-overflow appointment-view-list">

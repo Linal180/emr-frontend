@@ -30,16 +30,18 @@ import {
   NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, SOMETHING_WENT_WRONG, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES,
   TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
+import Loader from '../../../common/Loader';
 
 const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [testsToRemove, setTestsToRemove] = useState<string[]>([])
   const [accessionNumber, setAccessionNumber] = useState<string>('')
   const [diagnosesIds, setDiagnosesIds] = useState<multiOptionType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
-    resolver: yupResolver(createLabOrdersSchema)
+    resolver: yupResolver(createLabOrdersSchema())
   });
   const { control, handleSubmit, setValue } = methods
 
@@ -119,6 +121,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         }) ?? []
 
         setValue('testFieldValues', transformedLabTests)
+        setIsLoading(false)
       }
     }
   });
@@ -167,8 +170,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  // const { fields: testFields, remove: removeTestField, append: appendTestField } =
-  //   useFieldArray({ control: control, name: "testField" });
   const { fields: testFieldValues, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testFieldValues" });
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
@@ -297,6 +298,10 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     })
   }
 
+  if(isLoading){
+    return <Loader loading loaderText='Fetching Order...'/>
+  }
+
   return (
     <Box mt={4}>
       {(!loading || error) && (
@@ -366,20 +371,20 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                         <Grid item md={6} sm={12} xs={12}>
                           <TestsSelector
                             label={TEST}
-                            name={`testField.${index}.test`}
+                            name={`testFieldValues.${index}.test`}
                             addEmpty
                           />
                         </Grid>
 
                         <Grid item md={3} sm={12} xs={12}>
-                          <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
+                          <DatePicker name={`testFieldValues.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
                         </Grid>
 
                         <Grid item md={3} sm={12} xs={12}>
                           <TimePicker
                             isRequired
                             label={TEST_TIME}
-                            name={`testField.${index}.testTime`}
+                            name={`testFieldValues.${index}.testTime`}
                           />
                         </Grid>
 
@@ -387,7 +392,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                           <InputController
                             multiline
                             fieldType="text"
-                            controllerName={`testField.${index}.testNotes`}
+                            controllerName={`testFieldValues.${index}.testNotes`}
                             controllerLabel={TEST_NOTES}
                           />
                         </Grid>

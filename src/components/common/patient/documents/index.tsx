@@ -353,6 +353,7 @@ const DocumentsTable: FC<DocumentsTableProps> = ({ patient }): JSX.Element => {
           <SideDrawer
             drawerOpened={drawerOpened}
             toggleSideDrawer={toggleSideDrawer}
+            sideClickClose
           >
             <AddDocumentModal
               state={state}

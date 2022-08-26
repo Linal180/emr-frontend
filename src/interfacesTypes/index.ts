@@ -42,7 +42,7 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput, BillingPayload
+  FetchBillingClaimStatusesInput, BillingPayload, LabTestsPayload
 } from "../generated/graphql";
 import { AutocompleteRenderInputParams } from "@material-ui/lab";
 
@@ -391,6 +391,7 @@ export interface PatientSelectorProps extends SelectorProps {
 export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string;
   filteredOptions?: SelectorOption[]
+  placeHolder?: string
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -548,7 +549,8 @@ export type ParamsType = {
   orderNum?: string;
   patientId?: string;
   tabValue?: string
-  appointmentId?: string
+  appointmentId?: string;
+  testId?: string
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -767,6 +769,7 @@ export interface AutocompleteTextFieldProps {
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
   invalid: boolean
   loading: boolean
+  placeHolder?: string
 }
 
 export interface EligibilityTableComponentProps extends GeneralFormProps {
@@ -791,6 +794,10 @@ export type ViewerProps = {
 export type DocumentViewerProps = ViewerProps & {
   url: string
   title?: string
+}
+
+export type LabModalProps = ViewerProps & {
+  labTests: LabTestsPayload['labTests']
 }
 
 export type PastAndUpcomingAppointmentListProps = {
@@ -850,7 +857,8 @@ export interface LabOrderCreateProps {
   toggleSideDrawer?: Function
   isEdit?: boolean
   labTestsToEdit?: LabTests[]
-  orderNumber?: string
+  orderNumber?: string;
+  setCurrentTest?: Function
 }
 
 export interface LabOrdersTableProps {
@@ -946,7 +954,8 @@ export interface DropzoneImageType {
   setFiles?: Function
   numberOfFiles?: number;
   cameraOpen: boolean
-  setCameraOpen: (open: boolean) => void
+  setCameraOpen: (open: boolean) => void;
+  onUploading?: (open: boolean) => void
 }
 
 interface Message {
@@ -1790,9 +1799,12 @@ export interface CareTeamsProps {
   isEditable?: boolean
 }
 
+export type SideDrawerCloseReason = "backdropClick" | "escapeKeyDown";
+
 export interface SideDrawerProps {
   drawerOpened: boolean;
   toggleSideDrawer?: Function;
+  sideClickClose?: boolean
 }
 
 export interface PracticeChartProps {
@@ -2002,7 +2014,7 @@ export type SelfPayComponentProps = {
 }
 
 export type CameraComponentProps = {
-  sendFile: (blob: Blob | null) => void;
+  sendFile: (blob: File) => void;
   invisibleHandler: (open: boolean) => void;
   open: boolean
 }

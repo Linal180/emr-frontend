@@ -21,6 +21,7 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
           }
           currentProvider
         }
+        id
         firstName
         dob
         lastName
@@ -64,6 +65,7 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
       testObservations{
         createdAt
         doctorsSignOff
+        resultValue
         attachments {
           title
           id
@@ -84,6 +86,98 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
     pagination {
       page
       totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetLabTest($getLabTest: GetLabTest!) {
+  getLabTest(getLabTest: $getLabTest) {
+    labTest{
+      id
+      orderNumber
+      accessionNumber
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      receivedDate
+      collectedDate
+      appointmentId
+      patient{
+        doctorPatients{
+          doctor{
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+        dob
+        lastName
+      }
+      
+      diagnoses {
+        id
+        code
+        description
+      }
+      
+      test {
+        id
+        loincNum
+        component
+      }
+
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
+      }
+      
+      testObservations{
+        createdAt
+        doctorsSignOff
+        resultValue
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      
+      appointment{
+          id
+          appointmentType {
+            name
+        }
+        scheduleStartDateTime
+      }
     }
     
     response {

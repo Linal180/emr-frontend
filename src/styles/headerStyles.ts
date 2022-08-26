@@ -37,6 +37,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
     "& .active": {
       borderBottom: `2px solid ${BLUE}`,
     },
+
+    "& .MuiButton-root": {
+      minWidth: 'auto',
+    }
   },
 
   menuItem: {
@@ -90,6 +94,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
     "& .active": {
       borderBottom: `2px solid ${BLUE} !important`,
+    },
+
+    "& .MuiButton-root": {
+      maxWidth: "100%",
+      width: 30,
     },
   },
 
@@ -237,5 +246,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
     "& h4": {
       marginTop: '10px'
     }
-  }
+  },
+
+  practiceLogo: {
+    objectFit:'contain',
+    width:'100%',
+    height:'100%',
+  },
 }));
