@@ -4,7 +4,7 @@ import * as yup from "yup";
 // utils and constants block
 import { SelectorOption } from "../interfacesTypes";
 import {
-  checkNpi, dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
+  checkNpi, dateValidation, emailRegex, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
 } from "../utils";
 import {
   STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
@@ -125,9 +125,14 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
       value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
 }
 
-const optionalEmailSchema = (isOptional: boolean) => {
-  return yup.string().email(INVALID_EMAIL)
-    .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
+// const optionalEmailSchema = (isOptional: boolean) => {
+//   return yup.string().email(INVALID_EMAIL)
+//     .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
+// }
+
+const optionalLowerCaseEmailSchema = (isOptional: boolean) => {
+  return yup.string()
+    .test('', INVALID_EMAIL, value => isOptional ? value ? emailRegex(value || '') : true : emailRegex(value || ''))
 }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
@@ -499,7 +504,7 @@ export const extendedPatientSchema = (
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   suffix: suffixSchema(SUFFIX),
-  basicEmail: optionalEmailSchema(isOptional),
+  basicEmail: optionalLowerCaseEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
   middleName: generalNameSchema(false, MIDDLE_NAME, false, false, 15),
