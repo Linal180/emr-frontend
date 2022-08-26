@@ -58,6 +58,10 @@ query GetLoggedInUser {
         practice {
           id
           name
+
+          attachments {
+            preSignedUrl
+          }
         }
       }
 

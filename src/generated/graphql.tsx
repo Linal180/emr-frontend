@@ -6864,7 +6864,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Ac
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, email: string, phone?: string | null, isTwoFactorEnabled: boolean, token?: string | null, userId: string, userType: string, autoLogoutTime?: string | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, email: string, phone?: string | null, isTwoFactorEnabled: boolean, token?: string | null, userId: string, userType: string, autoLogoutTime?: string | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null, practice?: { __typename?: 'Practice', id: string, name: string, attachments?: Array<{ __typename?: 'Attachment', preSignedUrl?: string | null }> | null } | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -7825,7 +7825,7 @@ export type GetPracticeQueryVariables = Exact<{
 }>;
 
 
-export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null, practiceId?: string | null, ein?: string | null, fax?: string | null, upin?: string | null, medicare?: string | null, medicaid?: string | null, champus?: string | null, taxId?: string | null, npi?: string | null, createdAt?: string | null, updatedAt?: string | null, taxonomyCode?: { __typename?: 'Taxonomy', id: string, code: string, displayName?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, preSignedUrl?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null, practiceAdmin?: { __typename?: 'Staff', firstName: string, lastName: string, id: string, phone?: string | null, email: string } | null } };
 
 export type CreatePracticeMutationVariables = Exact<{
   createPracticeInput: CreatePracticeInput;
@@ -9697,6 +9697,9 @@ export const GetLoggedInUserDocument = gql`
         practice {
           id
           name
+          attachments {
+            preSignedUrl
+          }
         }
       }
       attachments {
@@ -16954,6 +16957,7 @@ export const GetPracticeDocument = gql`
       attachments {
         id
         key
+        preSignedUrl
         url
         type
         title

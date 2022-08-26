@@ -19,7 +19,9 @@ import {
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout, setTimeout] = useState<number>(LOCK_TIME_OUT)
   const { user, userPermissions, isLoggedIn } = useContext(AuthContext);
-  const { email, autoLogoutTime } = user || {}
+  const { email, autoLogoutTime, facility } = user || {}
+  const { practice } = facility || {}
+  const { attachments } = practice || {}
 
   const { pathname } = useLocation()
   const classes = useMainLayoutStyles()
@@ -39,7 +41,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
 
   const AppLayout = () => <>
     <CssBaseline />
-    {pathname !== LOCK_ROUTE && <Header />}
+    {pathname !== LOCK_ROUTE && <Header url={(attachments?.[0] as any)?.preSignedUrl} />}
 
     <Box className={classes.mainLayoutContainer}>
       <Box component="main" flex={1} width="100%">

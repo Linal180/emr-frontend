@@ -1,25 +1,25 @@
 // packages block
-import { Link } from "react-router-dom";
-import { Menu as MenuIcon, } from "@material-ui/icons";
-import { FC, MouseEvent, useContext, useState } from "react";
 import { AppBar, Box, Button, Fade, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { Menu as MenuIcon } from "@material-ui/icons";
+import { MouseEvent, useContext, useState } from "react";
+import { Link } from "react-router-dom";
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
-import { BLACK } from "../../theme";
-import history from "../../history";
-import { AuthContext } from "../../context";
-import { useHeaderStyles } from "../../styles/headerStyles";
 import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
-import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
   PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT,
   SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
 } from "../../constants";
+import { AuthContext } from "../../context";
+import history from "../../history";
+import { useHeaderStyles } from "../../styles/headerStyles";
+import { BLACK } from "../../theme";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 
-const Header: FC = (): JSX.Element => {
+const Header = ({ url }: { url: string }): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
@@ -131,9 +131,16 @@ const Header: FC = (): JSX.Element => {
     <>
       <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
-          <Link to={ROOT_ROUTE} className={classes.logo}>
-            <AIMEDLOGO />
-          </Link>
+          {
+            !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
+              <AIMEDLOGO />
+            </Link> :
+              <Box onClick={()=>history.push(ROOT_ROUTE)} width={200} height={64}>
+                {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
+                  <img src={url} alt="practice-logo" className={classes.practiceLogo} />
+                {/* </Button> */}
+              </Box>
+          }
 
           <Box className={classes.grow} />
 
