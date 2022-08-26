@@ -53,6 +53,7 @@ query GetPractice($getPractice: GetPractice!){
       attachments {
         id
         key
+        preSignedUrl
         url
         type
         title
