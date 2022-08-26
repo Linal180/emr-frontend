@@ -266,6 +266,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                           : scheduleIds.map(day => renderItem(DAY, day))
                         : <>
                           <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
+
                           <FormGroup>
                             <Box mt={1} mb={2} className={classesToggle.daysBox}
                               display="flex" alignItems="center" flexWrap="wrap"
@@ -273,7 +274,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                               {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
                                 control={
                                   <Checkbox disabled={isEdit} color="primary" checked={scheduleIds.includes(id || '')}
-                                    onChange={() => handleChangeForCheckBox(id || '')}
+                                    onChange={() => handleChangeForCheckBox(id || '')} className={classesToggle.checkBox}
                                   />
                                 }
                                 label={name}
@@ -286,7 +287,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                   </Grid>
 
                   <Grid container spacing={3}>
-                    <Grid item md={6} sm={12} xs={12}>
+                    <Grid item md={6} sm={6} xs={12}>
                       <TimePicker
                         isRequired
                         name="startAt"
@@ -295,7 +296,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                       />
                     </Grid>
 
-                    <Grid item md={6} sm={12} xs={12}>
+                    <Grid item md={6} sm={6} xs={12}>
                       <TimePicker
                         isRequired
                         name="endAt"

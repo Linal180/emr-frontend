@@ -3,18 +3,19 @@ import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core"
 import { Autocomplete } from "@material-ui/lab";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+// components block
+import AutocompleteTextField from "../AutocompleteTextField";
 // utils and interfaces/types block
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION_WITHOUT_DASHES } from "../../../constants";
 import { LoincCodesPayload, useFindAllLoincCodesLazyQuery } from "../../../generated/graphql";
 import { FacilitySelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { renderTests, requiredLabel } from "../../../utils";
-import AutocompleteTextField from "../AutocompleteTextField";
 
-const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions }): JSX.Element => {
+const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder }): JSX.Element => {
   const { control } = useFormContext()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [loincCodes, setLoincCodes] = useState<LoincCodesPayload['loincCodes']>([])
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderTests(loincCodes ?? [])] : [...renderTests(loincCodes ?? [])]
+  const updatedOptions = addEmpty ? [EMPTY_OPTION_WITHOUT_DASHES, ...renderTests(loincCodes ?? [])] : [...renderTests(loincCodes ?? [])]
 
   const [findAllLoincCodes, { loading }] = useFindAllLoincCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -87,6 +88,7 @@ const TestsSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isReq
                   onChange={(event) => setSearchQuery(event.target.value)}
                   params={params}
                   loading={loading}
+                  placeHolder={placeHolder}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

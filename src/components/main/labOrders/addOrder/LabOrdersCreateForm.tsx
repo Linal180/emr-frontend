@@ -34,7 +34,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
       diagnosesIds: [EMPTY_MULTISELECT_OPTION],
       labTestStatus: setRecord(LabTestStatus.OrderEntered, LabTestStatus.OrderEntered)
     },
-    resolver: yupResolver(createLabOrdersSchema)
+    resolver: yupResolver(createLabOrdersSchema())
   });
 
   const { id: patientId } = useParams<ParamsType>()

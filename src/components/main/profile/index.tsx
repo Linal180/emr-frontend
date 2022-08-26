@@ -274,42 +274,42 @@ const ProfileComponent = (): JSX.Element => {
                     }
 
                     <Collapse in={!isEdit} mountOnEnter unmountOnExit>
-                      <Box py={2}>
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
+                      <Box py={3}>
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={6} xs={12}>
                             {renderItem(FIRST_NAME,
                               isSuper ? SUPER : doctorFirstName || staffFirstName || N_A, false, jointLoading)
                             }
                           </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
+                          <Grid item md={6} sm={6} xs={12}>
                             {renderItem(LAST_NAME,
                               isSuper ? ADMIN : doctorLastName || staffLastName || N_A, false, jointLoading)
                             }
                           </Grid>
                         </Grid>
 
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={6} xs={12}>
                             <Box maxWidth='100%' style={{ overflowWrap: 'break-word' }}>
                               {renderItem(EMAIL, email, false, jointLoading)}
                             </Box>
                           </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
+                          <Grid item md={6} sm={6} xs={12}>
                             {renderItem(CONTACT_NUMBER, formatPhone(subPhone ? subPhone : phone), false, jointLoading)}
                           </Grid>
                         </Grid>
 
                         {userType === SYSTEM_ROLES.Doctor &&
                           <Fragment>
-                            <Grid container spacing={5}>
+                            <Grid container spacing={3}>
                               <Grid item md={12} sm={12} xs={12}>
                                 {renderItem(ADDRESS, address || N_A, false, jointLoading)}
                               </Grid>
                             </Grid>
 
-                            <Grid container spacing={5}>
+                            <Grid container spacing={3}>
                               <Grid item md={6} sm={12} xs={12}>
                                 {renderItem(CITY, city || N_A, false, jointLoading)}
                               </Grid>
@@ -319,7 +319,7 @@ const ProfileComponent = (): JSX.Element => {
                               </Grid>
                             </Grid>
 
-                            <Grid container spacing={5}>
+                            <Grid container spacing={3}>
                               <Grid item md={6} sm={12} xs={12}>
                                 {renderItem(ZIP_CODE, zipCode || N_A, false, jointLoading)}
                               </Grid>

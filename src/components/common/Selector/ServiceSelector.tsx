@@ -132,7 +132,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
                     defaultValue={options}
                     value={values}
                     isLoading={servicesLoading}
-                    components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5 }} /> }}
+                    components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5, }} /> }}
                     onChange={(newValue) => {
                       field.onChange(newValue)
                       updateValues(newValue as multiOptionType[])

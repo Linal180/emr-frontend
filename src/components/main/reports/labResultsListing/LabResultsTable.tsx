@@ -2,10 +2,10 @@
 import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import moment from "moment";
-import papaparse from 'papaparse';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import { CSVLink } from "react-csv";
 import { FormProvider, useForm } from "react-hook-form";
+import * as XLSX from 'xlsx';
 // components block
 import Alert from "../../../common/Alert";
 import CSVReader from "../../../common/CsvReader";
@@ -15,19 +15,22 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { DownloadIconWhite, EyeIcon } from "../../../../assets/svgs";
+import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXPORT_TO_FILE, LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT,
-  PENDING, RECEIVED, RECEIVED_DATE, TEST_1, TEST_2, TEST_3
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL, 
+  LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
-  LabTests, LabTestsPayload, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
+  LabTests, LabTestsPayload, UpdateObservationItemInput, useFindAllLabTestLazyQuery, useSyncLabResultsMutation
 } from "../../../../generated/graphql";
 import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { GRAY_SIX, WHITE } from "../../../../theme";
 import { getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import ResultDownloadLink from "../labResult/ResultDownloadLink";
+import LabTestModal from "./LabTestModal";
+import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
@@ -44,12 +47,8 @@ const headers = [
 ];
 
 const LabResultsTable: FC = (): JSX.Element => {
-  const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>()
-  const [page, setPage] = useState<number>(1);
-  const [pages, setPages] = useState<number>(0);
-  const [resultReceived, setResultReceived] = useState<boolean>(true)
-  const [receivedDate, setReceivedDate] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
+  const { isStickerModalOpen, labOrders, page, pages, receivedDate, resultReceived, searchQuery, stickerOrder } = state
 
   const methods = useForm({
     mode: "all",
@@ -68,7 +67,7 @@ const LabResultsTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setLabOrders(null)
+      dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: null })
     },
 
     onCompleted(data) {
@@ -76,11 +75,11 @@ const LabResultsTable: FC = (): JSX.Element => {
 
       if (findAllLabTest) {
         const { pagination, labTests } = findAllLabTest
-        labTests && setLabOrders(labTests as LabTestsPayload['labTests'])
+        labTests && dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: labTests as LabTestsPayload['labTests'] })
 
         if (pagination) {
           const { totalPages } = pagination
-          typeof totalPages === 'number' && setPages(totalPages)
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: totalPages })
         }
       }
     }
@@ -114,9 +113,9 @@ const LabResultsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
 
   const search = (query: string) => {
-    setSearchQuery(query)
-    setPages(0)
-    setPage(1)
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
   const transformedLabOrders = useMemo(() => {
@@ -143,7 +142,12 @@ const LabResultsTable: FC = (): JSX.Element => {
         return acc
       }, {})
 
-      const { patient, receivedDate, collectedDate, orderNumber } = labTests?.[0] || {}
+      const testObservations = labTests.reduce<Record<string, string>>((acc, labTest, index) => {
+        acc[`result${index + 1}`] = labTest?.testObservations?.[0]?.resultValue || ''
+        return acc
+      }, {})
+
+      const { patient, receivedDate, orderNumber, testDate } = labTests?.[0] || {}
       const { firstName, lastName, dob } = patient || {}
 
       return {
@@ -151,8 +155,9 @@ const LabResultsTable: FC = (): JSX.Element => {
         dob: getFormatDateString(dob, 'MM/DD/YYYY'),
         orderNumber: orderNumber || '',
         test: tests,
+        testObservations,
         receivedDate: receivedDate,
-        collectedDate
+        collectedDate: testDate
       }
     })
 
@@ -168,7 +173,7 @@ const LabResultsTable: FC = (): JSX.Element => {
     }
   })
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const csvData = transformedLabOrders.map((labOrder) => {
     return {
@@ -178,50 +183,101 @@ const LabResultsTable: FC = (): JSX.Element => {
       test1: labOrder.test.test1 || N_A,
       test2: labOrder.test.test2 || N_A,
       test3: labOrder.test.test3 || N_A,
-      result1: 'Fill Result',
-      result2: 'Fill Result',
-      result3: 'Fill Result',
+      result1: labOrder.testObservations.result1 || 'Fill Result',
+      result2: labOrder.testObservations.result2 || 'Fill Result',
+      result3: labOrder.testObservations.result3 || 'Fill Result',
       collectionDate: labOrder.collectedDate,
       receivedDate: labOrder.receivedDate
     }
   })
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const parseCSV = (text: string[]) => {
+    const parsedValue = text?.toString().slice(text?.toString().indexOf("\n") + 1).split("\n")
+    const response = parsedValue?.reduce<Record<string, string>[]>((acc, value) => {
+      const row = value.split(',')
+      if (row[0]) {
+        const test = [{
+          testName: row[4],
+          result: row[7],
+          orderNumber: row[0]
+        },
+        {
+          testName: row[5],
+          result: row[8],
+          orderNumber: row[0]
+        },
+        {
+          testName: row[6],
+          result: row[9],
+          orderNumber: row[0]
+        }
+        ]
+        acc.push(...test)
+        return acc
+      }
+
+      return acc
+    }, [])
+
+    return response
+  }
+
+  const promiseFileReaderCSV = async (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const text = event?.target?.result;
+          const response = text && parseCSV(text as unknown as string[])
+
+          resolve(response);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  const promiseFileReaderExcel = async (file: File) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const bstr = evt?.target?.result;
+          const wb = XLSX.read(bstr, { type: "binary" });
+          const sheetName = wb.SheetNames[0];
+          const ws = wb.Sheets[sheetName];
+          const data = XLSX.utils.sheet_to_csv(ws, {});
+          const response = data && parseCSV(data as unknown as string[])
+
+          resolve(response);
+          resolve(data);
+        } catch (error) {
+          reject(error);
+        }
+
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsBinaryString(file);
+    });
+  }
+
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      papaparse.parse<string[]>(files[0], {
-        complete: async function (results) {
-          const data = results.data.slice(1, results.data.length - 1)
-          const observationsToUpdate = data.reduce<Record<string, string>[]>((acc, row) => {
-            const test = [{
-              testName: row[3],
-              result: row[6],
-              orderNumber: row[0]
-            },
-            {
-              testName: row[4],
-              result: row[7],
-              orderNumber: row[0]
-            },
-            {
-              testName: row[5],
-              result: row[8],
-              orderNumber: row[0]
-            }
-            ]
+      const observationsToUpdate = (EXCEL_FILE_FORMATS.includes(files?.[0].type || '') ? await promiseFileReaderExcel(files?.[0]) : await promiseFileReaderCSV(files?.[0])) as UpdateObservationItemInput[]
 
-            acc.push(...test)
-            return acc
-          }, [])
-
-          await syncLabResults({
-            variables: {
-              updateObservationInput: {
-                UpdateObservationItemInput: observationsToUpdate
-              }
-            }
-          })
-
+      await syncLabResults({
+        variables: {
+          updateObservationInput: {
+            UpdateObservationItemInput: observationsToUpdate
+          }
         }
       })
     }
@@ -233,8 +289,27 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   const handleClear = () => {
     setValue('date', null)
-    setReceivedDate('')
+    dispatch({ type: ActionType.SET_RECEIVED_DATE, receivedDate: '' })
   }
+
+  const exportToXlSX = () => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: EXCEL_FILE_TYPE });
+    const url = window.URL.createObjectURL(
+      data,
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}` + EXCEL_FILE_EXTENSION,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link?.parentNode?.removeChild(link);
+  };
 
   return (
     <>
@@ -249,48 +324,58 @@ const LabResultsTable: FC = (): JSX.Element => {
               ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
               <Typography className={resultReceived ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
-                onClick={() => setResultReceived(false)}
+                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: false })}
               >
                 {RECEIVED}
               </Typography>
 
               <Typography className={resultReceived ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
-                onClick={() => setResultReceived(true)}
+                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true })}
               >
                 {PENDING}
               </Typography>
             </Box>
 
             {
-              !resultReceived && <FormProvider {...methods}>
-                <Box className="date-input-box" ml={2}>
-                  <DatePicker label="" name='date' onSelect={(date: string) => setReceivedDate(date)} />
+              !resultReceived && <>
+                <FormProvider {...methods}>
+                  <Box className="date-input-box" ml={2}>
+                    <DatePicker label="" name='date' onSelect={(date: string) => dispatch({ type: ActionType.SET_RECEIVED_DATE, receivedDate: date })} />
+                  </Box>
+                </FormProvider>
+
+
+                <Box mx={3}>
+                  <Button variant="outlined" onClick={() => handleClear()} color="inherit">
+                    {CLEAR_TEXT}
+                  </Button>
                 </Box>
-              </FormProvider>
-            }
-
-            <Box mx={3}>
-              <Button variant="outlined" className="danger" onClick={() => handleClear()} color="inherit">
-                {CLEAR_TEXT}
-              </Button>
-            </Box>
-
+              </>}
           </Box>
 
-          <Box display="flex" alignItems="center">
-            <Box m={0.5} mt={0}>
-              <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
-                filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
-                <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary">
-                  {EXPORT_TO_FILE}
+          {
+            resultReceived &&
+            <Box display="flex" alignItems="center">
+              <Box m={0.5} mt={0}>
+                <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
+                  filename={`lab_orders_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
+                  <Button variant="contained" startIcon={<DownloadIconWhite />} color="secondary">
+                    {EXPORT_TO_CSV}
+                  </Button>
+                </CSVLink>
+              </Box>
+
+              <Box m={0.5} mt={0}>
+                <Button variant="contained" startIcon={<DownloadIconWhite />} color="primary" onClick={() => exportToXlSX()}>
+                  {EXPORT_TO_EXCEL}
                 </Button>
-              </CSVLink>
-            </Box>
+              </Box>
 
-            <Box m={0.5} mt={0}>
-              <CSVReader handleFileUpload={handleFileUpload} />
+              <Box m={0.5} mt={0}>
+                <CSVReader handleFileUpload={handleFileUpload} />
+              </Box>
             </Box>
-          </Box>
+          }
         </Box>
 
         <Box className="table-overflow">
@@ -302,6 +387,9 @@ const LabResultsTable: FC = (): JSX.Element => {
                 {renderTh(TEST_1)}
                 {renderTh(TEST_2)}
                 {renderTh(TEST_3)}
+                {renderTh(RESULT_1)}
+                {renderTh(RESULT_2)}
+                {renderTh(RESULT_3)}
                 {renderTh(COLLECTION_DATE)}
                 {renderTh(RECEIVED_DATE)}
                 {renderTh(ACTION, "center")}
@@ -310,13 +398,13 @@ const LabResultsTable: FC = (): JSX.Element => {
 
             <TableBody>{(loading) ? (
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={PAGE_LIMIT_EIGHT} numberOfColumns={5} />
+                <TableCell colSpan={12}>
+                  <TableLoader numberOfRows={PAGE_LIMIT_EIGHT} numberOfColumns={9} />
                 </TableCell>
               </TableRow>
             ) : (
               transformedLabOrders.map((labOrders) => {
-                const { patientName, test, collectedDate, dob, receivedDate, orderNumber } = labOrders
+                const { patientName, test, collectedDate, dob, receivedDate, orderNumber, testObservations } = labOrders
 
                 return (
                   <TableRow>
@@ -340,15 +428,37 @@ const LabResultsTable: FC = (): JSX.Element => {
                       {(test as any).test3 || N_A}
                     </TableCell>
                     <TableCell scope="row">
+                      {(testObservations as any).result1 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {(testObservations as any).result2 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {(testObservations as any).result3 || N_A}
+                    </TableCell>
+                    <TableCell scope="row">
                       {collectedDate || N_A}
                     </TableCell>
                     <TableCell scope="row">
                       {receivedDate || N_A}
                     </TableCell>
                     <TableCell scope="row">
-                      <IconButton onClick={() => history.push(`${LAB_RESULTS_ROUTE}/${orderNumber}`)}>
-                        <EyeIcon />
-                      </IconButton>
+                      <Box display="flex" alignItems="center">
+                        <IconButton onClick={() => history.push(`${LAB_RESULTS_ROUTE}/${orderNumber}`)}>
+                          <EyeIcon />
+                        </IconButton>
+
+                        <ResultDownloadLink orderNumber={orderNumber} />
+
+                        <Box>
+                          <IconButton onClick={() => {
+                            dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                            dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber })
+                          }}>
+                            <PrintGrayIcon />
+                          </IconButton>
+                        </Box>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 )
@@ -374,6 +484,12 @@ const LabResultsTable: FC = (): JSX.Element => {
           />
         </Box>
       )}
+
+      {isStickerModalOpen && <LabTestModal
+        handleClose={() => dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: false })}
+        isOpen={isStickerModalOpen}
+        labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
+      />}
     </>
   );
 };

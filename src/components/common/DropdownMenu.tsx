@@ -1,7 +1,7 @@
 // packages block
 import { FC, MouseEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Menu, MenuItem, Fade, IconButton, } from '@material-ui/core';
+import { Typography, Menu, MenuItem, Fade, IconButton, Button, } from '@material-ui/core';
 // utils and header styles block
 import { DropDownItems } from "../../interfacesTypes";
 import { useHeaderStyles } from "../../styles/headerStyles";
@@ -22,13 +22,13 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
           onClick={(event) => handleClick(event)}
         >
           {itemName}
-          <IconButton
+          <Button
             aria-label="dropdown menu"
             aria-controls="menu-appBar"
             aria-haspopup="true" color="inherit"
           >
             <DownArrowIcon />
-          </IconButton>
+          </Button>
         </Typography>
       }
 

@@ -79,6 +79,7 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
             disableClearable
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
+            getOptionSelected={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 <Box position="relative">
