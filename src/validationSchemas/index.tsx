@@ -4,7 +4,7 @@ import * as yup from "yup";
 // utils and constants block
 import { SelectorOption } from "../interfacesTypes";
 import {
-  checkNpi, dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
+  checkNpi, dateValidation, emailRegex, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
 } from "../utils";
 import {
   STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
@@ -132,7 +132,7 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
 
 const optionalLowerCaseEmailSchema = (isOptional: boolean) => {
   return yup.string()
-    .test('', INVALID_EMAIL, value => isOptional ? value ? /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '') : true : /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || ''))
+    .test('', INVALID_EMAIL, value => isOptional ? value ? emailRegex(value || '') : true : emailRegex(value || ''))
 }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
