@@ -946,7 +946,8 @@ export interface DropzoneImageType {
   setFiles?: Function
   numberOfFiles?: number;
   cameraOpen: boolean
-  setCameraOpen: (open: boolean) => void
+  setCameraOpen: (open: boolean) => void;
+  onUploading?: (open: boolean) => void
 }
 
 interface Message {

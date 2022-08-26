@@ -20,6 +20,8 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
+
   const [{ fileUrl, attachmentId, loading }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -47,6 +49,10 @@ const EditMediaModel: FC<MediaModalTypes> = ({
     dispatch({ type: ActionType.SET_LOADING, loading: false })
   }
 
+  const onUploading = (open: boolean) => {
+    setUploading(open)
+  }
+
   return (
     <Dialog
       fullWidth
@@ -65,7 +71,8 @@ const EditMediaModel: FC<MediaModalTypes> = ({
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => setCameraOpen(true)}
+              onClick={() => setCameraOpen(!cameraOpen)}
+              disabled={loading || (fileUrl !== '') || uploading}
             >
               {OPEN_CAMERA}
             </Button>
@@ -102,6 +109,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               acceptableFilesType={mediaType(title)}
               cameraOpen={cameraOpen}
               setCameraOpen={setCameraOpen}
+              onUploading={onUploading}
             />
           }
         </DialogContent>
@@ -121,7 +129,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={loading || (fileUrl !== '')}
+              disabled={loading || (fileUrl !== '') || uploading}
             >
               {loading && (
                 <CircularProgress size={20} />

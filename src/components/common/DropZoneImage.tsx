@@ -23,7 +23,7 @@ import {
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen
+  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen, onUploading
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -84,7 +84,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }
 
       setLoading(true);
-
+      onUploading && onUploading(true)
       await axios.post(
         isEdit ?
           `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
@@ -99,6 +99,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         }
       ).then(response => {
         const { status, data } = response;
+        onUploading && onUploading(false)
 
         if (status === 201 && data) {
           switch (imageModuleType) {
@@ -182,6 +183,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         }
       }).then(data => { }).catch(error => {
         setLoading(false);
+        onUploading && onUploading(false)
         handleModalClose();
         Alert.error(SOMETHING_WENT_WRONG);
       });

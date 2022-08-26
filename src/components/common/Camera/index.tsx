@@ -3,11 +3,13 @@ import { CameraAlt, Cancel } from "@material-ui/icons";
 import { useCallback, useEffect, useState } from "react";
 //interface
 import { CameraComponentProps } from "../../../interfacesTypes";
+import Alert from "../Alert";
 
 const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentProps) => {
 
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   const [videoPlayer, setVideoPlayer] = useState<HTMLVideoElement | null>(null)
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
 
   const takePhoto = () => {
     if (canvas && videoPlayer) {
@@ -21,22 +23,28 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
 
   const setDevice = useCallback(async (device: MediaDeviceInfo) => {
     const { deviceId } = device;
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId } });
+    const stream = await navigator?.mediaDevices?.getUserMedia({ audio: false, video: { deviceId } });
     if (videoPlayer) {
       videoPlayer.srcObject = stream;
       videoPlayer.play();
     }
   }, [videoPlayer])
 
-  const processDevices = useCallback((devices: MediaDeviceInfo[]) => {
-    devices.forEach(device => {
-      setDevice(device);
-    });
-  }, [setDevice])
+  const processDevices = useCallback((mediaDevices: MediaDeviceInfo[]) => {
+    const newDevices = mediaDevices?.filter(({ kind }) => kind === "videoinput")
+    if (newDevices?.length) {
+      setDevices(newDevices)
+      setDevice(newDevices[0])
+    }
+  }, [setDevices, setDevice])
 
   const processDevicesCamera = useCallback(async () => {
-    const cameras = await navigator.mediaDevices.enumerateDevices();
-    processDevices(cameras);
+    try {
+      const cameras = await navigator?.mediaDevices?.enumerateDevices();
+      processDevices(cameras);
+    } catch (error) {
+      Alert.error("no Camera found")
+    }
   }, [processDevices])
 
   useEffect(() => {
@@ -44,7 +52,8 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
   }, [processDevicesCamera])
 
   return (
-    <Box >
+    <Box>
+      {console.log('devices', devices)}
       <Box>
         <video ref={ref => setVideoPlayer(ref)} width="100%" height="360" />
       </Box>

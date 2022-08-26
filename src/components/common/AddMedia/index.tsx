@@ -25,6 +25,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
   const dropZoneRef = useRef<FormForwardRef>(null);
   const methods = useForm<ICreateMediaInput>();
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
   const { handleSubmit, reset } = methods
 
   const [{ fileUrl, attachmentId }, dispatch] =
@@ -83,6 +84,10 @@ const AddImageModal: FC<MediaModalTypes> = ({
     })
   }
 
+  const onUploading = (open: boolean) => {
+    setUploading(open)
+  }
+
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title"
       aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
@@ -95,7 +100,8 @@ const AddImageModal: FC<MediaModalTypes> = ({
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => setCameraOpen(true)}
+              onClick={() => setCameraOpen(!cameraOpen)}
+              disabled={deleteAttachmentLoading || uploading}
             >
               {OPEN_CAMERA}
             </Button>
@@ -132,13 +138,15 @@ const AddImageModal: FC<MediaModalTypes> = ({
               attachmentMetadata={attachmentMetadata}
               cameraOpen={cameraOpen}
               setCameraOpen={setCameraOpen}
+              onUploading={onUploading}
             />
           }
         </DialogContent>
 
         <DialogActions>
           <Button variant="contained" color="primary" type={btnType}
-            onClick={handleSubmit((data) => handleMediaSubmit(data))} disabled={deleteAttachmentLoading}
+            onClick={handleSubmit((data) => handleMediaSubmit(data))}
+            disabled={deleteAttachmentLoading || uploading}
           >
             {deleteAttachmentLoading &&
               <CircularProgress size={20} />
