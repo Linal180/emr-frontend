@@ -3,7 +3,7 @@ import { BLACK_THREE, WHITE } from "../theme";
 export const useProfileStyles = makeStyles(() =>
   createStyles({
     profileContainer: {
-      padding: 50,
+      paddingBottom: 30,
       background: WHITE,
       borderRadius: 12,
       display: "flex",

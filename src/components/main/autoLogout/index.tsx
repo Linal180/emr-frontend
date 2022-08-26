@@ -1,7 +1,7 @@
 // packages block
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import Selector from '../../common/Selector';
@@ -73,10 +73,11 @@ const AutoLogoutComponent = (): JSX.Element => {
                 <Grid item md={10} sm={12} xs={12}>
                   {isEdit ?
                     <Box>
+                      <Typography>{AUTO_LOGOUT_DESCRIPTION}</Typography>
+
                       <Selector
-                        isRequired
                         name="autoLogoutTime"
-                        label={AUTO_LOGOUT_DESCRIPTION}
+                        label=""
                         value={EMPTY_OPTION}
                         options={MAPPED_AUTO_LOGOUT}
                       />
@@ -86,12 +87,13 @@ const AutoLogoutComponent = (): JSX.Element => {
                     : <Box>
                       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                         <Typography variant='inherit'>{AUTO_LOGOUT_DESCRIPTION}</Typography>
-                        <Box>
-                          <IconButton onClick={() => setIsEdit(!isEdit)}>
+                        <Box className='icon-button-hover'>
+                          <Button onClick={() => setIsEdit(!isEdit)}>
                             <Edit />
-                          </IconButton>
+                          </Button>
                         </Box>
                       </Box>
+                      
                       <Selector
                         disabled
                         name="autoLogoutTime"
