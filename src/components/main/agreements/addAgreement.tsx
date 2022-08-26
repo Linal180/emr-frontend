@@ -215,6 +215,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               />
             </Box>
           </Box>
+          
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4" color='textPrimary'>{AGREEMENTS}</Typography>
 

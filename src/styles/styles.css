@@ -30,6 +30,10 @@ body {
   padding: 12px 15px !important;
 }
 
+.icon-button-hover .MuiButton-root:hover {
+  background-color: transparent !important;
+}
+
 .MuiButton-root .MuiCircularProgress-root {
   position: absolute;
   top: 50%;
@@ -277,7 +281,7 @@ body .MuiTabPanel-root {
   height: 200px !important;
 }
 
-.selectorClass .MuiSvgIcon-root path {
+.selectorClass .MuiSvgIcon-root>path {
   display: none !important;
 }
 
@@ -286,7 +290,9 @@ body .MuiTabPanel-root {
   background-size: auto !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
-}
+  max-width: 100% !important;
+  width: 20px !important;
+ }
 
 .input-dollar-class .MuiInputBase-input {
   background-image: url(../assets/images/dollar-sign.svg) !important;

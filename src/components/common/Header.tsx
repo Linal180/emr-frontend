@@ -1,8 +1,8 @@
 // packages block
 import { Link } from "react-router-dom";
-import { Menu as MenuIcon } from "@material-ui/icons";
+import { Menu as MenuIcon, } from "@material-ui/icons";
 import { FC, MouseEvent, useContext, useState } from "react";
-import { AppBar, Box, Fade, IconButton, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, Fade, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
@@ -211,20 +211,10 @@ const Header: FC = (): JSX.Element => {
 
           <Box className={classes.grow} />
 
-          <Box display="flex" alignItems="center">
-            {/* <Link to={SEND_SMS_ROUTE}>
-              <Box pt={0.8} />
-
-              <MessageIcon />
-            </Link>
-
-            <Box px={2} /> */}
-
-            <Link to={SETTINGS_ROUTE}>
-              <Box pt={0.8} />
-
+          <Box className="icon-button-hover" display="flex" alignItems="center">
+            <Button onClick={() => history.push(SETTINGS_ROUTE)}>
               <SettingsIcon />
-            </Link>
+            </Button>
 
             <Box px={2} />
 
@@ -254,7 +244,7 @@ const Header: FC = (): JSX.Element => {
           </Box>
 
           <Box className={classes.sectionMobile}>
-            <IconButton
+            <Button
               aria-label="dropdown menu"
               aria-controls="mobile-menu"
               aria-haspopup="true"
@@ -262,7 +252,7 @@ const Header: FC = (): JSX.Element => {
               onClick={(event) => handleMobileMenuOpen(event)}
             >
               <MenuIcon />
-            </IconButton>
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>

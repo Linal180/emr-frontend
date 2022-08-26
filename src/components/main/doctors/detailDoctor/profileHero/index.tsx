@@ -11,7 +11,7 @@ import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
 import { formatPhone, getFormattedDate, getTimestamps, renderMissing } from "../../../../../utils";
 import { ATTACHMENT_TITLES, DOCTORS_ROUTE, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
 import { AtIcon, EditNewIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
-import { Avatar, Box, Button, Card, CircularProgress, Collapse, IconButton, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
 import {
   AttachmentType, Contact, Doctor, useGetAttachmentLazyQuery, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
@@ -200,9 +200,11 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
                     {`${firstName} ${lastName}`}
                   </Box>
 
-                  <IconButton onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
-                    <EditNewIcon />
-                  </IconButton>
+                  <Box className="icon-button-hover">
+                    <Button onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                      <EditNewIcon />
+                    </Button>
+                  </Box>
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
