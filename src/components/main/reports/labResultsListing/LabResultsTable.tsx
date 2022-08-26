@@ -2,7 +2,7 @@
 import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import moment from "moment";
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import { CSVLink } from "react-csv";
 import { FormProvider, useForm } from "react-hook-form";
 import * as XLSX from 'xlsx';
@@ -30,6 +30,7 @@ import { GRAY_SIX, WHITE } from "../../../../theme";
 import { getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import ResultDownloadLink from "../labResult/ResultDownloadLink";
 import LabTestModal from "./LabTestModal";
+import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
 
 const headers = [
   { label: "OrderNo", key: "orderNo" },
@@ -46,14 +47,8 @@ const headers = [
 ];
 
 const LabResultsTable: FC = (): JSX.Element => {
-  const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>()
-  const [page, setPage] = useState<number>(1);
-  const [pages, setPages] = useState<number>(0);
-  const [resultReceived, setResultReceived] = useState<boolean>(true)
-  const [receivedDate, setReceivedDate] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [isStickerModalOpen, setIsStickerModalOpen] = useState<boolean>(false)
-  const [stickerOrder, setStickerOrder] = useState<string>('')
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
+  const { isStickerModalOpen, labOrders, page, pages, receivedDate, resultReceived, searchQuery, stickerOrder } = state
 
   const methods = useForm({
     mode: "all",
@@ -72,7 +67,7 @@ const LabResultsTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setLabOrders(null)
+      dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: null })
     },
 
     onCompleted(data) {
@@ -80,11 +75,11 @@ const LabResultsTable: FC = (): JSX.Element => {
 
       if (findAllLabTest) {
         const { pagination, labTests } = findAllLabTest
-        labTests && setLabOrders(labTests as LabTestsPayload['labTests'])
+        labTests && dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: labTests as LabTestsPayload['labTests'] })
 
         if (pagination) {
           const { totalPages } = pagination
-          typeof totalPages === 'number' && setPages(totalPages)
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: totalPages })
         }
       }
     }
@@ -118,9 +113,9 @@ const LabResultsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
 
   const search = (query: string) => {
-    setSearchQuery(query)
-    setPages(0)
-    setPage(1)
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
   const transformedLabOrders = useMemo(() => {
@@ -178,7 +173,7 @@ const LabResultsTable: FC = (): JSX.Element => {
     }
   })
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const csvData = transformedLabOrders.map((labOrder) => {
     return {
@@ -294,7 +289,7 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   const handleClear = () => {
     setValue('date', null)
-    setReceivedDate('')
+    dispatch({ type: ActionType.SET_RECEIVED_DATE, receivedDate: '' })
   }
 
   const exportToXlSX = () => {
@@ -329,13 +324,13 @@ const LabResultsTable: FC = (): JSX.Element => {
               ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
               <Typography className={resultReceived ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
-                onClick={() => setResultReceived(false)}
+                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: false })}
               >
                 {RECEIVED}
               </Typography>
 
               <Typography className={resultReceived ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
-                onClick={() => setResultReceived(true)}
+                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true })}
               >
                 {PENDING}
               </Typography>
@@ -345,7 +340,7 @@ const LabResultsTable: FC = (): JSX.Element => {
               !resultReceived && <>
                 <FormProvider {...methods}>
                   <Box className="date-input-box" ml={2}>
-                    <DatePicker label="" name='date' onSelect={(date: string) => setReceivedDate(date)} />
+                    <DatePicker label="" name='date' onSelect={(date: string) => dispatch({ type: ActionType.SET_RECEIVED_DATE, receivedDate: date })} />
                   </Box>
                 </FormProvider>
 
@@ -359,7 +354,7 @@ const LabResultsTable: FC = (): JSX.Element => {
           </Box>
 
           {
-            !resultReceived &&
+            resultReceived &&
             <Box display="flex" alignItems="center">
               <Box m={0.5} mt={0}>
                 <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
@@ -457,8 +452,8 @@ const LabResultsTable: FC = (): JSX.Element => {
 
                         <Box>
                           <IconButton onClick={() => {
-                            setIsStickerModalOpen(true);
-                            setStickerOrder(orderNumber)
+                            dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                            dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber })
                           }}>
                             <PrintGrayIcon />
                           </IconButton>
@@ -491,7 +486,7 @@ const LabResultsTable: FC = (): JSX.Element => {
       )}
 
       {isStickerModalOpen && <LabTestModal
-        handleClose={() => setIsStickerModalOpen(false)}
+        handleClose={() => dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: false })}
         isOpen={isStickerModalOpen}
         labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
       />}
