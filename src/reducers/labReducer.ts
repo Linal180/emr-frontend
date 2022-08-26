@@ -20,7 +20,7 @@ export const initialState: State = {
   labOrders: [],
   page: 1,
   pages: 0,
-  resultReceived: false,
+  resultReceived: true,
   receivedDate: '',
   searchQuery: '',
   isStickerModalOpen: false,
