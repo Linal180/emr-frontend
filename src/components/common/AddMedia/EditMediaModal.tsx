@@ -67,7 +67,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
           <Box>
             {EDIT_MEDIA}
           </Box>
-          {!fileUrl && <Box>
+          {(!fileUrl || !cameraOpen) && <Box>
             <Button
               variant="contained"
               color="secondary"

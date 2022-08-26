@@ -97,14 +97,15 @@ const AddImageModal: FC<MediaModalTypes> = ({
             {ADD_MEDIA}
           </Box>
           <Box>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => setCameraOpen(!cameraOpen)}
-              disabled={deleteAttachmentLoading || uploading}
-            >
-              {OPEN_CAMERA}
-            </Button>
+            {!cameraOpen &&
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => setCameraOpen(!cameraOpen)}
+                disabled={deleteAttachmentLoading || uploading}
+              >
+                {OPEN_CAMERA}
+              </Button>}
           </Box>
         </Box>
       </DialogTitle>

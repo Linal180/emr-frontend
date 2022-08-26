@@ -8,7 +8,7 @@ import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 import Alert from "./Alert";
 import CameraComponent from "./Camera";
 // styles, utils, graphql, constants and interfaces/types block
-import { blobToFile, getToken } from "../../utils";
+import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
@@ -192,9 +192,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
 
   const handleUpdateImage = () => setImageEdit(true)
 
-  const sendFileHandler = (blob: Blob | null) => {
-    if (blob) {
-      const file = blobToFile(blob, 'front-end');
+  const sendFileHandler = (file: File) => {
+    if (file) {
       setFiles([file])
       setAttachmentFiles && setAttachmentFiles([file])
     }

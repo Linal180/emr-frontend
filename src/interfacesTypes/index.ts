@@ -2003,7 +2003,7 @@ export type SelfPayComponentProps = {
 }
 
 export type CameraComponentProps = {
-  sendFile: (blob: Blob | null) => void;
+  sendFile: (blob: File) => void;
   invisibleHandler: (open: boolean) => void;
   open: boolean
 }
