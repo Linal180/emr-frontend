@@ -2,18 +2,18 @@
 import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Add } from '@material-ui/icons';
 import { Pagination } from "@material-ui/lab";
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
 // components block
 import history from "../../../../history";
 import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
+import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 import Alert from "../../Alert";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 import Search from "../../Search";
 import Selector from "../../Selector";
 import SideDrawer from "../../SideDrawer";
-import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 // constant, utils and styles block
 import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
@@ -24,25 +24,18 @@ import {
   LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestMutation
 } from "../../../../generated/graphql";
 import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
 const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Element => {
   const classes = useTableStyles();
-  const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>([])
-  const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [orderNum, setOrderNum] = useState<string>('')
-  const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
-  const [labTestIds, setLabTestIds] = useState<string[]>([])
-  const [page, setPage] = useState<number>(1);
-  const [pages, setPages] = useState<number>(0);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
+  const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
+
   const { textColor } = appointmentStatus('' || '')
-  const [labTestsToEdit, setLabTestsToEdit] = useState<LabTests[]>()
   const { id } = useParams<ParamsType>()
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [isStickerModalOpen, setIsStickerModalOpen] = useState<boolean>(false)
-  const [stickerOrder, setStickerOrder] = useState<string>('')
 
   const methods = useForm<LabOrderInput>({ mode: "all" });
 
@@ -53,7 +46,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
     fetchPolicy: "network-only",
 
     onError() {
-      setLabOrders(null)
+      dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: null })
     },
 
     onCompleted(data) {
@@ -61,11 +54,11 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
 
       if (findAllLabTest) {
         const { pagination, labTests } = findAllLabTest
-        labTests && setLabOrders(labTests as LabTestsPayload['labTests'])
+        labTests && dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: labTests as LabTestsPayload['labTests'] })
 
         if (pagination) {
           const { totalPages } = pagination
-          typeof totalPages === 'number' && setPages(totalPages)
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: totalPages })
         }
       }
     }
@@ -112,13 +105,13 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
     }, {})
   }, [appointmentInfo, labOrders])
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const handleEdit = (orderNum: string, name: string, labTestIds: string[]) => {
     if (orderNum) {
-      setLabTestIds(labTestIds)
-      setOrderNum(orderNum)
-      setIsEdit(true)
+      dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: labTestIds })
+      dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNum })
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
       setValue('status', {
         id: formatValue(name),
         name: formatValue(name)
@@ -127,9 +120,9 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
   }
 
   const search = (query: string) => {
-    setSearchQuery(query)
-    setPages(0)
-    setPage(1)
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
   const [updateLabTest] = useUpdateLabTestMutation({
@@ -159,21 +152,21 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
       });
     })
 
-    setIsEdit(false)
-    setOrderNum('')
-    setLabTestIds([])
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
+    dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: [] })
   }
-  const toggleSideDrawer = () => { setDrawerOpened(!drawerOpened) }
+  const toggleSideDrawer = () => { dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened  }) }
 
   const handleReload = () => {
-    setDrawerOpened(false)
+    dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: false })
     fetchLabTests()
-    setOrderNum('')
-    setLabTestsToEdit([])
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
+    dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: [] })
   }
   const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
-    setLabTestsToEdit(labOrder)
-    setOrderNum(orderNumber)
+    dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNum })
     toggleSideDrawer()
   }
 
@@ -284,8 +277,8 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
 
                             <Box>
                               <IconButton onClick={() => {
-                                setIsStickerModalOpen(true);
-                                setStickerOrder(orderNumber || '')
+                                dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                                dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
                               }}>
                                 <PrintGrayIcon />
                               </IconButton>
@@ -323,7 +316,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
       }
 
       {isStickerModalOpen && <LabTestModal
-        handleClose={() => setIsStickerModalOpen(false)}
+        handleClose={() => dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: false })}
         isOpen={isStickerModalOpen}
         labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
       />}
