@@ -325,9 +325,12 @@ export type Attachment = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
+  preSignedUrl?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -383,9 +386,11 @@ export type AttachmentWithPreSignedUrl = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   preSignedUrl?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
@@ -1017,6 +1022,7 @@ export type CreateAttachmentInput = {
   documentTypeId?: Maybe<Scalars['String']>;
   documentTypeName?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   policyId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
@@ -2177,6 +2183,10 @@ export type GetForm = {
   id: Scalars['String'];
 };
 
+export type GetInsuranceInput = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type GetLabTest = {
   id?: Maybe<Scalars['String']>;
 };
@@ -2336,6 +2346,12 @@ export type InsurancePaginationInput = {
   searchString?: Maybe<Scalars['String']>;
 };
 
+export type InsurancePayload = {
+  __typename?: 'InsurancePayload';
+  insurance?: Maybe<Insurance>;
+  response?: Maybe<Response>;
+};
+
 export type InsurancesPayload = {
   __typename?: 'InsurancesPayload';
   insurances: Array<Insurance>;
@@ -2405,6 +2421,10 @@ export type LabTestInput = {
   orderNumber?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  shouldFetchPending?: Maybe<Scalars['Boolean']>;
+  shouldFetchReceived?: Maybe<Scalars['Boolean']>;
 };
 
 export type LabTestObservationPayload = {
@@ -2452,6 +2472,7 @@ export type LabTests = {
   referringProviderId?: Maybe<Scalars['String']>;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
+  testId?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
   testObservations?: Maybe<Array<Observations>>;
   testSpecimens?: Maybe<Array<TestSpecimens>>;
@@ -4362,6 +4383,7 @@ export type Query = {
   getFacilitySchedule: SchedulesPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
+  getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getModifier: ModifierPayload;
   getPatient: PatientPayload;
@@ -4793,6 +4815,11 @@ export type QueryGetFeeScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetInsuranceArgs = {
+  getInsuranceInput: GetInsuranceInput;
 };
 
 
@@ -5851,6 +5878,7 @@ export type UpdateAttachmentInput = {
   documentTypeName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   labOrderNum?: Maybe<Scalars['String']>;
+  parentAttachmentId?: Maybe<Scalars['String']>;
   policyId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   signedAt?: Maybe<Scalars['String']>;
@@ -6819,6 +6847,13 @@ export type FetchDocumentTypesQueryVariables = Exact<{
 
 export type FetchDocumentTypesQuery = { __typename?: 'Query', fetchDocumentTypes: { __typename?: 'DocumentTypesPayload', documentTypes?: Array<{ __typename?: 'DocumentType', type?: string | null, id: string, practiceId?: string | null } | null> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
+export type GetPatientAttachmentsQueryVariables = Exact<{
+  getAttachment: GetAttachment;
+}>;
+
+
+export type GetPatientAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, attachmentName?: string | null, createdAt: string, updatedAt: string, preSignedUrl?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null, signedBy?: string | null, providerName?: string | null, comments?: string | null, documentDate?: string | null, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
 }>;
@@ -6930,7 +6965,7 @@ export type FetchAllClaimStatusesQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null }> } };
+export type FetchAllClaimStatusesQuery = { __typename?: 'Query', fetchAllClaimStatuses: { __typename?: 'ClaimStatusesPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalCount?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, claimStatuses: Array<{ __typename?: 'ClaimStatus', id: string, createdAt?: string | null, statusName?: string | null, system: boolean }> } };
 
 export type FindClaimStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -7465,6 +7500,13 @@ export type FetchAllInsurancesQueryVariables = Exact<{
 
 export type FetchAllInsurancesQuery = { __typename?: 'Query', fetchAllInsurances: { __typename?: 'InsurancesPayload', insurances: Array<{ __typename?: 'Insurance', payerName: string, payerId: string, id: string }>, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
+export type GetInsuranceQueryVariables = Exact<{
+  getInsuranceInput: GetInsuranceInput;
+}>;
+
+
+export type GetInsuranceQuery = { __typename?: 'Query', getInsurance: { __typename?: 'InsurancePayload', insurance?: { __typename?: 'Insurance', payerName: string, payerId: string, id: string } | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null } };
+
 export type FetchAllPoliciesQueryVariables = Exact<{
   policyInput: PolicyPaginationInput;
 }>;
@@ -7825,7 +7867,7 @@ export type FindAllRolesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, description?: string | null, customRole?: boolean | null, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null } };
+export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, description?: string | null, customRole?: boolean | null } | null> | null } };
 
 export type GetRoleQueryVariables = Exact<{
   getRole: GetRole;
@@ -9501,6 +9543,72 @@ export function useFetchDocumentTypesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FetchDocumentTypesQueryHookResult = ReturnType<typeof useFetchDocumentTypesQuery>;
 export type FetchDocumentTypesLazyQueryHookResult = ReturnType<typeof useFetchDocumentTypesLazyQuery>;
 export type FetchDocumentTypesQueryResult = Apollo.QueryResult<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>;
+export const GetPatientAttachmentsDocument = gql`
+    query GetPatientAttachments($getAttachment: GetAttachment!) {
+  getAttachments(getAttachment: $getAttachment) {
+    response {
+      error
+      status
+      message
+    }
+    attachments {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+      preSignedUrl
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        comments
+        documentDate
+        documentType {
+          id
+          type
+        }
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientAttachmentsQuery__
+ *
+ * To run a query within a React component, call `useGetPatientAttachmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientAttachmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientAttachmentsQuery({
+ *   variables: {
+ *      getAttachment: // value for 'getAttachment'
+ *   },
+ * });
+ */
+export function useGetPatientAttachmentsQuery(baseOptions: Apollo.QueryHookOptions<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>(GetPatientAttachmentsDocument, options);
+      }
+export function useGetPatientAttachmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>(GetPatientAttachmentsDocument, options);
+        }
+export type GetPatientAttachmentsQueryHookResult = ReturnType<typeof useGetPatientAttachmentsQuery>;
+export type GetPatientAttachmentsLazyQueryHookResult = ReturnType<typeof useGetPatientAttachmentsLazyQuery>;
+export type GetPatientAttachmentsQueryResult = Apollo.QueryResult<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
@@ -10281,6 +10389,7 @@ export const FetchAllClaimStatusesDocument = gql`
       id
       createdAt
       statusName
+      system
     }
   }
 }
@@ -14141,6 +14250,49 @@ export function useFetchAllInsurancesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FetchAllInsurancesQueryHookResult = ReturnType<typeof useFetchAllInsurancesQuery>;
 export type FetchAllInsurancesLazyQueryHookResult = ReturnType<typeof useFetchAllInsurancesLazyQuery>;
 export type FetchAllInsurancesQueryResult = Apollo.QueryResult<FetchAllInsurancesQuery, FetchAllInsurancesQueryVariables>;
+export const GetInsuranceDocument = gql`
+    query GetInsurance($getInsuranceInput: GetInsuranceInput!) {
+  getInsurance(getInsuranceInput: $getInsuranceInput) {
+    insurance {
+      payerName
+      payerId
+      id
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetInsuranceQuery__
+ *
+ * To run a query within a React component, call `useGetInsuranceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetInsuranceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetInsuranceQuery({
+ *   variables: {
+ *      getInsuranceInput: // value for 'getInsuranceInput'
+ *   },
+ * });
+ */
+export function useGetInsuranceQuery(baseOptions: Apollo.QueryHookOptions<GetInsuranceQuery, GetInsuranceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetInsuranceQuery, GetInsuranceQueryVariables>(GetInsuranceDocument, options);
+      }
+export function useGetInsuranceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetInsuranceQuery, GetInsuranceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetInsuranceQuery, GetInsuranceQueryVariables>(GetInsuranceDocument, options);
+        }
+export type GetInsuranceQueryHookResult = ReturnType<typeof useGetInsuranceQuery>;
+export type GetInsuranceLazyQueryHookResult = ReturnType<typeof useGetInsuranceLazyQuery>;
+export type GetInsuranceQueryResult = Apollo.QueryResult<GetInsuranceQuery, GetInsuranceQueryVariables>;
 export const FetchAllPoliciesDocument = gql`
     query FetchAllPolicies($policyInput: PolicyPaginationInput!) {
   fetchAllPolicies(policyInput: $policyInput) {
@@ -16988,13 +17140,6 @@ export const FindAllRolesDocument = gql`
       role
       description
       customRole
-      rolePermissions {
-        id
-        permission {
-          id
-          name
-        }
-      }
     }
   }
 }

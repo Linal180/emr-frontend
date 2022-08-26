@@ -1,7 +1,7 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Pagination } from '@material-ui/lab';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 // components block
 import Alert from '../../common/Alert';
 import Search from '../../common/Search';
@@ -32,7 +32,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [claimStatusToRemove, setClaimStatusToRemove] = useState<string>('')
   const [openDelete, setOpenDelete] = useState<boolean>(false)
-  
+
   const [isClaimStatusModalOpen, setIsClaimStatusModalOpen] = useState(false)
   const [editId, setEditId] = useState<string>('')
   const searchRef = useRef<FormForwardRef>();
@@ -97,7 +97,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
           try {
             setOpenDelete(false)
-            if(!!claimStatuses && (claimStatuses.length > 1 || isLast(claimStatuses.length, page))){
+            if (!!claimStatuses && (claimStatuses.length > 1 || isLast(claimStatuses.length, page))) {
               await fetchClaimStatuses()
             } else {
               setPage(getPageNumber(page, claimStatuses?.length || 0))
@@ -144,7 +144,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
 
       <Box className={classes.mainTableContainer}>
         <Box maxWidth={450}>
-          <Search search={search} ref={searchRef}/>
+          <Search search={search} ref={searchRef} />
         </Box>
 
         <Box className="table-overflow" mt={4}>
@@ -166,7 +166,7 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
                 </TableRow>
               ) : (
                 claimStatuses?.map((claimStatus) => {
-                  const { statusName, createdAt, id } = claimStatus ?? {}
+                  const { statusName, createdAt, id, system } = claimStatus ?? {}
                   return (
                     <TableRow>
                       <TableCell scope="row" >
@@ -184,10 +184,12 @@ const ClaimStatusesTable: FC<GeneralFormProps> = (): JSX.Element => {
                           >
                             <EditNewIcon />
                           </Box>
-                          <Box className={classes.iconsBackground}
-                            onClick={() => id && onDeleteClick(id)}
+                          <Box className={system ? classes.iconsBackgroundDisabled : classes.iconsBackground}
+
                           >
-                            <TrashNewIcon />
+                            <Button disabled={system} onClick={() => id && onDeleteClick(id)}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>

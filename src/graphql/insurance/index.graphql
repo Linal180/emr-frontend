@@ -18,6 +18,21 @@ query FetchAllInsurances($insuranceInput: InsurancePaginationInput!){
   }
 }
 
+query GetInsurance($getInsuranceInput: GetInsuranceInput!){
+  getInsurance(getInsuranceInput: $getInsuranceInput){
+    insurance {
+      payerName
+      payerId
+      id
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
 query FetchAllPolicies($policyInput: PolicyPaginationInput!){
   fetchAllPolicies(policyInput: $policyInput){
     policies {
