@@ -1,6 +1,6 @@
 // packages block
 import { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from "react";
-import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
+import { Box, Button, ClickAwayListener, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchTooltip } from "../../styles/searchTooltip";
@@ -36,9 +36,11 @@ const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(
 
     return (
       <Box className={classes.searchBox}>
-        <IconButton aria-label="search">
-          <SearchIcon />
-        </IconButton>
+        <Box className="icon-button-hover">
+          <Button aria-label="search">
+            <SearchIcon />
+          </Button>
+        </Box>
 
         <TextField
           fullWidth
@@ -63,9 +65,11 @@ const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(
         />
 
         {query &&
-          <IconButton type="submit" aria-label="clear" onClick={handleClear}>
-            <ClearIcon />
-          </IconButton>
+          <Box>
+            <Button type="submit" aria-label="clear" onClick={handleClear}>
+              <ClearIcon />
+            </Button>
+          </Box>
         }
 
         {info && <ClickAwayListener onClickAway={handleTooltipClose}>

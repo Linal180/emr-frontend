@@ -349,7 +349,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <FacilitySelector
                       addEmpty
                       isRequired
@@ -359,7 +359,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <Selector
                       isRequired
                       name="speciality"
@@ -372,7 +372,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       isRequired
                       fieldType="text"
@@ -382,7 +382,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       isRequired
                       fieldType="text"
@@ -394,7 +394,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={4} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="middleName"
@@ -403,11 +403,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={6} xs={12}>
                     <DatePicker isRequired name="dob" label={DOB} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={4} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -451,7 +451,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               <CardComponent cardTitle={ADDITIONAL_INFO}>
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="ssn"
@@ -460,7 +460,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="deaNumber"
@@ -471,17 +471,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <DatePicker name="deaTermDate" label={DEA_TERM_DATE} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <TaxonomySelector
                       addEmpty
                       name="taxonomyCode"
@@ -490,7 +490,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -514,16 +514,16 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="billingPhone" label={PHONE} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="billingFax" label={FAX} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
+                <Grid item md={12} sm={6} xs={12}>
                   <InputController
                     fieldType="text"
                     controllerLabel={ZIP_CODE}
@@ -551,7 +551,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerLabel={CITY}
@@ -560,7 +560,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <Selector
                       label={STATE}
                       name="billingState"
@@ -570,14 +570,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <CountryController loading={getDoctorLoading} controllerName="billingCountry" />
                   </Grid>
                 </Grid>
               </CardComponent>
             </Grid>
 
-            <Grid md={6} item>
+            <Grid item md={6} sm={12} xs={12}>
               <CardComponent cardTitle={CONTACT_INFORMATION}>
                 <Grid item md={12} sm={12} xs={12}>
                   <InputController
@@ -590,26 +590,26 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="phone" label={MOBILE} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="mobile" label={PHONE} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="pager" label={PAGER} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <PhoneField name="fax" label={FAX} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
+                <Grid item md={12} sm={6} xs={12}>
                   <InputController
                     fieldType="text"
                     controllerName="zipCode"
@@ -637,7 +637,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="city"
@@ -646,7 +646,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <Selector
                       name="state"
                       label={STATE}
@@ -656,7 +656,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={4} sm={4} xs={12}>
                     <CountryController loading={getDoctorLoading} controllerName="country" />
                   </Grid>
                 </Grid>
@@ -666,7 +666,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               <CardComponent cardTitle={TAX_ID_DETAILS}>
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       info={TAX_ID_INFO}
@@ -676,7 +676,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       info={NPI_INFO}
                       fieldType="text"
@@ -688,7 +688,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       info={UPIN_INFO}
                       fieldType="text"
@@ -698,7 +698,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -709,7 +709,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -718,7 +718,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -729,7 +729,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -739,7 +739,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -750,7 +750,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -759,7 +759,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -770,7 +770,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -779,7 +779,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -790,7 +790,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -799,7 +799,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       loading={getDoctorLoading}
@@ -810,16 +810,16 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 </Grid>
 
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} loading={getDoctorLoading} />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6} sm={6} xs={12}>
                     <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} loading={getDoctorLoading} />
                   </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
+                <Grid item md={12} sm={6} xs={12}>
                   <InputController
                     fieldType="text"
                     loading={getDoctorLoading}

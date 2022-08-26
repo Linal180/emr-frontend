@@ -330,6 +330,7 @@ export type Attachment = {
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   parentAttachmentId?: Maybe<Scalars['String']>;
+  preSignedUrl?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -6846,6 +6847,13 @@ export type FetchDocumentTypesQueryVariables = Exact<{
 
 export type FetchDocumentTypesQuery = { __typename?: 'Query', fetchDocumentTypes: { __typename?: 'DocumentTypesPayload', documentTypes?: Array<{ __typename?: 'DocumentType', type?: string | null, id: string, practiceId?: string | null } | null> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
+export type GetPatientAttachmentsQueryVariables = Exact<{
+  getAttachment: GetAttachment;
+}>;
+
+
+export type GetPatientAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, attachmentName?: string | null, createdAt: string, updatedAt: string, preSignedUrl?: string | null, attachmentMetadata?: { __typename?: 'AttachmentMetadata', signedAt?: string | null, signedBy?: string | null, providerName?: string | null, comments?: string | null, documentDate?: string | null, documentType?: { __typename?: 'DocumentType', id: string, type?: string | null } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
 }>;
@@ -9542,6 +9550,72 @@ export function useFetchDocumentTypesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type FetchDocumentTypesQueryHookResult = ReturnType<typeof useFetchDocumentTypesQuery>;
 export type FetchDocumentTypesLazyQueryHookResult = ReturnType<typeof useFetchDocumentTypesLazyQuery>;
 export type FetchDocumentTypesQueryResult = Apollo.QueryResult<FetchDocumentTypesQuery, FetchDocumentTypesQueryVariables>;
+export const GetPatientAttachmentsDocument = gql`
+    query GetPatientAttachments($getAttachment: GetAttachment!) {
+  getAttachments(getAttachment: $getAttachment) {
+    response {
+      error
+      status
+      message
+    }
+    attachments {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+      preSignedUrl
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        comments
+        documentDate
+        documentType {
+          id
+          type
+        }
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientAttachmentsQuery__
+ *
+ * To run a query within a React component, call `useGetPatientAttachmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientAttachmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientAttachmentsQuery({
+ *   variables: {
+ *      getAttachment: // value for 'getAttachment'
+ *   },
+ * });
+ */
+export function useGetPatientAttachmentsQuery(baseOptions: Apollo.QueryHookOptions<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>(GetPatientAttachmentsDocument, options);
+      }
+export function useGetPatientAttachmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>(GetPatientAttachmentsDocument, options);
+        }
+export type GetPatientAttachmentsQueryHookResult = ReturnType<typeof useGetPatientAttachmentsQuery>;
+export type GetPatientAttachmentsLazyQueryHookResult = ReturnType<typeof useGetPatientAttachmentsLazyQuery>;
+export type GetPatientAttachmentsQueryResult = Apollo.QueryResult<GetPatientAttachmentsQuery, GetPatientAttachmentsQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {

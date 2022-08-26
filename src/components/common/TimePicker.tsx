@@ -1,7 +1,7 @@
 import 'date-fns';
 import { FC } from 'react';
 import { Controller, useFormContext } from "react-hook-form";
-import { FormControl, InputLabel, OutlinedInput, FormHelperText } from '@material-ui/core';
+import { FormControl, InputLabel, FormHelperText, TextField } from '@material-ui/core';
 // interfaces constants and utils block
 import { PickerProps } from "../../interfacesTypes";
 import { renderLoading, requiredLabel } from '../../utils';
@@ -23,7 +23,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disable
                 {inputLabel}
               </InputLabel>
 
-              <OutlinedInput
+              <TextField
                 id={`${name}-dialog`}
                 {...field}
                 className="timePickerIcon"
