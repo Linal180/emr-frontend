@@ -125,9 +125,14 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
       value => value ? NO_SPACE_AT_BOTH_ENDS_REGEX.test(value) : false)
 }
 
-const optionalEmailSchema = (isOptional: boolean) => {
-  return yup.string().email(INVALID_EMAIL)
-    .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
+// const optionalEmailSchema = (isOptional: boolean) => {
+//   return yup.string().email(INVALID_EMAIL)
+//     .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
+// }
+
+const optionalLowerCaseEmailSchema = (isOptional: boolean) => {
+  return yup.string()
+    .test('', INVALID_EMAIL, value => isOptional ? value ? /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '') : true : /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || ''))
 }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
@@ -499,7 +504,7 @@ export const extendedPatientSchema = (
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   suffix: suffixSchema(SUFFIX),
-  basicEmail: optionalEmailSchema(isOptional),
+  basicEmail: optionalLowerCaseEmailSchema(isOptional),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
   middleName: generalNameSchema(false, MIDDLE_NAME, false, false, 15),
