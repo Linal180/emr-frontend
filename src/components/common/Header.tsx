@@ -135,12 +135,13 @@ const Header = ({ url }: { url: string }): JSX.Element => {
             !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
               <AIMEDLOGO />
             </Link> :
-              <Box maxWidth="300">
-                <Button onClick={()=>history.push(ROOT_ROUTE)}>
-                  <img src={url} alt="" />
-                </Button>
+              <Box onClick={()=>history.push(ROOT_ROUTE)} width={200} height={64}>
+                {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
+                  <img src={url} alt="practice-logo" className={classes.practiceLogo} />
+                {/* </Button> */}
               </Box>
           }
+
           <Box className={classes.grow} />
 
           <Box className={classes.sectionDesktop}>

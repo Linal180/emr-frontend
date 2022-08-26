@@ -247,4 +247,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
       marginTop: '10px'
     }
   },
+
+  practiceLogo: {
+    objectFit:'contain',
+    width:'100%',
+    height:'100%',
+  },
 }));
