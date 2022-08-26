@@ -28,6 +28,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   const dropZoneRef = useRef<FormForwardRef>(null);
   const { files, documentTypeId } = state || {}
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const methods = useForm<DocumentInputProps>({
     mode: "all",
@@ -74,6 +75,10 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
     attachmentId && setPreview()
   }, [attachmentId, setPreview])
 
+  const onUploading = (loading: boolean) => {
+    setLoading(loading)
+  }
+
   return (
     <Box maxWidth={500}>
       <FormProvider {...methods}>
@@ -85,13 +90,13 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
             <Typography variant='h3'>{DOCUMENT_DETAILS}</Typography>
 
             <Box display="flex" alignItems="center">
-              <Button onClick={handleClose} variant="text" color="inherit" className="danger">
+              <Button onClick={handleClose} variant="text" color="inherit" className="danger" disabled={loading}>
                 {CANCEL}
               </Button>
 
               <Box p={1} />
 
-              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+              <Button type="submit" variant="contained" color="primary" disabled={loading}>{SAVE_TEXT}</Button>
             </Box>
           </Box>
 
@@ -174,6 +179,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                   setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
                   cameraOpen={cameraOpen}
                   setCameraOpen={setCameraOpen}
+                  onUploading={onUploading}
                 />
 
                 {validated && !!!files?.length &&

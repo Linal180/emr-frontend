@@ -26,7 +26,7 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state, docum
   const { patientId } = state || {}
 
   const dropzoneClasses = useDropzoneStyles()
-  const { control, setValue } = useFormContext();
+  const { control, setValue, setError } = useFormContext();
   const classes = useFormStyles();
 
   const handleRemoveAttachment = async (id: string) => {
@@ -92,6 +92,11 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state, docum
     )
   }
 
+  const setDocumentHandler = (documentAttachment: Attachment) => {
+    setValue(fieldId, documentAttachment?.url)
+    setError(fieldId, { message: '' })
+  }
+
   const [getAttachments] = useGetAttachmentsLazyQuery({
 
     onError({ message }) {
@@ -110,19 +115,19 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state, docum
               switch (documentType) {
                 case ATTACHMENT_TITLES.DrivingLicense1:
                   dispatcher({ type: ActionType.SET_DRIVING_LICENSE_1, drivingLicense1: documentAttachment })
-                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  documentAttachment && setDocumentHandler(documentAttachment)
                   break;
                 case ATTACHMENT_TITLES.DrivingLicense2:
                   dispatcher({ type: ActionType.SET_DRIVING_LICENSE_2, drivingLicense2: documentAttachment })
-                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  documentAttachment && setDocumentHandler(documentAttachment)
                   break;
                 case ATTACHMENT_TITLES.InsuranceCard1:
                   dispatcher({ type: ActionType.SET_INSURANCE_CARD_1, insuranceCard1: documentAttachment })
-                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  documentAttachment && setDocumentHandler(documentAttachment)
                   break;
                 case ATTACHMENT_TITLES.InsuranceCard2:
                   dispatcher({ type: ActionType.SET_INSURANCE_CARD_2, insuranceCard2: documentAttachment })
-                  documentAttachment && setValue(fieldId, documentAttachment?.url)
+                  documentAttachment && setDocumentHandler(documentAttachment)
                   break;
                 default:
                   break;

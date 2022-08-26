@@ -293,7 +293,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
         <ProfileUserIcon />
 
         <Box color={BLACK_THREE}>
-          <Typography variant="body1">{dob ? dateDifference(dob || '') : renderMissing()}</Typography>
+          <Typography variant="body1">{getPatientLoading ? renderLoading('') : dob ? dateDifference(dob || '') : renderMissing()}</Typography>
         </Box>
       </Box>
     </Box>

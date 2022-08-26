@@ -1791,9 +1791,12 @@ export interface CareTeamsProps {
   isEditable?: boolean
 }
 
+export type SideDrawerCloseReason = "backdropClick" | "escapeKeyDown";
+
 export interface SideDrawerProps {
   drawerOpened: boolean;
   toggleSideDrawer?: Function;
+  sideClickClose?: boolean
 }
 
 export interface PracticeChartProps {
