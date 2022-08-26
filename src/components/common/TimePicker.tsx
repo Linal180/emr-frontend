@@ -6,7 +6,7 @@ import { FormControl, InputLabel, FormHelperText, TextField } from '@material-ui
 import { PickerProps } from "../../interfacesTypes";
 import { renderLoading, requiredLabel } from '../../utils';
 
-const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading }): JSX.Element => {
+const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disabled }): JSX.Element => {
   const { control } = useFormContext()
   const inputLabel = isRequired ? requiredLabel(label) : label
 
@@ -31,6 +31,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading }): JSX.
                 defaultValue="07:30"
                 error={invalid}
                 inputProps={{ step: 300, }}
+                disabled={disabled}
               />
 
               <FormHelperText>{message}</FormHelperText>

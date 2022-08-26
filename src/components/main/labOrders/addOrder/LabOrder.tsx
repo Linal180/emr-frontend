@@ -2,7 +2,7 @@
 import { useParams } from 'react-router';
 import { FC, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { Box, Grid, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 
 // components block
 import moment from 'moment';
@@ -11,7 +11,7 @@ import TestsSelector from '../../../common/Selector/TestSelector';
 import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
 // interfaces, graphql, constants block
-import { GREY_THREE } from '../../../../theme';
+import { BLUE, GREY_THREE } from '../../../../theme';
 import { CrossIcon } from '../../../../assets/svgs';
 import { renderItem, setRecord } from '../../../../utils';
 import { ContactType, DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
@@ -24,7 +24,7 @@ import {
 } from '../../../../constants';
 import Loader from '../../../common/Loader';
 
-const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, setTestsToRemove }): JSX.Element => {
+const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, setTestsToRemove, handleStep, setCurrentTest }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const [guarantorName, setGuarantorName] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
@@ -43,7 +43,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       return
     }
 
-    setValue('testField', EMPTY_OPTION)
+    setValue('testField', { id: '', name: '' })
 
     appendTestFieldValuesFields({
       testId: '',
@@ -140,6 +140,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
 
         <Grid item md={12} sm={12} xs={12}>
           <Selector
+            addEmpty
             name="labTestStatus"
             label={STATUS}
             value={EMPTY_OPTION}
@@ -175,6 +176,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
 
         <Grid item md={12} sm={12} xs={12}>
           <TestsSelector
+            placeHolder='Add Test'
             label={TEST}
             name='testField'
             onSelect={(data: SelectorOption) => handleLabTests(data)}
@@ -188,20 +190,28 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
 
       {!testFieldValuesFields.length ?
         <Typography className='danger' variant="caption">{TESTS_FIELD_VALIDATION_MESSAGE}</Typography> :
-        testFieldValuesFields.map(({ test }) => {
+        testFieldValuesFields.map(({ test }, index) => {
           const { id, name } = test
           return (
-            <ul>
-              <li>
-                <Box minWidth="100%" display="flex" alignItems="center" justifyContent="space-between">
-                  {name}
-
-                  <IconButton onClick={() => handleLabTestRemove(id)} >
-                    <CrossIcon />
-                  </IconButton>
+            <Box minWidth="100%" display="flex" alignItems="center" justifyContent="space-between">
+              <Button
+                variant="text"
+                color="secondary"
+                onClick={() => {
+                  setCurrentTest && setCurrentTest(index);
+                  handleStep && handleStep(1)
+                }}
+              >
+                <Box color={BLUE} textAlign="start">
+                  <Typography variant="body2" color="inherit">{name}</Typography>
                 </Box>
-              </li>
-            </ul>
+              </Button>
+
+
+              <IconButton onClick={() => handleLabTestRemove(id)} >
+                <CrossIcon />
+              </IconButton>
+            </Box>
           )
         })}
     </Box>

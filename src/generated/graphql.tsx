@@ -7582,7 +7582,14 @@ export type FindAllLabTestQueryVariables = Exact<{
 }>;
 
 
-export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, resultValue?: string | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetLabTestQueryVariables = Exact<{
+  getLabTest: GetLabTest;
+}>;
+
+
+export type GetLabTestQuery = { __typename?: 'Query', getLabTest: { __typename?: 'LabTestPayload', labTest?: { __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, resultValue?: string | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllLoincCodesQueryVariables = Exact<{
   searchLoincCodesInput: SearchLoincCodesInput;
@@ -14912,6 +14919,7 @@ export const FindAllLabTestDocument = gql`
           }
           currentProvider
         }
+        id
         firstName
         dob
         lastName
@@ -14949,6 +14957,7 @@ export const FindAllLabTestDocument = gql`
       testObservations {
         createdAt
         doctorsSignOff
+        resultValue
         attachments {
           title
           id
@@ -15004,6 +15013,119 @@ export function useFindAllLabTestLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllLabTestQueryHookResult = ReturnType<typeof useFindAllLabTestQuery>;
 export type FindAllLabTestLazyQueryHookResult = ReturnType<typeof useFindAllLabTestLazyQuery>;
 export type FindAllLabTestQueryResult = Apollo.QueryResult<FindAllLabTestQuery, FindAllLabTestQueryVariables>;
+export const GetLabTestDocument = gql`
+    query GetLabTest($getLabTest: GetLabTest!) {
+  getLabTest(getLabTest: $getLabTest) {
+    labTest {
+      id
+      orderNumber
+      accessionNumber
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      receivedDate
+      collectedDate
+      appointmentId
+      patient {
+        doctorPatients {
+          doctor {
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+        dob
+        lastName
+      }
+      diagnoses {
+        id
+        code
+        description
+      }
+      test {
+        id
+        loincNum
+        component
+      }
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
+      }
+      testObservations {
+        createdAt
+        doctorsSignOff
+        resultValue
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      appointment {
+        id
+        appointmentType {
+          name
+        }
+        scheduleStartDateTime
+      }
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetLabTestQuery__
+ *
+ * To run a query within a React component, call `useGetLabTestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLabTestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLabTestQuery({
+ *   variables: {
+ *      getLabTest: // value for 'getLabTest'
+ *   },
+ * });
+ */
+export function useGetLabTestQuery(baseOptions: Apollo.QueryHookOptions<GetLabTestQuery, GetLabTestQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLabTestQuery, GetLabTestQueryVariables>(GetLabTestDocument, options);
+      }
+export function useGetLabTestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLabTestQuery, GetLabTestQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLabTestQuery, GetLabTestQueryVariables>(GetLabTestDocument, options);
+        }
+export type GetLabTestQueryHookResult = ReturnType<typeof useGetLabTestQuery>;
+export type GetLabTestLazyQueryHookResult = ReturnType<typeof useGetLabTestLazyQuery>;
+export type GetLabTestQueryResult = Apollo.QueryResult<GetLabTestQuery, GetLabTestQueryVariables>;
 export const FindAllLoincCodesDocument = gql`
     query FindAllLoincCodes($searchLoincCodesInput: SearchLoincCodesInput!) {
   findAllLoincCodes(searchLoincCodesInput: $searchLoincCodesInput) {

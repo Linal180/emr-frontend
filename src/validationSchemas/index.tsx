@@ -894,37 +894,39 @@ export const attachmentNameUpdateSchema = yup.object({
     .test('', NO_WHITE_SPACE_ALLOWED, value => value ? NO_WHITE_SPACE_REGEX.test(value) : false)
 })
 
-export const createLabOrdersSchema = yup.object({
-  labTestStatus: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', 'required', ({ id }) => !!id),
-  testFieldValues: yup.array().of(
-    yup.object().shape({
-      test: yup.object().shape({
-        name: yup.string().required(),
-        id: yup.string().required()
-      }).test('', TEST_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id),
-      specimenTypeField: yup.array().of(
-        yup.object().shape({
-          specimenType: yup.object().shape({
-            name: yup.string().required(),
-            id: yup.string().required()
-          }).test('', SPECIMEN_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id)
-        })
-      ),
-      diagnosesIds: yup.array().of(
-        yup.object().shape({
-          label: yup.string().required(),
-          value: yup.string().required()
-        })
-      ),
-      // .test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
-    })
-  ).test('', TESTS_FIELD_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
-  primaryProviderId: selectorSchema(PRIMARY_PROVIDER),
-  referringProviderId: selectorSchema(REFERRING_PROVIDER),
-})
+export const createLabOrdersSchema = (isSpecimenForm?: boolean) => (
+  yup.object({
+    labTestStatus: yup.object().shape({
+      name: yup.string().required(),
+      id: yup.string().required()
+    }).test('', 'required', ({ id }) => !!id),
+    testFieldValues: yup.array().of(
+      yup.object().shape({
+        test: yup.object().shape({
+          name: yup.string().required(),
+          id: yup.string().required()
+        }).test('', TEST_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id),
+        specimenTypeField: yup.array().of(
+          yup.object().shape({
+            specimenType: yup.object().shape({
+              name: yup.string().required(),
+              id: yup.string().required()
+            }).test('', SPECIMEN_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id)
+          })
+        ),
+        diagnosesIds: yup.array().of(
+          yup.object().shape({
+            label: yup.string().required(),
+            value: yup.string().required()
+          })
+        ),
+        // .test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
+      })
+    ).test('', TESTS_FIELD_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
+    primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
+    referringProviderId: selectorSchema(REFERRING_PROVIDER, !isSpecimenForm),
+  })
+)
 
 const issueAndExpireSchema = {
   issueDate: yup.string().test('', invalidMessage(ISSUE_DATE), value =>

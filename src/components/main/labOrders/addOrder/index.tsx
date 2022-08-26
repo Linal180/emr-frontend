@@ -50,7 +50,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
-    resolver: yupResolver(createLabOrdersSchema)
+    resolver: yupResolver(createLabOrdersSchema())
   });
   const { watch, trigger, handleSubmit, setValue } = methods
   const { testFieldValues } = watch()
@@ -80,7 +80,12 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <LabOrderComponent setTestsToRemove={setTestsToRemove} appointmentInfo={appointmentInfo} />
+        return <LabOrderComponent
+          setTestsToRemove={setTestsToRemove}
+          appointmentInfo={appointmentInfo}
+          handleStep={handleStep}
+          setCurrentTest={setCurrentTest} 
+          />
       case 1:
         return <TestsComponent currentTest={currentTest} />
       case 2:
@@ -166,6 +171,12 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       setIsLoading(false)
     }
   }, [isEdit, labTestsToEdit, setValue])
+
+  useEffect(() => {
+    return () => {
+      toggleSideDrawer && toggleSideDrawer()
+    }
+  }, [toggleSideDrawer])
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
     const { appointment, labTestStatus, diagnosesIds, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId } = values
@@ -339,7 +350,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   }
 
   return (
-    <Box maxWidth={560}>
+    <Box maxWidth={480}>
       <FormProvider {...methods}>
         <form>
           <Box
