@@ -66,8 +66,9 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     }, 0);
   }
 
-  const handleOptionalEmail = (checked: boolean) =>
+  const handleOptionalEmail = async (checked: boolean) => {
     dispatch && dispatch({ type: ActionType.SET_OPTIONAL_EMAIL, optionalEmail: checked })
+  }
 
   return (
     <>

@@ -17,7 +17,7 @@ import { AuthContext } from "../../context";
 import history from "../../history";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { BLACK } from "../../theme";
-import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
 
 const Header = ({ url }: { url: string }): JSX.Element => {
   const classes = useHeaderStyles();
@@ -29,6 +29,10 @@ const Header = ({ url }: { url: string }): JSX.Element => {
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
   const isSuper = isSuperAdmin(roles)
+  const isFacAdmin = isFacilityAdmin(roles)
+  const isPraAdmin = isPracticeAdmin(roles)
+
+  const isAdmin = isSuper || isFacAdmin || isPraAdmin
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -89,13 +93,13 @@ const Header = ({ url }: { url: string }): JSX.Element => {
             </Typography>
           }
 
-          <Box className={classes.mobileMenuItem}>
+          {isAdmin && <Box className={classes.mobileMenuItem}>
             <DropdownMenu
               itemName={BILLING_TEXT}
               menuItem={BILLING_MENU_ITEMS}
               current={currentRoute === 'inBilling'}
             />
-          </Box>
+          </Box>}
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
             <Typography
@@ -135,9 +139,9 @@ const Header = ({ url }: { url: string }): JSX.Element => {
             !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
               <AIMEDLOGO />
             </Link> :
-              <Box onClick={()=>history.push(ROOT_ROUTE)} width={200} height={64}>
+              <Box onClick={() => history.push(ROOT_ROUTE)} width={200} height={64}>
                 {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
-                  <img src={url} alt="practice-logo" className={classes.practiceLogo} />
+                <img src={url} alt="practice-logo" className={classes.practiceLogo} />
                 {/* </Button> */}
               </Box>
           }
@@ -182,11 +186,11 @@ const Header = ({ url }: { url: string }): JSX.Element => {
                 </Typography>
               }
 
-              <DropdownMenu
+              {isAdmin && <DropdownMenu
                 itemName={BILLING_TEXT}
                 menuItem={BILLING_MENU_ITEMS}
                 current={currentRoute === 'inBilling'}
-              />
+              />}
 
               {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
                 <Typography

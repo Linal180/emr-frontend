@@ -248,6 +248,8 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
+  console.log("serviceIds", serviceIds)
+
   return (
     <Dialog className="schedule-modal" open={isOpen} onClose={handleClose}
       aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"

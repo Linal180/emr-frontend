@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, LONG_URL_TEXT, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, NON_EMPTY_SPACE_REGEX, ALL_ZEROS_REGEX,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -132,7 +132,16 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
 
 const optionalLowerCaseEmailSchema = (isOptional: boolean) => {
   return yup.string()
-    .test('', INVALID_EMAIL, value => isOptional ? value ? emailRegex(value || '') : true : emailRegex(value || ''))
+    .test('', INVALID_EMAIL, value => {
+      if (isOptional) {
+        if (value?.length) {
+          return emailRegex(value)
+        }
+        return true
+      }else{
+        return emailRegex(value || '')
+      }
+    })
 }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
@@ -179,7 +188,9 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   codeId: yup.string(),
-  code: yup.string()
+  code: yup.string(),
+  price: yup.string().matches(ALL_ZEROS_REGEX, INVALID_BILL_FEE_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_BILL_FEE_MESSAGE),
+  unit: yup.string().matches(ALL_ZEROS_REGEX, INVALID_UNIT_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_UNIT_MESSAGE)
 }).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
@@ -1086,7 +1097,7 @@ export const createBillingSchema = yup.object({
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0),
   [ITEM_MODULE.cptFeeSchedule]: yup.array().of(
-    tableSelectorSchema(ITEM_MODULE.cptCode)
+    tableSelectorSchema(ITEM_MODULE.cptCode, true)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
@@ -1151,5 +1162,5 @@ export const sendSmsSchema = yup.object({
 })
 
 export const shortUrlSchema = yup.object({
-  longUrl: yup.string().required(requiredMessage(LONG_URL_TEXT)),
+  longUrl: yup.string(),
 })

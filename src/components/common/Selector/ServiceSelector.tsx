@@ -98,7 +98,7 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
     setValue('serviceId', [])
     setOptions([])
     setValues([])
-  }, [defaultValues, facilityId, setValue])
+  }, [facilityId, setValue])
 
   const multiSelectProps = isMulti ? {
     isMulti: isMulti,
