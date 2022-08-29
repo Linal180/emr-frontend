@@ -1,7 +1,11 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
 import Logo from "../../../../assets/images/aimed-logo.png";
-import { ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY, FINAL_REPORT, GENDER, LAB_RESULTS_INFO, METHOD, NAME, PATIENT, PATIENT_NO, PHYSICIAN, PRIMARY, PRIMARY_CARE, RECEIVED_DATE, SPECIMEN, TEL, URGENT_CARE, VIRAL_STRAIN } from "../../../../constants";
+import { 
+  ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY, 
+  FINAL_REPORT, GENDER, LAB_RESULTS_INFO, METHOD, NAME, PATIENT, PATIENT_NO, PHYSICIAN, 
+  PRIMARY, PRIMARY_CARE, RECEIVED_DATE, RESULTS, SPECIMEN, TEL, TESTS, URGENT_CARE,
+ } from "../../../../constants";
 import { LabTestsPayload } from "../../../../generated/graphql";
 import { formatAddress, formatPhone, getFormatDateString } from "../../../../utils";
 
@@ -286,7 +290,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           <View style={styles.tableRow}>
             <View style={[styles.w20, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>{VIRAL_STRAIN}</Text>
+                <Text style={styles.fieldTitle2}>{TESTS}</Text>
               </View>
 
               <View>
@@ -311,15 +315,14 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
 
             <View style={[styles.w30, styles.borderStyle, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>{VIRAL_STRAIN}</Text>
+                <Text style={styles.fieldTitle2}>{RESULTS}</Text>
               </View>
 
               <View>
                 {labTest?.map((test) => {
                   return (
-                    <View style={styles.fieldRow1}>
-                      <Text style={styles.fieldTitle}>{test?.test?.component}</Text>
-                      <Text style={styles.fieldText2}>{test?.testObservations?.[0]?.resultValue}</Text>
+                    <View style={[styles.w100,]}>
+                      <Text style={styles.fieldText3}>{test?.testObservations?.[0]?.resultValue}</Text>
                     </View>
                   )
                 })}

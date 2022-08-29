@@ -285,7 +285,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       if (isEdit) {
         if (id) {
-          const contactIdInput = contactId ? { id: contactId, ...contactInput } : { ...contactInput }
+          const contactIdInput = contactId ? { id: contactId, ...contactInput, doctorId: id } : { ...contactInput, doctorId: id }
           const billingIdInput = billingId ? { id: billingId, ...billingAddressInput } : { ...billingAddressInput }
 
           await updateDoctor({

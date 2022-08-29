@@ -554,16 +554,8 @@ export const renderStaffRoles = (roles: RolesPayload['roles'], userRoles: string
     const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
 
     userRoles.includes(SYSTEM_ROLES.PracticeAdmin) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
-    userRoles.includes(SYSTEM_ROLES.FacilityAdmin
-      || SYSTEM_ROLES.Nurse
-      || SYSTEM_ROLES.Staff
-      || SYSTEM_ROLES.Doctor
-      || SYSTEM_ROLES.FrontDesk
-      || SYSTEM_ROLES.OfficeManager
-      || SYSTEM_ROLES.DoctorAssistant
-      || SYSTEM_ROLES.NursePractitioner
-    ) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin)
-
+    userRoles.some(role => [SYSTEM_ROLES.FacilityAdmin, SYSTEM_ROLES.Nurse, SYSTEM_ROLES.Staff, SYSTEM_ROLES.Doctor
+      , SYSTEM_ROLES.FrontDesk, SYSTEM_ROLES.OfficeManager, SYSTEM_ROLES.DoctorAssistant, SYSTEM_ROLES.NursePractitioner].includes(role as SYSTEM_ROLES)) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin)
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
@@ -1980,17 +1972,12 @@ export const getCheckInStatus = (
     case 0:
       return { stage: 'Checked In', stageColor: GREEN_ONE };
     case 1:
-    case 2:
       return { stage: 'With Staff', stageColor: BLUE };
-
-    case 3:
-    case 4:
+    case 2:
       return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
-
-    case 5:
+    case 3:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
-
-    case 6:
+    case 4:
       return { stage: 'With Biller', stageColor: PURPLE_ONE };
 
     default:
@@ -2324,5 +2311,6 @@ export const getStateWithAbbreviation = (state: string) => {
   return state;
 }
 export const emailRegex = (value: string) => {
-  return /^[a-z]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
+  // eslint-disable-next-line no-useless-escape
+  return /^[a-z0-9!@#\$%\^\&*\)\(+=._-]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
 }

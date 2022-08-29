@@ -18,11 +18,11 @@ import {
   DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS,
 
 } from "../../../constants";
-import { useSettingtyles } from "../../../styles/settingStyles";
+import { useSettingStyles } from "../../../styles/settingStyles";
 
 export const SettingsComponent = () => {
   const { user, currentDoctor, userPermissions } = useContext(AuthContext)
-  const classes = useSettingtyles()
+  const classes = useSettingStyles()
   const { roles, facility, } = user || {}
   const { id: facilityId } = facility || {}
   const isSuper = isSuperAdmin(roles)
@@ -43,7 +43,7 @@ export const SettingsComponent = () => {
                 <MenuItem>{DOCTOR_PROFILE_TEXT}</MenuItem>
               </Link>
 
-              <Box pr={2} className={classes.inlinedashes}>-</Box>
+              <Box pr={2} className={classes.inlineDashes}>-</Box>
 
               <Typography variant="body1">{PROVIDER_PROFILE_DESCRIPTION} </Typography>
             </Box>
@@ -61,7 +61,7 @@ export const SettingsComponent = () => {
                     <MenuItem>{(doctorAdminRoute) ? PROVIDER_DETAILS : name}</MenuItem>
                   </Link>
 
-                  <Box pr={2} className={classes.inlinedashes}>-</Box>
+                  <Box pr={2} className={classes.inlineDashes}>-</Box>
 
                   <Typography variant="body1">{(doctorAdminRoute) ? PROVIDER_DETAILS_DESCRIPTION : desc} </Typography>
                 </Box>
@@ -98,7 +98,7 @@ export const SettingsComponent = () => {
                     </MenuItem>
                   </Link>
 
-                  <Box pr={2} className={classes.inlinedashes}>-</Box>
+                  <Box pr={2} className={classes.inlineDashes}>-</Box>
 
                   <Typography variant="body1">
                     {(practiceAdminRoute)
@@ -143,7 +143,7 @@ export const SettingsComponent = () => {
                 <MenuItem>{FACILITY_SERVICES_TEXT}</MenuItem>
               </Link>
 
-              <Box pr={2} className={classes.inlinedashes}>-</Box>
+              <Box pr={2} className={classes.inlineDashes}>-</Box>
 
               <Typography variant="body1">{FACILITY_SERVICES_DESCRIPTION}</Typography>
             </Box>
@@ -175,7 +175,7 @@ export const SettingsComponent = () => {
                 <MenuItem>{FACILITY_SCHEDULE}</MenuItem>
               </Link>
 
-              <Box pr={2} className={classes.inlinedashes}>-</Box>
+              <Box pr={2} className={classes.inlineDashes}>-</Box>
 
               <Typography variant="body1">{FACILITY_SCHEDULE_DESCRIPTION}</Typography>
             </Box>
@@ -191,7 +191,7 @@ export const SettingsComponent = () => {
                     <MenuItem>{name}</MenuItem>
                   </Link>
 
-                  <Box pr={2} className={classes.inlinedashes}>-</Box>
+                  <Box pr={2} className={classes.inlineDashes}>-</Box>
 
                   <Typography variant="body1">{desc}</Typography>
                 </Box>
@@ -212,7 +212,7 @@ export const SettingsComponent = () => {
                       <MenuItem>{name}</MenuItem>
                     </Link>
 
-                    <Box pr={2} className={classes.inlinedashes}>-</Box>
+                    <Box pr={2} className={classes.inlineDashes}>-</Box>
 
                     <Typography variant="body1">{desc}</Typography>
                   </Box>
@@ -223,7 +223,7 @@ export const SettingsComponent = () => {
                         <MenuItem>{name}</MenuItem>
                       </Link>
 
-                      <Box pr={2} className={classes.inlinedashes}>-</Box>
+                      <Box pr={2} className={classes.inlineDashes}>-</Box>
 
                       <Typography variant="body1">{desc}</Typography>
                     </Box>
