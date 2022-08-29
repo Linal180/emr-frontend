@@ -2311,7 +2311,6 @@ export const getStateWithAbbreviation = (state: string) => {
   return state;
 }
 export const emailRegex = (value: string) => {
-  console.log('in regex')
   // eslint-disable-next-line no-useless-escape
   return /^[a-z0-9!@#\$%\^\&*\)\(+=._-]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
 }
