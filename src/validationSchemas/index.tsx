@@ -7,7 +7,7 @@ import {
   checkNpi, dateValidation, emailRegex, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
 } from "../utils";
 import {
-  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
+  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ValidMessage, NUMBER_REGEX,
   OTHER_RELATION, EIN_VALIDATION_MESSAGE, EIN_REGEX, UPIN_VALIDATION_MESSAGE, UPIN_REGEX,
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
@@ -93,11 +93,11 @@ const suffixSchema = (label: string) => (
     .max(3, MaxLength(label, 3))
 )
 
-const nameSchema = (label: string) => {
-  return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
-    .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
-    .required(requiredMessage(label))
-}
+// const nameSchema = (label: string) => {
+//   return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
+//     .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
+//     .required(requiredMessage(label))
+// }
 
 export const notRequiredPhone = (label: string) => {
   return yup.string()
@@ -602,8 +602,8 @@ export const externalPatientSchema = yup.object({
 
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
-  userLastName: nameSchema(LAST_NAME),
-  userFirstName: nameSchema(FIRST_NAME),
+  userLastName: generalNameSchema(true, LAST_NAME, false, false, 15),
+  userFirstName: generalNameSchema(true, FIRST_NAME, false, false, 15),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
 }
 
@@ -632,6 +632,7 @@ export const createPracticeSchema = yup.object({
 export const updatePracticeSchema = yup.object({
   ...npiSchema(true),
   ...practiceFacilitySchema,
+  ...registerUserSchema,
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
