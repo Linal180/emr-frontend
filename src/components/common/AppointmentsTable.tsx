@@ -385,6 +385,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     <Sort />
   </IconButton>;
 
+  const handleAppointmentReminder = (id: string, email: string | undefined | null, phone: string | undefined | null) => {
+    if (email && phone) {
+      id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
+      dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
+    } else {
+      Alert.error('Patient Email or Phone Info missing')
+    }
+  }
+
   if (sendAppointmentReminderLoading) {
     return <Loader loading loaderText={SENDING_APPOINTMENT_REMINDER} />
   }
@@ -500,7 +509,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     } = appointment || {};
 
                     const { name } = facility || {};
-                    const { id: patientId, firstName, lastName } = patient || {};
+                    const { id: patientId, firstName, lastName, email, contacts } = patient || {};
+                    const { phone } = contacts?.find((contact) => contact.primaryContact) || {}
                     const { name: type } = appointmentType || {};
 
                     const cantUpdate = canBeUpdated(status as AppointmentStatus)
@@ -615,10 +625,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                             <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
                               <Button
-                                onClick={() => {
-                                  id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
-                                  dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
-                                }}
+                                onClick={() => id && handleAppointmentReminder(id, email, phone)}
                                 disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
                               >
                                 <BellIconNew />
