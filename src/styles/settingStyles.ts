@@ -1,7 +1,7 @@
 import { makeStyles, createStyles } from "@material-ui/core";
 import { theme } from "../theme";
 
-export const useSettingtyles = makeStyles(() =>
+export const useSettingStyles = makeStyles(() =>
   createStyles({
     settingContainer: {
       display: "flex",
@@ -20,7 +20,7 @@ export const useSettingtyles = makeStyles(() =>
       }
     },
 
-    inlinedashes: {
+    inlineDashes: {
       [theme.breakpoints.down("sm")]: {
         display: 'none'
       },

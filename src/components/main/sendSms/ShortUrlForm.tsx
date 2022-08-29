@@ -20,7 +20,8 @@ const ShortUrlForm: FC = (): JSX.Element => {
     defaultValues: { longUrl: "", }
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
+  const { longUrl } = watch()
 
   const [createShortUrl, { loading }] = useCreateShortUrlMutation({
     onCompleted: (data) => {
@@ -55,7 +56,6 @@ const ShortUrlForm: FC = (): JSX.Element => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
             <InputController
-              isRequired
               rows={4}
               controllerLabel={LONG_URL_TEXT}
               controllerName="longUrl"
@@ -76,7 +76,7 @@ const ShortUrlForm: FC = (): JSX.Element => {
 
           <Grid item xs={12} sm={12} md={12}>
             <Box mt={2} display='flex' justifyContent='flex-start' alignItems="baseline">
-              <Button type='submit' variant='contained' color='secondary' disabled={loading}>
+              <Button type='submit' variant='contained' color='secondary' disabled={loading || !longUrl}>
                 {(loading) && <CircularProgress size={20} color="inherit" />} {SHORT_URL_TEXT}
               </Button>
             </Box>

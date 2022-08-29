@@ -13,7 +13,7 @@ import { ATTACHMENT_TITLES, DOCTORS_ROUTE, LESS_INFO, MORE_INFO, N_A } from "../
 import { AtIcon, EditNewIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
 import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
 import {
-  AttachmentType, Contact, Doctor, useGetAttachmentLazyQuery, useGetDoctorLazyQuery
+  AttachmentType, Contact, Doctor, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
 import { DoctorProfileHeroProps, ParamsType } from "../../../../../interfacesTypes";
 import {
@@ -30,37 +30,6 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
   const [{ doctor, openMoreInfo }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const [{ attachmentUrl, attachmentData, attachmentId, }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-
-  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    variables: { getMedia: { id } },
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
-      }
-    },
-  });
-
-  const fetchAttachment = useCallback(async () => {
-    try {
-      await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
-      })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
 
   const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -80,7 +49,9 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
           const { attachments } = doctor || {}
           const profilePicture = attachments && attachments.filter(attachment =>
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
-          const { id: attachmentId, } = profilePicture || {}
+          const { id: attachmentId, preSignedUrl} = profilePicture || {}
+
+          preSignedUrl &&  mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
 
           attachmentId &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
@@ -112,10 +83,6 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
   useEffect(() => {
     id && fetchDoctor()
   }, [fetchDoctor, id])
-
-  useEffect(() => {
-    attachmentId && fetchAttachment();
-  }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
     firstName, email: doctorEmail, lastName, dob, contacts, createdAt
@@ -162,14 +129,14 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
     }
   ]
 
-  const isLoading = getDoctorLoading || getAttachmentLoading
+  const isLoading = getDoctorLoading
 
   return (
     <>
       <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
           <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
-            {getAttachmentLoading ?
+            {isLoading ?
               <Avatar variant="square" className={classes.profileImage}>
                 <CircularProgress size={20} color="inherit" />
               </Avatar>

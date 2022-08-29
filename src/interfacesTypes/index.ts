@@ -330,7 +330,7 @@ export interface TableCodesProps {
   codeId?: string;
   code: string;
   description: string;
-  price?: string;
+  price?: number;
   codeType?: CodeType;
   m1?: SelectorOption;
   m2?: SelectorOption;

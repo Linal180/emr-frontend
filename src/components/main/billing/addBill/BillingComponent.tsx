@@ -267,7 +267,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             codeId: codeValues?.code || '',
             code: code ?? '',
             description: description ?? '',
-            price: price ?? '',
+            price: Number(price || '') ?? 0,
             codeType,
             m1: setRecord(m1 || '', m1 || ''),
             m2: setRecord(m2 || '', m2 || ''),
@@ -358,6 +358,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         }
         return {
           ...billingCodeToCreate,
+          price: String(billingCodeToCreate.price),
           ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
         }
       }) : []
@@ -503,6 +504,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         }
         return {
           ...billingCodeToCreate,
+          price: String(billingCodeToCreate.price),
           ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
         }
       })
