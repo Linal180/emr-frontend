@@ -166,7 +166,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
   }
   const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
-    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNum })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNumber })
     toggleSideDrawer()
   }
 
