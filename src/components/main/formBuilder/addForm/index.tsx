@@ -6,7 +6,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
+import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, IconButton, } from '@material-ui/core';
 //components block
 import Sidebar from './sidebar';
 import TabProperties from './tabProperties';
@@ -672,11 +672,11 @@ const AddForm = () => {
 
             <Box mt={3}>
               <Grid container spacing={2}>
-                <Grid item lg={2} md={3} sm={3} xs={12}>
+                <Grid item lg={2} md={4} sm={12} xs={12}>
                   <Sidebar dispatch={dispatch} formState={state} />
                 </Grid>
 
-                <Grid item lg={7} md={6} sm={6} xs={12}>
+                <Grid item lg={7} md={4} sm={8} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
                       <DropContainer
@@ -694,8 +694,10 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={GREY_EIGHT} borderRadius={6} p={1} mr={1}>
-                            <FormAddIcon />
+                          <Box bgcolor={GREY_EIGHT} borderRadius={6} mr={1} py={1} px={0}>
+                            <Button>
+                              <FormAddIcon />
+                            </Button>
                           </Box>
 
                           <Typography variant="h4">
@@ -723,7 +725,7 @@ const AddForm = () => {
                   </Box>
                 </Grid>
 
-                <Grid item lg={3} md={3} sm={3} xs={12}>
+                <Grid item lg={3} md={4} sm={4} xs={12}>
                   <Box className={classes.main}>
                     <TabProperties formState={state} dispatch={dispatch} />
                     <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
