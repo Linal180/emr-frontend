@@ -6,7 +6,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, IconButton, } from '@material-ui/core';
+import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
 import Sidebar from './sidebar';
 import TabProperties from './tabProperties';
