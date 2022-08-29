@@ -1730,6 +1730,7 @@ export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
 export const DOCTOR_CREATED = "Provider created successfully!";
 export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const SCHEDULED_IN_FACILITY = "Scheduled in facility: ";
+export const PATIENT_EMAIL_PHONE_INFO_MISSING="Patient Email or Phone Info missing"
 export const SERVICE_CREATED = "Service created successfully!";
 export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
