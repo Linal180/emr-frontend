@@ -16,7 +16,7 @@ import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
-  notStep, isHelperText, autoFocus, isHtmlValidate, defaultValue, loading, onChange, rows
+  notStep, isHelperText, autoFocus, isHtmlValidate, defaultValue, loading, onChange, rows, toLowerCase = false,
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -62,8 +62,19 @@ const InputController: FC<CustomInputControlProps> = ({
                 required={isHtmlValidate && isRequired}
                 disabled={disabled}
                 onChange={(event) => {
-                  field.onChange(event)
-                  onChange && onChange(event.target.value)
+                  if (toLowerCase) {
+                    const e = {
+                      ...event,
+                      target: {
+                        value: event?.target?.value?.toLocaleLowerCase()
+                      }
+                    }
+                    field.onChange(e)
+                    onChange && onChange(event.target.value)
+                  } else {
+                    field.onChange(event)
+                    onChange && onChange(event.target.value)
+                  }
                 }
                 }
                 id={controllerName}
