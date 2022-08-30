@@ -52,9 +52,10 @@ const PatientsTable: FC = (): JSX.Element => {
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-
+  
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
+  
   const {
     page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch
   } = state;

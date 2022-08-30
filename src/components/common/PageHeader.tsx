@@ -13,8 +13,8 @@ import AddIcon from '@material-ui/icons/Add';
 
 const PageHeader: FC<PageHeaderProps> = ({
   title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal,
-   isIcon, id, startIcon
- }): JSX.Element => {
+  isIcon, id, startIcon
+}): JSX.Element => {
   return (
     <Box display="flex" flexWrap='wrap' alignItems="center" justifyContent="space-between">
       <Box className="breadcrumb-list" pb={2.25}>
@@ -26,7 +26,7 @@ const PageHeader: FC<PageHeaderProps> = ({
               </Link>
             </Box>
           )}
-          
+
         <Typography component="h4" variant="h4">{title}</Typography>
 
         {path && <Breadcrumb path={path} />}

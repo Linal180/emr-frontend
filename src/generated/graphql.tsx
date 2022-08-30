@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -214,6 +213,7 @@ export type Appointment = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   billing?: Maybe<Billing>;
   billingStatus: BillingStatus;
+  cardLast4Digits?: Maybe<Scalars['String']>;
   checkInActiveStep?: Maybe<Scalars['String']>;
   checkedInAt?: Maybe<Scalars['String']>;
   checkedOutAt?: Maybe<Scalars['String']>;
@@ -5825,7 +5825,8 @@ export type UpdateAllergyInput = {
 };
 
 export type UpdateAppointmentBillingStatusInput = {
-  billingStatus: Scalars['String'];
+  billingStatus: BillingStatus;
+  cardLast4Digits?: Maybe<Scalars['String']>;
   id: Scalars['String'];
 };
 
@@ -6769,6 +6770,13 @@ export type FindPatientLastAppointmentQueryVariables = Exact<{
 
 
 export type FindPatientLastAppointmentQuery = { __typename?: 'Query', findPatientLastAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleStartDateTime?: string | null, scheduleEndDateTime?: string | null, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
+
+export type UpdateAppointmentBillingStatusMutationVariables = Exact<{
+  updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput;
+}>;
+
+
+export type UpdateAppointmentBillingStatusMutation = { __typename?: 'Mutation', updateAppointmentBillingStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -9060,6 +9068,43 @@ export function useFindPatientLastAppointmentLazyQuery(baseOptions?: Apollo.Lazy
 export type FindPatientLastAppointmentQueryHookResult = ReturnType<typeof useFindPatientLastAppointmentQuery>;
 export type FindPatientLastAppointmentLazyQueryHookResult = ReturnType<typeof useFindPatientLastAppointmentLazyQuery>;
 export type FindPatientLastAppointmentQueryResult = Apollo.QueryResult<FindPatientLastAppointmentQuery, FindPatientLastAppointmentQueryVariables>;
+export const UpdateAppointmentBillingStatusDocument = gql`
+    mutation UpdateAppointmentBillingStatus($updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!) {
+  updateAppointmentBillingStatus(
+    updateAppointmentBillingStatusInput: $updateAppointmentBillingStatusInput
+  ) {
+    response {
+      status
+    }
+  }
+}
+    `;
+export type UpdateAppointmentBillingStatusMutationFn = Apollo.MutationFunction<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>;
+
+/**
+ * __useUpdateAppointmentBillingStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateAppointmentBillingStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAppointmentBillingStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAppointmentBillingStatusMutation, { data, loading, error }] = useUpdateAppointmentBillingStatusMutation({
+ *   variables: {
+ *      updateAppointmentBillingStatusInput: // value for 'updateAppointmentBillingStatusInput'
+ *   },
+ * });
+ */
+export function useUpdateAppointmentBillingStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>(UpdateAppointmentBillingStatusDocument, options);
+      }
+export type UpdateAppointmentBillingStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentBillingStatusMutation>;
+export type UpdateAppointmentBillingStatusMutationResult = Apollo.MutationResult<UpdateAppointmentBillingStatusMutation>;
+export type UpdateAppointmentBillingStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {

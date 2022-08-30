@@ -1,5 +1,5 @@
-query FindAllAppointments($appointmentInput: AppointmentInput!){
-  findAllAppointments(appointmentInput: $appointmentInput){
+query FindAllAppointments($appointmentInput: AppointmentInput!) {
+  findAllAppointments(appointmentInput: $appointmentInput) {
     response {
       error
       status
@@ -10,7 +10,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       page
       totalPages
     }
-    
+
     appointments {
       id
       status
@@ -22,13 +22,13 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       billingStatus
       checkInActiveStep
       appointmentCreateType
-      
+
       provider {
         id
         firstName
         lastName
       }
-      
+
       patient {
         id
         firstName
@@ -40,7 +40,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
           phone
         }
       }
-      
+
       facility {
         id
         name
@@ -57,14 +57,14 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
   }
 }
 
-query GetAppointment($getAppointment: GetAppointment!){
-  getAppointment(getAppointment: $getAppointment){
+query GetAppointment($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
     response {
       error
       status
       message
     }
-    
+
     appointment {
       id
       notes
@@ -87,7 +87,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       selfCheckIn
       checkInActiveStep
       appointmentCreateType
-      
+
       appointmentType {
         id
         name
@@ -95,19 +95,19 @@ query GetAppointment($getAppointment: GetAppointment!){
         duration
         serviceType
       }
-      
+
       provider {
         id
         lastName
         firstName
       }
-      
+
       patient {
         id
         firstName
         lastName
-    }
-      
+      }
+
       facility {
         id
         name
@@ -115,15 +115,15 @@ query GetAppointment($getAppointment: GetAppointment!){
         serviceCode
       }
 
-       invoice {
+      invoice {
         invoiceNo
       }
     }
   }
 }
 
-mutation RemoveAppointment($removeAppointment: RemoveAppointment!){
-  removeAppointment(removeAppointment: $removeAppointment){
+mutation RemoveAppointment($removeAppointment: RemoveAppointment!) {
+  removeAppointment(removeAppointment: $removeAppointment) {
     response {
       error
       status
@@ -132,8 +132,8 @@ mutation RemoveAppointment($removeAppointment: RemoveAppointment!){
   }
 }
 
-mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!){
-  createAppointment(createAppointmentInput: $createAppointmentInput){
+mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!) {
+  createAppointment(createAppointmentInput: $createAppointmentInput) {
     response {
       error
       status
@@ -142,8 +142,8 @@ mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!){
   }
 }
 
-mutation SendAppointmentReminder($appointmentId: String!){
-  sendAppointmentReminder(appointmentId: $appointmentId){
+mutation SendAppointmentReminder($appointmentId: String!) {
+  sendAppointmentReminder(appointmentId: $appointmentId) {
     response {
       error
       status
@@ -152,8 +152,8 @@ mutation SendAppointmentReminder($appointmentId: String!){
   }
 }
 
-mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
-  updateAppointment(updateAppointmentInput: $updateAppointmentInput){
+mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!) {
+  updateAppointment(updateAppointmentInput: $updateAppointmentInput) {
     response {
       error
       status
@@ -167,8 +167,12 @@ mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
   }
 }
 
-mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!){
-  createExternalAppointment(createExternalAppointmentInput: $createExternalAppointmentInput){
+mutation CreateExternalAppointment(
+  $createExternalAppointmentInput: CreateExternalAppointmentInput!
+) {
+  createExternalAppointment(
+    createExternalAppointmentInput: $createExternalAppointmentInput
+  ) {
     response {
       error
       status
@@ -192,8 +196,8 @@ mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExtern
   }
 }
 
-mutation CancelAppointment($cancelAppointment: CancelAppointment!){
-  cancelAppointment(cancelAppointment: $cancelAppointment){
+mutation CancelAppointment($cancelAppointment: CancelAppointment!) {
+  cancelAppointment(cancelAppointment: $cancelAppointment) {
     response {
       status
       message
@@ -202,47 +206,46 @@ mutation CancelAppointment($cancelAppointment: CancelAppointment!){
   }
 }
 
-query GetAppointments($getAppointments: GetAppointments!){
-  getAppointments(getAppointments: $getAppointments){
+query GetAppointments($getAppointments: GetAppointments!) {
+  getAppointments(getAppointments: $getAppointments) {
     response {
       error
       status
       message
     }
-    
+
     pagination {
       page
       totalPages
       totalCount
     }
-    
-		 appointments {
+
+    appointments {
       id
       status
       scheduleStartDateTime
       scheduleEndDateTime
       createdAt
       updatedAt
-      
-      
+
       appointmentType {
         id
         name
         duration
       }
-      
+
       provider {
         id
         firstName
         lastName
       }
-      
+
       patient {
         id
         firstName
         lastName
       }
-      
+
       facility {
         id
         name
@@ -251,8 +254,10 @@ query GetAppointments($getAppointments: GetAppointments!){
   }
 }
 
-mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatusInput!){
-  updateAppointmentStatus(appointmentStatusInput: $appointmentStatusInput){
+mutation UpdateAppointmentStatus(
+  $appointmentStatusInput: UpdateAppointmentStatusInput!
+) {
+  updateAppointmentStatus(appointmentStatusInput: $appointmentStatusInput) {
     response {
       error
       status
@@ -266,19 +271,23 @@ mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatu
   }
 }
 
-query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppointmentInput!){
-  getPatientPastUpcomingAppointment(getPatientAppointmentInput: $getPatientAppointmentInput){
+query GetPatientNearestAppointments(
+  $getPatientAppointmentInput: GetPatientAppointmentInput!
+) {
+  getPatientPastUpcomingAppointment(
+    getPatientAppointmentInput: $getPatientAppointmentInput
+  ) {
     response {
       status
     }
-    
+
     appointments {
       pastAppointment {
         id
         scheduleStartDateTime
       }
-      
-      upcomingAppointment{
+
+      upcomingAppointment {
         id
         scheduleStartDateTime
       }
@@ -286,25 +295,29 @@ query GetPatientNearestAppointments($getPatientAppointmentInput: GetPatientAppoi
   }
 }
 
-query FindAppointmentInsuranceStatus($appointmentId: String!){
-  findAppointmentInsuranceStatus(appointmentId: $appointmentId){
+query FindAppointmentInsuranceStatus($appointmentId: String!) {
+  findAppointmentInsuranceStatus(appointmentId: $appointmentId) {
     response {
       status
     }
-    
+
     id
     insuranceStatus
   }
 }
 
-query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmentsInput!){
-  findAllUpcomingAppointments(upComingAppointmentsInput: $upComingAppointmentsInput){
+query FindAllUpcomingAppointments(
+  $upComingAppointmentsInput: UpComingAppointmentsInput!
+) {
+  findAllUpcomingAppointments(
+    upComingAppointmentsInput: $upComingAppointmentsInput
+  ) {
     response {
       error
       status
       message
     }
-    
+
     appointments {
       id
       notes
@@ -325,7 +338,7 @@ query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmen
       checkedInAt
       createdAt
       updatedAt
-      
+
       appointmentType {
         id
         name
@@ -333,7 +346,7 @@ query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmen
         duration
         serviceType
       }
-      
+
       provider {
         id
         lastName
@@ -355,35 +368,53 @@ query FindAllUpcomingAppointments($upComingAppointmentsInput: UpComingAppointmen
   }
 }
 
-query FindPatientLastAppointment($lastVisitedAppointmentInput: LastVisitedAppointmentInput!){
-  findPatientLastAppointment(lastVisitedAppointmentInput: $lastVisitedAppointmentInput){
+query FindPatientLastAppointment(
+  $lastVisitedAppointmentInput: LastVisitedAppointmentInput!
+) {
+  findPatientLastAppointment(
+    lastVisitedAppointmentInput: $lastVisitedAppointmentInput
+  ) {
     response {
       status
     }
-    
-		 appointment {
+
+    appointment {
       id
       status
       scheduleStartDateTime
       scheduleEndDateTime
-      
+
       appointmentType {
         id
         name
         duration
       }
-      
+
       provider {
         id
         firstName
         lastName
       }
-      
+
       patient {
         id
         firstName
         lastName
       }
     }
+  }
+}
+
+mutation UpdateAppointmentBillingStatus(
+  $updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!
+) {
+  updateAppointmentBillingStatus(
+    updateAppointmentBillingStatusInput: $updateAppointmentBillingStatusInput
+  ) {
+
+    response {
+      status
+    }
+
   }
 }

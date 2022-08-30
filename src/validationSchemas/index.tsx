@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE, PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1159,4 +1159,18 @@ export const sendSmsSchema = yup.object({
 
 export const shortUrlSchema = yup.object({
   longUrl: yup.string(),
+})
+
+export const AppointmentPaymentTypeSchema = yup.object({
+  paymentType: yup.string().required(requiredMessage(PAYMENT_TYPE)),
+  lastFour: yup.string().test('', invalidMessage(LAST_FOUR_DIGIT), (value, { parent }) => {
+    const { paymentType } = parent || {}
+    if (paymentType === APPOINTMENT_PAYMENT_TYPE.CARD) {
+      if (value?.length === 4) {
+        return true
+      }
+      return false
+    }
+    return true
+  })
 })

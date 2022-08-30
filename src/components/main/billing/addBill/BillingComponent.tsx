@@ -503,7 +503,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           ...(m2?.id && { m2: m2?.id }),
           ...(m3?.id && { m3: m3?.id }),
           ...(m4?.id && { m4: m4?.id }),
-          unit
+          unit: `${unit ?? ""}`
         }
         return {
           ...billingCodeToCreate,
@@ -511,7 +511,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
         }
       })
-
+      
       const createBillingInput = {
         ...(appointmentId && { appointmentId: appointmentId || '' }),
         ...(facilityId && { facilityId: facilityId || '' }),
@@ -525,8 +525,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
         autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
         onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
-        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
-        uncoveredAmount, from, to, shouldCheckout
+        amount: `${amount}`, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
+        uncoveredAmount: `${uncoveredAmount}`, from, to, shouldCheckout
       }
 
       createBilling({

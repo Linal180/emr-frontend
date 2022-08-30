@@ -29,8 +29,8 @@ export const TID_REGEX = /^\d{9}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const NO_SPACE_REGEX = /^[^\s]+$/;
-export const NON_EMPTY_SPACE_REGEX=/^(?!\s*$).+/g
-export const ALL_ZEROS_REGEX=/^((?!^[0]+$|^$).)*$/g
+export const NON_EMPTY_SPACE_REGEX = /^(?!\s*$).+/g
+export const ALL_ZEROS_REGEX = /^((?!^[0]+$|^$).)*$/g
 export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
@@ -69,6 +69,12 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 
+export enum APPOINTMENT_PAYMENT_TYPE {
+  CASH = 'cash',
+  CARD = 'card'
+}
+
+
 // Blood Pressure Ranges
 export enum BLOOD_PRESSURE_RANGES {
   Normal = "Normal",
@@ -82,6 +88,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const LAST_FOUR_DIGIT = 'Card Last Four Digit'
 export const SELF_CHECK_IN = 'Self Check in'
 export const CHECK_IN_AT_TEXT = 'Checked in at'
 export const TAKE_AGAIN = 'Take again'
@@ -1665,9 +1672,9 @@ export const NO_WHITE_SPACING_ERROR_MESSAGE = "White-spaces at beginning is not 
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA Active date";
 export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
-export const INVALID_BILL_FEE_MESSAGE='Invalid bill fee';
-export const INVALID_UNIT_MESSAGE='Invalid unit'
-export const INVALID_AMOUNT_MESSAGE='Invalid amount'
+export const INVALID_BILL_FEE_MESSAGE = 'Invalid bill fee';
+export const INVALID_UNIT_MESSAGE = 'Invalid unit'
+export const INVALID_AMOUNT_MESSAGE = 'Invalid amount'
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
 export const NUMBER_AND_SPECIAL_ERROR_MESSAGE = "Numbers and Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
@@ -1733,7 +1740,7 @@ export const CANT_DELETE_DOCTOR = "Provider can't be deleted.";
 export const DOCTOR_CREATED = "Provider created successfully!";
 export const DOCTOR_UPDATED = "Provider updated successfully!";
 export const SCHEDULED_IN_FACILITY = "Scheduled in facility: ";
-export const PATIENT_EMAIL_PHONE_INFO_MISSING="Patient Email or Phone Info missing"
+export const PATIENT_EMAIL_PHONE_INFO_MISSING = "Patient Email or Phone Info missing"
 export const SERVICE_CREATED = "Service created successfully!";
 export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
@@ -3128,6 +3135,7 @@ export enum USER_PERMISSIONS {
   removeAgreement = 'removeAgreement',
   updateAgreement = 'updateAgreement',
   createAgreement = 'createAgreement',
+  updatePatientProviderRelation = 'updatePatientProviderRelation'
 }
 
 export const USER_MENU_ITEMS = [
@@ -3651,4 +3659,15 @@ export const SMS_TEMPLATES: SelectorOption[] = [
     id: `Please give us a review at: https://www.google.com`,
     name: "Review",
   },
+]
+
+export const MAPPED_APPOINTMENT_PAYMENT_TYPE = [
+  {
+    id: APPOINTMENT_PAYMENT_TYPE.CARD,
+    name: PAY_VIA_CARD
+  },
+  {
+    id: APPOINTMENT_PAYMENT_TYPE.CASH,
+    name: PAY_VIA_CASH
+  }
 ]
