@@ -107,7 +107,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         const blob = new Blob([new Uint8Array(buffer)], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob)
         var win = window.open();
-        win?.document.write('<iframe src="' + url + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>')
+        if (win) {
+          win.name = 'HCFA-1500'
+          win?.document.write('<iframe src="' + url + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>')
+        }
       }
     }
   });
@@ -500,7 +503,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           ...(m2?.id && { m2: m2?.id }),
           ...(m3?.id && { m3: m3?.id }),
           ...(m4?.id && { m4: m4?.id }),
-          unit
+          unit: `${unit ?? ""}`
         }
         return {
           ...billingCodeToCreate,
@@ -508,7 +511,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
         }
       })
-
+      
       const createBillingInput = {
         ...(appointmentId && { appointmentId: appointmentId || '' }),
         ...(facilityId && { facilityId: facilityId || '' }),
@@ -522,8 +525,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         ...(labOrderNumber && { labOrderNumber: labOrderNumber }),
         autoAccident: autoAccident, employment: employment, otherAccident: otherAccident,
         onsetDate: onsetDate, otherDate: otherDate, claimDate, pos: posId, serviceDate,
-        amount: amount, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
-        uncoveredAmount, from, to, shouldCheckout
+        amount: `${amount}`, patientId: id ?? '', codes: transformedBillingCodes, claimNo: claimNumber,
+        uncoveredAmount: `${uncoveredAmount}`, from, to, shouldCheckout
       }
 
       createBilling({

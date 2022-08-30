@@ -11,7 +11,7 @@ import {
 //components block
 import Alert from "../../../common/Alert";
 import Selector from "../../../common/Selector";
-import SelfPayComponent from "./SelfPayComponent";
+import SelfPayComponent from "./PaymentModal";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
 import CodesTable from "../../../common/CodesTable";

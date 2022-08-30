@@ -1,21 +1,31 @@
+// packages block
+import { useContext } from "react";
 // components block
 import PatientsTable from "./PatientsTable";
 import PageHeader from "../../../common/PageHeader";
-// constants block
+// constants, contexts block
+import { AuthContext } from "../../../../context";
+import { checkPermission } from "../../../../utils";
 import {
-  ADD_PATIENT, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENTS_TEXT, DASHBOARD_BREAD,
+  ADD_PATIENT, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENTS_TEXT, DASHBOARD_BREAD, USER_PERMISSIONS,
 } from "../../../../constants";
 
-const LabResultsComponent = (): JSX.Element => <>
-  <PageHeader
-    title={PATIENTS_TEXT}
-    path={[DASHBOARD_BREAD, PATIENTS_BREAD]}
-    hasComponent
-    buttonText={ADD_PATIENT}
-    linkToPage={`${PATIENTS_ROUTE}/new`}
-  />
+const LabResultsComponent = (): JSX.Element => {
+  const { userPermissions } = useContext(AuthContext);
+  const canAdd = checkPermission(userPermissions, USER_PERMISSIONS.createPatient)
 
-  <PatientsTable />
-</>;
+  return (<>
+    <PageHeader
+      title={PATIENTS_TEXT}
+      path={[DASHBOARD_BREAD, PATIENTS_BREAD]}
+      hasComponent
+      buttonText={ADD_PATIENT}
+      linkToPage={`${PATIENTS_ROUTE}/new`}
+      noAdd={!canAdd}
+    />
+
+    <PatientsTable />
+  </>);
+}
 
 export default LabResultsComponent;

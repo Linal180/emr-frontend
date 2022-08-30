@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, NON_EMPTY_SPACE_REGEX, ALL_ZEROS_REGEX,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE, PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -183,8 +183,8 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   codeId: yup.string(),
   code: yup.string(),
-  price: yup.string().matches(ALL_ZEROS_REGEX, INVALID_BILL_FEE_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_BILL_FEE_MESSAGE),
-  unit: yup.string().matches(ALL_ZEROS_REGEX, INVALID_UNIT_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_UNIT_MESSAGE)
+  price: yup.number().transform((value) => label === ITEM_MODULE.cptCode ? value : 12).positive(INVALID_BILL_FEE_MESSAGE).min(1, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+  unit: yup.number().transform((value) => label === ITEM_MODULE.cptCode ? value : 12).positive(INVALID_UNIT_MESSAGE).min(1, INVALID_UNIT_MESSAGE).typeError(requiredMessage(UNIT)).required(requiredMessage(UNIT)),
 }).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
@@ -1085,7 +1085,8 @@ export const createCopaySchema = yup.object({
 
 export const createBillingSchema = yup.object({
   // billingStatus: selectorSchema(BILLING_STATUS),
-  amount: yup.string(),
+  amount: yup.number().transform(value => (isNaN(value) ? 0 : value)).positive(INVALID_AMOUNT_MESSAGE).min(0, INVALID_AMOUNT_MESSAGE),
+  uncoveredAmount: yup.number().transform(value => (isNaN(value) ? 0 : value)).positive(INVALID_AMOUNT_MESSAGE).min(0, INVALID_AMOUNT_MESSAGE),
   paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
   feeSchedule: selectorSchema(FEE_SCHEDULE),
   [ITEM_MODULE.icdCodes]: yup.array().of(
@@ -1158,4 +1159,18 @@ export const sendSmsSchema = yup.object({
 
 export const shortUrlSchema = yup.object({
   longUrl: yup.string(),
+})
+
+export const AppointmentPaymentTypeSchema = yup.object({
+  paymentType: yup.string().required(requiredMessage(PAYMENT_TYPE)),
+  lastFour: yup.string().test('', invalidMessage(LAST_FOUR_DIGIT), (value, { parent }) => {
+    const { paymentType } = parent || {}
+    if (paymentType === APPOINTMENT_PAYMENT_TYPE.CARD) {
+      if (value?.length === 4) {
+        return true
+      }
+      return false
+    }
+    return true
+  })
 })

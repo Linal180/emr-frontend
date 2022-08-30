@@ -10,11 +10,11 @@ import LabOrdersResultForm from './LabOrdersResultForm';
 // components block
 
 const ResultsLabOrdersComponent: FC = (): JSX.Element => {
-  const { orderNum, patientId } = useParams<ParamsType>()
+  const { orderNum, patientId, appointmentId } = useParams<ParamsType>()
   return (
     <>
       <Box display="flex">
-        <BackButton to={`/patients/${patientId}/details/10`} />
+        <BackButton to={appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `/patients/${patientId}/details/10`} />
 
         <Box ml={2}>
           <PageHeader

@@ -2023,3 +2023,8 @@ export type CameraComponentProps = {
 export type CameraModalProps = {
   open: boolean;
 }
+
+export type AppointmentPaymentType = {
+  lastFour: string;
+  paymentType: string;
+} 
