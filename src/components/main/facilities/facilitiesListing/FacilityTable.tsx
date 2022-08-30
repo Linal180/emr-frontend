@@ -46,7 +46,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeFacility)
-  const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateFacility)
+  // const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updateFacility)
   const canFetchServices = checkPermission(userPermissions, USER_PERMISSIONS.findAllServices)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
@@ -210,7 +210,7 @@ const FacilityTable: FC = (): JSX.Element => {
                             </Link>
                           </DetailTooltip>
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}`} className={(isSuper || isFacAdmin || isPracticeUser) ? '' : 'disable-icon'}>
                             <Box className={classes.iconsBackground}>
                               <EditNewIcon />
                             </Box>
