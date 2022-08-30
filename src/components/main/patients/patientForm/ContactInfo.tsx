@@ -189,6 +189,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                   disabled={shouldDisableEdit}
                   isRequired={!optionalEmail}
                   fieldType="email"
+                  toLowerCase
                   controllerName="basicEmail"
                   controllerLabel={EMAIL}
                   loading={getPatientLoading}

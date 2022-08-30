@@ -82,6 +82,8 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const SELF_CHECK_IN = 'Self Check in'
+export const CHECK_IN_AT_TEXT = 'Checked in at'
 export const TAKE_AGAIN = 'Take again'
 export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'

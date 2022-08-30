@@ -16,8 +16,8 @@ import ACHPaymentComponent from '../../publicAppointments/achPayment';
 import { GREY, WHITE } from '../../../../theme';
 import { ACHIcon } from '../../../../assets/svgs';
 import { appointmentChargesDescription } from '../../../../utils';
-import { SelfPayComponentProps, ParamsType, TableCodesProps, CreateBillingProps } from '../../../../interfacesTypes';
 import { useChargeAfterAppointmentMutation, useGetTokenLazyQuery } from '../../../../generated/graphql';
+import { SelfPayComponentProps, ParamsType, TableCodesProps, CreateBillingProps } from '../../../../interfacesTypes';
 import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, PAY_VIA_ACH, PAY_VIA_PAYPAL, APPOINTMENT_NOT_EXIST,
