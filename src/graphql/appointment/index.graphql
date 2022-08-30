@@ -408,13 +408,13 @@ query FindPatientLastAppointment(
 mutation UpdateAppointmentBillingStatus(
   $updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!
 ) {
-  findPatientLastAppointment(
+  updateAppointmentBillingStatus(
     updateAppointmentBillingStatusInput: $updateAppointmentBillingStatusInput
   ) {
 
     response {
       status
     }
-    
+
   }
 }
