@@ -292,7 +292,7 @@ body .MuiTabPanel-root {
   background-repeat: no-repeat !important;
   max-width: 100% !important;
   width: 20px !important;
- }
+}
 
 .input-dollar-class .MuiInputBase-input {
   background-image: url(../assets/images/dollar-sign.svg) !important;
@@ -910,4 +910,16 @@ input[type=number] {
 .MuiIconButton-sizeSmall {
   width: 20px !important;
   height: auto !important;
+}
+
+.timePickerIcon {
+  position: relative;
+  border-radius: 4px;
+  background-color: #F3F4F6;
+}
+
+.timePickerIcon .MuiInput-input {
+  height: 48px;
+  padding: 12px 16px;
+  box-sizing: border-box;
 }
