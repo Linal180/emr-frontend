@@ -47,7 +47,7 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER, PATIENT_EMAIL_PHONE_INFO_MISSING
 } from "../../constants";
 
 dotenv.config()
@@ -385,6 +385,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     <Sort />
   </IconButton>;
 
+  const handleAppointmentReminder = (id: string, email: string | undefined | null, phone: string | undefined | null) => {
+    if (email && phone) {
+      id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
+      dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
+    } else {
+      Alert.error(PATIENT_EMAIL_PHONE_INFO_MISSING)
+    }
+  }
+
   if (sendAppointmentReminderLoading) {
     return <Loader loading loaderText={SENDING_APPOINTMENT_REMINDER} />
   }
@@ -505,7 +514,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     } = appointment || {};
 
                     const { name } = facility || {};
-                    const { id: patientId, firstName, lastName } = patient || {};
+                    const { id: patientId, firstName, lastName, email, contacts } = patient || {};
+                    const { phone } = contacts?.find((contact) => contact.primaryContact) || {}
                     const { name: type } = appointmentType || {};
 
                     const cantUpdate = canBeUpdated(status as AppointmentStatus)
@@ -620,10 +630,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
                             <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
                               <Button
-                                onClick={() => {
-                                  id && dispatch({ type: ActionType.SET_REMINDER_ID, reminderId: id })
-                                  dispatch({ type: ActionType.SET_REMINDER_MODAL_OPEN, isReminderModalOpen: true })
-                                }}
+                                onClick={() => id && handleAppointmentReminder(id, email, phone)}
                                 disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
                               >
                                 <BellIconNew />

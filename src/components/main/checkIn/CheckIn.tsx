@@ -1,12 +1,15 @@
 //packages import
-import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
-import { ChevronRight } from "@material-ui/icons";
 import { FC } from "react";
+import { ChevronRight } from "@material-ui/icons";
+import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 //constants, interfaces, utils, types
-import { APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE, PROVIDER_NAME, REASON } from "../../../constants";
 import { CheckInComponentProps } from "../../../interfacesTypes";
+import {
+  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
+  PROVIDER_NAME, REASON, SELF_CHECK_IN
+} from "../../../constants";
 
-const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispatcher, handleStep}) => {
+const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, appointmentDispatcher, handleStep }) => {
   const { appointment, primaryInsurance } = appointmentState;
   const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
   const { firstName, lastName } = provider ?? {}
@@ -64,7 +67,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
 
           <Grid item md={6} sm={12} xs={12}>
             <Box my={2}>
-              <Typography variant="body2">Checked in at</Typography>
+              <Typography variant="body2">{CHECK_IN_AT_TEXT}</Typography>
               <Box p={0.2} />
               <Typography variant="body1">{checkedInAt || N_A}</Typography>
             </Box>
@@ -72,7 +75,7 @@ const CheckIn: FC<CheckInComponentProps> = ({appointmentState, appointmentDispat
 
           <Grid item md={6} sm={12} xs={12}>
             <Box my={2}>
-              <Typography variant="body2">Self Check in</Typography>
+              <Typography variant="body2">{SELF_CHECK_IN}</Typography>
               <Box p={0.2} />
               <Typography variant="body1">{selfCheckIn ? 'Yes' : 'No' ?? N_A}</Typography>
             </Box>

@@ -11,9 +11,9 @@ import DatePicker from "../../../common/DatePicker";
 import InputController from "../../../../controller";
 // constants, utils block
 import { ListContext } from "../../../../context";
-import { DOB, STATUS } from "../../../../constants";
 import { renderFacilities } from "../../../../utils";
 import { GREY_SEVEN, WHITE } from "../../../../theme";
+import { ADD, DOB, NO, STATUS, YES } from "../../../../constants";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 
@@ -107,9 +107,9 @@ const PatientCardForm = (): JSX.Element => {
                       <InputLabel shrink>{STATUS}</InputLabel>
 
                       <label className="toggle-main">
-                        <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
+                        <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                         <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                        <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
+                        <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                       </label>
                     </FormControl>
                   )}
@@ -125,7 +125,7 @@ const PatientCardForm = (): JSX.Element => {
               </Grid>
 
               <Box display="flex" justifyContent="flex-end">
-                <Button type="submit" variant="contained" color="primary">Add</Button>
+                <Button type="submit" variant="contained" color="primary">{ADD}</Button>
               </Box>
             </CardContent>
           </Card>
