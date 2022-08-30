@@ -17,7 +17,7 @@ import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL, 
+  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL,
   LAB_RESULTS_ROUTE, N_A, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
@@ -324,13 +324,19 @@ const LabResultsTable: FC = (): JSX.Element => {
               ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
             >
               <Typography className={resultReceived ? classes.selectBox : `${classes.selectedBox} ${classes.selectBox}`}
-                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: false })}
+                onClick={() => {
+                  dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: false })
+                  dispatch({ type: ActionType.SET_PAGE, page: 1 })
+                }}
               >
                 {RECEIVED}
               </Typography>
 
               <Typography className={resultReceived ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
-                onClick={() => dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true })}
+                onClick={() => {
+                  dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true }); 
+                  dispatch({ type: ActionType.SET_PAGE, page: 1 })
+                }}
               >
                 {PENDING}
               </Typography>
@@ -409,11 +415,7 @@ const LabResultsTable: FC = (): JSX.Element => {
                 return (
                   <TableRow>
                     <TableCell scope="row">
-                      <Box className="pointer-cursor">
-                        <Typography color='secondary'>
-                          {patientName}
-                        </Typography>
-                      </Box>
+                      {patientName}
                     </TableCell>
                     <TableCell scope="row">
                       {dob}
