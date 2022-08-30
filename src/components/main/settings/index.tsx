@@ -168,6 +168,8 @@ export const SettingsComponent = () => {
           </Box>
         </CardComponent> */}
 
+        <Box p={2} />
+
         {isFacility && <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
           <Box pb={3}>
             <Box className={classes.settingContainer}>
@@ -181,6 +183,8 @@ export const SettingsComponent = () => {
             </Box>
           </Box>
         </CardComponent>}
+
+        <Box p={2} />
 
         <CardComponent cardTitle={CLINICAL_TEXT}>
           <Box pb={3}>

@@ -413,15 +413,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               <FormProvider {...methods}>
                 <Grid container spacing={3}>
                   {isAdminUser &&
-                    <Grid item md={3} sm={12} xs={12}>
-                      <FacilitySelector
-                        addEmpty
-                        label={FACILITY}
-                        name="facilityId"
-                        onSelect={({ id }: SelectorOption) =>
-                          dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
-                      />
-                    </Grid>}
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Grid container>
+                        <Grid item md={4} sm={12} xs={12}>
+                          <FacilitySelector
+                            addEmpty
+                            label={FACILITY}
+                            name="facilityId"
+                            onSelect={({ id }: SelectorOption) =>
+                              dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  }
 
                   <Grid item md={4} sm={12} xs={12}>
                     <ServicesSelector
@@ -431,7 +436,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     />
                   </Grid>
 
-                  <Grid item md={5} sm={12} xs={12}>
+                  <Grid item md={8} sm={12} xs={12}>
                     <Box className="date-box-wrap">
                       <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
