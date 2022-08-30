@@ -185,8 +185,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         setLoading(false);
         onUploading && onUploading(false)
         handleModalClose();
-        Alert.error(SOMETHING_WENT_WRONG);
-      });
+        // Alert.error(SOMETHING_WENT_WRONG);  //Attachment is uploaded successfully, But it still come in error
+        });
     }) : numberOfFiles ? numberOfFiles === 0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 

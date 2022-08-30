@@ -73,7 +73,6 @@ export const useProfileDetailsStyles = makeStyles(() =>
       fontSize: 19,
       fontWeight: 700,
       color: BLACK_ONE,
-      textTransform: 'capitalize',
 
       "& > svg": {
         marginLeft: 10,

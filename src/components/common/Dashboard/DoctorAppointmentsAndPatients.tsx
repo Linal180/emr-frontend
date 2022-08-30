@@ -14,15 +14,16 @@ import {
   Action, ActionType, appointmentReducer, initialState, State
 } from "../../../reducers/appointmentReducer";
 import {
-  AppointmentsPayload, AppointmentStatus, useFindAllDoctorUpcomingAppointmentsLazyQuery
+  AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery
 } from "../../../generated/graphql";
+import moment from "moment";
 
 const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
   patientId, providerId, setCount
 }): JSX.Element => {
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
-  const [findAllAppointments, { loading }] = useFindAllDoctorUpcomingAppointmentsLazyQuery({
+  const [findAllAppointments, { loading }] = useFindAllAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -32,10 +33,10 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     },
 
     onCompleted(data) {
-      const { findAllUpcomingAppointments } = data || {};
+      const { findAllAppointments } = data || {};
 
-      if (findAllUpcomingAppointments) {
-        const { appointments } = findAllUpcomingAppointments
+      if (findAllAppointments) {
+        const { appointments } = findAllAppointments
 
 
         const todayAppointments = appointments?.filter(appointment =>
@@ -63,7 +64,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
     const query = patientId ? { patientId } : { providerId }
 
     await findAllAppointments({
-      variables: { upComingAppointmentsInput: { ...query, paginationOptions: { limit: 10, page: 1 } } }
+      variables: { appointmentInput: { ...query, paginationOptions: { limit: 10, page: 1 }, appointmentDate: moment().format('YYYY-MM-DD') } }
     })
   }, [findAllAppointments, patientId, providerId])
 
