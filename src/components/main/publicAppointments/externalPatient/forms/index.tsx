@@ -63,7 +63,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    activeStep, isAppointment, isBilling, facilityId
+    activeStep, isAppointment, isBilling, facilityId, patientEmail
   } = state
 
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
@@ -136,7 +136,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
           if (patient) {
             const {
               ssn, contacts, doctorPatients, facility, phoneEmailPermission, pharmacy,
-              preferredCommunicationMethod, releaseOfInfoBill, attachments
+              preferredCommunicationMethod, releaseOfInfoBill, attachments, email
             } = patient;
 
             const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
@@ -216,6 +216,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 address2 && setValue("address2", address2)
                 state && setValue("state", setRecord(state, state))
                 country && setValue("country", setRecord(country, country))
+                email && dispatch({ type: ActionType.SET_PATIENT_EMAIL, patientEmail: email })
               }
             }
           }
@@ -268,7 +269,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
       const contactInput = {
         contactType: ContactType.Self, country: selectedCountry, city, zipCode: zipCode,
-        state: selectedState, address, address2,
+        state: selectedState, address, address2, email: patientEmail
       };
 
       const emergencyContactInput = {
