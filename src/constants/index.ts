@@ -3127,6 +3127,7 @@ export enum USER_PERMISSIONS {
   removeAgreement = 'removeAgreement',
   updateAgreement = 'updateAgreement',
   createAgreement = 'createAgreement',
+  updatePatientProviderRelation = 'updatePatientProviderRelation'
 }
 
 export const USER_MENU_ITEMS = [

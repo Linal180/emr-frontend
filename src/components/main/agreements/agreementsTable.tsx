@@ -19,23 +19,25 @@ import {
   Action, ActionType, agreementReducer, initialState, State
 } from '../../../reducers/agreementReducer';
 import {
-  convertDateFromUnix, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, renderTh
+  checkPermission, convertDateFromUnix, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, renderTh
 } from '../../../utils';
 import {
   useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation
 } from '../../../generated/graphql';
 import {
   ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, NAME, PAGE_LIMIT,
-  DELETE_AGREEMENT_DESCRIPTION, SOMETHING_WENT_WRONG, NO_FILE_ASSOCIATED,
+  DELETE_AGREEMENT_DESCRIPTION, SOMETHING_WENT_WRONG, NO_FILE_ASSOCIATED, USER_PERMISSIONS,
 } from '../../../constants';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
-  const { user } = useContext(AuthContext)
+  const { user, userPermissions } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const {
     agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery
   } = state
+
+  const canDel = checkPermission(userPermissions, USER_PERMISSIONS.createAgreement)
 
   const { roles, facility } = user || {};
   const { id: facilityId, practice } = facility || {};
@@ -233,10 +235,10 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground}
-                            onClick={() => id && onDeleteClick(id)}
-                          >
-                            <TrashNewIcon />
+                          <Box className={classes.iconsBackground}>
+                            <Button disabled={!canDel} onClick={() => id && onDeleteClick(id)}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>
