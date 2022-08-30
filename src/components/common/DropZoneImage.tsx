@@ -182,7 +182,6 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
           }
         }
       }).then(data => { }).catch(error => {
-        console.log("error", error)
         setLoading(false);
         onUploading && onUploading(false)
         handleModalClose();
