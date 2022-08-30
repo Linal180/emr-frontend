@@ -35,7 +35,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
   const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
 
   const { textColor } = appointmentStatus('' || '')
-  const { id } = useParams<ParamsType>()
+  const { id, appointmentId } = useParams<ParamsType>()
 
   const methods = useForm<LabOrderInput>({ mode: "all" });
 
@@ -156,7 +156,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
     dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: [] })
   }
-  const toggleSideDrawer = () => { dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened  }) }
+  const toggleSideDrawer = () => { dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened }) }
 
   const handleReload = () => {
     dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: false })
@@ -266,7 +266,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                         </TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center">
-                            <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                            <IconButton onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
                               <OutlinedAddIcon />
                             </IconButton>
 

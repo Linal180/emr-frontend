@@ -86,6 +86,7 @@ export interface State {
   resultConsent: boolean;
   immunizationConsent: boolean;
   medicationHistoryConsent: boolean;
+  patientEmail: string
 }
 
 export const initialState: State = {
@@ -166,7 +167,8 @@ export const initialState: State = {
   medicalPermission: false,
   resultConsent: false,
   immunizationConsent: false,
-  medicationHistoryConsent: false
+  medicationHistoryConsent: false,
+  patientEmail: ''
 }
 
 export enum ActionType {
@@ -245,7 +247,8 @@ export enum ActionType {
   SET_MEDICAL_PERMISSION = 'setMedicalPermission',
   SET_RESULT_CONSENT = 'setResultConsent',
   SET_IMMUNIZATION_CONSENT = 'setImmunizationConsent',
-  SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent'
+  SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent',
+  SET_PATIENT_EMAIL='setPatientEmail'
 }
 
 export type Action =
@@ -325,6 +328,7 @@ export type Action =
   | { type: ActionType.SET_RESULT_CONSENT; resultConsent: boolean }
   | { type: ActionType.SET_IMMUNIZATION_CONSENT; immunizationConsent: boolean }
   | { type: ActionType.SET_MEDICATION_HISTORY_CONSENT; medicationHistoryConsent: boolean }
+  | { type: ActionType.SET_PATIENT_EMAIL; patientEmail: string }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -781,6 +785,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         medicationHistoryConsent: action.medicationHistoryConsent
+      }
+
+    case ActionType.SET_PATIENT_EMAIL:
+      return {
+        ...state,
+        patientEmail: action.patientEmail
       }
 
   }
