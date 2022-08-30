@@ -26,7 +26,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
     mode: "all",
   });
   const parentMethods = useFormContext<CreateBillingProps>();
-  const { control, watch, setValue: setFormValue } = parentMethods
+  const { control, watch, setValue: setFormValue, trigger } = parentMethods
 
   const { IcdCodes, [moduleName]: moduleData } = watch()
 
@@ -62,7 +62,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
         codeId: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data?.code || '',
         code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data?.code || '',
         description: data?.name?.split(' |')?.[1] || '',
-        codeType: getCodeType(moduleName) as CodeType, price: data?.serviceFee, m1: EMPTY_OPTION, m2: EMPTY_OPTION, m3: EMPTY_OPTION, m4: EMPTY_OPTION, unit: '1', ...diagPointers
+        codeType: getCodeType(moduleName) as CodeType, price: Number(data?.serviceFee), m1: EMPTY_OPTION, m2: EMPTY_OPTION, m3: EMPTY_OPTION, m4: EMPTY_OPTION, unit: '1', ...diagPointers,
       })
 
       setFormValue(moduleName, [
@@ -71,7 +71,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
           codeId: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data?.code || '',
           code: moduleName === ITEM_MODULE.icdCodes ? data?.name?.split(' |')?.[0] || '' : data?.code || '',
           description: data?.name?.split(' |')?.[1] || '',
-          codeType: getCodeType(moduleName) as CodeType, price: data?.serviceFee, m1: EMPTY_OPTION, m2: EMPTY_OPTION, m3: EMPTY_OPTION, m4: EMPTY_OPTION, unit: '1', ...diagPointers
+          codeType: getCodeType(moduleName) as CodeType, price: Number(data?.serviceFee), m1: EMPTY_OPTION, m2: EMPTY_OPTION, m3: EMPTY_OPTION, m4: EMPTY_OPTION, unit: '1', ...diagPointers
         }
       ])
     }
@@ -124,7 +124,6 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                       <FeeCPTCodesSelector
                         label={''}
                         name={ITEM_MODULE.cptFeeSchedule}
-                        // addEmpty
                         modalName={ITEM_MODULE.cptFeeSchedule}
                         filteredOptions={(tableCodeFields)?.map((value) => {
                           return {
@@ -169,7 +168,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                     </TableHead>
 
                     <TableBody>
-                      {(tableCodeFields)?.map(({
+                      {(moduleData)?.map(({
                         code, description, codeId, price
                       }, index) => {
                         return <>
@@ -200,12 +199,14 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   <TableCell scope="row">
                                     <Box minWidth={100} maxWidth={100}>
                                       <InputController
-                                        fieldType="text"
+                                        fieldType="number"
                                         controllerName={`${moduleName}.${index}.unit`}
                                         controllerLabel={""}
                                         margin={'none'}
                                         onChange={(data: string) => {
-                                          return price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, String(Number(data) * Number(price)) as never)
+                                           price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, (Number(data) * Number(price)) as never)
+                                           trigger()
+                                           return
                                         }}
                                       />
                                     </Box>
@@ -214,7 +215,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                   <TableCell scope="row">
                                     <Box minWidth={150} maxWidth={150}>
                                       <InputController
-                                        fieldType="text"
+                                        fieldType="number"
                                         controllerName={`${moduleName}.${index}.price`}
                                         controllerLabel={""}
                                         margin={'none'}

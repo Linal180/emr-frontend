@@ -525,7 +525,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       <form onSubmit={handleSubmit(onSubmit)}>
         {shouldShowBread &&
           <Box display="flex">
-            <BackButton to={`${PATIENTS_ROUTE}/${id}/details`} />
+            <BackButton to={PATIENTS_ROUTE} />
 
             <Box ml={2}>
               <PageHeader

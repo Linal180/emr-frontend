@@ -4,10 +4,10 @@ import * as yup from "yup";
 // utils and constants block
 import { SelectorOption } from "../interfacesTypes";
 import {
-  checkNpi, dateValidation, emailRegex, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
+  checkNpi, dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort
 } from "../utils";
 import {
-  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ALPHABETS_REGEX, ValidMessage, NUMBER_REGEX,
+  STRING_REGEX, ADDRESS_REGEX, MinLength, MaxLength, ValidMessage, NUMBER_REGEX,
   OTHER_RELATION, EIN_VALIDATION_MESSAGE, EIN_REGEX, UPIN_VALIDATION_MESSAGE, UPIN_REGEX,
   SSN_VALIDATION_MESSAGE, SSN_REGEX, PASSWORD_LABEL, TID_VALIDATION_MESSAGE, TID_REGEX,
   TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, ValidOTP,
@@ -34,7 +34,7 @@ import {
   CPT_CODE_PROCEDURE_CODE, SERVICE_FEE_CHARGE, AMOUNT, INVALID_LICENSE_DATE_ERROR_MESSAGE,
   DESCRIPTION_INVALID_MESSAGE, NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE, NUMBER_AND_SPECIAL_ERROR_MESSAGE,
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
-  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, LONG_URL_TEXT, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE,
+  INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE, FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, NON_EMPTY_SPACE_REGEX, ALL_ZEROS_REGEX,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -93,11 +93,11 @@ const suffixSchema = (label: string) => (
     .max(3, MaxLength(label, 3))
 )
 
-const nameSchema = (label: string) => {
-  return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
-    .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
-    .required(requiredMessage(label))
-}
+// const nameSchema = (label: string) => {
+//   return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
+//     .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
+//     .required(requiredMessage(label))
+// }
 
 export const notRequiredPhone = (label: string) => {
   return yup.string()
@@ -130,9 +130,12 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
 //     .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
 // }
 
-const optionalLowerCaseEmailSchema = (isOptional: boolean) => {
-  return yup.string()
-    .test('', INVALID_EMAIL, value => isOptional ? value ? emailRegex(value || '') : true : emailRegex(value || ''))
+const optionalLowerCaseEmailSchema = (label: string) => {
+  return yup.string().when({
+    is: (value: string) => !!value,
+    then: yup.string().email(requiredMessage(label)),
+    otherwise: yup.string()
+  })
 }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
@@ -179,7 +182,9 @@ export const selectorSchema = (label: string, isRequired: boolean = true) => yup
 
 const tableSelectorSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
   codeId: yup.string(),
-  code: yup.string()
+  code: yup.string(),
+  price: yup.string().matches(ALL_ZEROS_REGEX, INVALID_BILL_FEE_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_BILL_FEE_MESSAGE),
+  unit: yup.string().matches(ALL_ZEROS_REGEX, INVALID_UNIT_MESSAGE).matches(NON_EMPTY_SPACE_REGEX, INVALID_UNIT_MESSAGE)
 }).test('', requiredMessage(label), ({ codeId, code }) => isRequired ? !!codeId && !!code : true);
 
 const multiOptionSchema = (label: string, isRequired: boolean = true) => yup.object().shape({
@@ -504,7 +509,7 @@ export const extendedPatientSchema = (
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   suffix: suffixSchema(SUFFIX),
-  basicEmail: optionalLowerCaseEmailSchema(isOptional),
+  basicEmail: isOptional ? optionalLowerCaseEmailSchema(EMAIL) : yup.string().email(requiredMessage(EMAIL)),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
   basicPhone: notRequiredPhone(MOBILE_NUMBER),
   middleName: generalNameSchema(false, MIDDLE_NAME, false, false, 15),
@@ -602,8 +607,8 @@ export const externalPatientSchema = yup.object({
 
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
-  userLastName: nameSchema(LAST_NAME),
-  userFirstName: nameSchema(FIRST_NAME),
+  userLastName: generalNameSchema(true, LAST_NAME, false, false, 15),
+  userFirstName: generalNameSchema(true, FIRST_NAME, false, false, 15),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
 }
 
@@ -632,6 +637,7 @@ export const createPracticeSchema = yup.object({
 export const updatePracticeSchema = yup.object({
   ...npiSchema(true),
   ...practiceFacilitySchema,
+  ...registerUserSchema,
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
@@ -1086,7 +1092,7 @@ export const createBillingSchema = yup.object({
     tableSelectorSchema(ITEM_MODULE.icdCodes)
   ).test('', requiredMessage(ICD_CODE), (value: any) => !!value && value.length > 0),
   [ITEM_MODULE.cptFeeSchedule]: yup.array().of(
-    tableSelectorSchema(ITEM_MODULE.cptCode)
+    tableSelectorSchema(ITEM_MODULE.cptCode, true)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
@@ -1151,5 +1157,5 @@ export const sendSmsSchema = yup.object({
 })
 
 export const shortUrlSchema = yup.object({
-  longUrl: yup.string().required(requiredMessage(LONG_URL_TEXT)),
+  longUrl: yup.string(),
 })

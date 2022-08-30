@@ -1,5 +1,5 @@
 // packages block
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router";
 import { Box, Button, Card, colors, IconButton, Typography } from "@material-ui/core";
 // components
@@ -12,11 +12,10 @@ import NoDataComponent from '../../../../common/NoDataComponent';
 import EligibilityTableComponent from './eligibilityAndCoverage/EligibilityTable';
 // constant, utils, svgs, interfaces, graphql and styles block
 import history from '../../../../../history';
-import { AuthContext } from '../../../../../context';
 import { ParamsType } from "../../../../../interfacesTypes";
 import { EditNewIcon, EyeIcon } from "../../../../../assets/svgs";
 import { PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
-import { getFormatDateString, isOnlyDoctor, renderTextLoading } from '../../../../../utils';
+import { getFormatDateString, renderTextLoading } from '../../../../../utils';
 import {
   OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation
 } from "../../../../../generated/graphql";
@@ -29,10 +28,6 @@ import {
 const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
-  const { user } = useContext(AuthContext)
-
-  const { roles } = user || {}
-  const isDoctor = isOnlyDoctor(roles)
   const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const [isCardModalOpen, setIsCardModalOpen] = useState<boolean>(false)
@@ -164,7 +159,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               </Typography>
 
               {!!filteredOrderOfBenefitOptions.length &&
-                !shouldDisableEdit && !isDoctor && <>
+                !shouldDisableEdit && <>
                   <Button
                     onClick={() => {
                       toggleSideDrawer()
@@ -201,7 +196,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                           }
                         </Box>
 
-                        {!shouldDisableEdit && !isDoctor && <IconButton onClick={() => {
+                        {!shouldDisableEdit && <IconButton onClick={() => {
                           setPolicyToEdit(id)
                           toggleSideDrawer()
                         }}>

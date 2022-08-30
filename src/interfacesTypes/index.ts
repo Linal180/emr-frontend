@@ -330,7 +330,7 @@ export interface TableCodesProps {
   codeId?: string;
   code: string;
   description: string;
-  price?: string;
+  price?: number;
   codeType?: CodeType;
   m1?: SelectorOption;
   m2?: SelectorOption;
@@ -489,7 +489,8 @@ export interface CustomInputControlProps extends IControlLabel {
   isHtmlValidate?: boolean;
   endAdornment?: ReactNode;
   handleClearField?: (fieldName: any) => void;
-  rows?: number
+  rows?: number;
+  toLowerCase?: boolean
 }
 
 export interface TooltipData {

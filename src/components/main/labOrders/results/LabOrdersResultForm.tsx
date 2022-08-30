@@ -11,7 +11,6 @@ import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
-import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 // interfaces, graphql, constants block
 import history from '../../../../history';
 import { GREY, GREY_THREE } from '../../../../theme';
@@ -354,8 +353,6 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
       </FormProvider>
 
       <Box p={2} />
-
-      <LabOrdersResultAttachment />
     </>
   );
 };

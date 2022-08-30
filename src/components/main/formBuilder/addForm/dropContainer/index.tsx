@@ -10,7 +10,7 @@ import {
 import FieldRenderer from '../../../../common/FieldRenderer';
 //constants block
 import { WHITE } from '../../../../../theme';
-import { parseColumnGrid } from '../../../../../utils';
+import { parseColumnGrid, parseXmGrid } from '../../../../../utils';
 import { FieldsInputs } from '../../../../../generated/graphql';
 import { ActionType } from '../../../../../reducers/formBuilderReducer';
 import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
@@ -136,7 +136,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
   return (
     <TabContext value={selectedTab}>
       <Grid container>
-        <Grid item xs={10}>
+        <Grid item xs={12} sm={12} md={10} lg={10}>
           <TabList onChange={handleChange} variant='scrollable' className='align-center'>
             {formValues?.map((tab, i) => {
               const { id, name } = tab || {}
@@ -147,7 +147,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
           </TabList>
         </Grid>
 
-        <Grid item xs={2}>
+        <Grid item xs={12} sm={12} md={2} lg={2}>
           <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
             <IconButton onClick={addTabHandler}>
               <AddIcon />
@@ -175,11 +175,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
                   const sectionLength = sections?.length
                   return (
                     <Grid item key={id}
-                      xs={parseColumnGrid(col) || 12}
-                      sm={parseColumnGrid(col) || 12}
-                      md={parseColumnGrid(col) || 12}
-                      lg={parseColumnGrid(col) || 12}
-                      xl={parseColumnGrid(col) || 12}>
+                    md={parseColumnGrid(col)} xs={parseXmGrid(col)}>
                       {
                         <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-end'} p={1}>
                           <Box pl={1}>
@@ -215,9 +211,7 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
                                   return (
                                     <Draggable key={fieldId} draggableId={fieldId} index={index}>
                                       {(provided, snapshot) => (
-                                        <Grid xs={parseColumnGrid(column) || 12} sm={parseColumnGrid(column) || 12}
-                                          md={parseColumnGrid(column) || 12} lg={parseColumnGrid(column) || 12}
-                                          xl={parseColumnGrid(column) || 12}>
+                                        <Grid md={parseColumnGrid(column)} xs={parseXmGrid(column)}>
                                           <div
                                             ref={provided.innerRef}
                                             className={`${classes.dragContainer} ${snapshot.isDragging && classes.draggingDragContainer}`}
