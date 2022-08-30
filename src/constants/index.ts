@@ -1665,6 +1665,7 @@ export const INVALID_DEA_DATE_ERROR_MESSAGE = "DEA Term date should be after DEA
 export const INVALID_EXPIRATION_DATE_ERROR_MESSAGE = "Expiration date should be after Effective date";
 export const INVALID_BILL_FEE_MESSAGE='Invalid bill fee';
 export const INVALID_UNIT_MESSAGE='Invalid unit'
+export const INVALID_AMOUNT_MESSAGE='Invalid amount'
 export const NO_SPECIAL_CHAR_ERROR_MESSAGE = "Special characters (!@#$%^&*) are not acceptable";
 export const NUMBER_AND_SPECIAL_ERROR_MESSAGE = "Numbers and Special characters (!@#$%^&*) are not acceptable";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";

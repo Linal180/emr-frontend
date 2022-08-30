@@ -84,8 +84,8 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
           setTestsToRemove={setTestsToRemove}
           appointmentInfo={appointmentInfo}
           handleStep={handleStep}
-          setCurrentTest={setCurrentTest} 
-          />
+          setCurrentTest={setCurrentTest}
+        />
       case 1:
         return <TestsComponent currentTest={currentTest} />
       case 2:
@@ -143,7 +143,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       labTestStatus && setValue('labTestStatus', setRecord(labTestStatus, labTestStatus))
       primaryProvider?.id && setValue('primaryProviderId', setRecord(primaryProvider?.id, `${primaryProvider?.firstName} ${primaryProvider?.lastName}`))
       referringProvider?.id && setValue('referringProviderId', setRecord(referringProvider?.id, `${referringProvider?.firstName} ${referringProvider?.lastName}`))
-
+      
       labTestsToEdit?.forEach((labTest, index) => {
         const { test, testDate, testNotes, testSpecimens, testTime, diagnoses, id } = labTest || {}
         const diagnosesIds = diagnoses?.map((value) => {
@@ -152,6 +152,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
             value: value?.id || ''
           }
         }) ?? []
+
         testDate && setValue(`testFieldValues.${index}.testDate`, testDate)
         testTime && setValue(`testFieldValues.${index}.testTime`, testTime)
         testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
@@ -179,7 +180,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   }, [toggleSideDrawer])
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
-    const { appointment, labTestStatus, diagnosesIds, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId } = values
+    const { appointment, labTestStatus, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId } = values
     const { id: testStatus } = labTestStatus ?? {}
 
     let appointmentId = ''
@@ -190,7 +191,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     }
 
     testFieldValues.forEach(async (testFieldValue) => {
-      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValue
+      const { test, testDate, testNotes, testTime, specimenTypeField, diagnosesIds } = testFieldValue
 
       const createLabTestItemInput = {
         patientId: patientId ?? '',
@@ -264,6 +265,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     }
 
     const { appointment, labTestStatus, testFieldValues, primaryProviderId, referringProviderId } = values
+
     const newTests = testFieldValues.filter((testFieldValue) => !!testFieldValue?.newTest)
     const oldTests = testFieldValues.filter((testFieldValue) => !testFieldValue?.newTest)
 
