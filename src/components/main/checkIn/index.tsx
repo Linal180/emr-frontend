@@ -1,6 +1,6 @@
 // packages block
 import { useParams } from "react-router";
-import { Reducer, useCallback, useEffect, useReducer, useRef } from "react";
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
 import {
   Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
@@ -32,9 +32,10 @@ import {
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
-import { convertDateFromUnix, getFormattedDate } from "../../../utils";
+import { convertDateFromUnix, getFormattedDate, isBiller } from "../../../utils";
 import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
+import { AuthContext } from "../../../context";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -52,6 +53,9 @@ const CheckInStepIcon = (props: StepIconProps) => {
 }
 
 const CheckInComponent = (): JSX.Element => {
+  const { user } = useContext(AuthContext)
+  const { roles } = user || {}
+  const isBillerUser = isBiller(roles);
   const checkInClasses = useCheckInProfileStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
@@ -236,23 +240,6 @@ const CheckInComponent = (): JSX.Element => {
       </Box>
     </>
 
-  // 2- INSURANCE
-  // const Insurance = () =>
-  //   <>
-  //     <Card>
-  //       <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-  //         <Typography variant="h4">{INSURANCE}</Typography>
-
-  //         <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-  //           {TO_CHART}
-  //           <ChevronRight />
-  //         </Button>
-  //       </Box>
-  //       <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
-  //       <Box p={2}></Box>
-  //     </Card>
-  //   </>
-
   // 3- CHART
   const Chart = () =>
     <>
@@ -269,6 +256,12 @@ const CheckInComponent = (): JSX.Element => {
         <ChartCards shouldDisableEdit={shouldDisableEdit} />
       </Card>
     </>
+
+  const handleStepChange = (index: number) => {
+    if ([0, 4].includes(index)) {
+      handleStep(index)
+    }
+  }
 
   return (
     <>
@@ -297,7 +290,7 @@ const CheckInComponent = (): JSX.Element => {
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={() => handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                <StepLabel onClick={() => isBillerUser ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />

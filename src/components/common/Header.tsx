@@ -17,7 +17,7 @@ import { AuthContext } from "../../context";
 import history from "../../history";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { BLACK } from "../../theme";
-import { activeClass, checkPermission, getHigherRole, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isBiller, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
 
 const Header = ({ url }: { url: string }): JSX.Element => {
   const classes = useHeaderStyles();
@@ -31,6 +31,7 @@ const Header = ({ url }: { url: string }): JSX.Element => {
   const isSuper = isSuperAdmin(roles)
   const isFacAdmin = isFacilityAdmin(roles)
   const isPraAdmin = isPracticeAdmin(roles)
+  const isBillerUser = isBiller(roles)
 
   const isAdmin = isSuper || isFacAdmin || isPraAdmin
 
@@ -83,7 +84,7 @@ const Header = ({ url }: { url: string }): JSX.Element => {
             }
           </Box>
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
+          {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
             <Typography
               component={Link}
               to={PATIENTS_ROUTE}
@@ -176,7 +177,7 @@ const Header = ({ url }: { url: string }): JSX.Element => {
                 />
               }
 
-              {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
+              {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
                 <Typography
                   component={Link}
                   to={PATIENTS_ROUTE}
@@ -192,7 +193,7 @@ const Header = ({ url }: { url: string }): JSX.Element => {
                 current={currentRoute === 'inBilling'}
               />}
 
-              {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+              {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
                 <Typography
                   component={Link}
                   to={FACILITIES_ROUTE}

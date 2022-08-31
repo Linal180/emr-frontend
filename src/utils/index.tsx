@@ -228,6 +228,7 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.OfficeManager)
     || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.Biller)
 }
 
 export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
@@ -239,6 +240,13 @@ export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.OfficeManager)
     || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.Biller)
+}
+
+export const isBiller = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Biller)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
