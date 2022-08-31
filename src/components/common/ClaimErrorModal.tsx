@@ -37,9 +37,8 @@ const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMes
               {errorMessages?.map((val) => (
                 <li>{val}</li>
               ))}
-            </ul> : <Typography>
-              {NO_ERROR_FOUND}
-            </Typography>
+            </ul> :
+            <Typography>{NO_ERROR_FOUND}</Typography>
           }
         </Box> */}
         <Box className="dialogBg">

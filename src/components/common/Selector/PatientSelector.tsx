@@ -36,7 +36,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   const { id: facilityId, practiceId } = facility || {}
   const [{ page, searchQuery, patients, doctorId }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  sortingValue(renderPatient(patients))
+
   const updatedOptions = [EMPTY_OPTION, ...sortingValue(renderPatient(patients)), ...(addNewPatientOption ? [DUMMY_OPTION] : [])]
 
   const [fetchAllPatientsQuery, { loading }] = useFetchAllPatientLazyQuery({
@@ -123,9 +123,8 @@ const PatientSelector: FC<PatientSelectorProps> = ({
             getOptionLabel={(option) => option.name ?? ""}
             filterOptions={(options, state) => {
               const results = defaultFilterOptions(options, state);
-
               if (results.length === 0) {
-                return [NO_RECORDS_OPTION, DUMMY_OPTION];
+                return addNewPatientOption ? [NO_RECORDS_OPTION, DUMMY_OPTION] : [NO_RECORDS_OPTION]
               }
 
               return results;
