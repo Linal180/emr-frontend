@@ -1,5 +1,5 @@
 //packages import
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { ChevronRight } from "@material-ui/icons";
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 //constants, interfaces, utils, types
@@ -8,8 +8,14 @@ import {
   APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
   PROVIDER_NAME, REASON, SELF_CHECK_IN
 } from "../../../constants";
+import { AuthContext } from "../../../context";
+import { isBiller } from "../../../utils";
 
-const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, appointmentDispatcher, handleStep }) => {
+const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep }) => {
+  const { user } = useContext(AuthContext)
+  const { roles } = user || {}
+  const isBillerUser = isBiller(roles);
+  
   const { appointment, primaryInsurance } = appointmentState;
   const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
   const { firstName, lastName } = provider ?? {}
@@ -25,7 +31,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, appointmentDispa
       >
         <Typography variant="h4">{APPOINTMENT_INFO}</Typography>
 
-        <Button variant="contained" color="primary" onClick={() => handleStep(1)}>
+        <Button variant="contained" color="primary" onClick={() => isBillerUser ? handleStep(4): handleStep(1)}>
           {CHECK_IN}
           <ChevronRight />
         </Button>
