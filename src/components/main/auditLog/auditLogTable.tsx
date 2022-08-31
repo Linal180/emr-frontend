@@ -27,6 +27,7 @@ import {
 } from "../../../constants";
 import BackButton from "../../common/BackButton";
 import PageHeader from "../../common/PageHeader";
+import { WHITE } from "../../../theme";
 
 const headers = [
   { label: "Date", key: "date" },
@@ -156,8 +157,6 @@ const AuditLogTable = (): JSX.Element => {
               path={[AUDIT_LOG_BREAD]}
             />
           </Box>
-          {/* <Box ml={1} /> */}
-          {/* <Typography variant="h4" color="textPrimary">{AUDIT_LOG_REPORT}</Typography> */}
         </Box>
 
         <CSVLink data={csvData as object[]} headers={headers} className="csvLink"
@@ -223,7 +222,7 @@ const AuditLogTable = (): JSX.Element => {
         </FormProvider>
       </Box>
 
-      <Box mt={2} className={classes.mainTableContainer}>
+      <Box mt={1} p={2} borderRadius={12} bgcolor={WHITE} maxHeight="calc(100vh - 400px)" className="overflowY-auto">
         <Box className="table-overflow">
           <Table aria-label="customized table" className={classes.table}>
             <TableHead>
@@ -282,7 +281,7 @@ const AuditLogTable = (): JSX.Element => {
       </Box>
 
       {!loading && totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" p={3}>
+        <Box display="flex" justifyContent="flex-end" pt={3}>
           <Pagination
             count={totalPages}
             shape="rounded"
