@@ -16,7 +16,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/pickers": "^3.3.10",
-    "@react-pdf/renderer": "^2.3.0",
+    "@react-pdf/renderer": "2.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -74,7 +74,13 @@
     "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
+  "resolutions": {
+    "//": "See https://github.com/facebook/create-react-app/issues/11773",
+    "react-error-overlay": "6.0.9",
+    "@react-pdf/font": "2.2.0"
+  },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:prod": "NODE_OPTIONS='--max-old-space-size=8192' react-scripts build",

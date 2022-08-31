@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Box, Typography } from "@material-ui/core";
 //components
 import Avatar from "../Avatar";
@@ -8,7 +8,7 @@ import ViewDataLoader from "../ViewDataLoader";
 import { NoDataIcon } from "../../../assets/svgs";
 import { DESC, NO_RECORDS } from "../../../constants";
 import { GRAY_SEVEN, GREY_SEVEN } from "../../../theme";
-import { getStandardTime, sortingArray, isCurrentDay } from "../../../utils";
+import { getStandardTime, sortingArray, isCurrentDay, isSuperAdmin, isPracticeAdmin, isOnlyDoctor } from "../../../utils";
 import { DoctorAppointmentsAndPatientsProps } from "../../../interfacesTypes";
 import {
   Action, ActionType, appointmentReducer, initialState, State
@@ -17,10 +17,18 @@ import {
   AppointmentsPayload, AppointmentStatus, useFindAllAppointmentsLazyQuery
 } from "../../../generated/graphql";
 import moment from "moment";
+import { AuthContext } from "../../../context";
 
 const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
   patientId, providerId, setCount
 }): JSX.Element => {
+  const { user } = useContext(AuthContext)
+  const { facility, roles } = user || {}
+  const { id: facilityId, practice } = facility || {}
+  const { id: practiceId } = practice || {}
+  const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
+  const isDoctor = isOnlyDoctor(roles)
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
   const [findAllAppointments, { loading }] = useFindAllAppointmentsLazyQuery({
@@ -61,12 +69,21 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
   });
 
   const fetchAppointments = useCallback(async () => {
+    const pageInputs = { paginationOptions: { page: 1, limit: 10 } }
+    const inputs = isSuper
+      ? {}
+      : isPracticeUser
+        ? { practiceId, facilityId: facilityId }
+        : isDoctor
+          ? { providerId }
+          : { facilityId }
+
     const query = patientId ? { patientId } : { providerId }
 
     await findAllAppointments({
-      variables: { appointmentInput: { ...query, paginationOptions: { limit: 10, page: 1 }, appointmentDate: moment().format('YYYY-MM-DD') } }
+      variables: { appointmentInput: { ...inputs, ...query, ...pageInputs, appointmentDate: moment().format('YYYY-MM-DD') } }
     })
-  }, [findAllAppointments, patientId, providerId])
+  }, [facilityId, findAllAppointments, isDoctor, isPracticeUser, isSuper, patientId, practiceId, providerId])
 
   useEffect(() => {
     fetchAppointments()
