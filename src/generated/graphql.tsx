@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
 };
 
@@ -287,6 +288,11 @@ export type AppointmentPayload = {
   __typename?: 'AppointmentPayload';
   appointment?: Maybe<Appointment>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type AppointmentReminderInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 /** The patient appointment status type assigned */
@@ -3203,7 +3209,7 @@ export type MutationSaveUserFormValuesArgs = {
 
 
 export type MutationSendAppointmentReminderArgs = {
-  appointmentId: Scalars['String'];
+  appointmentReminderInput: AppointmentReminderInput;
 };
 
 
@@ -6702,7 +6708,7 @@ export type CreateAppointmentMutationVariables = Exact<{
 export type CreateAppointmentMutation = { __typename?: 'Mutation', createAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type SendAppointmentReminderMutationVariables = Exact<{
-  appointmentId: Scalars['String'];
+  appointmentReminderInput: AppointmentReminderInput;
 }>;
 
 
@@ -8558,8 +8564,8 @@ export type CreateAppointmentMutationHookResult = ReturnType<typeof useCreateApp
 export type CreateAppointmentMutationResult = Apollo.MutationResult<CreateAppointmentMutation>;
 export type CreateAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateAppointmentMutation, CreateAppointmentMutationVariables>;
 export const SendAppointmentReminderDocument = gql`
-    mutation SendAppointmentReminder($appointmentId: String!) {
-  sendAppointmentReminder(appointmentId: $appointmentId) {
+    mutation SendAppointmentReminder($appointmentReminderInput: AppointmentReminderInput!) {
+  sendAppointmentReminder(appointmentReminderInput: $appointmentReminderInput) {
     response {
       error
       status
@@ -8583,7 +8589,7 @@ export type SendAppointmentReminderMutationFn = Apollo.MutationFunction<SendAppo
  * @example
  * const [sendAppointmentReminderMutation, { data, loading, error }] = useSendAppointmentReminderMutation({
  *   variables: {
- *      appointmentId: // value for 'appointmentId'
+ *      appointmentReminderInput: // value for 'appointmentReminderInput'
  *   },
  * });
  */
