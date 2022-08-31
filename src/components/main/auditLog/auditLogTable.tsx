@@ -44,14 +44,14 @@ const AuditLogTable = (): JSX.Element => {
   const methods = useForm<AuditLogsInputs>({
     mode: "all", defaultValues: {
       endDate: new Date().toString(),
-      startDate: new Date().toString()
+      startDate: moment().subtract(1,'hour').toString()
     }
   });
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(userLogsReducer, initialState)
   const { page, totalPages, userLogs, csvData } = state
-  const { handleSubmit, getValues, setValue } = methods
-  const { patient, module, user, startDate, endDate } = getValues()
+  const { handleSubmit, watch, setValue } = methods
+  const { patient, module, user, startDate, endDate } = watch()
 
   const [findAllUserLogs, { loading, error }] = useFindAllUserLogsLazyQuery({
     fetchPolicy: "network-only",
@@ -96,7 +96,7 @@ const AuditLogTable = (): JSX.Element => {
 
   useEffect(() => {
     fetchAllUserLogs()
-  }, [fetchAllUserLogs])
+  }, [fetchAllUserLogs, startDate])
 
   const onSubmit = async (data: AuditLogsInputs) => {
     const { module, patient, user, startDate, endDate } = data

@@ -185,8 +185,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const sendReminder = async () => {
     try {
+      const timeZone = moment.tz.guess();
       await sendAppointmentReminder({
-        variables: { appointmentId: reminderId }
+        variables: { appointmentReminderInput: { appointmentId: reminderId, timeZone: timeZone } }
       })
     } catch (error) { }
   }
