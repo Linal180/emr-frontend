@@ -67,6 +67,7 @@ export enum SYSTEM_ROLES {
   Nurse = "nurse",
   FrontDesk = "front-desk",
   Patient = "patient",
+  Biller = "biller",
 }
 
 export enum APPOINTMENT_PAYMENT_TYPE {

@@ -27,7 +27,7 @@ import {
 import {
   CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, SERVICES, PRACTICE,
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
-  FACILITY_SERVICES_ROUTE, SOMETHING_WENT_WRONG, USER_PERMISSIONS,
+  FACILITY_SERVICES_ROUTE, USER_PERMISSIONS,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -85,9 +85,9 @@ const FacilityTable: FC = (): JSX.Element => {
         isSuper ? { ...inputs } : isPracticeUser ? { ...inputs, practiceId } :
           isFacAdmin || isRegUser ? { ...inputs, singleFacilityId: facilityId } : undefined
 
-      payload ? await findAllFacility({
+      payload && await findAllFacility({
         variables: { facilityInput: { ...payload } }
-      }) : Alert.error(SOMETHING_WENT_WRONG)
+      }) 
     } catch (error) { }
   }, [
     facilityId, findAllFacility, isFacAdmin, isPracticeUser, isRegUser, isSuper, page,
