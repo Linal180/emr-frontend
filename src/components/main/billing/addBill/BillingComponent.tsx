@@ -66,8 +66,9 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
       } else {
-
-        dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: message.split('.') }))
+        const messages = message.split('.');
+        messages?.pop()
+        dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: messages }))
         dispatch(({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: true }))
       }
     },
@@ -511,7 +512,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
         }
       })
-      
+
       const createBillingInput = {
         ...(appointmentId && { appointmentId: appointmentId || '' }),
         ...(facilityId && { facilityId: facilityId || '' }),
