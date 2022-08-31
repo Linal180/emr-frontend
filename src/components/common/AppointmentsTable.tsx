@@ -47,7 +47,8 @@ import {
   APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, ARRIVAL_STATUS, ASC, CANCEL_TIME_EXPIRED_MESSAGE,
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
-  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER, PATIENT_EMAIL_PHONE_INFO_MISSING
+  USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER, 
+  PATIENT_EMAIL_PHONE_INFO_MISSING
 } from "../../constants";
 
 dotenv.config()
@@ -413,18 +414,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               <FormProvider {...methods}>
                 <Grid container spacing={3}>
                   {isAdminUser &&
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Grid container>
-                        <Grid item md={4} sm={12} xs={12}>
-                          <FacilitySelector
-                            addEmpty
-                            label={FACILITY}
-                            name="facilityId"
-                            onSelect={({ id }: SelectorOption) =>
-                              dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
-                          />
-                        </Grid>
-                      </Grid>
+                    <Grid item md={4} sm={12} xs={12}>
+                      <FacilitySelector
+                        addEmpty
+                        label={FACILITY}
+                        name="facilityId"
+                        onSelect={({ id }: SelectorOption) =>
+                          dispatch({ type: ActionType.SET_FILTER_FACILITY_ID, filterFacilityId: id })}
+                      />
                     </Grid>
                   }
 
@@ -436,7 +433,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     />
                   </Grid>
 
-                  <Grid item md={8} sm={12} xs={12}>
+                  <Grid item md={isAdminUser ? 4: 8} sm={12} xs={12}>
                     <Box className="date-box-wrap">
                       <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
