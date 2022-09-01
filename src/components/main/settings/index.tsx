@@ -177,7 +177,7 @@ export const SettingsComponent = () => {
         {isFacility && <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
           <Box pb={3}>
             <Box className={classes.settingContainer}>
-              <Link key={FACILITY_SCHEDULE} to={`${FACILITIES_ROUTE}/${facilityId}`}>
+              <Link key={FACILITY_SCHEDULE} to={`${FACILITIES_ROUTE}/${facilityId}/2`}>
                 <MenuItem>{FACILITY_SCHEDULE}</MenuItem>
               </Link>
 
