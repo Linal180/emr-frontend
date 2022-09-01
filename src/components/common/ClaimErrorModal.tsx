@@ -1,7 +1,7 @@
 // packages block
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@material-ui/core";
 import { FC } from "react";
-import { TickIconNew } from "../../assets/svgs";
+import { TickIconNew, WarningIconNew } from "../../assets/svgs";
 // components block
 // interfaces/types block, theme, svgs and constants
 import { ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
@@ -24,33 +24,24 @@ const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMes
     >
       <DialogTitle id="alert-dialog-title">
         <Box display='flex' alignItems='center'>
-        <TickIconNew />
-        <Box p={1} />
-        <Typography variant="h4">{ISSUES}</Typography>
+          {errorMessages?.length ? <WarningIconNew /> : <TickIconNew />}
+          <Box p={1} />
+          <Typography variant="h4">{ISSUES}</Typography>
         </Box>
       </DialogTitle>
 
       <DialogContent>
-        {/* <Box className="dialogBg">
-          {errorMessages && errorMessages?.length ?
-            <ul>
-              {errorMessages?.map((val) => (
-                <li>{val}</li>
-              ))}
-            </ul> :
-            <Typography>{NO_ERROR_FOUND}</Typography>
-          }
-        </Box> */}
         <Box className="dialogBg">
           {errorMessages && errorMessages?.length ?
             <ul>
-              {errorMessages?.map((val) => (
-                <li>
-                  <Box py={0.5}>
-                    <Typography variant="body2">{val}</Typography>
-                  </Box>
-                </li>
-              ))}
+              {errorMessages?.map((val) => {
+                return !val?.trim() ? <></>
+                  : (
+                    <li key={val}>
+                      <Typography variant="body2">{val}</Typography>
+                    </li>
+                  )
+              })}
             </ul> : <Typography>
               {NO_ERROR_FOUND}
             </Typography>
